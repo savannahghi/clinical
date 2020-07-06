@@ -1,0 +1,390 @@
+"""
+AllergyIntoleranceTypeEnum is a FHIR enum
+"""
+enum AllergyIntoleranceTypeEnum {
+  allergy
+  intolerance
+}
+
+"""
+AllergyIntoleranceCategoryEnum is a FHIR enum
+"""
+enum AllergyIntoleranceCategoryEnum {
+  food
+  medication
+  environment
+  biologic
+}
+
+"""
+AllergyIntoleranceCriticalityEnum is a FHIR enum
+"""
+enum AllergyIntoleranceCriticalityEnum {
+  low
+  high
+  unable_to_assess # `original: unable-to-assess`
+}
+
+"""
+AllergyIntoleranceReactionSeverityEnum is a FHIR enum
+"""
+enum AllergyIntoleranceReactionSeverityEnum {
+  mild
+  moderate
+  severe
+}
+
+"""
+FHIRAllergyIntoleranceInput: input for AllergyIntolerance
+"""
+input FHIRAllergyIntoleranceInput {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  Business identifiers assigned to this AllergyIntolerance by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
+  """
+  Identifier: [FHIRIdentifierInput]
+
+  """
+  The clinical status of the allergy or intolerance.
+  """
+  ClinicalStatus: FHIRCodeableConceptInput!
+
+  """
+  Assertion about certainty associated with the propensity, or potential risk, of a reaction to the identified substance (including pharmaceutical product).
+  """
+  VerificationStatus: FHIRCodeableConceptInput!
+
+  """
+  Identification of the underlying physiological mechanism for the reaction risk.
+  """
+  Type: AllergyIntoleranceTypeEnum
+
+  """
+  Category of the identified substance.
+  """
+  Category: [AllergyIntoleranceCategoryEnum]
+
+  """
+  Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance.
+  """
+  Criticality: AllergyIntoleranceCriticalityEnum!
+
+  """
+  Code for an allergy or intolerance statement (either a positive or a negated/excluded statement).  This may be a code for a substance or pharmaceutical product that is considered to be responsible for the adverse reaction risk (e.g., "Latex"), an allergy or intolerance condition (e.g., "Latex allergy"), or a negated/excluded code for a specific substance or class (e.g., "No latex allergy") or a general or categorical negated statement (e.g.,  "No known allergy", "No known drug allergies").  Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
+  """
+  Code: FHIRCodeableConceptInput!
+
+  """
+  The patient who has the allergy or intolerance.
+  """
+  Patient: FHIRReferenceInput!
+
+  """
+  The encounter when the allergy or intolerance was asserted.
+  """
+  Encounter: FHIRReferenceInput
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetDateTime: Date
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetAge: FHIRAgeInput
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetPeriod: FHIRPeriodInput
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetRange: FHIRRangeInput
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetString: String
+
+  """
+  The recordedDate represents when this particular AllergyIntolerance record was created in the system, which is often a system-generated date.
+  """
+  RecordedDate: Date
+
+  """
+  Individual who recorded the record and takes responsibility for its content.
+  """
+  Recorder: FHIRReferenceInput
+
+  """
+  The source of the information about the allergy that is recorded.
+  """
+  Asserter: FHIRReferenceInput
+
+  """
+  Represents the date and/or time of the last known occurrence of a reaction event.
+  """
+  LastOccurrence: DateTime
+
+  """
+  Additional narrative about the propensity for the Adverse Reaction, not captured in other fields.
+  """
+  Note: [FHIRAnnotationInput]
+
+  """
+  Details about each adverse reaction event linked to exposure to the identified substance.
+  """
+  Reaction: [FHIRAllergyintoleranceReactionInput]
+}
+
+"""
+FHIRAllergyintoleranceReactionInput: input for AllergyintoleranceReaction
+"""
+input FHIRAllergyintoleranceReactionInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Identification of the specific substance (or pharmaceutical product) considered to be responsible for the Adverse Reaction event. Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
+  """
+  Substance: FHIRCodeableConceptInput
+
+  """
+  Clinical symptoms and/or signs that are observed or associated with the adverse reaction event.
+  """
+  Manifestation: [FHIRCodeableConceptInput!]!
+
+  """
+  Text description about the reaction as a whole, including details of the manifestation if required.
+  """
+  Description: String
+
+  """
+  Record of the date and/or time of the onset of the Reaction.
+  """
+  Onset: DateTime
+
+  """
+  Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.
+  """
+  Severity: AllergyIntoleranceReactionSeverityEnum
+
+  """
+  Identification of the route by which the subject was exposed to the substance.
+  """
+  ExposureRoute: FHIRCodeableConceptInput
+
+  """
+  Additional text about the adverse reaction event not captured in other fields.
+  """
+  Note: [FHIRAnnotationInput]
+}
+
+"""
+FHIRAllergyintoleranceReaction definition: risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.
+"""
+type FHIRAllergyintoleranceReaction {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Identification of the specific substance (or pharmaceutical product) considered to be responsible for the Adverse Reaction event. Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
+  """
+  Substance: FHIRCodeableConcept
+
+  """
+  Clinical symptoms and/or signs that are observed or associated with the adverse reaction event.
+  """
+  Manifestation: [FHIRCodeableConcept!]!
+
+  """
+  Text description about the reaction as a whole, including details of the manifestation if required.
+  """
+  Description: String
+
+  """
+  Record of the date and/or time of the onset of the Reaction.
+  """
+  Onset: DateTime
+
+  """
+  Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.
+  """
+  Severity: AllergyIntoleranceReactionSeverityEnum
+
+  """
+  Identification of the route by which the subject was exposed to the substance.
+  """
+  ExposureRoute: FHIRCodeableConcept
+
+  """
+  Additional text about the adverse reaction event not captured in other fields.
+  """
+  Note: [FHIRAnnotation]
+}
+
+"""
+FHIRAllergyIntolerance definition: risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.
+"""
+type FHIRAllergyIntolerance {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.
+  """
+  Text: FHIRNarrative
+
+  """
+  Business identifiers assigned to this AllergyIntolerance by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
+  """
+  Identifier: [FHIRIdentifier]
+
+  """
+  The clinical status of the allergy or intolerance.
+  """
+  ClinicalStatus: FHIRCodeableConcept!
+
+  """
+  Assertion about certainty associated with the propensity, or potential risk, of a reaction to the identified substance (including pharmaceutical product).
+  """
+  VerificationStatus: FHIRCodeableConcept!
+
+  """
+  Identification of the underlying physiological mechanism for the reaction risk.
+  """
+  Type: AllergyIntoleranceTypeEnum
+
+  """
+  Category of the identified substance.
+  """
+  Category: [AllergyIntoleranceCategoryEnum]
+
+  """
+  Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance.
+  """
+  Criticality: AllergyIntoleranceCriticalityEnum!
+
+  """
+  Code for an allergy or intolerance statement (either a positive or a negated/excluded statement).  This may be a code for a substance or pharmaceutical product that is considered to be responsible for the adverse reaction risk (e.g., "Latex"), an allergy or intolerance condition (e.g., "Latex allergy"), or a negated/excluded code for a specific substance or class (e.g., "No latex allergy") or a general or categorical negated statement (e.g.,  "No known allergy", "No known drug allergies").  Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
+  """
+  Code: FHIRCodeableConcept
+
+  """
+  The patient who has the allergy or intolerance.
+  """
+  Patient: FHIRReference!
+
+  """
+  The encounter when the allergy or intolerance was asserted.
+  """
+  Encounter: FHIRReference
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetDateTime: Date
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetAge: FHIRAge
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetPeriod: FHIRPeriod
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetRange: FHIRRange
+
+  """
+  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
+  """
+  OnsetString: String
+
+  """
+  The recordedDate represents when this particular AllergyIntolerance record was created in the system, which is often a system-generated date.
+  """
+  RecordedDate: Date
+
+  """
+  Individual who recorded the record and takes responsibility for its content.
+  """
+  Recorder: FHIRReference
+
+  """
+  The source of the information about the allergy that is recorded.
+  """
+  Asserter: FHIRReference
+
+  """
+  Represents the date and/or time of the last known occurrence of a reaction event.
+  """
+  LastOccurrence: DateTime
+
+  """
+  Additional narrative about the propensity for the Adverse Reaction, not captured in other fields.
+  """
+  Note: [FHIRAnnotation]
+
+  """
+  Details about each adverse reaction event linked to exposure to the identified substance.
+  """
+  Reaction: [FHIRAllergyintoleranceReaction]
+}
+
+"""
+FHIRAllergyIntoleranceRelayPayload is used to return single instances of AllergyIntolerance
+"""
+type FHIRAllergyIntoleranceRelayPayload {
+  resource: FHIRAllergyIntolerance!
+}
+
+"""
+FHIRAllergyIntoleranceRelayEdge is a Relay edge for AllergyIntolerance
+"""
+type FHIRAllergyIntoleranceRelayEdge {
+  cursor: String
+  node: FHIRAllergyIntolerance
+}
+
+"""
+FHIRAllergyIntoleranceRelayConnection is a Relay connection for AllergyIntolerance
+"""
+type FHIRAllergyIntoleranceRelayConnection {
+  edges: [FHIRAllergyIntoleranceRelayEdge]
+  pageInfo: PageInfo!
+}
+
+extend type Query {
+  getFHIRAllergyIntolerance(id: ID!): FHIRAllergyIntoleranceRelayPayload!
+  searchFHIRAllergyIntolerance(
+    params: Map!
+  ): FHIRAllergyIntoleranceRelayConnection!
+}
+
+extend type Mutation {
+  createFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+  updateFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+  deleteFHIRAllergyIntolerance(id: ID!): Boolean!
+}

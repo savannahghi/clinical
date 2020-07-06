@@ -1,0 +1,469 @@
+"""
+CompositionStatusEnum is a FHIR enum
+"""
+enum CompositionStatusEnum {
+  preliminary
+  final
+  amended
+  entered_in_error # `original: entered-in-error`
+}
+
+"""
+CompositionAttesterModeEnum is a FHIR enum
+"""
+enum CompositionAttesterModeEnum {
+  personal
+  professional
+  legal
+  official
+}
+
+"""
+FHIRCompositionInput: input for Composition
+"""
+input FHIRCompositionInput {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  A version-independent identifier for the Composition. This identifier stays constant as the composition is changed over time.
+  """
+  Identifier: FHIRIdentifierInput
+  """
+  The workflow/clinical status of this composition. The status is a marker for the clinical standing of the document.
+  """
+  Status: CompositionStatusEnum
+  """
+  Specifies the particular kind of composition (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the composition.
+  """
+  Type: FHIRCodeableConceptInput!
+  """
+  A categorization for the type of the composition - helps for indexing and searching. This may be implied by or derived from the code specified in the Composition Type.
+  """
+  Category: [FHIRCodeableConceptInput]
+  """
+  Who or what the composition is about. The composition can be about a person, (patient or healthcare practitioner), a device (e.g. a machine) or even a group of subjects (such as a document about a herd of livestock, or a set of patients that share a common exposure).
+  """
+  Subject: FHIRReferenceInput
+  """
+  Describes the clinical encounter or type of care this documentation is associated with.
+  """
+  Encounter: FHIRReferenceInput
+  """
+  The composition editing time, when the composition was last logically changed by the author.
+  """
+  Date: Date
+  """
+  Identifies who is responsible for the information in the composition, not necessarily who typed it in.
+  """
+  Author: [FHIRReferenceInput!]!
+  """
+  Official human-readable label for the composition.
+  """
+  Title: String
+  """
+  The code specifying the level of confidentiality of the Composition.
+  """
+  Confidentiality: Code
+  """
+  A participant who has attested to the accuracy of the composition/document.
+  """
+  Attester: [FHIRCompositionAttesterInput]
+  """
+  Identifies the organization or group who is responsible for ongoing maintenance of and access to the composition/document information.
+  """
+  Custodian: FHIRReferenceInput
+  """
+  Relationships that this composition has with other compositions or documents that already exist.
+  """
+  RelatesTo: [FHIRCompositionRelatestoInput]
+  """
+  The clinical service, such as a colonoscopy or an appendectomy, being documented.
+  """
+  Event: [FHIRCompositionEventInput]
+  """
+  The root of the sections that make up the composition.
+  """
+  Section: [FHIRCompositionSectionInput]
+}
+"""
+FHIRCompositionSectionInput: input for CompositionSection
+"""
+input FHIRCompositionSectionInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The label for this particular section.  This will be part of the rendered content for the document, and is often used to build a table of contents.
+  """
+  Title: String
+  """
+  A code identifying the kind of content contained within the section. This must be consistent with the section title.
+  """
+  Code: Code
+  """
+  Identifies who is responsible for the information in this section, not necessarily who typed it in.
+  """
+  Author: [FHIRReferenceInput]
+  """
+  The actual focus of the section when it is not the subject of the composition, but instead represents something or someone associated with the subject such as (for a patient subject) a spouse, parent, fetus, or donor. If not focus is specified, the focus is assumed to be focus of the parent section, or, for a section in the Composition itself, the subject of the composition. Sections with a focus SHALL only include resources where the logical subject (patient, subject, focus, etc.) matches the section focus, or the resources have no logical subject (few resources).
+  """
+  Focus: FHIRReferenceInput
+  """
+  A human-readable narrative that contains the attested content of the section, used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative.
+  """
+  Text: FHIRNarrativeInput
+  """
+  How the entry list was prepared - whether it is a working list that is suitable for being maintained on an ongoing basis, or if it represents a snapshot of a list of items from another source, or whether it is a prepared list where items may be marked as added, modified or deleted.
+  """
+  Mode: Code
+  """
+  Specifies the order applied to the items in the section entries.
+  """
+  OrderedBy: FHIRCodeableConceptInput
+  """
+  A reference to the actual resource from which the narrative in the section is derived.
+  """
+  Entry: [FHIRReferenceInput]
+  """
+  If the section is empty, why the list is empty. An empty section typically has some text explaining the empty reason.
+  """
+  EmptyReason: FHIRCodeableConceptInput
+  """
+  A nested sub-section within this section.
+  """
+  Section: [FHIRCompositionSectionInput]
+}
+"""
+FHIRCompositionRelatestoInput: input for CompositionRelatesto
+"""
+input FHIRCompositionRelatestoInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The type of relationship that this composition has with anther composition or document.
+  """
+  Code: Code
+  """
+  The target composition/document of this relationship.
+  """
+  TargetIdentifier: FHIRIdentifierInput
+  """
+  The target composition/document of this relationship.
+  """
+  TargetReference: FHIRReferenceInput
+}
+"""
+FHIRCompositionEventInput: input for CompositionEvent
+"""
+input FHIRCompositionEventInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  This list of codes represents the main clinical acts, such as a colonoscopy or an appendectomy, being documented. In some cases, the event is inherent in the typeCode, such as a "History and Physical Report" in which the procedure being documented is necessarily a "History and Physical" act.
+  """
+  Code: Code
+  """
+  The period of time covered by the documentation. There is no assertion that the documentation is a complete representation for this period, only that it documents events during this time.
+  """
+  Period: FHIRPeriodInput
+  """
+  The description and/or reference of the event(s) being documented. For example, this could be used to document such a colonoscopy or an appendectomy.
+  """
+  Detail: [FHIRReferenceInput]
+}
+"""
+FHIRCompositionAttesterInput: input for CompositionAttester
+"""
+input FHIRCompositionAttesterInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The type of attestation the authenticator offers.
+  """
+  Mode: CompositionAttesterModeEnum
+  """
+  When the composition was attested by the party.
+  """
+  Time: DateTime
+  """
+  Who attested the composition in the specified way.
+  """
+  Party: FHIRReferenceInput
+}
+
+"""
+FHIRCompositionSection definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).
+"""
+type FHIRCompositionSection {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The label for this particular section.  This will be part of the rendered content for the document, and is often used to build a table of contents.
+  """
+  Title: String
+
+  """
+  A code identifying the kind of content contained within the section. This must be consistent with the section title.
+  """
+  Code: Code
+
+  """
+  Identifies who is responsible for the information in this section, not necessarily who typed it in.
+  """
+  Author: [FHIRReference]
+
+  """
+  The actual focus of the section when it is not the subject of the composition, but instead represents something or someone associated with the subject such as (for a patient subject) a spouse, parent, fetus, or donor. If not focus is specified, the focus is assumed to be focus of the parent section, or, for a section in the Composition itself, the subject of the composition. Sections with a focus SHALL only include resources where the logical subject (patient, subject, focus, etc.) matches the section focus, or the resources have no logical subject (few resources).
+  """
+  Focus: FHIRReference
+
+  """
+  A human-readable narrative that contains the attested content of the section, used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative.
+  """
+  Text: FHIRNarrative
+
+  """
+  How the entry list was prepared - whether it is a working list that is suitable for being maintained on an ongoing basis, or if it represents a snapshot of a list of items from another source, or whether it is a prepared list where items may be marked as added, modified or deleted.
+  """
+  Mode: Code
+
+  """
+  Specifies the order applied to the items in the section entries.
+  """
+  OrderedBy: FHIRCodeableConcept
+
+  """
+  A reference to the actual resource from which the narrative in the section is derived.
+  """
+  Entry: [FHIRReference]
+
+  """
+  If the section is empty, why the list is empty. An empty section typically has some text explaining the empty reason.
+  """
+  EmptyReason: FHIRCodeableConcept
+
+  """
+  A nested sub-section within this section.
+  """
+  Section: [FHIRCompositionSection]
+}
+
+"""
+FHIRCompositionRelatesto definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).
+"""
+type FHIRCompositionRelatesto {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The type of relationship that this composition has with anther composition or document.
+  """
+  Code: Code
+
+  """
+  The target composition/document of this relationship.
+  """
+  TargetIdentifier: FHIRIdentifier
+
+  """
+  The target composition/document of this relationship.
+  """
+  TargetReference: FHIRReference
+}
+
+"""
+FHIRCompositionEvent definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).
+"""
+type FHIRCompositionEvent {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  This list of codes represents the main clinical acts, such as a colonoscopy or an appendectomy, being documented. In some cases, the event is inherent in the typeCode, such as a "History and Physical Report" in which the procedure being documented is necessarily a "History and Physical" act.
+  """
+  Code: Code
+
+  """
+  The period of time covered by the documentation. There is no assertion that the documentation is a complete representation for this period, only that it documents events during this time.
+  """
+  Period: FHIRPeriod
+
+  """
+  The description and/or reference of the event(s) being documented. For example, this could be used to document such a colonoscopy or an appendectomy.
+  """
+  Detail: [FHIRReference]
+}
+
+"""
+FHIRCompositionAttester definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).
+"""
+type FHIRCompositionAttester {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The type of attestation the authenticator offers.
+  """
+  Mode: CompositionAttesterModeEnum
+
+  """
+  When the composition was attested by the party.
+  """
+  Time: Time
+
+  """
+  Who attested the composition in the specified way.
+  """
+  Party: FHIRReference
+}
+
+"""
+FHIRComposition definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).
+"""
+type FHIRComposition {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.
+  """
+  Text: FHIRNarrative
+
+  """
+  A version-independent identifier for the Composition. This identifier stays constant as the composition is changed over time.
+  """
+  Identifier: FHIRIdentifier
+
+  """
+  The workflow/clinical status of this composition. The status is a marker for the clinical standing of the document.
+  """
+  Status: CompositionStatusEnum
+
+  """
+  Specifies the particular kind of composition (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the composition.
+  """
+  Type: FHIRCodeableConcept!
+
+  """
+  A categorization for the type of the composition - helps for indexing and searching. This may be implied by or derived from the code specified in the Composition Type.
+  """
+  Category: [FHIRCodeableConcept]
+
+  """
+  Who or what the composition is about. The composition can be about a person, (patient or healthcare practitioner), a device (e.g. a machine) or even a group of subjects (such as a document about a herd of livestock, or a set of patients that share a common exposure).
+  """
+  Subject: FHIRReference
+
+  """
+  Describes the clinical encounter or type of care this documentation is associated with.
+  """
+  Encounter: FHIRReference
+
+  """
+  The composition editing time, when the composition was last logically changed by the author.
+  """
+  Date: Date
+
+  """
+  Identifies who is responsible for the information in the composition, not necessarily who typed it in.
+  """
+  Author: [FHIRReference!]!
+
+  """
+  Official human-readable label for the composition.
+  """
+  Title: String
+
+  """
+  The code specifying the level of confidentiality of the Composition.
+  """
+  Confidentiality: Code
+
+  """
+  A participant who has attested to the accuracy of the composition/document.
+  """
+  Attester: [FHIRCompositionAttester]
+
+  """
+  Identifies the organization or group who is responsible for ongoing maintenance of and access to the composition/document information.
+  """
+  Custodian: FHIRReference
+
+  """
+  Relationships that this composition has with other compositions or documents that already exist.
+  """
+  RelatesTo: [FHIRCompositionRelatesto]
+
+  """
+  The clinical service, such as a colonoscopy or an appendectomy, being documented.
+  """
+  Event: [FHIRCompositionEvent]
+
+  """
+  The root of the sections that make up the composition.
+  """
+  Section: [FHIRCompositionSection]
+}
+
+"""
+FHIRCompositionRelayPayload is used to return single instances of Composition
+"""
+type FHIRCompositionRelayPayload {
+  resource: FHIRComposition!
+}
+
+"""
+FHIRCompositionRelayEdge is a Relay edge for Composition
+"""
+type FHIRCompositionRelayEdge {
+  cursor: String
+  node: FHIRComposition
+}
+
+"""
+FHIRCompositionRelayConnection is a Relay connection for Composition
+"""
+type FHIRCompositionRelayConnection {
+  edges: [FHIRCompositionRelayEdge]
+  pageInfo: PageInfo!
+}
+
+extend type Query {
+  getFHIRComposition(id: ID!): FHIRCompositionRelayPayload!
+  searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
+}
+
+extend type Mutation {
+  createFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+  updateFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+  deleteFHIRComposition(id: ID!): Boolean!
+}

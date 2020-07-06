@@ -1,0 +1,2392 @@
+"""
+FHIRUsageContextInput: input for UsageContext
+"""
+input FHIRUsageContextInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  A code that identifies the type of context being specified by this usage context.
+  """
+  Code: Code!
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueCodeableConcept: Code
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueQuantity: FHIRQuantityInput
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueRange: FHIRRangeInput
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueReference: FHIRReferenceInput
+}
+
+"""
+FHIRTimingRepeatInput: input for TimingRepeat
+"""
+input FHIRTimingRepeatInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.
+  """
+  BoundsDuration: FHIRDurationInput
+  """
+  Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.
+  """
+  BoundsRange: FHIRRangeInput
+  """
+  Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.
+  """
+  BoundsPeriod: FHIRPeriodInput
+  """
+  A total count of the desired number of repetitions across the duration of the entire timing specification. If countMax is present, this element indicates the lower bound of the allowed range of count values.
+  """
+  Count: PositiveInt
+  """
+  If present, indicates that the count is a range - so to perform the action between [count] and [countMax] times.
+  """
+  CountMax: PositiveInt
+  """
+  How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.
+  """
+  Duration: Decimal
+  """
+  If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.
+  """
+  DurationMax: Decimal
+  """
+  The units of time for the duration, in UCUM units.
+  """
+  DurationUnit: TimingRepeatDurationUnitEnum
+  """
+  The number of times to repeat the action within the specified period. If frequencyMax is present, this element indicates the lower bound of the allowed range of the frequency.
+  """
+  Frequency: PositiveInt
+  """
+  If present, indicates that the frequency is a range - so to repeat between [frequency] and [frequencyMax] times within the period or period range.
+  """
+  FrequencyMax: PositiveInt
+  """
+  Indicates the duration of time over which repetitions are to occur; e.g. to express "3 times per day", 3 would be the frequency and "1 day" would be the period. If periodMax is present, this element indicates the lower bound of the allowed range of the period length.
+  """
+  Period: Decimal
+  """
+  If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as "do this once every 3-5 days.
+  """
+  PeriodMax: Decimal
+  """
+  The units of time for the period in UCUM units.
+  """
+  PeriodUnit: TimingRepeatPeriodUnitEnum
+  """
+  If one or more days of week is provided, then the action happens only on the specified day(s).
+  """
+  DayOfWeek: Code
+  """
+  Specified time of day for action to take place.
+  """
+  TimeOfDay: Time
+  """
+  An approximate time period during the day, potentially linked to an event of daily living that indicates when the action should occur.
+  """
+  When: TimingRepeatWhenEnum
+  """
+  The number of minutes from the event. If the event code does not indicate whether the minutes is before or after the event, then the offset is assumed to be after the event.
+  """
+  Offset: Int
+}
+"""
+FHIRTimingInput: input for Timing
+"""
+input FHIRTimingInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Identifies specific times when the event occurs.
+  """
+  Event: DateTime
+  """
+  A set of rules that describe when the event is scheduled.
+  """
+  Repeat: FHIRTimingRepeatInput
+  """
+  A code for the timing schedule (or just text in code.text). Some codes such as BID are ubiquitous, but many institutions define their own additional codes. If a code is provided, the code is understood to be a complete statement of whatever is specified in the structured timing data, and either the code or the data may be used to interpret the Timing, with the exception that .repeat.bounds still applies over the code (and is not contained in the code).
+  """
+  Code: Code!
+}
+"""
+FHIRSignatureInput: input for Signature
+"""
+input FHIRSignatureInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  An indication of the reason that the entity signed this document. This may be explicitly included as part of the signature information and can be used when determining accountability for various actions concerning the document.
+  """
+  Type: [FHIRCodingInput!]!
+  """
+  When the digital signature was signed.
+  """
+  When: Instant
+  """
+  A reference to an application-usable description of the identity that signed  (e.g. the signature used their private key).
+  """
+  Who: FHIRReferenceInput!
+  """
+  A reference to an application-usable description of the identity that is represented by the signature.
+  """
+  OnBehalfOf: FHIRReferenceInput
+  """
+  A mime type that indicates the technical format of the target resources signed by the signature.
+  """
+  TargetFormat: Code
+  """
+  A mime type that indicates the technical format of the signature. Important mime types are application/signature+xml for X ML DigSig, application/jose for JWS, and image/* for a graphical image of a signature, etc.
+  """
+  SigFormat: Code
+  """
+  The base64 encoding of the Signature content. When signature is not recorded electronically this element would be empty.
+  """
+  Data: Base64Binary
+}
+"""
+FHIRSampledDataInput: input for SampledData
+"""
+input FHIRSampledDataInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The base quantity that a measured value of zero represents. In addition, this provides the units of the entire measurement series.
+  """
+  Origin: FHIRQuantityInput!
+  """
+  The length of time between sampling times, measured in milliseconds.
+  """
+  Period: Decimal
+  """
+  A correction factor that is applied to the sampled data points before they are added to the origin.
+  """
+  Factor: Decimal
+  """
+  The lower limit of detection of the measured points. This is needed if any of the data points have the value "L" (lower than detection limit).
+  """
+  LowerLimit: Decimal
+  """
+  The upper limit of detection of the measured points. This is needed if any of the data points have the value "U" (higher than detection limit).
+  """
+  UpperLimit: Decimal
+  """
+  The number of sample points at each time point. If this value is greater than one, then the dimensions will be interlaced - all the sample points for a point in time will be recorded at once.
+  """
+  Dimensions: PositiveInt
+  """
+  A series of data points which are decimal values separated by a single space (character u20). The special values "E" (error), "L" (below detection limit) and "U" (above detection limit) can also be used in place of a decimal value.
+  """
+  Data: String
+}
+
+"""
+FHIRReferenceInput: input for Reference
+"""
+input FHIRReferenceInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  A reference to a location at which the other resource is found. The reference may be a relative reference, in which case it is relative to the service base URL, or an absolute URL that resolves to the location where the resource is found. The reference may be version specific or not. If the reference is not to a FHIR RESTful server, then it should be assumed to be version specific. Internal fragment references (start with '#') refer to contained resources.
+  """
+  Reference: String
+  """
+      The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+
+  The type is the Canonical URL of Resource Definition that is the type this reference refers to. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition/ e.g. "Patient" is a reference to http://hl7.org/fhir/StructureDefinition/Patient. Absolute URLs are only allowed for logical models (and can only be used in references in logical models, not resources).
+  """
+  Type: URI
+  """
+  An identifier for the target resource. This is used when there is no way to reference the other resource directly, either because the entity it represents is not available through a FHIR server, or because there is no way for the author of the resource to convert a known identifier to an actual location. There is no requirement that a Reference.identifier point to something that is actually exposed as a FHIR instance, but it SHALL point to a business concept that would be expected to be exposed as a FHIR instance, and that instance would need to be of a FHIR resource type allowed by the reference.
+  """
+  Identifier: FHIRIdentifierInput
+  """
+  Plain text narrative that identifies the resource in addition to the resource reference.
+  """
+  Display: String!
+}
+
+"""
+FHIRRangeInput: input for Range
+"""
+input FHIRRangeInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The low limit. The boundary is inclusive.
+  """
+  Low: FHIRQuantityInput
+  """
+  The high limit. The boundary is inclusive.
+  """
+  High: FHIRQuantityInput
+}
+"""
+FHIRQuantityInput: input for Quantity
+"""
+input FHIRQuantityInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Float!
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: QuantityComparatorEnum
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String!
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI!
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code!
+}
+
+"""
+FHIRPeriodInput: input for Period
+"""
+input FHIRPeriodInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The start of the period. The boundary is inclusive.
+  """
+  Start: DateTime!
+  """
+  The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.
+  """
+  End: DateTime!
+}
+
+"""
+FHIRNarrativeInput: input for Narrative
+"""
+input FHIRNarrativeInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.
+  """
+  Status: NarrativeStatusEnum
+  """
+  The actual narrative content, a stripped down version of XHTML.
+  """
+  Div: XHTML!
+}
+"""
+FHIRMoneyInput: input for Money
+"""
+input FHIRMoneyInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Numerical value (with implicit precision).
+  """
+  Value: Decimal
+  """
+  ISO 4217 Currency Code.
+  """
+  Currency: Code
+}
+
+"""
+FHIRIdentifierInput: input for Identifier
+"""
+input FHIRIdentifierInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The purpose of this identifier.
+  """
+  Use: IdentifierUseEnum!
+  """
+  A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.
+  """
+  Type: FHIRCodeableConceptInput!
+  """
+  Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+  """
+  System: URI
+  """
+  The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+  """
+  Value: String!
+  """
+  Time period during which identifier is/was valid for use.
+  """
+  Period: FHIRPeriodInput
+  """
+  Organization that issued/manages the identifier.
+  """
+  Assigner: FHIRReferenceInput
+}
+"""
+FHIRHumanNameInput: input for HumanName
+"""
+input FHIRHumanNameInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Identifies the purpose for this name.
+  """
+  Use: HumanNameUseEnum!
+  """
+  Specifies the entire name as it should be displayed e.g. on an application UI. This may be provided instead of or as well as the specific parts.
+  """
+  Text: String!
+  """
+  The part of a name that links to the genealogy. In some cultures (e.g. Eritrea) the family name of a son is the first name of his father.
+  """
+  Family: String
+  """
+  Given name.
+  """
+  Given: String
+  """
+  Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the start of the name.
+  """
+  Prefix: String
+  """
+  Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the end of the name.
+  """
+  Suffix: String
+  """
+  Indicates the period of time when this name was valid for the named person.
+  """
+  Period: FHIRPeriodInput
+}
+
+"""
+FHIRDurationInput: input for Duration
+"""
+input FHIRDurationInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: DurationComparatorEnum
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+"""
+FHIRDosageDoseandrateInput: input for DosageDoseandrate
+"""
+input FHIRDosageDoseandrateInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The kind of dose or rate specified, for example, ordered or calculated.
+  """
+  Type: FHIRCodeableConceptInput
+  """
+  Amount of medication per dose.
+  """
+  DoseRange: FHIRRangeInput
+  """
+  Amount of medication per dose.
+  """
+  DoseQuantity: FHIRQuantityInput
+  """
+  Amount of medication per unit of time.
+  """
+  RateRatio: FHIRRatioInput
+  """
+  Amount of medication per unit of time.
+  """
+  RateRange: FHIRRangeInput
+  """
+  Amount of medication per unit of time.
+  """
+  RateQuantity: FHIRQuantityInput
+}
+"""
+FHIRDosageInput: input for Dosage
+"""
+input FHIRDosageInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Indicates the order in which the dosage instructions should be applied or interpreted.
+  """
+  Sequence: Integer
+  """
+  Free text dosage instructions e.g. SIG.
+  """
+  Text: String
+  """
+  Supplemental instructions to the patient on how to take the medication  (e.g. "with meals" or"take half to one hour before food") or warnings for the patient about the medication (e.g. "may cause drowsiness" or "avoid exposure of skin to direct sunlight or sunlamps").
+  """
+  AdditionalInstruction: [FHIRCodeableConceptInput]
+  """
+  Instructions in terms that are understood by the patient or consumer.
+  """
+  PatientInstruction: String
+  """
+  When medication should be administered.
+  """
+  Timing: FHIRTimingInput
+  """
+  Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
+  """
+  AsNeededBoolean: Boolean
+  """
+  Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
+  """
+  AsNeededCodeableConcept: Code
+  """
+  Body site to administer to.
+  """
+  Site: FHIRCodeableConceptInput
+  """
+  How drug should enter body.
+  """
+  Route: FHIRCodeableConceptInput
+  """
+  Technique for administering medication.
+  """
+  Method: FHIRCodeableConceptInput
+  """
+  The amount of medication administered.
+  """
+  DoseAndRate: [FHIRDosageDoseandrateInput]
+  """
+  Upper limit on medication per unit of time.
+  """
+  MaxDosePerPeriod: FHIRRatioInput
+  """
+  Upper limit on medication per administration.
+  """
+  MaxDosePerAdministration: FHIRQuantityInput
+  """
+  Upper limit on medication per lifetime of the patient.
+  """
+  MaxDosePerLifetime: FHIRQuantityInput
+}
+"""
+FHIRDistanceInput: input for Distance
+"""
+input FHIRDistanceInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: DistanceComparatorEnum
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+"""
+FHIRDatarequirementSortInput: input for DatarequirementSort
+"""
+input FHIRDatarequirementSortInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The attribute of the sort. The specified path must be resolvable from the type of the required data. The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements. Note that the index must be an integer constant.
+  """
+  Path: String
+  """
+  The direction of the sort, ascending or descending.
+  """
+  Direction: DataRequirementSortDirectionEnum
+}
+"""
+FHIRDatarequirementDatefilterInput: input for DatarequirementDatefilter
+"""
+input FHIRDatarequirementDatefilterInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The date-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type date, dateTime, Period, Schedule, or Timing.
+  """
+  Path: String
+  """
+  A date parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type date, dateTime, Period, Schedule, or Timing.
+  """
+  SearchParam: String
+  """
+  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
+  """
+  ValueDateTime: Date
+  """
+  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
+  """
+  ValuePeriod: FHIRPeriodInput
+  """
+  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
+  """
+  ValueDuration: FHIRDurationInput
+}
+"""
+FHIRDatarequirementCodefilterInput: input for DatarequirementCodefilter
+"""
+input FHIRDatarequirementCodefilterInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The code-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type code, Coding, or CodeableConcept.
+  """
+  Path: String
+  """
+  A token parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type code, Coding, or CodeableConcept.
+  """
+  SearchParam: String
+  """
+  The valueset for the code filter. The valueSet and code elements are additive. If valueSet is specified, the filter will return only those data items for which the value of the code-valued element specified in the path is a member of the specified valueset.
+  """
+  ValueSet: Canonical
+  """
+  The codes for the code filter. If values are given, the filter will return only those data items for which the code-valued attribute specified by the path has a value that is one of the specified codes. If codes are specified in addition to a value set, the filter returns items matching a code in the value set or one of the specified codes.
+  """
+  Code: Code
+}
+"""
+FHIRDataRequirementInput: input for DataRequirement
+"""
+input FHIRDataRequirementInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.
+  """
+  Type: Code
+  """
+  The profile of the required data, specified as the uri of the profile definition.
+  """
+  Profile: Canonical
+  """
+  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
+  """
+  SubjectCodeableConcept: Code
+  """
+  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
+  """
+  SubjectReference: FHIRReferenceInput
+  """
+      Indicates that specific elements of the type are referenced by the knowledge module and must be supported by the consumer in order to obtain an effective evaluation. This does not mean that a value is required for this element, only that the consuming system must understand the element and be able to provide values for it if they are available.
+
+  The value of mustSupport SHALL be a FHIRPath resolveable on the type of the DataRequirement. The path SHALL consist only of identifiers, constant indexers, and .resolve() (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details).
+  """
+  MustSupport: String
+  """
+  Code filters specify additional constraints on the data, specifying the value set of interest for a particular element of the data. Each code filter defines an additional constraint on the data, i.e. code filters are AND'ed, not OR'ed.
+  """
+  CodeFilter: Code
+  """
+  Date filters specify additional constraints on the data in terms of the applicable date range for specific elements. Each date filter specifies an additional constraint on the data, i.e. date filters are AND'ed, not OR'ed.
+  """
+  DateFilter: Date
+  """
+  Specifies a maximum number of results that are required (uses the _count search parameter).
+  """
+  Limit: PositiveInt
+  """
+  Specifies the order of the results to be returned.
+  """
+  Sort: [FHIRDatarequirementSortInput]
+}
+"""
+FHIRCountInput: input for Count
+"""
+input FHIRCountInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: CountComparatorEnum
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+"""
+FHIRContributorInput: input for Contributor
+"""
+input FHIRContributorInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The type of contributor.
+  """
+  Type: ContributorTypeEnum
+  """
+  The name of the individual or organization responsible for the contribution.
+  """
+  Name: String
+  """
+  Contact details to assist a user in finding and communicating with the contributor.
+  """
+  Contact: [FHIRContactDetailInput]
+}
+"""
+FHIRContactPointInput: input for ContactPoint
+"""
+input FHIRContactPointInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Telecommunications form for contact point - what communications system is required to make use of the contact.
+  """
+  System: ContactPointSystemEnum
+  """
+  The actual contact point details, in a form that is meaningful to the designated communication system (i.e. phone number or email address).
+  """
+  Value: String
+  """
+  Identifies the purpose for the contact point.
+  """
+  Use: ContactPointUseEnum
+  """
+  Specifies a preferred order in which to use a set of contacts. ContactPoints with lower rank values are more preferred than those with higher rank values.
+  """
+  Rank: Int
+  """
+  Time period when the contact point was/is in use.
+  """
+  Period: FHIRPeriodInput
+}
+"""
+FHIRContactDetailInput: input for ContactDetail
+"""
+input FHIRContactDetailInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The name of an individual to contact.
+  """
+  Name: String
+  """
+  The contact details for the individual (if a name was provided) or the organization.
+  """
+  Telecom: [FHIRContactPointInput]
+}
+"""
+FHIRCodingInput: input for Coding
+"""
+input FHIRCodingInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The identification of the code system that defines the meaning of the symbol in the code.
+  """
+  System: URI
+  """
+  The version of the code system which was used when choosing this code. Note that a well-maintained code system does not need the version reported, because the meaning of codes is consistent across versions. However this cannot consistently be assured, and when the meaning is not guaranteed to be consistent, the version SHOULD be exchanged.
+  """
+  Version: String
+  """
+  A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
+  """
+  Code: Code!
+  """
+  A representation of the meaning of the code in the system, following the rules of the system.
+  """
+  Display: String!
+  """
+  Indicates that this coding was chosen by a user directly - e.g. off a pick list of available items (codes or displays).
+  """
+  UserSelected: Boolean
+}
+"""
+FHIRCodeableConceptInput: input for CodeableConcept
+"""
+input FHIRCodeableConceptInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  A reference to a code defined by a terminology system.
+  """
+  Coding: [FHIRCodingInput!]!
+  """
+  A human language representation of the concept as seen/selected/uttered by the user who entered the data and/or which represents the intended meaning of the user.
+  """
+  Text: String!
+}
+"""
+FHIRAttachmentInput: input for Attachment
+"""
+input FHIRAttachmentInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.
+  """
+  ContentType: Code
+  """
+  The human language of the content. The value can be any valid value according to BCP 47.
+  """
+  Language: Code
+  """
+  The actual data of the attachment - a sequence of bytes, base64 encoded.
+  """
+  Data: Base64Binary
+  """
+  A location where the data can be accessed.
+  """
+  URL: URL
+  """
+  The number of bytes of data that make up this attachment (before base64 encoding, if that is done).
+  """
+  Size: Int
+  """
+  The calculated hash of the data using SHA-1. Represented using base64.
+  """
+  Hash: Base64Binary
+  """
+  A label or set of text to display in place of the data.
+  """
+  Title: String
+  """
+  The date that the attachment was first created.
+  """
+  Creation: DateTime
+}
+"""
+FHIRAnnotationInput: input for Annotation
+"""
+input FHIRAnnotationInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The individual responsible for making the annotation.
+  """
+  AuthorReference: FHIRReferenceInput
+  """
+  The individual responsible for making the annotation.
+  """
+  AuthorString: String
+  """
+  Indicates when this particular annotation was made.
+  """
+  Time: DateTime
+  """
+  The text of the annotation in markdown format.
+  """
+  Text: Markdown
+}
+"""
+FHIRAgeInput: input for Age
+"""
+input FHIRAgeInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: AgeComparatorEnum
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+"""
+FHIRAddressInput: input for Address
+"""
+input FHIRAddressInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The purpose of this address.
+  """
+  Use: AddressUseEnum
+  """
+  Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both.
+  """
+  Type: AddressTypeEnum
+  """
+  Specifies the entire address as it should be displayed e.g. on a postal label. This may be provided instead of or as well as the specific parts.
+  """
+  Text: String!
+  """
+  This component contains the house number, apartment number, street name, street direction,  P.O. Box number, delivery hints, and similar address information.
+  """
+  Line: String
+  """
+  The name of the city, town, suburb, village or other community or delivery center.
+  """
+  City: String
+  """
+  The name of the administrative area (county).
+  """
+  District: String
+  """
+  Sub-unit of a country with limited sovereignty in a federally organized country. A code may be used if codes are in common use (e.g. US 2 letter state codes).
+  """
+  State: String
+  """
+  A postal code designating a region defined by the postal service.
+  """
+  PostalCode: Code
+  """
+  Country - a nation as commonly understood or generally accepted.
+  """
+  Country: String
+  """
+  Time period when address was/is in use.
+  """
+  Period: FHIRPeriodInput
+}
+
+"""
+FHIRUsageContext definition: specifies clinical/business/etc. metadata that can be used to retrieve, index and/or categorize an artifact. this metadata can either be specific to the applicable population (e.g., age category, drg) or the specific context of care (e.g., venue, care setting, provider of care).
+"""
+type FHIRUsageContext {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  A code that identifies the type of context being specified by this usage context.
+  """
+  Code: Code!
+
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueCodeableConcept: Code
+
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueQuantity: FHIRQuantity
+
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueRange: FHIRRange
+
+  """
+  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
+  """
+  ValueReference: FHIRReference
+}
+
+"""
+FHIRTimingRepeat definition: specifies an event that may occur multiple times. timing schedules are used to record when things are planned, expected or requested to occur. the most common usage is in dosage instructions for medications. they are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.
+"""
+type FHIRTimingRepeat {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.
+  """
+  BoundsDuration: FHIRDuration
+
+  """
+  Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.
+  """
+  BoundsRange: FHIRRange
+
+  """
+  Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.
+  """
+  BoundsPeriod: FHIRPeriod
+
+  """
+  A total count of the desired number of repetitions across the duration of the entire timing specification. If countMax is present, this element indicates the lower bound of the allowed range of count values.
+  """
+  Count: PositiveInt
+
+  """
+  If present, indicates that the count is a range - so to perform the action between [count] and [countMax] times.
+  """
+  CountMax: PositiveInt
+
+  """
+  How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.
+  """
+  Duration: Decimal
+
+  """
+  If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.
+  """
+  DurationMax: Decimal
+
+  """
+  The units of time for the duration, in UCUM units.
+  """
+  DurationUnit: TimingRepeatDurationUnitEnum
+
+  """
+  The number of times to repeat the action within the specified period. If frequencyMax is present, this element indicates the lower bound of the allowed range of the frequency.
+  """
+  Frequency: PositiveInt
+
+  """
+  If present, indicates that the frequency is a range - so to repeat between [frequency] and [frequencyMax] times within the period or period range.
+  """
+  FrequencyMax: PositiveInt
+
+  """
+  Indicates the duration of time over which repetitions are to occur; e.g. to express "3 times per day", 3 would be the frequency and "1 day" would be the period. If periodMax is present, this element indicates the lower bound of the allowed range of the period length.
+  """
+  Period: Decimal
+
+  """
+  If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as "do this once every 3-5 days.
+  """
+  PeriodMax: Decimal
+
+  """
+  The units of time for the period in UCUM units.
+  """
+  PeriodUnit: TimingRepeatPeriodUnitEnum
+
+  """
+  If one or more days of week is provided, then the action happens only on the specified day(s).
+  """
+  DayOfWeek: [Code]
+
+  """
+  Specified time of day for action to take place.
+  """
+  TimeOfDay: Time
+
+  """
+  An approximate time period during the day, potentially linked to an event of daily living that indicates when the action should occur.
+  """
+  When: TimingRepeatWhenEnum
+
+  """
+  The number of minutes from the event. If the event code does not indicate whether the minutes is before or after the event, then the offset is assumed to be after the event.
+  """
+  Offset: Int
+}
+
+"""
+FHIRTiming definition: specifies an event that may occur multiple times. timing schedules are used to record when things are planned, expected or requested to occur. the most common usage is in dosage instructions for medications. they are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.
+"""
+type FHIRTiming {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Identifies specific times when the event occurs.
+  """
+  Event: [DateTime]
+
+  """
+  A set of rules that describe when the event is scheduled.
+  """
+  Repeat: FHIRTimingRepeat
+
+  """
+  A code for the timing schedule (or just text in code.text). Some codes such as BID are ubiquitous, but many institutions define their own additional codes. If a code is provided, the code is understood to be a complete statement of whatever is specified in the structured timing data, and either the code or the data may be used to interpret the Timing, with the exception that .repeat.bounds still applies over the code (and is not contained in the code).
+  """
+  Code: Code!
+}
+
+"""
+FHIRSignature definition: a signature along with supporting context. the signature may be a digital signature that is cryptographic in nature, or some other signature acceptable to the domain. this other signature may be as simple as a graphical image representing a hand-written signature, or a signature ceremony different signature approaches have different utilities.
+"""
+type FHIRSignature {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  An indication of the reason that the entity signed this document. This may be explicitly included as part of the signature information and can be used when determining accountability for various actions concerning the document.
+  """
+  Type: [FHIRCoding!]!
+
+  """
+  When the digital signature was signed.
+  """
+  When: Instant
+
+  """
+  A reference to an application-usable description of the identity that signed  (e.g. the signature used their private key).
+  """
+  Who: FHIRReference!
+
+  """
+  A reference to an application-usable description of the identity that is represented by the signature.
+  """
+  OnBehalfOf: FHIRReference
+
+  """
+  A mime type that indicates the technical format of the target resources signed by the signature.
+  """
+  TargetFormat: Code
+
+  """
+  A mime type that indicates the technical format of the signature. Important mime types are application/signature+xml for X ML DigSig, application/jose for JWS, and image/* for a graphical image of a signature, etc.
+  """
+  SigFormat: Code
+
+  """
+  The base64 encoding of the Signature content. When signature is not recorded electronically this element would be empty.
+  """
+  Data: Base64Binary
+}
+
+"""
+FHIRSampledData definition: a series of measurements taken by a device, with upper and lower limits. there may be more than one dimension in the data.
+"""
+type FHIRSampledData {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The base quantity that a measured value of zero represents. In addition, this provides the units of the entire measurement series.
+  """
+  Origin: FHIRQuantity!
+
+  """
+  The length of time between sampling times, measured in milliseconds.
+  """
+  Period: Decimal
+
+  """
+  A correction factor that is applied to the sampled data points before they are added to the origin.
+  """
+  Factor: Decimal
+
+  """
+  The lower limit of detection of the measured points. This is needed if any of the data points have the value "L" (lower than detection limit).
+  """
+  LowerLimit: Decimal
+
+  """
+  The upper limit of detection of the measured points. This is needed if any of the data points have the value "U" (higher than detection limit).
+  """
+  UpperLimit: Decimal
+
+  """
+  The number of sample points at each time point. If this value is greater than one, then the dimensions will be interlaced - all the sample points for a point in time will be recorded at once.
+  """
+  Dimensions: PositiveInt
+
+  """
+  A series of data points which are decimal values separated by a single space (character u20). The special values "E" (error), "L" (below detection limit) and "U" (above detection limit) can also be used in place of a decimal value.
+  """
+  Data: String
+}
+
+"""
+FHIRReference definition: a reference from one resource to another.
+"""
+type FHIRReference {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  A reference to a location at which the other resource is found. The reference may be a relative reference, in which case it is relative to the service base URL, or an absolute URL that resolves to the location where the resource is found. The reference may be version specific or not. If the reference is not to a FHIR RESTful server, then it should be assumed to be version specific. Internal fragment references (start with '#') refer to contained resources.
+  """
+  Reference: String
+
+  """
+      The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+
+  The type is the Canonical URL of Resource Definition that is the type this reference refers to. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition/ e.g. "Patient" is a reference to http://hl7.org/fhir/StructureDefinition/Patient. Absolute URLs are only allowed for logical models (and can only be used in references in logical models, not resources).
+  """
+  Type: URI
+
+  """
+  An identifier for the target resource. This is used when there is no way to reference the other resource directly, either because the entity it represents is not available through a FHIR server, or because there is no way for the author of the resource to convert a known identifier to an actual location. There is no requirement that a Reference.identifier point to something that is actually exposed as a FHIR instance, but it SHALL point to a business concept that would be expected to be exposed as a FHIR instance, and that instance would need to be of a FHIR resource type allowed by the reference.
+  """
+  Identifier: FHIRIdentifier
+
+  """
+  Plain text narrative that identifies the resource in addition to the resource reference.
+  """
+  Display: String!
+}
+
+"""
+FHIRRatio definition: a relationship of two quantity values - expressed as a numerator and a denominator.
+"""
+type FHIRRatio {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The value of the numerator.
+  """
+  Numerator: FHIRQuantity!
+
+  """
+  The value of the denominator.
+  """
+  Denominator: FHIRQuantity!
+}
+
+
+"""
+FHIRRatio definition: a relationship of two quantity values - expressed as a numerator and a denominator.
+"""
+input FHIRRatioInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The value of the numerator.
+  """
+  Numerator: FHIRQuantityInput!
+
+  """
+  The value of the denominator.
+  """
+  Denominator: FHIRQuantityInput!
+}
+
+"""
+FHIRRange definition: a set of ordered quantities defined by a low and high limit.
+"""
+type FHIRRange {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The low limit. The boundary is inclusive.
+  """
+  Low: FHIRQuantity!
+
+  """
+  The high limit. The boundary is inclusive.
+  """
+  High: FHIRQuantity!
+}
+
+"""
+FHIRQuantity definition: a measured amount (or an amount that can potentially be measured). note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.
+"""
+type FHIRQuantity {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Float!
+
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: QuantityComparatorEnum
+
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String!
+
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI!
+
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code!
+}
+
+"""
+FHIRPeriod definition: a time period defined by a start and end date and optionally time.
+"""
+type FHIRPeriod {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The start of the period. The boundary is inclusive.
+  """
+  Start: DateTime!
+
+  """
+  The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.
+  """
+  End: DateTime!
+}
+
+"""
+FHIRNarrative definition: a human-readable summary of the resource conveying the essential clinical and business information for the resource.
+"""
+type FHIRNarrative {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.
+  """
+  Status: NarrativeStatusEnum
+
+  """
+  The actual narrative content, a stripped down version of XHTML.
+  """
+  Div: XHTML!
+}
+
+"""
+FHIRMoney definition: an amount of economic utility in some recognized currency.
+"""
+type FHIRMoney {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Numerical value (with implicit precision).
+  """
+  Value: Decimal
+
+  """
+  ISO 4217 Currency Code.
+  """
+  Currency: Code
+}
+
+"""
+FHIRIdentifier definition: an identifier - identifies some entity uniquely and unambiguously. typically this is used for business identifiers.
+"""
+type FHIRIdentifier {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The purpose of this identifier.
+  """
+  Use: IdentifierUseEnum!
+
+  """
+  A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.
+  """
+  Type: FHIRCodeableConcept!
+
+  """
+  Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+  """
+  System: URI
+
+  """
+  The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+  """
+  Value: String!
+
+  """
+  Time period during which identifier is/was valid for use.
+  """
+  Period: FHIRPeriod
+
+  """
+  Organization that issued/manages the identifier.
+  """
+  Assigner: FHIRReference
+}
+
+"""
+FHIRHumanName definition: a human's name with the ability to identify parts and usage.
+"""
+type FHIRHumanName {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Identifies the purpose for this name.
+  """
+  Use: HumanNameUseEnum!
+
+  """
+  Specifies the entire name as it should be displayed e.g. on an application UI. This may be provided instead of or as well as the specific parts.
+  """
+  Text: String!
+
+  """
+  The part of a name that links to the genealogy. In some cultures (e.g. Eritrea) the family name of a son is the first name of his father.
+  """
+  Family: String
+
+  """
+  Given name.
+  """
+  Given: [String]
+
+  """
+  Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the start of the name.
+  """
+  Prefix: [String]
+
+  """
+  Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the end of the name.
+  """
+  Suffix: [String]
+
+  """
+  Indicates the period of time when this name was valid for the named person.
+  """
+  Period: FHIRPeriod
+}
+
+"""
+FHIRDuration definition: a length of time.
+"""
+type FHIRDuration {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: DurationComparatorEnum
+
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+
+"""
+FHIRDosageDoseandrate definition: indicates how the medication is/was taken or should be taken by the patient.
+"""
+type FHIRDosageDoseandrate {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The kind of dose or rate specified, for example, ordered or calculated.
+  """
+  Type: FHIRCodeableConcept
+
+  """
+  Amount of medication per dose.
+  """
+  DoseRange: FHIRRange
+
+  """
+  Amount of medication per dose.
+  """
+  DoseQuantity: FHIRQuantity
+
+  """
+  Amount of medication per unit of time.
+  """
+  RateRatio: FHIRRatio
+
+  """
+  Amount of medication per unit of time.
+  """
+  RateRange: FHIRRange
+
+  """
+  Amount of medication per unit of time.
+  """
+  RateQuantity: FHIRQuantity
+}
+
+"""
+FHIRDosage definition: indicates how the medication is/was taken or should be taken by the patient.
+"""
+type FHIRDosage {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Indicates the order in which the dosage instructions should be applied or interpreted.
+  """
+  Sequence: Integer
+
+  """
+  Free text dosage instructions e.g. SIG.
+  """
+  Text: String
+
+  """
+  Supplemental instructions to the patient on how to take the medication  (e.g. "with meals" or"take half to one hour before food") or warnings for the patient about the medication (e.g. "may cause drowsiness" or "avoid exposure of skin to direct sunlight or sunlamps").
+  """
+  AdditionalInstruction: [FHIRCodeableConcept]
+
+  """
+  Instructions in terms that are understood by the patient or consumer.
+  """
+  PatientInstruction: String
+
+  """
+  When medication should be administered.
+  """
+  Timing: FHIRTiming
+
+  """
+  Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
+  """
+  AsNeededBoolean: Boolean
+
+  """
+  Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
+  """
+  AsNeededCodeableConcept: Code
+
+  """
+  Body site to administer to.
+  """
+  Site: FHIRCodeableConcept
+
+  """
+  How drug should enter body.
+  """
+  Route: FHIRCodeableConcept
+
+  """
+  Technique for administering medication.
+  """
+  Method: FHIRCodeableConcept
+
+  """
+  The amount of medication administered.
+  """
+  DoseAndRate: [FHIRDosageDoseandrate]
+
+  """
+  Upper limit on medication per unit of time.
+  """
+  MaxDosePerPeriod: FHIRRatio
+
+  """
+  Upper limit on medication per administration.
+  """
+  MaxDosePerAdministration: FHIRQuantity
+
+  """
+  Upper limit on medication per lifetime of the patient.
+  """
+  MaxDosePerLifetime: FHIRQuantity
+}
+
+"""
+FHIRDistance definition: a length - a value with a unit that is a physical distance.
+"""
+type FHIRDistance {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: DistanceComparatorEnum
+
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+
+"""
+FHIRDatarequirementSort definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
+"""
+type FHIRDatarequirementSort {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The attribute of the sort. The specified path must be resolvable from the type of the required data. The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements. Note that the index must be an integer constant.
+  """
+  Path: String
+
+  """
+  The direction of the sort, ascending or descending.
+  """
+  Direction: DataRequirementSortDirectionEnum
+}
+
+"""
+FHIRDatarequirementDatefilter definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
+"""
+type FHIRDatarequirementDatefilter {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The date-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type date, dateTime, Period, Schedule, or Timing.
+  """
+  Path: String
+
+  """
+  A date parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type date, dateTime, Period, Schedule, or Timing.
+  """
+  SearchParam: String
+
+  """
+  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
+  """
+  ValueDateTime: Date
+
+  """
+  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
+  """
+  ValuePeriod: FHIRPeriod
+
+  """
+  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
+  """
+  ValueDuration: FHIRDuration
+}
+
+"""
+FHIRDatarequirementCodefilter definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
+"""
+type FHIRDatarequirementCodefilter {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The code-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type code, Coding, or CodeableConcept.
+  """
+  Path: String
+
+  """
+  A token parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type code, Coding, or CodeableConcept.
+  """
+  SearchParam: String
+
+  """
+  The valueset for the code filter. The valueSet and code elements are additive. If valueSet is specified, the filter will return only those data items for which the value of the code-valued element specified in the path is a member of the specified valueset.
+  """
+  ValueSet: Canonical
+
+  """
+  The codes for the code filter. If values are given, the filter will return only those data items for which the code-valued attribute specified by the path has a value that is one of the specified codes. If codes are specified in addition to a value set, the filter returns items matching a code in the value set or one of the specified codes.
+  """
+  Code: Code
+}
+
+"""
+FHIRDataRequirement definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
+"""
+type FHIRDataRequirement {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.
+  """
+  Type: Code
+
+  """
+  The profile of the required data, specified as the uri of the profile definition.
+  """
+  Profile: [Canonical]
+
+  """
+  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
+  """
+  SubjectCodeableConcept: Code
+
+  """
+  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
+  """
+  SubjectReference: FHIRReference
+
+  """
+      Indicates that specific elements of the type are referenced by the knowledge module and must be supported by the consumer in order to obtain an effective evaluation. This does not mean that a value is required for this element, only that the consuming system must understand the element and be able to provide values for it if they are available.
+
+  The value of mustSupport SHALL be a FHIRPath resolveable on the type of the DataRequirement. The path SHALL consist only of identifiers, constant indexers, and .resolve() (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details).
+  """
+  MustSupport: [String]
+
+  """
+  Code filters specify additional constraints on the data, specifying the value set of interest for a particular element of the data. Each code filter defines an additional constraint on the data, i.e. code filters are AND'ed, not OR'ed.
+  """
+  CodeFilter: Code
+
+  """
+  Date filters specify additional constraints on the data in terms of the applicable date range for specific elements. Each date filter specifies an additional constraint on the data, i.e. date filters are AND'ed, not OR'ed.
+  """
+  DateFilter: Date
+
+  """
+  Specifies a maximum number of results that are required (uses the _count search parameter).
+  """
+  Limit: PositiveInt
+
+  """
+  Specifies the order of the results to be returned.
+  """
+  Sort: [FHIRDatarequirementSort]
+}
+
+"""
+FHIRCount definition: a measured amount (or an amount that can potentially be measured). note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.
+"""
+type FHIRCount {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: CountComparatorEnum
+
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+
+"""
+FHIRContributor definition: a contributor to the content of a knowledge asset, including authors, editors, reviewers, and endorsers.
+"""
+type FHIRContributor {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The type of contributor.
+  """
+  Type: ContributorTypeEnum
+
+  """
+  The name of the individual or organization responsible for the contribution.
+  """
+  Name: String
+
+  """
+  Contact details to assist a user in finding and communicating with the contributor.
+  """
+  Contact: [FHIRContactDetail]
+}
+
+"""
+FHIRContactPoint definition: details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc.
+"""
+type FHIRContactPoint {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Telecommunications form for contact point - what communications system is required to make use of the contact.
+  """
+  System: ContactPointSystemEnum
+
+  """
+  The actual contact point details, in a form that is meaningful to the designated communication system (i.e. phone number or email address).
+  """
+  Value: String
+
+  """
+  Identifies the purpose for the contact point.
+  """
+  Use: ContactPointUseEnum
+
+  """
+  Specifies a preferred order in which to use a set of contacts. ContactPoints with lower rank values are more preferred than those with higher rank values.
+  """
+  Rank: Int
+
+  """
+  Time period when the contact point was/is in use.
+  """
+  Period: FHIRPeriod
+}
+
+"""
+FHIRContactDetail definition: specifies contact information for a person or organization.
+"""
+type FHIRContactDetail {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The name of an individual to contact.
+  """
+  Name: String
+
+  """
+  The contact details for the individual (if a name was provided) or the organization.
+  """
+  Telecom: [FHIRContactPoint]
+}
+
+"""
+FHIRCoding definition: a reference to a code defined by a terminology system.
+"""
+type FHIRCoding {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The identification of the code system that defines the meaning of the symbol in the code.
+  """
+  System: URI
+
+  """
+  The version of the code system which was used when choosing this code. Note that a well-maintained code system does not need the version reported, because the meaning of codes is consistent across versions. However this cannot consistently be assured, and when the meaning is not guaranteed to be consistent, the version SHOULD be exchanged.
+  """
+  Version: String
+
+  """
+  A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
+  """
+  Code: Code!
+
+  """
+  A representation of the meaning of the code in the system, following the rules of the system.
+  """
+  Display: String!
+
+  """
+  Indicates that this coding was chosen by a user directly - e.g. off a pick list of available items (codes or displays).
+  """
+  UserSelected: Boolean
+}
+
+"""
+FHIRCodeableConcept definition: a concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.
+"""
+type FHIRCodeableConcept {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  A reference to a code defined by a terminology system.
+  """
+  Coding: [FHIRCoding!]!
+
+  """
+  A human language representation of the concept as seen/selected/uttered by the user who entered the data and/or which represents the intended meaning of the user.
+  """
+  Text: String!
+}
+
+"""
+FHIRAttachment definition: for referring to data content defined in other formats.
+"""
+type FHIRAttachment {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.
+  """
+  ContentType: Code
+
+  """
+  The human language of the content. The value can be any valid value according to BCP 47.
+  """
+  Language: Code
+
+  """
+  The actual data of the attachment - a sequence of bytes, base64 encoded.
+  """
+  Data: Base64Binary
+
+  """
+  A location where the data can be accessed.
+  """
+  URL: URL
+
+  """
+  The number of bytes of data that make up this attachment (before base64 encoding, if that is done).
+  """
+  Size: Int
+
+  """
+  The calculated hash of the data using SHA-1. Represented using base64.
+  """
+  Hash: Base64Binary
+
+  """
+  A label or set of text to display in place of the data.
+  """
+  Title: String
+
+  """
+  The date that the attachment was first created.
+  """
+  Creation: DateTime
+}
+
+"""
+FHIRAnnotation definition: a  text note which also  contains information about who made the statement and when.
+"""
+type FHIRAnnotation {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The individual responsible for making the annotation.
+  """
+  AuthorReference: FHIRReference
+
+  """
+  The individual responsible for making the annotation.
+  """
+  AuthorString: String
+
+  """
+  Indicates when this particular annotation was made.
+  """
+  Time: Time
+
+  """
+  The text of the annotation in markdown format.
+  """
+  Text: Markdown
+}
+
+"""
+FHIRAge definition: a duration of time during which an organism (or a process) has existed.
+"""
+type FHIRAge {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+  """
+  Value: Decimal
+
+  """
+  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
+  """
+  Comparator: AgeComparatorEnum
+
+  """
+  A human-readable form of the unit.
+  """
+  Unit: String
+
+  """
+  The identification of the system that provides the coded form of the unit.
+  """
+  System: URI
+
+  """
+  A computer processable form of the unit in some unit representation system.
+  """
+  Code: Code
+}
+
+"""
+FHIRAddress definition: an address expressed using postal conventions (as opposed to gps or other location definition formats).  this data type may be used to convey addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery.  there are a variety of postal address formats defined around the world.
+"""
+type FHIRAddress {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The purpose of this address.
+  """
+  Use: AddressUseEnum
+
+  """
+  Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both.
+  """
+  Type: AddressTypeEnum
+
+  """
+  Specifies the entire address as it should be displayed e.g. on a postal label. This may be provided instead of or as well as the specific parts.
+  """
+  Text: String!
+
+  """
+  This component contains the house number, apartment number, street name, street direction,  P.O. Box number, delivery hints, and similar address information.
+  """
+  Line: [String]
+
+  """
+  The name of the city, town, suburb, village or other community or delivery center.
+  """
+  City: String
+
+  """
+  The name of the administrative area (county).
+  """
+  District: String
+
+  """
+  Sub-unit of a country with limited sovereignty in a federally organized country. A code may be used if codes are in common use (e.g. US 2 letter state codes).
+  """
+  State: String
+
+  """
+  A postal code designating a region defined by the postal service.
+  """
+  PostalCode: Code
+
+  """
+  Country - a nation as commonly understood or generally accepted.
+  """
+  Country: String
+
+  """
+  Time period when address was/is in use.
+  """
+  Period: FHIRPeriod
+}
+
+"""
+ContactPointSystemEnum is a FHIR enum
+"""
+enum ContactPointSystemEnum {
+  phone
+  fax
+  email
+  pager
+  url
+  sms
+  other
+}
+
+"""
+ContactPointUseEnum is a FHIR enum
+"""
+enum ContactPointUseEnum {
+  home
+  work
+  temp
+  old
+  mobile
+}
+
+"""
+AgeComparatorEnum is a FHIR enum
+"""
+enum AgeComparatorEnum {
+  less_than # `original: <`
+  less_than_or_equal_to # `original: <=`
+  greater_than_or_equal_to # `original: >=`
+  greater_than # `original: >`
+}
+
+"""
+AddressUseEnum is a FHIR enum
+"""
+enum AddressUseEnum {
+  home
+  work
+  temp
+  old
+  billing
+}
+
+"""
+AddressTypeEnum is a FHIR enum
+"""
+enum AddressTypeEnum {
+  postal
+  physical
+  both
+}
+
+"""
+NarrativeStatusEnum is a FHIR enum
+"""
+enum NarrativeStatusEnum {
+  generated
+  extensions
+  additional
+  empty
+}
+
+"""
+IdentifierUseEnum is a FHIR enum
+"""
+enum IdentifierUseEnum {
+  usual
+  official
+  temp
+  secondary
+  old
+}
+
+"""
+HumanNameUseEnum is a FHIR enum
+"""
+enum HumanNameUseEnum {
+  usual
+  official
+  temp
+  nickname
+  anonymous
+  old
+  maiden
+}
+
+"""
+TimingRepeatDurationUnitEnum is a FHIR enum
+"""
+enum TimingRepeatDurationUnitEnum {
+  s
+  min
+  h
+  d
+  wk
+  mo
+  a
+}
+
+"""
+TimingRepeatPeriodUnitEnum is a FHIR enum
+"""
+enum TimingRepeatPeriodUnitEnum {
+  s
+  min
+  h
+  d
+  wk
+  mo
+  a
+}
+
+"""
+TimingRepeatWhenEnum is a FHIR enum
+"""
+enum TimingRepeatWhenEnum {
+  MORN
+  MORN_early # `original: MORN.early`
+  MORN_late # `original: MORN.late`
+  NOON
+  AFT
+  AFT_early # `original: AFT.early`
+  AFT_late # `original: AFT.late`
+  EVE
+  EVE_early # `original: EVE.early`
+  EVE_late # `original: EVE.late`
+  NIGHT
+  PHS
+  HS
+  WAKE
+  C
+  CM
+  CD
+  CV
+  AC
+  ACM
+  ACD
+  ACV
+  PC
+  PCM
+  PCD
+  PCV
+}
+
+"""
+QuantityComparatorEnum is a FHIR enum
+"""
+enum QuantityComparatorEnum {
+  less_than # `original: <`
+  less_than_or_equal_to # `original: <=`
+  greater_than_or_equal_to # `original: >=`
+  greater_than # `original: >`
+}
+
+"""
+DurationComparatorEnum is a FHIR enum
+"""
+enum DurationComparatorEnum {
+  less_than # `original: <`
+  less_than_or_equal_to # `original: <=`
+  greater_than_or_equal_to # `original: >=`
+  greater_than # `original: >`
+}
+
+"""
+DistanceComparatorEnum is a FHIR enum
+"""
+enum DistanceComparatorEnum {
+  less_than # `original: <`
+  less_than_or_equal_to # `original: <=`
+  greater_than_or_equal_to # `original: >=`
+  greater_than # `original: >`
+}
+
+"""
+DataRequirementSortDirectionEnum is a FHIR enum
+"""
+enum DataRequirementSortDirectionEnum {
+  ascending
+  descending
+}
+
+"""
+CountComparatorEnum is a FHIR enum
+"""
+enum CountComparatorEnum {
+  less_than # `original: <`
+  less_than_or_equal_to # `original: <=`
+  greater_than_or_equal_to # `original: >=`
+  greater_than # `original: >`
+}
+
+"""
+ContributorTypeEnum is a FHIR enum
+"""
+enum ContributorTypeEnum {
+  author
+  editor
+  reviewer
+  endorser
+}
