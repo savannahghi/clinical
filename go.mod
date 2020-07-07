@@ -8,6 +8,7 @@ require (
 	github.com/bearbin/go-age v0.0.0-20140407072555-316d0c1e7cd1
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.6.1
+	github.com/microcosm-cc/bluemonday v1.0.3
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/russross/blackfriday/v2 v2.0.1
