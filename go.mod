@@ -12,6 +12,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/russross/blackfriday/v2 v2.0.1
+	github.com/securego/gosec v0.0.0-20200401082031-e946c8c39989 // indirect
 	github.com/sirupsen/logrus v1.6.0
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	github.com/vektah/gqlparser/v2 v2.0.1
