@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -6343,17 +6344,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	&ast.Source{Name: "graph/schema/base.graphql", Input: `scalar Map
-
-# Relay spec page info
-type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-  endCursor: String
-}
-`, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/AllergyIntolerance.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/AllergyIntolerance.graphql", Input: `"""
 AllergyIntoleranceTypeEnum is a FHIR enum
 """
 enum AllergyIntoleranceTypeEnum {
@@ -6744,7 +6735,7 @@ extend type Mutation {
   deleteFHIRAllergyIntolerance(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/Appointment.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/Appointment.graphql", Input: `"""
 AppointmentStatusEnum is a FHIR enum
 """
 enum AppointmentStatusEnum {
@@ -7110,7 +7101,7 @@ extend type Mutation {
   deleteFHIRAppointment(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/Composition.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/Composition.graphql", Input: `"""
 CompositionStatusEnum is a FHIR enum
 """
 enum CompositionStatusEnum {
@@ -7580,7 +7571,7 @@ extend type Mutation {
   deleteFHIRComposition(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/Condition.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/Condition.graphql", Input: `"""
 FHIRConditionInput: input for Condition
 """
 input FHIRConditionInput {
@@ -7979,7 +7970,7 @@ extend type Mutation {
   deleteFHIRCondition(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/Encounter.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/Encounter.graphql", Input: `"""
 EncounterStatusEnum is a FHIR enum
 """
 enum EncounterStatusEnum {
@@ -8613,7 +8604,7 @@ extend type Mutation {
   deleteFHIREncounter(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/EpisodeOfCare.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/EpisodeOfCare.graphql", Input: `"""
 EpisodeOfCareStatusEnum is a FHIR enum
 """
 enum EpisodeOfCareStatusEnum {
@@ -8896,7 +8887,7 @@ extend type Mutation {
   deleteFHIREpisodeOfCare(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/MedicationRequest.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/MedicationRequest.graphql", Input: `"""
 FHIRMedicationRequestInput: input for MedicationRequest
 """
 input FHIRMedicationRequestInput {
@@ -9436,7 +9427,7 @@ extend type Mutation {
   deleteFHIRMedicationRequest(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/Observation.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/Observation.graphql", Input: `"""
 ObservationStatusEnum is a FHIR enum
 """
 enum ObservationStatusEnum {
@@ -10076,7 +10067,7 @@ extend type Mutation {
   deleteFHIRObservation(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/Patient.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/Patient.graphql", Input: `"""
 PatientGenderEnum is a FHIR enum
 """
 enum PatientGenderEnum {
@@ -10497,7 +10488,7 @@ extend type Mutation {
   deleteFHIRPatient(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/ServiceRequest.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/ServiceRequest.graphql", Input: `"""
 FHIRServiceRequestInput: input for ServiceRequest
 """
 input FHIRServiceRequestInput {
@@ -10903,7 +10894,7 @@ extend type Mutation {
   deleteFHIRServiceRequest(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/complex_types.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/complex_types.graphql", Input: `"""
 FHIRUsageContextInput: input for UsageContext
 """
 input FHIRUsageContextInput {
@@ -13296,7 +13287,7 @@ enum ContributorTypeEnum {
   endorser
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/schema/fhir/scalars.graphql", Input: `"""
+	&ast.Source{Name: "schema/fhir/scalars.graphql", Input: `"""
 ResourceList is a FHIR data type
 
 
@@ -13440,6 +13431,84 @@ Underlying type: ` + "`" + `String` + "`" + `
 """
 scalar XHTML
 `, BuiltIn: false},
+	&ast.Source{Name: "graph/base.graphql", Input: `scalar Map
+scalar Any
+
+# Relay spec page info
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+input PaginationInput {
+  first: Int
+  last: Int
+  after: String
+  before: String
+}
+
+input FilterInput {
+  search: String
+  filterBy: [FilterParam]
+}
+
+input FilterParam {
+  fieldName: String!
+  fieldType: FieldType!
+  comparisonOperation: Operation!
+  fieldValue: Any!
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+enum FieldType {
+  BOOLEAN
+  TIMESTAMP
+  NUMBER
+  INTEGER
+  STRING
+}
+
+input SortInput {
+  sortBy: [SortParam]
+}
+
+input SortParam {
+  fieldName: String!
+  sortOrder: SortOrder!
+}
+
+enum Operation {
+  LESS_THAN
+  LESS_THAN_OR_EQUAL_TO
+  EQUAL
+  GREATER_THAN
+  GREATER_THAN_OR_EQUAL_TO
+  IN
+  CONTAINS
+}
+
+# Node is needed by the Relay spec
+# This server attempts to be Relay spec compliant
+interface Node {
+  id: ID!
+}
+`, BuiltIn: false},
+	&ast.Source{Name: "federation/directives.graphql", Input: `
+scalar _Any
+scalar _FieldSet
+
+directive @external on FIELD_DEFINITION
+directive @requires(fields: _FieldSet!) on FIELD_DEFINITION
+directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
+directive @key(fields: _FieldSet!) on OBJECT | INTERFACE
+directive @extends on OBJECT
+`, BuiltIn: true},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -42128,9 +42197,156 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputFilterInput(ctx context.Context, obj interface{}) (base.FilterInput, error) {
+	var it base.FilterInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "search":
+			var err error
+			it.Search, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "filterBy":
+			var err error
+			it.FilterBy, err = ec.unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj interface{}) (base.FilterParam, error) {
+	var it base.FilterParam
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "fieldName":
+			var err error
+			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "fieldType":
+			var err error
+			it.FieldType, err = ec.unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comparisonOperation":
+			var err error
+			it.ComparisonOperation, err = ec.unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "fieldValue":
+			var err error
+			it.FieldValue, err = ec.unmarshalNAny2interface(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, obj interface{}) (base.PaginationInput, error) {
+	var it base.PaginationInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "first":
+			var err error
+			it.First, err = ec.unmarshalOInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "last":
+			var err error
+			it.Last, err = ec.unmarshalOInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "after":
+			var err error
+			it.After, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "before":
+			var err error
+			it.Before, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputSortInput(ctx context.Context, obj interface{}) (base.SortInput, error) {
+	var it base.SortInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "sortBy":
+			var err error
+			it.SortBy, err = ec.unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputSortParam(ctx context.Context, obj interface{}) (base.SortParam, error) {
+	var it base.SortParam
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "fieldName":
+			var err error
+			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "sortOrder":
+			var err error
+			it.SortOrder, err = ec.unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
+
+func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj base.Node) graphql.Marshaler {
+	switch obj := (obj).(type) {
+	case nil:
+		return graphql.Null
+	default:
+		panic(fmt.Errorf("unexpected type %T", obj))
+	}
+}
 
 // endregion ************************** interface.gotpl ***************************
 
@@ -46539,6 +46755,29 @@ func (ec *executionContext) marshalNAllergyIntoleranceCriticalityEnum2gitlabᚗs
 	return v
 }
 
+func (ec *executionContext) unmarshalNAny2interface(ctx context.Context, v interface{}) (interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return graphql.UnmarshalAny(v)
+}
+
+func (ec *executionContext) marshalNAny2interface(ctx context.Context, sel ast.SelectionSet, v interface{}) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalAny(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	return graphql.UnmarshalBoolean(v)
 }
@@ -47507,6 +47746,15 @@ func (ec *executionContext) marshalNFHIRServiceRequestRelayPayload2ᚖgitlabᚗs
 	return ec._FHIRServiceRequestRelayPayload(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, v interface{}) (base.FieldType, error) {
+	var res base.FieldType
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, sel ast.SelectionSet, v base.FieldType) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
 	return graphql.UnmarshalFloat(v)
 }
@@ -47576,6 +47824,15 @@ func (ec *executionContext) marshalNMap2map(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, v interface{}) (base.Operation, error) {
+	var res base.Operation
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, sel ast.SelectionSet, v base.Operation) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) marshalNPageInfo2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v base.PageInfo) graphql.Marshaler {
 	return ec._PageInfo(ctx, sel, &v)
 }
@@ -47588,6 +47845,15 @@ func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 		return graphql.Null
 	}
 	return ec._PageInfo(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, v interface{}) (base.SortOrder, error) {
+	var res base.SortOrder
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, sel ast.SelectionSet, v base.SortOrder) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -47620,6 +47886,20 @@ func (ec *executionContext) unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋba
 
 func (ec *executionContext) marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, sel ast.SelectionSet, v base.XHTML) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) unmarshalN_FieldSet2string(ctx context.Context, v interface{}) (string, error) {
+	return graphql.UnmarshalString(v)
+}
+
+func (ec *executionContext) marshalN_FieldSet2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalString(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -52274,6 +52554,38 @@ func (ec *executionContext) unmarshalOFHIRTimingRepeatInput2ᚖgitlabᚗslade360
 	return &res, err
 }
 
+func (ec *executionContext) unmarshalOFilterParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) (base.FilterParam, error) {
+	return ec.unmarshalInputFilterParam(ctx, v)
+}
+
+func (ec *executionContext) unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) ([]*base.FilterParam, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*base.FilterParam, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) (*base.FilterParam, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOFilterParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, v)
+	return &res, err
+}
+
 func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalID(v)
 }
@@ -52579,6 +52891,38 @@ func (ec *executionContext) marshalOQuantityComparatorEnum2ᚖgitlabᚗslade360e
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) unmarshalOSortParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) (base.SortParam, error) {
+	return ec.unmarshalInputSortParam(ctx, v)
+}
+
+func (ec *executionContext) unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) ([]*base.SortParam, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*base.SortParam, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) (*base.SortParam, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOSortParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, v)
+	return &res, err
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

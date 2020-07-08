@@ -9,7 +9,7 @@ import (
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
-//go:generate go run github.com/99designs/gqlgen
+//go:generate go run gitlab.slade360emr.com/go/clinical/cmd/generator
 
 // Resolver wires up the resolvers needed for the clinical services
 type Resolver struct {
