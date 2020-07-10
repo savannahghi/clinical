@@ -13384,14 +13384,6 @@ Underlying type: ` + "`" + `number` + "`" + `
 scalar PositiveInt
 
 """
-Time is a time during the day, with no date specified
-
-Validation pattern: ` + "`" + `^([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?$` + "`" + `
-Underlying type: ` + "`" + `string` + "`" + `
-"""
-scalar Time
-
-"""
 UnsignedInt is an integer with a value that is not negative (e.g. >= 0)
 
 Validation pattern: ` + "`" + `^[0]|([1-9][0-9]*)$` + "`" + `
@@ -13433,6 +13425,7 @@ scalar XHTML
 `, BuiltIn: false},
 	&ast.Source{Name: "graph/base.graphql", Input: `scalar Map
 scalar Any
+scalar Time
 
 # Relay spec page info
 type PageInfo {

@@ -5,7 +5,6 @@ go 1.14
 require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/99designs/gqlgen v0.11.3
-	github.com/aws/aws-sdk-go v1.33.3 // indirect
 	github.com/bearbin/go-age v0.0.0-20140407072555-316d0c1e7cd1
 	github.com/google/pprof v0.0.0-20200708004538-1a94d8640e99 // indirect
 	github.com/google/uuid v1.1.1
@@ -24,11 +23,9 @@ require (
 	github.com/sirupsen/logrus v1.6.0
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	github.com/vektah/gqlparser/v2 v2.0.1
-	gitlab.slade360emr.com/go/base v0.0.12
+	gitlab.slade360emr.com/go/base v0.0.13
 	gitlab.slade360emr.com/go/cloudhealth v0.0.1
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
-	golang.org/x/tools v0.0.0-20200708003708-134513de8882 // indirect
-	google.golang.org/genproto v0.0.0-20200707001353-8e8330bf89df // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	jaytaylor.com/html2text v0.0.0-20200412013138-3577fbdbcff7
 )
