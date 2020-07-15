@@ -1,0 +1,28 @@
+
+input USSDClinicalRequest {
+  patientID: String!
+  msisdn: String!
+  ussdSessionID: String!
+}
+
+type USSDClinicalResponse {
+  shortLink: String!
+  summary: String!
+  text: String!
+}
+
+extend type Query {
+  allergySummary(patientID: String!): [String!]!
+  problemSummary(patientID: String!): [String!]!
+  requestUSSDPatientProfile(input: USSDClinicalRequest!): USSDClinicalResponse!
+  requestUSSDLastVisit(input: USSDClinicalRequest!): USSDClinicalResponse!
+  requestUSSDFullHistory(input: USSDClinicalRequest!): USSDClinicalResponse!
+  patientTimeline(episodeID: String!): [Map!]!
+  visitSummary(encounterID: String!): Map!
+}
+
+extend type Mutation {
+  startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
+  endEpisode(episodeID: String!): Boolean!
+}

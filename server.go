@@ -13,9 +13,9 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph"
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
-	"gitlab.slade360emr.com/go/base"
 )
 
 const serverTimeoutSeconds = 120
