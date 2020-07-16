@@ -15,6 +15,7 @@ import (
 	"github.com/gorilla/mux"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph"
+	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
 
@@ -70,11 +71,13 @@ func main() {
 
 // Router sets up the ginContext router
 func Router() (*mux.Router, error) {
+	ctx := context.Background()
 	fc := &base.FirebaseClient{}
 	firebaseApp, err := fc.InitFirebase()
 	if err != nil {
 		return nil, err
 	}
+	clinicalService := clinical.NewService()
 	r := mux.NewRouter() // gorilla mux
 	r.Use(
 		handlers.RecoveryHandler(
@@ -86,6 +89,20 @@ func Router() (*mux.Router, error) {
 
 	// Unauthenticated routes
 	r.Path("/ide").HandlerFunc(playground.Handler("GraphQL IDE", "/graphql"))
+	r.Path("/profiles/{id}").Methods(
+		http.MethodGet, http.MethodOptions).HandlerFunc(
+		clinical.PatientProfileHandlerFunc(clinicalService))
+	r.Path("/visits/{id}").Methods(
+		http.MethodGet, http.MethodOptions).HandlerFunc(
+		clinical.LastVisitHandlerFunc(ctx, clinicalService))
+	r.Path("/charts/{id}").Methods(
+		http.MethodGet, http.MethodOptions).HandlerFunc(
+		clinical.FullHistoryHandlerFunc(ctx, clinicalService))
+	r.Path("/base.css").Methods(http.MethodGet, http.MethodOptions).HandlerFunc(base.CSS())
+	r.Path("/visit.css").Methods(http.MethodGet, http.MethodOptions).HandlerFunc(base.VisitCSS())
+	r.Path("/profile.css").Methods(http.MethodGet, http.MethodOptions).HandlerFunc(base.ProfileCSS())
+	r.Path("/history.css").Methods(http.MethodGet, http.MethodOptions).HandlerFunc(base.HistoryCSS())
+	r.Path("/invalid.css").Methods(http.MethodGet, http.MethodOptions).HandlerFunc(base.InvalidCSS())
 
 	// Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
