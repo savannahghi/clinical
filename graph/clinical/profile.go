@@ -133,16 +133,17 @@ func (s Service) RequestUSSDPatientProfile(
 	}
 
 	name := patient.RenderOfficialName()
-	age := patient.RenderAgeAndGender()
-	problemsAndAllergies := patient.RenderProblemsAndAllergies()
+	age := patient.RenderAge()
+	problems := patient.RenderProblems()
+	allergies := patient.RenderAllergies()
 	text := fmt.Sprintf(
 		"Dear %s, please access your health profile at %s",
 		name, shortURL,
 	)
 
 	summary := fmt.Sprintf(
-		"%s (%s)\n\nProblems and allergies:\n%s\nSee more at %s",
-		name, age, problemsAndAllergies, shortURL,
+		"%s (%s)\n\nProblems and allergies:\n%s,%s\nSee more at %s",
+		name, age, problems, allergies, shortURL,
 	)
 	return &USSDClinicalResponse{
 		ShortLink: shortURL,
@@ -174,65 +175,92 @@ func (p FHIRPatient) RenderOfficialName() base.Markdown {
 
 // RenderIDDocuments returns a patient's ID documents in Markdown format
 func (p FHIRPatient) RenderIDDocuments() base.Markdown {
-	defaultID := base.Markdown("-")
+	defaultID := base.Markdown("No Identification documents found")
 	identifiers := []string{}
 	if p.Identifier != nil {
 		for _, identifier := range p.Identifier {
 			if identifier == nil {
 				continue
 			}
-			identif := fmt.Sprintf("%s (_%s_)", identifier.Value, identifier.Use.String())
+			identif := fmt.Sprintf("%s (%s)", identifier.Value, identifier.Use.String())
 			identifiers = append(identifiers, identif)
 		}
 	}
 	if len(identifiers) > 0 {
-		ids := strings.Join(identifiers, " | ")
-		return base.Markdown(fmt.Sprintf("Identifiers: %s", ids))
+		ids := strings.Join(identifiers, " , ")
+		return base.Markdown(ids)
 	}
 	return defaultID
 }
 
-// RenderAgeAndGender returns the patient's age and gender, rendered in a humanized way
-func (p FHIRPatient) RenderAgeAndGender() base.Markdown {
-	gender := "UNKNOWN GENDER"
-	if p.Gender != nil {
-		gender = p.Gender.String()
-	}
+// RenderAge returns the patient's age, rendered in a humanized way
+func (p FHIRPatient) RenderAge() base.Markdown {
 	ageStr := "UNKNOWN AGE"
 	if p.BirthDate != nil {
 		ageStr = strconv.Itoa(age.Age(p.BirthDate.AsTime())) + " yrs"
 	}
-	return base.Markdown(fmt.Sprintf("_Age_: %s _Gender_: %s", ageStr, gender))
+	return base.Markdown(fmt.Sprintf("Age: %s", ageStr))
 }
 
-// RenderProblemsAndAllergies returns the patient's problems and allergies
-func (p FHIRPatient) RenderProblemsAndAllergies() base.Markdown {
-	defaultProblemAllergies := base.Markdown("")
+// RenderGender returns the patient's age and gender, rendered in a humanized way
+func (p FHIRPatient) RenderGender() base.Markdown {
+	gender := "UNKNOWN GENDER"
+	if p.Gender != nil {
+		gender = p.Gender.String()
+	}
+
+	return base.Markdown(fmt.Sprintf("Gender: %s", gender))
+}
+
+// RenderProblems returns the patient's problems
+func (p FHIRPatient) RenderProblems() base.Markdown {
+	defaultProblem := base.Markdown("Problems: No known problems")
 	if p.ID == nil {
-		return defaultProblemAllergies
+		return defaultProblem
 	}
 	clinicalService := NewService()
 	ctx := context.Background()
 	problemSummary, err := clinicalService.ProblemSummary(ctx, *p.ID)
 	if err != nil {
-		return defaultProblemAllergies
-	}
-	allergySummary, err := clinicalService.AllergySummary(ctx, *p.ID)
-	if err != nil {
-		return defaultProblemAllergies
+		return defaultProblem
 	}
 
 	problems := ""
-	allergies := ""
 	if len(problemSummary) > 0 {
 		problems = strings.Join(problemSummary, ",")
 	}
+
+	if len(problems) > 0 {
+		patientProblems := fmt.Sprintf("Problems: %s", problems)
+		return base.Markdown(patientProblems)
+	}
+
+	return base.Markdown(defaultProblem)
+}
+
+// RenderAllergies returns the patient's allergies
+func (p FHIRPatient) RenderAllergies() base.Markdown {
+	defaultAllergies := base.Markdown("Allergies: No known allergies")
+	if p.ID == nil {
+		return defaultAllergies
+	}
+	clinicalService := NewService()
+	ctx := context.Background()
+	allergySummary, err := clinicalService.AllergySummary(ctx, *p.ID)
+	if err != nil {
+		return defaultAllergies
+	}
+
+	allergies := ""
 	if len(allergySummary) > 0 {
 		allergies = strings.Join(allergySummary, ",")
 	}
 
-	problemsAndAllergies := fmt.Sprintf("Problems: _%s_ | Allergies: _%s_", problems, allergies)
-	return base.Markdown(problemsAndAllergies)
+	if len(allergies) > 0 {
+		patientAllergies := fmt.Sprintf("Allergies: %s", allergies)
+		return base.Markdown(patientAllergies)
+	}
+	return base.Markdown(defaultAllergies)
 }
 
 // RenderAddresses renders the patient's postal and physical addresses
@@ -352,29 +380,35 @@ func PatientProfileHandlerFunc(clinicalService *Service) http.HandlerFunc {
 		}
 		patient := payload.Resource
 		name := patient.RenderOfficialName()
-		age := patient.RenderAgeAndGender()
-		problemsAndAllergies := patient.RenderProblemsAndAllergies()
+		age := patient.RenderAge()
+		gender := patient.RenderGender()
+		problems := patient.RenderProblems()
+		allergies := patient.RenderAllergies()
 		idDocs := patient.RenderIDDocuments()
 		addresses := patient.RenderAddresses()
 		maritalStatus := patient.RenderMaritalStatus()
 		languages := patient.RenderLanguages()
 
 		templateData := struct {
-			Name                 base.Markdown
-			Age                  base.Markdown
-			ProblemsAndAllergies base.Markdown
-			IDDocs               base.Markdown
-			Addresses            base.Markdown
-			MaritalStatus        base.Markdown
-			Languages            base.Markdown
+			Name          base.Markdown
+			Age           base.Markdown
+			Gender        base.Markdown
+			Problems      base.Markdown
+			Allergies     base.Markdown
+			IDDocs        base.Markdown
+			Addresses     base.Markdown
+			MaritalStatus base.Markdown
+			Languages     base.Markdown
 		}{
-			Name:                 name,
-			Age:                  age,
-			ProblemsAndAllergies: problemsAndAllergies,
-			IDDocs:               idDocs,
-			Addresses:            addresses,
-			MaritalStatus:        maritalStatus,
-			Languages:            languages,
+			Name:          name,
+			Age:           age,
+			Gender:        gender,
+			Problems:      problems,
+			Allergies:     allergies,
+			IDDocs:        idDocs,
+			Addresses:     addresses,
+			MaritalStatus: maritalStatus,
+			Languages:     languages,
 		}
 		t := template.Must(template.New("profile").Parse(patientProfileTemplate))
 		_ = t.Execute(w, templateData)
