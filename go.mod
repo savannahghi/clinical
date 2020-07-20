@@ -22,7 +22,8 @@ require (
 	github.com/vektah/gqlparser/v2 v2.0.1
 	gitlab.slade360emr.com/go/base v0.0.16
 	gitlab.slade360emr.com/go/cloudhealth v0.0.1
-	golang.org/x/tools v0.0.0-20200717024301-6ddee64345a6 // indirect
+	golang.org/x/tools v0.0.0-20200720150256-cf97b7f4a4c1 // indirect
+	google.golang.org/genproto v0.0.0-20200720141249-1244ee217b7e // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	jaytaylor.com/html2text v0.0.0-20200412013138-3577fbdbcff7
 )

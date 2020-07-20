@@ -818,17 +818,20 @@ type ComplexityRoot struct {
 	}
 
 	FHIRPatientRelayConnection struct {
-		Edges    func(childComplexity int) int
-		PageInfo func(childComplexity int) int
+		Edges           func(childComplexity int) int
+		HasOpenEpisodes func(childComplexity int) int
+		PageInfo        func(childComplexity int) int
 	}
 
 	FHIRPatientRelayEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
+		Cursor          func(childComplexity int) int
+		HasOpenEpisodes func(childComplexity int) int
+		Node            func(childComplexity int) int
 	}
 
 	FHIRPatientRelayPayload struct {
-		Resource func(childComplexity int) int
+		HasOpenEpisodes func(childComplexity int) int
+		Resource        func(childComplexity int) int
 	}
 
 	FHIRPeriod struct {
@@ -4889,6 +4892,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRPatientRelayConnection.Edges(childComplexity), true
 
+	case "FHIRPatientRelayConnection.hasOpenEpisodes":
+		if e.complexity.FHIRPatientRelayConnection.HasOpenEpisodes == nil {
+			break
+		}
+
+		return e.complexity.FHIRPatientRelayConnection.HasOpenEpisodes(childComplexity), true
+
 	case "FHIRPatientRelayConnection.pageInfo":
 		if e.complexity.FHIRPatientRelayConnection.PageInfo == nil {
 			break
@@ -4903,12 +4913,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRPatientRelayEdge.Cursor(childComplexity), true
 
+	case "FHIRPatientRelayEdge.hasOpenEpisodes":
+		if e.complexity.FHIRPatientRelayEdge.HasOpenEpisodes == nil {
+			break
+		}
+
+		return e.complexity.FHIRPatientRelayEdge.HasOpenEpisodes(childComplexity), true
+
 	case "FHIRPatientRelayEdge.node":
 		if e.complexity.FHIRPatientRelayEdge.Node == nil {
 			break
 		}
 
 		return e.complexity.FHIRPatientRelayEdge.Node(childComplexity), true
+
+	case "FHIRPatientRelayPayload.hasOpenEpisodes":
+		if e.complexity.FHIRPatientRelayPayload.HasOpenEpisodes == nil {
+			break
+		}
+
+		return e.complexity.FHIRPatientRelayPayload.HasOpenEpisodes(childComplexity), true
 
 	case "FHIRPatientRelayPayload.resource":
 		if e.complexity.FHIRPatientRelayPayload.Resource == nil {
@@ -10640,6 +10664,7 @@ FHIRPatientRelayPayload is used to return single instances of Patient
 """
 type FHIRPatientRelayPayload {
   resource: FHIRPatient!
+  hasOpenEpisodes: Boolean!
 }
 
 """
@@ -10647,6 +10672,7 @@ FHIRPatientRelayEdge is a Relay edge for Patient
 """
 type FHIRPatientRelayEdge {
   cursor: String
+  hasOpenEpisodes: Boolean!
   node: FHIRPatient
 }
 
@@ -10655,6 +10681,7 @@ FHIRPatientRelayConnection is a Relay connection for Patient
 """
 type FHIRPatientRelayConnection {
   edges: [FHIRPatientRelayEdge]
+  hasOpenEpisodes: Boolean!
   pageInfo: PageInfo!
 }
 
@@ -31307,6 +31334,40 @@ func (ec *executionContext) _FHIRPatientRelayConnection_edges(ctx context.Contex
 	return ec.marshalOFHIRPatientRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientRelayEdge(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _FHIRPatientRelayConnection_hasOpenEpisodes(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatientRelayConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIRPatientRelayConnection",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasOpenEpisodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _FHIRPatientRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatientRelayConnection) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -31372,6 +31433,40 @@ func (ec *executionContext) _FHIRPatientRelayEdge_cursor(ctx context.Context, fi
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _FHIRPatientRelayEdge_hasOpenEpisodes(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatientRelayEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIRPatientRelayEdge",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasOpenEpisodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _FHIRPatientRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatientRelayEdge) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -31435,6 +31530,40 @@ func (ec *executionContext) _FHIRPatientRelayPayload_resource(ctx context.Contex
 	res := resTmp.(*clinical.FHIRPatient)
 	fc.Result = res
 	return ec.marshalNFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRPatientRelayPayload_hasOpenEpisodes(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatientRelayPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIRPatientRelayPayload",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasOpenEpisodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRPeriod_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPeriod) (ret graphql.Marshaler) {
@@ -46210,6 +46339,11 @@ func (ec *executionContext) _FHIRPatientRelayConnection(ctx context.Context, sel
 			out.Values[i] = graphql.MarshalString("FHIRPatientRelayConnection")
 		case "edges":
 			out.Values[i] = ec._FHIRPatientRelayConnection_edges(ctx, field, obj)
+		case "hasOpenEpisodes":
+			out.Values[i] = ec._FHIRPatientRelayConnection_hasOpenEpisodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "pageInfo":
 			out.Values[i] = ec._FHIRPatientRelayConnection_pageInfo(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -46239,6 +46373,11 @@ func (ec *executionContext) _FHIRPatientRelayEdge(ctx context.Context, sel ast.S
 			out.Values[i] = graphql.MarshalString("FHIRPatientRelayEdge")
 		case "cursor":
 			out.Values[i] = ec._FHIRPatientRelayEdge_cursor(ctx, field, obj)
+		case "hasOpenEpisodes":
+			out.Values[i] = ec._FHIRPatientRelayEdge_hasOpenEpisodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "node":
 			out.Values[i] = ec._FHIRPatientRelayEdge_node(ctx, field, obj)
 		default:
@@ -46265,6 +46404,11 @@ func (ec *executionContext) _FHIRPatientRelayPayload(ctx context.Context, sel as
 			out.Values[i] = graphql.MarshalString("FHIRPatientRelayPayload")
 		case "resource":
 			out.Values[i] = ec._FHIRPatientRelayPayload_resource(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "hasOpenEpisodes":
+			out.Values[i] = ec._FHIRPatientRelayPayload_hasOpenEpisodes(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

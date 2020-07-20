@@ -390,6 +390,7 @@ FHIRPatientRelayPayload is used to return single instances of Patient
 """
 type FHIRPatientRelayPayload {
   resource: FHIRPatient!
+  hasOpenEpisodes: Boolean!
 }
 
 """
@@ -397,6 +398,7 @@ FHIRPatientRelayEdge is a Relay edge for Patient
 """
 type FHIRPatientRelayEdge {
   cursor: String
+  hasOpenEpisodes: Boolean!
   node: FHIRPatient
 }
 
@@ -405,6 +407,7 @@ FHIRPatientRelayConnection is a Relay connection for Patient
 """
 type FHIRPatientRelayConnection {
   edges: [FHIRPatientRelayEdge]
+  hasOpenEpisodes: Boolean!
   pageInfo: PageInfo!
 }
 

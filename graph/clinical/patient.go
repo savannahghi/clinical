@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/url"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
@@ -38,8 +39,13 @@ func (s Service) GetFHIRPatient(ctx context.Context, id string) (*FHIRPatientRel
 			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
 	}
 
+	hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get open episodes for patieht %#v: %w", resource, err)
+	}
 	payload := &FHIRPatientRelayPayload{
-		Resource: &resource,
+		Resource:        &resource,
+		HasOpenEpisodes: hasOpenEpisodes,
 	}
 	return payload, nil
 }
@@ -80,11 +86,109 @@ func (s Service) SearchFHIRPatient(ctx context.Context, params map[string]interf
 			return nil, fmt.Errorf(
 				"server error: Unable to unmarshal %s: %s", resourceName, err)
 		}
+		hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
+		if err != nil {
+			return nil, fmt.Errorf("unable to get open episodes for patieht %#v: %w", resource, err)
+		}
 		output.Edges = append(output.Edges, &FHIRPatientRelayEdge{
-			Node: &resource,
+			Node:            &resource,
+			HasOpenEpisodes: hasOpenEpisodes,
 		})
 	}
 	return &output, nil
+}
+
+// OpenEpisodes returns the IDs of a patient's open episodes
+func (s Service) OpenEpisodes(
+	ctx context.Context, patientReference string) ([]*FHIREpisodeOfCare, error) {
+	s.checkPreconditions()
+
+	searchParams := url.Values{}
+	searchParams.Add("status:exact", "active")
+	searchParams.Add("patient", patientReference)
+
+	bs, err := s.clinicalRepository.POSTRequest(
+		"EpisodeOfCare", "_search", searchParams, nil)
+	if err != nil {
+		return nil, fmt.Errorf("unable to search for episode of care: %v", err)
+	}
+
+	respMap := make(map[string]interface{})
+	err = json.Unmarshal(bs, &respMap)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to unmarshal FHIR episode of care search response: %v", err)
+	}
+
+	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
+	for _, k := range mandatoryKeys {
+		_, found := respMap[k]
+		if !found {
+			return nil, fmt.Errorf("search response does not have key '%s'", k)
+		}
+	}
+	resourceType, ok := respMap["resourceType"].(string)
+	if !ok {
+		return nil, fmt.Errorf("search: the resourceType is not a string")
+	}
+	if resourceType != "Bundle" {
+		return nil, fmt.Errorf("search: the resourceType value is not 'Bundle' as expected")
+	}
+	resultType, ok := respMap["type"].(string)
+	if !ok {
+		return nil, fmt.Errorf("search: the type is not a string")
+	}
+	if resultType != "searchset" {
+		return nil, fmt.Errorf("search: the type value is not 'searchset' as expected")
+	}
+
+	output := []*FHIREpisodeOfCare{}
+	respEntries := respMap["entry"]
+	if respEntries == nil {
+		return output, nil
+	}
+	entries, ok := respEntries.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("search: entries is not a list of maps, it is: %T", respEntries)
+	}
+
+	for _, en := range entries {
+		entry, ok := en.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("expected each entry to be map, they are %T instead", en)
+		}
+		expectedKeys := []string{"fullUrl", "resource", "search"}
+		for _, k := range expectedKeys {
+			_, found := entry[k]
+			if !found {
+				return nil, fmt.Errorf("search entry does not have key '%s'", k)
+			}
+		}
+		resource := entry["resource"]
+		var episode FHIREpisodeOfCare
+		resourceBs, err := json.Marshal(resource)
+		if err != nil {
+			return nil, fmt.Errorf("unable to marshal resource to JSON: %v", err)
+		}
+		err = json.Unmarshal(resourceBs, &episode)
+		if err != nil {
+			return nil, fmt.Errorf("unable to unmarshal resource: %v", err)
+		}
+		output = append(output, &episode)
+	}
+	return output, nil
+}
+
+// HasOpenEpisode determines if a patient has an open episode
+func (s Service) HasOpenEpisode(
+	ctx context.Context, patient FHIRPatient) (bool, error) {
+	s.checkPreconditions()
+	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
+	episodes, err := s.OpenEpisodes(ctx, patientReference)
+	if err != nil {
+		return false, err
+	}
+	return len(episodes) > 0, nil
 }
 
 // CreateFHIRPatient creates a FHIRPatient instance
@@ -144,8 +248,13 @@ func (s Service) UpdateFHIRPatient(ctx context.Context, input FHIRPatientInput) 
 			resourceType, string(data), err)
 	}
 
+	hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get open episodes for patieht %#v: %w", resource, err)
+	}
 	output := &FHIRPatientRelayPayload{
-		Resource: &resource,
+		Resource:        &resource,
+		HasOpenEpisodes: hasOpenEpisodes,
 	}
 	return output, nil
 }
@@ -400,21 +509,22 @@ type FHIRPatientLinkInput struct {
 
 // FHIRPatientRelayConnection is a Relay connection for Patient
 type FHIRPatientRelayConnection struct {
-	Edges []*FHIRPatientRelayEdge `json:"edges,omitempty"`
-
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	Edges           []*FHIRPatientRelayEdge `json:"edges,omitempty"`
+	HasOpenEpisodes bool                    `json:"hasOpenEpisodes,omitempty"`
+	PageInfo        *base.PageInfo          `json:"pageInfo,omitempty"`
 }
 
 // FHIRPatientRelayEdge is a Relay edge for Patient
 type FHIRPatientRelayEdge struct {
-	Cursor *string `json:"cursor,omitempty"`
-
-	Node *FHIRPatient `json:"node,omitempty"`
+	Cursor          *string      `json:"cursor,omitempty"`
+	HasOpenEpisodes bool         `json:"hasOpenEpisodes,omitempty"`
+	Node            *FHIRPatient `json:"node,omitempty"`
 }
 
 // FHIRPatientRelayPayload is used to return single instances of Patient
 type FHIRPatientRelayPayload struct {
-	Resource *FHIRPatient `json:"resource,omitempty"`
+	Resource        *FHIRPatient `json:"resource,omitempty"`
+	HasOpenEpisodes bool         `json:"hasOpenEpisodes,omitempty"`
 }
 
 // USSDClinicalRequest is used to request the patient profile, medical
