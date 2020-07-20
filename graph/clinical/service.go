@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -18,7 +19,10 @@ import (
 const (
 	// LimitedProfileEncounterCount is the number of encounters to show when a
 	// patient has approved limited access to their health record
-	LimitedProfileEncounterCount = "5"
+	LimitedProfileEncounterCount = 5
+
+	// MaxClinicalRecordPageSize is the maximum number of encounters we can show on a timeline
+	MaxClinicalRecordPageSize = 50
 
 	timeFormatStr = "2006-01-02T15:04:05+03:00"
 )
@@ -215,7 +219,7 @@ func (s Service) AllergySummary(
 // VisitSummary returns a narrative friendly display of the data that has
 // been associated with a single visit
 func (s Service) VisitSummary(
-	ctx context.Context, encounterID string) (map[string]interface{}, error) {
+	ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
 	s.checkPreconditions()
 	encounterPayload, err := s.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
@@ -226,6 +230,7 @@ func (s Service) VisitSummary(
 	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.ID)
 	encounterFilterParams := map[string]interface{}{
 		"encounter": encounterRef,
+		"_count":    strconv.Itoa(count),
 	}
 	encounterInstanceFilterParams := map[string]interface{}{
 		"_id": encounterID,
@@ -236,6 +241,7 @@ func (s Service) VisitSummary(
 	}
 	patientFilterParams := map[string]interface{}{
 		"patient": *encounterPayload.Resource.Subject.Reference,
+		"_count":  strconv.Itoa(count),
 	}
 
 	resources := []string{
@@ -397,38 +403,71 @@ func (s Service) VisitSummary(
 // respecting the approval level
 func (s Service) PatientTimeline(
 	ctx context.Context, episodeID string) ([]map[string]interface{}, error) {
-	s.checkPreconditions()
-
-	episodePayload, err := s.GetFHIREpisodeOfCare(ctx, episodeID)
+	episode, accessLevel, err := s.getTimelineEpisode(ctx, episodeID)
 	if err != nil {
-		return nil, fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
+		return nil, err
 	}
-	episode := episodePayload.Resource
-	activeEpisodeStatus := EpisodeOfCareStatusEnumActive
-	if episode.Patient == nil || episode.Patient.Reference == nil {
-		return nil, fmt.Errorf("the episode with ID %s has no patient reference", episodeID)
-	}
-	if episodePayload.Resource.Status.String() != activeEpisodeStatus.String() {
-		return nil, fmt.Errorf("the episode with ID %s is not active", episodeID)
-	}
-	if episode.Type == nil {
-		return nil, fmt.Errorf("the episode with ID %s has a nil type", episodeID)
-	}
-	if len(episode.Type) != 1 {
-		return nil, fmt.Errorf("expected the episode type to have just one entry")
-	}
-	accessLevel := episode.Type[0].Text
-	if accessLevel != "FULL_ACCESS" && accessLevel != "PROFILE_AND_RECENT_VISITS_ACCESS" {
-		return nil, fmt.Errorf("unknown episode access level: %s", accessLevel)
-	}
-
 	encounterSearchParams := map[string]interface{}{
 		"patient": *episode.Patient.Reference,
 		"sort":    "-date", // reverse chronological order
 	}
+	count := MaxClinicalRecordPageSize
 	if accessLevel == "PROFILE_AND_RECENT_VISITS_ACCESS" {
-		encounterSearchParams["_count"] = LimitedProfileEncounterCount
+		count = LimitedProfileEncounterCount
 	}
+	encounterSearchParams["_count"] = strconv.Itoa(count)
+	return s.getTimelineVisitSummaries(ctx, encounterSearchParams, count)
+}
+
+// PatientTimelineWithCount returns the patient's visit note timeline (a list of
+// narratives that are sorted with the most recent one first), while
+// respecting the approval level AND limiting the number
+func (s Service) PatientTimelineWithCount(
+	ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
+	episode, _, err := s.getTimelineEpisode(ctx, episodeID)
+	if err != nil {
+		return nil, err
+	}
+	encounterSearchParams := map[string]interface{}{
+		"patient": *episode.Patient.Reference,
+		"sort":    "-date", // reverse chronological order
+		"_count":  strconv.Itoa(count),
+	}
+	return s.getTimelineVisitSummaries(ctx, encounterSearchParams, count)
+}
+
+func (s Service) getTimelineEpisode(ctx context.Context, episodeID string) (*FHIREpisodeOfCare, string, error) {
+	s.checkPreconditions()
+	episodePayload, err := s.GetFHIREpisodeOfCare(ctx, episodeID)
+	if err != nil {
+		return nil, "", fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
+	}
+	episode := episodePayload.Resource
+	activeEpisodeStatus := EpisodeOfCareStatusEnumActive
+	if episode.Patient == nil || episode.Patient.Reference == nil {
+		return nil, "", fmt.Errorf("the episode with ID %s has no patient reference", episodeID)
+	}
+	if episodePayload.Resource.Status.String() != activeEpisodeStatus.String() {
+		return nil, "", fmt.Errorf("the episode with ID %s is not active", episodeID)
+	}
+	if episode.Type == nil {
+		return nil, "", fmt.Errorf("the episode with ID %s has a nil type", episodeID)
+	}
+	if len(episode.Type) != 1 {
+		return nil, "", fmt.Errorf("expected the episode type to have just one entry")
+	}
+	accessLevel := episode.Type[0].Text
+	if accessLevel != "FULL_ACCESS" && accessLevel != "PROFILE_AND_RECENT_VISITS_ACCESS" {
+		return nil, "", fmt.Errorf("unknown episode access level: %s", accessLevel)
+	}
+	return episode, accessLevel, nil
+}
+
+func (s Service) getTimelineVisitSummaries(
+	ctx context.Context,
+	encounterSearchParams map[string]interface{},
+	count int,
+) ([]map[string]interface{}, error) {
 	encounterConn, err := s.SearchFHIREncounter(ctx, encounterSearchParams)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search for encounters for the timeline: %w", err)
@@ -441,7 +480,7 @@ func (s Service) PatientTimeline(
 		if edge.Node == nil || edge.Node.ID == nil {
 			continue
 		}
-		summary, err := s.VisitSummary(ctx, *edge.Node.ID)
+		summary, err := s.VisitSummary(ctx, *edge.Node.ID, count)
 		if err != nil {
 			return nil, err
 		}

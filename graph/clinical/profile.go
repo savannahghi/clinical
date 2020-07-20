@@ -327,7 +327,7 @@ func (p FHIRPatient) RenderVisitSummary(ctx context.Context, clinicalService *Se
 		return defaultVisitSummary
 	}
 	encounter := encounterConnection.Edges[0].Node
-	visitSummary, err := clinicalService.VisitSummary(ctx, *encounter.ID)
+	visitSummary, err := clinicalService.VisitSummary(ctx, *encounter.ID, MaxClinicalRecordPageSize)
 	if err != nil {
 		log.Printf("Unable to render visit summary for encounter %#v", *encounter)
 		return defaultVisitSummary

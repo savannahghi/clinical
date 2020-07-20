@@ -7,6 +7,7 @@ import (
 	"firebase.google.com/go/auth"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
+	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
 
 //go:generate go run gitlab.slade360emr.com/go/clinical/cmd/generator
@@ -40,3 +41,12 @@ func (r *Resolver) CheckDependencies() {
 		log.Panicf("graph.Resolver: clinicalService is nil")
 	}
 }
+
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+
+// Query returns generated.QueryResolver implementation.
+func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
+
+type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }

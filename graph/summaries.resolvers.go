@@ -45,7 +45,7 @@ func (r *queryResolver) VisitSummary(
 	ctx context.Context, encounterID string) (map[string]interface{}, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
-	return r.clinicalService.VisitSummary(ctx, encounterID)
+	return r.clinicalService.VisitSummary(ctx, encounterID, clinical.MaxClinicalRecordPageSize)
 }
 
 func (r *queryResolver) PatientTimeline(
@@ -53,6 +53,12 @@ func (r *queryResolver) PatientTimeline(
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.PatientTimeline(ctx, episodeID)
+}
+
+func (r *queryResolver) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.PatientTimelineWithCount(ctx, episodeID, count)
 }
 
 func (r *mutationResolver) EndEncounter(

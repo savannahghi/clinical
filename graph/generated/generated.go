@@ -1038,6 +1038,7 @@ type ComplexityRoot struct {
 		GetFHIRPatient               func(childComplexity int, id string) int
 		GetFHIRServiceRequest        func(childComplexity int, id string) int
 		PatientTimeline              func(childComplexity int, episodeID string) int
+		PatientTimelineWithCount     func(childComplexity int, episodeID string, count int) int
 		ProblemSummary               func(childComplexity int, patientID string) int
 		RequestUSSDFullHistory       func(childComplexity int, input clinical.USSDClinicalRequest) int
 		RequestUSSDLastVisit         func(childComplexity int, input clinical.USSDClinicalRequest) int
@@ -1124,6 +1125,7 @@ type QueryResolver interface {
 	RequestUSSDLastVisit(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error)
 	RequestUSSDFullHistory(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error)
 	PatientTimeline(ctx context.Context, episodeID string) ([]map[string]interface{}, error)
+	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
 	VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error)
 }
 
@@ -6245,6 +6247,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.PatientTimeline(childComplexity, args["episodeID"].(string)), true
+
+	case "Query.patientTimelineWithCount":
+		if e.complexity.Query.PatientTimelineWithCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_patientTimelineWithCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.PatientTimelineWithCount(childComplexity, args["episodeID"].(string), args["count"].(int)), true
 
 	case "Query.problemSummary":
 		if e.complexity.Query.ProblemSummary == nil {
@@ -13474,6 +13488,7 @@ extend type Query {
   requestUSSDLastVisit(input: USSDClinicalRequest!): USSDClinicalResponse!
   requestUSSDFullHistory(input: USSDClinicalRequest!): USSDClinicalResponse!
   patientTimeline(episodeID: String!): [Map!]!
+  patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
   visitSummary(encounterID: String!): Map!
 }
 
@@ -14266,6 +14281,28 @@ func (ec *executionContext) field_Query_getFHIRServiceRequest_args(ctx context.C
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_patientTimelineWithCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["episodeID"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["episodeID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["count"]; ok {
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["count"] = arg1
 	return args, nil
 }
 
@@ -37385,6 +37422,47 @@ func (ec *executionContext) _Query_patientTimeline(ctx context.Context, field gr
 	return ec.marshalNMap2ᚕmapᚄ(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_patientTimelineWithCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_patientTimelineWithCount_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().PatientTimelineWithCount(rctx, args["episodeID"].(string), args["count"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]map[string]interface{})
+	fc.Result = res
+	return ec.marshalNMap2ᚕmapᚄ(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_visitSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -47390,6 +47468,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "patientTimelineWithCount":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_patientTimelineWithCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "visitSummary":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -48754,6 +48846,20 @@ func (ec *executionContext) unmarshalNIdentifierUseEnum2gitlabᚗslade360emrᚗc
 
 func (ec *executionContext) marshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx context.Context, sel ast.SelectionSet, v clinical.IdentifierUseEnum) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNMap2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
