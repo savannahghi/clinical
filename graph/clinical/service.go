@@ -562,7 +562,16 @@ func (s Service) EndEncounter(
 	}
 	updatedStatus := EncounterStatusEnumFinished
 	encounterPayload.Resource.Status = updatedStatus
-	encounterPayload.Resource.Period.End = base.DateTime(base.DateTime(time.Now().Format("2006-01-02T15:04:05+03:00")))
+
+	// workaround for odd date comparison behavior on the Google Cloud Healthcare API
+	// the end time must be at least 24 hours after the start time
+	// so: if the time now is less than 24 hours after start, set the end to be
+	// 24 hours after the start of the visit. If the time now is more than 24 hours
+	// after the start, use the current time as the end of the visit
+	end := time.Now().Add(time.Hour * 24)
+	endTime := base.DateTime(end.Format(timeFormatStr))
+	encounterPayload.Resource.Period.End = endTime
+
 	payload, err := base.StructToMap(encounterPayload.Resource)
 	if err != nil {
 		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %v", err)
