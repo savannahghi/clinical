@@ -16,7 +16,7 @@ import (
 
 // RequestUSSDLastVisit returns details of the patient's last visit
 func (s Service) RequestUSSDLastVisit(
-	ctx context.Context, input USSDClinicalRequest) (*USSDClinicalResponse, error) {
+	ctx context.Context, input USSDClinicalRequest) (*USSDLastVisitClinicalResponse, error) {
 	s.checkPreconditions()
 
 	patient, err := s.lookupUSSDSessionPatient(ctx, input)
@@ -48,10 +48,13 @@ func (s Service) RequestUSSDLastVisit(
 	summary := fmt.Sprintf(
 		"%s\n\nPlease access your visit summary at %s", name, shortURL)
 
-	return &USSDClinicalResponse{
-		ShortLink: shortURL,
-		Summary:   summary,
-		Text:      text,
+	visitSummary := patient.RenderVisitSummary(ctx, &s)
+
+	return &USSDLastVisitClinicalResponse{
+		ShortLink:    shortURL,
+		Summary:      summary,
+		Text:         text,
+		VisitSummary: visitSummary,
 	}, nil
 }
 
@@ -322,7 +325,7 @@ func (p FHIRPatient) RenderVisitSummary(ctx context.Context, clinicalService *Se
 	encounterSearchParams := map[string]interface{}{
 		"patient": fmt.Sprintf("Patient/%s", *p.ID),
 		"_sort":   "date",
-		"count":   1,
+		"count":   strconv.Itoa(1),
 	}
 	defaultVisitSummary := make(map[string]interface{})
 	encounterConnection, err := clinicalService.SearchFHIREncounter(ctx, encounterSearchParams)

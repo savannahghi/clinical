@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -503,6 +504,106 @@ func TestFHIRPatient_RenderAllergies(t *testing.T) {
 			if got := p.RenderAllergies(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("FHIRPatient.RenderAllergies() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestService_RequestUSSDLastVisit(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input USSDClinicalRequest
+	}
+	ctx := context.Background()
+	service := NewService()
+
+	ep := CreateFHIREpisodeOfCarePayload(t)
+	encounterPayload := GetEncounterPayload(ep)
+	encounter, err := service.CreateFHIREncounter(ctx, encounterPayload)
+	if err != nil {
+		t.Fatalf("unable to create patient resource %s: ", err)
+	}
+
+	subjectReference := *encounter.Resource.Subject.Reference
+	reference := strings.Split(subjectReference, "/")[1:]
+	patientID := strings.Join(reference, " ")
+
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "valid USSD last visit response",
+			args: args{
+				ctx: ctx,
+				input: USSDClinicalRequest{
+					PatientID: patientID,
+				},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := service
+			got, err := s.RequestUSSDLastVisit(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.RequestUSSDLastVisit() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				assert.NotNil(t, got)
+			}
+		})
+	}
+}
+
+func TestFHIRPatient_RenderVisitSummary(t *testing.T) {
+	type fields struct {
+		ID *string
+	}
+	type args struct {
+		ctx             context.Context
+		clinicalService *Service
+	}
+
+	ctx := context.Background()
+	service := NewService()
+
+	ep := CreateFHIREpisodeOfCarePayload(t)
+	encounterPayload := GetEncounterPayload(ep)
+	encounter, err := service.CreateFHIREncounter(ctx, encounterPayload)
+	if err != nil {
+		t.Fatalf("unable to create patient resource %s: ", err)
+	}
+
+	subjectReference := *encounter.Resource.Subject.Reference
+	reference := strings.Split(subjectReference, "/")[1:]
+	patientID := strings.Join(reference, " ")
+
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name: "valid visit summary render",
+			fields: fields{
+				ID: &patientID,
+			},
+			args: args{
+				ctx:             ctx,
+				clinicalService: service,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := FHIRPatient{
+				ID: tt.fields.ID,
+			}
+			got := p.RenderVisitSummary(tt.args.ctx, tt.args.clinicalService)
+			assert.NotNil(t, got)
 		})
 	}
 }

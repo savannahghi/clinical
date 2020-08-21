@@ -1065,6 +1065,13 @@ type ComplexityRoot struct {
 		Text      func(childComplexity int) int
 	}
 
+	USSDLastVisitClinicalResponse struct {
+		ShortLink    func(childComplexity int) int
+		Summary      func(childComplexity int) int
+		Text         func(childComplexity int) int
+		VisitSummary func(childComplexity int) int
+	}
+
 	USSDMedicalHistoryClinicalResponse struct {
 		FullHistory func(childComplexity int) int
 		ShortLink   func(childComplexity int) int
@@ -1132,8 +1139,8 @@ type QueryResolver interface {
 	AllergySummary(ctx context.Context, patientID string) ([]string, error)
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
 	RequestUSSDPatientProfile(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error)
-	RequestUSSDLastVisit(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error)
 	RequestUSSDFullHistory(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDMedicalHistoryClinicalResponse, error)
+	RequestUSSDLastVisit(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDLastVisitClinicalResponse, error)
 	PatientTimeline(ctx context.Context, episodeID string) ([]map[string]interface{}, error)
 	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
 	VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error)
@@ -6491,6 +6498,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.USSDClinicalResponse.Text(childComplexity), true
+
+	case "USSDLastVisitClinicalResponse.shortLink":
+		if e.complexity.USSDLastVisitClinicalResponse.ShortLink == nil {
+			break
+		}
+
+		return e.complexity.USSDLastVisitClinicalResponse.ShortLink(childComplexity), true
+
+	case "USSDLastVisitClinicalResponse.summary":
+		if e.complexity.USSDLastVisitClinicalResponse.Summary == nil {
+			break
+		}
+
+		return e.complexity.USSDLastVisitClinicalResponse.Summary(childComplexity), true
+
+	case "USSDLastVisitClinicalResponse.text":
+		if e.complexity.USSDLastVisitClinicalResponse.Text == nil {
+			break
+		}
+
+		return e.complexity.USSDLastVisitClinicalResponse.Text(childComplexity), true
+
+	case "USSDLastVisitClinicalResponse.visitSummary":
+		if e.complexity.USSDLastVisitClinicalResponse.VisitSummary == nil {
+			break
+		}
+
+		return e.complexity.USSDLastVisitClinicalResponse.VisitSummary(childComplexity), true
 
 	case "USSDMedicalHistoryClinicalResponse.fullHistory":
 		if e.complexity.USSDMedicalHistoryClinicalResponse.FullHistory == nil {
@@ -13536,6 +13571,13 @@ enum ContributorTypeEnum {
   ussdSessionID: String!
 }
 
+type USSDLastVisitClinicalResponse {
+  shortLink: String!
+  summary: String!
+  text: String!
+  visitSummary: Map!
+}
+
 type USSDClinicalResponse {
   shortLink: String!
   summary: String!
@@ -13553,10 +13595,12 @@ extend type Query {
   allergySummary(patientID: String!): [String!]!
   problemSummary(patientID: String!): [String!]!
   requestUSSDPatientProfile(input: USSDClinicalRequest!): USSDClinicalResponse!
-  requestUSSDLastVisit(input: USSDClinicalRequest!): USSDClinicalResponse!
   requestUSSDFullHistory(
     input: USSDClinicalRequest!
   ): USSDMedicalHistoryClinicalResponse!
+  requestUSSDLastVisit(
+    input: USSDClinicalRequest!
+  ): USSDLastVisitClinicalResponse!
   patientTimeline(episodeID: String!): [Map!]!
   patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
   visitSummary(encounterID: String!): Map!
@@ -37536,47 +37580,6 @@ func (ec *executionContext) _Query_requestUSSDPatientProfile(ctx context.Context
 	return ec.marshalNUSSDClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_requestUSSDLastVisit(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_requestUSSDLastVisit_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RequestUSSDLastVisit(rctx, args["input"].(clinical.USSDClinicalRequest))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.USSDClinicalResponse)
-	fc.Result = res
-	return ec.marshalNUSSDClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalResponse(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Query_requestUSSDFullHistory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -37616,6 +37619,47 @@ func (ec *executionContext) _Query_requestUSSDFullHistory(ctx context.Context, f
 	res := resTmp.(*clinical.USSDMedicalHistoryClinicalResponse)
 	fc.Result = res
 	return ec.marshalNUSSDMedicalHistoryClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_requestUSSDLastVisit(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_requestUSSDLastVisit_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().RequestUSSDLastVisit(rctx, args["input"].(clinical.USSDClinicalRequest))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.USSDLastVisitClinicalResponse)
+	fc.Result = res
+	return ec.marshalNUSSDLastVisitClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDLastVisitClinicalResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_patientTimeline(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -37910,6 +37954,142 @@ func (ec *executionContext) _USSDClinicalResponse_text(ctx context.Context, fiel
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDLastVisitClinicalResponse_shortLink(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDLastVisitClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ShortLink, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDLastVisitClinicalResponse_summary(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDLastVisitClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Summary, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDLastVisitClinicalResponse_text(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDLastVisitClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDLastVisitClinicalResponse_visitSummary(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDLastVisitClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.VisitSummary, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(map[string]interface{})
+	fc.Result = res
+	return ec.marshalNMap2map(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_shortLink(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
@@ -49022,20 +49202,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
-		case "requestUSSDLastVisit":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_requestUSSDLastVisit(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
 		case "requestUSSDFullHistory":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -49045,6 +49211,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_requestUSSDFullHistory(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "requestUSSDLastVisit":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_requestUSSDLastVisit(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -49130,6 +49310,48 @@ func (ec *executionContext) _USSDClinicalResponse(ctx context.Context, sel ast.S
 			}
 		case "text":
 			out.Values[i] = ec._USSDClinicalResponse_text(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var uSSDLastVisitClinicalResponseImplementors = []string{"USSDLastVisitClinicalResponse"}
+
+func (ec *executionContext) _USSDLastVisitClinicalResponse(ctx context.Context, sel ast.SelectionSet, obj *clinical.USSDLastVisitClinicalResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, uSSDLastVisitClinicalResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("USSDLastVisitClinicalResponse")
+		case "shortLink":
+			out.Values[i] = ec._USSDLastVisitClinicalResponse_shortLink(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "summary":
+			out.Values[i] = ec._USSDLastVisitClinicalResponse_summary(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "text":
+			out.Values[i] = ec._USSDLastVisitClinicalResponse_text(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "visitSummary":
+			out.Values[i] = ec._USSDLastVisitClinicalResponse_visitSummary(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -50587,6 +50809,20 @@ func (ec *executionContext) marshalNUSSDClinicalResponse2ᚖgitlabᚗslade360emr
 		return graphql.Null
 	}
 	return ec._USSDClinicalResponse(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNUSSDLastVisitClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDLastVisitClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDLastVisitClinicalResponse) graphql.Marshaler {
+	return ec._USSDLastVisitClinicalResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUSSDLastVisitClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDLastVisitClinicalResponse(ctx context.Context, sel ast.SelectionSet, v *clinical.USSDLastVisitClinicalResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._USSDLastVisitClinicalResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNUSSDMedicalHistoryClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDMedicalHistoryClinicalResponse) graphql.Marshaler {

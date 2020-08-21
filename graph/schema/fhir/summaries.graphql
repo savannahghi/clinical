@@ -4,6 +4,13 @@ input USSDClinicalRequest {
   ussdSessionID: String!
 }
 
+type USSDLastVisitClinicalResponse {
+  shortLink: String!
+  summary: String!
+  text: String!
+  visitSummary: Map!
+}
+
 type USSDClinicalResponse {
   shortLink: String!
   summary: String!
@@ -21,10 +28,12 @@ extend type Query {
   allergySummary(patientID: String!): [String!]!
   problemSummary(patientID: String!): [String!]!
   requestUSSDPatientProfile(input: USSDClinicalRequest!): USSDClinicalResponse!
-  requestUSSDLastVisit(input: USSDClinicalRequest!): USSDClinicalResponse!
   requestUSSDFullHistory(
     input: USSDClinicalRequest!
   ): USSDMedicalHistoryClinicalResponse!
+  requestUSSDLastVisit(
+    input: USSDClinicalRequest!
+  ): USSDLastVisitClinicalResponse!
   patientTimeline(episodeID: String!): [Map!]!
   patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
   visitSummary(encounterID: String!): Map!

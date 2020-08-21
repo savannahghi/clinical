@@ -717,6 +717,14 @@ func (e PatientLinkTypeEnum) MarshalGQL(w io.Writer) {
 	}
 }
 
+// USSDLastVisitClinicalResponse is used to return the patient visit information
+type USSDLastVisitClinicalResponse struct {
+	ShortLink    string                 `json:"shortLink"`
+	Summary      string                 `json:"summary"`
+	Text         string                 `json:"text"`
+	VisitSummary map[string]interface{} `json:"visitSummary"`
+}
+
 // USSDMedicalHistoryClinicalResponse returns full medical history response
 type USSDMedicalHistoryClinicalResponse struct {
 	ShortLink   string                 `json:"shortLink"`

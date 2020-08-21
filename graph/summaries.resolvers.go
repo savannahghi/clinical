@@ -28,7 +28,7 @@ func (r *queryResolver) RequestUSSDFullHistory(
 }
 
 func (r *queryResolver) RequestUSSDLastVisit(
-	ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error) {
+	ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDLastVisitClinicalResponse, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.RequestUSSDLastVisit(ctx, input)
