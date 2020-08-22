@@ -19,8 +19,8 @@ require (
 	github.com/sirupsen/logrus v1.6.0
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	github.com/vektah/gqlparser/v2 v2.0.1
-	gitlab.slade360emr.com/go/base v0.0.28
-	gitlab.slade360emr.com/go/cloudhealth v0.0.2
+	gitlab.slade360emr.com/go/base v0.0.29
+	gitlab.slade360emr.com/go/cloudhealth v0.0.3
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	jaytaylor.com/html2text v0.0.0-20200412013138-3577fbdbcff7
 )

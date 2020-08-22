@@ -379,10 +379,10 @@ github.com/yudai/pp v2.0.1+incompatible/go.mod h1:PuxR/8QJ7cyCkFp/aUDS+JY727OFEZ
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
-gitlab.slade360emr.com/go/base v0.0.28 h1:6xyaPGNX84NWh23ybO37lwXvn3q5te+FnEOQEzrLOa4=
-gitlab.slade360emr.com/go/base v0.0.28/go.mod h1:zzftuZcF6pEml/kOzM3ixvqD1h2WxxpvjZynO4ibNDc=
-gitlab.slade360emr.com/go/cloudhealth v0.0.2 h1:duLkHZeD5iPTDpw/xAjgE1Wqi5wcpF1w2b36wjRR1RQ=
-gitlab.slade360emr.com/go/cloudhealth v0.0.2/go.mod h1:P6uTPWot8Q+LuSfM8i6yv9EcLlk4hRFbFMoXD97Uorw=
+gitlab.slade360emr.com/go/base v0.0.29 h1:595WTNeyhRIYVeEo85KU7qtIqsvI/50/S4fPoGeWYuw=
+gitlab.slade360emr.com/go/base v0.0.29/go.mod h1:zzftuZcF6pEml/kOzM3ixvqD1h2WxxpvjZynO4ibNDc=
+gitlab.slade360emr.com/go/cloudhealth v0.0.3 h1:bFka+DDpmYM/Z9Yl4ku8PC1l03Het07LKQhlvBh33i4=
+gitlab.slade360emr.com/go/cloudhealth v0.0.3/go.mod h1:E3jzaRVDj03986JC7RKUWO2t7W6QGNzyEf4OhfFQ4KE=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
