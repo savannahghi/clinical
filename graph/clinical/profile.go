@@ -83,7 +83,7 @@ func (s Service) RequestUSSDFullHistory(
 
 	name := patient.RenderOfficialName()
 	text := fmt.Sprintf(
-		"Dear %s, please access your last visit's details at %s",
+		"Dear %s, please access your clinical history details at %s",
 		name, shortURL,
 	)
 
