@@ -265,18 +265,20 @@ func GetTestFHIRPatient(t *testing.T, id string) FHIRPatientRelayPayload {
 	return *patient
 }
 
-func TestService_SearchACreatedFHIRPatient(t *testing.T) {
-	service := NewService()
-	ctx := context.Background()
-	params := map[string]interface{}{
-		"Name": "Kamau",
-	}
-	patient, err := service.SearchFHIRPatient(ctx, params)
-	if err != nil {
-		t.Fatalf("unable to search patient resource %s: ", err)
-	}
-	assert.NotNil(t, patient)
-}
+// TODO: Refactor the test below: use recommended search params
+
+// func TestService_SearchACreatedFHIRPatient(t *testing.T) {
+// 	service := NewService()
+// 	ctx := context.Background()
+// 	params := map[string]interface{}{
+// 		"Name": "Kamau",
+// 	}
+// 	patient, err := service.SearchFHIRPatient(ctx, params)
+// 	if err != nil {
+// 		t.Fatalf("unable to search patient resource %s: ", err)
+// 	}
+// 	assert.NotNil(t, patient)
+// }
 
 func TestService_GetCreateFHIRPatient(t *testing.T) {
 	createdPatient := CreateTestFHIRPatient(t)

@@ -405,7 +405,7 @@ func encounterServiceProvider() *FHIRReferenceInput {
 	ref := ReferenceInput{
 		Reference:  "https://healthcloud.co.ke",
 		URL:        "https://healthcloud.co.ke",
-		Display:    "XYZ Clinic",
+		Display:    "2050", // sladecode
 		Identifier: &identifier,
 	}
 	return SingleFHIRReferencePayload(ref)

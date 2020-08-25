@@ -771,6 +771,31 @@ type ComplexityRoot struct {
 		Resource func(childComplexity int) int
 	}
 
+	FHIROrganization struct {
+		Active     func(childComplexity int) int
+		Address    func(childComplexity int) int
+		Alias      func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Identifier func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Telecom    func(childComplexity int) int
+		Type       func(childComplexity int) int
+	}
+
+	FHIROrganizationRelayConnection struct {
+		Edges    func(childComplexity int) int
+		PageInfo func(childComplexity int) int
+	}
+
+	FHIROrganizationRelayEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	FHIROrganizationRelayPayload struct {
+		Resource func(childComplexity int) int
+	}
+
 	FHIRPatient struct {
 		Active               func(childComplexity int) int
 		Address              func(childComplexity int) int
@@ -994,6 +1019,7 @@ type ComplexityRoot struct {
 		CreateFHIREpisodeOfCare      func(childComplexity int, input clinical.FHIREpisodeOfCareInput) int
 		CreateFHIRMedicationRequest  func(childComplexity int, input clinical.FHIRMedicationRequestInput) int
 		CreateFHIRObservation        func(childComplexity int, input clinical.FHIRObservationInput) int
+		CreateFHIROrganization       func(childComplexity int, input clinical.FHIROrganizationInput) int
 		CreateFHIRPatient            func(childComplexity int, input clinical.FHIRPatientInput) int
 		CreateFHIRServiceRequest     func(childComplexity int, input clinical.FHIRServiceRequestInput) int
 		DeleteFHIRAllergyIntolerance func(childComplexity int, id string) int
@@ -1004,6 +1030,7 @@ type ComplexityRoot struct {
 		DeleteFHIREpisodeOfCare      func(childComplexity int, id string) int
 		DeleteFHIRMedicationRequest  func(childComplexity int, id string) int
 		DeleteFHIRObservation        func(childComplexity int, id string) int
+		DeleteFHIROrganization       func(childComplexity int, id string) int
 		DeleteFHIRPatient            func(childComplexity int, id string) int
 		DeleteFHIRServiceRequest     func(childComplexity int, id string) int
 		EndEncounter                 func(childComplexity int, encounterID string) int
@@ -1017,6 +1044,7 @@ type ComplexityRoot struct {
 		UpdateFHIREpisodeOfCare      func(childComplexity int, input clinical.FHIREpisodeOfCareInput) int
 		UpdateFHIRMedicationRequest  func(childComplexity int, input clinical.FHIRMedicationRequestInput) int
 		UpdateFHIRObservation        func(childComplexity int, input clinical.FHIRObservationInput) int
+		UpdateFHIROrganization       func(childComplexity int, input clinical.FHIROrganizationInput) int
 		UpdateFHIRPatient            func(childComplexity int, input clinical.FHIRPatientInput) int
 		UpdateFHIRServiceRequest     func(childComplexity int, input clinical.FHIRServiceRequestInput) int
 	}
@@ -1038,6 +1066,7 @@ type ComplexityRoot struct {
 		GetFHIREpisodeOfCare         func(childComplexity int, id string) int
 		GetFHIRMedicationRequest     func(childComplexity int, id string) int
 		GetFHIRObservation           func(childComplexity int, id string) int
+		GetFHIROrganization          func(childComplexity int, id string) int
 		GetFHIRPatient               func(childComplexity int, id string) int
 		GetFHIRServiceRequest        func(childComplexity int, id string) int
 		PatientTimeline              func(childComplexity int, episodeID string) int
@@ -1054,6 +1083,7 @@ type ComplexityRoot struct {
 		SearchFHIREpisodeOfCare      func(childComplexity int, params map[string]interface{}) int
 		SearchFHIRMedicationRequest  func(childComplexity int, params map[string]interface{}) int
 		SearchFHIRObservation        func(childComplexity int, params map[string]interface{}) int
+		SearchFHIROrganization       func(childComplexity int, params map[string]interface{}) int
 		SearchFHIRPatient            func(childComplexity int, params map[string]interface{}) int
 		SearchFHIRServiceRequest     func(childComplexity int, params map[string]interface{}) int
 		VisitSummary                 func(childComplexity int, encounterID string) int
@@ -1106,6 +1136,9 @@ type MutationResolver interface {
 	CreateFHIRObservation(ctx context.Context, input clinical.FHIRObservationInput) (*clinical.FHIRObservationRelayPayload, error)
 	UpdateFHIRObservation(ctx context.Context, input clinical.FHIRObservationInput) (*clinical.FHIRObservationRelayPayload, error)
 	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
+	CreateFHIROrganization(ctx context.Context, input clinical.FHIROrganizationInput) (*clinical.FHIROrganizationRelayPayload, error)
+	UpdateFHIROrganization(ctx context.Context, input clinical.FHIROrganizationInput) (*clinical.FHIROrganizationRelayPayload, error)
+	DeleteFHIROrganization(ctx context.Context, id string) (bool, error)
 	CreateFHIRPatient(ctx context.Context, input clinical.FHIRPatientInput) (*clinical.FHIRPatientRelayPayload, error)
 	UpdateFHIRPatient(ctx context.Context, input clinical.FHIRPatientInput) (*clinical.FHIRPatientRelayPayload, error)
 	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
@@ -1133,6 +1166,8 @@ type QueryResolver interface {
 	SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRMedicationRequestRelayConnection, error)
 	GetFHIRObservation(ctx context.Context, id string) (*clinical.FHIRObservationRelayPayload, error)
 	SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*clinical.FHIRObservationRelayConnection, error)
+	GetFHIROrganization(ctx context.Context, id string) (*clinical.FHIROrganizationRelayPayload, error)
+	SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*clinical.FHIROrganizationRelayConnection, error)
 	GetFHIRPatient(ctx context.Context, id string) (*clinical.FHIRPatientRelayPayload, error)
 	SearchFHIRPatient(ctx context.Context, params map[string]interface{}) (*clinical.FHIRPatientRelayConnection, error)
 	GetFHIRServiceRequest(ctx context.Context, id string) (*clinical.FHIRServiceRequestRelayPayload, error)
@@ -4662,6 +4697,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRObservationRelayPayload.Resource(childComplexity), true
 
+	case "FHIROrganization.Active":
+		if e.complexity.FHIROrganization.Active == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.Active(childComplexity), true
+
+	case "FHIROrganization.Address":
+		if e.complexity.FHIROrganization.Address == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.Address(childComplexity), true
+
+	case "FHIROrganization.Alias":
+		if e.complexity.FHIROrganization.Alias == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.Alias(childComplexity), true
+
+	case "FHIROrganization.ID":
+		if e.complexity.FHIROrganization.ID == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.ID(childComplexity), true
+
+	case "FHIROrganization.Identifier":
+		if e.complexity.FHIROrganization.Identifier == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.Identifier(childComplexity), true
+
+	case "FHIROrganization.Name":
+		if e.complexity.FHIROrganization.Name == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.Name(childComplexity), true
+
+	case "FHIROrganization.Telecom":
+		if e.complexity.FHIROrganization.Telecom == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.Telecom(childComplexity), true
+
+	case "FHIROrganization.Type":
+		if e.complexity.FHIROrganization.Type == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganization.Type(childComplexity), true
+
+	case "FHIROrganizationRelayConnection.edges":
+		if e.complexity.FHIROrganizationRelayConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganizationRelayConnection.Edges(childComplexity), true
+
+	case "FHIROrganizationRelayConnection.pageInfo":
+		if e.complexity.FHIROrganizationRelayConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganizationRelayConnection.PageInfo(childComplexity), true
+
+	case "FHIROrganizationRelayEdge.cursor":
+		if e.complexity.FHIROrganizationRelayEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganizationRelayEdge.Cursor(childComplexity), true
+
+	case "FHIROrganizationRelayEdge.node":
+		if e.complexity.FHIROrganizationRelayEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganizationRelayEdge.Node(childComplexity), true
+
+	case "FHIROrganizationRelayPayload.resource":
+		if e.complexity.FHIROrganizationRelayPayload.Resource == nil {
+			break
+		}
+
+		return e.complexity.FHIROrganizationRelayPayload.Resource(childComplexity), true
+
 	case "FHIRPatient.Active":
 		if e.complexity.FHIRPatient.Active == nil {
 			break
@@ -5815,6 +5941,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateFHIRObservation(childComplexity, args["input"].(clinical.FHIRObservationInput)), true
 
+	case "Mutation.createFHIROrganization":
+		if e.complexity.Mutation.CreateFHIROrganization == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createFHIROrganization_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateFHIROrganization(childComplexity, args["input"].(clinical.FHIROrganizationInput)), true
+
 	case "Mutation.createFHIRPatient":
 		if e.complexity.Mutation.CreateFHIRPatient == nil {
 			break
@@ -5934,6 +6072,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteFHIRObservation(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteFHIROrganization":
+		if e.complexity.Mutation.DeleteFHIROrganization == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteFHIROrganization_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteFHIROrganization(childComplexity, args["id"].(string)), true
 
 	case "Mutation.deleteFHIRPatient":
 		if e.complexity.Mutation.DeleteFHIRPatient == nil {
@@ -6090,6 +6240,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateFHIRObservation(childComplexity, args["input"].(clinical.FHIRObservationInput)), true
+
+	case "Mutation.updateFHIROrganization":
+		if e.complexity.Mutation.UpdateFHIROrganization == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateFHIROrganization_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateFHIROrganization(childComplexity, args["input"].(clinical.FHIROrganizationInput)), true
 
 	case "Mutation.updateFHIRPatient":
 		if e.complexity.Mutation.UpdateFHIRPatient == nil {
@@ -6250,6 +6412,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetFHIRObservation(childComplexity, args["id"].(string)), true
+
+	case "Query.getFHIROrganization":
+		if e.complexity.Query.GetFHIROrganization == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getFHIROrganization_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetFHIROrganization(childComplexity, args["id"].(string)), true
 
 	case "Query.getFHIRPatient":
 		if e.complexity.Query.GetFHIRPatient == nil {
@@ -6442,6 +6616,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.SearchFHIRObservation(childComplexity, args["params"].(map[string]interface{})), true
+
+	case "Query.searchFHIROrganization":
+		if e.complexity.Query.SearchFHIROrganization == nil {
+			break
+		}
+
+		args, err := ec.field_Query_searchFHIROrganization_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SearchFHIROrganization(childComplexity, args["params"].(map[string]interface{})), true
 
 	case "Query.searchFHIRPatient":
 		if e.complexity.Query.SearchFHIRPatient == nil {
@@ -10350,6 +10536,128 @@ extend type Mutation {
   deleteFHIRObservation(id: ID!): Boolean!
 }
 `, BuiltIn: false},
+	{Name: "schema/fhir/Organization.graphql", Input: `"""
+FHIROrganizationInput: input for Organization
+"""
+input FHIROrganizationInput {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  An identifier for this organization
+  """
+  Identifier: [FHIRIdentifierInput]
+  """
+  Whether this organization record is in active use.
+  """
+
+  Active: Boolean
+  
+  """
+  Specific type of organization (e.g. Healthcare Provider, Hospital Department, Insurance Company).
+  """
+  Type: [FHIRCodeableConceptInput]
+
+  """
+  A name associated with the organization.
+  """
+
+  Name: String
+  """
+  An alternate name for the organization.
+  """
+  Alias: [String]
+  
+  """
+  A contact detail (e.g. a telephone number or an email address) by which the organization may be contacted.
+  """
+  Telecom: [FHIRContactPointInput]
+  
+  """
+  An address for the organization.
+  """
+  Address: [FHIRAddressInput]
+
+}
+
+type FHIROrganization {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  An identifier for this organization.
+  """
+  Identifier: [FHIRIdentifier]
+
+  """
+  Whether this organization record is in active use.
+  """
+  Active: Boolean
+
+  """
+  Specific type of organization (e.g. Healthcare Provider, Hospital Department, Insurance Company).
+  """
+  Type: [FHIRCodeableConcept]
+
+  """
+  A name associated with the organization.
+  """
+  Name: String
+
+  """
+  An alternate name for the organization.
+  """
+  Alias: [String]
+
+  """
+  A contact detail (e.g. a telephone number or an email address) by which the organization may be contacted.
+  """
+  Telecom: [FHIRContactPoint]
+
+  """
+  An address for the organization.
+  """
+  Address: [FHIRAddress]
+
+}
+
+"""
+FHIROrganizationRelayPayload is used to return single instances of Organization
+"""
+type FHIROrganizationRelayPayload  {
+  resource: FHIROrganization!
+}
+
+"""
+FHIROrganizationRelayEdge is a Relay edge for Organization
+"""
+type FHIROrganizationRelayEdge {
+  cursor: String
+  node: FHIROrganization
+}
+
+"""
+FHIROrganizationRelayConnection is a Relay connection for Organization
+"""
+type FHIROrganizationRelayConnection {
+  edges: [FHIROrganizationRelayEdge]
+  pageInfo: PageInfo!
+}
+
+extend type Query {
+  getFHIROrganization(id: ID!): FHIROrganizationRelayPayload!
+  searchFHIROrganization(params: Map!): FHIROrganizationRelayConnection!
+}
+
+extend type Mutation {
+  createFHIROrganization(input: FHIROrganizationInput!): FHIROrganizationRelayPayload!
+  updateFHIROrganization(input: FHIROrganizationInput!): FHIROrganizationRelayPayload!
+  deleteFHIROrganization(id: ID!): Boolean!
+}`, BuiltIn: false},
 	{Name: "schema/fhir/Patient.graphql", Input: `"""
 PatientGenderEnum is a FHIR enum
 """
@@ -13899,6 +14207,21 @@ func (ec *executionContext) field_Mutation_createFHIRObservation_args(ctx contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createFHIROrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.FHIROrganizationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		arg0, err = ec.unmarshalNFHIROrganizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createFHIRPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -14035,6 +14358,21 @@ func (ec *executionContext) field_Mutation_deleteFHIRMedicationRequest_args(ctx 
 }
 
 func (ec *executionContext) field_Mutation_deleteFHIRObservation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteFHIROrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -14244,6 +14582,21 @@ func (ec *executionContext) field_Mutation_updateFHIRObservation_args(ctx contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateFHIROrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.FHIROrganizationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		arg0, err = ec.unmarshalNFHIROrganizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateFHIRPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -14410,6 +14763,21 @@ func (ec *executionContext) field_Query_getFHIRMedicationRequest_args(ctx contex
 }
 
 func (ec *executionContext) field_Query_getFHIRObservation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getFHIROrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -14659,6 +15027,21 @@ func (ec *executionContext) field_Query_searchFHIRMedicationRequest_args(ctx con
 }
 
 func (ec *executionContext) field_Query_searchFHIRObservation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 map[string]interface{}
+	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["params"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_searchFHIROrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
@@ -30406,6 +30789,415 @@ func (ec *executionContext) _FHIRObservationRelayPayload_resource(ctx context.Co
 	return ec.marshalNFHIRObservation2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservation(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _FHIROrganization_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganization_Identifier(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Identifier, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIRIdentifier)
+	fc.Result = res
+	return ec.marshalOFHIRIdentifier2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganization_Active(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Active, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganization_Type(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganization_Name(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganization_Alias(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Alias, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganization_Telecom(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Telecom, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIRContactPoint)
+	fc.Result = res
+	return ec.marshalOFHIRContactPoint2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPoint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganization_Address(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganization) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganization",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Address, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIRAddress)
+	fc.Result = res
+	return ec.marshalOFHIRAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganizationRelayConnection_edges(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganizationRelayConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganizationRelayConnection",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIROrganizationRelayEdge)
+	fc.Result = res
+	return ec.marshalOFHIROrganizationRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganizationRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganizationRelayConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganizationRelayConnection",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*base.PageInfo)
+	fc.Result = res
+	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganizationRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganizationRelayEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganizationRelayEdge",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganizationRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganizationRelayEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganizationRelayEdge",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIROrganization)
+	fc.Result = res
+	return ec.marshalOFHIROrganization2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganization(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIROrganizationRelayPayload_resource(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganizationRelayPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FHIROrganizationRelayPayload",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Resource, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIROrganization)
+	fc.Result = res
+	return ec.marshalNFHIROrganization2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganization(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _FHIRPatient_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatient) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -36149,6 +36941,129 @@ func (ec *executionContext) _Mutation_deleteFHIRObservation(ctx context.Context,
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createFHIROrganization_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateFHIROrganization(rctx, args["input"].(clinical.FHIROrganizationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIROrganizationRelayPayload)
+	fc.Result = res
+	return ec.marshalNFHIROrganizationRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateFHIROrganization_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateFHIROrganization(rctx, args["input"].(clinical.FHIROrganizationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIROrganizationRelayPayload)
+	fc.Result = res
+	return ec.marshalNFHIROrganizationRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteFHIROrganization_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteFHIROrganization(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_createFHIRPatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -37302,6 +38217,88 @@ func (ec *executionContext) _Query_searchFHIRObservation(ctx context.Context, fi
 	res := resTmp.(*clinical.FHIRObservationRelayConnection)
 	fc.Result = res
 	return ec.marshalNFHIRObservationRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationRelayConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_getFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getFHIROrganization_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetFHIROrganization(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIROrganizationRelayPayload)
+	fc.Result = res
+	return ec.marshalNFHIROrganizationRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_searchFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_searchFHIROrganization_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().SearchFHIROrganization(rctx, args["params"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIROrganizationRelayConnection)
+	fc.Result = res
+	return ec.marshalNFHIROrganizationRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getFHIRPatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -43556,6 +44553,82 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Context, obj interface{}) (clinical.FHIROrganizationInput, error) {
+	var it clinical.FHIROrganizationInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "ID":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Identifier":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Active":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Active"))
+			it.Active, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Type":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Alias":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Alias"))
+			it.Alias, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Telecom":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
+			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Address":
+			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Address"))
+			it.Address, err = ec.unmarshalOFHIRAddressInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx context.Context, obj interface{}) (clinical.FHIRPatientCommunicationInput, error) {
 	var it clinical.FHIRPatientCommunicationInput
 	var asMap = obj.(map[string]interface{})
@@ -47841,6 +48914,126 @@ func (ec *executionContext) _FHIRObservationRelayPayload(ctx context.Context, se
 	return out
 }
 
+var fHIROrganizationImplementors = []string{"FHIROrganization"}
+
+func (ec *executionContext) _FHIROrganization(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIROrganization) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIROrganizationImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIROrganization")
+		case "ID":
+			out.Values[i] = ec._FHIROrganization_ID(ctx, field, obj)
+		case "Identifier":
+			out.Values[i] = ec._FHIROrganization_Identifier(ctx, field, obj)
+		case "Active":
+			out.Values[i] = ec._FHIROrganization_Active(ctx, field, obj)
+		case "Type":
+			out.Values[i] = ec._FHIROrganization_Type(ctx, field, obj)
+		case "Name":
+			out.Values[i] = ec._FHIROrganization_Name(ctx, field, obj)
+		case "Alias":
+			out.Values[i] = ec._FHIROrganization_Alias(ctx, field, obj)
+		case "Telecom":
+			out.Values[i] = ec._FHIROrganization_Telecom(ctx, field, obj)
+		case "Address":
+			out.Values[i] = ec._FHIROrganization_Address(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIROrganizationRelayConnectionImplementors = []string{"FHIROrganizationRelayConnection"}
+
+func (ec *executionContext) _FHIROrganizationRelayConnection(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIROrganizationRelayConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIROrganizationRelayConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIROrganizationRelayConnection")
+		case "edges":
+			out.Values[i] = ec._FHIROrganizationRelayConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._FHIROrganizationRelayConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIROrganizationRelayEdgeImplementors = []string{"FHIROrganizationRelayEdge"}
+
+func (ec *executionContext) _FHIROrganizationRelayEdge(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIROrganizationRelayEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIROrganizationRelayEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIROrganizationRelayEdge")
+		case "cursor":
+			out.Values[i] = ec._FHIROrganizationRelayEdge_cursor(ctx, field, obj)
+		case "node":
+			out.Values[i] = ec._FHIROrganizationRelayEdge_node(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIROrganizationRelayPayloadImplementors = []string{"FHIROrganizationRelayPayload"}
+
+func (ec *executionContext) _FHIROrganizationRelayPayload(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIROrganizationRelayPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIROrganizationRelayPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIROrganizationRelayPayload")
+		case "resource":
+			out.Values[i] = ec._FHIROrganizationRelayPayload_resource(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var fHIRPatientImplementors = []string{"FHIRPatient"}
 
 func (ec *executionContext) _FHIRPatient(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRPatient) graphql.Marshaler {
@@ -48818,6 +50011,21 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "createFHIROrganization":
+			out.Values[i] = ec._Mutation_createFHIROrganization(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateFHIROrganization":
+			out.Values[i] = ec._Mutation_updateFHIROrganization(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteFHIROrganization":
+			out.Values[i] = ec._Mutation_deleteFHIROrganization(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createFHIRPatient":
 			out.Values[i] = ec._Mutation_createFHIRPatient(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -49144,6 +50352,34 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_searchFHIRObservation(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "getFHIROrganization":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getFHIROrganization(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "searchFHIROrganization":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_searchFHIROrganization(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -50431,6 +51667,49 @@ func (ec *executionContext) marshalNFHIRObservationRelayPayload2ᚖgitlabᚗslad
 		return graphql.Null
 	}
 	return ec._FHIRObservationRelayPayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNFHIROrganization2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganization(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIROrganization) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._FHIROrganization(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNFHIROrganizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationInput(ctx context.Context, v interface{}) (clinical.FHIROrganizationInput, error) {
+	res, err := ec.unmarshalInputFHIROrganizationInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFHIROrganizationRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIROrganizationRelayConnection) graphql.Marshaler {
+	return ec._FHIROrganizationRelayConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNFHIROrganizationRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayConnection(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIROrganizationRelayConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._FHIROrganizationRelayConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNFHIROrganizationRelayPayload2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayPayload(ctx context.Context, sel ast.SelectionSet, v clinical.FHIROrganizationRelayPayload) graphql.Marshaler {
+	return ec._FHIROrganizationRelayPayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNFHIROrganizationRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayPayload(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIROrganizationRelayPayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._FHIROrganizationRelayPayload(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRPatient) graphql.Marshaler {
@@ -54457,6 +55736,60 @@ func (ec *executionContext) marshalOFHIRObservationRelayEdge2ᚖgitlabᚗslade36
 	return ec._FHIRObservationRelayEdge(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOFHIROrganization2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganization(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIROrganization) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._FHIROrganization(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOFHIROrganizationRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIROrganizationRelayEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOFHIROrganizationRelayEdge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOFHIROrganizationRelayEdge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayEdge(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIROrganizationRelayEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._FHIROrganizationRelayEdge(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRPatient) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -55338,6 +56671,42 @@ func (ec *executionContext) unmarshalOString2string(ctx context.Context, v inter
 
 func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	return graphql.MarshalString(v)
+}
+
+func (ec *executionContext) unmarshalOString2ᚕstring(ctx context.Context, v interface{}) ([]string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		res[i], err = ec.unmarshalOString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstring(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOString2string(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
