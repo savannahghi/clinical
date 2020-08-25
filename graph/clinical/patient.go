@@ -732,3 +732,11 @@ type USSDMedicalHistoryClinicalResponse struct {
 	Text        string                 `json:"text"`
 	FullHistory map[string]interface{} `json:"fullHistory"`
 }
+
+// USSDPatientProfileClinicalResponse returns the patient profile information
+type USSDPatientProfileClinicalResponse struct {
+	ShortLink      string                 `json:"shortLink"`
+	Summary        string                 `json:"summary"`
+	Text           string                 `json:"text"`
+	PatientProfile map[string]interface{} `json:"patientProfile"`
+}

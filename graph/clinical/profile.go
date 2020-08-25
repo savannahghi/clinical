@@ -109,7 +109,7 @@ func (s Service) RequestUSSDFullHistory(
 // RequestUSSDPatientProfile returns details of the patient's profile in a form
 // that is suitable for use by a USSD gateway
 func (s Service) RequestUSSDPatientProfile(
-	ctx context.Context, input USSDClinicalRequest) (*USSDClinicalResponse, error) {
+	ctx context.Context, input USSDClinicalRequest) (*USSDPatientProfileClinicalResponse, error) {
 	s.checkPreconditions()
 
 	patient, err := s.lookupUSSDSessionPatient(ctx, input)
@@ -145,6 +145,12 @@ func (s Service) RequestUSSDPatientProfile(
 	age := patient.RenderAge()
 	problems := patient.RenderProblems()
 	allergies := patient.RenderAllergies()
+	gender := patient.RenderGender()
+	idDocs := patient.RenderIDDocuments()
+	addresses := patient.RenderAddresses()
+	maritalStatus := patient.RenderMaritalStatus()
+	languages := patient.RenderLanguages()
+
 	text := fmt.Sprintf(
 		"Dear %s, please access your health profile at %s",
 		name, shortURL,
@@ -154,10 +160,23 @@ func (s Service) RequestUSSDPatientProfile(
 		"%s (%s)\n\nProblems and allergies:\n%s,%s\nSee more at %s",
 		name, age, problems, allergies, shortURL,
 	)
-	return &USSDClinicalResponse{
-		ShortLink: shortURL,
-		Summary:   summary,
-		Text:      text,
+
+	patientProfile := map[string]interface{}{
+		"Name":          name,
+		"Age":           age,
+		"Gender":        gender,
+		"Problems":      problems,
+		"Allergies":     allergies,
+		"IDDocs":        idDocs,
+		"Addresses":     addresses,
+		"MaritalStatus": maritalStatus,
+		"Languages":     languages,
+	}
+	return &USSDPatientProfileClinicalResponse{
+		ShortLink:      shortURL,
+		Summary:        summary,
+		Text:           text,
+		PatientProfile: patientProfile,
 	}, nil
 }
 
