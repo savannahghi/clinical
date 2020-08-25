@@ -27,7 +27,8 @@ var allowedOrigins = []string{
 	"http://localhost:5000",
 	"https://api-gateway-test.healthcloud.co.ke",
 	"https://api-gateway-prod.healthcloud.co.ke",
-	"https://clinical-lermby4k3q-ew.a.run.app",
+	"https://clinical-testing-uyajqt434q-ew.a.run.app",
+	"https://clinical-prod-uyajqt434q-ew.a.run.app",
 }
 var allowedHeaders = []string{
 	"clinical", "Accept", "Accept-Charset", "Accept-Language",
