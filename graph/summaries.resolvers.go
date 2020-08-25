@@ -21,7 +21,7 @@ func (r *queryResolver) ProblemSummary(
 }
 
 func (r *queryResolver) RequestUSSDFullHistory(
-	ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error) {
+	ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDMedicalHistoryClinicalResponse, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.RequestUSSDFullHistory(ctx, input)

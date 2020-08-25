@@ -1,9 +1,11 @@
 package clinical
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -500,6 +502,53 @@ func TestFHIRPatient_RenderAllergies(t *testing.T) {
 			}
 			if got := p.RenderAllergies(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("FHIRPatient.RenderAllergies() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestService_RequestUSSDFullHistory(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input USSDClinicalRequest
+	}
+
+	service := NewService()
+	ctx := context.Background()
+
+	patientPayload := PatientResourceFHIRPayload(t)
+	patient, err := service.CreateFHIRPatient(ctx, patientPayload)
+	if err != nil {
+		t.Fatalf("unable to retrieve patient resource %s: ", err)
+	}
+	patientID := *patient.Resource.ID
+
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "valid full history USSD response",
+			args: args{
+				ctx: ctx,
+				input: USSDClinicalRequest{
+					PatientID: patientID,
+				},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := service
+			got, err := s.RequestUSSDFullHistory(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.RequestUSSDFullHistory() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				assert.NotNil(t, got)
 			}
 		})
 	}

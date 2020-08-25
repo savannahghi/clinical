@@ -57,7 +57,7 @@ func (s Service) RequestUSSDLastVisit(
 
 // RequestUSSDFullHistory returns links to the patient's full history
 func (s Service) RequestUSSDFullHistory(
-	ctx context.Context, input USSDClinicalRequest) (*USSDClinicalResponse, error) {
+	ctx context.Context, input USSDClinicalRequest) (*USSDMedicalHistoryClinicalResponse, error) {
 	s.checkPreconditions()
 
 	patient, err := s.lookupUSSDSessionPatient(ctx, input)
@@ -90,10 +90,16 @@ func (s Service) RequestUSSDFullHistory(
 	summary := fmt.Sprintf(
 		"%s\n\nPlease access your clinical history at %s", name, shortURL)
 
-	return &USSDClinicalResponse{
-		ShortLink: shortURL,
-		Summary:   summary,
-		Text:      text,
+	RenderFullHistory := patient.RenderFullHistory(ctx, &s) // Returns make([]map[string]interface{}, 0)
+	fullHistory := map[string]interface{}{
+		"fullHistory": RenderFullHistory,
+	}
+
+	return &USSDMedicalHistoryClinicalResponse{
+		ShortLink:   shortURL,
+		Summary:     summary,
+		Text:        text,
+		FullHistory: fullHistory,
 	}, nil
 }
 

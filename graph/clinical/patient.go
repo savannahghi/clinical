@@ -716,3 +716,11 @@ func (e PatientLinkTypeEnum) MarshalGQL(w io.Writer) {
 		log.Printf("%v\n", err)
 	}
 }
+
+// USSDMedicalHistoryClinicalResponse returns full medical history response
+type USSDMedicalHistoryClinicalResponse struct {
+	ShortLink   string                 `json:"shortLink"`
+	Summary     string                 `json:"summary"`
+	Text        string                 `json:"text"`
+	FullHistory map[string]interface{} `json:"fullHistory"`
+}

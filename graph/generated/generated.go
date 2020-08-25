@@ -1064,6 +1064,13 @@ type ComplexityRoot struct {
 		Summary   func(childComplexity int) int
 		Text      func(childComplexity int) int
 	}
+
+	USSDMedicalHistoryClinicalResponse struct {
+		FullHistory func(childComplexity int) int
+		ShortLink   func(childComplexity int) int
+		Summary     func(childComplexity int) int
+		Text        func(childComplexity int) int
+	}
 }
 
 type MutationResolver interface {
@@ -1126,7 +1133,7 @@ type QueryResolver interface {
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
 	RequestUSSDPatientProfile(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error)
 	RequestUSSDLastVisit(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error)
-	RequestUSSDFullHistory(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDClinicalResponse, error)
+	RequestUSSDFullHistory(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDMedicalHistoryClinicalResponse, error)
 	PatientTimeline(ctx context.Context, episodeID string) ([]map[string]interface{}, error)
 	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
 	VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error)
@@ -6485,6 +6492,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.USSDClinicalResponse.Text(childComplexity), true
 
+	case "USSDMedicalHistoryClinicalResponse.fullHistory":
+		if e.complexity.USSDMedicalHistoryClinicalResponse.FullHistory == nil {
+			break
+		}
+
+		return e.complexity.USSDMedicalHistoryClinicalResponse.FullHistory(childComplexity), true
+
+	case "USSDMedicalHistoryClinicalResponse.shortLink":
+		if e.complexity.USSDMedicalHistoryClinicalResponse.ShortLink == nil {
+			break
+		}
+
+		return e.complexity.USSDMedicalHistoryClinicalResponse.ShortLink(childComplexity), true
+
+	case "USSDMedicalHistoryClinicalResponse.summary":
+		if e.complexity.USSDMedicalHistoryClinicalResponse.Summary == nil {
+			break
+		}
+
+		return e.complexity.USSDMedicalHistoryClinicalResponse.Summary(childComplexity), true
+
+	case "USSDMedicalHistoryClinicalResponse.text":
+		if e.complexity.USSDMedicalHistoryClinicalResponse.Text == nil {
+			break
+		}
+
+		return e.complexity.USSDMedicalHistoryClinicalResponse.Text(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -6549,7 +6584,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	&ast.Source{Name: "schema/fhir/AllergyIntolerance.graphql", Input: `"""
+	{Name: "schema/fhir/AllergyIntolerance.graphql", Input: `"""
 AllergyIntoleranceTypeEnum is a FHIR enum
 """
 enum AllergyIntoleranceTypeEnum {
@@ -6940,7 +6975,7 @@ extend type Mutation {
   deleteFHIRAllergyIntolerance(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/Appointment.graphql", Input: `"""
+	{Name: "schema/fhir/Appointment.graphql", Input: `"""
 AppointmentStatusEnum is a FHIR enum
 """
 enum AppointmentStatusEnum {
@@ -7306,7 +7341,7 @@ extend type Mutation {
   deleteFHIRAppointment(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/Composition.graphql", Input: `"""
+	{Name: "schema/fhir/Composition.graphql", Input: `"""
 CompositionStatusEnum is a FHIR enum
 """
 enum CompositionStatusEnum {
@@ -7776,7 +7811,7 @@ extend type Mutation {
   deleteFHIRComposition(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/Condition.graphql", Input: `"""
+	{Name: "schema/fhir/Condition.graphql", Input: `"""
 FHIRConditionInput: input for Condition
 """
 input FHIRConditionInput {
@@ -8175,7 +8210,7 @@ extend type Mutation {
   deleteFHIRCondition(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/Encounter.graphql", Input: `"""
+	{Name: "schema/fhir/Encounter.graphql", Input: `"""
 EncounterStatusEnum is a FHIR enum
 """
 enum EncounterStatusEnum {
@@ -8809,7 +8844,7 @@ extend type Mutation {
   deleteFHIREncounter(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/EpisodeOfCare.graphql", Input: `"""
+	{Name: "schema/fhir/EpisodeOfCare.graphql", Input: `"""
 EpisodeOfCareStatusEnum is a FHIR enum
 """
 enum EpisodeOfCareStatusEnum {
@@ -9092,7 +9127,7 @@ extend type Mutation {
   deleteFHIREpisodeOfCare(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/MedicationRequest.graphql", Input: `"""
+	{Name: "schema/fhir/MedicationRequest.graphql", Input: `"""
 FHIRMedicationRequestInput: input for MedicationRequest
 """
 input FHIRMedicationRequestInput {
@@ -9632,7 +9667,7 @@ extend type Mutation {
   deleteFHIRMedicationRequest(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/Observation.graphql", Input: `"""
+	{Name: "schema/fhir/Observation.graphql", Input: `"""
 ObservationStatusEnum is a FHIR enum
 """
 enum ObservationStatusEnum {
@@ -10272,7 +10307,7 @@ extend type Mutation {
   deleteFHIRObservation(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/Patient.graphql", Input: `"""
+	{Name: "schema/fhir/Patient.graphql", Input: `"""
 PatientGenderEnum is a FHIR enum
 """
 enum PatientGenderEnum {
@@ -10696,7 +10731,7 @@ extend type Mutation {
   deleteFHIRPatient(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/ServiceRequest.graphql", Input: `"""
+	{Name: "schema/fhir/ServiceRequest.graphql", Input: `"""
 FHIRServiceRequestInput: input for ServiceRequest
 """
 input FHIRServiceRequestInput {
@@ -11102,7 +11137,7 @@ extend type Mutation {
   deleteFHIRServiceRequest(id: ID!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/complex_types.graphql", Input: `"""
+	{Name: "schema/fhir/complex_types.graphql", Input: `"""
 FHIRUsageContextInput: input for UsageContext
 """
 input FHIRUsageContextInput {
@@ -13495,8 +13530,7 @@ enum ContributorTypeEnum {
   endorser
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "schema/fhir/summaries.graphql", Input: `
-input USSDClinicalRequest {
+	{Name: "schema/fhir/summaries.graphql", Input: `input USSDClinicalRequest {
   patientID: String!
   msisdn: String!
   ussdSessionID: String!
@@ -13508,12 +13542,21 @@ type USSDClinicalResponse {
   text: String!
 }
 
+type USSDMedicalHistoryClinicalResponse {
+  shortLink: String!
+  summary: String!
+  text: String!
+  fullHistory: Map!
+}
+
 extend type Query {
   allergySummary(patientID: String!): [String!]!
   problemSummary(patientID: String!): [String!]!
   requestUSSDPatientProfile(input: USSDClinicalRequest!): USSDClinicalResponse!
   requestUSSDLastVisit(input: USSDClinicalRequest!): USSDClinicalResponse!
-  requestUSSDFullHistory(input: USSDClinicalRequest!): USSDClinicalResponse!
+  requestUSSDFullHistory(
+    input: USSDClinicalRequest!
+  ): USSDMedicalHistoryClinicalResponse!
   patientTimeline(episodeID: String!): [Map!]!
   patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
   visitSummary(encounterID: String!): Map!
@@ -13525,7 +13568,7 @@ extend type Mutation {
   endEpisode(episodeID: String!): Boolean!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "graph/base.graphql", Input: `scalar Map
+	{Name: "graph/base.graphql", Input: `scalar Map
 scalar Any
 scalar Time
 scalar Date
@@ -13664,7 +13707,7 @@ interface Node {
   id: ID!
 }
 `, BuiltIn: false},
-	&ast.Source{Name: "federation/directives.graphql", Input: `
+	{Name: "federation/directives.graphql", Input: `
 scalar _Any
 scalar _FieldSet
 
@@ -13686,6 +13729,7 @@ func (ec *executionContext) field_Mutation_createFHIRAllergyIntolerance_args(ctx
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAllergyIntoleranceInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13700,6 +13744,7 @@ func (ec *executionContext) field_Mutation_createFHIRAppointment_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAppointmentInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13714,6 +13759,7 @@ func (ec *executionContext) field_Mutation_createFHIRComposition_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRCompositionInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRCompositionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13728,6 +13774,7 @@ func (ec *executionContext) field_Mutation_createFHIRCondition_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRConditionInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRConditionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13742,6 +13789,7 @@ func (ec *executionContext) field_Mutation_createFHIREncounter_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREncounterInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIREncounterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13756,6 +13804,7 @@ func (ec *executionContext) field_Mutation_createFHIREpisodeOfCare_args(ctx cont
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREpisodeOfCareInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIREpisodeOfCareInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13770,6 +13819,7 @@ func (ec *executionContext) field_Mutation_createFHIRMedicationRequest_args(ctx 
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRMedicationRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRMedicationRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13784,6 +13834,7 @@ func (ec *executionContext) field_Mutation_createFHIRObservation_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRObservationInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRObservationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13798,6 +13849,7 @@ func (ec *executionContext) field_Mutation_createFHIRPatient_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRPatientInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRPatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13812,6 +13864,7 @@ func (ec *executionContext) field_Mutation_createFHIRServiceRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRServiceRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRServiceRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13826,6 +13879,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRAllergyIntolerance_args(ctx
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13840,6 +13894,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRAppointment_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13854,6 +13909,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRComposition_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13868,6 +13924,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRCondition_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13882,6 +13939,7 @@ func (ec *executionContext) field_Mutation_deleteFHIREncounter_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13896,6 +13954,7 @@ func (ec *executionContext) field_Mutation_deleteFHIREpisodeOfCare_args(ctx cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13910,6 +13969,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRMedicationRequest_args(ctx 
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13924,6 +13984,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRObservation_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13938,6 +13999,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRPatient_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13952,6 +14014,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRServiceRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13966,6 +14029,7 @@ func (ec *executionContext) field_Mutation_endEncounter_args(ctx context.Context
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("encounterID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13980,6 +14044,7 @@ func (ec *executionContext) field_Mutation_endEpisode_args(ctx context.Context, 
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["episodeID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -13994,6 +14059,7 @@ func (ec *executionContext) field_Mutation_startEncounter_args(ctx context.Conte
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["episodeID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14008,6 +14074,7 @@ func (ec *executionContext) field_Mutation_updateFHIRAllergyIntolerance_args(ctx
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAllergyIntoleranceInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14022,6 +14089,7 @@ func (ec *executionContext) field_Mutation_updateFHIRAppointment_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAppointmentInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14036,6 +14104,7 @@ func (ec *executionContext) field_Mutation_updateFHIRComposition_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRCompositionInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRCompositionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14050,6 +14119,7 @@ func (ec *executionContext) field_Mutation_updateFHIRCondition_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRConditionInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRConditionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14064,6 +14134,7 @@ func (ec *executionContext) field_Mutation_updateFHIREncounter_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREncounterInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIREncounterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14078,6 +14149,7 @@ func (ec *executionContext) field_Mutation_updateFHIREpisodeOfCare_args(ctx cont
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREpisodeOfCareInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIREpisodeOfCareInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14092,6 +14164,7 @@ func (ec *executionContext) field_Mutation_updateFHIRMedicationRequest_args(ctx 
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRMedicationRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRMedicationRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14106,6 +14179,7 @@ func (ec *executionContext) field_Mutation_updateFHIRObservation_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRObservationInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRObservationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14120,6 +14194,7 @@ func (ec *executionContext) field_Mutation_updateFHIRPatient_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRPatientInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRPatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14134,6 +14209,7 @@ func (ec *executionContext) field_Mutation_updateFHIRServiceRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRServiceRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNFHIRServiceRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14148,6 +14224,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("name"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14162,6 +14239,7 @@ func (ec *executionContext) field_Query_allergySummary_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("patientID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14176,6 +14254,7 @@ func (ec *executionContext) field_Query_getFHIRAllergyIntolerance_args(ctx conte
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14190,6 +14269,7 @@ func (ec *executionContext) field_Query_getFHIRAppointment_args(ctx context.Cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14204,6 +14284,7 @@ func (ec *executionContext) field_Query_getFHIRComposition_args(ctx context.Cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14218,6 +14299,7 @@ func (ec *executionContext) field_Query_getFHIRCondition_args(ctx context.Contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14232,6 +14314,7 @@ func (ec *executionContext) field_Query_getFHIREncounter_args(ctx context.Contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14246,6 +14329,7 @@ func (ec *executionContext) field_Query_getFHIREpisodeOfCare_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14260,6 +14344,7 @@ func (ec *executionContext) field_Query_getFHIRMedicationRequest_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14274,6 +14359,7 @@ func (ec *executionContext) field_Query_getFHIRObservation_args(ctx context.Cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14288,6 +14374,7 @@ func (ec *executionContext) field_Query_getFHIRPatient_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14302,6 +14389,7 @@ func (ec *executionContext) field_Query_getFHIRServiceRequest_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14316,6 +14404,7 @@ func (ec *executionContext) field_Query_patientTimelineWithCount_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["episodeID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14324,6 +14413,7 @@ func (ec *executionContext) field_Query_patientTimelineWithCount_args(ctx contex
 	args["episodeID"] = arg0
 	var arg1 int
 	if tmp, ok := rawArgs["count"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("count"))
 		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14338,6 +14428,7 @@ func (ec *executionContext) field_Query_patientTimeline_args(ctx context.Context
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["episodeID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14352,6 +14443,7 @@ func (ec *executionContext) field_Query_problemSummary_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("patientID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14366,6 +14458,7 @@ func (ec *executionContext) field_Query_requestUSSDFullHistory_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.USSDClinicalRequest
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14380,6 +14473,7 @@ func (ec *executionContext) field_Query_requestUSSDLastVisit_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 clinical.USSDClinicalRequest
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14394,6 +14488,7 @@ func (ec *executionContext) field_Query_requestUSSDPatientProfile_args(ctx conte
 	args := map[string]interface{}{}
 	var arg0 clinical.USSDClinicalRequest
 	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
 		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14408,6 +14503,7 @@ func (ec *executionContext) field_Query_searchFHIRAllergyIntolerance_args(ctx co
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14422,6 +14518,7 @@ func (ec *executionContext) field_Query_searchFHIRAppointment_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14436,6 +14533,7 @@ func (ec *executionContext) field_Query_searchFHIRComposition_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14450,6 +14548,7 @@ func (ec *executionContext) field_Query_searchFHIRCondition_args(ctx context.Con
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14464,6 +14563,7 @@ func (ec *executionContext) field_Query_searchFHIREncounter_args(ctx context.Con
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14478,6 +14578,7 @@ func (ec *executionContext) field_Query_searchFHIREpisodeOfCare_args(ctx context
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14492,6 +14593,7 @@ func (ec *executionContext) field_Query_searchFHIRMedicationRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14506,6 +14608,7 @@ func (ec *executionContext) field_Query_searchFHIRObservation_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14520,6 +14623,7 @@ func (ec *executionContext) field_Query_searchFHIRPatient_args(ctx context.Conte
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14534,6 +14638,7 @@ func (ec *executionContext) field_Query_searchFHIRServiceRequest_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14548,6 +14653,7 @@ func (ec *executionContext) field_Query_visitSummary_args(ctx context.Context, r
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("encounterID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14562,6 +14668,7 @@ func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, ra
 	args := map[string]interface{}{}
 	var arg0 bool
 	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("includeDeprecated"))
 		arg0, err = ec.unmarshalOBoolean2bool(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14576,6 +14683,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 	args := map[string]interface{}{}
 	var arg0 bool
 	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("includeDeprecated"))
 		arg0, err = ec.unmarshalOBoolean2bool(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -37505,9 +37613,9 @@ func (ec *executionContext) _Query_requestUSSDFullHistory(ctx context.Context, f
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*clinical.USSDClinicalResponse)
+	res := resTmp.(*clinical.USSDMedicalHistoryClinicalResponse)
 	fc.Result = res
-	return ec.marshalNUSSDClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalResponse(ctx, field.Selections, res)
+	return ec.marshalNUSSDMedicalHistoryClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_patientTimeline(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -37802,6 +37910,142 @@ func (ec *executionContext) _USSDClinicalResponse_text(ctx context.Context, fiel
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_shortLink(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDMedicalHistoryClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ShortLink, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_summary(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDMedicalHistoryClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Summary, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_text(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDMedicalHistoryClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_fullHistory(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "USSDMedicalHistoryClinicalResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FullHistory, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(map[string]interface{})
+	fc.Result = res
+	return ec.marshalNMap2map(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -38867,66 +39111,88 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Use":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
 			it.Use, err = ec.unmarshalOAddressUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOAddressTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Text":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
 			it.Text, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Line":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Line"))
 			it.Line, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "City":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("City"))
 			it.City, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "District":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("District"))
 			it.District, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "State":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("State"))
 			it.State, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PostalCode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PostalCode"))
 			it.PostalCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Country":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Country"))
 			it.Country, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -38945,36 +39211,48 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Comparator":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalOAgeComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Unit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -38993,126 +39271,168 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ClinicalStatus":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ClinicalStatus"))
 			it.ClinicalStatus, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "VerificationStatus":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("VerificationStatus"))
 			it.VerificationStatus, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Category":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
 			it.Category, err = ec.unmarshalOAllergyIntoleranceCategoryEnum2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Criticality":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Criticality"))
 			it.Criticality, err = ec.unmarshalNAllergyIntoleranceCriticalityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCriticalityEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Patient":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Patient"))
 			it.Patient, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Encounter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetDateTime"))
 			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetAge":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetAge"))
 			it.OnsetAge, err = ec.unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetPeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetPeriod"))
 			it.OnsetPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetRange"))
 			it.OnsetRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetString":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetString"))
 			it.OnsetString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RecordedDate":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RecordedDate"))
 			it.RecordedDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Recorder":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Recorder"))
 			it.Recorder, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Asserter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Asserter"))
 			it.Asserter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "LastOccurrence":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LastOccurrence"))
 			it.LastOccurrence, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Note":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Reaction":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Reaction"))
 			it.Reaction, err = ec.unmarshalOFHIRAllergyintoleranceReactionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReactionInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39131,48 +39451,64 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Substance":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Substance"))
 			it.Substance, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Manifestation":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Manifestation"))
 			it.Manifestation, err = ec.unmarshalNFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Description":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Description"))
 			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Onset":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Onset"))
 			it.Onset, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Severity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Severity"))
 			it.Severity, err = ec.unmarshalOAllergyIntoleranceReactionSeverityEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ExposureRoute":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ExposureRoute"))
 			it.ExposureRoute, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Note":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39191,30 +39527,40 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AuthorReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthorReference"))
 			it.AuthorReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AuthorString":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthorString"))
 			it.AuthorString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Time":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Time"))
 			it.Time, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Text":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
 			it.Text, err = ec.unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx, v)
 			if err != nil {
 				return it, err
@@ -39233,138 +39579,184 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "CancelationReason":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CancelationReason"))
 			it.CancelationReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ServiceCategory":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceCategory"))
 			it.ServiceCategory, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ServiceType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceType"))
 			it.ServiceType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Specialty":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Specialty"))
 			it.Specialty, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AppointmentType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AppointmentType"))
 			it.AppointmentType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonCode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Priority":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
 			it.Priority, err = ec.unmarshalOUnsignedInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Description":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Description"))
 			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SupportingInformation":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SupportingInformation"))
 			it.SupportingInformation, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Start":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Start"))
 			it.Start, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "End":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("End"))
 			it.End, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MinutesDuration":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MinutesDuration"))
 			it.MinutesDuration, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Slot":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Slot"))
 			it.Slot, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Created":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Created"))
 			it.Created, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Comment":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comment"))
 			it.Comment, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PatientInstruction":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PatientInstruction"))
 			it.PatientInstruction, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BasedOn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Participant":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Participant"))
 			it.Participant, err = ec.unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RequestedPeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RequestedPeriod"))
 			it.RequestedPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39383,36 +39775,48 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx co
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Actor":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Actor"))
 			it.Actor, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Required":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Required"))
 			it.Required, err = ec.unmarshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39431,54 +39835,72 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ContentType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ContentType"))
 			it.ContentType, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Language":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Language"))
 			it.Language, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Data":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Data"))
 			it.Data, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "URL":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("URL"))
 			it.URL, err = ec.unmarshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Size":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Size"))
 			it.Size, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Hash":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Hash"))
 			it.Hash, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Title":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Title"))
 			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Creation":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Creation"))
 			it.Creation, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -39497,18 +39919,24 @@ func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.C
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Coding":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Coding"))
 			it.Coding, err = ec.unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Text":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
 			it.Text, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -39527,36 +39955,48 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Version":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Version"))
 			it.Version, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Display":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Display"))
 			it.Display, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "UserSelected":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("UserSelected"))
 			it.UserSelected, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -39575,24 +40015,32 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Mode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Mode"))
 			it.Mode, err = ec.unmarshalOCompositionAttesterModeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Time":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Time"))
 			it.Time, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Party":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Party"))
 			it.Party, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39611,24 +40059,32 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Detail":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Detail"))
 			it.Detail, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39647,96 +40103,128 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOCompositionStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Category":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Subject":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
 			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Encounter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Date":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Date"))
 			it.Date, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Author":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Author"))
 			it.Author, err = ec.unmarshalNFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Title":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Title"))
 			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Confidentiality":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Confidentiality"))
 			it.Confidentiality, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Attester":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Attester"))
 			it.Attester, err = ec.unmarshalOFHIRCompositionAttesterInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttesterInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Custodian":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Custodian"))
 			it.Custodian, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RelatesTo":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RelatesTo"))
 			it.RelatesTo, err = ec.unmarshalOFHIRCompositionRelatestoInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatestoInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Event":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Event"))
 			it.Event, err = ec.unmarshalOFHIRCompositionEventInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEventInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Section":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Section"))
 			it.Section, err = ec.unmarshalOFHIRCompositionSectionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39755,24 +40243,32 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "TargetIdentifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TargetIdentifier"))
 			it.TargetIdentifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "TargetReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TargetReference"))
 			it.TargetReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39791,66 +40287,88 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Title":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Title"))
 			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Author":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Author"))
 			it.Author, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Focus":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Focus"))
 			it.Focus, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Text":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
 			it.Text, err = ec.unmarshalOFHIRNarrativeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrativeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Mode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Mode"))
 			it.Mode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OrderedBy":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OrderedBy"))
 			it.OrderedBy, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Entry":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Entry"))
 			it.Entry, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "EmptyReason":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EmptyReason"))
 			it.EmptyReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Section":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Section"))
 			it.Section, err = ec.unmarshalOFHIRCompositionSectionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39869,18 +40387,24 @@ func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Detail":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Detail"))
 			it.Detail, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -39899,156 +40423,208 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ClinicalStatus":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ClinicalStatus"))
 			it.ClinicalStatus, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "VerificationStatus":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("VerificationStatus"))
 			it.VerificationStatus, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Category":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Severity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Severity"))
 			it.Severity, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BodySite":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BodySite"))
 			it.BodySite, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Subject":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
 			it.Subject, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Encounter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetDateTime"))
 			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetAge":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetAge"))
 			it.OnsetAge, err = ec.unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetPeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetPeriod"))
 			it.OnsetPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetRange"))
 			it.OnsetRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnsetString":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetString"))
 			it.OnsetString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AbatementDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementDateTime"))
 			it.AbatementDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AbatementAge":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementAge"))
 			it.AbatementAge, err = ec.unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AbatementPeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementPeriod"))
 			it.AbatementPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AbatementRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementRange"))
 			it.AbatementRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AbatementString":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementString"))
 			it.AbatementString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RecordedDate":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RecordedDate"))
 			it.RecordedDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Recorder":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Recorder"))
 			it.Recorder, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Asserter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Asserter"))
 			it.Asserter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Stage":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Stage"))
 			it.Stage, err = ec.unmarshalOFHIRConditionStageInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStageInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Evidence":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Evidence"))
 			it.Evidence, err = ec.unmarshalOFHIRConditionEvidenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Note":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40067,24 +40643,32 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Summary":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Summary"))
 			it.Summary, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Assessment":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Assessment"))
 			it.Assessment, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40103,18 +40687,24 @@ func (ec *executionContext) unmarshalInputFHIRContactDetailInput(ctx context.Con
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Name":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
 			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Telecom":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
 			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40133,36 +40723,48 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalOContactPointSystemEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Use":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
 			it.Use, err = ec.unmarshalOContactPointUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Rank":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Rank"))
 			it.Rank, err = ec.unmarshalOInt2ᚖint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40181,24 +40783,32 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Name":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
 			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Contact":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Contact"))
 			it.Contact, err = ec.unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40217,36 +40827,48 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Comparator":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Unit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40265,60 +40887,80 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Profile":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Profile"))
 			it.Profile, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SubjectCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SubjectCodeableConcept"))
 			it.SubjectCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SubjectReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SubjectReference"))
 			it.SubjectReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MustSupport":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MustSupport"))
 			it.MustSupport, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "CodeFilter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CodeFilter"))
 			it.CodeFilter, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DateFilter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DateFilter"))
 			it.DateFilter, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Limit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Limit"))
 			it.Limit, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Sort":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Sort"))
 			it.Sort, err = ec.unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40337,30 +40979,40 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Path":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Path"))
 			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SearchParam":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SearchParam"))
 			it.SearchParam, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueSet":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueSet"))
 			it.ValueSet, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40379,36 +41031,48 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Path":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Path"))
 			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SearchParam":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SearchParam"))
 			it.SearchParam, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDateTime"))
 			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValuePeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValuePeriod"))
 			it.ValuePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueDuration":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDuration"))
 			it.ValueDuration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40427,18 +41091,24 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Path":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Path"))
 			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Direction":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Direction"))
 			it.Direction, err = ec.unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40457,36 +41127,48 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Comparator":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Unit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40505,42 +41187,56 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DoseRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoseRange"))
 			it.DoseRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DoseQuantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoseQuantity"))
 			it.DoseQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RateRatio":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RateRatio"))
 			it.RateRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RateRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RateRange"))
 			it.RateRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RateQuantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RateQuantity"))
 			it.RateQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40559,90 +41255,120 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Sequence":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Sequence"))
 			it.Sequence, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Text":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
 			it.Text, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AdditionalInstruction":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AdditionalInstruction"))
 			it.AdditionalInstruction, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PatientInstruction":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PatientInstruction"))
 			it.PatientInstruction, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Timing":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Timing"))
 			it.Timing, err = ec.unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AsNeededBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededBoolean"))
 			it.AsNeededBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AsNeededCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededCodeableConcept"))
 			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Site":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Site"))
 			it.Site, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Route":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Route"))
 			it.Route, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Method":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Method"))
 			it.Method, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DoseAndRate":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoseAndRate"))
 			it.DoseAndRate, err = ec.unmarshalOFHIRDosageDoseandrateInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrateInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MaxDosePerPeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaxDosePerPeriod"))
 			it.MaxDosePerPeriod, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MaxDosePerAdministration":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaxDosePerAdministration"))
 			it.MaxDosePerAdministration, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MaxDosePerLifetime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaxDosePerLifetime"))
 			it.MaxDosePerLifetime, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40661,36 +41387,48 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Comparator":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalODurationComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Unit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40709,18 +41447,24 @@ func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx con
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Class":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Class"))
 			it.Class, err = ec.unmarshalNFHIRCodingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40739,24 +41483,32 @@ func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx contex
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Condition":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Condition"))
 			it.Condition, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Use":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
 			it.Use, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Rank":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Rank"))
 			it.Rank, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40775,60 +41527,80 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PreAdmissionIdentifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PreAdmissionIdentifier"))
 			it.PreAdmissionIdentifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Origin":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Origin"))
 			it.Origin, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AdmitSource":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AdmitSource"))
 			it.AdmitSource, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReAdmission":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReAdmission"))
 			it.ReAdmission, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DietPreference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DietPreference"))
 			it.DietPreference, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SpecialCourtesy":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SpecialCourtesy"))
 			it.SpecialCourtesy, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SpecialArrangement":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SpecialArrangement"))
 			it.SpecialArrangement, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Destination":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Destination"))
 			it.Destination, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DischargeDisposition":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DischargeDisposition"))
 			it.DischargeDisposition, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40847,144 +41619,192 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalNFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalNEncounterStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "StatusHistory":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("StatusHistory"))
 			it.StatusHistory, err = ec.unmarshalOFHIREncounterStatushistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistoryInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Class":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Class"))
 			it.Class, err = ec.unmarshalNFHIRCodingInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ClassHistory":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ClassHistory"))
 			it.ClassHistory, err = ec.unmarshalOFHIREncounterClasshistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistoryInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ServiceType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceType"))
 			it.ServiceType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Priority":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
 			it.Priority, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Subject":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
 			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "EpisodeOfCare":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EpisodeOfCare"))
 			it.EpisodeOfCare, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BasedOn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Participant":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Participant"))
 			it.Participant, err = ec.unmarshalOFHIREncounterParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipantInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Appointment":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Appointment"))
 			it.Appointment, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Length":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Length"))
 			it.Length, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonCode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Diagnosis":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Diagnosis"))
 			it.Diagnosis, err = ec.unmarshalOFHIREncounterDiagnosisInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosisInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Account":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Account"))
 			it.Account, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Hospitalization":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Hospitalization"))
 			it.Hospitalization, err = ec.unmarshalOFHIREncounterHospitalizationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalizationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Location":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Location"))
 			it.Location, err = ec.unmarshalOFHIREncounterLocationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ServiceProvider":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceProvider"))
 			it.ServiceProvider, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PartOf":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PartOf"))
 			it.PartOf, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41003,30 +41823,40 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Location":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Location"))
 			it.Location, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOEncounterLocationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PhysicalType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PhysicalType"))
 			it.PhysicalType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41045,24 +41875,32 @@ func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx cont
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Individual":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Individual"))
 			it.Individual, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41081,18 +41919,24 @@ func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx co
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOEncounterStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41111,78 +41955,104 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOEpisodeOfCareStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "StatusHistory":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("StatusHistory"))
 			it.StatusHistory, err = ec.unmarshalOFHIREpisodeofcareStatushistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistoryInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Diagnosis":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Diagnosis"))
 			it.Diagnosis, err = ec.unmarshalOFHIREpisodeofcareDiagnosisInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosisInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Patient":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Patient"))
 			it.Patient, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ManagingOrganization":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ManagingOrganization"))
 			it.ManagingOrganization, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReferralRequest":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReferralRequest"))
 			it.ReferralRequest, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "CareManager":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CareManager"))
 			it.CareManager, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Team":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Team"))
 			it.Team, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Account":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Account"))
 			it.Account, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41201,24 +42071,32 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx co
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Condition":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Condition"))
 			it.Condition, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Role":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Role"))
 			it.Role, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Rank":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Rank"))
 			it.Rank, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41237,18 +42115,24 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ct
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOEpisodeOfCareStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41267,48 +42151,64 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Use":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
 			it.Use, err = ec.unmarshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐHumanNameUseEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Text":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
 			it.Text, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Family":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Family"))
 			it.Family, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Given":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Given"))
 			it.Given, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Prefix":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Prefix"))
 			it.Prefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Suffix":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Suffix"))
 			it.Suffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41327,42 +42227,56 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Use":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
 			it.Use, err = ec.unmarshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Assigner":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Assigner"))
 			it.Assigner, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41381,210 +42295,280 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "StatusReason":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("StatusReason"))
 			it.StatusReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Intent":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Intent"))
 			it.Intent, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Category":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Priority":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
 			it.Priority, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DoNotPerform":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoNotPerform"))
 			it.DoNotPerform, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReportedBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReportedBoolean"))
 			it.ReportedBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReportedReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReportedReference"))
 			it.ReportedReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MedicationCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MedicationCodeableConcept"))
 			it.MedicationCodeableConcept, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MedicationReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MedicationReference"))
 			it.MedicationReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Subject":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
 			it.Subject, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Encounter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SupportingInformation":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SupportingInformation"))
 			it.SupportingInformation, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AuthoredOn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthoredOn"))
 			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Requester":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Requester"))
 			it.Requester, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Performer":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PerformerType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PerformerType"))
 			it.PerformerType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Recorder":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Recorder"))
 			it.Recorder, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonCode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "InstantiatesCanonical":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesCanonical"))
 			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "InstantiatesURI":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesURI"))
 			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BasedOn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "GroupIdentifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("GroupIdentifier"))
 			it.GroupIdentifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "CourseOfTherapyType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CourseOfTherapyType"))
 			it.CourseOfTherapyType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Insurance":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Insurance"))
 			it.Insurance, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Note":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DosageInstruction":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DosageInstruction"))
 			it.DosageInstruction, err = ec.unmarshalOFHIRDosageInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DispenseRequest":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DispenseRequest"))
 			it.DispenseRequest, err = ec.unmarshalOFHIRMedicationrequestDispenserequestInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestDispenserequestInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Substitution":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Substitution"))
 			it.Substitution, err = ec.unmarshalOFHIRMedicationrequestSubstitutionInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitutionInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PriorPrescription":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PriorPrescription"))
 			it.PriorPrescription, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DetectedIssue":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DetectedIssue"))
 			it.DetectedIssue, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "EventHistory":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EventHistory"))
 			it.EventHistory, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41603,48 +42587,64 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "InitialFill":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InitialFill"))
 			it.InitialFill, err = ec.unmarshalOFHIRMedicationrequestInitialfillInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfillInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DispenseInterval":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DispenseInterval"))
 			it.DispenseInterval, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValidityPeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValidityPeriod"))
 			it.ValidityPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "NumberOfRepeatsAllowed":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("NumberOfRepeatsAllowed"))
 			it.NumberOfRepeatsAllowed, err = ec.unmarshalOUnsignedInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Quantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Quantity"))
 			it.Quantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ExpectedSupplyDuration":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ExpectedSupplyDuration"))
 			it.ExpectedSupplyDuration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Performer":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41663,18 +42663,24 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Quantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Quantity"))
 			it.Quantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Duration":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Duration"))
 			it.Duration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41693,24 +42699,32 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AllowedBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AllowedBoolean"))
 			it.AllowedBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AllowedCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AllowedCodeableConcept"))
 			it.AllowedCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Reason":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Reason"))
 			it.Reason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41729,18 +42743,24 @@ func (ec *executionContext) unmarshalInputFHIRMoneyInput(ctx context.Context, ob
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Currency":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Currency"))
 			it.Currency, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -41759,18 +42779,24 @@ func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalONarrativeStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Div":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Div"))
 			it.Div, err = ec.unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx, v)
 			if err != nil {
 				return it, err
@@ -41789,96 +42815,128 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueQuantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueQuantity"))
 			it.ValueQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueCodeableConcept"))
 			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueString":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueString"))
 			it.ValueString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueBoolean"))
 			it.ValueBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueInteger":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueInteger"))
 			it.ValueInteger, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRange"))
 			it.ValueRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueRatio":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRatio"))
 			it.ValueRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueSampledData":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueSampledData"))
 			it.ValueSampledData, err = ec.unmarshalOFHIRSampledDataInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledDataInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueTime"))
 			it.ValueTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDateTime"))
 			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValuePeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValuePeriod"))
 			it.ValuePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DataAbsentReason":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DataAbsentReason"))
 			it.DataAbsentReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Interpretation":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Interpretation"))
 			it.Interpretation, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReferenceRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReferenceRange"))
 			it.ReferenceRange, err = ec.unmarshalOFHIRObservationReferencerangeInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41897,228 +42955,304 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BasedOn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PartOf":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PartOf"))
 			it.PartOf, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOObservationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Category":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Subject":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
 			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Focus":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Focus"))
 			it.Focus, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Encounter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "EffectiveDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectiveDateTime"))
 			it.EffectiveDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "EffectivePeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectivePeriod"))
 			it.EffectivePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "EffectiveTiming":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectiveTiming"))
 			it.EffectiveTiming, err = ec.unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "EffectiveInstant":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectiveInstant"))
 			it.EffectiveInstant, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Issued":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Issued"))
 			it.Issued, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Performer":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueQuantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueQuantity"))
 			it.ValueQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueCodeableConcept"))
 			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueString":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueString"))
 			it.ValueString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueBoolean"))
 			it.ValueBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueInteger":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueInteger"))
 			it.ValueInteger, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRange"))
 			it.ValueRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueRatio":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRatio"))
 			it.ValueRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueSampledData":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueSampledData"))
 			it.ValueSampledData, err = ec.unmarshalOFHIRSampledDataInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledDataInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueTime"))
 			it.ValueTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDateTime"))
 			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValuePeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValuePeriod"))
 			it.ValuePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DataAbsentReason":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DataAbsentReason"))
 			it.DataAbsentReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Interpretation":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Interpretation"))
 			it.Interpretation, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Note":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BodySite":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BodySite"))
 			it.BodySite, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Method":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Method"))
 			it.Method, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Specimen":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Specimen"))
 			it.Specimen, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Device":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Device"))
 			it.Device, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReferenceRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReferenceRange"))
 			it.ReferenceRange, err = ec.unmarshalOFHIRObservationReferencerangeInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "HasMember":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("HasMember"))
 			it.HasMember, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DerivedFrom":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DerivedFrom"))
 			it.DerivedFrom, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Component":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Component"))
 			it.Component, err = ec.unmarshalOFHIRObservationComponentInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponentInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42137,42 +43271,56 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Low":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Low"))
 			it.Low, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "High":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("High"))
 			it.High, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AppliesTo":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AppliesTo"))
 			it.AppliesTo, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Age":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Age"))
 			it.Age, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Text":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
 			it.Text, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42191,18 +43339,24 @@ func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx cont
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Language":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Language"))
 			it.Language, err = ec.unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Preferred":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Preferred"))
 			it.Preferred, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -42221,48 +43375,64 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Relationship":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Relationship"))
 			it.Relationship, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Name":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
 			it.Name, err = ec.unmarshalOFHIRHumanNameInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Telecom":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
 			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Address":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Address"))
 			it.Address, err = ec.unmarshalOFHIRAddressInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Gender":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Gender"))
 			it.Gender, err = ec.unmarshalOPatientContactGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Organization":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Organization"))
 			it.Organization, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42281,114 +43451,152 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Active":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Active"))
 			it.Active, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Name":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
 			it.Name, err = ec.unmarshalOFHIRHumanNameInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Telecom":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
 			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Gender":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Gender"))
 			it.Gender, err = ec.unmarshalOPatientGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BirthDate":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BirthDate"))
 			it.BirthDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DeceasedBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DeceasedBoolean"))
 			it.DeceasedBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DeceasedDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DeceasedDateTime"))
 			it.DeceasedDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Address":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Address"))
 			it.Address, err = ec.unmarshalOFHIRAddressInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MaritalStatus":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaritalStatus"))
 			it.MaritalStatus, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MultipleBirthBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MultipleBirthBoolean"))
 			it.MultipleBirthBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "MultipleBirthInteger":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MultipleBirthInteger"))
 			it.MultipleBirthInteger, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Photo":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Photo"))
 			it.Photo, err = ec.unmarshalOFHIRAttachmentInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachmentInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Contact":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Contact"))
 			it.Contact, err = ec.unmarshalOFHIRPatientContactInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContactInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Communication":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Communication"))
 			it.Communication, err = ec.unmarshalOFHIRPatientCommunicationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunicationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "GeneralPractitioner":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("GeneralPractitioner"))
 			it.GeneralPractitioner, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ManagingOrganization":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ManagingOrganization"))
 			it.ManagingOrganization, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Link":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Link"))
 			it.Link, err = ec.unmarshalOFHIRPatientLinkInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLinkInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42407,18 +43615,24 @@ func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Other":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Other"))
 			it.Other, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -42437,18 +43651,24 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Start":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Start"))
 			it.Start, err = ec.unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "End":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("End"))
 			it.End, err = ec.unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -42467,36 +43687,48 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Value":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
 			it.Value, err = ec.unmarshalNFloat2float64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Comparator":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalOQuantityComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Unit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
 			it.Unit, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "System":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
 			it.System, err = ec.unmarshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42515,18 +43747,24 @@ func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, ob
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Low":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Low"))
 			it.Low, err = ec.unmarshalOFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "High":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("High"))
 			it.High, err = ec.unmarshalOFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42545,18 +43783,24 @@ func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, ob
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Numerator":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Numerator"))
 			it.Numerator, err = ec.unmarshalNFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Denominator":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Denominator"))
 			it.Denominator, err = ec.unmarshalNFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42575,30 +43819,40 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Reference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Reference"))
 			it.Reference, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Display":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Display"))
 			it.Display, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -42617,48 +43871,64 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Origin":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Origin"))
 			it.Origin, err = ec.unmarshalNFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Factor":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Factor"))
 			it.Factor, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "LowerLimit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LowerLimit"))
 			it.LowerLimit, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "UpperLimit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("UpperLimit"))
 			it.UpperLimit, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Dimensions":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Dimensions"))
 			it.Dimensions, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Data":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Data"))
 			it.Data, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42677,234 +43947,312 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Identifier":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "InstantiatesCanonical":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesCanonical"))
 			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "InstantiatesURI":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesURI"))
 			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BasedOn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Replaces":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Replaces"))
 			it.Replaces, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Requisition":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Requisition"))
 			it.Requisition, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Status":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
 			it.Status, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Intent":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Intent"))
 			it.Intent, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Category":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Priority":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
 			it.Priority, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DoNotPerform":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoNotPerform"))
 			it.DoNotPerform, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OrderDetail":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OrderDetail"))
 			it.OrderDetail, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "QuantityQuantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("QuantityQuantity"))
 			it.QuantityQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "QuantityRatio":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("QuantityRatio"))
 			it.QuantityRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "QuantityRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("QuantityRange"))
 			it.QuantityRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Subject":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
 			it.Subject, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Encounter":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OccurrenceDateTime":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OccurrenceDateTime"))
 			it.OccurrenceDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OccurrencePeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OccurrencePeriod"))
 			it.OccurrencePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OccurrenceTiming":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OccurrenceTiming"))
 			it.OccurrenceTiming, err = ec.unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AsNeededBoolean":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededBoolean"))
 			it.AsNeededBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AsNeededCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededCodeableConcept"))
 			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "AuthoredOn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthoredOn"))
 			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Requester":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Requester"))
 			it.Requester, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PerformerType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PerformerType"))
 			it.PerformerType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Performer":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "LocationCode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LocationCode"))
 			it.LocationCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "LocationReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LocationReference"))
 			it.LocationReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonCode":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ReasonReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Insurance":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Insurance"))
 			it.Insurance, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SupportingInfo":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SupportingInfo"))
 			it.SupportingInfo, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Specimen":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Specimen"))
 			it.Specimen, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BodySite":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BodySite"))
 			it.BodySite, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Note":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PatientInstruction":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PatientInstruction"))
 			it.PatientInstruction, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "RelevantHistory":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RelevantHistory"))
 			it.RelevantHistory, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42923,48 +44271,64 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Type":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
 			it.Type, err = ec.unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "When":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("When"))
 			it.When, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Who":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Who"))
 			it.Who, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "OnBehalfOf":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnBehalfOf"))
 			it.OnBehalfOf, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "TargetFormat":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TargetFormat"))
 			it.TargetFormat, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "SigFormat":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SigFormat"))
 			it.SigFormat, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Data":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Data"))
 			it.Data, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
@@ -42983,24 +44347,32 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Event":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Event"))
 			it.Event, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Repeat":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Repeat"))
 			it.Repeat, err = ec.unmarshalOFHIRTimingRepeatInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeatInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43019,108 +44391,144 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BoundsDuration":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BoundsDuration"))
 			it.BoundsDuration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BoundsRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BoundsRange"))
 			it.BoundsRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "BoundsPeriod":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BoundsPeriod"))
 			it.BoundsPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Count":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Count"))
 			it.Count, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "CountMax":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CountMax"))
 			it.CountMax, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Duration":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Duration"))
 			it.Duration, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DurationMax":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DurationMax"))
 			it.DurationMax, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DurationUnit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DurationUnit"))
 			it.DurationUnit, err = ec.unmarshalOTimingRepeatDurationUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Frequency":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Frequency"))
 			it.Frequency, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "FrequencyMax":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("FrequencyMax"))
 			it.FrequencyMax, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Period":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
 			it.Period, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PeriodMax":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PeriodMax"))
 			it.PeriodMax, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PeriodUnit":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PeriodUnit"))
 			it.PeriodUnit, err = ec.unmarshalOTimingRepeatPeriodUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DayOfWeek":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DayOfWeek"))
 			it.DayOfWeek, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "TimeOfDay":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TimeOfDay"))
 			it.TimeOfDay, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "When":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("When"))
 			it.When, err = ec.unmarshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Offset":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Offset"))
 			it.Offset, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
@@ -43139,36 +44547,48 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 		switch k {
 		case "ID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Code":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueCodeableConcept":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueCodeableConcept"))
 			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueQuantity":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueQuantity"))
 			it.ValueQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueRange":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRange"))
 			it.ValueRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ValueReference":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueReference"))
 			it.ValueReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43187,12 +44607,16 @@ func (ec *executionContext) unmarshalInputFilterInput(ctx context.Context, obj i
 		switch k {
 		case "search":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("search"))
 			it.Search, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "filterBy":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("filterBy"))
 			it.FilterBy, err = ec.unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, v)
 			if err != nil {
 				return it, err
@@ -43211,24 +44635,32 @@ func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj i
 		switch k {
 		case "fieldName":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldName"))
 			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "fieldType":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldType"))
 			it.FieldType, err = ec.unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "comparisonOperation":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("comparisonOperation"))
 			it.ComparisonOperation, err = ec.unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "fieldValue":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldValue"))
 			it.FieldValue, err = ec.unmarshalNAny2interface(ctx, v)
 			if err != nil {
 				return it, err
@@ -43247,24 +44679,32 @@ func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, o
 		switch k {
 		case "first":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("first"))
 			it.First, err = ec.unmarshalOInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "last":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("last"))
 			it.Last, err = ec.unmarshalOInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "after":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("after"))
 			it.After, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "before":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("before"))
 			it.Before, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -43283,6 +44723,8 @@ func (ec *executionContext) unmarshalInputSortInput(ctx context.Context, obj int
 		switch k {
 		case "sortBy":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("sortBy"))
 			it.SortBy, err = ec.unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, v)
 			if err != nil {
 				return it, err
@@ -43301,12 +44743,16 @@ func (ec *executionContext) unmarshalInputSortParam(ctx context.Context, obj int
 		switch k {
 		case "fieldName":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldName"))
 			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "sortOrder":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("sortOrder"))
 			it.SortOrder, err = ec.unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx, v)
 			if err != nil {
 				return it, err
@@ -43325,18 +44771,24 @@ func (ec *executionContext) unmarshalInputUSSDClinicalRequest(ctx context.Contex
 		switch k {
 		case "patientID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("patientID"))
 			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "msisdn":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("msisdn"))
 			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "ussdSessionID":
 			var err error
+
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ussdSessionID"))
 			it.UssdSessionID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -47692,6 +49144,48 @@ func (ec *executionContext) _USSDClinicalResponse(ctx context.Context, sel ast.S
 	return out
 }
 
+var uSSDMedicalHistoryClinicalResponseImplementors = []string{"USSDMedicalHistoryClinicalResponse"}
+
+func (ec *executionContext) _USSDMedicalHistoryClinicalResponse(ctx context.Context, sel ast.SelectionSet, obj *clinical.USSDMedicalHistoryClinicalResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, uSSDMedicalHistoryClinicalResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("USSDMedicalHistoryClinicalResponse")
+		case "shortLink":
+			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_shortLink(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "summary":
+			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_summary(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "text":
+			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_text(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "fullHistory":
+			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_fullHistory(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var __DirectiveImplementors = []string{"__Directive"}
 
 func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionSet, obj *introspection.Directive) graphql.Marshaler {
@@ -47939,7 +49433,8 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 func (ec *executionContext) unmarshalNAllergyIntoleranceCriticalityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCriticalityEnum(ctx context.Context, v interface{}) (clinical.AllergyIntoleranceCriticalityEnum, error) {
 	var res clinical.AllergyIntoleranceCriticalityEnum
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNAllergyIntoleranceCriticalityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCriticalityEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AllergyIntoleranceCriticalityEnum) graphql.Marshaler {
@@ -47947,10 +49442,8 @@ func (ec *executionContext) marshalNAllergyIntoleranceCriticalityEnum2gitlabᚗs
 }
 
 func (ec *executionContext) unmarshalNAny2interface(ctx context.Context, v interface{}) (interface{}, error) {
-	if v == nil {
-		return nil, nil
-	}
-	return graphql.UnmarshalAny(v)
+	res, err := graphql.UnmarshalAny(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNAny2interface(ctx context.Context, sel ast.SelectionSet, v interface{}) graphql.Marshaler {
@@ -47970,7 +49463,8 @@ func (ec *executionContext) marshalNAny2interface(ctx context.Context, sel ast.S
 }
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
-	return graphql.UnmarshalBoolean(v)
+	res, err := graphql.UnmarshalBoolean(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
@@ -47985,7 +49479,8 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 
 func (ec *executionContext) unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) (base.Code, error) {
 	var res base.Code
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v base.Code) graphql.Marshaler {
@@ -47994,7 +49489,8 @@ func (ec *executionContext) marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbase�
 
 func (ec *executionContext) unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, v interface{}) (base.DateTime, error) {
 	var res base.DateTime
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v base.DateTime) graphql.Marshaler {
@@ -48003,15 +49499,12 @@ func (ec *executionContext) marshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋb
 
 func (ec *executionContext) unmarshalNEncounterStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx context.Context, v interface{}) (clinical.EncounterStatusEnum, error) {
 	var res clinical.EncounterStatusEnum
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNEncounterStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.EncounterStatusEnum) graphql.Marshaler {
 	return v
-}
-
-func (ec *executionContext) marshalNFHIRAllergyIntolerance2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAllergyIntolerance) graphql.Marshaler {
-	return ec._FHIRAllergyIntolerance(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNFHIRAllergyIntolerance2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAllergyIntolerance) graphql.Marshaler {
@@ -48025,7 +49518,8 @@ func (ec *executionContext) marshalNFHIRAllergyIntolerance2ᚖgitlabᚗslade360e
 }
 
 func (ec *executionContext) unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx context.Context, v interface{}) (clinical.FHIRAllergyIntoleranceInput, error) {
-	return ec.unmarshalInputFHIRAllergyIntoleranceInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRAllergyIntoleranceInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRAllergyIntoleranceRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAllergyIntoleranceRelayConnection) graphql.Marshaler {
@@ -48056,10 +49550,6 @@ func (ec *executionContext) marshalNFHIRAllergyIntoleranceRelayPayload2ᚖgitlab
 	return ec._FHIRAllergyIntoleranceRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFHIRAppointment2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointment) graphql.Marshaler {
-	return ec._FHIRAppointment(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNFHIRAppointment2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointment) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -48071,11 +49561,8 @@ func (ec *executionContext) marshalNFHIRAppointment2ᚖgitlabᚗslade360emrᚗco
 }
 
 func (ec *executionContext) unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx context.Context, v interface{}) (clinical.FHIRAppointmentInput, error) {
-	return ec.unmarshalInputFHIRAppointmentInput(ctx, v)
-}
-
-func (ec *executionContext) marshalNFHIRAppointmentParticipant2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipant(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointmentParticipant) graphql.Marshaler {
-	return ec._FHIRAppointmentParticipant(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRAppointmentInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRAppointmentParticipant2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantᚄ(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAppointmentParticipant) graphql.Marshaler {
@@ -48125,10 +49612,6 @@ func (ec *executionContext) marshalNFHIRAppointmentParticipant2ᚖgitlabᚗslade
 	return ec._FHIRAppointmentParticipant(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx context.Context, v interface{}) (clinical.FHIRAppointmentParticipantInput, error) {
-	return ec.unmarshalInputFHIRAppointmentParticipantInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRAppointmentParticipantInput, error) {
 	var vSlice []interface{}
 	if v != nil {
@@ -48141,20 +49624,18 @@ func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitl
 	var err error
 	res := make([]*clinical.FHIRAppointmentParticipantInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRAppointmentParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
 }
 
 func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx context.Context, v interface{}) (*clinical.FHIRAppointmentParticipantInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalNFHIRAppointmentParticipantInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx, v)
-	return &res, err
+	res, err := ec.unmarshalInputFHIRAppointmentParticipantInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRAppointmentRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointmentRelayConnection) graphql.Marshaler {
@@ -48237,7 +49718,8 @@ func (ec *executionContext) marshalNFHIRCodeableConcept2ᚖgitlabᚗslade360emr�
 }
 
 func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) (clinical.FHIRCodeableConceptInput, error) {
-	return ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRCodeableConceptInput, error) {
@@ -48252,20 +49734,18 @@ func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚕᚖgitlabᚗsl
 	var err error
 	res := make([]*clinical.FHIRCodeableConceptInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
 }
 
 func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) (*clinical.FHIRCodeableConceptInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-	return &res, err
+	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRCoding2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCoding(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCoding) graphql.Marshaler {
@@ -48320,7 +49800,8 @@ func (ec *executionContext) marshalNFHIRCoding2ᚖgitlabᚗslade360emrᚗcomᚋg
 }
 
 func (ec *executionContext) unmarshalNFHIRCodingInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx context.Context, v interface{}) (clinical.FHIRCodingInput, error) {
-	return ec.unmarshalInputFHIRCodingInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRCodingInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRCodingInput, error) {
@@ -48335,24 +49816,18 @@ func (ec *executionContext) unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emr
 	var err error
 	res := make([]*clinical.FHIRCodingInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRCodingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
 }
 
 func (ec *executionContext) unmarshalNFHIRCodingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx context.Context, v interface{}) (*clinical.FHIRCodingInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalNFHIRCodingInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalNFHIRComposition2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRComposition(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRComposition) graphql.Marshaler {
-	return ec._FHIRComposition(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRCodingInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRComposition2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRComposition(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRComposition) graphql.Marshaler {
@@ -48366,7 +49841,8 @@ func (ec *executionContext) marshalNFHIRComposition2ᚖgitlabᚗslade360emrᚗco
 }
 
 func (ec *executionContext) unmarshalNFHIRCompositionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionInput(ctx context.Context, v interface{}) (clinical.FHIRCompositionInput, error) {
-	return ec.unmarshalInputFHIRCompositionInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRCompositionInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRCompositionRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCompositionRelayConnection) graphql.Marshaler {
@@ -48397,10 +49873,6 @@ func (ec *executionContext) marshalNFHIRCompositionRelayPayload2ᚖgitlabᚗslad
 	return ec._FHIRCompositionRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFHIRCondition2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCondition(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCondition) graphql.Marshaler {
-	return ec._FHIRCondition(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNFHIRCondition2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCondition(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRCondition) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -48412,7 +49884,8 @@ func (ec *executionContext) marshalNFHIRCondition2ᚖgitlabᚗslade360emrᚗcom�
 }
 
 func (ec *executionContext) unmarshalNFHIRConditionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionInput(ctx context.Context, v interface{}) (clinical.FHIRConditionInput, error) {
-	return ec.unmarshalInputFHIRConditionInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRConditionInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRConditionRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRConditionRelayConnection) graphql.Marshaler {
@@ -48443,10 +49916,6 @@ func (ec *executionContext) marshalNFHIRConditionRelayPayload2ᚖgitlabᚗslade3
 	return ec._FHIRConditionRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFHIREncounter2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounter(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounter) graphql.Marshaler {
-	return ec._FHIREncounter(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNFHIREncounter2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounter(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREncounter) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -48458,7 +49927,8 @@ func (ec *executionContext) marshalNFHIREncounter2ᚖgitlabᚗslade360emrᚗcom�
 }
 
 func (ec *executionContext) unmarshalNFHIREncounterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterInput(ctx context.Context, v interface{}) (clinical.FHIREncounterInput, error) {
-	return ec.unmarshalInputFHIREncounterInput(ctx, v)
+	res, err := ec.unmarshalInputFHIREncounterInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIREncounterRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterRelayConnection) graphql.Marshaler {
@@ -48489,10 +49959,6 @@ func (ec *executionContext) marshalNFHIREncounterRelayPayload2ᚖgitlabᚗslade3
 	return ec._FHIREncounterRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFHIREpisodeOfCare2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREpisodeOfCare) graphql.Marshaler {
-	return ec._FHIREpisodeOfCare(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREpisodeOfCare) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -48504,7 +49970,8 @@ func (ec *executionContext) marshalNFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗ
 }
 
 func (ec *executionContext) unmarshalNFHIREpisodeOfCareInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareInput(ctx context.Context, v interface{}) (clinical.FHIREpisodeOfCareInput, error) {
-	return ec.unmarshalInputFHIREpisodeOfCareInput(ctx, v)
+	res, err := ec.unmarshalInputFHIREpisodeOfCareInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIREpisodeOfCareRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREpisodeOfCareRelayConnection) graphql.Marshaler {
@@ -48533,10 +50000,6 @@ func (ec *executionContext) marshalNFHIREpisodeOfCareRelayPayload2ᚖgitlabᚗsl
 		return graphql.Null
 	}
 	return ec._FHIREpisodeOfCareRelayPayload(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNFHIRIdentifier2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifier(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRIdentifier) graphql.Marshaler {
-	return ec._FHIRIdentifier(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNFHIRIdentifier2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierᚄ(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRIdentifier) graphql.Marshaler {
@@ -48586,10 +50049,6 @@ func (ec *executionContext) marshalNFHIRIdentifier2ᚖgitlabᚗslade360emrᚗcom
 	return ec._FHIRIdentifier(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFHIRIdentifierInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx context.Context, v interface{}) (clinical.FHIRIdentifierInput, error) {
-	return ec.unmarshalInputFHIRIdentifierInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalNFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRIdentifierInput, error) {
 	var vSlice []interface{}
 	if v != nil {
@@ -48602,24 +50061,18 @@ func (ec *executionContext) unmarshalNFHIRIdentifierInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRIdentifierInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
 }
 
 func (ec *executionContext) unmarshalNFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx context.Context, v interface{}) (*clinical.FHIRIdentifierInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalNFHIRIdentifierInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalNFHIRMedicationRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationRequest) graphql.Marshaler {
-	return ec._FHIRMedicationRequest(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRIdentifierInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRMedicationRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationRequest) graphql.Marshaler {
@@ -48633,7 +50086,8 @@ func (ec *executionContext) marshalNFHIRMedicationRequest2ᚖgitlabᚗslade360em
 }
 
 func (ec *executionContext) unmarshalNFHIRMedicationRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestInput(ctx context.Context, v interface{}) (clinical.FHIRMedicationRequestInput, error) {
-	return ec.unmarshalInputFHIRMedicationRequestInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRMedicationRequestInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRMedicationRequestRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationRequestRelayConnection) graphql.Marshaler {
@@ -48664,10 +50118,6 @@ func (ec *executionContext) marshalNFHIRMedicationRequestRelayPayload2ᚖgitlab�
 	return ec._FHIRMedicationRequestRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFHIRObservation2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRObservation) graphql.Marshaler {
-	return ec._FHIRObservation(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNFHIRObservation2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRObservation) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -48679,7 +50129,8 @@ func (ec *executionContext) marshalNFHIRObservation2ᚖgitlabᚗslade360emrᚗco
 }
 
 func (ec *executionContext) unmarshalNFHIRObservationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationInput(ctx context.Context, v interface{}) (clinical.FHIRObservationInput, error) {
-	return ec.unmarshalInputFHIRObservationInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRObservationInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRObservationRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRObservationRelayConnection) graphql.Marshaler {
@@ -48710,10 +50161,6 @@ func (ec *executionContext) marshalNFHIRObservationRelayPayload2ᚖgitlabᚗslad
 	return ec._FHIRObservationRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFHIRPatient2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatient) graphql.Marshaler {
-	return ec._FHIRPatient(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRPatient) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -48725,7 +50172,8 @@ func (ec *executionContext) marshalNFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋ
 }
 
 func (ec *executionContext) unmarshalNFHIRPatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientInput(ctx context.Context, v interface{}) (clinical.FHIRPatientInput, error) {
-	return ec.unmarshalInputFHIRPatientInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRPatientInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRPatientRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatientRelayConnection) graphql.Marshaler {
@@ -48756,10 +50204,6 @@ func (ec *executionContext) marshalNFHIRPatientRelayPayload2ᚖgitlabᚗslade360
 	return ec._FHIRPatientRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFHIRPeriod2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPeriod) graphql.Marshaler {
-	return ec._FHIRPeriod(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRPeriod) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -48770,16 +50214,9 @@ func (ec *executionContext) marshalNFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋg
 	return ec._FHIRPeriod(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFHIRPeriodInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx context.Context, v interface{}) (clinical.FHIRPeriodInput, error) {
-	return ec.unmarshalInputFHIRPeriodInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx context.Context, v interface{}) (*clinical.FHIRPeriodInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalNFHIRPeriodInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
-	return &res, err
+	res, err := ec.unmarshalInputFHIRPeriodInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRQuantity2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantity(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRQuantity) graphql.Marshaler {
@@ -48797,19 +50234,13 @@ func (ec *executionContext) marshalNFHIRQuantity2ᚖgitlabᚗslade360emrᚗcom�
 }
 
 func (ec *executionContext) unmarshalNFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (clinical.FHIRQuantityInput, error) {
-	return ec.unmarshalInputFHIRQuantityInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (*clinical.FHIRQuantityInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalNFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalNFHIRReference2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRReference) graphql.Marshaler {
-	return ec._FHIRReference(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceᚄ(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRReference) graphql.Marshaler {
@@ -48859,10 +50290,6 @@ func (ec *executionContext) marshalNFHIRReference2ᚖgitlabᚗslade360emrᚗcom�
 	return ec._FHIRReference(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFHIRReferenceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx context.Context, v interface{}) (clinical.FHIRReferenceInput, error) {
-	return ec.unmarshalInputFHIRReferenceInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalNFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRReferenceInput, error) {
 	var vSlice []interface{}
 	if v != nil {
@@ -48875,24 +50302,18 @@ func (ec *executionContext) unmarshalNFHIRReferenceInput2ᚕᚖgitlabᚗslade360
 	var err error
 	res := make([]*clinical.FHIRReferenceInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
 }
 
 func (ec *executionContext) unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx context.Context, v interface{}) (*clinical.FHIRReferenceInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalNFHIRReferenceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalNFHIRServiceRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRServiceRequest) graphql.Marshaler {
-	return ec._FHIRServiceRequest(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRReferenceInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRServiceRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRServiceRequest) graphql.Marshaler {
@@ -48906,7 +50327,8 @@ func (ec *executionContext) marshalNFHIRServiceRequest2ᚖgitlabᚗslade360emr�
 }
 
 func (ec *executionContext) unmarshalNFHIRServiceRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestInput(ctx context.Context, v interface{}) (clinical.FHIRServiceRequestInput, error) {
-	return ec.unmarshalInputFHIRServiceRequestInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRServiceRequestInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRServiceRequestRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRServiceRequestRelayConnection) graphql.Marshaler {
@@ -48939,7 +50361,8 @@ func (ec *executionContext) marshalNFHIRServiceRequestRelayPayload2ᚖgitlabᚗs
 
 func (ec *executionContext) unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, v interface{}) (base.FieldType, error) {
 	var res base.FieldType
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, sel ast.SelectionSet, v base.FieldType) graphql.Marshaler {
@@ -48947,7 +50370,8 @@ func (ec *executionContext) marshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋ
 }
 
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
-	return graphql.UnmarshalFloat(v)
+	res, err := graphql.UnmarshalFloat(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
@@ -48962,7 +50386,8 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 
 func (ec *executionContext) unmarshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐHumanNameUseEnum(ctx context.Context, v interface{}) (clinical.HumanNameUseEnum, error) {
 	var res clinical.HumanNameUseEnum
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐHumanNameUseEnum(ctx context.Context, sel ast.SelectionSet, v clinical.HumanNameUseEnum) graphql.Marshaler {
@@ -48970,7 +50395,8 @@ func (ec *executionContext) marshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcom�
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalID(v)
+	res, err := graphql.UnmarshalID(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -48985,7 +50411,8 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 
 func (ec *executionContext) unmarshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx context.Context, v interface{}) (clinical.IdentifierUseEnum, error) {
 	var res clinical.IdentifierUseEnum
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx context.Context, sel ast.SelectionSet, v clinical.IdentifierUseEnum) graphql.Marshaler {
@@ -48993,7 +50420,8 @@ func (ec *executionContext) marshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcom
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	return graphql.UnmarshalInt(v)
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
@@ -49007,10 +50435,8 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 }
 
 func (ec *executionContext) unmarshalNMap2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
-	if v == nil {
-		return nil, nil
-	}
-	return graphql.UnmarshalMap(v)
+	res, err := graphql.UnmarshalMap(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNMap2map(ctx context.Context, sel ast.SelectionSet, v map[string]interface{}) graphql.Marshaler {
@@ -49041,9 +50467,10 @@ func (ec *executionContext) unmarshalNMap2ᚕmapᚄ(ctx context.Context, v inter
 	var err error
 	res := make([]map[string]interface{}, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalNMap2map(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -49060,15 +50487,12 @@ func (ec *executionContext) marshalNMap2ᚕmapᚄ(ctx context.Context, sel ast.S
 
 func (ec *executionContext) unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, v interface{}) (base.Operation, error) {
 	var res base.Operation
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, sel ast.SelectionSet, v base.Operation) graphql.Marshaler {
 	return v
-}
-
-func (ec *executionContext) marshalNPageInfo2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v base.PageInfo) graphql.Marshaler {
-	return ec._PageInfo(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *base.PageInfo) graphql.Marshaler {
@@ -49083,7 +50507,8 @@ func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 
 func (ec *executionContext) unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, v interface{}) (base.SortOrder, error) {
 	var res base.SortOrder
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, sel ast.SelectionSet, v base.SortOrder) graphql.Marshaler {
@@ -49091,7 +50516,8 @@ func (ec *executionContext) marshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋ
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -49116,9 +50542,10 @@ func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -49135,7 +50562,8 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 
 func (ec *executionContext) unmarshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, v interface{}) (base.URI, error) {
 	var res base.URI
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v base.URI) graphql.Marshaler {
@@ -49143,7 +50571,8 @@ func (ec *executionContext) marshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbase�
 }
 
 func (ec *executionContext) unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx context.Context, v interface{}) (clinical.USSDClinicalRequest, error) {
-	return ec.unmarshalInputUSSDClinicalRequest(ctx, v)
+	res, err := ec.unmarshalInputUSSDClinicalRequest(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNUSSDClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDClinicalResponse) graphql.Marshaler {
@@ -49160,9 +50589,24 @@ func (ec *executionContext) marshalNUSSDClinicalResponse2ᚖgitlabᚗslade360emr
 	return ec._USSDClinicalResponse(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNUSSDMedicalHistoryClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDMedicalHistoryClinicalResponse) graphql.Marshaler {
+	return ec._USSDMedicalHistoryClinicalResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUSSDMedicalHistoryClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx context.Context, sel ast.SelectionSet, v *clinical.USSDMedicalHistoryClinicalResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._USSDMedicalHistoryClinicalResponse(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, v interface{}) (base.XHTML, error) {
 	var res base.XHTML
-	return res, res.UnmarshalGQL(v)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, sel ast.SelectionSet, v base.XHTML) graphql.Marshaler {
@@ -49170,7 +50614,8 @@ func (ec *executionContext) marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbase
 }
 
 func (ec *executionContext) unmarshalN_FieldSet2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN_FieldSet2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -49225,7 +50670,8 @@ func (ec *executionContext) marshalN__Directive2ᚕgithubᚗcomᚋ99designsᚋgq
 }
 
 func (ec *executionContext) unmarshalN__DirectiveLocation2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__DirectiveLocation2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -49250,9 +50696,10 @@ func (ec *executionContext) unmarshalN__DirectiveLocation2ᚕstringᚄ(ctx conte
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalN__DirectiveLocation2string(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -49396,7 +50843,8 @@ func (ec *executionContext) marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 }
 
 func (ec *executionContext) unmarshalN__TypeKind2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -49409,21 +50857,13 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) unmarshalOAddressTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx context.Context, v interface{}) (clinical.AddressTypeEnum, error) {
-	var res clinical.AddressTypeEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAddressTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AddressTypeEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAddressTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx context.Context, v interface{}) (*clinical.AddressTypeEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAddressTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AddressTypeEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAddressTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AddressTypeEnum) graphql.Marshaler {
@@ -49433,21 +50873,13 @@ func (ec *executionContext) marshalOAddressTypeEnum2ᚖgitlabᚗslade360emrᚗco
 	return v
 }
 
-func (ec *executionContext) unmarshalOAddressUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx context.Context, v interface{}) (clinical.AddressUseEnum, error) {
-	var res clinical.AddressUseEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAddressUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AddressUseEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAddressUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx context.Context, v interface{}) (*clinical.AddressUseEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAddressUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AddressUseEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAddressUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AddressUseEnum) graphql.Marshaler {
@@ -49457,21 +50889,13 @@ func (ec *executionContext) marshalOAddressUseEnum2ᚖgitlabᚗslade360emrᚗcom
 	return v
 }
 
-func (ec *executionContext) unmarshalOAgeComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx context.Context, v interface{}) (clinical.AgeComparatorEnum, error) {
-	var res clinical.AgeComparatorEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAgeComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AgeComparatorEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAgeComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx context.Context, v interface{}) (*clinical.AgeComparatorEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAgeComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AgeComparatorEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAgeComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AgeComparatorEnum) graphql.Marshaler {
@@ -49481,16 +50905,10 @@ func (ec *executionContext) marshalOAgeComparatorEnum2ᚖgitlabᚗslade360emrᚗ
 	return v
 }
 
-func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx context.Context, v interface{}) (clinical.AllergyIntoleranceCategoryEnum, error) {
-	var res clinical.AllergyIntoleranceCategoryEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AllergyIntoleranceCategoryEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx context.Context, v interface{}) ([]*clinical.AllergyIntoleranceCategoryEnum, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -49502,9 +50920,10 @@ func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2ᚕᚖgitla
 	var err error
 	res := make([]*clinical.AllergyIntoleranceCategoryEnum, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOAllergyIntoleranceCategoryEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -49554,8 +50973,9 @@ func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2ᚖgitlab�
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAllergyIntoleranceCategoryEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AllergyIntoleranceCategoryEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AllergyIntoleranceCategoryEnum) graphql.Marshaler {
@@ -49565,21 +50985,13 @@ func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚖgitlabᚗs
 	return v
 }
 
-func (ec *executionContext) unmarshalOAllergyIntoleranceReactionSeverityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, v interface{}) (clinical.AllergyIntoleranceReactionSeverityEnum, error) {
-	var res clinical.AllergyIntoleranceReactionSeverityEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AllergyIntoleranceReactionSeverityEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAllergyIntoleranceReactionSeverityEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, v interface{}) (*clinical.AllergyIntoleranceReactionSeverityEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAllergyIntoleranceReactionSeverityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AllergyIntoleranceReactionSeverityEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AllergyIntoleranceReactionSeverityEnum) graphql.Marshaler {
@@ -49589,21 +51001,13 @@ func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2ᚖgi
 	return v
 }
 
-func (ec *executionContext) unmarshalOAllergyIntoleranceTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx context.Context, v interface{}) (clinical.AllergyIntoleranceTypeEnum, error) {
-	var res clinical.AllergyIntoleranceTypeEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAllergyIntoleranceTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AllergyIntoleranceTypeEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx context.Context, v interface{}) (*clinical.AllergyIntoleranceTypeEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAllergyIntoleranceTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AllergyIntoleranceTypeEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AllergyIntoleranceTypeEnum) graphql.Marshaler {
@@ -49613,21 +51017,13 @@ func (ec *executionContext) marshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade
 	return v
 }
 
-func (ec *executionContext) unmarshalOAppointmentParticipantRequiredEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx context.Context, v interface{}) (clinical.AppointmentParticipantRequiredEnum, error) {
-	var res clinical.AppointmentParticipantRequiredEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAppointmentParticipantRequiredEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AppointmentParticipantRequiredEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx context.Context, v interface{}) (*clinical.AppointmentParticipantRequiredEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAppointmentParticipantRequiredEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AppointmentParticipantRequiredEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentParticipantRequiredEnum) graphql.Marshaler {
@@ -49637,21 +51033,13 @@ func (ec *executionContext) marshalOAppointmentParticipantRequiredEnum2ᚖgitlab
 	return v
 }
 
-func (ec *executionContext) unmarshalOAppointmentParticipantStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx context.Context, v interface{}) (clinical.AppointmentParticipantStatusEnum, error) {
-	var res clinical.AppointmentParticipantStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAppointmentParticipantStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AppointmentParticipantStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx context.Context, v interface{}) (*clinical.AppointmentParticipantStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAppointmentParticipantStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AppointmentParticipantStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentParticipantStatusEnum) graphql.Marshaler {
@@ -49661,21 +51049,13 @@ func (ec *executionContext) marshalOAppointmentParticipantStatusEnum2ᚖgitlab�
 	return v
 }
 
-func (ec *executionContext) unmarshalOAppointmentStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx context.Context, v interface{}) (clinical.AppointmentStatusEnum, error) {
-	var res clinical.AppointmentStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOAppointmentStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AppointmentStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx context.Context, v interface{}) (*clinical.AppointmentStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOAppointmentStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.AppointmentStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentStatusEnum) graphql.Marshaler {
@@ -49685,21 +51065,13 @@ func (ec *executionContext) marshalOAppointmentStatusEnum2ᚖgitlabᚗslade360em
 	return v
 }
 
-func (ec *executionContext) unmarshalOBase64Binary2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, v interface{}) (base.Base64Binary, error) {
-	var res base.Base64Binary
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOBase64Binary2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, sel ast.SelectionSet, v base.Base64Binary) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, v interface{}) (*base.Base64Binary, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOBase64Binary2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
-	return &res, err
+	var res = new(base.Base64Binary)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, sel ast.SelectionSet, v *base.Base64Binary) graphql.Marshaler {
@@ -49710,7 +51082,8 @@ func (ec *executionContext) marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcom�
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
-	return graphql.UnmarshalBoolean(v)
+	res, err := graphql.UnmarshalBoolean(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
@@ -49721,27 +51094,21 @@ func (ec *executionContext) unmarshalOBoolean2ᚖbool(ctx context.Context, v int
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOBoolean2bool(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalBoolean(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast.SelectionSet, v *bool) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOBoolean2bool(ctx, sel, *v)
-}
-
-func (ec *executionContext) unmarshalOCanonical2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, v interface{}) (base.Canonical, error) {
-	var res base.Canonical
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOCanonical2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, sel ast.SelectionSet, v base.Canonical) graphql.Marshaler {
-	return v
+	return graphql.MarshalBoolean(*v)
 }
 
 func (ec *executionContext) unmarshalOCanonical2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, v interface{}) ([]*base.Canonical, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -49753,9 +51120,10 @@ func (ec *executionContext) unmarshalOCanonical2ᚕᚖgitlabᚗslade360emrᚗcom
 	var err error
 	res := make([]*base.Canonical, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -49777,8 +51145,9 @@ func (ec *executionContext) unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOCanonical2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
-	return &res, err
+	var res = new(base.Canonical)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, sel ast.SelectionSet, v *base.Canonical) graphql.Marshaler {
@@ -49788,16 +51157,10 @@ func (ec *executionContext) marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgo
 	return v
 }
 
-func (ec *executionContext) unmarshalOCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) (base.Code, error) {
-	var res base.Code
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v base.Code) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) ([]*base.Code, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -49809,9 +51172,10 @@ func (ec *executionContext) unmarshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgo
 	var err error
 	res := make([]*base.Code, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -49833,8 +51197,9 @@ func (ec *executionContext) unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-	return &res, err
+	var res = new(base.Code)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v *base.Code) graphql.Marshaler {
@@ -49844,21 +51209,13 @@ func (ec *executionContext) marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋba
 	return v
 }
 
-func (ec *executionContext) unmarshalOCompositionAttesterModeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx context.Context, v interface{}) (clinical.CompositionAttesterModeEnum, error) {
-	var res clinical.CompositionAttesterModeEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOCompositionAttesterModeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx context.Context, sel ast.SelectionSet, v clinical.CompositionAttesterModeEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOCompositionAttesterModeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx context.Context, v interface{}) (*clinical.CompositionAttesterModeEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOCompositionAttesterModeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.CompositionAttesterModeEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCompositionAttesterModeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.CompositionAttesterModeEnum) graphql.Marshaler {
@@ -49868,21 +51225,13 @@ func (ec *executionContext) marshalOCompositionAttesterModeEnum2ᚖgitlabᚗslad
 	return v
 }
 
-func (ec *executionContext) unmarshalOCompositionStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx context.Context, v interface{}) (clinical.CompositionStatusEnum, error) {
-	var res clinical.CompositionStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOCompositionStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.CompositionStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOCompositionStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx context.Context, v interface{}) (*clinical.CompositionStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOCompositionStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.CompositionStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCompositionStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.CompositionStatusEnum) graphql.Marshaler {
@@ -49892,21 +51241,13 @@ func (ec *executionContext) marshalOCompositionStatusEnum2ᚖgitlabᚗslade360em
 	return v
 }
 
-func (ec *executionContext) unmarshalOContactPointSystemEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx context.Context, v interface{}) (clinical.ContactPointSystemEnum, error) {
-	var res clinical.ContactPointSystemEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOContactPointSystemEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx context.Context, sel ast.SelectionSet, v clinical.ContactPointSystemEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOContactPointSystemEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx context.Context, v interface{}) (*clinical.ContactPointSystemEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOContactPointSystemEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.ContactPointSystemEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOContactPointSystemEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ContactPointSystemEnum) graphql.Marshaler {
@@ -49916,21 +51257,13 @@ func (ec *executionContext) marshalOContactPointSystemEnum2ᚖgitlabᚗslade360e
 	return v
 }
 
-func (ec *executionContext) unmarshalOContactPointUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx context.Context, v interface{}) (clinical.ContactPointUseEnum, error) {
-	var res clinical.ContactPointUseEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOContactPointUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx context.Context, sel ast.SelectionSet, v clinical.ContactPointUseEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOContactPointUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx context.Context, v interface{}) (*clinical.ContactPointUseEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOContactPointUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.ContactPointUseEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOContactPointUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ContactPointUseEnum) graphql.Marshaler {
@@ -49940,21 +51273,13 @@ func (ec *executionContext) marshalOContactPointUseEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
-func (ec *executionContext) unmarshalOContributorTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, v interface{}) (clinical.ContributorTypeEnum, error) {
-	var res clinical.ContributorTypeEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOContributorTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, sel ast.SelectionSet, v clinical.ContributorTypeEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, v interface{}) (*clinical.ContributorTypeEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOContributorTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.ContributorTypeEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ContributorTypeEnum) graphql.Marshaler {
@@ -49964,21 +51289,13 @@ func (ec *executionContext) marshalOContributorTypeEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
-func (ec *executionContext) unmarshalOCountComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx context.Context, v interface{}) (clinical.CountComparatorEnum, error) {
-	var res clinical.CountComparatorEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOCountComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx context.Context, sel ast.SelectionSet, v clinical.CountComparatorEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx context.Context, v interface{}) (*clinical.CountComparatorEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOCountComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.CountComparatorEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.CountComparatorEnum) graphql.Marshaler {
@@ -49988,21 +51305,13 @@ func (ec *executionContext) marshalOCountComparatorEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
-func (ec *executionContext) unmarshalODataRequirementSortDirectionEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx context.Context, v interface{}) (clinical.DataRequirementSortDirectionEnum, error) {
-	var res clinical.DataRequirementSortDirectionEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalODataRequirementSortDirectionEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx context.Context, sel ast.SelectionSet, v clinical.DataRequirementSortDirectionEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx context.Context, v interface{}) (*clinical.DataRequirementSortDirectionEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalODataRequirementSortDirectionEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.DataRequirementSortDirectionEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DataRequirementSortDirectionEnum) graphql.Marshaler {
@@ -50012,21 +51321,13 @@ func (ec *executionContext) marshalODataRequirementSortDirectionEnum2ᚖgitlab�
 	return v
 }
 
-func (ec *executionContext) unmarshalODate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, v interface{}) (base.Date, error) {
-	var res base.Date
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalODate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, sel ast.SelectionSet, v base.Date) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, v interface{}) (*base.Date, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalODate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
-	return &res, err
+	var res = new(base.Date)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, sel ast.SelectionSet, v *base.Date) graphql.Marshaler {
@@ -50036,16 +51337,10 @@ func (ec *executionContext) marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋba
 	return v
 }
 
-func (ec *executionContext) unmarshalODateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, v interface{}) (base.DateTime, error) {
-	var res base.DateTime
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalODateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v base.DateTime) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, v interface{}) ([]*base.DateTime, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50057,9 +51352,10 @@ func (ec *executionContext) unmarshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcom�
 	var err error
 	res := make([]*base.DateTime, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50081,8 +51377,9 @@ func (ec *executionContext) unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋg
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalODateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
-	return &res, err
+	var res = new(base.DateTime)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v *base.DateTime) graphql.Marshaler {
@@ -50092,21 +51389,13 @@ func (ec *executionContext) marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 	return v
 }
 
-func (ec *executionContext) unmarshalODecimal2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, v interface{}) (base.Decimal, error) {
-	var res base.Decimal
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalODecimal2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, sel ast.SelectionSet, v base.Decimal) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, v interface{}) (*base.Decimal, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalODecimal2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
-	return &res, err
+	var res = new(base.Decimal)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, sel ast.SelectionSet, v *base.Decimal) graphql.Marshaler {
@@ -50116,21 +51405,13 @@ func (ec *executionContext) marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 	return v
 }
 
-func (ec *executionContext) unmarshalODistanceComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx context.Context, v interface{}) (clinical.DistanceComparatorEnum, error) {
-	var res clinical.DistanceComparatorEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalODistanceComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx context.Context, sel ast.SelectionSet, v clinical.DistanceComparatorEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx context.Context, v interface{}) (*clinical.DistanceComparatorEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalODistanceComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.DistanceComparatorEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DistanceComparatorEnum) graphql.Marshaler {
@@ -50140,21 +51421,13 @@ func (ec *executionContext) marshalODistanceComparatorEnum2ᚖgitlabᚗslade360e
 	return v
 }
 
-func (ec *executionContext) unmarshalODurationComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx context.Context, v interface{}) (clinical.DurationComparatorEnum, error) {
-	var res clinical.DurationComparatorEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalODurationComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx context.Context, sel ast.SelectionSet, v clinical.DurationComparatorEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalODurationComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx context.Context, v interface{}) (*clinical.DurationComparatorEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalODurationComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.DurationComparatorEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODurationComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DurationComparatorEnum) graphql.Marshaler {
@@ -50164,21 +51437,13 @@ func (ec *executionContext) marshalODurationComparatorEnum2ᚖgitlabᚗslade360e
 	return v
 }
 
-func (ec *executionContext) unmarshalOEncounterLocationStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx context.Context, v interface{}) (clinical.EncounterLocationStatusEnum, error) {
-	var res clinical.EncounterLocationStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOEncounterLocationStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.EncounterLocationStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOEncounterLocationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx context.Context, v interface{}) (*clinical.EncounterLocationStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOEncounterLocationStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.EncounterLocationStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEncounterLocationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EncounterLocationStatusEnum) graphql.Marshaler {
@@ -50188,21 +51453,13 @@ func (ec *executionContext) marshalOEncounterLocationStatusEnum2ᚖgitlabᚗslad
 	return v
 }
 
-func (ec *executionContext) unmarshalOEncounterStatusHistoryStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx context.Context, v interface{}) (clinical.EncounterStatusHistoryStatusEnum, error) {
-	var res clinical.EncounterStatusHistoryStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOEncounterStatusHistoryStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.EncounterStatusHistoryStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOEncounterStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx context.Context, v interface{}) (*clinical.EncounterStatusHistoryStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOEncounterStatusHistoryStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.EncounterStatusHistoryStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEncounterStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EncounterStatusHistoryStatusEnum) graphql.Marshaler {
@@ -50212,21 +51469,13 @@ func (ec *executionContext) marshalOEncounterStatusHistoryStatusEnum2ᚖgitlab�
 	return v
 }
 
-func (ec *executionContext) unmarshalOEpisodeOfCareStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx context.Context, v interface{}) (clinical.EpisodeOfCareStatusEnum, error) {
-	var res clinical.EpisodeOfCareStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOEpisodeOfCareStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.EpisodeOfCareStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOEpisodeOfCareStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx context.Context, v interface{}) (*clinical.EpisodeOfCareStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOEpisodeOfCareStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.EpisodeOfCareStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEpisodeOfCareStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EpisodeOfCareStatusEnum) graphql.Marshaler {
@@ -50236,21 +51485,13 @@ func (ec *executionContext) marshalOEpisodeOfCareStatusEnum2ᚖgitlabᚗslade360
 	return v
 }
 
-func (ec *executionContext) unmarshalOEpisodeOfCareStatusHistoryStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx context.Context, v interface{}) (clinical.EpisodeOfCareStatusHistoryStatusEnum, error) {
-	var res clinical.EpisodeOfCareStatusHistoryStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOEpisodeOfCareStatusHistoryStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.EpisodeOfCareStatusHistoryStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOEpisodeOfCareStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx context.Context, v interface{}) (*clinical.EpisodeOfCareStatusHistoryStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOEpisodeOfCareStatusHistoryStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.EpisodeOfCareStatusHistoryStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEpisodeOfCareStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EpisodeOfCareStatusHistoryStatusEnum) graphql.Marshaler {
@@ -50258,10 +51499,6 @@ func (ec *executionContext) marshalOEpisodeOfCareStatusHistoryStatusEnum2ᚖgitl
 		return graphql.Null
 	}
 	return v
-}
-
-func (ec *executionContext) marshalOFHIRAddress2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddress(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAddress) graphql.Marshaler {
-	return ec._FHIRAddress(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddress(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAddress) graphql.Marshaler {
@@ -50311,11 +51548,10 @@ func (ec *executionContext) marshalOFHIRAddress2ᚖgitlabᚗslade360emrᚗcomᚋ
 	return ec._FHIRAddress(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRAddressInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx context.Context, v interface{}) (clinical.FHIRAddressInput, error) {
-	return ec.unmarshalInputFHIRAddressInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRAddressInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx context.Context, v interface{}) ([]*clinical.FHIRAddressInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50327,9 +51563,10 @@ func (ec *executionContext) unmarshalOFHIRAddressInput2ᚕᚖgitlabᚗslade360em
 	var err error
 	res := make([]*clinical.FHIRAddressInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAddressInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50339,12 +51576,8 @@ func (ec *executionContext) unmarshalOFHIRAddressInput2ᚖgitlabᚗslade360emr�
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRAddressInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRAge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAge) graphql.Marshaler {
-	return ec._FHIRAge(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRAddressInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAge(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAge) graphql.Marshaler {
@@ -50354,20 +51587,12 @@ func (ec *executionContext) marshalOFHIRAge2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 	return ec._FHIRAge(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRAgeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx context.Context, v interface{}) (clinical.FHIRAgeInput, error) {
-	return ec.unmarshalInputFHIRAgeInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx context.Context, v interface{}) (*clinical.FHIRAgeInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRAgeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRAllergyIntolerance2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAllergyIntolerance) graphql.Marshaler {
-	return ec._FHIRAllergyIntolerance(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRAgeInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAllergyIntolerance) graphql.Marshaler {
@@ -50375,10 +51600,6 @@ func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚖgitlabᚗslade360e
 		return graphql.Null
 	}
 	return ec._FHIRAllergyIntolerance(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRAllergyIntoleranceRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAllergyIntoleranceRelayEdge) graphql.Marshaler {
-	return ec._FHIRAllergyIntoleranceRelayEdge(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRAllergyIntoleranceRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAllergyIntoleranceRelayEdge) graphql.Marshaler {
@@ -50428,10 +51649,6 @@ func (ec *executionContext) marshalOFHIRAllergyIntoleranceRelayEdge2ᚖgitlabᚗ
 	return ec._FHIRAllergyIntoleranceRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRAllergyintoleranceReaction2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReaction(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAllergyintoleranceReaction) graphql.Marshaler {
-	return ec._FHIRAllergyintoleranceReaction(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRAllergyintoleranceReaction2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReaction(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAllergyintoleranceReaction) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -50479,11 +51696,10 @@ func (ec *executionContext) marshalOFHIRAllergyintoleranceReaction2ᚖgitlabᚗs
 	return ec._FHIRAllergyintoleranceReaction(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReactionInput(ctx context.Context, v interface{}) (clinical.FHIRAllergyintoleranceReactionInput, error) {
-	return ec.unmarshalInputFHIRAllergyintoleranceReactionInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReactionInput(ctx context.Context, v interface{}) ([]*clinical.FHIRAllergyintoleranceReactionInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50495,9 +51711,10 @@ func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2ᚕᚖ
 	var err error
 	res := make([]*clinical.FHIRAllergyintoleranceReactionInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAllergyintoleranceReactionInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReactionInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50507,12 +51724,8 @@ func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2ᚖgit
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRAllergyintoleranceReactionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReactionInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRAnnotation2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotation(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAnnotation) graphql.Marshaler {
-	return ec._FHIRAnnotation(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRAllergyintoleranceReactionInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAnnotation2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotation(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAnnotation) graphql.Marshaler {
@@ -50562,11 +51775,10 @@ func (ec *executionContext) marshalOFHIRAnnotation2ᚖgitlabᚗslade360emrᚗcom
 	return ec._FHIRAnnotation(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRAnnotationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx context.Context, v interface{}) (clinical.FHIRAnnotationInput, error) {
-	return ec.unmarshalInputFHIRAnnotationInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx context.Context, v interface{}) ([]*clinical.FHIRAnnotationInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50578,9 +51790,10 @@ func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRAnnotationInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAnnotationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50590,12 +51803,8 @@ func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚖgitlabᚗslade360em
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRAnnotationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRAppointment2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointment) graphql.Marshaler {
-	return ec._FHIRAppointment(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRAnnotationInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAppointment2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointment) graphql.Marshaler {
@@ -50603,10 +51812,6 @@ func (ec *executionContext) marshalOFHIRAppointment2ᚖgitlabᚗslade360emrᚗco
 		return graphql.Null
 	}
 	return ec._FHIRAppointment(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRAppointmentRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointmentRelayEdge) graphql.Marshaler {
-	return ec._FHIRAppointmentRelayEdge(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRAppointmentRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAppointmentRelayEdge) graphql.Marshaler {
@@ -50656,10 +51861,6 @@ func (ec *executionContext) marshalOFHIRAppointmentRelayEdge2ᚖgitlabᚗslade36
 	return ec._FHIRAppointmentRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRAttachment2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachment(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAttachment) graphql.Marshaler {
-	return ec._FHIRAttachment(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRAttachment2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachment(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAttachment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -50707,11 +51908,10 @@ func (ec *executionContext) marshalOFHIRAttachment2ᚖgitlabᚗslade360emrᚗcom
 	return ec._FHIRAttachment(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRAttachmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachmentInput(ctx context.Context, v interface{}) (clinical.FHIRAttachmentInput, error) {
-	return ec.unmarshalInputFHIRAttachmentInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRAttachmentInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachmentInput(ctx context.Context, v interface{}) ([]*clinical.FHIRAttachmentInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50723,9 +51923,10 @@ func (ec *executionContext) unmarshalOFHIRAttachmentInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRAttachmentInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAttachmentInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachmentInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50735,12 +51936,8 @@ func (ec *executionContext) unmarshalOFHIRAttachmentInput2ᚖgitlabᚗslade360em
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRAttachmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachmentInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRCodeableConcept2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCodeableConcept) graphql.Marshaler {
-	return ec._FHIRCodeableConcept(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRAttachmentInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCodeableConcept2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCodeableConcept) graphql.Marshaler {
@@ -50790,11 +51987,10 @@ func (ec *executionContext) marshalOFHIRCodeableConcept2ᚖgitlabᚗslade360emr�
 	return ec._FHIRCodeableConcept(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) (clinical.FHIRCodeableConceptInput, error) {
-	return ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) ([]*clinical.FHIRCodeableConceptInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50806,9 +52002,10 @@ func (ec *executionContext) unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗsl
 	var err error
 	res := make([]*clinical.FHIRCodeableConceptInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50818,12 +52015,8 @@ func (ec *executionContext) unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRComposition2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRComposition(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRComposition) graphql.Marshaler {
-	return ec._FHIRComposition(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRComposition2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRComposition(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRComposition) graphql.Marshaler {
@@ -50831,10 +52024,6 @@ func (ec *executionContext) marshalOFHIRComposition2ᚖgitlabᚗslade360emrᚗco
 		return graphql.Null
 	}
 	return ec._FHIRComposition(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRCompositionAttester2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttester(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCompositionAttester) graphql.Marshaler {
-	return ec._FHIRCompositionAttester(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRCompositionAttester2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttester(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionAttester) graphql.Marshaler {
@@ -50884,11 +52073,10 @@ func (ec *executionContext) marshalOFHIRCompositionAttester2ᚖgitlabᚗslade360
 	return ec._FHIRCompositionAttester(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRCompositionAttesterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttesterInput(ctx context.Context, v interface{}) (clinical.FHIRCompositionAttesterInput, error) {
-	return ec.unmarshalInputFHIRCompositionAttesterInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRCompositionAttesterInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttesterInput(ctx context.Context, v interface{}) ([]*clinical.FHIRCompositionAttesterInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50900,9 +52088,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionAttesterInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIRCompositionAttesterInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionAttesterInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttesterInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50912,12 +52101,8 @@ func (ec *executionContext) unmarshalOFHIRCompositionAttesterInput2ᚖgitlabᚗs
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRCompositionAttesterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttesterInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRCompositionEvent2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEvent(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCompositionEvent) graphql.Marshaler {
-	return ec._FHIRCompositionEvent(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRCompositionAttesterInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCompositionEvent2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEvent(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionEvent) graphql.Marshaler {
@@ -50967,11 +52152,10 @@ func (ec *executionContext) marshalOFHIRCompositionEvent2ᚖgitlabᚗslade360emr
 	return ec._FHIRCompositionEvent(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRCompositionEventInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEventInput(ctx context.Context, v interface{}) (clinical.FHIRCompositionEventInput, error) {
-	return ec.unmarshalInputFHIRCompositionEventInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRCompositionEventInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEventInput(ctx context.Context, v interface{}) ([]*clinical.FHIRCompositionEventInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -50983,9 +52167,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionEventInput2ᚕᚖgitlabᚗs
 	var err error
 	res := make([]*clinical.FHIRCompositionEventInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionEventInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEventInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -50995,12 +52180,8 @@ func (ec *executionContext) unmarshalOFHIRCompositionEventInput2ᚖgitlabᚗslad
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRCompositionEventInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEventInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRCompositionRelatesto2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatesto(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCompositionRelatesto) graphql.Marshaler {
-	return ec._FHIRCompositionRelatesto(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRCompositionEventInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCompositionRelatesto2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatesto(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionRelatesto) graphql.Marshaler {
@@ -51050,11 +52231,10 @@ func (ec *executionContext) marshalOFHIRCompositionRelatesto2ᚖgitlabᚗslade36
 	return ec._FHIRCompositionRelatesto(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRCompositionRelatestoInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatestoInput(ctx context.Context, v interface{}) (clinical.FHIRCompositionRelatestoInput, error) {
-	return ec.unmarshalInputFHIRCompositionRelatestoInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRCompositionRelatestoInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatestoInput(ctx context.Context, v interface{}) ([]*clinical.FHIRCompositionRelatestoInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51066,9 +52246,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionRelatestoInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIRCompositionRelatestoInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionRelatestoInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatestoInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51078,12 +52259,8 @@ func (ec *executionContext) unmarshalOFHIRCompositionRelatestoInput2ᚖgitlabᚗ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRCompositionRelatestoInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatestoInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRCompositionRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCompositionRelayEdge) graphql.Marshaler {
-	return ec._FHIRCompositionRelayEdge(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRCompositionRelatestoInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCompositionRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionRelayEdge) graphql.Marshaler {
@@ -51133,10 +52310,6 @@ func (ec *executionContext) marshalOFHIRCompositionRelayEdge2ᚖgitlabᚗslade36
 	return ec._FHIRCompositionRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRCompositionSection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCompositionSection) graphql.Marshaler {
-	return ec._FHIRCompositionSection(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRCompositionSection2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSection(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionSection) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -51184,11 +52357,10 @@ func (ec *executionContext) marshalOFHIRCompositionSection2ᚖgitlabᚗslade360e
 	return ec._FHIRCompositionSection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRCompositionSectionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx context.Context, v interface{}) (clinical.FHIRCompositionSectionInput, error) {
-	return ec.unmarshalInputFHIRCompositionSectionInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRCompositionSectionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx context.Context, v interface{}) ([]*clinical.FHIRCompositionSectionInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51200,9 +52372,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionSectionInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIRCompositionSectionInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionSectionInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51212,12 +52385,8 @@ func (ec *executionContext) unmarshalOFHIRCompositionSectionInput2ᚖgitlabᚗsl
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRCompositionSectionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRCondition2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCondition(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCondition) graphql.Marshaler {
-	return ec._FHIRCondition(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRCompositionSectionInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCondition2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCondition(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRCondition) graphql.Marshaler {
@@ -51225,10 +52394,6 @@ func (ec *executionContext) marshalOFHIRCondition2ᚖgitlabᚗslade360emrᚗcom�
 		return graphql.Null
 	}
 	return ec._FHIRCondition(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRConditionEvidence2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidence(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRConditionEvidence) graphql.Marshaler {
-	return ec._FHIRConditionEvidence(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRConditionEvidence2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidence(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRConditionEvidence) graphql.Marshaler {
@@ -51278,11 +52443,10 @@ func (ec *executionContext) marshalOFHIRConditionEvidence2ᚖgitlabᚗslade360em
 	return ec._FHIRConditionEvidence(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRConditionEvidenceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidenceInput(ctx context.Context, v interface{}) (clinical.FHIRConditionEvidenceInput, error) {
-	return ec.unmarshalInputFHIRConditionEvidenceInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRConditionEvidenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidenceInput(ctx context.Context, v interface{}) ([]*clinical.FHIRConditionEvidenceInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51294,9 +52458,10 @@ func (ec *executionContext) unmarshalOFHIRConditionEvidenceInput2ᚕᚖgitlabᚗ
 	var err error
 	res := make([]*clinical.FHIRConditionEvidenceInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRConditionEvidenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidenceInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51306,12 +52471,8 @@ func (ec *executionContext) unmarshalOFHIRConditionEvidenceInput2ᚖgitlabᚗsla
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRConditionEvidenceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidenceInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRConditionRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRConditionRelayEdge) graphql.Marshaler {
-	return ec._FHIRConditionRelayEdge(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRConditionEvidenceInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRConditionRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRConditionRelayEdge) graphql.Marshaler {
@@ -51361,10 +52522,6 @@ func (ec *executionContext) marshalOFHIRConditionRelayEdge2ᚖgitlabᚗslade360e
 	return ec._FHIRConditionRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRConditionStage2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStage(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRConditionStage) graphql.Marshaler {
-	return ec._FHIRConditionStage(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRConditionStage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStage(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRConditionStage) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -51412,11 +52569,10 @@ func (ec *executionContext) marshalOFHIRConditionStage2ᚖgitlabᚗslade360emr�
 	return ec._FHIRConditionStage(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRConditionStageInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStageInput(ctx context.Context, v interface{}) (clinical.FHIRConditionStageInput, error) {
-	return ec.unmarshalInputFHIRConditionStageInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRConditionStageInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStageInput(ctx context.Context, v interface{}) ([]*clinical.FHIRConditionStageInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51428,9 +52584,10 @@ func (ec *executionContext) unmarshalOFHIRConditionStageInput2ᚕᚖgitlabᚗsla
 	var err error
 	res := make([]*clinical.FHIRConditionStageInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRConditionStageInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStageInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51440,12 +52597,8 @@ func (ec *executionContext) unmarshalOFHIRConditionStageInput2ᚖgitlabᚗslade3
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRConditionStageInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStageInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRContactDetail2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRContactDetail) graphql.Marshaler {
-	return ec._FHIRContactDetail(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRConditionStageInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRContactDetail) graphql.Marshaler {
@@ -51495,11 +52648,10 @@ func (ec *executionContext) marshalOFHIRContactDetail2ᚖgitlabᚗslade360emrᚗ
 	return ec._FHIRContactDetail(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRContactDetailInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx context.Context, v interface{}) (clinical.FHIRContactDetailInput, error) {
-	return ec.unmarshalInputFHIRContactDetailInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx context.Context, v interface{}) ([]*clinical.FHIRContactDetailInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51511,9 +52663,10 @@ func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslad
 	var err error
 	res := make([]*clinical.FHIRContactDetailInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51523,12 +52676,8 @@ func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade36
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRContactDetailInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRContactPoint2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPoint(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRContactPoint) graphql.Marshaler {
-	return ec._FHIRContactPoint(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRContactDetailInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRContactPoint2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPoint(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRContactPoint) graphql.Marshaler {
@@ -51578,11 +52727,10 @@ func (ec *executionContext) marshalOFHIRContactPoint2ᚖgitlabᚗslade360emrᚗc
 	return ec._FHIRContactPoint(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRContactPointInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx context.Context, v interface{}) (clinical.FHIRContactPointInput, error) {
-	return ec.unmarshalInputFHIRContactPointInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx context.Context, v interface{}) ([]*clinical.FHIRContactPointInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51594,9 +52742,10 @@ func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade
 	var err error
 	res := make([]*clinical.FHIRContactPointInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRContactPointInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51606,12 +52755,8 @@ func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚖgitlabᚗslade360
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRContactPointInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRDatarequirementSort2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRDatarequirementSort) graphql.Marshaler {
-	return ec._FHIRDatarequirementSort(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRContactPointInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRDatarequirementSort) graphql.Marshaler {
@@ -51661,11 +52806,10 @@ func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚖgitlabᚗslade360
 	return ec._FHIRDatarequirementSort(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) (clinical.FHIRDatarequirementSortInput, error) {
-	return ec.unmarshalInputFHIRDatarequirementSortInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) ([]*clinical.FHIRDatarequirementSortInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51677,9 +52821,10 @@ func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIRDatarequirementSortInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51689,12 +52834,8 @@ func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗs
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRDatarequirementSortInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRDosage2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosage(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRDosage) graphql.Marshaler {
-	return ec._FHIRDosage(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRDatarequirementSortInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRDosage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosage(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRDosage) graphql.Marshaler {
@@ -51744,10 +52885,6 @@ func (ec *executionContext) marshalOFHIRDosage2ᚖgitlabᚗslade360emrᚗcomᚋg
 	return ec._FHIRDosage(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRDosageDoseandrate2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrate(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRDosageDoseandrate) graphql.Marshaler {
-	return ec._FHIRDosageDoseandrate(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRDosageDoseandrate2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrate(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRDosageDoseandrate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -51795,11 +52932,10 @@ func (ec *executionContext) marshalOFHIRDosageDoseandrate2ᚖgitlabᚗslade360em
 	return ec._FHIRDosageDoseandrate(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRDosageDoseandrateInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrateInput(ctx context.Context, v interface{}) (clinical.FHIRDosageDoseandrateInput, error) {
-	return ec.unmarshalInputFHIRDosageDoseandrateInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRDosageDoseandrateInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrateInput(ctx context.Context, v interface{}) ([]*clinical.FHIRDosageDoseandrateInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51811,9 +52947,10 @@ func (ec *executionContext) unmarshalOFHIRDosageDoseandrateInput2ᚕᚖgitlabᚗ
 	var err error
 	res := make([]*clinical.FHIRDosageDoseandrateInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRDosageDoseandrateInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrateInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51823,15 +52960,14 @@ func (ec *executionContext) unmarshalOFHIRDosageDoseandrateInput2ᚖgitlabᚗsla
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRDosageDoseandrateInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrateInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) unmarshalOFHIRDosageInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx context.Context, v interface{}) (clinical.FHIRDosageInput, error) {
-	return ec.unmarshalInputFHIRDosageInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRDosageDoseandrateInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOFHIRDosageInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx context.Context, v interface{}) ([]*clinical.FHIRDosageInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51843,9 +52979,10 @@ func (ec *executionContext) unmarshalOFHIRDosageInput2ᚕᚖgitlabᚗslade360emr
 	var err error
 	res := make([]*clinical.FHIRDosageInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRDosageInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51855,12 +52992,8 @@ func (ec *executionContext) unmarshalOFHIRDosageInput2ᚖgitlabᚗslade360emrᚗ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRDosageInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRDuration2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDuration(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRDuration) graphql.Marshaler {
-	return ec._FHIRDuration(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRDosageInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRDuration2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDuration(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRDuration) graphql.Marshaler {
@@ -51870,20 +53003,12 @@ func (ec *executionContext) marshalOFHIRDuration2ᚖgitlabᚗslade360emrᚗcom�
 	return ec._FHIRDuration(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRDurationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx context.Context, v interface{}) (clinical.FHIRDurationInput, error) {
-	return ec.unmarshalInputFHIRDurationInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx context.Context, v interface{}) (*clinical.FHIRDurationInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRDurationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREncounter2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounter(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounter) graphql.Marshaler {
-	return ec._FHIREncounter(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRDurationInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounter2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounter(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREncounter) graphql.Marshaler {
@@ -51891,10 +53016,6 @@ func (ec *executionContext) marshalOFHIREncounter2ᚖgitlabᚗslade360emrᚗcom�
 		return graphql.Null
 	}
 	return ec._FHIREncounter(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIREncounterClasshistory2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistory(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterClasshistory) graphql.Marshaler {
-	return ec._FHIREncounterClasshistory(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIREncounterClasshistory2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistory(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterClasshistory) graphql.Marshaler {
@@ -51944,11 +53065,10 @@ func (ec *executionContext) marshalOFHIREncounterClasshistory2ᚖgitlabᚗslade3
 	return ec._FHIREncounterClasshistory(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREncounterClasshistoryInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistoryInput(ctx context.Context, v interface{}) (clinical.FHIREncounterClasshistoryInput, error) {
-	return ec.unmarshalInputFHIREncounterClasshistoryInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREncounterClasshistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistoryInput(ctx context.Context, v interface{}) ([]*clinical.FHIREncounterClasshistoryInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -51960,9 +53080,10 @@ func (ec *executionContext) unmarshalOFHIREncounterClasshistoryInput2ᚕᚖgitla
 	var err error
 	res := make([]*clinical.FHIREncounterClasshistoryInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterClasshistoryInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistoryInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -51972,12 +53093,8 @@ func (ec *executionContext) unmarshalOFHIREncounterClasshistoryInput2ᚖgitlab�
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREncounterClasshistoryInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistoryInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREncounterDiagnosis2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosis(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterDiagnosis) graphql.Marshaler {
-	return ec._FHIREncounterDiagnosis(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREncounterClasshistoryInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterDiagnosis2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosis(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterDiagnosis) graphql.Marshaler {
@@ -52027,11 +53144,10 @@ func (ec *executionContext) marshalOFHIREncounterDiagnosis2ᚖgitlabᚗslade360e
 	return ec._FHIREncounterDiagnosis(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREncounterDiagnosisInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosisInput(ctx context.Context, v interface{}) (clinical.FHIREncounterDiagnosisInput, error) {
-	return ec.unmarshalInputFHIREncounterDiagnosisInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREncounterDiagnosisInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosisInput(ctx context.Context, v interface{}) ([]*clinical.FHIREncounterDiagnosisInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52043,9 +53159,10 @@ func (ec *executionContext) unmarshalOFHIREncounterDiagnosisInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIREncounterDiagnosisInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterDiagnosisInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosisInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52055,12 +53172,8 @@ func (ec *executionContext) unmarshalOFHIREncounterDiagnosisInput2ᚖgitlabᚗsl
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREncounterDiagnosisInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosisInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREncounterHospitalization2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalization(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterHospitalization) graphql.Marshaler {
-	return ec._FHIREncounterHospitalization(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREncounterDiagnosisInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterHospitalization2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalization(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREncounterHospitalization) graphql.Marshaler {
@@ -52070,20 +53183,12 @@ func (ec *executionContext) marshalOFHIREncounterHospitalization2ᚖgitlabᚗsla
 	return ec._FHIREncounterHospitalization(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREncounterHospitalizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalizationInput(ctx context.Context, v interface{}) (clinical.FHIREncounterHospitalizationInput, error) {
-	return ec.unmarshalInputFHIREncounterHospitalizationInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREncounterHospitalizationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalizationInput(ctx context.Context, v interface{}) (*clinical.FHIREncounterHospitalizationInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREncounterHospitalizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalizationInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREncounterLocation2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocation(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterLocation) graphql.Marshaler {
-	return ec._FHIREncounterLocation(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREncounterHospitalizationInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterLocation2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocation(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterLocation) graphql.Marshaler {
@@ -52133,11 +53238,10 @@ func (ec *executionContext) marshalOFHIREncounterLocation2ᚖgitlabᚗslade360em
 	return ec._FHIREncounterLocation(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREncounterLocationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocationInput(ctx context.Context, v interface{}) (clinical.FHIREncounterLocationInput, error) {
-	return ec.unmarshalInputFHIREncounterLocationInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREncounterLocationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocationInput(ctx context.Context, v interface{}) ([]*clinical.FHIREncounterLocationInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52149,9 +53253,10 @@ func (ec *executionContext) unmarshalOFHIREncounterLocationInput2ᚕᚖgitlabᚗ
 	var err error
 	res := make([]*clinical.FHIREncounterLocationInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterLocationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocationInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52161,12 +53266,8 @@ func (ec *executionContext) unmarshalOFHIREncounterLocationInput2ᚖgitlabᚗsla
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREncounterLocationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocationInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREncounterParticipant2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipant(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterParticipant) graphql.Marshaler {
-	return ec._FHIREncounterParticipant(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREncounterLocationInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterParticipant2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipant(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterParticipant) graphql.Marshaler {
@@ -52216,11 +53317,10 @@ func (ec *executionContext) marshalOFHIREncounterParticipant2ᚖgitlabᚗslade36
 	return ec._FHIREncounterParticipant(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREncounterParticipantInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipantInput(ctx context.Context, v interface{}) (clinical.FHIREncounterParticipantInput, error) {
-	return ec.unmarshalInputFHIREncounterParticipantInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREncounterParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipantInput(ctx context.Context, v interface{}) ([]*clinical.FHIREncounterParticipantInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52232,9 +53332,10 @@ func (ec *executionContext) unmarshalOFHIREncounterParticipantInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIREncounterParticipantInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipantInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52244,12 +53345,8 @@ func (ec *executionContext) unmarshalOFHIREncounterParticipantInput2ᚖgitlabᚗ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREncounterParticipantInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipantInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREncounterRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterRelayEdge) graphql.Marshaler {
-	return ec._FHIREncounterRelayEdge(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREncounterParticipantInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterRelayEdge) graphql.Marshaler {
@@ -52299,10 +53396,6 @@ func (ec *executionContext) marshalOFHIREncounterRelayEdge2ᚖgitlabᚗslade360e
 	return ec._FHIREncounterRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIREncounterStatushistory2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistory(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterStatushistory) graphql.Marshaler {
-	return ec._FHIREncounterStatushistory(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIREncounterStatushistory2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistory(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterStatushistory) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -52350,11 +53443,10 @@ func (ec *executionContext) marshalOFHIREncounterStatushistory2ᚖgitlabᚗslade
 	return ec._FHIREncounterStatushistory(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREncounterStatushistoryInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistoryInput(ctx context.Context, v interface{}) (clinical.FHIREncounterStatushistoryInput, error) {
-	return ec.unmarshalInputFHIREncounterStatushistoryInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREncounterStatushistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistoryInput(ctx context.Context, v interface{}) ([]*clinical.FHIREncounterStatushistoryInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52366,9 +53458,10 @@ func (ec *executionContext) unmarshalOFHIREncounterStatushistoryInput2ᚕᚖgitl
 	var err error
 	res := make([]*clinical.FHIREncounterStatushistoryInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterStatushistoryInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistoryInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52378,12 +53471,8 @@ func (ec *executionContext) unmarshalOFHIREncounterStatushistoryInput2ᚖgitlab�
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREncounterStatushistoryInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistoryInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREpisodeOfCare2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREpisodeOfCare) graphql.Marshaler {
-	return ec._FHIREpisodeOfCare(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREncounterStatushistoryInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREpisodeOfCare) graphql.Marshaler {
@@ -52391,10 +53480,6 @@ func (ec *executionContext) marshalOFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗ
 		return graphql.Null
 	}
 	return ec._FHIREpisodeOfCare(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIREpisodeOfCareRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREpisodeOfCareRelayEdge) graphql.Marshaler {
-	return ec._FHIREpisodeOfCareRelayEdge(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIREpisodeOfCareRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREpisodeOfCareRelayEdge) graphql.Marshaler {
@@ -52444,10 +53529,6 @@ func (ec *executionContext) marshalOFHIREpisodeOfCareRelayEdge2ᚖgitlabᚗslade
 	return ec._FHIREpisodeOfCareRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIREpisodeofcareDiagnosis2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosis(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREpisodeofcareDiagnosis) graphql.Marshaler {
-	return ec._FHIREpisodeofcareDiagnosis(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIREpisodeofcareDiagnosis2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosis(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREpisodeofcareDiagnosis) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -52495,11 +53576,10 @@ func (ec *executionContext) marshalOFHIREpisodeofcareDiagnosis2ᚖgitlabᚗslade
 	return ec._FHIREpisodeofcareDiagnosis(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREpisodeofcareDiagnosisInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosisInput(ctx context.Context, v interface{}) (clinical.FHIREpisodeofcareDiagnosisInput, error) {
-	return ec.unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREpisodeofcareDiagnosisInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosisInput(ctx context.Context, v interface{}) ([]*clinical.FHIREpisodeofcareDiagnosisInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52511,9 +53591,10 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareDiagnosisInput2ᚕᚖgitl
 	var err error
 	res := make([]*clinical.FHIREpisodeofcareDiagnosisInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREpisodeofcareDiagnosisInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosisInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52523,12 +53604,8 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareDiagnosisInput2ᚖgitlab�
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREpisodeofcareDiagnosisInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosisInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIREpisodeofcareStatushistory2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistory(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREpisodeofcareStatushistory) graphql.Marshaler {
-	return ec._FHIREpisodeofcareStatushistory(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREpisodeofcareStatushistory2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistory(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREpisodeofcareStatushistory) graphql.Marshaler {
@@ -52578,11 +53655,10 @@ func (ec *executionContext) marshalOFHIREpisodeofcareStatushistory2ᚖgitlabᚗs
 	return ec._FHIREpisodeofcareStatushistory(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIREpisodeofcareStatushistoryInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistoryInput(ctx context.Context, v interface{}) (clinical.FHIREpisodeofcareStatushistoryInput, error) {
-	return ec.unmarshalInputFHIREpisodeofcareStatushistoryInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIREpisodeofcareStatushistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistoryInput(ctx context.Context, v interface{}) ([]*clinical.FHIREpisodeofcareStatushistoryInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52594,9 +53670,10 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareStatushistoryInput2ᚕᚖ
 	var err error
 	res := make([]*clinical.FHIREpisodeofcareStatushistoryInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREpisodeofcareStatushistoryInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistoryInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52606,12 +53683,8 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareStatushistoryInput2ᚖgit
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIREpisodeofcareStatushistoryInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistoryInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRHumanName2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanName(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRHumanName) graphql.Marshaler {
-	return ec._FHIRHumanName(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIREpisodeofcareStatushistoryInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRHumanName2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanName(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRHumanName) graphql.Marshaler {
@@ -52661,11 +53734,10 @@ func (ec *executionContext) marshalOFHIRHumanName2ᚖgitlabᚗslade360emrᚗcom�
 	return ec._FHIRHumanName(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRHumanNameInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx context.Context, v interface{}) (clinical.FHIRHumanNameInput, error) {
-	return ec.unmarshalInputFHIRHumanNameInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRHumanNameInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx context.Context, v interface{}) ([]*clinical.FHIRHumanNameInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52677,9 +53749,10 @@ func (ec *executionContext) unmarshalOFHIRHumanNameInput2ᚕᚖgitlabᚗslade360
 	var err error
 	res := make([]*clinical.FHIRHumanNameInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRHumanNameInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52689,12 +53762,8 @@ func (ec *executionContext) unmarshalOFHIRHumanNameInput2ᚖgitlabᚗslade360emr
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRHumanNameInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRIdentifier2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifier(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRIdentifier) graphql.Marshaler {
-	return ec._FHIRIdentifier(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRHumanNameInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRIdentifier2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifier(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRIdentifier) graphql.Marshaler {
@@ -52744,11 +53813,10 @@ func (ec *executionContext) marshalOFHIRIdentifier2ᚖgitlabᚗslade360emrᚗcom
 	return ec._FHIRIdentifier(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRIdentifierInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx context.Context, v interface{}) (clinical.FHIRIdentifierInput, error) {
-	return ec.unmarshalInputFHIRIdentifierInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx context.Context, v interface{}) ([]*clinical.FHIRIdentifierInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -52760,9 +53828,10 @@ func (ec *executionContext) unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRIdentifierInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -52772,12 +53841,8 @@ func (ec *executionContext) unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360em
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRIdentifierInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRMedicationRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationRequest) graphql.Marshaler {
-	return ec._FHIRMedicationRequest(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRIdentifierInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationRequest) graphql.Marshaler {
@@ -52785,10 +53850,6 @@ func (ec *executionContext) marshalOFHIRMedicationRequest2ᚖgitlabᚗslade360em
 		return graphql.Null
 	}
 	return ec._FHIRMedicationRequest(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRMedicationRequestRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationRequestRelayEdge) graphql.Marshaler {
-	return ec._FHIRMedicationRequestRelayEdge(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationRequestRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRMedicationRequestRelayEdge) graphql.Marshaler {
@@ -52838,10 +53899,6 @@ func (ec *executionContext) marshalOFHIRMedicationRequestRelayEdge2ᚖgitlabᚗs
 	return ec._FHIRMedicationRequestRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRMedicationrequestDispenserequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestDispenserequest(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationrequestDispenserequest) graphql.Marshaler {
-	return ec._FHIRMedicationrequestDispenserequest(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRMedicationrequestDispenserequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestDispenserequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationrequestDispenserequest) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -52849,20 +53906,12 @@ func (ec *executionContext) marshalOFHIRMedicationrequestDispenserequest2ᚖgitl
 	return ec._FHIRMedicationrequestDispenserequest(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRMedicationrequestDispenserequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestDispenserequestInput(ctx context.Context, v interface{}) (clinical.FHIRMedicationrequestDispenserequestInput, error) {
-	return ec.unmarshalInputFHIRMedicationrequestDispenserequestInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRMedicationrequestDispenserequestInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestDispenserequestInput(ctx context.Context, v interface{}) (*clinical.FHIRMedicationrequestDispenserequestInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRMedicationrequestDispenserequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestDispenserequestInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRMedicationrequestInitialfill2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfill(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationrequestInitialfill) graphql.Marshaler {
-	return ec._FHIRMedicationrequestInitialfill(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRMedicationrequestDispenserequestInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationrequestInitialfill2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfill(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationrequestInitialfill) graphql.Marshaler {
@@ -52872,20 +53921,12 @@ func (ec *executionContext) marshalOFHIRMedicationrequestInitialfill2ᚖgitlab�
 	return ec._FHIRMedicationrequestInitialfill(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRMedicationrequestInitialfillInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfillInput(ctx context.Context, v interface{}) (clinical.FHIRMedicationrequestInitialfillInput, error) {
-	return ec.unmarshalInputFHIRMedicationrequestInitialfillInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRMedicationrequestInitialfillInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfillInput(ctx context.Context, v interface{}) (*clinical.FHIRMedicationrequestInitialfillInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRMedicationrequestInitialfillInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfillInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRMedicationrequestSubstitution2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitution(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationrequestSubstitution) graphql.Marshaler {
-	return ec._FHIRMedicationrequestSubstitution(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRMedicationrequestInitialfillInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationrequestSubstitution2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitution(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationrequestSubstitution) graphql.Marshaler {
@@ -52895,20 +53936,12 @@ func (ec *executionContext) marshalOFHIRMedicationrequestSubstitution2ᚖgitlab�
 	return ec._FHIRMedicationrequestSubstitution(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRMedicationrequestSubstitutionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitutionInput(ctx context.Context, v interface{}) (clinical.FHIRMedicationrequestSubstitutionInput, error) {
-	return ec.unmarshalInputFHIRMedicationrequestSubstitutionInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRMedicationrequestSubstitutionInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitutionInput(ctx context.Context, v interface{}) (*clinical.FHIRMedicationrequestSubstitutionInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRMedicationrequestSubstitutionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitutionInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRNarrative2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrative(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRNarrative) graphql.Marshaler {
-	return ec._FHIRNarrative(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRMedicationrequestSubstitutionInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRNarrative2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrative(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRNarrative) graphql.Marshaler {
@@ -52918,20 +53951,12 @@ func (ec *executionContext) marshalOFHIRNarrative2ᚖgitlabᚗslade360emrᚗcom�
 	return ec._FHIRNarrative(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRNarrativeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrativeInput(ctx context.Context, v interface{}) (clinical.FHIRNarrativeInput, error) {
-	return ec.unmarshalInputFHIRNarrativeInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRNarrativeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrativeInput(ctx context.Context, v interface{}) (*clinical.FHIRNarrativeInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRNarrativeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrativeInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRObservation2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRObservation) graphql.Marshaler {
-	return ec._FHIRObservation(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRNarrativeInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRObservation2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRObservation) graphql.Marshaler {
@@ -52939,10 +53964,6 @@ func (ec *executionContext) marshalOFHIRObservation2ᚖgitlabᚗslade360emrᚗco
 		return graphql.Null
 	}
 	return ec._FHIRObservation(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRObservationComponent2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponent(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRObservationComponent) graphql.Marshaler {
-	return ec._FHIRObservationComponent(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRObservationComponent2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponent(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRObservationComponent) graphql.Marshaler {
@@ -52992,11 +54013,10 @@ func (ec *executionContext) marshalOFHIRObservationComponent2ᚖgitlabᚗslade36
 	return ec._FHIRObservationComponent(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRObservationComponentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponentInput(ctx context.Context, v interface{}) (clinical.FHIRObservationComponentInput, error) {
-	return ec.unmarshalInputFHIRObservationComponentInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRObservationComponentInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponentInput(ctx context.Context, v interface{}) ([]*clinical.FHIRObservationComponentInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53008,9 +54028,10 @@ func (ec *executionContext) unmarshalOFHIRObservationComponentInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIRObservationComponentInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRObservationComponentInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponentInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53020,12 +54041,8 @@ func (ec *executionContext) unmarshalOFHIRObservationComponentInput2ᚖgitlabᚗ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRObservationComponentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponentInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRObservationReferencerange2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerange(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRObservationReferencerange) graphql.Marshaler {
-	return ec._FHIRObservationReferencerange(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRObservationComponentInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRObservationReferencerange2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerange(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRObservationReferencerange) graphql.Marshaler {
@@ -53075,11 +54092,10 @@ func (ec *executionContext) marshalOFHIRObservationReferencerange2ᚖgitlabᚗsl
 	return ec._FHIRObservationReferencerange(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRObservationReferencerangeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx context.Context, v interface{}) (clinical.FHIRObservationReferencerangeInput, error) {
-	return ec.unmarshalInputFHIRObservationReferencerangeInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRObservationReferencerangeInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx context.Context, v interface{}) ([]*clinical.FHIRObservationReferencerangeInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53091,9 +54107,10 @@ func (ec *executionContext) unmarshalOFHIRObservationReferencerangeInput2ᚕᚖg
 	var err error
 	res := make([]*clinical.FHIRObservationReferencerangeInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRObservationReferencerangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53103,12 +54120,8 @@ func (ec *executionContext) unmarshalOFHIRObservationReferencerangeInput2ᚖgitl
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRObservationReferencerangeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRObservationRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRObservationRelayEdge) graphql.Marshaler {
-	return ec._FHIRObservationRelayEdge(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRObservationReferencerangeInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRObservationRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRObservationRelayEdge) graphql.Marshaler {
@@ -53158,19 +54171,11 @@ func (ec *executionContext) marshalOFHIRObservationRelayEdge2ᚖgitlabᚗslade36
 	return ec._FHIRObservationRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRPatient2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatient) graphql.Marshaler {
-	return ec._FHIRPatient(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRPatient) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._FHIRPatient(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRPatientCommunication2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunication(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatientCommunication) graphql.Marshaler {
-	return ec._FHIRPatientCommunication(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRPatientCommunication2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunication(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPatientCommunication) graphql.Marshaler {
@@ -53220,11 +54225,10 @@ func (ec *executionContext) marshalOFHIRPatientCommunication2ᚖgitlabᚗslade36
 	return ec._FHIRPatientCommunication(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRPatientCommunicationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunicationInput(ctx context.Context, v interface{}) (clinical.FHIRPatientCommunicationInput, error) {
-	return ec.unmarshalInputFHIRPatientCommunicationInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRPatientCommunicationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunicationInput(ctx context.Context, v interface{}) ([]*clinical.FHIRPatientCommunicationInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53236,9 +54240,10 @@ func (ec *executionContext) unmarshalOFHIRPatientCommunicationInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIRPatientCommunicationInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPatientCommunicationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunicationInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53248,12 +54253,8 @@ func (ec *executionContext) unmarshalOFHIRPatientCommunicationInput2ᚖgitlabᚗ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRPatientCommunicationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunicationInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRPatientContact2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContact(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatientContact) graphql.Marshaler {
-	return ec._FHIRPatientContact(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRPatientCommunicationInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRPatientContact2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContact(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPatientContact) graphql.Marshaler {
@@ -53303,11 +54304,10 @@ func (ec *executionContext) marshalOFHIRPatientContact2ᚖgitlabᚗslade360emr�
 	return ec._FHIRPatientContact(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRPatientContactInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContactInput(ctx context.Context, v interface{}) (clinical.FHIRPatientContactInput, error) {
-	return ec.unmarshalInputFHIRPatientContactInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRPatientContactInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContactInput(ctx context.Context, v interface{}) ([]*clinical.FHIRPatientContactInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53319,9 +54319,10 @@ func (ec *executionContext) unmarshalOFHIRPatientContactInput2ᚕᚖgitlabᚗsla
 	var err error
 	res := make([]*clinical.FHIRPatientContactInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPatientContactInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContactInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53331,12 +54332,8 @@ func (ec *executionContext) unmarshalOFHIRPatientContactInput2ᚖgitlabᚗslade3
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRPatientContactInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContactInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRPatientLink2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLink(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatientLink) graphql.Marshaler {
-	return ec._FHIRPatientLink(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRPatientContactInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRPatientLink2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLink(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPatientLink) graphql.Marshaler {
@@ -53386,11 +54383,10 @@ func (ec *executionContext) marshalOFHIRPatientLink2ᚖgitlabᚗslade360emrᚗco
 	return ec._FHIRPatientLink(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRPatientLinkInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLinkInput(ctx context.Context, v interface{}) (clinical.FHIRPatientLinkInput, error) {
-	return ec.unmarshalInputFHIRPatientLinkInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRPatientLinkInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLinkInput(ctx context.Context, v interface{}) ([]*clinical.FHIRPatientLinkInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53402,9 +54398,10 @@ func (ec *executionContext) unmarshalOFHIRPatientLinkInput2ᚕᚖgitlabᚗslade3
 	var err error
 	res := make([]*clinical.FHIRPatientLinkInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPatientLinkInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLinkInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53414,12 +54411,8 @@ func (ec *executionContext) unmarshalOFHIRPatientLinkInput2ᚖgitlabᚗslade360e
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRPatientLinkInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLinkInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRPatientRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatientRelayEdge) graphql.Marshaler {
-	return ec._FHIRPatientRelayEdge(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRPatientLinkInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRPatientRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPatientRelayEdge) graphql.Marshaler {
@@ -53469,10 +54462,6 @@ func (ec *executionContext) marshalOFHIRPatientRelayEdge2ᚖgitlabᚗslade360emr
 	return ec._FHIRPatientRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRPeriod2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPeriod) graphql.Marshaler {
-	return ec._FHIRPeriod(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRPeriod2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPeriod) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -53520,11 +54509,10 @@ func (ec *executionContext) marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋg
 	return ec._FHIRPeriod(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRPeriodInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx context.Context, v interface{}) (clinical.FHIRPeriodInput, error) {
-	return ec.unmarshalInputFHIRPeriodInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRPeriodInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx context.Context, v interface{}) ([]*clinical.FHIRPeriodInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53536,9 +54524,10 @@ func (ec *executionContext) unmarshalOFHIRPeriodInput2ᚕᚖgitlabᚗslade360emr
 	var err error
 	res := make([]*clinical.FHIRPeriodInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53548,12 +54537,8 @@ func (ec *executionContext) unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRPeriodInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRQuantity2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantity(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRQuantity) graphql.Marshaler {
-	return ec._FHIRQuantity(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRPeriodInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRQuantity2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantity(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRQuantity) graphql.Marshaler {
@@ -53564,19 +54549,16 @@ func (ec *executionContext) marshalOFHIRQuantity2ᚖgitlabᚗslade360emrᚗcom�
 }
 
 func (ec *executionContext) unmarshalOFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (clinical.FHIRQuantityInput, error) {
-	return ec.unmarshalInputFHIRQuantityInput(ctx, v)
+	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (*clinical.FHIRQuantityInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRRange2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRange(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRRange) graphql.Marshaler {
-	return ec._FHIRRange(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRRange2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRange(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRRange) graphql.Marshaler {
@@ -53586,20 +54568,12 @@ func (ec *executionContext) marshalOFHIRRange2ᚖgitlabᚗslade360emrᚗcomᚋgo
 	return ec._FHIRRange(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRRangeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx context.Context, v interface{}) (clinical.FHIRRangeInput, error) {
-	return ec.unmarshalInputFHIRRangeInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx context.Context, v interface{}) (*clinical.FHIRRangeInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRRangeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRRatio2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatio(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRRatio) graphql.Marshaler {
-	return ec._FHIRRatio(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRRangeInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRRatio2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatio(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRRatio) graphql.Marshaler {
@@ -53609,20 +54583,12 @@ func (ec *executionContext) marshalOFHIRRatio2ᚖgitlabᚗslade360emrᚗcomᚋgo
 	return ec._FHIRRatio(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRRatioInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx context.Context, v interface{}) (clinical.FHIRRatioInput, error) {
-	return ec.unmarshalInputFHIRRatioInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx context.Context, v interface{}) (*clinical.FHIRRatioInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRRatioInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRReference2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRReference) graphql.Marshaler {
-	return ec._FHIRReference(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRRatioInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRReference) graphql.Marshaler {
@@ -53672,11 +54638,10 @@ func (ec *executionContext) marshalOFHIRReference2ᚖgitlabᚗslade360emrᚗcom�
 	return ec._FHIRReference(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRReferenceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx context.Context, v interface{}) (clinical.FHIRReferenceInput, error) {
-	return ec.unmarshalInputFHIRReferenceInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx context.Context, v interface{}) ([]*clinical.FHIRReferenceInput, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53688,9 +54653,10 @@ func (ec *executionContext) unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360
 	var err error
 	res := make([]*clinical.FHIRReferenceInput, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53700,12 +54666,8 @@ func (ec *executionContext) unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emr
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRReferenceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRSampledData2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledData(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRSampledData) graphql.Marshaler {
-	return ec._FHIRSampledData(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRReferenceInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRSampledData2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledData(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRSampledData) graphql.Marshaler {
@@ -53715,20 +54677,12 @@ func (ec *executionContext) marshalOFHIRSampledData2ᚖgitlabᚗslade360emrᚗco
 	return ec._FHIRSampledData(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRSampledDataInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledDataInput(ctx context.Context, v interface{}) (clinical.FHIRSampledDataInput, error) {
-	return ec.unmarshalInputFHIRSampledDataInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRSampledDataInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledDataInput(ctx context.Context, v interface{}) (*clinical.FHIRSampledDataInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRSampledDataInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledDataInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRServiceRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRServiceRequest) graphql.Marshaler {
-	return ec._FHIRServiceRequest(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRSampledDataInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRServiceRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRServiceRequest) graphql.Marshaler {
@@ -53736,10 +54690,6 @@ func (ec *executionContext) marshalOFHIRServiceRequest2ᚖgitlabᚗslade360emr�
 		return graphql.Null
 	}
 	return ec._FHIRServiceRequest(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRServiceRequestRelayEdge2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestRelayEdge(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRServiceRequestRelayEdge) graphql.Marshaler {
-	return ec._FHIRServiceRequestRelayEdge(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOFHIRServiceRequestRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRServiceRequestRelayEdge) graphql.Marshaler {
@@ -53789,10 +54739,6 @@ func (ec *executionContext) marshalOFHIRServiceRequestRelayEdge2ᚖgitlabᚗslad
 	return ec._FHIRServiceRequestRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRTiming2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTiming(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRTiming) graphql.Marshaler {
-	return ec._FHIRTiming(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOFHIRTiming2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTiming(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRTiming) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -53800,20 +54746,12 @@ func (ec *executionContext) marshalOFHIRTiming2ᚖgitlabᚗslade360emrᚗcomᚋg
 	return ec._FHIRTiming(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRTimingInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx context.Context, v interface{}) (clinical.FHIRTimingInput, error) {
-	return ec.unmarshalInputFHIRTimingInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx context.Context, v interface{}) (*clinical.FHIRTimingInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRTimingInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOFHIRTimingRepeat2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeat(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRTimingRepeat) graphql.Marshaler {
-	return ec._FHIRTimingRepeat(ctx, sel, &v)
+	res, err := ec.unmarshalInputFHIRTimingInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRTimingRepeat2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeat(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRTimingRepeat) graphql.Marshaler {
@@ -53823,23 +54761,18 @@ func (ec *executionContext) marshalOFHIRTimingRepeat2ᚖgitlabᚗslade360emrᚗc
 	return ec._FHIRTimingRepeat(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRTimingRepeatInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeatInput(ctx context.Context, v interface{}) (clinical.FHIRTimingRepeatInput, error) {
-	return ec.unmarshalInputFHIRTimingRepeatInput(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOFHIRTimingRepeatInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeatInput(ctx context.Context, v interface{}) (*clinical.FHIRTimingRepeatInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFHIRTimingRepeatInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeatInput(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) unmarshalOFilterParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) (base.FilterParam, error) {
-	return ec.unmarshalInputFilterParam(ctx, v)
+	res, err := ec.unmarshalInputFHIRTimingRepeatInput(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) ([]*base.FilterParam, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -53851,9 +54784,10 @@ func (ec *executionContext) unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗc
 	var err error
 	res := make([]*base.FilterParam, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -53863,48 +54797,32 @@ func (ec *executionContext) unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcom�
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOFilterParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalID(v)
-}
-
-func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalID(v)
+	res, err := ec.unmarshalInputFilterParam(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOID2string(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalID(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOID2string(ctx, sel, *v)
-}
-
-func (ec *executionContext) unmarshalOInstant2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx context.Context, v interface{}) (base.Instant, error) {
-	var res base.Instant
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOInstant2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx context.Context, sel ast.SelectionSet, v base.Instant) graphql.Marshaler {
-	return v
+	return graphql.MarshalID(*v)
 }
 
 func (ec *executionContext) unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx context.Context, v interface{}) (*base.Instant, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOInstant2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
-	return &res, err
+	var res = new(base.Instant)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx context.Context, sel ast.SelectionSet, v *base.Instant) graphql.Marshaler {
@@ -53915,89 +54833,66 @@ func (ec *executionContext) marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 }
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
-	return graphql.UnmarshalInt(v)
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	return graphql.MarshalInt(v)
 }
 
-func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v interface{}) (int64, error) {
-	return graphql.UnmarshalInt64(v)
-}
-
-func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
-	return graphql.MarshalInt64(v)
-}
-
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOInt2int(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOInt2int(ctx, sel, *v)
+	return graphql.MarshalInt(*v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint64(ctx context.Context, v interface{}) (*int64, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOInt2int64(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalInt64(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInt2ᚖint64(ctx context.Context, sel ast.SelectionSet, v *int64) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOInt2int64(ctx, sel, *v)
-}
-
-func (ec *executionContext) unmarshalOInteger2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
-}
-
-func (ec *executionContext) marshalOInteger2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalString(v)
+	return graphql.MarshalInt64(*v)
 }
 
 func (ec *executionContext) unmarshalOInteger2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOInteger2string(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalString(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInteger2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOInteger2string(ctx, sel, *v)
-}
-
-func (ec *executionContext) unmarshalOMarkdown2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, v interface{}) (base.Markdown, error) {
-	var res base.Markdown
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOMarkdown2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, sel ast.SelectionSet, v base.Markdown) graphql.Marshaler {
-	return v
+	return graphql.MarshalString(*v)
 }
 
 func (ec *executionContext) unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, v interface{}) (*base.Markdown, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOMarkdown2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx, v)
-	return &res, err
+	var res = new(base.Markdown)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, sel ast.SelectionSet, v *base.Markdown) graphql.Marshaler {
@@ -54007,21 +54902,13 @@ func (ec *executionContext) marshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 	return v
 }
 
-func (ec *executionContext) unmarshalONarrativeStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx context.Context, v interface{}) (clinical.NarrativeStatusEnum, error) {
-	var res clinical.NarrativeStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalONarrativeStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.NarrativeStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalONarrativeStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx context.Context, v interface{}) (*clinical.NarrativeStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalONarrativeStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.NarrativeStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalONarrativeStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.NarrativeStatusEnum) graphql.Marshaler {
@@ -54031,21 +54918,13 @@ func (ec *executionContext) marshalONarrativeStatusEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
-func (ec *executionContext) unmarshalOObservationStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx context.Context, v interface{}) (clinical.ObservationStatusEnum, error) {
-	var res clinical.ObservationStatusEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOObservationStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.ObservationStatusEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOObservationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx context.Context, v interface{}) (*clinical.ObservationStatusEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOObservationStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.ObservationStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOObservationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ObservationStatusEnum) graphql.Marshaler {
@@ -54055,21 +54934,13 @@ func (ec *executionContext) marshalOObservationStatusEnum2ᚖgitlabᚗslade360em
 	return v
 }
 
-func (ec *executionContext) unmarshalOPatientContactGenderEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx context.Context, v interface{}) (clinical.PatientContactGenderEnum, error) {
-	var res clinical.PatientContactGenderEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOPatientContactGenderEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx context.Context, sel ast.SelectionSet, v clinical.PatientContactGenderEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOPatientContactGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx context.Context, v interface{}) (*clinical.PatientContactGenderEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOPatientContactGenderEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.PatientContactGenderEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPatientContactGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientContactGenderEnum) graphql.Marshaler {
@@ -54079,21 +54950,13 @@ func (ec *executionContext) marshalOPatientContactGenderEnum2ᚖgitlabᚗslade36
 	return v
 }
 
-func (ec *executionContext) unmarshalOPatientGenderEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx context.Context, v interface{}) (clinical.PatientGenderEnum, error) {
-	var res clinical.PatientGenderEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOPatientGenderEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx context.Context, sel ast.SelectionSet, v clinical.PatientGenderEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOPatientGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx context.Context, v interface{}) (*clinical.PatientGenderEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOPatientGenderEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.PatientGenderEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPatientGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientGenderEnum) graphql.Marshaler {
@@ -54103,21 +54966,13 @@ func (ec *executionContext) marshalOPatientGenderEnum2ᚖgitlabᚗslade360emrᚗ
 	return v
 }
 
-func (ec *executionContext) unmarshalOPatientLinkTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx context.Context, v interface{}) (clinical.PatientLinkTypeEnum, error) {
-	var res clinical.PatientLinkTypeEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOPatientLinkTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx context.Context, sel ast.SelectionSet, v clinical.PatientLinkTypeEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx context.Context, v interface{}) (*clinical.PatientLinkTypeEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOPatientLinkTypeEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.PatientLinkTypeEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientLinkTypeEnum) graphql.Marshaler {
@@ -54127,44 +54982,28 @@ func (ec *executionContext) marshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
-func (ec *executionContext) unmarshalOPositiveInt2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
-}
-
-func (ec *executionContext) marshalOPositiveInt2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalString(v)
-}
-
 func (ec *executionContext) unmarshalOPositiveInt2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOPositiveInt2string(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalString(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPositiveInt2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOPositiveInt2string(ctx, sel, *v)
-}
-
-func (ec *executionContext) unmarshalOQuantityComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx context.Context, v interface{}) (clinical.QuantityComparatorEnum, error) {
-	var res clinical.QuantityComparatorEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOQuantityComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx context.Context, sel ast.SelectionSet, v clinical.QuantityComparatorEnum) graphql.Marshaler {
-	return v
+	return graphql.MarshalString(*v)
 }
 
 func (ec *executionContext) unmarshalOQuantityComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx context.Context, v interface{}) (*clinical.QuantityComparatorEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOQuantityComparatorEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.QuantityComparatorEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOQuantityComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.QuantityComparatorEnum) graphql.Marshaler {
@@ -54174,11 +55013,10 @@ func (ec *executionContext) marshalOQuantityComparatorEnum2ᚖgitlabᚗslade360e
 	return v
 }
 
-func (ec *executionContext) unmarshalOSortParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) (base.SortParam, error) {
-	return ec.unmarshalInputSortParam(ctx, v)
-}
-
 func (ec *executionContext) unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) ([]*base.SortParam, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -54190,9 +55028,10 @@ func (ec *executionContext) unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcom
 	var err error
 	res := make([]*base.SortParam, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -54202,12 +55041,13 @@ func (ec *executionContext) unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋ
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOSortParam2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, v)
-	return &res, err
+	res, err := ec.unmarshalInputSortParam(ctx, v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -54215,6 +55055,9 @@ func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.S
 }
 
 func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
+	if v == nil {
+		return nil, nil
+	}
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -54226,9 +55069,10 @@ func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v
 	var err error
 	res := make([]*string, len(vSlice))
 	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
 		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
 		if err != nil {
-			return nil, err
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
 		}
 	}
 	return res, nil
@@ -54250,55 +55094,39 @@ func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v in
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOString2string(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalString(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOString2string(ctx, sel, *v)
-}
-
-func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
-	return graphql.UnmarshalTime(v)
-}
-
-func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
-	return graphql.MarshalTime(v)
+	return graphql.MarshalString(*v)
 }
 
 func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOTime2timeᚐTime(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalTime(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOTime2timeᚐTime(ctx, sel, *v)
-}
-
-func (ec *executionContext) unmarshalOTimingRepeatDurationUnitEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx context.Context, v interface{}) (clinical.TimingRepeatDurationUnitEnum, error) {
-	var res clinical.TimingRepeatDurationUnitEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOTimingRepeatDurationUnitEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx context.Context, sel ast.SelectionSet, v clinical.TimingRepeatDurationUnitEnum) graphql.Marshaler {
-	return v
+	return graphql.MarshalTime(*v)
 }
 
 func (ec *executionContext) unmarshalOTimingRepeatDurationUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx context.Context, v interface{}) (*clinical.TimingRepeatDurationUnitEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOTimingRepeatDurationUnitEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.TimingRepeatDurationUnitEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTimingRepeatDurationUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.TimingRepeatDurationUnitEnum) graphql.Marshaler {
@@ -54308,21 +55136,13 @@ func (ec *executionContext) marshalOTimingRepeatDurationUnitEnum2ᚖgitlabᚗsla
 	return v
 }
 
-func (ec *executionContext) unmarshalOTimingRepeatPeriodUnitEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx context.Context, v interface{}) (clinical.TimingRepeatPeriodUnitEnum, error) {
-	var res clinical.TimingRepeatPeriodUnitEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOTimingRepeatPeriodUnitEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx context.Context, sel ast.SelectionSet, v clinical.TimingRepeatPeriodUnitEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOTimingRepeatPeriodUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx context.Context, v interface{}) (*clinical.TimingRepeatPeriodUnitEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOTimingRepeatPeriodUnitEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.TimingRepeatPeriodUnitEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTimingRepeatPeriodUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.TimingRepeatPeriodUnitEnum) graphql.Marshaler {
@@ -54332,21 +55152,13 @@ func (ec *executionContext) marshalOTimingRepeatPeriodUnitEnum2ᚖgitlabᚗslade
 	return v
 }
 
-func (ec *executionContext) unmarshalOTimingRepeatWhenEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx context.Context, v interface{}) (clinical.TimingRepeatWhenEnum, error) {
-	var res clinical.TimingRepeatWhenEnum
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOTimingRepeatWhenEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx context.Context, sel ast.SelectionSet, v clinical.TimingRepeatWhenEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx context.Context, v interface{}) (*clinical.TimingRepeatWhenEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOTimingRepeatWhenEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx, v)
-	return &res, err
+	var res = new(clinical.TimingRepeatWhenEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.TimingRepeatWhenEnum) graphql.Marshaler {
@@ -54356,21 +55168,13 @@ func (ec *executionContext) marshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360emr
 	return v
 }
 
-func (ec *executionContext) unmarshalOURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, v interface{}) (base.URI, error) {
-	var res base.URI
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v base.URI) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, v interface{}) (*base.URI, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
-	return &res, err
+	var res = new(base.URI)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v *base.URI) graphql.Marshaler {
@@ -54380,21 +55184,13 @@ func (ec *executionContext) marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbas
 	return v
 }
 
-func (ec *executionContext) unmarshalOURL2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx context.Context, v interface{}) (base.URL, error) {
-	var res base.URL
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalOURL2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx context.Context, sel ast.SelectionSet, v base.URL) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx context.Context, v interface{}) (*base.URL, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOURL2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx, v)
-	return &res, err
+	var res = new(base.URL)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx context.Context, sel ast.SelectionSet, v *base.URL) graphql.Marshaler {
@@ -54404,27 +55200,19 @@ func (ec *executionContext) marshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbas
 	return v
 }
 
-func (ec *executionContext) unmarshalOUnsignedInt2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
-}
-
-func (ec *executionContext) marshalOUnsignedInt2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalString(v)
-}
-
 func (ec *executionContext) unmarshalOUnsignedInt2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOUnsignedInt2string(ctx, v)
-	return &res, err
+	res, err := graphql.UnmarshalString(v)
+	return &res, graphql.WrapErrorWithInputPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOUnsignedInt2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec.marshalOUnsignedInt2string(ctx, sel, *v)
+	return graphql.MarshalString(*v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {
@@ -54547,19 +55335,11 @@ func (ec *executionContext) marshalO__InputValue2ᚕgithubᚗcomᚋ99designsᚋg
 	return ret
 }
 
-func (ec *executionContext) marshalO__Schema2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx context.Context, sel ast.SelectionSet, v introspection.Schema) graphql.Marshaler {
-	return ec.___Schema(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx context.Context, sel ast.SelectionSet, v *introspection.Schema) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec.___Schema(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalO__Type2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx context.Context, sel ast.SelectionSet, v introspection.Type) graphql.Marshaler {
-	return ec.___Type(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalO__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐTypeᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.Type) graphql.Marshaler {
