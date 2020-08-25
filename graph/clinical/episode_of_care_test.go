@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -75,7 +74,7 @@ func EpisodeOfCareType() []*FHIRCodeableConceptInput {
 
 }
 
-func episodeOfCarePatient() *FHIRReferenceInput {
+func episodeOfCarePatient(patientID string) *FHIRReferenceInput {
 	identifier := SingleIdentifierInput{
 		IdentifierUse: "official",
 		Value:         "+254723002959",
@@ -84,8 +83,9 @@ func episodeOfCarePatient() *FHIRReferenceInput {
 		Version:       "0.1",
 		Code:          "msisdn",
 	}
+	patientReference := "Patient/" + patientID
 	ref := ReferenceInput{
-		Reference:  "https://healthcloud.co.ke",
+		Reference:  patientReference,
 		URL:        "https://healthcloud.co.ke",
 		Display:    "Test User",
 		Identifier: &identifier,
@@ -186,7 +186,7 @@ func AccountPayload() []*FHIRReferenceInput {
 	return []*FHIRReferenceInput{SingleFHIRReferencePayload(ref)}
 }
 
-func getEpisodeOfCarePayload() FHIREpisodeOfCareInput {
+func getEpisodeOfCarePayload(patientID string) FHIREpisodeOfCareInput {
 	var status EpisodeOfCareStatusEnum = "active"
 
 	return FHIREpisodeOfCareInput{
@@ -195,7 +195,7 @@ func getEpisodeOfCarePayload() FHIREpisodeOfCareInput {
 		StatusHistory:        EpisodeofcareStatushistoryPayload(),
 		Type:                 EpisodeOfCareType(),
 		Diagnosis:            []*FHIREpisodeofcareDiagnosisInput{SingleEpisodeofcareDiagnosisPayload()},
-		Patient:              episodeOfCarePatient(),
+		Patient:              episodeOfCarePatient(patientID),
 		ManagingOrganization: episodeOfCareOrganisation(),
 		Period:               SingleFHIRPeriodPayload(),
 		ReferralRequest:      referralRequestPayload(),
@@ -208,7 +208,9 @@ func getEpisodeOfCarePayload() FHIREpisodeOfCareInput {
 // CreateFHIREpisodeOfCarePayload - create an episode of care
 func CreateFHIREpisodeOfCarePayload(t *testing.T) FHIREpisodeOfCareRelayPayload {
 	service := NewService()
-	episodeOfCarePayload := getEpisodeOfCarePayload()
+	createdPatient := CreateTestFHIRPatient(t)
+	patientID := *createdPatient.Resource.ID
+	episodeOfCarePayload := getEpisodeOfCarePayload(patientID)
 	ctx := context.Background()
 	ep, err := service.CreateFHIREpisodeOfCare(ctx, episodeOfCarePayload)
 	if err != nil {
@@ -226,11 +228,4 @@ func GetTestFHIREpisodeOfCare(t *testing.T, id string) FHIREpisodeOfCareRelayPay
 		t.Fatalf("unable to retrieve the episode of care %s: ", err)
 	}
 	return *ep
-}
-
-func TestService_GetCreateFHIREpisodeOfCare(t *testing.T) {
-	episodeOfCare := CreateFHIREpisodeOfCarePayload(t)
-	episodeOfCareID := *episodeOfCare.Resource.ID
-	ep := GetTestFHIREpisodeOfCare(t, episodeOfCareID)
-	assert.NotNil(t, ep)
 }

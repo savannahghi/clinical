@@ -2,6 +2,7 @@ package clinical
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -301,7 +302,7 @@ func EncounterLocationPayload() *FHIREncounterLocationInput {
 	}
 }
 
-func encounterEpisodeOfCare() []*FHIRReferenceInput {
+func encounterEpisodeOfCare(episodeID string) []*FHIRReferenceInput {
 	identifier := SingleIdentifierInput{
 		IdentifierUse: "official",
 		Value:         "Visit",
@@ -310,16 +311,17 @@ func encounterEpisodeOfCare() []*FHIRReferenceInput {
 		Version:       "0.1",
 		Code:          "Visit",
 	}
+	epReference := "EpisodeOfCare/" + episodeID
 	ref := ReferenceInput{
-		Reference:  "https://healthcloud.co.ke",
-		URL:        "https://healthcloud.co.ke",
+		Reference:  epReference,
+		URL:        "EpisodeOfCare",
 		Display:    "Visit",
 		Identifier: &identifier,
 	}
 	return []*FHIRReferenceInput{SingleFHIRReferencePayload(ref)}
 }
 
-func encounterSubject() *FHIRReferenceInput {
+func encounterSubject(patientID string) *FHIRReferenceInput {
 	identifier := SingleIdentifierInput{
 		IdentifierUse: "official",
 		Value:         "+254723002959",
@@ -329,8 +331,8 @@ func encounterSubject() *FHIRReferenceInput {
 		Code:          "msisdn",
 	}
 	ref := ReferenceInput{
-		Reference:  "https://healthcloud.co.ke",
-		URL:        "https://healthcloud.co.ke",
+		Reference:  patientID,
+		URL:        "Patient",
 		Display:    "Patient",
 		Identifier: &identifier,
 	}
@@ -409,6 +411,7 @@ func encounterServiceProvider() *FHIRReferenceInput {
 	return SingleFHIRReferencePayload(ref)
 }
 
+// Another Encounter this encounter is part of
 func encounterPartOf() *FHIRReferenceInput {
 	identifier := SingleIdentifierInput{
 		IdentifierUse: "official",
@@ -428,9 +431,11 @@ func encounterPartOf() *FHIRReferenceInput {
 }
 
 // GetEncounterPayload - compose an FHIR Encounter payload
-func GetEncounterPayload() FHIREncounterInput {
+func GetEncounterPayload(ep FHIREpisodeOfCareRelayPayload) FHIREncounterInput {
 	var status EncounterStatusEnum = "planned"
 	// var reason base.Code = "Spontaneous abortion with laceration of cervix"
+	patientID := *ep.Resource.Patient.Reference
+	episodeID := *ep.Resource.ID
 	return FHIREncounterInput{
 		Identifier:    IdentifierPayload(),
 		Status:        status,
@@ -440,8 +445,8 @@ func GetEncounterPayload() FHIREncounterInput {
 		Type:          EncounterTypePayload(),
 		ServiceType:   EncounterServiceTypePayload(),
 		Priority:      EncounterPriorityPayload(),
-		Subject:       encounterSubject(),       // The patient
-		EpisodeOfCare: encounterEpisodeOfCare(), //Episode(s) of care that this encounter should be recorded against
+		Subject:       encounterSubject(patientID),       // The patient
+		EpisodeOfCare: encounterEpisodeOfCare(episodeID), //Episode(s) of care that this encounter should be recorded against
 		BasedOn:       encounterBasedOn(),
 		Participant:   []*FHIREncounterParticipantInput{EncounterParticipantPayload()},
 		Appointment:   encounterAppointment(),
@@ -457,13 +462,33 @@ func GetEncounterPayload() FHIREncounterInput {
 		PartOf:          encounterPartOf(),
 	}
 }
+
+/**
+ When an EpisodeOfCare has been started/created
+ Given one or more encounters have been added to it
+ When i search encounters for the specified patient
+ Then it should return a number of encounters
+**/
 func TestService_CreateFHIREncounter(t *testing.T) {
 	service := NewService()
-	encounterPayload := GetEncounterPayload()
+	ep := CreateFHIREpisodeOfCarePayload(t)
+	encounterPayload := GetEncounterPayload(ep)
 	ctx := context.Background()
 	encounter, err := service.CreateFHIREncounter(ctx, encounterPayload)
 	if err != nil {
-		t.Fatalf("unable to create patient resource %s: ", err)
+		t.Fatalf("unable to create encounter resource %s: ", err)
 	}
 	assert.NotNil(t, encounter)
+	encounterSearchParams := map[string]interface{}{
+		"patient": fmt.Sprintf(*ep.Resource.Patient.Reference),
+		"_sort":   "date",
+		"count":   "1",
+	}
+	encounterConnection, err := service.SearchFHIREncounter(ctx, encounterSearchParams)
+	if err != nil {
+		t.Fatalf("unable to search patient encounter resource %s: ", err)
+	}
+	if len(encounterConnection.Edges) == 0 {
+		t.Fatalf("unable to get patient encounter resource %s: ", err)
+	}
 }
