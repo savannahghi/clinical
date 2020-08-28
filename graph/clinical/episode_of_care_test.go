@@ -68,7 +68,7 @@ func SingleEpisodeofcareDiagnosisPayload() *FHIREpisodeofcareDiagnosisInput {
 func EpisodeOfCareType() []*FHIRCodeableConceptInput {
 	display := "Post Acute Care"
 	var code base.Code = "pac"
-	text := "EpisodeOfCare"
+	text := "FULL_ACCESS" // This should be the access level type
 	codeableConcept := SingleCodeableConceptPayload(code, display, text)
 	return []*FHIRCodeableConceptInput{codeableConcept}
 

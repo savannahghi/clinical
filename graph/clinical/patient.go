@@ -41,7 +41,7 @@ func (s Service) GetFHIRPatient(ctx context.Context, id string) (*FHIRPatientRel
 
 	hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
 	if err != nil {
-		return nil, fmt.Errorf("unable to get open episodes for patieht %#v: %w", resource, err)
+		return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
 	}
 	payload := &FHIRPatientRelayPayload{
 		Resource:        &resource,
@@ -88,7 +88,7 @@ func (s Service) SearchFHIRPatient(ctx context.Context, params map[string]interf
 		}
 		hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
 		if err != nil {
-			return nil, fmt.Errorf("unable to get open episodes for patieht %#v: %w", resource, err)
+			return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
 		}
 		output.Edges = append(output.Edges, &FHIRPatientRelayEdge{
 			Node:            &resource,
@@ -250,7 +250,7 @@ func (s Service) UpdateFHIRPatient(ctx context.Context, input FHIRPatientInput) 
 
 	hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
 	if err != nil {
-		return nil, fmt.Errorf("unable to get open episodes for patieht %#v: %w", resource, err)
+		return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
 	}
 	output := &FHIRPatientRelayPayload{
 		Resource:        &resource,

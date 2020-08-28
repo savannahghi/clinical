@@ -701,3 +701,52 @@ func TestService_RequestUSSDPatientProfile(t *testing.T) {
 		})
 	}
 }
+
+func TestFHIRPatient_RenderFullHistory(t *testing.T) {
+	type fields struct {
+		ID *string
+	}
+	type args struct {
+		ctx             context.Context
+		clinicalService *Service
+	}
+	ctx := context.Background()
+	service := NewService()
+
+	ep := CreateFHIREpisodeOfCarePayload(t)
+	encounterPayload := GetEncounterPayload(ep)
+	encounter, err := service.CreateFHIREncounter(ctx, encounterPayload)
+	if err != nil {
+		t.Fatalf("unable to create patient resource %s: ", err)
+	}
+
+	subjectReference := *encounter.Resource.Subject.Reference
+	reference := strings.Split(subjectReference, "/")[1:]
+	patientID := strings.Join(reference, " ")
+
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name: "render full history data good case",
+			fields: fields{
+				ID: &patientID,
+			},
+			args: args{
+				ctx:             ctx,
+				clinicalService: service,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := FHIRPatient{
+				ID: tt.fields.ID,
+			}
+			got := p.RenderFullHistory(tt.args.ctx, tt.args.clinicalService)
+			assert.NotNil(t, got)
+		})
+	}
+}

@@ -93,7 +93,7 @@ func (s Service) RequestUSSDFullHistory(
 	summary := fmt.Sprintf(
 		"%s\n\nPlease access your clinical history at %s", name, shortURL)
 
-	RenderFullHistory := patient.RenderFullHistory(ctx, &s) // Returns make([]map[string]interface{}, 0)
+	RenderFullHistory := patient.RenderFullHistory(ctx, &s)
 	fullHistory := map[string]interface{}{
 		"fullHistory": RenderFullHistory,
 	}
@@ -369,7 +369,7 @@ func (p FHIRPatient) RenderFullHistory(ctx context.Context, clinicalService *Ser
 	episodeSearchParams := map[string]interface{}{
 		"patient": fmt.Sprintf("Patient/%s", *p.ID),
 		"_sort":   "date",
-		"count":   1,
+		"count":   strconv.Itoa(1),
 	}
 	defaultEpisodeSummary := make([]map[string]interface{}, 0)
 	episodeConnection, err := clinicalService.SearchFHIREpisodeOfCare(ctx, episodeSearchParams)
