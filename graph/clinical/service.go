@@ -643,7 +643,7 @@ func (s Service) sendAlertEndEpisode(ctx context.Context, patientID string) erro
 	for _, contact := range patientContacts {
 		if *contact.System == ContactPointSystemEnumPhone {
 
-			message := createAlertMessage(patientName)
+			message := composeAlertMessage(patientName)
 			_, err := s.smsRepository.Send(*contact.Value, message)
 			if err != nil {
 				return err
@@ -656,7 +656,7 @@ func (s Service) sendAlertEndEpisode(ctx context.Context, patientID string) erro
 }
 
 //createAlertMessage Create a nice message to be sent.
-func createAlertMessage(names []*FHIRHumanName) string {
+func composeAlertMessage(names []*FHIRHumanName) string {
 	if names == nil {
 		return ""
 	}
