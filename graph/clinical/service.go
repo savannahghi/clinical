@@ -625,6 +625,9 @@ func (s Service) EndEpisode(
 
 	patientID := *episodePayload.Resource.Patient.ID
 	s.sendAlertEndEpisode(ctx, patientID)
+	if err != nil {
+		return false, err
+	}
 
 	return true, nil
 }
