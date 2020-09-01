@@ -14,6 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/cloudhealth/cloudhealth"
+	"gitlab.slade360emr.com/go/sms/graph/sms"
 )
 
 const (
@@ -30,12 +31,14 @@ const (
 // NewService initializes a new clinical service
 func NewService() *Service {
 	clinicalRepository := cloudhealth.NewService()
-	return &Service{clinicalRepository: clinicalRepository}
+	smsRepository := sms.NewService()
+	return &Service{clinicalRepository: clinicalRepository, smsRepository: smsRepository}
 }
 
 // Service is a clinical service
 type Service struct {
 	clinicalRepository *cloudhealth.Service
+	smsRepository      *sms.Service
 }
 
 func (s Service) checkPreconditions() {
@@ -619,5 +622,46 @@ func (s Service) EndEpisode(
 	if err != nil {
 		return false, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
 	}
+
+	patientID := *episodePayload.Resource.Patient.ID
+	s.sendAlertEndEpisode(ctx, patientID)
+
 	return true, nil
+}
+
+func (s Service) sendAlertEndEpisode(ctx context.Context, patientID string) error {
+	patientPayload, err := s.GetFHIRPatient(ctx, patientID)
+	if err != nil {
+		return err
+	}
+
+	patientName := patientPayload.Resource.Name
+	patientContacts := patientPayload.Resource.Telecom
+	for _, contact := range patientContacts {
+		if *contact.System == ContactPointSystemEnumPhone {
+
+			message := createAlertMessage(patientName)
+			_, err := s.smsRepository.Send(*contact.Value, message)
+			if err != nil {
+				return err
+			}
+
+		}
+	}
+
+	return err
+}
+
+//createAlertMessage Create a nice message to be sent.
+func createAlertMessage(names []*FHIRHumanName) string {
+	if names == nil {
+		return ""
+	}
+	contactName := names[0].Text
+
+	text := fmt.Sprintf(
+		"Dear %s. Your Episode of Care was successfully closed ",
+		contactName,
+	)
+	return text
 }

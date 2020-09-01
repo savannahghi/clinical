@@ -13,7 +13,6 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.4
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
@@ -25,6 +24,6 @@ require (
 	github.com/vektah/gqlparser/v2 v2.0.1
 	gitlab.slade360emr.com/go/base v0.0.29
 	gitlab.slade360emr.com/go/cloudhealth v0.0.3
-	gopkg.in/yaml.v2 v2.3.0 // indirect
+	gitlab.slade360emr.com/go/sms v0.0.6
 	jaytaylor.com/html2text v0.0.0-20200412013138-3577fbdbcff7
 )
