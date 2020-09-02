@@ -596,7 +596,14 @@ func (s Service) EndEpisode(
 	if err != nil {
 		return false, fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
 	}
+	
+	encounterConn, err := s.GetFHIREncounter(ctx, episodeID)
+	if err != nil {
+		return false, fmt.Errorf("unable to get encounter linked to episode with ID %s: %w", episodeID, err)
+	}
+	encounterID := *encounterConn.Resource.ID
 
+	s.EndEncounter(ctx, encounterID)
 	startTime := base.DateTime(time.Now().Format(timeFormatStr))
 	if episodePayload.Resource.Period != nil {
 		startTime = episodePayload.Resource.Period.Start
