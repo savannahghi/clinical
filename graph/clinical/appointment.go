@@ -155,6 +155,21 @@ func (s Service) DeleteFHIRAppointment(ctx context.Context, id string) (bool, er
 	return true, nil
 }
 
+// ListAppointments filter appointments by their provider code
+func (s Service) ListAppointments(ctx context.Context, providerSladeCode int) (*FHIRAppointmentRelayConnection, error) {
+	s.checkPreconditions()
+	organizaionID, err := s.GetORCreateOrganization(ctx, providerSladeCode)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"internal server error in retrieving organisation : %v", err)
+	}
+	params := map[string]interface{}{
+		"identifier": *organizaionID,
+	}
+	return s.SearchFHIRAppointment(ctx, params)
+
+}
+
 // FHIRAppointment definition: a booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. this may result in one or more encounter(s).
 type FHIRAppointment struct {
 	// The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
@@ -191,7 +206,7 @@ type FHIRAppointment struct {
 	ReasonReference []*FHIRReference `json:"reasonReference,omitempty"`
 
 	// The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).
-	Priority *string `json:"priority,omitempty"`
+	Priority *int `json:"priority,omitempty"`
 
 	// The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.
 	Description *string `json:"description,omitempty"`
@@ -206,7 +221,7 @@ type FHIRAppointment struct {
 	End *base.Instant `json:"end,omitempty"`
 
 	// Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a 30 minute appointment is being requested, but any time would work.  Also, if there is, for example, a planned 15 minute break in the middle of a long appointment, the duration may be 15 minutes less than the difference between the start and end.
-	MinutesDuration *string `json:"minutesDuration,omitempty"`
+	MinutesDuration *int `json:"minutesDuration,omitempty"`
 
 	// The slots from the participants' schedules that will be filled by the appointment.
 	Slot []*FHIRReference `json:"slot,omitempty"`
@@ -265,7 +280,7 @@ type FHIRAppointmentInput struct {
 	ReasonReference []*FHIRReferenceInput `json:"reasonReference,omitempty"`
 
 	// The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).
-	Priority *string `json:"priority,omitempty"`
+	Priority *int `json:"priority,omitempty"`
 
 	// The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.
 	Description *string `json:"description,omitempty"`
@@ -280,7 +295,7 @@ type FHIRAppointmentInput struct {
 	End *base.Instant `json:"end,omitempty"`
 
 	// Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a 30 minute appointment is being requested, but any time would work.  Also, if there is, for example, a planned 15 minute break in the middle of a long appointment, the duration may be 15 minutes less than the difference between the start and end.
-	MinutesDuration *string `json:"minutesDuration,omitempty"`
+	MinutesDuration *int `json:"minutesDuration,omitempty"`
 
 	// The slots from the participants' schedules that will be filled by the appointment.
 	Slot []*FHIRReferenceInput `json:"slot,omitempty"`

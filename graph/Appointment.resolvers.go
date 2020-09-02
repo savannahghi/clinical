@@ -33,3 +33,8 @@ func (r *queryResolver) SearchFHIRAppointment(ctx context.Context, params map[st
 	r.CheckDependencies()
 	return r.clinicalService.SearchFHIRAppointment(ctx, params)
 }
+
+func (r *queryResolver) ListAppointments(ctx context.Context, providerSladeCode int) (*clinical.FHIRAppointmentRelayConnection, error) {
+	r.CheckDependencies()
+	return r.clinicalService.ListAppointments(ctx, providerSladeCode)
+}

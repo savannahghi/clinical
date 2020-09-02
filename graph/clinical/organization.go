@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
@@ -150,6 +151,66 @@ func (s Service) DeleteFHIROrganization(ctx context.Context, id string) (bool, e
 		)
 	}
 	return true, nil
+}
+
+// GetOrganization retrieves an organization given its code
+func (s Service) GetOrganization(ctx context.Context, providerSladeCode int) (*string, error) {
+	s.checkPreconditions()
+	providerCode := strconv.Itoa(providerSladeCode)
+	searchParam := map[string]interface{}{
+		"identifier": providerCode,
+	}
+	organization, err := s.SearchFHIROrganization(ctx, searchParam)
+	if err != nil {
+		return nil, err
+	}
+	if organization.Edges == nil {
+		return nil, nil
+	}
+	ORGID := organization.Edges[0].Node.ID
+	return ORGID, nil
+
+}
+
+// CreateOrganization creates an organization given ist provider code
+func (s Service) CreateOrganization(ctx context.Context, providerSladeCode int) (*string, error) {
+	s.checkPreconditions()
+	providerCode := strconv.Itoa(providerSladeCode)
+	identifier := []*FHIRIdentifierInput{
+		{
+			Use:   "official",
+			Value: providerCode,
+		},
+	}
+	organizationInput := FHIROrganizationInput{
+		Identifier: identifier,
+		Name:       &providerCode,
+	}
+	createdOrganization, err := s.CreateFHIROrganization(ctx, organizationInput)
+	if err != nil {
+		return nil, err
+	}
+	organisationID := createdOrganization.Resource.ID
+	return organisationID, nil
+}
+
+// GetORCreateOrganization retrieve an organisation via its code if not found create a new one.
+func (s Service) GetORCreateOrganization(ctx context.Context, providerSladeCode int) (*string, error) {
+	s.checkPreconditions()
+	retrievedOrg, err := s.GetOrganization(ctx, providerSladeCode)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"internal server error in getting organisation : %v", err)
+	}
+	if retrievedOrg == nil {
+		createdOrg, err := s.CreateOrganization(ctx, providerSladeCode)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"internal server error in creating organisation : %v", err)
+		}
+		return createdOrg, nil
+	}
+	return retrievedOrg, nil
 }
 
 // FHIROrganization definition: The organization (facility) responsible for this organization

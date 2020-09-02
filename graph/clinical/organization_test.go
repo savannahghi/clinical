@@ -75,6 +75,20 @@ func invalidOrganizationPayload() FHIROrganizationInput {
 		Address:    AddressPayload(),
 	}
 }
+
+// CreateTestOrganization - helper to create a test organization in FHIR
+func CreateTestOrganization(t *testing.T) *FHIROrganizationRelayPayload {
+	ctx := context.Background()
+	service := NewService()
+	// create an organization
+	orgPayload := validOrganizationPayload()
+	res, err := service.CreateFHIROrganization(ctx, orgPayload)
+	if err != nil {
+		t.Fatalf("unable to create organization resource %s: ", err)
+	}
+	return res
+}
+
 func TestService_CreateFHIROrganization(t *testing.T) {
 	ctx := context.Background()
 	service := NewService()
@@ -123,7 +137,7 @@ func TestService_GetFHIROrganization(t *testing.T) {
 	orgPayload := validOrganizationPayload()
 	res, err := service.CreateFHIROrganization(ctx, orgPayload)
 	if err != nil {
-		t.Fatalf("unable to search patient resource %s: ", err)
+		t.Fatalf("unable to search organization resource %s: ", err)
 	}
 	type args struct {
 		ctx context.Context
@@ -169,7 +183,7 @@ func TestService_SearchFHIROrganization(t *testing.T) {
 	orgPayload := validOrganizationPayload()
 	res, err := service.CreateFHIROrganization(ctx, orgPayload)
 	if err != nil {
-		t.Fatalf("unable to search patient resource %s: ", err)
+		t.Fatalf("unable to search organization resource %s: ", err)
 	}
 	validSearchParams := map[string]interface{}{
 		"name": *res.Resource.Name,
@@ -219,7 +233,7 @@ func TestService_UpdateFHIROrganization(t *testing.T) {
 	orgPayload := validOrganizationPayload()
 	res, err := service.CreateFHIROrganization(ctx, orgPayload)
 	if err != nil {
-		t.Fatalf("unable to search patient resource %s: ", err)
+		t.Fatalf("unable to create organization resource %s: ", err)
 	}
 	// deactivate the created organization
 	organizationID := *res.Resource.ID
@@ -263,7 +277,7 @@ func TestService_DeleteFHIROrganization(t *testing.T) {
 	orgPayload := validOrganizationPayload()
 	organization, err := service.CreateFHIROrganization(ctx, orgPayload)
 	if err != nil {
-		t.Fatalf("unable to search patient resource %s: ", err)
+		t.Fatalf("unable to search organization resource %s: ", err)
 	}
 	type args struct {
 		ctx context.Context

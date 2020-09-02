@@ -3,7 +3,6 @@ package clinical
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -801,9 +800,9 @@ func TestService_SearchFHIREpisodeOfCare(t *testing.T) {
 		t.Errorf("CreateFHIREpisodeOfCare() error = %v", err)
 		return
 	}
-
+	patientID := *patient.Resource.ID
 	episodeOfCareSearchParams := map[string]interface{}{
-		"patient": fmt.Sprintf(*patient.Resource.ID),
+		"patient": patientID,
 		"_sort":   "date",
 		"_count":  "1",
 	}

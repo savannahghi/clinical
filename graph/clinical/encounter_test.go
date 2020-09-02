@@ -2,7 +2,6 @@ package clinical
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -479,8 +478,9 @@ func TestService_CreateFHIREncounter(t *testing.T) {
 		t.Fatalf("unable to create encounter resource %s: ", err)
 	}
 	assert.NotNil(t, encounter)
+	patientID := *ep.Resource.Patient.Reference
 	encounterSearchParams := map[string]interface{}{
-		"patient": fmt.Sprintf(*ep.Resource.Patient.Reference),
+		"patient": patientID,
 		"_sort":   "date",
 		"count":   "1",
 	}

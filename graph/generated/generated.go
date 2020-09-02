@@ -7287,7 +7287,7 @@ input FHIRAppointmentInput {
   """
   The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).
   """
-  Priority: UnsignedInt
+  Priority: Int
   """
   The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.
   """
@@ -7307,7 +7307,7 @@ input FHIRAppointmentInput {
   """
   Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a 30 minute appointment is being requested, but any time would work.  Also, if there is, for example, a planned 15 minute break in the middle of a long appointment, the duration may be 15 minutes less than the difference between the start and end.
   """
-  MinutesDuration: PositiveInt
+  MinutesDuration: Int
   """
   The slots from the participants' schedules that will be filled by the appointment.
   """
@@ -7467,7 +7467,7 @@ type FHIRAppointment {
   """
   The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).
   """
-  Priority: UnsignedInt
+  Priority: Int
 
   """
   The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.
@@ -7492,7 +7492,7 @@ type FHIRAppointment {
   """
   Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a 30 minute appointment is being requested, but any time would work.  Also, if there is, for example, a planned 15 minute break in the middle of a long appointment, the duration may be 15 minutes less than the difference between the start and end.
   """
-  MinutesDuration: PositiveInt
+  MinutesDuration: Int
 
   """
   The slots from the participants' schedules that will be filled by the appointment.
@@ -13992,7 +13992,7 @@ enum PractitionerSpecialty {
   NEUROSURGERY
   OBSTETRICS_AND_GYNAECOLOGY
   OCCUPATIONAL_MEDICINE
-  OPTHALMOLOGY
+  OPHTHALMOLOGY
   ORTHOPAEDIC_SURGERY
   ONCOLOGY
   ONCOLOGY_RADIOTHERAPY
@@ -17297,9 +17297,9 @@ func (ec *executionContext) _FHIRAppointment_Priority(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOUnsignedInt2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAppointment_Description(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
@@ -17452,9 +17452,9 @@ func (ec *executionContext) _FHIRAppointment_MinutesDuration(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOPositiveInt2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAppointment_Slot(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
@@ -40883,7 +40883,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
-			it.Priority, err = ec.unmarshalOUnsignedInt2ᚖstring(ctx, v)
+			it.Priority, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40923,7 +40923,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MinutesDuration"))
-			it.MinutesDuration, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
+			it.MinutesDuration, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}

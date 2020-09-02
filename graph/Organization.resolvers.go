@@ -33,3 +33,21 @@ func (r *queryResolver) SearchFHIROrganization(ctx context.Context, params map[s
 	r.CheckDependencies()
 	return r.clinicalService.SearchFHIROrganization(ctx, params)
 }
+
+func (r *queryResolver) GetROrganization(ctx context.Context, providerSladeCode int) (*string, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.GetOrganization(ctx, providerSladeCode)
+}
+
+func (r *queryResolver) CreateOrganization(ctx context.Context, providerSladeCode int) (*string, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.CreateOrganization(ctx, providerSladeCode)
+}
+
+func (r *queryResolver) GetORCreateOrganization(ctx context.Context, providerSladeCode int) (*string, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.GetORCreateOrganization(ctx, providerSladeCode)
+}
