@@ -644,15 +644,23 @@ func (s Service) sendAlertEndEpisode(ctx context.Context, patientID string) erro
 		if *contact.System == ContactPointSystemEnumPhone {
 
 			message := composeAlertMessage(patientName)
+			phone := *contact.Value
+
+			if phone == "" {
+				continue
+			}
 			_, err := s.smsRepository.Send(*contact.Value, message)
 			if err != nil {
 				return err
 			}
 
+			return nil
+
 		}
 	}
 
-	return err
+	log.Panicf("Patient does not have a Phone Number")
+	return nil
 }
 
 //createAlertMessage Create a nice message to be sent.
@@ -663,7 +671,7 @@ func composeAlertMessage(names []*FHIRHumanName) string {
 	contactName := names[0].Text
 
 	text := fmt.Sprintf(
-		"Dear %s. Your Episode of Care was successfully closed ",
+		"Dear %s. Your Episode of Care was successfully closed.",
 		contactName,
 	)
 	return text
