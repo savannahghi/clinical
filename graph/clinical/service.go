@@ -624,7 +624,7 @@ func (s Service) EndEpisode(
 	}
 
 	patientID := *episodePayload.Resource.Patient.ID
-	err = s.sendAlertEndEpisode(ctx, patientID)
+	err = s.sendEpisodeEndAlert(ctx, patientID)
 	if err != nil {
 		return false, err
 	}
@@ -632,7 +632,7 @@ func (s Service) EndEpisode(
 	return true, nil
 }
 
-func (s Service) sendAlertEndEpisode(ctx context.Context, patientID string) error {
+func (s Service) sendEpisodeEndAlert(ctx context.Context, patientID string) error {
 	patientPayload, err := s.GetFHIRPatient(ctx, patientID)
 	if err != nil {
 		return err
@@ -671,7 +671,7 @@ func composeAlertMessage(names []*FHIRHumanName) string {
 	contactName := names[0].Text
 
 	text := fmt.Sprintf(
-		"Dear %s. Your Episode of Care was successfully closed.",
+		"Dear %s. Your visit was successfully closed.",
 		contactName,
 	)
 	return text
