@@ -461,11 +461,20 @@ func LastVisitHandlerFunc(ctx context.Context, clinicalService *Service) http.Ha
 			_ = invalidTemplate.Execute(w, invalidTemplateData)
 		}
 		patient := payload.Resource
+		name := patient.RenderOfficialName()
+		addresses := patient.RenderAddresses()
+		age := patient.RenderAge()
 		templateData := struct {
 			ID           string
+			Name         base.Markdown
+			Addresses    base.Markdown
+			Age          base.Markdown
 			VisitSummary map[string]interface{}
 		}{
 			ID:           id,
+			Name:         name,
+			Addresses:    addresses,
+			Age:          age,
 			VisitSummary: patient.RenderVisitSummary(ctx, clinicalService),
 		}
 		t := template.Must(template.New("visit").Parse(lastVisitTemplate))
@@ -491,11 +500,20 @@ func FullHistoryHandlerFunc(ctx context.Context, clinicalService *Service) http.
 			_ = invalidTemplate.Execute(w, invalidTemplateData)
 		}
 		patient := payload.Resource
+		name := patient.RenderOfficialName()
+		addresses := patient.RenderAddresses()
+		age := patient.RenderAge()
 		templateData := struct {
 			ID          string
+			Name        base.Markdown
+			Addresses   base.Markdown
+			Age         base.Markdown
 			FullHistory []map[string]interface{}
 		}{
 			ID:          id,
+			Name:        name,
+			Addresses:   addresses,
+			Age:         age,
 			FullHistory: patient.RenderFullHistory(ctx, clinicalService),
 		}
 		t := template.Must(template.New("history").Parse(fullHistoryTemplate))
