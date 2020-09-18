@@ -372,19 +372,3 @@ type FHIRAllergyIntoleranceRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRAllergyIntolerance(id: ID!): FHIRAllergyIntoleranceRelayPayload!
-  searchFHIRAllergyIntolerance(
-    params: Map!
-  ): FHIRAllergyIntoleranceRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRAllergyIntolerance(
-    input: FHIRAllergyIntoleranceInput!
-  ): FHIRAllergyIntoleranceRelayPayload!
-  updateFHIRAllergyIntolerance(
-    input: FHIRAllergyIntoleranceInput!
-  ): FHIRAllergyIntoleranceRelayPayload!
-  deleteFHIRAllergyIntolerance(id: ID!): Boolean!
-}

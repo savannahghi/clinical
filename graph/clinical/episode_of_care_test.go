@@ -222,17 +222,6 @@ func CreateFHIREpisodeOfCarePayload(t *testing.T) FHIREpisodeOfCareRelayPayload 
 	return *ep
 }
 
-// GetTestFHIREpisodeOfCare - retrieve a created test patient in FHIR
-func GetTestFHIREpisodeOfCare(t *testing.T, id string) FHIREpisodeOfCareRelayPayload {
-	service := NewService()
-	ctx := context.Background()
-	ep, err := service.GetFHIREpisodeOfCare(ctx, id)
-	if err != nil {
-		t.Fatalf("unable to retrieve the episode of care %s: ", err)
-	}
-	return *ep
-}
-
 func TestEpisodeOfCareStatusEnum_IsValid(t *testing.T) {
 	const unplanned EpisodeOfCareStatusEnum = "unplanned"
 	tests := []struct {

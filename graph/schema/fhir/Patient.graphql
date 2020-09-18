@@ -411,13 +411,3 @@ type FHIRPatientRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRPatient(id: ID!): FHIRPatientRelayPayload!
-  searchFHIRPatient(params: Map!): FHIRPatientRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRPatient(input: FHIRPatientInput!): FHIRPatientRelayPayload!
-  updateFHIRPatient(input: FHIRPatientInput!): FHIRPatientRelayPayload!
-  deleteFHIRPatient(id: ID!): Boolean!
-}

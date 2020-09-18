@@ -110,13 +110,3 @@ type FHIROrganizationRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIROrganization(id: ID!): FHIROrganizationRelayPayload!
-  searchFHIROrganization(params: Map!): FHIROrganizationRelayConnection!
-}
-
-extend type Mutation {
-  createFHIROrganization(input: FHIROrganizationInput!): FHIROrganizationRelayPayload!
-  updateFHIROrganization(input: FHIROrganizationInput!): FHIROrganizationRelayPayload!
-  deleteFHIROrganization(id: ID!): Boolean!
-}

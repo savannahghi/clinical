@@ -76,19 +76,6 @@ func invalidOrganizationPayload() FHIROrganizationInput {
 	}
 }
 
-// CreateTestOrganization - helper to create a test organization in FHIR
-func CreateTestOrganization(t *testing.T) *FHIROrganizationRelayPayload {
-	ctx := context.Background()
-	service := NewService()
-	// create an organization
-	orgPayload := validOrganizationPayload()
-	res, err := service.CreateFHIROrganization(ctx, orgPayload)
-	if err != nil {
-		t.Fatalf("unable to create organization resource %s: ", err)
-	}
-	return res
-}
-
 func TestService_CreateFHIROrganization(t *testing.T) {
 	ctx := context.Background()
 	service := NewService()

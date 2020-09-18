@@ -621,13 +621,3 @@ type FHIREncounterRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIREncounter(id: ID!): FHIREncounterRelayPayload!
-  searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
-}
-
-extend type Mutation {
-  createFHIREncounter(input: FHIREncounterInput!): FHIREncounterRelayPayload!
-  updateFHIREncounter(input: FHIREncounterInput!): FHIREncounterRelayPayload!
-  deleteFHIREncounter(id: ID!): Boolean!
-}

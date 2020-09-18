@@ -453,17 +453,3 @@ type FHIRCompositionRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRComposition(id: ID!): FHIRCompositionRelayPayload!
-  searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRComposition(
-    input: FHIRCompositionInput!
-  ): FHIRCompositionRelayPayload!
-  updateFHIRComposition(
-    input: FHIRCompositionInput!
-  ): FHIRCompositionRelayPayload!
-  deleteFHIRComposition(id: ID!): Boolean!
-}

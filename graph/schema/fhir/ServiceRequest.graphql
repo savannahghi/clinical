@@ -389,17 +389,3 @@ type FHIRServiceRequestRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRServiceRequest(id: ID!): FHIRServiceRequestRelayPayload!
-  searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRServiceRequest(
-    input: FHIRServiceRequestInput!
-  ): FHIRServiceRequestRelayPayload!
-  updateFHIRServiceRequest(
-    input: FHIRServiceRequestInput!
-  ): FHIRServiceRequestRelayPayload!
-  deleteFHIRServiceRequest(id: ID!): Boolean!
-}

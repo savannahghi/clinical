@@ -349,17 +349,3 @@ type FHIRAppointmentRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRAppointment(id: ID!): FHIRAppointmentRelayPayload!
-  searchFHIRAppointment(params: Map!): FHIRAppointmentRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  updateFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  deleteFHIRAppointment(id: ID!): Boolean!
-}

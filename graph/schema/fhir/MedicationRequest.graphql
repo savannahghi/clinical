@@ -521,19 +521,3 @@ type FHIRMedicationRequestRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRMedicationRequest(id: ID!): FHIRMedicationRequestRelayPayload!
-  searchFHIRMedicationRequest(
-    params: Map!
-  ): FHIRMedicationRequestRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRMedicationRequest(
-    input: FHIRMedicationRequestInput!
-  ): FHIRMedicationRequestRelayPayload!
-  updateFHIRMedicationRequest(
-    input: FHIRMedicationRequestInput!
-  ): FHIRMedicationRequestRelayPayload!
-  deleteFHIRMedicationRequest(id: ID!): Boolean!
-}

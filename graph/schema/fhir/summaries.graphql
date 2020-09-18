@@ -25,25 +25,4 @@ type USSDMedicalHistoryClinicalResponse {
   fullHistory: Map!
 }
 
-extend type Query {
-  allergySummary(patientID: String!): [String!]!
-  problemSummary(patientID: String!): [String!]!
-  requestUSSDFullHistory(
-    input: USSDClinicalRequest!
-  ): USSDMedicalHistoryClinicalResponse!
-  requestUSSDLastVisit(
-    input: USSDClinicalRequest!
-  ): USSDLastVisitClinicalResponse!
-  requestUSSDPatientProfile(
-    input: USSDClinicalRequest!
-  ): USSDPatientProfileClinicalResponse!
-  patientTimeline(episodeID: String!): [Map!]!
-  patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
-  visitSummary(encounterID: String!): Map!
-}
 
-extend type Mutation {
-  startEncounter(episodeID: String!): String!
-  endEncounter(encounterID: String!): Boolean!
-  endEpisode(episodeID: String!): Boolean!
-}

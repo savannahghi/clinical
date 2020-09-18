@@ -8,15 +8,6 @@ import (
 	"gitlab.slade360emr.com/go/base"
 )
 
-// SingleEncounterStatushistoryPayload - compose an encounter status history payload
-func SingleEncounterStatushistoryPayload() FHIREncounterStatushistoryInput {
-	var status EncounterStatusHistoryStatusEnum = "planned"
-	return FHIREncounterStatushistoryInput{
-		Status: &status,
-		Period: SingleFHIRPeriodPayload(),
-	}
-}
-
 func encounterStatushistoryPayloadSecond() *FHIREncounterStatushistoryInput {
 	var status EncounterStatusHistoryStatusEnum = "planned"
 	return &FHIREncounterStatushistoryInput{
@@ -62,14 +53,6 @@ func encounterCodingPayload() *FHIRCodingInput {
 		Version:      &version,
 		Display:      display,
 		UserSelected: &userSelected,
-	}
-}
-
-// SigleEncounterClasshistoryPayload - compose a n encounter class history payload
-func SingleEncounterClasshistoryPayload() FHIREncounterClasshistoryInput {
-	return FHIREncounterClasshistoryInput{
-		Class:  encounterCodingPayload(),
-		Period: SingleFHIRPeriodPayload(),
 	}
 }
 

@@ -266,17 +266,3 @@ type FHIREpisodeOfCareRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIREpisodeOfCare(id: ID!): FHIREpisodeOfCareRelayPayload!
-  searchFHIREpisodeOfCare(params: Map!): FHIREpisodeOfCareRelayConnection!
-}
-
-extend type Mutation {
-  createFHIREpisodeOfCare(
-    input: FHIREpisodeOfCareInput!
-  ): FHIREpisodeOfCareRelayPayload!
-  updateFHIREpisodeOfCare(
-    input: FHIREpisodeOfCareInput!
-  ): FHIREpisodeOfCareRelayPayload!
-  deleteFHIREpisodeOfCare(id: ID!): Boolean!
-}

@@ -14,6 +14,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 	"gitlab.slade360emr.com/go/base"
@@ -38,6 +39,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Entity() EntityResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -46,6 +48,10 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Entity struct {
+		FindPageInfoByHasNextPage func(childComplexity int, hasNextPage bool) int
+	}
+
 	FHIRAddress struct {
 		City       func(childComplexity int) int
 		Country    func(childComplexity int) int
@@ -1050,10 +1056,8 @@ type ComplexityRoot struct {
 	}
 
 	PageInfo struct {
-		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
 		HasPreviousPage func(childComplexity int) int
-		StartCursor     func(childComplexity int) int
 	}
 
 	Query struct {
@@ -1087,6 +1091,8 @@ type ComplexityRoot struct {
 		SearchFHIRPatient            func(childComplexity int, params map[string]interface{}) int
 		SearchFHIRServiceRequest     func(childComplexity int, params map[string]interface{}) int
 		VisitSummary                 func(childComplexity int, encounterID string) int
+		__resolve__service           func(childComplexity int) int
+		__resolve_entities           func(childComplexity int, representations []map[string]interface{}) int
 	}
 
 	USSDLastVisitClinicalResponse struct {
@@ -1109,8 +1115,15 @@ type ComplexityRoot struct {
 		Summary        func(childComplexity int) int
 		Text           func(childComplexity int) int
 	}
+
+	Service struct {
+		SDL func(childComplexity int) int
+	}
 }
 
+type EntityResolver interface {
+	FindPageInfoByHasNextPage(ctx context.Context, hasNextPage bool) (*base.PageInfo, error)
+}
 type MutationResolver interface {
 	CreateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error)
 	UpdateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error)
@@ -1196,6 +1209,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Entity.findPageInfoByHasNextPage":
+		if e.complexity.Entity.FindPageInfoByHasNextPage == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findPageInfoByHasNextPage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindPageInfoByHasNextPage(childComplexity, args["hasNextPage"].(bool)), true
 
 	case "FHIRAddress.City":
 		if e.complexity.FHIRAddress.City == nil {
@@ -6277,13 +6302,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateFHIRServiceRequest(childComplexity, args["input"].(clinical.FHIRServiceRequestInput)), true
 
-	case "PageInfo.endCursor":
-		if e.complexity.PageInfo.EndCursor == nil {
-			break
-		}
-
-		return e.complexity.PageInfo.EndCursor(childComplexity), true
-
 	case "PageInfo.hasNextPage":
 		if e.complexity.PageInfo.HasNextPage == nil {
 			break
@@ -6297,13 +6315,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PageInfo.HasPreviousPage(childComplexity), true
-
-	case "PageInfo.startCursor":
-		if e.complexity.PageInfo.StartCursor == nil {
-			break
-		}
-
-		return e.complexity.PageInfo.StartCursor(childComplexity), true
 
 	case "Query.allergySummary":
 		if e.complexity.Query.AllergySummary == nil {
@@ -6665,6 +6676,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.VisitSummary(childComplexity, args["encounterID"].(string)), true
 
+	case "Query._service":
+		if e.complexity.Query.__resolve__service == nil {
+			break
+		}
+
+		return e.complexity.Query.__resolve__service(childComplexity), true
+
+	case "Query._entities":
+		if e.complexity.Query.__resolve_entities == nil {
+			break
+		}
+
+		args, err := ec.field_Query__entities_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.__resolve_entities(childComplexity, args["representations"].([]map[string]interface{})), true
+
 	case "USSDLastVisitClinicalResponse.shortLink":
 		if e.complexity.USSDLastVisitClinicalResponse.ShortLink == nil {
 			break
@@ -6749,6 +6779,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.USSDPatientProfileClinicalResponse.Text(childComplexity), true
 
+	case "_Service.sdl":
+		if e.complexity.Service.SDL == nil {
+			break
+		}
+
+		return e.complexity.Service.SDL(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -6813,7 +6850,280 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "schema/fhir/AllergyIntolerance.graphql", Input: `"""
+	{Name: "graph/schema/clinical.graphql", Input: `extend type Query {
+  getFHIRAllergyIntolerance(id: ID!): FHIRAllergyIntoleranceRelayPayload!
+  searchFHIRAllergyIntolerance(
+    params: Map!
+  ): FHIRAllergyIntoleranceRelayConnection!
+
+  getFHIRAppointment(id: ID!): FHIRAppointmentRelayPayload!
+  searchFHIRAppointment(params: Map!): FHIRAppointmentRelayConnection!
+
+  getFHIRComposition(id: ID!): FHIRCompositionRelayPayload!
+  searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
+
+  getFHIRCondition(id: ID!): FHIRConditionRelayPayload!
+  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
+
+  getFHIREncounter(id: ID!): FHIREncounterRelayPayload!
+  searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
+
+  getFHIREpisodeOfCare(id: ID!): FHIREpisodeOfCareRelayPayload!
+  searchFHIREpisodeOfCare(params: Map!): FHIREpisodeOfCareRelayConnection!
+
+  getFHIRMedicationRequest(id: ID!): FHIRMedicationRequestRelayPayload!
+  searchFHIRMedicationRequest(
+    params: Map!
+  ): FHIRMedicationRequestRelayConnection!
+
+  getFHIRObservation(id: ID!): FHIRObservationRelayPayload!
+  searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
+
+  getFHIROrganization(id: ID!): FHIROrganizationRelayPayload!
+  searchFHIROrganization(params: Map!): FHIROrganizationRelayConnection!
+
+  getFHIRPatient(id: ID!): FHIRPatientRelayPayload!
+  searchFHIRPatient(params: Map!): FHIRPatientRelayConnection!
+
+  getFHIRServiceRequest(id: ID!): FHIRServiceRequestRelayPayload!
+  searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
+
+  allergySummary(patientID: String!): [String!]!
+  problemSummary(patientID: String!): [String!]!
+  requestUSSDFullHistory(
+    input: USSDClinicalRequest!
+  ): USSDMedicalHistoryClinicalResponse!
+  requestUSSDLastVisit(
+    input: USSDClinicalRequest!
+  ): USSDLastVisitClinicalResponse!
+  requestUSSDPatientProfile(
+    input: USSDClinicalRequest!
+  ): USSDPatientProfileClinicalResponse!
+  patientTimeline(episodeID: String!): [Map!]!
+  patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
+  visitSummary(encounterID: String!): Map!
+}
+
+extend type Mutation {
+  createFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+  updateFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+  deleteFHIRAllergyIntolerance(id: ID!): Boolean!
+
+  createFHIRAppointment(
+    input: FHIRAppointmentInput!
+  ): FHIRAppointmentRelayPayload!
+  updateFHIRAppointment(
+    input: FHIRAppointmentInput!
+  ): FHIRAppointmentRelayPayload!
+  deleteFHIRAppointment(id: ID!): Boolean!
+
+  createFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+  updateFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+  deleteFHIRComposition(id: ID!): Boolean!
+
+  createFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
+  updateFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
+  deleteFHIRCondition(id: ID!): Boolean!
+
+  createFHIREncounter(input: FHIREncounterInput!): FHIREncounterRelayPayload!
+  updateFHIREncounter(input: FHIREncounterInput!): FHIREncounterRelayPayload!
+  deleteFHIREncounter(id: ID!): Boolean!
+
+  createFHIREpisodeOfCare(
+    input: FHIREpisodeOfCareInput!
+  ): FHIREpisodeOfCareRelayPayload!
+  updateFHIREpisodeOfCare(
+    input: FHIREpisodeOfCareInput!
+  ): FHIREpisodeOfCareRelayPayload!
+  deleteFHIREpisodeOfCare(id: ID!): Boolean!
+
+  createFHIRMedicationRequest(
+    input: FHIRMedicationRequestInput!
+  ): FHIRMedicationRequestRelayPayload!
+  updateFHIRMedicationRequest(
+    input: FHIRMedicationRequestInput!
+  ): FHIRMedicationRequestRelayPayload!
+  deleteFHIRMedicationRequest(id: ID!): Boolean!
+
+  createFHIRObservation(
+    input: FHIRObservationInput!
+  ): FHIRObservationRelayPayload!
+  updateFHIRObservation(
+    input: FHIRObservationInput!
+  ): FHIRObservationRelayPayload!
+  deleteFHIRObservation(id: ID!): Boolean!
+
+  createFHIROrganization(
+    input: FHIROrganizationInput!
+  ): FHIROrganizationRelayPayload!
+  updateFHIROrganization(
+    input: FHIROrganizationInput!
+  ): FHIROrganizationRelayPayload!
+  deleteFHIROrganization(id: ID!): Boolean!
+
+  createFHIRPatient(input: FHIRPatientInput!): FHIRPatientRelayPayload!
+  updateFHIRPatient(input: FHIRPatientInput!): FHIRPatientRelayPayload!
+  deleteFHIRPatient(id: ID!): Boolean!
+
+  createFHIRServiceRequest(
+    input: FHIRServiceRequestInput!
+  ): FHIRServiceRequestRelayPayload!
+  updateFHIRServiceRequest(
+    input: FHIRServiceRequestInput!
+  ): FHIRServiceRequestRelayPayload!
+  deleteFHIRServiceRequest(id: ID!): Boolean!
+
+  startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
+  endEpisode(episodeID: String!): Boolean!
+}
+`, BuiltIn: false},
+	{Name: "graph/schema/external.graphql", Input: `scalar Map
+scalar Any
+scalar Time
+scalar Date
+scalar Markdown
+scalar Decimal
+scalar URL
+scalar ResourceList
+scalar Base64Binary
+scalar Canonical
+scalar Code
+scalar DateTime
+scalar Instant
+scalar Integer
+scalar OID
+scalar PositiveInt
+scalar UnsignedInt
+scalar URI
+scalar UUID
+scalar XHTML
+
+# supported content types
+enum ContentType {
+  PNG
+  JPG
+  PDF
+}
+
+enum Language {
+  en
+  sw
+}
+
+"""
+PractitionerSpecialties is a list of recognised health worker specialties.
+
+See: https://medicalboard.co.ke/resources_page/gazetted-specialties/
+"""
+enum PractitionerSpecialty {
+  UNSPECIFIED
+  ANAESTHESIA
+  CARDIOTHORACIC_SURGERY
+  CLINICAL_MEDICAL_GENETICS
+  CLINCICAL_PATHOLOGY
+  GENERAL_PATHOLOGY
+  ANATOMIC_PATHOLOGY
+  CLINICAL_ONCOLOGY
+  DERMATOLOGY
+  EAR_NOSE_AND_THROAT
+  EMERGENCY_MEDICINE
+  FAMILY_MEDICINE
+  GENERAL_SURGERY
+  GERIATRICS
+  IMMUNOLOGY
+  INFECTIOUS_DISEASE
+  INTERNAL_MEDICINE
+  MICROBIOLOGY
+  NEUROSURGERY
+  OBSTETRICS_AND_GYNAECOLOGY
+  OCCUPATIONAL_MEDICINE
+  OPHTHALMOLOGY
+  ORTHOPAEDIC_SURGERY
+  ONCOLOGY
+  ONCOLOGY_RADIOTHERAPY
+  PAEDIATRICS_AND_CHILD_HEALTH
+  PALLIATIVE_MEDICINE
+  PLASTIC_AND_RECONSTRUCTIVE_SURGERY
+  PSYCHIATRY
+  PUBLIC_HEALTH
+  RADIOLOGY
+  UROLOGY
+}
+
+extend type PageInfo
+@key(fields: "hasNextPage")
+@key(fields: "hasPreviousPage") {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+input PaginationInput {
+  first: Int
+  last: Int
+  after: String
+  before: String
+}
+
+input FilterInput {
+  search: String
+  filterBy: [FilterParam]
+}
+
+input FilterParam {
+  fieldName: String!
+  fieldType: FieldType!
+  comparisonOperation: Operation!
+  fieldValue: Any!
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+enum FieldType {
+  BOOLEAN
+  TIMESTAMP
+  NUMBER
+  INTEGER
+  STRING
+}
+
+input SortInput {
+  sortBy: [SortParam]
+}
+
+input SortParam {
+  fieldName: String!
+  sortOrder: SortOrder!
+}
+
+enum Operation {
+  LESS_THAN
+  LESS_THAN_OR_EQUAL_TO
+  EQUAL
+  GREATER_THAN
+  GREATER_THAN_OR_EQUAL_TO
+  IN
+  CONTAINS
+}
+
+# Node is needed by the Relay spec
+# This server attempts to be Relay spec compliant
+interface Node {
+  id: ID!
+}
+`, BuiltIn: false},
+	{Name: "graph/schema/fhir/AllergyIntolerance.graphql", Input: `"""
 AllergyIntoleranceTypeEnum is a FHIR enum
 """
 enum AllergyIntoleranceTypeEnum {
@@ -7187,24 +7497,8 @@ type FHIRAllergyIntoleranceRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRAllergyIntolerance(id: ID!): FHIRAllergyIntoleranceRelayPayload!
-  searchFHIRAllergyIntolerance(
-    params: Map!
-  ): FHIRAllergyIntoleranceRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRAllergyIntolerance(
-    input: FHIRAllergyIntoleranceInput!
-  ): FHIRAllergyIntoleranceRelayPayload!
-  updateFHIRAllergyIntolerance(
-    input: FHIRAllergyIntoleranceInput!
-  ): FHIRAllergyIntoleranceRelayPayload!
-  deleteFHIRAllergyIntolerance(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/Appointment.graphql", Input: `"""
+	{Name: "graph/schema/fhir/Appointment.graphql", Input: `"""
 AppointmentStatusEnum is a FHIR enum
 """
 enum AppointmentStatusEnum {
@@ -7555,22 +7849,8 @@ type FHIRAppointmentRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRAppointment(id: ID!): FHIRAppointmentRelayPayload!
-  searchFHIRAppointment(params: Map!): FHIRAppointmentRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  updateFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  deleteFHIRAppointment(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/Composition.graphql", Input: `"""
+	{Name: "graph/schema/fhir/Composition.graphql", Input: `"""
 CompositionStatusEnum is a FHIR enum
 """
 enum CompositionStatusEnum {
@@ -8025,22 +8305,8 @@ type FHIRCompositionRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRComposition(id: ID!): FHIRCompositionRelayPayload!
-  searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRComposition(
-    input: FHIRCompositionInput!
-  ): FHIRCompositionRelayPayload!
-  updateFHIRComposition(
-    input: FHIRCompositionInput!
-  ): FHIRCompositionRelayPayload!
-  deleteFHIRComposition(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/Condition.graphql", Input: `"""
+	{Name: "graph/schema/fhir/Condition.graphql", Input: `"""
 FHIRConditionInput: input for Condition
 """
 input FHIRConditionInput {
@@ -8428,18 +8694,8 @@ type FHIRConditionRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRCondition(id: ID!): FHIRConditionRelayPayload!
-  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
-  updateFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
-  deleteFHIRCondition(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/Encounter.graphql", Input: `"""
+	{Name: "graph/schema/fhir/Encounter.graphql", Input: `"""
 EncounterStatusEnum is a FHIR enum
 """
 enum EncounterStatusEnum {
@@ -9062,18 +9318,8 @@ type FHIREncounterRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIREncounter(id: ID!): FHIREncounterRelayPayload!
-  searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
-}
-
-extend type Mutation {
-  createFHIREncounter(input: FHIREncounterInput!): FHIREncounterRelayPayload!
-  updateFHIREncounter(input: FHIREncounterInput!): FHIREncounterRelayPayload!
-  deleteFHIREncounter(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/EpisodeOfCare.graphql", Input: `"""
+	{Name: "graph/schema/fhir/EpisodeOfCare.graphql", Input: `"""
 EpisodeOfCareStatusEnum is a FHIR enum
 """
 enum EpisodeOfCareStatusEnum {
@@ -9341,22 +9587,8 @@ type FHIREpisodeOfCareRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIREpisodeOfCare(id: ID!): FHIREpisodeOfCareRelayPayload!
-  searchFHIREpisodeOfCare(params: Map!): FHIREpisodeOfCareRelayConnection!
-}
-
-extend type Mutation {
-  createFHIREpisodeOfCare(
-    input: FHIREpisodeOfCareInput!
-  ): FHIREpisodeOfCareRelayPayload!
-  updateFHIREpisodeOfCare(
-    input: FHIREpisodeOfCareInput!
-  ): FHIREpisodeOfCareRelayPayload!
-  deleteFHIREpisodeOfCare(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/MedicationRequest.graphql", Input: `"""
+	{Name: "graph/schema/fhir/MedicationRequest.graphql", Input: `"""
 FHIRMedicationRequestInput: input for MedicationRequest
 """
 input FHIRMedicationRequestInput {
@@ -9879,24 +10111,8 @@ type FHIRMedicationRequestRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRMedicationRequest(id: ID!): FHIRMedicationRequestRelayPayload!
-  searchFHIRMedicationRequest(
-    params: Map!
-  ): FHIRMedicationRequestRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRMedicationRequest(
-    input: FHIRMedicationRequestInput!
-  ): FHIRMedicationRequestRelayPayload!
-  updateFHIRMedicationRequest(
-    input: FHIRMedicationRequestInput!
-  ): FHIRMedicationRequestRelayPayload!
-  deleteFHIRMedicationRequest(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/Observation.graphql", Input: `"""
+	{Name: "graph/schema/fhir/Observation.graphql", Input: `"""
 ObservationStatusEnum is a FHIR enum
 """
 enum ObservationStatusEnum {
@@ -10520,23 +10736,8 @@ type FHIRObservationRelayConnection {
   edges: [FHIRObservationRelayEdge]
   pageInfo: PageInfo!
 }
-
-extend type Query {
-  getFHIRObservation(id: ID!): FHIRObservationRelayPayload!
-  searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRObservation(
-    input: FHIRObservationInput!
-  ): FHIRObservationRelayPayload!
-  updateFHIRObservation(
-    input: FHIRObservationInput!
-  ): FHIRObservationRelayPayload!
-  deleteFHIRObservation(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/Organization.graphql", Input: `"""
+	{Name: "graph/schema/fhir/Organization.graphql", Input: `"""
 FHIROrganizationInput: input for Organization
 """
 input FHIROrganizationInput {
@@ -10648,17 +10849,8 @@ type FHIROrganizationRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIROrganization(id: ID!): FHIROrganizationRelayPayload!
-  searchFHIROrganization(params: Map!): FHIROrganizationRelayConnection!
-}
-
-extend type Mutation {
-  createFHIROrganization(input: FHIROrganizationInput!): FHIROrganizationRelayPayload!
-  updateFHIROrganization(input: FHIROrganizationInput!): FHIROrganizationRelayPayload!
-  deleteFHIROrganization(id: ID!): Boolean!
-}`, BuiltIn: false},
-	{Name: "schema/fhir/Patient.graphql", Input: `"""
+`, BuiltIn: false},
+	{Name: "graph/schema/fhir/Patient.graphql", Input: `"""
 PatientGenderEnum is a FHIR enum
 """
 enum PatientGenderEnum {
@@ -11071,18 +11263,8 @@ type FHIRPatientRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRPatient(id: ID!): FHIRPatientRelayPayload!
-  searchFHIRPatient(params: Map!): FHIRPatientRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRPatient(input: FHIRPatientInput!): FHIRPatientRelayPayload!
-  updateFHIRPatient(input: FHIRPatientInput!): FHIRPatientRelayPayload!
-  deleteFHIRPatient(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/ServiceRequest.graphql", Input: `"""
+	{Name: "graph/schema/fhir/ServiceRequest.graphql", Input: `"""
 FHIRServiceRequestInput: input for ServiceRequest
 """
 input FHIRServiceRequestInput {
@@ -11473,22 +11655,8 @@ type FHIRServiceRequestRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRServiceRequest(id: ID!): FHIRServiceRequestRelayPayload!
-  searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRServiceRequest(
-    input: FHIRServiceRequestInput!
-  ): FHIRServiceRequestRelayPayload!
-  updateFHIRServiceRequest(
-    input: FHIRServiceRequestInput!
-  ): FHIRServiceRequestRelayPayload!
-  deleteFHIRServiceRequest(id: ID!): Boolean!
-}
 `, BuiltIn: false},
-	{Name: "schema/fhir/complex_types.graphql", Input: `"""
+	{Name: "graph/schema/fhir/complex_types.graphql", Input: `"""
 FHIRUsageContextInput: input for UsageContext
 """
 input FHIRUsageContextInput {
@@ -13881,7 +14049,7 @@ enum ContributorTypeEnum {
   endorser
 }
 `, BuiltIn: false},
-	{Name: "schema/fhir/summaries.graphql", Input: `input USSDClinicalRequest {
+	{Name: "graph/schema/fhir/summaries.graphql", Input: `input USSDClinicalRequest {
   patientID: String!
   msisdn: String!
   ussdSessionID: String!
@@ -13908,167 +14076,7 @@ type USSDMedicalHistoryClinicalResponse {
   fullHistory: Map!
 }
 
-extend type Query {
-  allergySummary(patientID: String!): [String!]!
-  problemSummary(patientID: String!): [String!]!
-  requestUSSDFullHistory(
-    input: USSDClinicalRequest!
-  ): USSDMedicalHistoryClinicalResponse!
-  requestUSSDLastVisit(
-    input: USSDClinicalRequest!
-  ): USSDLastVisitClinicalResponse!
-  requestUSSDPatientProfile(
-    input: USSDClinicalRequest!
-  ): USSDPatientProfileClinicalResponse!
-  patientTimeline(episodeID: String!): [Map!]!
-  patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
-  visitSummary(encounterID: String!): Map!
-}
 
-extend type Mutation {
-  startEncounter(episodeID: String!): String!
-  endEncounter(encounterID: String!): Boolean!
-  endEpisode(episodeID: String!): Boolean!
-}
-`, BuiltIn: false},
-	{Name: "graph/base.graphql", Input: `scalar Map
-scalar Any
-scalar Time
-scalar Date
-scalar Markdown
-scalar Decimal
-scalar URL
-scalar ResourceList
-scalar Base64Binary
-scalar Canonical
-scalar Code
-scalar DateTime
-scalar Instant
-scalar Integer
-scalar OID
-scalar PositiveInt
-scalar UnsignedInt
-scalar URI
-scalar UUID
-scalar XHTML
-
-# supported content types
-enum ContentType {
-  PNG
-  JPG
-  PDF
-}
-
-enum Language {
-  en
-  sw
-}
-
-
-"""
-PractitionerSpecialties is a list of recognised health worker specialties.
-
-See: https://medicalboard.co.ke/resources_page/gazetted-specialties/
-"""
-enum PractitionerSpecialty {
-  UNSPECIFIED
-  ANAESTHESIA
-  CARDIOTHORACIC_SURGERY
-  CLINICAL_MEDICAL_GENETICS
-  CLINCICAL_PATHOLOGY
-  GENERAL_PATHOLOGY
-  ANATOMIC_PATHOLOGY
-  CLINICAL_ONCOLOGY
-  DERMATOLOGY
-  EAR_NOSE_AND_THROAT
-  EMERGENCY_MEDICINE
-  FAMILY_MEDICINE
-  GENERAL_SURGERY
-  GERIATRICS
-  IMMUNOLOGY
-  INFECTIOUS_DISEASE
-  INTERNAL_MEDICINE
-  MICROBIOLOGY
-  NEUROSURGERY
-  OBSTETRICS_AND_GYNAECOLOGY
-  OCCUPATIONAL_MEDICINE
-  OPHTHALMOLOGY
-  ORTHOPAEDIC_SURGERY
-  ONCOLOGY
-  ONCOLOGY_RADIOTHERAPY
-  PAEDIATRICS_AND_CHILD_HEALTH
-  PALLIATIVE_MEDICINE
-  PLASTIC_AND_RECONSTRUCTIVE_SURGERY
-  PSYCHIATRY
-  PUBLIC_HEALTH
-  RADIOLOGY
-  UROLOGY
-}
-
-# Relay spec page info
-type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-  endCursor: String
-}
-
-input PaginationInput {
-  first: Int
-  last: Int
-  after: String
-  before: String
-}
-
-input FilterInput {
-  search: String
-  filterBy: [FilterParam]
-}
-
-input FilterParam {
-  fieldName: String!
-  fieldType: FieldType!
-  comparisonOperation: Operation!
-  fieldValue: Any!
-}
-
-enum SortOrder {
-  ASC
-  DESC
-}
-
-enum FieldType {
-  BOOLEAN
-  TIMESTAMP
-  NUMBER
-  INTEGER
-  STRING
-}
-
-input SortInput {
-  sortBy: [SortParam]
-}
-
-input SortParam {
-  fieldName: String!
-  sortOrder: SortOrder!
-}
-
-enum Operation {
-  LESS_THAN
-  LESS_THAN_OR_EQUAL_TO
-  EQUAL
-  GREATER_THAN
-  GREATER_THAN_OR_EQUAL_TO
-  IN
-  CONTAINS
-}
-
-# Node is needed by the Relay spec
-# This server attempts to be Relay spec compliant
-interface Node {
-  id: ID!
-}
 `, BuiltIn: false},
 	{Name: "federation/directives.graphql", Input: `
 scalar _Any
@@ -14080,12 +14088,46 @@ directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
 directive @key(fields: _FieldSet!) on OBJECT | INTERFACE
 directive @extends on OBJECT
 `, BuiltIn: true},
+	{Name: "federation/entity.graphql", Input: `
+# a union of all types that use the @key directive
+union _Entity = PageInfo
+
+# fake type to build resolver interfaces for users to implement
+type Entity {
+		findPageInfoByHasNextPage(hasNextPage: Boolean!,): PageInfo!
+
+}
+
+type _Service {
+  sdl: String
+}
+
+extend type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+}
+`, BuiltIn: true},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Entity_findPageInfoByHasNextPage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["hasNextPage"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("hasNextPage"))
+		arg0, err = ec.unmarshalNBoolean2bool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["hasNextPage"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -14642,6 +14684,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
+func (ec *executionContext) field_Query__entities_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 []map[string]interface{}
+	if tmp, ok := rawArgs["representations"]; ok {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("representations"))
+		arg0, err = ec.unmarshalN_Any2ᚕmapᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["representations"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_allergySummary_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -15138,6 +15195,47 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _Entity_findPageInfoByHasNextPage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Entity",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Entity_findPageInfoByHasNextPage_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindPageInfoByHasNextPage(rctx, args["hasNextPage"].(bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*base.PageInfo)
+	fc.Result = res
+	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+}
 
 func (ec *executionContext) _FHIRAddress_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAddress) (ret graphql.Marshaler) {
 	defer func() {
@@ -37501,68 +37599,6 @@ func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PageInfo_startCursor(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "PageInfo",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.StartCursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _PageInfo_endCursor(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "PageInfo",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.EndCursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Query_getFHIRAllergyIntolerance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -38793,6 +38829,81 @@ func (ec *executionContext) _Query_visitSummary(ctx context.Context, field graph
 	return ec.marshalNMap2map(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query__entities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query__entities_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.__resolve_entities(ctx, args["representations"].([]map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]fedruntime.Entity)
+	fc.Result = res
+	return ec.marshalN_Entity2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋpluginᚋfederationᚋfedruntimeᚐEntity(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query__service(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.__resolve__service(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(fedruntime.Service)
+	fc.Result = res
+	return ec.marshalN_Service2githubᚗcomᚋ99designsᚋgqlgenᚋpluginᚋfederationᚋfedruntimeᚐService(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -39268,6 +39379,37 @@ func (ec *executionContext) _USSDPatientProfileClinicalResponse_patientProfile(c
 	res := resTmp.(map[string]interface{})
 	fc.Result = res
 	return ec.marshalNMap2map(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) __Service_sdl(ctx context.Context, field graphql.CollectedField, obj *fedruntime.Service) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "_Service",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SDL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -46110,9 +46252,65 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	}
 }
 
+func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, obj fedruntime.Entity) graphql.Marshaler {
+	switch obj := (obj).(type) {
+	case nil:
+		return graphql.Null
+	case base.PageInfo:
+		return ec._PageInfo(ctx, sel, &obj)
+	case *base.PageInfo:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._PageInfo(ctx, sel, obj)
+	default:
+		panic(fmt.Errorf("unexpected type %T", obj))
+	}
+}
+
 // endregion ************************** interface.gotpl ***************************
 
 // region    **************************** object.gotpl ****************************
+
+var entityImplementors = []string{"Entity"}
+
+func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, entityImplementors)
+
+	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
+		Object: "Entity",
+	})
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Entity")
+		case "findPageInfoByHasNextPage":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findPageInfoByHasNextPage(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
 
 var fHIRAddressImplementors = []string{"FHIRAddress"}
 
@@ -50082,7 +50280,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
-var pageInfoImplementors = []string{"PageInfo"}
+var pageInfoImplementors = []string{"PageInfo", "_Entity"}
 
 func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *base.PageInfo) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, pageInfoImplementors)
@@ -50103,10 +50301,6 @@ func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "startCursor":
-			out.Values[i] = ec._PageInfo_startCursor(ctx, field, obj)
-		case "endCursor":
-			out.Values[i] = ec._PageInfo_endCursor(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -50553,6 +50747,34 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "_entities":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query__entities(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "_service":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query__service(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -50683,6 +50905,30 @@ func (ec *executionContext) _USSDPatientProfileClinicalResponse(ctx context.Cont
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var _ServiceImplementors = []string{"_Service"}
+
+func (ec *executionContext) __Service(ctx context.Context, sel ast.SelectionSet, obj *fedruntime.Service) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, _ServiceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("_Service")
+		case "sdl":
+			out.Values[i] = ec.__Service_sdl(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -52046,6 +52292,10 @@ func (ec *executionContext) marshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋ
 	return v
 }
 
+func (ec *executionContext) marshalNPageInfo2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v base.PageInfo) graphql.Marshaler {
+	return ec._PageInfo(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *base.PageInfo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -52178,6 +52428,94 @@ func (ec *executionContext) marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbase
 	return v
 }
 
+func (ec *executionContext) unmarshalN_Any2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	res, err := graphql.UnmarshalMap(v)
+	return res, graphql.WrapErrorWithInputPath(ctx, err)
+}
+
+func (ec *executionContext) marshalN_Any2map(ctx context.Context, sel ast.SelectionSet, v map[string]interface{}) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalMap(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalN_Any2ᚕmapᚄ(ctx context.Context, v interface{}) ([]map[string]interface{}, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]map[string]interface{}, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		res[i], err = ec.unmarshalN_Any2map(ctx, vSlice[i])
+		if err != nil {
+			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalN_Any2ᚕmapᚄ(ctx context.Context, sel ast.SelectionSet, v []map[string]interface{}) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalN_Any2map(ctx, sel, v[i])
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalN_Entity2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋpluginᚋfederationᚋfedruntimeᚐEntity(ctx context.Context, sel ast.SelectionSet, v []fedruntime.Entity) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalO_Entity2githubᚗcomᚋ99designsᚋgqlgenᚋpluginᚋfederationᚋfedruntimeᚐEntity(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) unmarshalN_FieldSet2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.WrapErrorWithInputPath(ctx, err)
@@ -52191,6 +52529,10 @@ func (ec *executionContext) marshalN_FieldSet2string(ctx context.Context, sel as
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalN_Service2githubᚗcomᚋ99designsᚋgqlgenᚋpluginᚋfederationᚋfedruntimeᚐService(ctx context.Context, sel ast.SelectionSet, v fedruntime.Service) graphql.Marshaler {
+	return ec.__Service(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -56868,6 +57210,13 @@ func (ec *executionContext) marshalOUnsignedInt2ᚖstring(ctx context.Context, s
 		return graphql.Null
 	}
 	return graphql.MarshalString(*v)
+}
+
+func (ec *executionContext) marshalO_Entity2githubᚗcomᚋ99designsᚋgqlgenᚋpluginᚋfederationᚋfedruntimeᚐEntity(ctx context.Context, sel ast.SelectionSet, v fedruntime.Entity) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.__Entity(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

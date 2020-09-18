@@ -386,13 +386,3 @@ type FHIRConditionRelayConnection {
   pageInfo: PageInfo!
 }
 
-extend type Query {
-  getFHIRCondition(id: ID!): FHIRConditionRelayPayload!
-  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
-  updateFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
-  deleteFHIRCondition(id: ID!): Boolean!
-}

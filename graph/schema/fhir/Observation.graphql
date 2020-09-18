@@ -622,18 +622,3 @@ type FHIRObservationRelayConnection {
   edges: [FHIRObservationRelayEdge]
   pageInfo: PageInfo!
 }
-
-extend type Query {
-  getFHIRObservation(id: ID!): FHIRObservationRelayPayload!
-  searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
-}
-
-extend type Mutation {
-  createFHIRObservation(
-    input: FHIRObservationInput!
-  ): FHIRObservationRelayPayload!
-  updateFHIRObservation(
-    input: FHIRObservationInput!
-  ): FHIRObservationRelayPayload!
-  deleteFHIRObservation(id: ID!): Boolean!
-}
