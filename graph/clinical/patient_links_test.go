@@ -13,7 +13,7 @@ func TestMain(m *testing.M) {
 	os.Setenv("CLOUD_HEALTH_PUBSUB_TOPIC", "healthcloud-bewell-testing")
 	os.Setenv("CLOUD_HEALTH_DATASET_ID", "healthcloud-bewell-testing")
 	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-bewell-fhir-testing")
-	m.Run()
+	os.Exit(m.Run())
 }
 
 func TestGeneratePatientLink(t *testing.T) {
