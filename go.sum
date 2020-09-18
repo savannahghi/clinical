@@ -360,6 +360,8 @@ gitlab.slade360emr.com/go/base v0.0.33/go.mod h1:FSZG+DP8U+w5WTmYLE7iEV/eU4QSq0B
 gitlab.slade360emr.com/go/cloudhealth v0.0.3/go.mod h1:E3jzaRVDj03986JC7RKUWO2t7W6QGNzyEf4OhfFQ4KE=
 gitlab.slade360emr.com/go/cloudhealth v0.0.5 h1:1WJQPJaEh3XixBo5uoZQgYKZcHNUQkPqaylArnZQUv0=
 gitlab.slade360emr.com/go/cloudhealth v0.0.5/go.mod h1:tuqGxk1C+wVc0wcYgi8x1kiG3k7Dme2LSkUqiOXOl/0=
+gitlab.slade360emr.com/go/cloudhealth v0.0.6 h1:0mH0N4ivoB8EdpSan1ZVBDTRNtj2Ry1wHo2C6eF5wYA=
+gitlab.slade360emr.com/go/cloudhealth v0.0.6/go.mod h1:tuqGxk1C+wVc0wcYgi8x1kiG3k7Dme2LSkUqiOXOl/0=
 gitlab.slade360emr.com/go/sms v0.0.9 h1:PZM1aYx8RiSoLB93VsINU6vRYpAp8Fl2FtDI/36xmfU=
 gitlab.slade360emr.com/go/sms v0.0.9/go.mod h1:HA/hwvCarwiXC6WV1WsvCgMO4nWuq+k+8NEHrmZ2Fi8=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
