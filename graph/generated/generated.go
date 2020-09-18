@@ -39,7 +39,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Entity() EntityResolver
+	Dummy() DummyResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -48,8 +48,8 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	Entity struct {
-		FindPageInfoByHasNextPage func(childComplexity int, hasNextPage bool) int
+	Dummy struct {
+		ID func(childComplexity int) int
 	}
 
 	FHIRAddress struct {
@@ -1121,8 +1121,8 @@ type ComplexityRoot struct {
 	}
 }
 
-type EntityResolver interface {
-	FindPageInfoByHasNextPage(ctx context.Context, hasNextPage bool) (*base.PageInfo, error)
+type DummyResolver interface {
+	ID(ctx context.Context, obj *clinical.Dummy) (*string, error)
 }
 type MutationResolver interface {
 	CreateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error)
@@ -1210,17 +1210,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Entity.findPageInfoByHasNextPage":
-		if e.complexity.Entity.FindPageInfoByHasNextPage == nil {
+	case "Dummy.id":
+		if e.complexity.Dummy.ID == nil {
 			break
 		}
 
-		args, err := ec.field_Entity_findPageInfoByHasNextPage_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Entity.FindPageInfoByHasNextPage(childComplexity, args["hasNextPage"].(bool)), true
+		return e.complexity.Dummy.ID(childComplexity), true
 
 	case "FHIRAddress.City":
 		if e.complexity.FHIRAddress.City == nil {
@@ -7007,6 +7002,18 @@ scalar URI
 scalar UUID
 scalar XHTML
 
+extend type Dummy @key(fields: "id") {
+  id: ID @external
+}
+
+extend type PageInfo
+@key(fields: "hasNextPage")
+@key(fields: "hasPreviousPage") {
+  hasNextPage: Boolean! @external
+  hasPreviousPage: Boolean! @external
+}
+
+
 # supported content types
 enum ContentType {
   PNG
@@ -7057,13 +7064,6 @@ enum PractitionerSpecialty {
   PUBLIC_HEALTH
   RADIOLOGY
   UROLOGY
-}
-
-extend type PageInfo
-@key(fields: "hasNextPage")
-@key(fields: "hasPreviousPage") {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
 }
 
 input PaginationInput {
@@ -14090,13 +14090,7 @@ directive @extends on OBJECT
 `, BuiltIn: true},
 	{Name: "federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = PageInfo
-
-# fake type to build resolver interfaces for users to implement
-type Entity {
-		findPageInfoByHasNextPage(hasNextPage: Boolean!,): PageInfo!
-
-}
+union _Entity = Dummy | PageInfo
 
 type _Service {
   sdl: String
@@ -14113,21 +14107,6 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_Entity_findPageInfoByHasNextPage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 bool
-	if tmp, ok := rawArgs["hasNextPage"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("hasNextPage"))
-		arg0, err = ec.unmarshalNBoolean2bool(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["hasNextPage"] = arg0
-	return args, nil
-}
 
 func (ec *executionContext) field_Mutation_createFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -15196,7 +15175,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Entity_findPageInfoByHasNextPage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Dummy_id(ctx context.Context, field graphql.CollectedField, obj *clinical.Dummy) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15204,37 +15183,27 @@ func (ec *executionContext) _Entity_findPageInfoByHasNextPage(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Entity",
+		Object:   "Dummy",
 		Field:    field,
 		Args:     nil,
 		IsMethod: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Entity_findPageInfoByHasNextPage_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Entity().FindPageInfoByHasNextPage(rctx, args["hasNextPage"].(bool))
+		return ec.resolvers.Dummy().ID(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAddress_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAddress) (ret graphql.Marshaler) {
@@ -46256,6 +46225,13 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
+	case clinical.Dummy:
+		return ec._Dummy(ctx, sel, &obj)
+	case *clinical.Dummy:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Dummy(ctx, sel, obj)
 	case base.PageInfo:
 		return ec._PageInfo(ctx, sel, &obj)
 	case *base.PageInfo:
@@ -46272,22 +46248,18 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 
 // region    **************************** object.gotpl ****************************
 
-var entityImplementors = []string{"Entity"}
+var dummyImplementors = []string{"Dummy", "_Entity"}
 
-func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, entityImplementors)
-
-	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
-		Object: "Entity",
-	})
+func (ec *executionContext) _Dummy(ctx context.Context, sel ast.SelectionSet, obj *clinical.Dummy) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, dummyImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Entity")
-		case "findPageInfoByHasNextPage":
+			out.Values[i] = graphql.MarshalString("Dummy")
+		case "id":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -46295,10 +46267,7 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Entity_findPageInfoByHasNextPage(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
+				res = ec._Dummy_id(ctx, field, obj)
 				return res
 			})
 		default:
@@ -52290,10 +52259,6 @@ func (ec *executionContext) unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgo�
 
 func (ec *executionContext) marshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, sel ast.SelectionSet, v base.Operation) graphql.Marshaler {
 	return v
-}
-
-func (ec *executionContext) marshalNPageInfo2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v base.PageInfo) graphql.Marshaler {
-	return ec._PageInfo(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *base.PageInfo) graphql.Marshaler {

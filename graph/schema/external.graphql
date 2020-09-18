@@ -19,6 +19,18 @@ scalar URI
 scalar UUID
 scalar XHTML
 
+extend type Dummy @key(fields: "id") {
+  id: ID @external
+}
+
+extend type PageInfo
+@key(fields: "hasNextPage")
+@key(fields: "hasPreviousPage") {
+  hasNextPage: Boolean! @external
+  hasPreviousPage: Boolean! @external
+}
+
+
 # supported content types
 enum ContentType {
   PNG
@@ -69,13 +81,6 @@ enum PractitionerSpecialty {
   PUBLIC_HEALTH
   RADIOLOGY
   UROLOGY
-}
-
-extend type PageInfo
-@key(fields: "hasNextPage")
-@key(fields: "hasPreviousPage") {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
 }
 
 input PaginationInput {

@@ -5,7 +5,6 @@ package generated
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
@@ -38,20 +37,6 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 			return nil, errors.New("__typename must be an existing string")
 		}
 		switch typeName {
-
-		case "PageInfo":
-			id0, err := ec.unmarshalNBoolean2bool(ctx, rep["hasNextPage"])
-			if err != nil {
-				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "hasNextPage"))
-			}
-
-			entity, err := ec.resolvers.Entity().FindPageInfoByHasNextPage(ctx,
-				id0)
-			if err != nil {
-				return nil, err
-			}
-
-			list = append(list, entity)
 
 		default:
 			return nil, errors.New("unknown type: " + typeName)
