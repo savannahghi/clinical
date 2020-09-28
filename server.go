@@ -3,6 +3,7 @@ package main
 import (
 	"compress/gzip"
 	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 	"time"
@@ -105,6 +106,9 @@ func Router() (*mux.Router, error) {
 	r.Path("/history.css").Methods(http.MethodGet, http.MethodOptions).HandlerFunc(base.HistoryCSS())
 	r.Path("/invalid.css").Methods(http.MethodGet, http.MethodOptions).HandlerFunc(base.InvalidCSS())
 
+	// check server status.
+	r.Path("/health").HandlerFunc(HealthStatusCheck)
+
 	// Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
 	gqlR.Use(base.AuthenticationMiddleware(firebaseApp))
@@ -112,6 +116,16 @@ func Router() (*mux.Router, error) {
 		http.MethodPost, http.MethodGet, http.MethodOptions,
 	).HandlerFunc(graphqlHandler())
 	return r, nil
+
+}
+
+//HealthStatusCheck endpoint to check if the server is working.
+func HealthStatusCheck(w http.ResponseWriter, r *http.Request) {
+
+	err := json.NewEncoder(w).Encode(true)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
