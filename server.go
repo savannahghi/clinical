@@ -45,6 +45,12 @@ func main() {
 		base.LogStartupError(ctx, err)
 	}
 
+	// check if must hace env variable exists
+	// expects the server to die if this not explictly set
+	base.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
+	base.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
+	base.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
+
 	// start up the router
 	r, err := Router()
 	if err != nil {
