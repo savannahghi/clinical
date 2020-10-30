@@ -175,24 +175,6 @@ func (r *mutationResolver) DeleteFHIRServiceRequest(ctx context.Context, id stri
 	return r.clinicalService.DeleteFHIRServiceRequest(ctx, id)
 }
 
-func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string) (string, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.StartEncounter(ctx, episodeID)
-}
-
-func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.EndEncounter(ctx, encounterID)
-}
-
-func (r *mutationResolver) EndEpisode(ctx context.Context, episodeID string) (bool, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.EndEpisode(ctx, episodeID)
-}
-
 func (r *queryResolver) GetFHIRAllergyIntolerance(ctx context.Context, id string) (*clinical.FHIRAllergyIntoleranceRelayPayload, error) {
 	r.CheckDependencies()
 	return r.clinicalService.GetFHIRAllergyIntolerance(ctx, id)

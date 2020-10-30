@@ -1039,9 +1039,6 @@ type ComplexityRoot struct {
 		DeleteFHIROrganization       func(childComplexity int, id string) int
 		DeleteFHIRPatient            func(childComplexity int, id string) int
 		DeleteFHIRServiceRequest     func(childComplexity int, id string) int
-		EndEncounter                 func(childComplexity int, encounterID string) int
-		EndEpisode                   func(childComplexity int, episodeID string) int
-		StartEncounter               func(childComplexity int, episodeID string) int
 		UpdateFHIRAllergyIntolerance func(childComplexity int, input clinical.FHIRAllergyIntoleranceInput) int
 		UpdateFHIRAppointment        func(childComplexity int, input clinical.FHIRAppointmentInput) int
 		UpdateFHIRComposition        func(childComplexity int, input clinical.FHIRCompositionInput) int
@@ -1158,9 +1155,6 @@ type MutationResolver interface {
 	CreateFHIRServiceRequest(ctx context.Context, input clinical.FHIRServiceRequestInput) (*clinical.FHIRServiceRequestRelayPayload, error)
 	UpdateFHIRServiceRequest(ctx context.Context, input clinical.FHIRServiceRequestInput) (*clinical.FHIRServiceRequestRelayPayload, error)
 	DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error)
-	StartEncounter(ctx context.Context, episodeID string) (string, error)
-	EndEncounter(ctx context.Context, encounterID string) (bool, error)
-	EndEpisode(ctx context.Context, episodeID string) (bool, error)
 }
 type QueryResolver interface {
 	GetFHIRAllergyIntolerance(ctx context.Context, id string) (*clinical.FHIRAllergyIntoleranceRelayPayload, error)
@@ -6129,42 +6123,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFHIRServiceRequest(childComplexity, args["id"].(string)), true
 
-	case "Mutation.endEncounter":
-		if e.complexity.Mutation.EndEncounter == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_endEncounter_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.EndEncounter(childComplexity, args["encounterID"].(string)), true
-
-	case "Mutation.endEpisode":
-		if e.complexity.Mutation.EndEpisode == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_endEpisode_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.EndEpisode(childComplexity, args["episodeID"].(string)), true
-
-	case "Mutation.startEncounter":
-		if e.complexity.Mutation.StartEncounter == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_startEncounter_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.StartEncounter(childComplexity, args["episodeID"].(string)), true
-
 	case "Mutation.updateFHIRAllergyIntolerance":
 		if e.complexity.Mutation.UpdateFHIRAllergyIntolerance == nil {
 			break
@@ -6975,10 +6933,6 @@ extend type Mutation {
     input: FHIRServiceRequestInput!
   ): FHIRServiceRequestRelayPayload!
   deleteFHIRServiceRequest(id: ID!): Boolean!
-
-  startEncounter(episodeID: String!): String!
-  endEncounter(encounterID: String!): Boolean!
-  endEpisode(episodeID: String!): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/external.graphql", Input: `scalar Map
@@ -14435,51 +14389,6 @@ func (ec *executionContext) field_Mutation_deleteFHIRServiceRequest_args(ctx con
 		}
 	}
 	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_endEncounter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["encounterID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("encounterID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["encounterID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_endEpisode_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["episodeID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["episodeID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_startEncounter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["episodeID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["episodeID"] = arg0
 	return args, nil
 }
 
@@ -37377,129 +37286,6 @@ func (ec *executionContext) _Mutation_deleteFHIRServiceRequest(ctx context.Conte
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_startEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_startEncounter_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().StartEncounter(rctx, args["episodeID"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_endEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_endEncounter_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().EndEncounter(rctx, args["encounterID"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_endEpisode(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_endEpisode_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().EndEpisode(rctx, args["episodeID"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -50220,21 +50006,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteFHIRServiceRequest":
 			out.Values[i] = ec._Mutation_deleteFHIRServiceRequest(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "startEncounter":
-			out.Values[i] = ec._Mutation_startEncounter(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "endEncounter":
-			out.Values[i] = ec._Mutation_endEncounter(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "endEpisode":
-			out.Values[i] = ec._Mutation_endEpisode(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

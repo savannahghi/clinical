@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"strconv"
-	"time"
 
 	"github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
@@ -154,44 +153,6 @@ func (s Service) DeleteFHIREpisodeOfCare(ctx context.Context, id string) (bool, 
 		)
 	}
 	return true, nil
-}
-
-// EndInactiveEpisodes ends all open EpisodeOfCare Instances that have been inactive for the period specified.
-// Period is specified by an environment variable
-func (s Service) EndInactiveEpisodes(ctx context.Context, inactiveDuration float64) (bool, error) {
-	s.checkPreconditions()
-
-	searchParams := map[string]interface{}{
-		"status": "active",
-	}
-
-	episodesOfCareList, err := s.SearchFHIREpisodeOfCare(ctx, searchParams)
-	if err != nil {
-		fmt.Println(err)
-		return false, err
-	}
-
-	for _, episodeOfCare := range episodesOfCareList.Edges {
-
-		episodeStartTime := episodeOfCare.Node.Period.Start.Time()
-
-		standardActivityDuration := inactiveDuration * time.Hour.Hours()
-		episodeActivityDuration := time.Since(episodeStartTime.UTC()).Hours()
-
-		if episodeActivityDuration >= standardActivityDuration {
-			episodeID := episodeOfCare.Node.ID
-
-			_, err := s.EndEpisode(ctx, *episodeID)
-			if err != nil {
-				fmt.Println(err)
-				return false, err
-			}
-
-		}
-	}
-
-	return true, err
-
 }
 
 // FHIREpisodeOfCare definition: an association between a patient and an organization / healthcare provider(s) during which time encounters may occur. the managing organization assumes a level of responsibility for the patient during this time.

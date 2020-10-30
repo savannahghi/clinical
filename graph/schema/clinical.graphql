@@ -128,8 +128,4 @@ extend type Mutation {
     input: FHIRServiceRequestInput!
   ): FHIRServiceRequestRelayPayload!
   deleteFHIRServiceRequest(id: ID!): Boolean!
-
-  startEncounter(episodeID: String!): String!
-  endEncounter(encounterID: String!): Boolean!
-  endEpisode(episodeID: String!): Boolean!
 }
