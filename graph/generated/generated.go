@@ -14067,7 +14067,7 @@ func (ec *executionContext) field_Mutation_createFHIRAllergyIntolerance_args(ctx
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAllergyIntoleranceInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14082,7 +14082,7 @@ func (ec *executionContext) field_Mutation_createFHIRAppointment_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAppointmentInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14097,7 +14097,7 @@ func (ec *executionContext) field_Mutation_createFHIRComposition_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRCompositionInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRCompositionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14112,7 +14112,7 @@ func (ec *executionContext) field_Mutation_createFHIRCondition_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRConditionInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRConditionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14127,7 +14127,7 @@ func (ec *executionContext) field_Mutation_createFHIREncounter_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREncounterInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIREncounterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14142,7 +14142,7 @@ func (ec *executionContext) field_Mutation_createFHIREpisodeOfCare_args(ctx cont
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREpisodeOfCareInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIREpisodeOfCareInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14157,7 +14157,7 @@ func (ec *executionContext) field_Mutation_createFHIRMedicationRequest_args(ctx 
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRMedicationRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRMedicationRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14172,7 +14172,7 @@ func (ec *executionContext) field_Mutation_createFHIRObservation_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRObservationInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRObservationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14187,7 +14187,7 @@ func (ec *executionContext) field_Mutation_createFHIROrganization_args(ctx conte
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIROrganizationInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIROrganizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14202,7 +14202,7 @@ func (ec *executionContext) field_Mutation_createFHIRPatient_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRPatientInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRPatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14217,7 +14217,7 @@ func (ec *executionContext) field_Mutation_createFHIRServiceRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRServiceRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRServiceRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14232,7 +14232,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRAllergyIntolerance_args(ctx
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14247,7 +14247,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRAppointment_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14262,7 +14262,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRComposition_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14277,7 +14277,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRCondition_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14292,7 +14292,7 @@ func (ec *executionContext) field_Mutation_deleteFHIREncounter_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14307,7 +14307,7 @@ func (ec *executionContext) field_Mutation_deleteFHIREpisodeOfCare_args(ctx cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14322,7 +14322,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRMedicationRequest_args(ctx 
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14337,7 +14337,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRObservation_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14352,7 +14352,7 @@ func (ec *executionContext) field_Mutation_deleteFHIROrganization_args(ctx conte
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14367,7 +14367,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRPatient_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14382,7 +14382,7 @@ func (ec *executionContext) field_Mutation_deleteFHIRServiceRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14397,7 +14397,7 @@ func (ec *executionContext) field_Mutation_updateFHIRAllergyIntolerance_args(ctx
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAllergyIntoleranceInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14412,7 +14412,7 @@ func (ec *executionContext) field_Mutation_updateFHIRAppointment_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRAppointmentInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14427,7 +14427,7 @@ func (ec *executionContext) field_Mutation_updateFHIRComposition_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRCompositionInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRCompositionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14442,7 +14442,7 @@ func (ec *executionContext) field_Mutation_updateFHIRCondition_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRConditionInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRConditionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14457,7 +14457,7 @@ func (ec *executionContext) field_Mutation_updateFHIREncounter_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREncounterInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIREncounterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14472,7 +14472,7 @@ func (ec *executionContext) field_Mutation_updateFHIREpisodeOfCare_args(ctx cont
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIREpisodeOfCareInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIREpisodeOfCareInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14487,7 +14487,7 @@ func (ec *executionContext) field_Mutation_updateFHIRMedicationRequest_args(ctx 
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRMedicationRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRMedicationRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14502,7 +14502,7 @@ func (ec *executionContext) field_Mutation_updateFHIRObservation_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRObservationInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRObservationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14517,7 +14517,7 @@ func (ec *executionContext) field_Mutation_updateFHIROrganization_args(ctx conte
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIROrganizationInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIROrganizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14532,7 +14532,7 @@ func (ec *executionContext) field_Mutation_updateFHIRPatient_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRPatientInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRPatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14547,7 +14547,7 @@ func (ec *executionContext) field_Mutation_updateFHIRServiceRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 clinical.FHIRServiceRequestInput
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRServiceRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestInput(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14562,7 +14562,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["name"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("name"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14577,7 +14577,7 @@ func (ec *executionContext) field_Query__entities_args(ctx context.Context, rawA
 	args := map[string]interface{}{}
 	var arg0 []map[string]interface{}
 	if tmp, ok := rawArgs["representations"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("representations"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("representations"))
 		arg0, err = ec.unmarshalN_Any2ᚕmapᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14592,7 +14592,7 @@ func (ec *executionContext) field_Query_allergySummary_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["patientID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("patientID"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14607,7 +14607,7 @@ func (ec *executionContext) field_Query_getFHIRAllergyIntolerance_args(ctx conte
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14622,7 +14622,7 @@ func (ec *executionContext) field_Query_getFHIRAppointment_args(ctx context.Cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14637,7 +14637,7 @@ func (ec *executionContext) field_Query_getFHIRComposition_args(ctx context.Cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14652,7 +14652,7 @@ func (ec *executionContext) field_Query_getFHIRCondition_args(ctx context.Contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14667,7 +14667,7 @@ func (ec *executionContext) field_Query_getFHIREncounter_args(ctx context.Contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14682,7 +14682,7 @@ func (ec *executionContext) field_Query_getFHIREpisodeOfCare_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14697,7 +14697,7 @@ func (ec *executionContext) field_Query_getFHIRMedicationRequest_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14712,7 +14712,7 @@ func (ec *executionContext) field_Query_getFHIRObservation_args(ctx context.Cont
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14727,7 +14727,7 @@ func (ec *executionContext) field_Query_getFHIROrganization_args(ctx context.Con
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14742,7 +14742,7 @@ func (ec *executionContext) field_Query_getFHIRPatient_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14757,7 +14757,7 @@ func (ec *executionContext) field_Query_getFHIRServiceRequest_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("id"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14772,7 +14772,7 @@ func (ec *executionContext) field_Query_patientTimelineWithCount_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["episodeID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("episodeID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14781,7 +14781,7 @@ func (ec *executionContext) field_Query_patientTimelineWithCount_args(ctx contex
 	args["episodeID"] = arg0
 	var arg1 int
 	if tmp, ok := rawArgs["count"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("count"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("count"))
 		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14796,7 +14796,7 @@ func (ec *executionContext) field_Query_patientTimeline_args(ctx context.Context
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["episodeID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("episodeID"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("episodeID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14811,7 +14811,7 @@ func (ec *executionContext) field_Query_problemSummary_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["patientID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("patientID"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14826,7 +14826,7 @@ func (ec *executionContext) field_Query_requestUSSDFullHistory_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 clinical.USSDClinicalRequest
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14841,7 +14841,7 @@ func (ec *executionContext) field_Query_requestUSSDLastVisit_args(ctx context.Co
 	args := map[string]interface{}{}
 	var arg0 clinical.USSDClinicalRequest
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14856,7 +14856,7 @@ func (ec *executionContext) field_Query_requestUSSDPatientProfile_args(ctx conte
 	args := map[string]interface{}{}
 	var arg0 clinical.USSDClinicalRequest
 	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14871,7 +14871,7 @@ func (ec *executionContext) field_Query_searchFHIRAllergyIntolerance_args(ctx co
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14886,7 +14886,7 @@ func (ec *executionContext) field_Query_searchFHIRAppointment_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14901,7 +14901,7 @@ func (ec *executionContext) field_Query_searchFHIRComposition_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14916,7 +14916,7 @@ func (ec *executionContext) field_Query_searchFHIRCondition_args(ctx context.Con
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14931,7 +14931,7 @@ func (ec *executionContext) field_Query_searchFHIREncounter_args(ctx context.Con
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14946,7 +14946,7 @@ func (ec *executionContext) field_Query_searchFHIREpisodeOfCare_args(ctx context
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14961,7 +14961,7 @@ func (ec *executionContext) field_Query_searchFHIRMedicationRequest_args(ctx con
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14976,7 +14976,7 @@ func (ec *executionContext) field_Query_searchFHIRObservation_args(ctx context.C
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -14991,7 +14991,7 @@ func (ec *executionContext) field_Query_searchFHIROrganization_args(ctx context.
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -15006,7 +15006,7 @@ func (ec *executionContext) field_Query_searchFHIRPatient_args(ctx context.Conte
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -15021,7 +15021,7 @@ func (ec *executionContext) field_Query_searchFHIRServiceRequest_args(ctx contex
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("params"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
 		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -15036,7 +15036,7 @@ func (ec *executionContext) field_Query_visitSummary_args(ctx context.Context, r
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["encounterID"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("encounterID"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -15051,7 +15051,7 @@ func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, ra
 	args := map[string]interface{}{}
 	var arg0 bool
 	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("includeDeprecated"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
 		arg0, err = ec.unmarshalOBoolean2bool(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -15066,7 +15066,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 	args := map[string]interface{}{}
 	var arg0 bool
 	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("includeDeprecated"))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
 		arg0, err = ec.unmarshalOBoolean2bool(ctx, tmp)
 		if err != nil {
 			return nil, err
@@ -15092,10 +15092,11 @@ func (ec *executionContext) _Dummy_id(ctx context.Context, field graphql.Collect
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Dummy",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Dummy",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15123,10 +15124,11 @@ func (ec *executionContext) _FHIRAddress_ID(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15154,10 +15156,11 @@ func (ec *executionContext) _FHIRAddress_Use(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15185,10 +15188,11 @@ func (ec *executionContext) _FHIRAddress_Type(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15216,10 +15220,11 @@ func (ec *executionContext) _FHIRAddress_Text(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15250,10 +15255,11 @@ func (ec *executionContext) _FHIRAddress_Line(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15281,10 +15287,11 @@ func (ec *executionContext) _FHIRAddress_City(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15312,10 +15319,11 @@ func (ec *executionContext) _FHIRAddress_District(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15343,10 +15351,11 @@ func (ec *executionContext) _FHIRAddress_State(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15374,10 +15383,11 @@ func (ec *executionContext) _FHIRAddress_PostalCode(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15405,10 +15415,11 @@ func (ec *executionContext) _FHIRAddress_Country(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15436,10 +15447,11 @@ func (ec *executionContext) _FHIRAddress_Period(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAddress",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAddress",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15467,10 +15479,11 @@ func (ec *executionContext) _FHIRAge_ID(ctx context.Context, field graphql.Colle
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15498,10 +15511,11 @@ func (ec *executionContext) _FHIRAge_Value(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15529,10 +15543,11 @@ func (ec *executionContext) _FHIRAge_Comparator(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15560,10 +15575,11 @@ func (ec *executionContext) _FHIRAge_Unit(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15591,10 +15607,11 @@ func (ec *executionContext) _FHIRAge_System(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15622,10 +15639,11 @@ func (ec *executionContext) _FHIRAge_Code(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15653,10 +15671,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_ID(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15684,10 +15703,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Text(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15715,10 +15735,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Identifier(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15746,10 +15767,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_ClinicalStatus(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15780,10 +15802,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_VerificationStatus(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15814,10 +15837,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Type(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15845,10 +15869,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Category(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15876,10 +15901,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Criticality(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15910,10 +15936,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Code(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15941,10 +15968,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Patient(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -15975,10 +16003,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Encounter(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16006,10 +16035,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_OnsetDateTime(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16037,10 +16067,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_OnsetAge(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16068,10 +16099,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_OnsetPeriod(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16099,10 +16131,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_OnsetRange(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16130,10 +16163,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_OnsetString(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16161,10 +16195,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_RecordedDate(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16192,10 +16227,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Recorder(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16223,10 +16259,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Asserter(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16254,10 +16291,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_LastOccurrence(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16285,10 +16323,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Note(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16316,10 +16355,11 @@ func (ec *executionContext) _FHIRAllergyIntolerance_Reaction(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntolerance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntolerance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16347,10 +16387,11 @@ func (ec *executionContext) _FHIRAllergyIntoleranceRelayConnection_edges(ctx con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntoleranceRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntoleranceRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16378,10 +16419,11 @@ func (ec *executionContext) _FHIRAllergyIntoleranceRelayConnection_pageInfo(ctx 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntoleranceRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntoleranceRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16412,10 +16454,11 @@ func (ec *executionContext) _FHIRAllergyIntoleranceRelayEdge_cursor(ctx context.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntoleranceRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntoleranceRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16443,10 +16486,11 @@ func (ec *executionContext) _FHIRAllergyIntoleranceRelayEdge_node(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntoleranceRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntoleranceRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16474,10 +16518,11 @@ func (ec *executionContext) _FHIRAllergyIntoleranceRelayPayload_resource(ctx con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyIntoleranceRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyIntoleranceRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16508,10 +16553,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_ID(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16539,10 +16585,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_Substance(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16570,10 +16617,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_Manifestation(ctx co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16604,10 +16652,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_Description(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16635,10 +16684,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_Onset(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16666,10 +16716,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_Severity(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16697,10 +16748,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_ExposureRoute(ctx co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16728,10 +16780,11 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_Note(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAllergyintoleranceReaction",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAllergyintoleranceReaction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16759,10 +16812,11 @@ func (ec *executionContext) _FHIRAnnotation_ID(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAnnotation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAnnotation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16790,10 +16844,11 @@ func (ec *executionContext) _FHIRAnnotation_AuthorReference(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAnnotation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAnnotation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16821,10 +16876,11 @@ func (ec *executionContext) _FHIRAnnotation_AuthorString(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAnnotation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAnnotation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16852,10 +16908,11 @@ func (ec *executionContext) _FHIRAnnotation_Time(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAnnotation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAnnotation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16883,10 +16940,11 @@ func (ec *executionContext) _FHIRAnnotation_Text(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAnnotation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAnnotation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16914,10 +16972,11 @@ func (ec *executionContext) _FHIRAppointment_ID(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16945,10 +17004,11 @@ func (ec *executionContext) _FHIRAppointment_Text(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -16976,10 +17036,11 @@ func (ec *executionContext) _FHIRAppointment_Identifier(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17007,10 +17068,11 @@ func (ec *executionContext) _FHIRAppointment_Status(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17038,10 +17100,11 @@ func (ec *executionContext) _FHIRAppointment_CancelationReason(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17069,10 +17132,11 @@ func (ec *executionContext) _FHIRAppointment_ServiceCategory(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17100,10 +17164,11 @@ func (ec *executionContext) _FHIRAppointment_ServiceType(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17131,10 +17196,11 @@ func (ec *executionContext) _FHIRAppointment_Specialty(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17162,10 +17228,11 @@ func (ec *executionContext) _FHIRAppointment_AppointmentType(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17193,10 +17260,11 @@ func (ec *executionContext) _FHIRAppointment_ReasonCode(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17224,10 +17292,11 @@ func (ec *executionContext) _FHIRAppointment_ReasonReference(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17255,10 +17324,11 @@ func (ec *executionContext) _FHIRAppointment_Priority(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17286,10 +17356,11 @@ func (ec *executionContext) _FHIRAppointment_Description(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17317,10 +17388,11 @@ func (ec *executionContext) _FHIRAppointment_SupportingInformation(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17348,10 +17420,11 @@ func (ec *executionContext) _FHIRAppointment_Start(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17379,10 +17452,11 @@ func (ec *executionContext) _FHIRAppointment_End(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17410,10 +17484,11 @@ func (ec *executionContext) _FHIRAppointment_MinutesDuration(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17441,10 +17516,11 @@ func (ec *executionContext) _FHIRAppointment_Slot(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17472,10 +17548,11 @@ func (ec *executionContext) _FHIRAppointment_Created(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17503,10 +17580,11 @@ func (ec *executionContext) _FHIRAppointment_Comment(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17534,10 +17612,11 @@ func (ec *executionContext) _FHIRAppointment_PatientInstruction(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17565,10 +17644,11 @@ func (ec *executionContext) _FHIRAppointment_BasedOn(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17596,10 +17676,11 @@ func (ec *executionContext) _FHIRAppointment_Participant(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17630,10 +17711,11 @@ func (ec *executionContext) _FHIRAppointment_RequestedPeriod(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17661,10 +17743,11 @@ func (ec *executionContext) _FHIRAppointmentParticipant_ID(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17692,10 +17775,11 @@ func (ec *executionContext) _FHIRAppointmentParticipant_Type(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17723,10 +17807,11 @@ func (ec *executionContext) _FHIRAppointmentParticipant_Actor(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17754,10 +17839,11 @@ func (ec *executionContext) _FHIRAppointmentParticipant_Required(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17785,10 +17871,11 @@ func (ec *executionContext) _FHIRAppointmentParticipant_Status(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17816,10 +17903,11 @@ func (ec *executionContext) _FHIRAppointmentParticipant_Period(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17847,10 +17935,11 @@ func (ec *executionContext) _FHIRAppointmentRelayConnection_edges(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17878,10 +17967,11 @@ func (ec *executionContext) _FHIRAppointmentRelayConnection_pageInfo(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17912,10 +18002,11 @@ func (ec *executionContext) _FHIRAppointmentRelayEdge_cursor(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17943,10 +18034,11 @@ func (ec *executionContext) _FHIRAppointmentRelayEdge_node(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -17974,10 +18066,11 @@ func (ec *executionContext) _FHIRAppointmentRelayPayload_resource(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAppointmentRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAppointmentRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18008,10 +18101,11 @@ func (ec *executionContext) _FHIRAttachment_ID(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18039,10 +18133,11 @@ func (ec *executionContext) _FHIRAttachment_ContentType(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18070,10 +18165,11 @@ func (ec *executionContext) _FHIRAttachment_Language(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18101,10 +18197,11 @@ func (ec *executionContext) _FHIRAttachment_Data(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18132,10 +18229,11 @@ func (ec *executionContext) _FHIRAttachment_URL(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18163,10 +18261,11 @@ func (ec *executionContext) _FHIRAttachment_Size(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18194,10 +18293,11 @@ func (ec *executionContext) _FHIRAttachment_Hash(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18225,10 +18325,11 @@ func (ec *executionContext) _FHIRAttachment_Title(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18256,10 +18357,11 @@ func (ec *executionContext) _FHIRAttachment_Creation(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRAttachment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRAttachment",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18287,10 +18389,11 @@ func (ec *executionContext) _FHIRCodeableConcept_ID(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCodeableConcept",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCodeableConcept",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18318,10 +18421,11 @@ func (ec *executionContext) _FHIRCodeableConcept_Coding(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCodeableConcept",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCodeableConcept",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18352,10 +18456,11 @@ func (ec *executionContext) _FHIRCodeableConcept_Text(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCodeableConcept",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCodeableConcept",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18386,10 +18491,11 @@ func (ec *executionContext) _FHIRCoding_ID(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCoding",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCoding",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18417,10 +18523,11 @@ func (ec *executionContext) _FHIRCoding_System(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCoding",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCoding",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18448,10 +18555,11 @@ func (ec *executionContext) _FHIRCoding_Version(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCoding",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCoding",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18479,10 +18587,11 @@ func (ec *executionContext) _FHIRCoding_Code(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCoding",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCoding",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18513,10 +18622,11 @@ func (ec *executionContext) _FHIRCoding_Display(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCoding",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCoding",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18547,10 +18657,11 @@ func (ec *executionContext) _FHIRCoding_UserSelected(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCoding",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCoding",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18578,10 +18689,11 @@ func (ec *executionContext) _FHIRComposition_ID(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18609,10 +18721,11 @@ func (ec *executionContext) _FHIRComposition_Text(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18640,10 +18753,11 @@ func (ec *executionContext) _FHIRComposition_Identifier(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18671,10 +18785,11 @@ func (ec *executionContext) _FHIRComposition_Status(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18702,10 +18817,11 @@ func (ec *executionContext) _FHIRComposition_Type(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18736,10 +18852,11 @@ func (ec *executionContext) _FHIRComposition_Category(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18767,10 +18884,11 @@ func (ec *executionContext) _FHIRComposition_Subject(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18798,10 +18916,11 @@ func (ec *executionContext) _FHIRComposition_Encounter(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18829,10 +18948,11 @@ func (ec *executionContext) _FHIRComposition_Date(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18860,10 +18980,11 @@ func (ec *executionContext) _FHIRComposition_Author(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18894,10 +19015,11 @@ func (ec *executionContext) _FHIRComposition_Title(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18925,10 +19047,11 @@ func (ec *executionContext) _FHIRComposition_Confidentiality(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18956,10 +19079,11 @@ func (ec *executionContext) _FHIRComposition_Attester(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -18987,10 +19111,11 @@ func (ec *executionContext) _FHIRComposition_Custodian(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19018,10 +19143,11 @@ func (ec *executionContext) _FHIRComposition_RelatesTo(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19049,10 +19175,11 @@ func (ec *executionContext) _FHIRComposition_Event(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19080,10 +19207,11 @@ func (ec *executionContext) _FHIRComposition_Section(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRComposition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRComposition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19111,10 +19239,11 @@ func (ec *executionContext) _FHIRCompositionAttester_ID(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionAttester",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionAttester",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19142,10 +19271,11 @@ func (ec *executionContext) _FHIRCompositionAttester_Mode(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionAttester",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionAttester",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19173,10 +19303,11 @@ func (ec *executionContext) _FHIRCompositionAttester_Time(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionAttester",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionAttester",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19204,10 +19335,11 @@ func (ec *executionContext) _FHIRCompositionAttester_Party(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionAttester",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionAttester",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19235,10 +19367,11 @@ func (ec *executionContext) _FHIRCompositionEvent_ID(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionEvent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionEvent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19266,10 +19399,11 @@ func (ec *executionContext) _FHIRCompositionEvent_Code(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionEvent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionEvent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19297,10 +19431,11 @@ func (ec *executionContext) _FHIRCompositionEvent_Period(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionEvent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionEvent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19328,10 +19463,11 @@ func (ec *executionContext) _FHIRCompositionEvent_Detail(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionEvent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionEvent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19359,10 +19495,11 @@ func (ec *executionContext) _FHIRCompositionRelatesto_ID(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelatesto",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelatesto",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19390,10 +19527,11 @@ func (ec *executionContext) _FHIRCompositionRelatesto_Code(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelatesto",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelatesto",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19421,10 +19559,11 @@ func (ec *executionContext) _FHIRCompositionRelatesto_TargetIdentifier(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelatesto",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelatesto",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19452,10 +19591,11 @@ func (ec *executionContext) _FHIRCompositionRelatesto_TargetReference(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelatesto",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelatesto",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19483,10 +19623,11 @@ func (ec *executionContext) _FHIRCompositionRelayConnection_edges(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19514,10 +19655,11 @@ func (ec *executionContext) _FHIRCompositionRelayConnection_pageInfo(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19548,10 +19690,11 @@ func (ec *executionContext) _FHIRCompositionRelayEdge_cursor(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19579,10 +19722,11 @@ func (ec *executionContext) _FHIRCompositionRelayEdge_node(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19610,10 +19754,11 @@ func (ec *executionContext) _FHIRCompositionRelayPayload_resource(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19644,10 +19789,11 @@ func (ec *executionContext) _FHIRCompositionSection_ID(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19675,10 +19821,11 @@ func (ec *executionContext) _FHIRCompositionSection_Title(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19706,10 +19853,11 @@ func (ec *executionContext) _FHIRCompositionSection_Code(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19737,10 +19885,11 @@ func (ec *executionContext) _FHIRCompositionSection_Author(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19768,10 +19917,11 @@ func (ec *executionContext) _FHIRCompositionSection_Focus(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19799,10 +19949,11 @@ func (ec *executionContext) _FHIRCompositionSection_Text(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19830,10 +19981,11 @@ func (ec *executionContext) _FHIRCompositionSection_Mode(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19861,10 +20013,11 @@ func (ec *executionContext) _FHIRCompositionSection_OrderedBy(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19892,10 +20045,11 @@ func (ec *executionContext) _FHIRCompositionSection_Entry(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19923,10 +20077,11 @@ func (ec *executionContext) _FHIRCompositionSection_EmptyReason(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19954,10 +20109,11 @@ func (ec *executionContext) _FHIRCompositionSection_Section(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCompositionSection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCompositionSection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -19985,10 +20141,11 @@ func (ec *executionContext) _FHIRCondition_ID(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20016,10 +20173,11 @@ func (ec *executionContext) _FHIRCondition_Text(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20047,10 +20205,11 @@ func (ec *executionContext) _FHIRCondition_Identifier(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20078,10 +20237,11 @@ func (ec *executionContext) _FHIRCondition_ClinicalStatus(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20109,10 +20269,11 @@ func (ec *executionContext) _FHIRCondition_VerificationStatus(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20140,10 +20301,11 @@ func (ec *executionContext) _FHIRCondition_Category(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20171,10 +20333,11 @@ func (ec *executionContext) _FHIRCondition_Severity(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20202,10 +20365,11 @@ func (ec *executionContext) _FHIRCondition_Code(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20233,10 +20397,11 @@ func (ec *executionContext) _FHIRCondition_BodySite(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20264,10 +20429,11 @@ func (ec *executionContext) _FHIRCondition_Subject(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20298,10 +20464,11 @@ func (ec *executionContext) _FHIRCondition_Encounter(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20329,10 +20496,11 @@ func (ec *executionContext) _FHIRCondition_OnsetDateTime(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20360,10 +20528,11 @@ func (ec *executionContext) _FHIRCondition_OnsetAge(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20391,10 +20560,11 @@ func (ec *executionContext) _FHIRCondition_OnsetPeriod(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20422,10 +20592,11 @@ func (ec *executionContext) _FHIRCondition_OnsetRange(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20453,10 +20624,11 @@ func (ec *executionContext) _FHIRCondition_OnsetString(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20484,10 +20656,11 @@ func (ec *executionContext) _FHIRCondition_AbatementDateTime(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20515,10 +20688,11 @@ func (ec *executionContext) _FHIRCondition_AbatementAge(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20546,10 +20720,11 @@ func (ec *executionContext) _FHIRCondition_AbatementPeriod(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20577,10 +20752,11 @@ func (ec *executionContext) _FHIRCondition_AbatementRange(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20608,10 +20784,11 @@ func (ec *executionContext) _FHIRCondition_AbatementString(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20639,10 +20816,11 @@ func (ec *executionContext) _FHIRCondition_RecordedDate(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20670,10 +20848,11 @@ func (ec *executionContext) _FHIRCondition_Recorder(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20701,10 +20880,11 @@ func (ec *executionContext) _FHIRCondition_Asserter(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20732,10 +20912,11 @@ func (ec *executionContext) _FHIRCondition_Stage(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20763,10 +20944,11 @@ func (ec *executionContext) _FHIRCondition_Evidence(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20794,10 +20976,11 @@ func (ec *executionContext) _FHIRCondition_Note(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCondition",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20825,10 +21008,11 @@ func (ec *executionContext) _FHIRConditionEvidence_ID(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionEvidence",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionEvidence",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20856,10 +21040,11 @@ func (ec *executionContext) _FHIRConditionEvidence_Code(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionEvidence",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionEvidence",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20887,10 +21072,11 @@ func (ec *executionContext) _FHIRConditionEvidence_Detail(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionEvidence",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionEvidence",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20918,10 +21104,11 @@ func (ec *executionContext) _FHIRConditionRelayConnection_edges(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20949,10 +21136,11 @@ func (ec *executionContext) _FHIRConditionRelayConnection_pageInfo(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -20983,10 +21171,11 @@ func (ec *executionContext) _FHIRConditionRelayEdge_cursor(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21014,10 +21203,11 @@ func (ec *executionContext) _FHIRConditionRelayEdge_node(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21045,10 +21235,11 @@ func (ec *executionContext) _FHIRConditionRelayPayload_resource(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21079,10 +21270,11 @@ func (ec *executionContext) _FHIRConditionStage_ID(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionStage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionStage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21110,10 +21302,11 @@ func (ec *executionContext) _FHIRConditionStage_Summary(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionStage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionStage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21141,10 +21334,11 @@ func (ec *executionContext) _FHIRConditionStage_Assessment(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionStage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionStage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21172,10 +21366,11 @@ func (ec *executionContext) _FHIRConditionStage_Type(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRConditionStage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRConditionStage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21203,10 +21398,11 @@ func (ec *executionContext) _FHIRContactDetail_ID(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactDetail",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactDetail",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21234,10 +21430,11 @@ func (ec *executionContext) _FHIRContactDetail_Name(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactDetail",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactDetail",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21265,10 +21462,11 @@ func (ec *executionContext) _FHIRContactDetail_Telecom(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactDetail",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactDetail",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21296,10 +21494,11 @@ func (ec *executionContext) _FHIRContactPoint_ID(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactPoint",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactPoint",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21327,10 +21526,11 @@ func (ec *executionContext) _FHIRContactPoint_System(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactPoint",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactPoint",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21358,10 +21558,11 @@ func (ec *executionContext) _FHIRContactPoint_Value(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactPoint",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactPoint",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21389,10 +21590,11 @@ func (ec *executionContext) _FHIRContactPoint_Use(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactPoint",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactPoint",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21420,10 +21622,11 @@ func (ec *executionContext) _FHIRContactPoint_Rank(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactPoint",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactPoint",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21451,10 +21654,11 @@ func (ec *executionContext) _FHIRContactPoint_Period(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContactPoint",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContactPoint",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21482,10 +21686,11 @@ func (ec *executionContext) _FHIRContributor_ID(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContributor",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContributor",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21513,10 +21718,11 @@ func (ec *executionContext) _FHIRContributor_Type(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContributor",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContributor",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21544,10 +21750,11 @@ func (ec *executionContext) _FHIRContributor_Name(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContributor",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContributor",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21575,10 +21782,11 @@ func (ec *executionContext) _FHIRContributor_Contact(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRContributor",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRContributor",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21606,10 +21814,11 @@ func (ec *executionContext) _FHIRCount_ID(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCount",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21637,10 +21846,11 @@ func (ec *executionContext) _FHIRCount_Value(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCount",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21668,10 +21878,11 @@ func (ec *executionContext) _FHIRCount_Comparator(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCount",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21699,10 +21910,11 @@ func (ec *executionContext) _FHIRCount_Unit(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCount",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21730,10 +21942,11 @@ func (ec *executionContext) _FHIRCount_System(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCount",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21761,10 +21974,11 @@ func (ec *executionContext) _FHIRCount_Code(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRCount",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRCount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21792,10 +22006,11 @@ func (ec *executionContext) _FHIRDataRequirement_ID(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21823,10 +22038,11 @@ func (ec *executionContext) _FHIRDataRequirement_Type(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21854,10 +22070,11 @@ func (ec *executionContext) _FHIRDataRequirement_Profile(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21885,10 +22102,11 @@ func (ec *executionContext) _FHIRDataRequirement_SubjectCodeableConcept(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21916,10 +22134,11 @@ func (ec *executionContext) _FHIRDataRequirement_SubjectReference(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21947,10 +22166,11 @@ func (ec *executionContext) _FHIRDataRequirement_MustSupport(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -21978,10 +22198,11 @@ func (ec *executionContext) _FHIRDataRequirement_CodeFilter(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22009,10 +22230,11 @@ func (ec *executionContext) _FHIRDataRequirement_DateFilter(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22040,10 +22262,11 @@ func (ec *executionContext) _FHIRDataRequirement_Limit(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22071,10 +22294,11 @@ func (ec *executionContext) _FHIRDataRequirement_Sort(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDataRequirement",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDataRequirement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22102,10 +22326,11 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_ID(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementCodefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementCodefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22133,10 +22358,11 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_Path(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementCodefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementCodefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22164,10 +22390,11 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_SearchParam(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementCodefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementCodefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22195,10 +22422,11 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_ValueSet(ctx context.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementCodefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementCodefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22226,10 +22454,11 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_Code(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementCodefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementCodefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22257,10 +22486,11 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ID(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementDatefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementDatefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22288,10 +22518,11 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_Path(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementDatefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementDatefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22319,10 +22550,11 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_SearchParam(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementDatefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementDatefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22350,10 +22582,11 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDateTime(ctx con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementDatefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementDatefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22381,10 +22614,11 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ValuePeriod(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementDatefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementDatefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22412,10 +22646,11 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDuration(ctx con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementDatefilter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementDatefilter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22443,10 +22678,11 @@ func (ec *executionContext) _FHIRDatarequirementSort_ID(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementSort",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementSort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22474,10 +22710,11 @@ func (ec *executionContext) _FHIRDatarequirementSort_Path(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementSort",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementSort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22505,10 +22742,11 @@ func (ec *executionContext) _FHIRDatarequirementSort_Direction(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDatarequirementSort",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDatarequirementSort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22536,10 +22774,11 @@ func (ec *executionContext) _FHIRDistance_ID(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDistance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDistance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22567,10 +22806,11 @@ func (ec *executionContext) _FHIRDistance_Value(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDistance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDistance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22598,10 +22838,11 @@ func (ec *executionContext) _FHIRDistance_Comparator(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDistance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDistance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22629,10 +22870,11 @@ func (ec *executionContext) _FHIRDistance_Unit(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDistance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDistance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22660,10 +22902,11 @@ func (ec *executionContext) _FHIRDistance_System(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDistance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDistance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22691,10 +22934,11 @@ func (ec *executionContext) _FHIRDistance_Code(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDistance",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDistance",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22722,10 +22966,11 @@ func (ec *executionContext) _FHIRDosage_ID(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22753,10 +22998,11 @@ func (ec *executionContext) _FHIRDosage_Sequence(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22784,10 +23030,11 @@ func (ec *executionContext) _FHIRDosage_Text(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22815,10 +23062,11 @@ func (ec *executionContext) _FHIRDosage_AdditionalInstruction(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22846,10 +23094,11 @@ func (ec *executionContext) _FHIRDosage_PatientInstruction(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22877,10 +23126,11 @@ func (ec *executionContext) _FHIRDosage_Timing(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22908,10 +23158,11 @@ func (ec *executionContext) _FHIRDosage_AsNeededBoolean(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22939,10 +23190,11 @@ func (ec *executionContext) _FHIRDosage_AsNeededCodeableConcept(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -22970,10 +23222,11 @@ func (ec *executionContext) _FHIRDosage_Site(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23001,10 +23254,11 @@ func (ec *executionContext) _FHIRDosage_Route(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23032,10 +23286,11 @@ func (ec *executionContext) _FHIRDosage_Method(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23063,10 +23318,11 @@ func (ec *executionContext) _FHIRDosage_DoseAndRate(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23094,10 +23350,11 @@ func (ec *executionContext) _FHIRDosage_MaxDosePerPeriod(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23125,10 +23382,11 @@ func (ec *executionContext) _FHIRDosage_MaxDosePerAdministration(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23156,10 +23414,11 @@ func (ec *executionContext) _FHIRDosage_MaxDosePerLifetime(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosage",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23187,10 +23446,11 @@ func (ec *executionContext) _FHIRDosageDoseandrate_ID(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosageDoseandrate",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosageDoseandrate",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23218,10 +23478,11 @@ func (ec *executionContext) _FHIRDosageDoseandrate_Type(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosageDoseandrate",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosageDoseandrate",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23249,10 +23510,11 @@ func (ec *executionContext) _FHIRDosageDoseandrate_DoseRange(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosageDoseandrate",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosageDoseandrate",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23280,10 +23542,11 @@ func (ec *executionContext) _FHIRDosageDoseandrate_DoseQuantity(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosageDoseandrate",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosageDoseandrate",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23311,10 +23574,11 @@ func (ec *executionContext) _FHIRDosageDoseandrate_RateRatio(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosageDoseandrate",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosageDoseandrate",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23342,10 +23606,11 @@ func (ec *executionContext) _FHIRDosageDoseandrate_RateRange(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosageDoseandrate",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosageDoseandrate",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23373,10 +23638,11 @@ func (ec *executionContext) _FHIRDosageDoseandrate_RateQuantity(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDosageDoseandrate",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDosageDoseandrate",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23404,10 +23670,11 @@ func (ec *executionContext) _FHIRDuration_ID(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDuration",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDuration",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23435,10 +23702,11 @@ func (ec *executionContext) _FHIRDuration_Value(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDuration",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDuration",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23466,10 +23734,11 @@ func (ec *executionContext) _FHIRDuration_Comparator(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDuration",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDuration",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23497,10 +23766,11 @@ func (ec *executionContext) _FHIRDuration_Unit(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDuration",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDuration",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23528,10 +23798,11 @@ func (ec *executionContext) _FHIRDuration_System(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDuration",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDuration",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23559,10 +23830,11 @@ func (ec *executionContext) _FHIRDuration_Code(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRDuration",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRDuration",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23590,10 +23862,11 @@ func (ec *executionContext) _FHIREncounter_ID(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23621,10 +23894,11 @@ func (ec *executionContext) _FHIREncounter_Text(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23652,10 +23926,11 @@ func (ec *executionContext) _FHIREncounter_Identifier(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23686,10 +23961,11 @@ func (ec *executionContext) _FHIREncounter_Status(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23720,10 +23996,11 @@ func (ec *executionContext) _FHIREncounter_StatusHistory(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23751,10 +24028,11 @@ func (ec *executionContext) _FHIREncounter_Class(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23785,10 +24063,11 @@ func (ec *executionContext) _FHIREncounter_ClassHistory(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23816,10 +24095,11 @@ func (ec *executionContext) _FHIREncounter_Type(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23847,10 +24127,11 @@ func (ec *executionContext) _FHIREncounter_ServiceType(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23878,10 +24159,11 @@ func (ec *executionContext) _FHIREncounter_Priority(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23909,10 +24191,11 @@ func (ec *executionContext) _FHIREncounter_Subject(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23940,10 +24223,11 @@ func (ec *executionContext) _FHIREncounter_EpisodeOfCare(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -23971,10 +24255,11 @@ func (ec *executionContext) _FHIREncounter_BasedOn(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24002,10 +24287,11 @@ func (ec *executionContext) _FHIREncounter_Participant(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24033,10 +24319,11 @@ func (ec *executionContext) _FHIREncounter_Appointment(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24064,10 +24351,11 @@ func (ec *executionContext) _FHIREncounter_Period(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24095,10 +24383,11 @@ func (ec *executionContext) _FHIREncounter_Length(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24126,10 +24415,11 @@ func (ec *executionContext) _FHIREncounter_ReasonCode(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24157,10 +24447,11 @@ func (ec *executionContext) _FHIREncounter_ReasonReference(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24188,10 +24479,11 @@ func (ec *executionContext) _FHIREncounter_Diagnosis(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24219,10 +24511,11 @@ func (ec *executionContext) _FHIREncounter_Account(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24250,10 +24543,11 @@ func (ec *executionContext) _FHIREncounter_Hospitalization(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24281,10 +24575,11 @@ func (ec *executionContext) _FHIREncounter_Location(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24312,10 +24607,11 @@ func (ec *executionContext) _FHIREncounter_ServiceProvider(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24343,10 +24639,11 @@ func (ec *executionContext) _FHIREncounter_PartOf(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounter",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounter",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24374,10 +24671,11 @@ func (ec *executionContext) _FHIREncounterClasshistory_ID(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterClasshistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterClasshistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24405,10 +24703,11 @@ func (ec *executionContext) _FHIREncounterClasshistory_Class(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterClasshistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterClasshistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24439,10 +24738,11 @@ func (ec *executionContext) _FHIREncounterClasshistory_Period(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterClasshistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterClasshistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24473,10 +24773,11 @@ func (ec *executionContext) _FHIREncounterDiagnosis_ID(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24504,10 +24805,11 @@ func (ec *executionContext) _FHIREncounterDiagnosis_Condition(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24538,10 +24840,11 @@ func (ec *executionContext) _FHIREncounterDiagnosis_Use(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24569,10 +24872,11 @@ func (ec *executionContext) _FHIREncounterDiagnosis_Rank(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24600,10 +24904,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_ID(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24631,10 +24936,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_PreAdmissionIdentifier
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24662,10 +24968,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_Origin(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24693,10 +25000,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_AdmitSource(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24724,10 +25032,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_ReAdmission(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24755,10 +25064,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_DietPreference(ctx con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24786,10 +25096,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_SpecialCourtesy(ctx co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24817,10 +25128,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_SpecialArrangement(ctx
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24848,10 +25160,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_Destination(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24879,10 +25192,11 @@ func (ec *executionContext) _FHIREncounterHospitalization_DischargeDisposition(c
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterHospitalization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterHospitalization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24910,10 +25224,11 @@ func (ec *executionContext) _FHIREncounterLocation_ID(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterLocation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterLocation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24941,10 +25256,11 @@ func (ec *executionContext) _FHIREncounterLocation_Location(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterLocation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterLocation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -24975,10 +25291,11 @@ func (ec *executionContext) _FHIREncounterLocation_Status(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterLocation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterLocation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25006,10 +25323,11 @@ func (ec *executionContext) _FHIREncounterLocation_PhysicalType(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterLocation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterLocation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25037,10 +25355,11 @@ func (ec *executionContext) _FHIREncounterLocation_Period(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterLocation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterLocation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25068,10 +25387,11 @@ func (ec *executionContext) _FHIREncounterParticipant_ID(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25099,10 +25419,11 @@ func (ec *executionContext) _FHIREncounterParticipant_Type(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25130,10 +25451,11 @@ func (ec *executionContext) _FHIREncounterParticipant_Period(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25161,10 +25483,11 @@ func (ec *executionContext) _FHIREncounterParticipant_Individual(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterParticipant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterParticipant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25192,10 +25515,11 @@ func (ec *executionContext) _FHIREncounterRelayConnection_edges(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25223,10 +25547,11 @@ func (ec *executionContext) _FHIREncounterRelayConnection_pageInfo(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25257,10 +25582,11 @@ func (ec *executionContext) _FHIREncounterRelayEdge_cursor(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25288,10 +25614,11 @@ func (ec *executionContext) _FHIREncounterRelayEdge_node(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25319,10 +25646,11 @@ func (ec *executionContext) _FHIREncounterRelayPayload_resource(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25353,10 +25681,11 @@ func (ec *executionContext) _FHIREncounterStatushistory_ID(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterStatushistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterStatushistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25384,10 +25713,11 @@ func (ec *executionContext) _FHIREncounterStatushistory_Status(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterStatushistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterStatushistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25415,10 +25745,11 @@ func (ec *executionContext) _FHIREncounterStatushistory_Period(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREncounterStatushistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREncounterStatushistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25449,10 +25780,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_ID(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25480,10 +25812,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Text(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25511,10 +25844,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Identifier(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25542,10 +25876,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Status(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25573,10 +25908,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_StatusHistory(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25604,10 +25940,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Type(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25635,10 +25972,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Diagnosis(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25666,10 +26004,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Patient(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25700,10 +26039,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_ManagingOrganization(ctx context.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25731,10 +26071,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Period(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25762,10 +26103,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_ReferralRequest(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25793,10 +26135,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_CareManager(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25824,10 +26167,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Team(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25855,10 +26199,11 @@ func (ec *executionContext) _FHIREpisodeOfCare_Account(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCare",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCare",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25886,10 +26231,11 @@ func (ec *executionContext) _FHIREpisodeOfCareRelayConnection_edges(ctx context.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCareRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCareRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25917,10 +26263,11 @@ func (ec *executionContext) _FHIREpisodeOfCareRelayConnection_pageInfo(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCareRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCareRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25951,10 +26298,11 @@ func (ec *executionContext) _FHIREpisodeOfCareRelayEdge_cursor(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCareRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCareRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -25982,10 +26330,11 @@ func (ec *executionContext) _FHIREpisodeOfCareRelayEdge_node(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCareRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCareRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26013,10 +26362,11 @@ func (ec *executionContext) _FHIREpisodeOfCareRelayPayload_resource(ctx context.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeOfCareRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeOfCareRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26047,10 +26397,11 @@ func (ec *executionContext) _FHIREpisodeofcareDiagnosis_ID(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeofcareDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeofcareDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26078,10 +26429,11 @@ func (ec *executionContext) _FHIREpisodeofcareDiagnosis_Condition(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeofcareDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeofcareDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26112,10 +26464,11 @@ func (ec *executionContext) _FHIREpisodeofcareDiagnosis_Role(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeofcareDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeofcareDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26143,10 +26496,11 @@ func (ec *executionContext) _FHIREpisodeofcareDiagnosis_Rank(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeofcareDiagnosis",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeofcareDiagnosis",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26174,10 +26528,11 @@ func (ec *executionContext) _FHIREpisodeofcareStatushistory_ID(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeofcareStatushistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeofcareStatushistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26205,10 +26560,11 @@ func (ec *executionContext) _FHIREpisodeofcareStatushistory_Status(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeofcareStatushistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeofcareStatushistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26236,10 +26592,11 @@ func (ec *executionContext) _FHIREpisodeofcareStatushistory_Period(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIREpisodeofcareStatushistory",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIREpisodeofcareStatushistory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26270,10 +26627,11 @@ func (ec *executionContext) _FHIRHumanName_ID(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26301,10 +26659,11 @@ func (ec *executionContext) _FHIRHumanName_Use(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26335,10 +26694,11 @@ func (ec *executionContext) _FHIRHumanName_Text(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26369,10 +26729,11 @@ func (ec *executionContext) _FHIRHumanName_Family(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26400,10 +26761,11 @@ func (ec *executionContext) _FHIRHumanName_Given(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26431,10 +26793,11 @@ func (ec *executionContext) _FHIRHumanName_Prefix(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26462,10 +26825,11 @@ func (ec *executionContext) _FHIRHumanName_Suffix(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26493,10 +26857,11 @@ func (ec *executionContext) _FHIRHumanName_Period(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRHumanName",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRHumanName",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26524,10 +26889,11 @@ func (ec *executionContext) _FHIRIdentifier_ID(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRIdentifier",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRIdentifier",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26555,10 +26921,11 @@ func (ec *executionContext) _FHIRIdentifier_Use(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRIdentifier",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRIdentifier",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26589,10 +26956,11 @@ func (ec *executionContext) _FHIRIdentifier_Type(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRIdentifier",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRIdentifier",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26623,10 +26991,11 @@ func (ec *executionContext) _FHIRIdentifier_System(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRIdentifier",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRIdentifier",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26654,10 +27023,11 @@ func (ec *executionContext) _FHIRIdentifier_Value(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRIdentifier",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRIdentifier",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26688,10 +27058,11 @@ func (ec *executionContext) _FHIRIdentifier_Period(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRIdentifier",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRIdentifier",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26719,10 +27090,11 @@ func (ec *executionContext) _FHIRIdentifier_Assigner(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRIdentifier",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRIdentifier",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26750,10 +27122,11 @@ func (ec *executionContext) _FHIRMedicationRequest_ID(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26781,10 +27154,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Text(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26812,10 +27186,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Identifier(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26843,10 +27218,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Status(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26874,10 +27250,11 @@ func (ec *executionContext) _FHIRMedicationRequest_StatusReason(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26905,10 +27282,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Intent(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26936,10 +27314,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Category(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26967,10 +27346,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Priority(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -26998,10 +27378,11 @@ func (ec *executionContext) _FHIRMedicationRequest_DoNotPerform(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27029,10 +27410,11 @@ func (ec *executionContext) _FHIRMedicationRequest_ReportedBoolean(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27060,10 +27442,11 @@ func (ec *executionContext) _FHIRMedicationRequest_ReportedReference(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27091,10 +27474,11 @@ func (ec *executionContext) _FHIRMedicationRequest_MedicationCodeableConcept(ctx
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27122,10 +27506,11 @@ func (ec *executionContext) _FHIRMedicationRequest_MedicationReference(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27153,10 +27538,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Subject(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27187,10 +27573,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Encounter(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27218,10 +27605,11 @@ func (ec *executionContext) _FHIRMedicationRequest_SupportingInformation(ctx con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27249,10 +27637,11 @@ func (ec *executionContext) _FHIRMedicationRequest_AuthoredOn(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27280,10 +27669,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Requester(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27311,10 +27701,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Performer(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27342,10 +27733,11 @@ func (ec *executionContext) _FHIRMedicationRequest_PerformerType(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27373,10 +27765,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Recorder(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27404,10 +27797,11 @@ func (ec *executionContext) _FHIRMedicationRequest_ReasonCode(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27435,10 +27829,11 @@ func (ec *executionContext) _FHIRMedicationRequest_ReasonReference(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27466,10 +27861,11 @@ func (ec *executionContext) _FHIRMedicationRequest_InstantiatesCanonical(ctx con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27497,10 +27893,11 @@ func (ec *executionContext) _FHIRMedicationRequest_InstantiatesURI(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27528,10 +27925,11 @@ func (ec *executionContext) _FHIRMedicationRequest_BasedOn(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27559,10 +27957,11 @@ func (ec *executionContext) _FHIRMedicationRequest_GroupIdentifier(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27590,10 +27989,11 @@ func (ec *executionContext) _FHIRMedicationRequest_CourseOfTherapyType(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27621,10 +28021,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Insurance(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27652,10 +28053,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Note(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27683,10 +28085,11 @@ func (ec *executionContext) _FHIRMedicationRequest_DosageInstruction(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27714,10 +28117,11 @@ func (ec *executionContext) _FHIRMedicationRequest_DispenseRequest(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27745,10 +28149,11 @@ func (ec *executionContext) _FHIRMedicationRequest_Substitution(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27776,10 +28181,11 @@ func (ec *executionContext) _FHIRMedicationRequest_PriorPrescription(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27807,10 +28213,11 @@ func (ec *executionContext) _FHIRMedicationRequest_DetectedIssue(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27838,10 +28245,11 @@ func (ec *executionContext) _FHIRMedicationRequest_EventHistory(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27869,10 +28277,11 @@ func (ec *executionContext) _FHIRMedicationRequestRelayConnection_edges(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequestRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequestRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27900,10 +28309,11 @@ func (ec *executionContext) _FHIRMedicationRequestRelayConnection_pageInfo(ctx c
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequestRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequestRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27934,10 +28344,11 @@ func (ec *executionContext) _FHIRMedicationRequestRelayEdge_cursor(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequestRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequestRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27965,10 +28376,11 @@ func (ec *executionContext) _FHIRMedicationRequestRelayEdge_node(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequestRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequestRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -27996,10 +28408,11 @@ func (ec *executionContext) _FHIRMedicationRequestRelayPayload_resource(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationRequestRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationRequestRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28030,10 +28443,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_ID(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28061,10 +28475,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_InitialFill(ct
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28092,10 +28507,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_DispenseInterv
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28123,10 +28539,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_ValidityPeriod
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28154,10 +28571,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_NumberOfRepeat
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28185,10 +28603,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_Quantity(ctx c
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28216,10 +28635,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_ExpectedSupply
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28247,10 +28667,11 @@ func (ec *executionContext) _FHIRMedicationrequestDispenserequest_Performer(ctx 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestDispenserequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestDispenserequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28278,10 +28699,11 @@ func (ec *executionContext) _FHIRMedicationrequestInitialfill_ID(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestInitialfill",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestInitialfill",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28309,10 +28731,11 @@ func (ec *executionContext) _FHIRMedicationrequestInitialfill_Quantity(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestInitialfill",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestInitialfill",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28340,10 +28763,11 @@ func (ec *executionContext) _FHIRMedicationrequestInitialfill_Duration(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestInitialfill",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestInitialfill",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28371,10 +28795,11 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution_ID(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestSubstitution",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestSubstitution",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28402,10 +28827,11 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution_AllowedBoolean(ct
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestSubstitution",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestSubstitution",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28433,10 +28859,11 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution_AllowedCodeableCo
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestSubstitution",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestSubstitution",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28464,10 +28891,11 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution_Reason(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMedicationrequestSubstitution",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMedicationrequestSubstitution",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28495,10 +28923,11 @@ func (ec *executionContext) _FHIRMoney_ID(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMoney",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMoney",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28526,10 +28955,11 @@ func (ec *executionContext) _FHIRMoney_Value(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMoney",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMoney",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28557,10 +28987,11 @@ func (ec *executionContext) _FHIRMoney_Currency(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRMoney",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRMoney",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28588,10 +29019,11 @@ func (ec *executionContext) _FHIRNarrative_ID(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRNarrative",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRNarrative",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28619,10 +29051,11 @@ func (ec *executionContext) _FHIRNarrative_Status(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRNarrative",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRNarrative",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28650,10 +29083,11 @@ func (ec *executionContext) _FHIRNarrative_Div(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRNarrative",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRNarrative",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28684,10 +29118,11 @@ func (ec *executionContext) _FHIRObservation_ID(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28715,10 +29150,11 @@ func (ec *executionContext) _FHIRObservation_Text(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28746,10 +29182,11 @@ func (ec *executionContext) _FHIRObservation_Identifier(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28777,10 +29214,11 @@ func (ec *executionContext) _FHIRObservation_BasedOn(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28808,10 +29246,11 @@ func (ec *executionContext) _FHIRObservation_PartOf(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28839,10 +29278,11 @@ func (ec *executionContext) _FHIRObservation_Status(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28870,10 +29310,11 @@ func (ec *executionContext) _FHIRObservation_Category(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28901,10 +29342,11 @@ func (ec *executionContext) _FHIRObservation_Code(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28935,10 +29377,11 @@ func (ec *executionContext) _FHIRObservation_Subject(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28966,10 +29409,11 @@ func (ec *executionContext) _FHIRObservation_Focus(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -28997,10 +29441,11 @@ func (ec *executionContext) _FHIRObservation_Encounter(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29028,10 +29473,11 @@ func (ec *executionContext) _FHIRObservation_EffectiveDateTime(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29059,10 +29505,11 @@ func (ec *executionContext) _FHIRObservation_EffectivePeriod(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29090,10 +29537,11 @@ func (ec *executionContext) _FHIRObservation_EffectiveTiming(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29121,10 +29569,11 @@ func (ec *executionContext) _FHIRObservation_EffectiveInstant(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29152,10 +29601,11 @@ func (ec *executionContext) _FHIRObservation_Issued(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29183,10 +29633,11 @@ func (ec *executionContext) _FHIRObservation_Performer(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29214,10 +29665,11 @@ func (ec *executionContext) _FHIRObservation_ValueQuantity(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29245,10 +29697,11 @@ func (ec *executionContext) _FHIRObservation_ValueCodeableConcept(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29276,10 +29729,11 @@ func (ec *executionContext) _FHIRObservation_ValueString(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29307,10 +29761,11 @@ func (ec *executionContext) _FHIRObservation_ValueBoolean(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29338,10 +29793,11 @@ func (ec *executionContext) _FHIRObservation_ValueInteger(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29369,10 +29825,11 @@ func (ec *executionContext) _FHIRObservation_ValueRange(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29400,10 +29857,11 @@ func (ec *executionContext) _FHIRObservation_ValueRatio(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29431,10 +29889,11 @@ func (ec *executionContext) _FHIRObservation_ValueSampledData(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29462,10 +29921,11 @@ func (ec *executionContext) _FHIRObservation_ValueTime(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29493,10 +29953,11 @@ func (ec *executionContext) _FHIRObservation_ValueDateTime(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29524,10 +29985,11 @@ func (ec *executionContext) _FHIRObservation_ValuePeriod(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29555,10 +30017,11 @@ func (ec *executionContext) _FHIRObservation_DataAbsentReason(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29586,10 +30049,11 @@ func (ec *executionContext) _FHIRObservation_Interpretation(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29617,10 +30081,11 @@ func (ec *executionContext) _FHIRObservation_Note(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29648,10 +30113,11 @@ func (ec *executionContext) _FHIRObservation_BodySite(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29679,10 +30145,11 @@ func (ec *executionContext) _FHIRObservation_Method(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29710,10 +30177,11 @@ func (ec *executionContext) _FHIRObservation_Specimen(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29741,10 +30209,11 @@ func (ec *executionContext) _FHIRObservation_Device(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29772,10 +30241,11 @@ func (ec *executionContext) _FHIRObservation_ReferenceRange(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29803,10 +30273,11 @@ func (ec *executionContext) _FHIRObservation_HasMember(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29834,10 +30305,11 @@ func (ec *executionContext) _FHIRObservation_DerivedFrom(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29865,10 +30337,11 @@ func (ec *executionContext) _FHIRObservation_Component(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29896,10 +30369,11 @@ func (ec *executionContext) _FHIRObservationComponent_ID(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29927,10 +30401,11 @@ func (ec *executionContext) _FHIRObservationComponent_Code(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29961,10 +30436,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueQuantity(ctx context.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -29992,10 +30468,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueCodeableConcept(ctx c
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30023,10 +30500,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueString(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30054,10 +30532,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueBoolean(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30085,10 +30564,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueInteger(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30116,10 +30596,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueRange(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30147,10 +30628,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueRatio(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30178,10 +30660,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueSampledData(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30209,10 +30692,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueTime(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30240,10 +30724,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValueDateTime(ctx context.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30271,10 +30756,11 @@ func (ec *executionContext) _FHIRObservationComponent_ValuePeriod(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30302,10 +30788,11 @@ func (ec *executionContext) _FHIRObservationComponent_DataAbsentReason(ctx conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30333,10 +30820,11 @@ func (ec *executionContext) _FHIRObservationComponent_Interpretation(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30364,10 +30852,11 @@ func (ec *executionContext) _FHIRObservationComponent_ReferenceRange(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationComponent",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationComponent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30395,10 +30884,11 @@ func (ec *executionContext) _FHIRObservationReferencerange_ID(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationReferencerange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationReferencerange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30426,10 +30916,11 @@ func (ec *executionContext) _FHIRObservationReferencerange_Low(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationReferencerange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationReferencerange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30457,10 +30948,11 @@ func (ec *executionContext) _FHIRObservationReferencerange_High(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationReferencerange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationReferencerange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30488,10 +30980,11 @@ func (ec *executionContext) _FHIRObservationReferencerange_Type(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationReferencerange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationReferencerange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30519,10 +31012,11 @@ func (ec *executionContext) _FHIRObservationReferencerange_AppliesTo(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationReferencerange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationReferencerange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30550,10 +31044,11 @@ func (ec *executionContext) _FHIRObservationReferencerange_Age(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationReferencerange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationReferencerange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30581,10 +31076,11 @@ func (ec *executionContext) _FHIRObservationReferencerange_Text(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationReferencerange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationReferencerange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30612,10 +31108,11 @@ func (ec *executionContext) _FHIRObservationRelayConnection_edges(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30643,10 +31140,11 @@ func (ec *executionContext) _FHIRObservationRelayConnection_pageInfo(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30677,10 +31175,11 @@ func (ec *executionContext) _FHIRObservationRelayEdge_cursor(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30708,10 +31207,11 @@ func (ec *executionContext) _FHIRObservationRelayEdge_node(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30739,10 +31239,11 @@ func (ec *executionContext) _FHIRObservationRelayPayload_resource(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRObservationRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRObservationRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30773,10 +31274,11 @@ func (ec *executionContext) _FHIROrganization_ID(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30804,10 +31306,11 @@ func (ec *executionContext) _FHIROrganization_Identifier(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30835,10 +31338,11 @@ func (ec *executionContext) _FHIROrganization_Active(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30866,10 +31370,11 @@ func (ec *executionContext) _FHIROrganization_Type(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30897,10 +31402,11 @@ func (ec *executionContext) _FHIROrganization_Name(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30928,10 +31434,11 @@ func (ec *executionContext) _FHIROrganization_Alias(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30959,10 +31466,11 @@ func (ec *executionContext) _FHIROrganization_Telecom(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -30990,10 +31498,11 @@ func (ec *executionContext) _FHIROrganization_Address(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganization",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganization",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31021,10 +31530,11 @@ func (ec *executionContext) _FHIROrganizationRelayConnection_edges(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganizationRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganizationRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31052,10 +31562,11 @@ func (ec *executionContext) _FHIROrganizationRelayConnection_pageInfo(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganizationRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganizationRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31086,10 +31597,11 @@ func (ec *executionContext) _FHIROrganizationRelayEdge_cursor(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganizationRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganizationRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31117,10 +31629,11 @@ func (ec *executionContext) _FHIROrganizationRelayEdge_node(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganizationRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganizationRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31148,10 +31661,11 @@ func (ec *executionContext) _FHIROrganizationRelayPayload_resource(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIROrganizationRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIROrganizationRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31182,10 +31696,11 @@ func (ec *executionContext) _FHIRPatient_ID(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31213,10 +31728,11 @@ func (ec *executionContext) _FHIRPatient_Text(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31244,10 +31760,11 @@ func (ec *executionContext) _FHIRPatient_Identifier(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31275,10 +31792,11 @@ func (ec *executionContext) _FHIRPatient_Active(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31306,10 +31824,11 @@ func (ec *executionContext) _FHIRPatient_Name(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31337,10 +31856,11 @@ func (ec *executionContext) _FHIRPatient_Telecom(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31368,10 +31888,11 @@ func (ec *executionContext) _FHIRPatient_Gender(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31399,10 +31920,11 @@ func (ec *executionContext) _FHIRPatient_BirthDate(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31430,10 +31952,11 @@ func (ec *executionContext) _FHIRPatient_DeceasedBoolean(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31461,10 +31984,11 @@ func (ec *executionContext) _FHIRPatient_DeceasedDateTime(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31492,10 +32016,11 @@ func (ec *executionContext) _FHIRPatient_Address(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31523,10 +32048,11 @@ func (ec *executionContext) _FHIRPatient_MaritalStatus(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31554,10 +32080,11 @@ func (ec *executionContext) _FHIRPatient_MultipleBirthBoolean(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31585,10 +32112,11 @@ func (ec *executionContext) _FHIRPatient_MultipleBirthInteger(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31616,10 +32144,11 @@ func (ec *executionContext) _FHIRPatient_Photo(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31647,10 +32176,11 @@ func (ec *executionContext) _FHIRPatient_Contact(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31678,10 +32208,11 @@ func (ec *executionContext) _FHIRPatient_Communication(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31709,10 +32240,11 @@ func (ec *executionContext) _FHIRPatient_GeneralPractitioner(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31740,10 +32272,11 @@ func (ec *executionContext) _FHIRPatient_ManagingOrganization(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31771,10 +32304,11 @@ func (ec *executionContext) _FHIRPatient_Link(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatient",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31802,10 +32336,11 @@ func (ec *executionContext) _FHIRPatientCommunication_ID(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientCommunication",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientCommunication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31833,10 +32368,11 @@ func (ec *executionContext) _FHIRPatientCommunication_Language(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientCommunication",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientCommunication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31867,10 +32403,11 @@ func (ec *executionContext) _FHIRPatientCommunication_Preferred(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientCommunication",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientCommunication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31898,10 +32435,11 @@ func (ec *executionContext) _FHIRPatientContact_ID(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31929,10 +32467,11 @@ func (ec *executionContext) _FHIRPatientContact_Relationship(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31960,10 +32499,11 @@ func (ec *executionContext) _FHIRPatientContact_Name(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -31991,10 +32531,11 @@ func (ec *executionContext) _FHIRPatientContact_Telecom(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32022,10 +32563,11 @@ func (ec *executionContext) _FHIRPatientContact_Address(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32053,10 +32595,11 @@ func (ec *executionContext) _FHIRPatientContact_Gender(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32084,10 +32627,11 @@ func (ec *executionContext) _FHIRPatientContact_Organization(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32115,10 +32659,11 @@ func (ec *executionContext) _FHIRPatientContact_Period(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientContact",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientContact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32146,10 +32691,11 @@ func (ec *executionContext) _FHIRPatientLink_ID(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientLink",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientLink",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32177,10 +32723,11 @@ func (ec *executionContext) _FHIRPatientLink_Other(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientLink",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientLink",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32211,10 +32758,11 @@ func (ec *executionContext) _FHIRPatientLink_Type(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientLink",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientLink",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32242,10 +32790,11 @@ func (ec *executionContext) _FHIRPatientRelayConnection_edges(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32273,10 +32822,11 @@ func (ec *executionContext) _FHIRPatientRelayConnection_hasOpenEpisodes(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32307,10 +32857,11 @@ func (ec *executionContext) _FHIRPatientRelayConnection_pageInfo(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32341,10 +32892,11 @@ func (ec *executionContext) _FHIRPatientRelayEdge_cursor(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32372,10 +32924,11 @@ func (ec *executionContext) _FHIRPatientRelayEdge_hasOpenEpisodes(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32406,10 +32959,11 @@ func (ec *executionContext) _FHIRPatientRelayEdge_node(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32437,10 +32991,11 @@ func (ec *executionContext) _FHIRPatientRelayPayload_resource(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32471,10 +33026,11 @@ func (ec *executionContext) _FHIRPatientRelayPayload_hasOpenEpisodes(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPatientRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPatientRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32505,10 +33061,11 @@ func (ec *executionContext) _FHIRPeriod_ID(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPeriod",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPeriod",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32536,10 +33093,11 @@ func (ec *executionContext) _FHIRPeriod_Start(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPeriod",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPeriod",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32570,10 +33128,11 @@ func (ec *executionContext) _FHIRPeriod_End(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRPeriod",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRPeriod",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32604,10 +33163,11 @@ func (ec *executionContext) _FHIRQuantity_ID(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRQuantity",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRQuantity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32635,10 +33195,11 @@ func (ec *executionContext) _FHIRQuantity_Value(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRQuantity",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRQuantity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32669,10 +33230,11 @@ func (ec *executionContext) _FHIRQuantity_Comparator(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRQuantity",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRQuantity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32700,10 +33262,11 @@ func (ec *executionContext) _FHIRQuantity_Unit(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRQuantity",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRQuantity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32734,10 +33297,11 @@ func (ec *executionContext) _FHIRQuantity_System(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRQuantity",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRQuantity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32768,10 +33332,11 @@ func (ec *executionContext) _FHIRQuantity_Code(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRQuantity",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRQuantity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32802,10 +33367,11 @@ func (ec *executionContext) _FHIRRange_ID(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRRange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRRange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32833,10 +33399,11 @@ func (ec *executionContext) _FHIRRange_Low(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRRange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRRange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32867,10 +33434,11 @@ func (ec *executionContext) _FHIRRange_High(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRRange",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRRange",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32901,10 +33469,11 @@ func (ec *executionContext) _FHIRRatio_ID(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRRatio",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRRatio",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32932,10 +33501,11 @@ func (ec *executionContext) _FHIRRatio_Numerator(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRRatio",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRRatio",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -32966,10 +33536,11 @@ func (ec *executionContext) _FHIRRatio_Denominator(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRRatio",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRRatio",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33000,10 +33571,11 @@ func (ec *executionContext) _FHIRReference_ID(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRReference",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRReference",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33031,10 +33603,11 @@ func (ec *executionContext) _FHIRReference_Reference(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRReference",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRReference",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33062,10 +33635,11 @@ func (ec *executionContext) _FHIRReference_Type(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRReference",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRReference",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33093,10 +33667,11 @@ func (ec *executionContext) _FHIRReference_Identifier(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRReference",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRReference",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33124,10 +33699,11 @@ func (ec *executionContext) _FHIRReference_Display(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRReference",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRReference",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33158,10 +33734,11 @@ func (ec *executionContext) _FHIRSampledData_ID(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33189,10 +33766,11 @@ func (ec *executionContext) _FHIRSampledData_Origin(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33223,10 +33801,11 @@ func (ec *executionContext) _FHIRSampledData_Period(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33254,10 +33833,11 @@ func (ec *executionContext) _FHIRSampledData_Factor(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33285,10 +33865,11 @@ func (ec *executionContext) _FHIRSampledData_LowerLimit(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33316,10 +33897,11 @@ func (ec *executionContext) _FHIRSampledData_UpperLimit(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33347,10 +33929,11 @@ func (ec *executionContext) _FHIRSampledData_Dimensions(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33378,10 +33961,11 @@ func (ec *executionContext) _FHIRSampledData_Data(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSampledData",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSampledData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33409,10 +33993,11 @@ func (ec *executionContext) _FHIRServiceRequest_ID(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33440,10 +34025,11 @@ func (ec *executionContext) _FHIRServiceRequest_Text(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33471,10 +34057,11 @@ func (ec *executionContext) _FHIRServiceRequest_Identifier(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33502,10 +34089,11 @@ func (ec *executionContext) _FHIRServiceRequest_InstantiatesCanonical(ctx contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33533,10 +34121,11 @@ func (ec *executionContext) _FHIRServiceRequest_InstantiatesURI(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33564,10 +34153,11 @@ func (ec *executionContext) _FHIRServiceRequest_BasedOn(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33595,10 +34185,11 @@ func (ec *executionContext) _FHIRServiceRequest_Replaces(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33626,10 +34217,11 @@ func (ec *executionContext) _FHIRServiceRequest_Requisition(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33657,10 +34249,11 @@ func (ec *executionContext) _FHIRServiceRequest_Status(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33688,10 +34281,11 @@ func (ec *executionContext) _FHIRServiceRequest_Intent(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33719,10 +34313,11 @@ func (ec *executionContext) _FHIRServiceRequest_Category(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33750,10 +34345,11 @@ func (ec *executionContext) _FHIRServiceRequest_Priority(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33781,10 +34377,11 @@ func (ec *executionContext) _FHIRServiceRequest_DoNotPerform(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33812,10 +34409,11 @@ func (ec *executionContext) _FHIRServiceRequest_Code(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33843,10 +34441,11 @@ func (ec *executionContext) _FHIRServiceRequest_OrderDetail(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33874,10 +34473,11 @@ func (ec *executionContext) _FHIRServiceRequest_QuantityQuantity(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33905,10 +34505,11 @@ func (ec *executionContext) _FHIRServiceRequest_QuantityRatio(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33936,10 +34537,11 @@ func (ec *executionContext) _FHIRServiceRequest_QuantityRange(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -33967,10 +34569,11 @@ func (ec *executionContext) _FHIRServiceRequest_Subject(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34001,10 +34604,11 @@ func (ec *executionContext) _FHIRServiceRequest_Encounter(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34032,10 +34636,11 @@ func (ec *executionContext) _FHIRServiceRequest_OccurrenceDateTime(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34063,10 +34668,11 @@ func (ec *executionContext) _FHIRServiceRequest_OccurrencePeriod(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34094,10 +34700,11 @@ func (ec *executionContext) _FHIRServiceRequest_OccurrenceTiming(ctx context.Con
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34125,10 +34732,11 @@ func (ec *executionContext) _FHIRServiceRequest_AsNeededBoolean(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34156,10 +34764,11 @@ func (ec *executionContext) _FHIRServiceRequest_AsNeededCodeableConcept(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34187,10 +34796,11 @@ func (ec *executionContext) _FHIRServiceRequest_AuthoredOn(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34218,10 +34828,11 @@ func (ec *executionContext) _FHIRServiceRequest_Requester(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34249,10 +34860,11 @@ func (ec *executionContext) _FHIRServiceRequest_PerformerType(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34280,10 +34892,11 @@ func (ec *executionContext) _FHIRServiceRequest_Performer(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34311,10 +34924,11 @@ func (ec *executionContext) _FHIRServiceRequest_LocationCode(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34342,10 +34956,11 @@ func (ec *executionContext) _FHIRServiceRequest_LocationReference(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34373,10 +34988,11 @@ func (ec *executionContext) _FHIRServiceRequest_ReasonCode(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34404,10 +35020,11 @@ func (ec *executionContext) _FHIRServiceRequest_ReasonReference(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34435,10 +35052,11 @@ func (ec *executionContext) _FHIRServiceRequest_Insurance(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34466,10 +35084,11 @@ func (ec *executionContext) _FHIRServiceRequest_SupportingInfo(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34497,10 +35116,11 @@ func (ec *executionContext) _FHIRServiceRequest_Specimen(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34528,10 +35148,11 @@ func (ec *executionContext) _FHIRServiceRequest_BodySite(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34559,10 +35180,11 @@ func (ec *executionContext) _FHIRServiceRequest_Note(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34590,10 +35212,11 @@ func (ec *executionContext) _FHIRServiceRequest_PatientInstruction(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34621,10 +35244,11 @@ func (ec *executionContext) _FHIRServiceRequest_RelevantHistory(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequest",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34652,10 +35276,11 @@ func (ec *executionContext) _FHIRServiceRequestRelayConnection_edges(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequestRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequestRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34683,10 +35308,11 @@ func (ec *executionContext) _FHIRServiceRequestRelayConnection_pageInfo(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequestRelayConnection",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequestRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34717,10 +35343,11 @@ func (ec *executionContext) _FHIRServiceRequestRelayEdge_cursor(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequestRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequestRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34748,10 +35375,11 @@ func (ec *executionContext) _FHIRServiceRequestRelayEdge_node(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequestRelayEdge",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequestRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34779,10 +35407,11 @@ func (ec *executionContext) _FHIRServiceRequestRelayPayload_resource(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRServiceRequestRelayPayload",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRServiceRequestRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34813,10 +35442,11 @@ func (ec *executionContext) _FHIRSignature_ID(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34844,10 +35474,11 @@ func (ec *executionContext) _FHIRSignature_Type(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34878,10 +35509,11 @@ func (ec *executionContext) _FHIRSignature_When(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34909,10 +35541,11 @@ func (ec *executionContext) _FHIRSignature_Who(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34943,10 +35576,11 @@ func (ec *executionContext) _FHIRSignature_OnBehalfOf(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -34974,10 +35608,11 @@ func (ec *executionContext) _FHIRSignature_TargetFormat(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35005,10 +35640,11 @@ func (ec *executionContext) _FHIRSignature_SigFormat(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35036,10 +35672,11 @@ func (ec *executionContext) _FHIRSignature_Data(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRSignature",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRSignature",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35067,10 +35704,11 @@ func (ec *executionContext) _FHIRTiming_ID(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTiming",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTiming",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35098,10 +35736,11 @@ func (ec *executionContext) _FHIRTiming_Event(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTiming",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTiming",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35129,10 +35768,11 @@ func (ec *executionContext) _FHIRTiming_Repeat(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTiming",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTiming",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35160,10 +35800,11 @@ func (ec *executionContext) _FHIRTiming_Code(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTiming",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTiming",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35194,10 +35835,11 @@ func (ec *executionContext) _FHIRTimingRepeat_ID(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35225,10 +35867,11 @@ func (ec *executionContext) _FHIRTimingRepeat_BoundsDuration(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35256,10 +35899,11 @@ func (ec *executionContext) _FHIRTimingRepeat_BoundsRange(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35287,10 +35931,11 @@ func (ec *executionContext) _FHIRTimingRepeat_BoundsPeriod(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35318,10 +35963,11 @@ func (ec *executionContext) _FHIRTimingRepeat_Count(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35349,10 +35995,11 @@ func (ec *executionContext) _FHIRTimingRepeat_CountMax(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35380,10 +36027,11 @@ func (ec *executionContext) _FHIRTimingRepeat_Duration(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35411,10 +36059,11 @@ func (ec *executionContext) _FHIRTimingRepeat_DurationMax(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35442,10 +36091,11 @@ func (ec *executionContext) _FHIRTimingRepeat_DurationUnit(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35473,10 +36123,11 @@ func (ec *executionContext) _FHIRTimingRepeat_Frequency(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35504,10 +36155,11 @@ func (ec *executionContext) _FHIRTimingRepeat_FrequencyMax(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35535,10 +36187,11 @@ func (ec *executionContext) _FHIRTimingRepeat_Period(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35566,10 +36219,11 @@ func (ec *executionContext) _FHIRTimingRepeat_PeriodMax(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35597,10 +36251,11 @@ func (ec *executionContext) _FHIRTimingRepeat_PeriodUnit(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35628,10 +36283,11 @@ func (ec *executionContext) _FHIRTimingRepeat_DayOfWeek(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35659,10 +36315,11 @@ func (ec *executionContext) _FHIRTimingRepeat_TimeOfDay(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35690,10 +36347,11 @@ func (ec *executionContext) _FHIRTimingRepeat_When(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35721,10 +36379,11 @@ func (ec *executionContext) _FHIRTimingRepeat_Offset(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRTimingRepeat",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRTimingRepeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35752,10 +36411,11 @@ func (ec *executionContext) _FHIRUsageContext_ID(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRUsageContext",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRUsageContext",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35783,10 +36443,11 @@ func (ec *executionContext) _FHIRUsageContext_Code(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRUsageContext",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRUsageContext",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35817,10 +36478,11 @@ func (ec *executionContext) _FHIRUsageContext_ValueCodeableConcept(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRUsageContext",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRUsageContext",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35848,10 +36510,11 @@ func (ec *executionContext) _FHIRUsageContext_ValueQuantity(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRUsageContext",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRUsageContext",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35879,10 +36542,11 @@ func (ec *executionContext) _FHIRUsageContext_ValueRange(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRUsageContext",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRUsageContext",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35910,10 +36574,11 @@ func (ec *executionContext) _FHIRUsageContext_ValueReference(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "FHIRUsageContext",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "FHIRUsageContext",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35941,10 +36606,11 @@ func (ec *executionContext) _Mutation_createFHIRAllergyIntolerance(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -35982,10 +36648,11 @@ func (ec *executionContext) _Mutation_updateFHIRAllergyIntolerance(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36023,10 +36690,11 @@ func (ec *executionContext) _Mutation_deleteFHIRAllergyIntolerance(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36064,10 +36732,11 @@ func (ec *executionContext) _Mutation_createFHIRAppointment(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36105,10 +36774,11 @@ func (ec *executionContext) _Mutation_updateFHIRAppointment(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36146,10 +36816,11 @@ func (ec *executionContext) _Mutation_deleteFHIRAppointment(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36187,10 +36858,11 @@ func (ec *executionContext) _Mutation_createFHIRComposition(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36228,10 +36900,11 @@ func (ec *executionContext) _Mutation_updateFHIRComposition(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36269,10 +36942,11 @@ func (ec *executionContext) _Mutation_deleteFHIRComposition(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36310,10 +36984,11 @@ func (ec *executionContext) _Mutation_createFHIRCondition(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36351,10 +37026,11 @@ func (ec *executionContext) _Mutation_updateFHIRCondition(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36392,10 +37068,11 @@ func (ec *executionContext) _Mutation_deleteFHIRCondition(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36433,10 +37110,11 @@ func (ec *executionContext) _Mutation_createFHIREncounter(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36474,10 +37152,11 @@ func (ec *executionContext) _Mutation_updateFHIREncounter(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36515,10 +37194,11 @@ func (ec *executionContext) _Mutation_deleteFHIREncounter(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36556,10 +37236,11 @@ func (ec *executionContext) _Mutation_createFHIREpisodeOfCare(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36597,10 +37278,11 @@ func (ec *executionContext) _Mutation_updateFHIREpisodeOfCare(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36638,10 +37320,11 @@ func (ec *executionContext) _Mutation_deleteFHIREpisodeOfCare(ctx context.Contex
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36679,10 +37362,11 @@ func (ec *executionContext) _Mutation_createFHIRMedicationRequest(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36720,10 +37404,11 @@ func (ec *executionContext) _Mutation_updateFHIRMedicationRequest(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36761,10 +37446,11 @@ func (ec *executionContext) _Mutation_deleteFHIRMedicationRequest(ctx context.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36802,10 +37488,11 @@ func (ec *executionContext) _Mutation_createFHIRObservation(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36843,10 +37530,11 @@ func (ec *executionContext) _Mutation_updateFHIRObservation(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36884,10 +37572,11 @@ func (ec *executionContext) _Mutation_deleteFHIRObservation(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36925,10 +37614,11 @@ func (ec *executionContext) _Mutation_createFHIROrganization(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -36966,10 +37656,11 @@ func (ec *executionContext) _Mutation_updateFHIROrganization(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37007,10 +37698,11 @@ func (ec *executionContext) _Mutation_deleteFHIROrganization(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37048,10 +37740,11 @@ func (ec *executionContext) _Mutation_createFHIRPatient(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37089,10 +37782,11 @@ func (ec *executionContext) _Mutation_updateFHIRPatient(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37130,10 +37824,11 @@ func (ec *executionContext) _Mutation_deleteFHIRPatient(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37171,10 +37866,11 @@ func (ec *executionContext) _Mutation_createFHIRServiceRequest(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37212,10 +37908,11 @@ func (ec *executionContext) _Mutation_updateFHIRServiceRequest(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37253,10 +37950,11 @@ func (ec *executionContext) _Mutation_deleteFHIRServiceRequest(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37294,10 +37992,11 @@ func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "PageInfo",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "PageInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37328,10 +38027,11 @@ func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "PageInfo",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "PageInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37362,10 +38062,11 @@ func (ec *executionContext) _Query_getFHIRAllergyIntolerance(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37403,10 +38104,11 @@ func (ec *executionContext) _Query_searchFHIRAllergyIntolerance(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37444,10 +38146,11 @@ func (ec *executionContext) _Query_getFHIRAppointment(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37485,10 +38188,11 @@ func (ec *executionContext) _Query_searchFHIRAppointment(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37526,10 +38230,11 @@ func (ec *executionContext) _Query_getFHIRComposition(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37567,10 +38272,11 @@ func (ec *executionContext) _Query_searchFHIRComposition(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37608,10 +38314,11 @@ func (ec *executionContext) _Query_getFHIRCondition(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37649,10 +38356,11 @@ func (ec *executionContext) _Query_searchFHIRCondition(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37690,10 +38398,11 @@ func (ec *executionContext) _Query_getFHIREncounter(ctx context.Context, field g
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37731,10 +38440,11 @@ func (ec *executionContext) _Query_searchFHIREncounter(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37772,10 +38482,11 @@ func (ec *executionContext) _Query_getFHIREpisodeOfCare(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37813,10 +38524,11 @@ func (ec *executionContext) _Query_searchFHIREpisodeOfCare(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37854,10 +38566,11 @@ func (ec *executionContext) _Query_getFHIRMedicationRequest(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37895,10 +38608,11 @@ func (ec *executionContext) _Query_searchFHIRMedicationRequest(ctx context.Conte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37936,10 +38650,11 @@ func (ec *executionContext) _Query_getFHIRObservation(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -37977,10 +38692,11 @@ func (ec *executionContext) _Query_searchFHIRObservation(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38018,10 +38734,11 @@ func (ec *executionContext) _Query_getFHIROrganization(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38059,10 +38776,11 @@ func (ec *executionContext) _Query_searchFHIROrganization(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38100,10 +38818,11 @@ func (ec *executionContext) _Query_getFHIRPatient(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38141,10 +38860,11 @@ func (ec *executionContext) _Query_searchFHIRPatient(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38182,10 +38902,11 @@ func (ec *executionContext) _Query_getFHIRServiceRequest(ctx context.Context, fi
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38223,10 +38944,11 @@ func (ec *executionContext) _Query_searchFHIRServiceRequest(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38264,10 +38986,11 @@ func (ec *executionContext) _Query_allergySummary(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38305,10 +39028,11 @@ func (ec *executionContext) _Query_problemSummary(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38346,10 +39070,11 @@ func (ec *executionContext) _Query_requestUSSDFullHistory(ctx context.Context, f
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38387,10 +39112,11 @@ func (ec *executionContext) _Query_requestUSSDLastVisit(ctx context.Context, fie
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38428,10 +39154,11 @@ func (ec *executionContext) _Query_requestUSSDPatientProfile(ctx context.Context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38469,10 +39196,11 @@ func (ec *executionContext) _Query_patientTimeline(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38510,10 +39238,11 @@ func (ec *executionContext) _Query_patientTimelineWithCount(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38551,10 +39280,11 @@ func (ec *executionContext) _Query_visitSummary(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38592,10 +39322,11 @@ func (ec *executionContext) _Query__entities(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38633,10 +39364,11 @@ func (ec *executionContext) _Query__service(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38667,10 +39399,11 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38705,10 +39438,11 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38736,10 +39470,11 @@ func (ec *executionContext) _USSDLastVisitClinicalResponse_shortLink(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDLastVisitClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDLastVisitClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38770,10 +39505,11 @@ func (ec *executionContext) _USSDLastVisitClinicalResponse_summary(ctx context.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDLastVisitClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDLastVisitClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38804,10 +39540,11 @@ func (ec *executionContext) _USSDLastVisitClinicalResponse_text(ctx context.Cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDLastVisitClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDLastVisitClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38838,10 +39575,11 @@ func (ec *executionContext) _USSDLastVisitClinicalResponse_visitSummary(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDLastVisitClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDLastVisitClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38872,10 +39610,11 @@ func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_shortLink(ctx co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDMedicalHistoryClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDMedicalHistoryClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38906,10 +39645,11 @@ func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_summary(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDMedicalHistoryClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDMedicalHistoryClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38940,10 +39680,11 @@ func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_text(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDMedicalHistoryClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDMedicalHistoryClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -38974,10 +39715,11 @@ func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_fullHistory(ctx 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDMedicalHistoryClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDMedicalHistoryClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39008,10 +39750,11 @@ func (ec *executionContext) _USSDPatientProfileClinicalResponse_shortLink(ctx co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDPatientProfileClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDPatientProfileClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39042,10 +39785,11 @@ func (ec *executionContext) _USSDPatientProfileClinicalResponse_summary(ctx cont
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDPatientProfileClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDPatientProfileClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39076,10 +39820,11 @@ func (ec *executionContext) _USSDPatientProfileClinicalResponse_text(ctx context
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDPatientProfileClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDPatientProfileClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39110,10 +39855,11 @@ func (ec *executionContext) _USSDPatientProfileClinicalResponse_patientProfile(c
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "USSDPatientProfileClinicalResponse",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "USSDPatientProfileClinicalResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39144,10 +39890,11 @@ func (ec *executionContext) __Service_sdl(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "_Service",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "_Service",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39175,10 +39922,11 @@ func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Directive",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Directive",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39209,10 +39957,11 @@ func (ec *executionContext) ___Directive_description(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Directive",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Directive",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39240,10 +39989,11 @@ func (ec *executionContext) ___Directive_locations(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Directive",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Directive",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39274,10 +40024,11 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Directive",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Directive",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39308,10 +40059,11 @@ func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__EnumValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__EnumValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39342,10 +40094,11 @@ func (ec *executionContext) ___EnumValue_description(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__EnumValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__EnumValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39373,10 +40126,11 @@ func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__EnumValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__EnumValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39407,10 +40161,11 @@ func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__EnumValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__EnumValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39438,10 +40193,11 @@ func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Field",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Field",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39472,10 +40228,11 @@ func (ec *executionContext) ___Field_description(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Field",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Field",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39503,10 +40260,11 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Field",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Field",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39537,10 +40295,11 @@ func (ec *executionContext) ___Field_type(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Field",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__Field",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39571,10 +40330,11 @@ func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Field",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Field",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39605,10 +40365,11 @@ func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Field",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Field",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39636,10 +40397,11 @@ func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__InputValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__InputValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39670,10 +40432,11 @@ func (ec *executionContext) ___InputValue_description(ctx context.Context, field
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__InputValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__InputValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39701,10 +40464,11 @@ func (ec *executionContext) ___InputValue_type(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__InputValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__InputValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39735,10 +40499,11 @@ func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__InputValue",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
+		Object:     "__InputValue",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39766,10 +40531,11 @@ func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.C
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Schema",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Schema",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39800,10 +40566,11 @@ func (ec *executionContext) ___Schema_queryType(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Schema",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Schema",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39834,10 +40601,11 @@ func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Schema",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Schema",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39865,10 +40633,11 @@ func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Schema",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Schema",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39896,10 +40665,11 @@ func (ec *executionContext) ___Schema_directives(ctx context.Context, field grap
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Schema",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Schema",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39930,10 +40700,11 @@ func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.Coll
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39964,10 +40735,11 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -39995,10 +40767,11 @@ func (ec *executionContext) ___Type_description(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -40026,10 +40799,11 @@ func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -40064,10 +40838,11 @@ func (ec *executionContext) ___Type_interfaces(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -40095,10 +40870,11 @@ func (ec *executionContext) ___Type_possibleTypes(ctx context.Context, field gra
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -40126,10 +40902,11 @@ func (ec *executionContext) ___Type_enumValues(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -40164,10 +40941,11 @@ func (ec *executionContext) ___Type_inputFields(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -40195,10 +40973,11 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "__Type",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
+		Object:     "__Type",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
@@ -40231,7 +41010,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40239,7 +41018,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "Use":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Use"))
 			it.Use, err = ec.unmarshalOAddressUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40247,7 +41026,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOAddressTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40255,7 +41034,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "Text":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -40263,7 +41042,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "Line":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Line"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Line"))
 			it.Line, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40271,7 +41050,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "City":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("City"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("City"))
 			it.City, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40279,7 +41058,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "District":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("District"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("District"))
 			it.District, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40287,7 +41066,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "State":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("State"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("State"))
 			it.State, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40295,7 +41074,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "PostalCode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PostalCode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PostalCode"))
 			it.PostalCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40303,7 +41082,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "Country":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Country"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Country"))
 			it.Country, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40311,7 +41090,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40331,7 +41110,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40339,7 +41118,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -40347,7 +41126,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 		case "Comparator":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalOAgeComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40355,7 +41134,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 		case "Unit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40363,7 +41142,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -40371,7 +41150,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40391,7 +41170,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40399,7 +41178,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40407,7 +41186,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "ClinicalStatus":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ClinicalStatus"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ClinicalStatus"))
 			it.ClinicalStatus, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40415,7 +41194,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "VerificationStatus":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("VerificationStatus"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("VerificationStatus"))
 			it.VerificationStatus, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40423,7 +41202,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40431,7 +41210,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Category":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
 			it.Category, err = ec.unmarshalOAllergyIntoleranceCategoryEnum2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40439,7 +41218,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Criticality":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Criticality"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Criticality"))
 			it.Criticality, err = ec.unmarshalNAllergyIntoleranceCriticalityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCriticalityEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40447,7 +41226,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40455,7 +41234,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Patient":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Patient"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Patient"))
 			it.Patient, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40463,7 +41242,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Encounter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40471,7 +41250,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "OnsetDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetDateTime"))
 			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -40479,7 +41258,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "OnsetAge":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetAge"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetAge"))
 			it.OnsetAge, err = ec.unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40487,7 +41266,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "OnsetPeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetPeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetPeriod"))
 			it.OnsetPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40495,7 +41274,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "OnsetRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetRange"))
 			it.OnsetRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40503,7 +41282,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "OnsetString":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetString"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetString"))
 			it.OnsetString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40511,7 +41290,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "RecordedDate":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RecordedDate"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RecordedDate"))
 			it.RecordedDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -40519,7 +41298,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Recorder":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Recorder"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Recorder"))
 			it.Recorder, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40527,7 +41306,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Asserter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Asserter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Asserter"))
 			it.Asserter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40535,7 +41314,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "LastOccurrence":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LastOccurrence"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LastOccurrence"))
 			it.LastOccurrence, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -40543,7 +41322,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Note":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40551,7 +41330,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 		case "Reaction":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Reaction"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Reaction"))
 			it.Reaction, err = ec.unmarshalOFHIRAllergyintoleranceReactionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReactionInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40571,7 +41350,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40579,7 +41358,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "Substance":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Substance"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Substance"))
 			it.Substance, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40587,7 +41366,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "Manifestation":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Manifestation"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Manifestation"))
 			it.Manifestation, err = ec.unmarshalNFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
@@ -40595,7 +41374,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "Description":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Description"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Description"))
 			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40603,7 +41382,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "Onset":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Onset"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Onset"))
 			it.Onset, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -40611,7 +41390,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "Severity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Severity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Severity"))
 			it.Severity, err = ec.unmarshalOAllergyIntoleranceReactionSeverityEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40619,7 +41398,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "ExposureRoute":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ExposureRoute"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExposureRoute"))
 			it.ExposureRoute, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40627,7 +41406,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 		case "Note":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40647,7 +41426,7 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40655,7 +41434,7 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 		case "AuthorReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthorReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthorReference"))
 			it.AuthorReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40663,7 +41442,7 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 		case "AuthorString":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthorString"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthorString"))
 			it.AuthorString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40671,7 +41450,7 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 		case "Time":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Time"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Time"))
 			it.Time, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -40679,7 +41458,7 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 		case "Text":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx, v)
 			if err != nil {
 				return it, err
@@ -40699,7 +41478,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40707,7 +41486,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40715,7 +41494,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40723,7 +41502,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "CancelationReason":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CancelationReason"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CancelationReason"))
 			it.CancelationReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40731,7 +41510,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "ServiceCategory":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceCategory"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ServiceCategory"))
 			it.ServiceCategory, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40739,7 +41518,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "ServiceType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ServiceType"))
 			it.ServiceType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40747,7 +41526,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Specialty":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Specialty"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Specialty"))
 			it.Specialty, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40755,7 +41534,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "AppointmentType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AppointmentType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AppointmentType"))
 			it.AppointmentType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40763,7 +41542,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "ReasonCode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40771,7 +41550,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "ReasonReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40779,7 +41558,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Priority":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Priority"))
 			it.Priority, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
@@ -40787,7 +41566,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Description":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Description"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Description"))
 			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40795,7 +41574,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "SupportingInformation":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SupportingInformation"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SupportingInformation"))
 			it.SupportingInformation, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40803,7 +41582,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Start":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Start"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Start"))
 			it.Start, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
@@ -40811,7 +41590,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "End":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("End"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("End"))
 			it.End, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
@@ -40819,7 +41598,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "MinutesDuration":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MinutesDuration"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MinutesDuration"))
 			it.MinutesDuration, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
@@ -40827,7 +41606,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Slot":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Slot"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Slot"))
 			it.Slot, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40835,7 +41614,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Created":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Created"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Created"))
 			it.Created, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -40843,7 +41622,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Comment":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comment"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comment"))
 			it.Comment, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40851,7 +41630,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "PatientInstruction":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PatientInstruction"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PatientInstruction"))
 			it.PatientInstruction, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40859,7 +41638,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "BasedOn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40867,7 +41646,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "Participant":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Participant"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Participant"))
 			it.Participant, err = ec.unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
@@ -40875,7 +41654,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Conte
 		case "RequestedPeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RequestedPeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RequestedPeriod"))
 			it.RequestedPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40895,7 +41674,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx co
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40903,7 +41682,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx co
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40911,7 +41690,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx co
 		case "Actor":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Actor"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Actor"))
 			it.Actor, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40919,7 +41698,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx co
 		case "Required":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Required"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Required"))
 			it.Required, err = ec.unmarshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40927,7 +41706,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx co
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -40935,7 +41714,7 @@ func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx co
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -40955,7 +41734,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -40963,7 +41742,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "ContentType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ContentType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ContentType"))
 			it.ContentType, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40971,7 +41750,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "Language":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Language"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Language"))
 			it.Language, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -40979,7 +41758,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "Data":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Data"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Data"))
 			it.Data, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
@@ -40987,7 +41766,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "URL":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("URL"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("URL"))
 			it.URL, err = ec.unmarshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx, v)
 			if err != nil {
 				return it, err
@@ -40995,7 +41774,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "Size":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Size"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Size"))
 			it.Size, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
@@ -41003,7 +41782,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "Hash":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Hash"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Hash"))
 			it.Hash, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
@@ -41011,7 +41790,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "Title":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Title"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Title"))
 			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41019,7 +41798,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 		case "Creation":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Creation"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Creation"))
 			it.Creation, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -41039,7 +41818,7 @@ func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.C
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41047,7 +41826,7 @@ func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.C
 		case "Coding":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Coding"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Coding"))
 			it.Coding, err = ec.unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
@@ -41055,7 +41834,7 @@ func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.C
 		case "Text":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -41075,7 +41854,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41083,7 +41862,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -41091,7 +41870,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 		case "Version":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Version"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Version"))
 			it.Version, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41099,7 +41878,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -41107,7 +41886,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 		case "Display":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Display"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Display"))
 			it.Display, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -41115,7 +41894,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 		case "UserSelected":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("UserSelected"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UserSelected"))
 			it.UserSelected, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -41135,7 +41914,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41143,7 +41922,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 		case "Mode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Mode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Mode"))
 			it.Mode, err = ec.unmarshalOCompositionAttesterModeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -41151,7 +41930,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 		case "Time":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Time"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Time"))
 			it.Time, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -41159,7 +41938,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 		case "Party":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Party"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Party"))
 			it.Party, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41179,7 +41958,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41187,7 +41966,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -41195,7 +41974,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41203,7 +41982,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 		case "Detail":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Detail"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Detail"))
 			it.Detail, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41223,7 +42002,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41231,7 +42010,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41239,7 +42018,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOCompositionStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -41247,7 +42026,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41255,7 +42034,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Category":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41263,7 +42042,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Subject":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
 			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41271,7 +42050,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Encounter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41279,7 +42058,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Date":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Date"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Date"))
 			it.Date, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -41287,7 +42066,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Author":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Author"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Author"))
 			it.Author, err = ec.unmarshalNFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
@@ -41295,7 +42074,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Title":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Title"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Title"))
 			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41303,7 +42082,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Confidentiality":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Confidentiality"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Confidentiality"))
 			it.Confidentiality, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -41311,7 +42090,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Attester":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Attester"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Attester"))
 			it.Attester, err = ec.unmarshalOFHIRCompositionAttesterInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttesterInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41319,7 +42098,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Custodian":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Custodian"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Custodian"))
 			it.Custodian, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41327,7 +42106,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "RelatesTo":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RelatesTo"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RelatesTo"))
 			it.RelatesTo, err = ec.unmarshalOFHIRCompositionRelatestoInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatestoInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41335,7 +42114,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Event":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Event"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Event"))
 			it.Event, err = ec.unmarshalOFHIRCompositionEventInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEventInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41343,7 +42122,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 		case "Section":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Section"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Section"))
 			it.Section, err = ec.unmarshalOFHIRCompositionSectionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41363,7 +42142,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41371,7 +42150,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -41379,7 +42158,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 		case "TargetIdentifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TargetIdentifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("TargetIdentifier"))
 			it.TargetIdentifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41387,7 +42166,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 		case "TargetReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TargetReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("TargetReference"))
 			it.TargetReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41407,7 +42186,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41415,7 +42194,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Title":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Title"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Title"))
 			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41423,7 +42202,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -41431,7 +42210,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Author":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Author"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Author"))
 			it.Author, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41439,7 +42218,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Focus":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Focus"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Focus"))
 			it.Focus, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41447,7 +42226,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Text":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalOFHIRNarrativeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrativeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41455,7 +42234,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Mode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Mode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Mode"))
 			it.Mode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -41463,7 +42242,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "OrderedBy":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OrderedBy"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OrderedBy"))
 			it.OrderedBy, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41471,7 +42250,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Entry":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Entry"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Entry"))
 			it.Entry, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41479,7 +42258,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "EmptyReason":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EmptyReason"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EmptyReason"))
 			it.EmptyReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41487,7 +42266,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 		case "Section":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Section"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Section"))
 			it.Section, err = ec.unmarshalOFHIRCompositionSectionInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41507,7 +42286,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41515,7 +42294,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41523,7 +42302,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context
 		case "Detail":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Detail"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Detail"))
 			it.Detail, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41543,7 +42322,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41551,7 +42330,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41559,7 +42338,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "ClinicalStatus":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ClinicalStatus"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ClinicalStatus"))
 			it.ClinicalStatus, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41567,7 +42346,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "VerificationStatus":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("VerificationStatus"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("VerificationStatus"))
 			it.VerificationStatus, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41575,7 +42354,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Category":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41583,7 +42362,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Severity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Severity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Severity"))
 			it.Severity, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41591,7 +42370,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41599,7 +42378,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "BodySite":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BodySite"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BodySite"))
 			it.BodySite, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41607,7 +42386,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Subject":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
 			it.Subject, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41615,7 +42394,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Encounter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41623,7 +42402,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "OnsetDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetDateTime"))
 			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -41631,7 +42410,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "OnsetAge":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetAge"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetAge"))
 			it.OnsetAge, err = ec.unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41639,7 +42418,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "OnsetPeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetPeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetPeriod"))
 			it.OnsetPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41647,7 +42426,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "OnsetRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetRange"))
 			it.OnsetRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41655,7 +42434,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "OnsetString":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnsetString"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetString"))
 			it.OnsetString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41663,7 +42442,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "AbatementDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AbatementDateTime"))
 			it.AbatementDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -41671,7 +42450,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "AbatementAge":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementAge"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AbatementAge"))
 			it.AbatementAge, err = ec.unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAgeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41679,7 +42458,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "AbatementPeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementPeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AbatementPeriod"))
 			it.AbatementPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41687,7 +42466,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "AbatementRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AbatementRange"))
 			it.AbatementRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41695,7 +42474,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "AbatementString":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AbatementString"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AbatementString"))
 			it.AbatementString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41703,7 +42482,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "RecordedDate":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RecordedDate"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RecordedDate"))
 			it.RecordedDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -41711,7 +42490,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Recorder":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Recorder"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Recorder"))
 			it.Recorder, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41719,7 +42498,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Asserter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Asserter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Asserter"))
 			it.Asserter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41727,7 +42506,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Stage":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Stage"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Stage"))
 			it.Stage, err = ec.unmarshalOFHIRConditionStageInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStageInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41735,7 +42514,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Evidence":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Evidence"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Evidence"))
 			it.Evidence, err = ec.unmarshalOFHIRConditionEvidenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41743,7 +42522,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 		case "Note":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41763,7 +42542,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41771,7 +42550,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 		case "Summary":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Summary"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Summary"))
 			it.Summary, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41779,7 +42558,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 		case "Assessment":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Assessment"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Assessment"))
 			it.Assessment, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41787,7 +42566,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41807,7 +42586,7 @@ func (ec *executionContext) unmarshalInputFHIRContactDetailInput(ctx context.Con
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41815,7 +42594,7 @@ func (ec *executionContext) unmarshalInputFHIRContactDetailInput(ctx context.Con
 		case "Name":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
 			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41823,7 +42602,7 @@ func (ec *executionContext) unmarshalInputFHIRContactDetailInput(ctx context.Con
 		case "Telecom":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Telecom"))
 			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41843,7 +42622,7 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41851,7 +42630,7 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalOContactPointSystemEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -41859,7 +42638,7 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41867,7 +42646,7 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 		case "Use":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Use"))
 			it.Use, err = ec.unmarshalOContactPointUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -41875,7 +42654,7 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 		case "Rank":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Rank"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Rank"))
 			it.Rank, err = ec.unmarshalOInt2ᚖint64(ctx, v)
 			if err != nil {
 				return it, err
@@ -41883,7 +42662,7 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41903,7 +42682,7 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41911,7 +42690,7 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -41919,7 +42698,7 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 		case "Name":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
 			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41927,7 +42706,7 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 		case "Contact":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Contact"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Contact"))
 			it.Contact, err = ec.unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -41947,7 +42726,7 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41955,7 +42734,7 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -41963,7 +42742,7 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 		case "Comparator":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -41971,7 +42750,7 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 		case "Unit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -41979,7 +42758,7 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -41987,7 +42766,7 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42007,7 +42786,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42015,7 +42794,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42023,7 +42802,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "Profile":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Profile"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Profile"))
 			it.Profile, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
@@ -42031,7 +42810,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "SubjectCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SubjectCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SubjectCodeableConcept"))
 			it.SubjectCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42039,7 +42818,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "SubjectReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SubjectReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SubjectReference"))
 			it.SubjectReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42047,7 +42826,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "MustSupport":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MustSupport"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MustSupport"))
 			it.MustSupport, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42055,7 +42834,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "CodeFilter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CodeFilter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CodeFilter"))
 			it.CodeFilter, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42063,7 +42842,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "DateFilter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DateFilter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DateFilter"))
 			it.DateFilter, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -42071,7 +42850,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "Limit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Limit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Limit"))
 			it.Limit, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42079,7 +42858,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 		case "Sort":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Sort"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Sort"))
 			it.Sort, err = ec.unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42099,7 +42878,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42107,7 +42886,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx
 		case "Path":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Path"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Path"))
 			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42115,7 +42894,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx
 		case "SearchParam":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SearchParam"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SearchParam"))
 			it.SearchParam, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42123,7 +42902,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx
 		case "ValueSet":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueSet"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueSet"))
 			it.ValueSet, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
@@ -42131,7 +42910,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42151,7 +42930,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42159,7 +42938,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 		case "Path":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Path"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Path"))
 			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42167,7 +42946,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 		case "SearchParam":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SearchParam"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SearchParam"))
 			it.SearchParam, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42175,7 +42954,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 		case "ValueDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDateTime"))
 			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -42183,7 +42962,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 		case "ValuePeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValuePeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValuePeriod"))
 			it.ValuePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42191,7 +42970,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 		case "ValueDuration":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDuration"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDuration"))
 			it.ValueDuration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42211,7 +42990,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42219,7 +42998,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx conte
 		case "Path":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Path"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Path"))
 			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42227,7 +43006,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx conte
 		case "Direction":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Direction"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Direction"))
 			it.Direction, err = ec.unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -42247,7 +43026,7 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42255,7 +43034,7 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -42263,7 +43042,7 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 		case "Comparator":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -42271,7 +43050,7 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 		case "Unit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42279,7 +43058,7 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -42287,7 +43066,7 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42307,7 +43086,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42315,7 +43094,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42323,7 +43102,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		case "DoseRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoseRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DoseRange"))
 			it.DoseRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42331,7 +43110,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		case "DoseQuantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoseQuantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DoseQuantity"))
 			it.DoseQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42339,7 +43118,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		case "RateRatio":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RateRatio"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RateRatio"))
 			it.RateRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42347,7 +43126,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		case "RateRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RateRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RateRange"))
 			it.RateRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42355,7 +43134,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 		case "RateQuantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RateQuantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RateQuantity"))
 			it.RateQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42375,7 +43154,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42383,7 +43162,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "Sequence":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Sequence"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Sequence"))
 			it.Sequence, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42391,7 +43170,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "Text":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42399,7 +43178,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "AdditionalInstruction":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AdditionalInstruction"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AdditionalInstruction"))
 			it.AdditionalInstruction, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42407,7 +43186,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "PatientInstruction":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PatientInstruction"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PatientInstruction"))
 			it.PatientInstruction, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42415,7 +43194,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "Timing":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Timing"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Timing"))
 			it.Timing, err = ec.unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42423,7 +43202,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "AsNeededBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AsNeededBoolean"))
 			it.AsNeededBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -42431,7 +43210,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "AsNeededCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AsNeededCodeableConcept"))
 			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42439,7 +43218,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "Site":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Site"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Site"))
 			it.Site, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42447,7 +43226,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "Route":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Route"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Route"))
 			it.Route, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42455,7 +43234,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "Method":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Method"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Method"))
 			it.Method, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42463,7 +43242,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "DoseAndRate":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoseAndRate"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DoseAndRate"))
 			it.DoseAndRate, err = ec.unmarshalOFHIRDosageDoseandrateInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrateInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42471,7 +43250,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "MaxDosePerPeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaxDosePerPeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MaxDosePerPeriod"))
 			it.MaxDosePerPeriod, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42479,7 +43258,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "MaxDosePerAdministration":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaxDosePerAdministration"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MaxDosePerAdministration"))
 			it.MaxDosePerAdministration, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42487,7 +43266,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 		case "MaxDosePerLifetime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaxDosePerLifetime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MaxDosePerLifetime"))
 			it.MaxDosePerLifetime, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42507,7 +43286,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42515,7 +43294,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -42523,7 +43302,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 		case "Comparator":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalODurationComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -42531,7 +43310,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 		case "Unit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Unit"))
 			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42539,7 +43318,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -42547,7 +43326,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42567,7 +43346,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx con
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42575,7 +43354,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx con
 		case "Class":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Class"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Class"))
 			it.Class, err = ec.unmarshalNFHIRCodingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42583,7 +43362,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx con
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42603,7 +43382,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx contex
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42611,7 +43390,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx contex
 		case "Condition":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Condition"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Condition"))
 			it.Condition, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42619,7 +43398,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx contex
 		case "Use":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Use"))
 			it.Use, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42627,7 +43406,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx contex
 		case "Rank":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Rank"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Rank"))
 			it.Rank, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42647,7 +43426,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42655,7 +43434,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "PreAdmissionIdentifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PreAdmissionIdentifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PreAdmissionIdentifier"))
 			it.PreAdmissionIdentifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42663,7 +43442,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "Origin":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Origin"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Origin"))
 			it.Origin, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42671,7 +43450,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "AdmitSource":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AdmitSource"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AdmitSource"))
 			it.AdmitSource, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42679,7 +43458,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "ReAdmission":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReAdmission"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReAdmission"))
 			it.ReAdmission, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42687,7 +43466,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "DietPreference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DietPreference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DietPreference"))
 			it.DietPreference, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42695,7 +43474,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "SpecialCourtesy":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SpecialCourtesy"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SpecialCourtesy"))
 			it.SpecialCourtesy, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42703,7 +43482,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "SpecialArrangement":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SpecialArrangement"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SpecialArrangement"))
 			it.SpecialArrangement, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42711,7 +43490,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "Destination":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Destination"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Destination"))
 			it.Destination, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42719,7 +43498,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 		case "DischargeDisposition":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DischargeDisposition"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DischargeDisposition"))
 			it.DischargeDisposition, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42739,7 +43518,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42747,7 +43526,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalNFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
@@ -42755,7 +43534,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalNEncounterStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -42763,7 +43542,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "StatusHistory":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("StatusHistory"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("StatusHistory"))
 			it.StatusHistory, err = ec.unmarshalOFHIREncounterStatushistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistoryInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42771,7 +43550,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Class":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Class"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Class"))
 			it.Class, err = ec.unmarshalNFHIRCodingInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42779,7 +43558,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "ClassHistory":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ClassHistory"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ClassHistory"))
 			it.ClassHistory, err = ec.unmarshalOFHIREncounterClasshistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistoryInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42787,7 +43566,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42795,7 +43574,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "ServiceType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ServiceType"))
 			it.ServiceType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42803,7 +43582,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Priority":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Priority"))
 			it.Priority, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42811,7 +43590,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Subject":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
 			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42819,7 +43598,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "EpisodeOfCare":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EpisodeOfCare"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EpisodeOfCare"))
 			it.EpisodeOfCare, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42827,7 +43606,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "BasedOn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42835,7 +43614,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Participant":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Participant"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Participant"))
 			it.Participant, err = ec.unmarshalOFHIREncounterParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipantInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42843,7 +43622,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Appointment":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Appointment"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Appointment"))
 			it.Appointment, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42851,7 +43630,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42859,7 +43638,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Length":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Length"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Length"))
 			it.Length, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42867,7 +43646,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "ReasonCode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -42875,7 +43654,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "ReasonReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42883,7 +43662,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Diagnosis":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Diagnosis"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Diagnosis"))
 			it.Diagnosis, err = ec.unmarshalOFHIREncounterDiagnosisInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosisInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42891,7 +43670,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Account":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Account"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Account"))
 			it.Account, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42899,7 +43678,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Hospitalization":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Hospitalization"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Hospitalization"))
 			it.Hospitalization, err = ec.unmarshalOFHIREncounterHospitalizationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalizationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42907,7 +43686,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "Location":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Location"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Location"))
 			it.Location, err = ec.unmarshalOFHIREncounterLocationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42915,7 +43694,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "ServiceProvider":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ServiceProvider"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ServiceProvider"))
 			it.ServiceProvider, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42923,7 +43702,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 		case "PartOf":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PartOf"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PartOf"))
 			it.PartOf, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42943,7 +43722,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -42951,7 +43730,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 		case "Location":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Location"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Location"))
 			it.Location, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42959,7 +43738,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOEncounterLocationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -42967,7 +43746,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 		case "PhysicalType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PhysicalType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PhysicalType"))
 			it.PhysicalType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42975,7 +43754,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -42995,7 +43774,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43003,7 +43782,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx cont
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43011,7 +43790,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx cont
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43019,7 +43798,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx cont
 		case "Individual":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Individual"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Individual"))
 			it.Individual, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43039,7 +43818,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx co
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43047,7 +43826,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx co
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOEncounterStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -43055,7 +43834,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx co
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43075,7 +43854,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43083,7 +43862,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43091,7 +43870,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOEpisodeOfCareStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -43099,7 +43878,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "StatusHistory":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("StatusHistory"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("StatusHistory"))
 			it.StatusHistory, err = ec.unmarshalOFHIREpisodeofcareStatushistoryInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistoryInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43107,7 +43886,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43115,7 +43894,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Diagnosis":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Diagnosis"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Diagnosis"))
 			it.Diagnosis, err = ec.unmarshalOFHIREpisodeofcareDiagnosisInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosisInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43123,7 +43902,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Patient":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Patient"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Patient"))
 			it.Patient, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43131,7 +43910,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "ManagingOrganization":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ManagingOrganization"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ManagingOrganization"))
 			it.ManagingOrganization, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43139,7 +43918,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43147,7 +43926,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "ReferralRequest":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReferralRequest"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReferralRequest"))
 			it.ReferralRequest, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43155,7 +43934,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "CareManager":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CareManager"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CareManager"))
 			it.CareManager, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43163,7 +43942,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Team":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Team"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Team"))
 			it.Team, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43171,7 +43950,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 		case "Account":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Account"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Account"))
 			it.Account, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43191,7 +43970,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx co
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43199,7 +43978,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx co
 		case "Condition":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Condition"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Condition"))
 			it.Condition, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43207,7 +43986,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx co
 		case "Role":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Role"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Role"))
 			it.Role, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43215,7 +43994,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx co
 		case "Rank":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Rank"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Rank"))
 			it.Rank, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43235,7 +44014,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ct
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43243,7 +44022,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ct
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOEpisodeOfCareStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -43251,7 +44030,7 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ct
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43271,7 +44050,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43279,7 +44058,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "Use":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Use"))
 			it.Use, err = ec.unmarshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐHumanNameUseEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -43287,7 +44066,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "Text":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -43295,7 +44074,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "Family":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Family"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Family"))
 			it.Family, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43303,7 +44082,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "Given":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Given"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Given"))
 			it.Given, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43311,7 +44090,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "Prefix":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Prefix"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Prefix"))
 			it.Prefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43319,7 +44098,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "Suffix":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Suffix"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Suffix"))
 			it.Suffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43327,7 +44106,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43347,7 +44126,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43355,7 +44134,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		case "Use":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Use"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Use"))
 			it.Use, err = ec.unmarshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -43363,7 +44142,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43371,7 +44150,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -43379,7 +44158,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -43387,7 +44166,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43395,7 +44174,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 		case "Assigner":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Assigner"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Assigner"))
 			it.Assigner, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43415,7 +44194,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43423,7 +44202,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43431,7 +44210,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43439,7 +44218,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "StatusReason":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("StatusReason"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("StatusReason"))
 			it.StatusReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43447,7 +44226,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Intent":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Intent"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Intent"))
 			it.Intent, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43455,7 +44234,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Category":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43463,7 +44242,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Priority":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Priority"))
 			it.Priority, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43471,7 +44250,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "DoNotPerform":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoNotPerform"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DoNotPerform"))
 			it.DoNotPerform, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -43479,7 +44258,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "ReportedBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReportedBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReportedBoolean"))
 			it.ReportedBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -43487,7 +44266,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "ReportedReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReportedReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReportedReference"))
 			it.ReportedReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43495,7 +44274,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "MedicationCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MedicationCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MedicationCodeableConcept"))
 			it.MedicationCodeableConcept, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43503,7 +44282,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "MedicationReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MedicationReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MedicationReference"))
 			it.MedicationReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43511,7 +44290,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Subject":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
 			it.Subject, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43519,7 +44298,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Encounter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43527,7 +44306,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "SupportingInformation":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SupportingInformation"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SupportingInformation"))
 			it.SupportingInformation, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43535,7 +44314,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "AuthoredOn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthoredOn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthoredOn"))
 			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -43543,7 +44322,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Requester":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Requester"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Requester"))
 			it.Requester, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43551,7 +44330,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Performer":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43559,7 +44338,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "PerformerType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PerformerType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PerformerType"))
 			it.PerformerType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43567,7 +44346,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Recorder":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Recorder"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Recorder"))
 			it.Recorder, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43575,7 +44354,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "ReasonCode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43583,7 +44362,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "ReasonReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43591,7 +44370,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "InstantiatesCanonical":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesCanonical"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesCanonical"))
 			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
@@ -43599,7 +44378,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "InstantiatesURI":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesURI"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesURI"))
 			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
@@ -43607,7 +44386,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "BasedOn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43615,7 +44394,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "GroupIdentifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("GroupIdentifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("GroupIdentifier"))
 			it.GroupIdentifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43623,7 +44402,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "CourseOfTherapyType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CourseOfTherapyType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CourseOfTherapyType"))
 			it.CourseOfTherapyType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43631,7 +44410,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Insurance":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Insurance"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Insurance"))
 			it.Insurance, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43639,7 +44418,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Note":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43647,7 +44426,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "DosageInstruction":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DosageInstruction"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DosageInstruction"))
 			it.DosageInstruction, err = ec.unmarshalOFHIRDosageInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43655,7 +44434,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "DispenseRequest":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DispenseRequest"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DispenseRequest"))
 			it.DispenseRequest, err = ec.unmarshalOFHIRMedicationrequestDispenserequestInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestDispenserequestInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43663,7 +44442,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "Substitution":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Substitution"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Substitution"))
 			it.Substitution, err = ec.unmarshalOFHIRMedicationrequestSubstitutionInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitutionInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43671,7 +44450,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "PriorPrescription":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PriorPrescription"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PriorPrescription"))
 			it.PriorPrescription, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43679,7 +44458,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "DetectedIssue":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DetectedIssue"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DetectedIssue"))
 			it.DetectedIssue, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43687,7 +44466,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 		case "EventHistory":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EventHistory"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EventHistory"))
 			it.EventHistory, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43707,7 +44486,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43715,7 +44494,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "InitialFill":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InitialFill"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InitialFill"))
 			it.InitialFill, err = ec.unmarshalOFHIRMedicationrequestInitialfillInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfillInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43723,7 +44502,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "DispenseInterval":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DispenseInterval"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DispenseInterval"))
 			it.DispenseInterval, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43731,7 +44510,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "ValidityPeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValidityPeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValidityPeriod"))
 			it.ValidityPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43739,7 +44518,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "NumberOfRepeatsAllowed":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("NumberOfRepeatsAllowed"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("NumberOfRepeatsAllowed"))
 			it.NumberOfRepeatsAllowed, err = ec.unmarshalOUnsignedInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43747,7 +44526,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "Quantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Quantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Quantity"))
 			it.Quantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43755,7 +44534,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "ExpectedSupplyDuration":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ExpectedSupplyDuration"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExpectedSupplyDuration"))
 			it.ExpectedSupplyDuration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43763,7 +44542,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 		case "Performer":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43783,7 +44562,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43791,7 +44570,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(
 		case "Quantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Quantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Quantity"))
 			it.Quantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43799,7 +44578,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(
 		case "Duration":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Duration"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Duration"))
 			it.Duration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43819,7 +44598,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43827,7 +44606,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 		case "AllowedBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AllowedBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AllowedBoolean"))
 			it.AllowedBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -43835,7 +44614,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 		case "AllowedCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AllowedCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AllowedCodeableConcept"))
 			it.AllowedCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43843,7 +44622,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 		case "Reason":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Reason"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Reason"))
 			it.Reason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43863,7 +44642,7 @@ func (ec *executionContext) unmarshalInputFHIRMoneyInput(ctx context.Context, ob
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43871,7 +44650,7 @@ func (ec *executionContext) unmarshalInputFHIRMoneyInput(ctx context.Context, ob
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -43879,7 +44658,7 @@ func (ec *executionContext) unmarshalInputFHIRMoneyInput(ctx context.Context, ob
 		case "Currency":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Currency"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Currency"))
 			it.Currency, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43899,7 +44678,7 @@ func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43907,7 +44686,7 @@ func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalONarrativeStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -43915,7 +44694,7 @@ func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context
 		case "Div":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Div"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Div"))
 			it.Div, err = ec.unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx, v)
 			if err != nil {
 				return it, err
@@ -43935,7 +44714,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43943,7 +44722,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43951,7 +44730,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueQuantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueQuantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueQuantity"))
 			it.ValueQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43959,7 +44738,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueCodeableConcept"))
 			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -43967,7 +44746,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueString":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueString"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueString"))
 			it.ValueString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43975,7 +44754,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueBoolean"))
 			it.ValueBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -43983,7 +44762,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueInteger":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueInteger"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueInteger"))
 			it.ValueInteger, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -43991,7 +44770,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueRange"))
 			it.ValueRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -43999,7 +44778,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueRatio":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRatio"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueRatio"))
 			it.ValueRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44007,7 +44786,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueSampledData":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueSampledData"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueSampledData"))
 			it.ValueSampledData, err = ec.unmarshalOFHIRSampledDataInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledDataInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44015,7 +44794,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueTime"))
 			it.ValueTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -44023,7 +44802,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValueDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDateTime"))
 			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -44031,7 +44810,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ValuePeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValuePeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValuePeriod"))
 			it.ValuePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44039,7 +44818,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "DataAbsentReason":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DataAbsentReason"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DataAbsentReason"))
 			it.DataAbsentReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44047,7 +44826,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "Interpretation":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Interpretation"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Interpretation"))
 			it.Interpretation, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44055,7 +44834,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 		case "ReferenceRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReferenceRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReferenceRange"))
 			it.ReferenceRange, err = ec.unmarshalOFHIRObservationReferencerangeInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44075,7 +44854,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44083,7 +44862,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44091,7 +44870,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "BasedOn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44099,7 +44878,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "PartOf":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PartOf"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PartOf"))
 			it.PartOf, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44107,7 +44886,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOObservationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -44115,7 +44894,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Category":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44123,7 +44902,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44131,7 +44910,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Subject":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
 			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44139,7 +44918,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Focus":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Focus"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Focus"))
 			it.Focus, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44147,7 +44926,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Encounter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44155,7 +44934,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "EffectiveDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectiveDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectiveDateTime"))
 			it.EffectiveDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -44163,7 +44942,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "EffectivePeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectivePeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectivePeriod"))
 			it.EffectivePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44171,7 +44950,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "EffectiveTiming":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectiveTiming"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectiveTiming"))
 			it.EffectiveTiming, err = ec.unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44179,7 +44958,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "EffectiveInstant":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("EffectiveInstant"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectiveInstant"))
 			it.EffectiveInstant, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
@@ -44187,7 +44966,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Issued":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Issued"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Issued"))
 			it.Issued, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
@@ -44195,7 +44974,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Performer":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44203,7 +44982,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueQuantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueQuantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueQuantity"))
 			it.ValueQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44211,7 +44990,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueCodeableConcept"))
 			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -44219,7 +44998,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueString":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueString"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueString"))
 			it.ValueString, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44227,7 +45006,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueBoolean"))
 			it.ValueBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -44235,7 +45014,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueInteger":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueInteger"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueInteger"))
 			it.ValueInteger, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44243,7 +45022,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueRange"))
 			it.ValueRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44251,7 +45030,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueRatio":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRatio"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueRatio"))
 			it.ValueRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44259,7 +45038,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueSampledData":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueSampledData"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueSampledData"))
 			it.ValueSampledData, err = ec.unmarshalOFHIRSampledDataInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledDataInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44267,7 +45046,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueTime"))
 			it.ValueTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -44275,7 +45054,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValueDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDateTime"))
 			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -44283,7 +45062,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ValuePeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValuePeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValuePeriod"))
 			it.ValuePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44291,7 +45070,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "DataAbsentReason":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DataAbsentReason"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DataAbsentReason"))
 			it.DataAbsentReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44299,7 +45078,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Interpretation":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Interpretation"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Interpretation"))
 			it.Interpretation, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44307,7 +45086,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Note":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44315,7 +45094,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "BodySite":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BodySite"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BodySite"))
 			it.BodySite, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44323,7 +45102,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Method":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Method"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Method"))
 			it.Method, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44331,7 +45110,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Specimen":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Specimen"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Specimen"))
 			it.Specimen, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44339,7 +45118,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Device":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Device"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Device"))
 			it.Device, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44347,7 +45126,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "ReferenceRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReferenceRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReferenceRange"))
 			it.ReferenceRange, err = ec.unmarshalOFHIRObservationReferencerangeInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44355,7 +45134,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "HasMember":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("HasMember"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("HasMember"))
 			it.HasMember, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44363,7 +45142,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "DerivedFrom":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DerivedFrom"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DerivedFrom"))
 			it.DerivedFrom, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44371,7 +45150,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 		case "Component":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Component"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Component"))
 			it.Component, err = ec.unmarshalOFHIRObservationComponentInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponentInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44391,7 +45170,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44399,7 +45178,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		case "Low":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Low"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Low"))
 			it.Low, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44407,7 +45186,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		case "High":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("High"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("High"))
 			it.High, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44415,7 +45194,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44423,7 +45202,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		case "AppliesTo":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AppliesTo"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AppliesTo"))
 			it.AppliesTo, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44431,7 +45210,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		case "Age":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Age"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Age"))
 			it.Age, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44439,7 +45218,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 		case "Text":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Text"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44459,7 +45238,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44467,7 +45246,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44475,7 +45254,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "Active":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Active"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Active"))
 			it.Active, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -44483,7 +45262,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44491,7 +45270,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "Name":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
 			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44499,7 +45278,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "Alias":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Alias"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Alias"))
 			it.Alias, err = ec.unmarshalOString2ᚕstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44507,7 +45286,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "Telecom":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Telecom"))
 			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44515,7 +45294,7 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 		case "Address":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Address"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Address"))
 			it.Address, err = ec.unmarshalOFHIRAddressInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44535,7 +45314,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44543,7 +45322,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx cont
 		case "Language":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Language"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Language"))
 			it.Language, err = ec.unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44551,7 +45330,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx cont
 		case "Preferred":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Preferred"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Preferred"))
 			it.Preferred, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -44571,7 +45350,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44579,7 +45358,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "Relationship":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Relationship"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Relationship"))
 			it.Relationship, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44587,7 +45366,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "Name":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
 			it.Name, err = ec.unmarshalOFHIRHumanNameInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44595,7 +45374,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "Telecom":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Telecom"))
 			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44603,7 +45382,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "Address":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Address"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Address"))
 			it.Address, err = ec.unmarshalOFHIRAddressInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44611,7 +45390,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "Gender":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Gender"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Gender"))
 			it.Gender, err = ec.unmarshalOPatientContactGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -44619,7 +45398,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "Organization":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Organization"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Organization"))
 			it.Organization, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44627,7 +45406,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44647,7 +45426,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44655,7 +45434,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44663,7 +45442,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Active":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Active"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Active"))
 			it.Active, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -44671,7 +45450,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Name":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Name"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
 			it.Name, err = ec.unmarshalOFHIRHumanNameInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44679,7 +45458,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Telecom":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Telecom"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Telecom"))
 			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44687,7 +45466,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Gender":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Gender"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Gender"))
 			it.Gender, err = ec.unmarshalOPatientGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -44695,7 +45474,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "BirthDate":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BirthDate"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BirthDate"))
 			it.BirthDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -44703,7 +45482,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "DeceasedBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DeceasedBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DeceasedBoolean"))
 			it.DeceasedBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -44711,7 +45490,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "DeceasedDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DeceasedDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DeceasedDateTime"))
 			it.DeceasedDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -44719,7 +45498,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Address":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Address"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Address"))
 			it.Address, err = ec.unmarshalOFHIRAddressInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44727,7 +45506,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "MaritalStatus":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MaritalStatus"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MaritalStatus"))
 			it.MaritalStatus, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44735,7 +45514,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "MultipleBirthBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MultipleBirthBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MultipleBirthBoolean"))
 			it.MultipleBirthBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -44743,7 +45522,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "MultipleBirthInteger":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("MultipleBirthInteger"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MultipleBirthInteger"))
 			it.MultipleBirthInteger, err = ec.unmarshalOInteger2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44751,7 +45530,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Photo":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Photo"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Photo"))
 			it.Photo, err = ec.unmarshalOFHIRAttachmentInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachmentInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44759,7 +45538,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Contact":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Contact"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Contact"))
 			it.Contact, err = ec.unmarshalOFHIRPatientContactInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContactInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44767,7 +45546,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Communication":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Communication"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Communication"))
 			it.Communication, err = ec.unmarshalOFHIRPatientCommunicationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunicationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44775,7 +45554,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "GeneralPractitioner":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("GeneralPractitioner"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("GeneralPractitioner"))
 			it.GeneralPractitioner, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44783,7 +45562,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "ManagingOrganization":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ManagingOrganization"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ManagingOrganization"))
 			it.ManagingOrganization, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44791,7 +45570,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 		case "Link":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Link"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Link"))
 			it.Link, err = ec.unmarshalOFHIRPatientLinkInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLinkInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44811,7 +45590,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44819,7 +45598,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Conte
 		case "Other":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Other"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Other"))
 			it.Other, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44827,7 +45606,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Conte
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -44847,7 +45626,7 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44855,7 +45634,7 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 		case "Start":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Start"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Start"))
 			it.Start, err = ec.unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -44863,7 +45642,7 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 		case "End":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("End"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("End"))
 			it.End, err = ec.unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -44883,7 +45662,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44891,7 +45670,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 		case "Value":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Value"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
 			it.Value, err = ec.unmarshalNFloat2float64(ctx, v)
 			if err != nil {
 				return it, err
@@ -44899,7 +45678,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 		case "Comparator":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Comparator"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
 			it.Comparator, err = ec.unmarshalOQuantityComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -44907,7 +45686,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 		case "Unit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Unit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Unit"))
 			it.Unit, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -44915,7 +45694,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 		case "System":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("System"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
 			it.System, err = ec.unmarshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -44923,7 +45702,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -44943,7 +45722,7 @@ func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, ob
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44951,7 +45730,7 @@ func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, ob
 		case "Low":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Low"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Low"))
 			it.Low, err = ec.unmarshalOFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44959,7 +45738,7 @@ func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, ob
 		case "High":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("High"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("High"))
 			it.High, err = ec.unmarshalOFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44979,7 +45758,7 @@ func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, ob
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -44987,7 +45766,7 @@ func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, ob
 		case "Numerator":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Numerator"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Numerator"))
 			it.Numerator, err = ec.unmarshalNFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -44995,7 +45774,7 @@ func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, ob
 		case "Denominator":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Denominator"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Denominator"))
 			it.Denominator, err = ec.unmarshalNFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45015,7 +45794,7 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45023,7 +45802,7 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 		case "Reference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Reference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Reference"))
 			it.Reference, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45031,7 +45810,7 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
 			if err != nil {
 				return it, err
@@ -45039,7 +45818,7 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45047,7 +45826,7 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 		case "Display":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Display"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Display"))
 			it.Display, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -45067,7 +45846,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45075,7 +45854,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "Origin":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Origin"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Origin"))
 			it.Origin, err = ec.unmarshalNFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45083,7 +45862,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45091,7 +45870,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "Factor":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Factor"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Factor"))
 			it.Factor, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45099,7 +45878,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "LowerLimit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LowerLimit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LowerLimit"))
 			it.LowerLimit, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45107,7 +45886,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "UpperLimit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("UpperLimit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpperLimit"))
 			it.UpperLimit, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45115,7 +45894,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "Dimensions":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Dimensions"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Dimensions"))
 			it.Dimensions, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45123,7 +45902,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 		case "Data":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Data"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Data"))
 			it.Data, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45143,7 +45922,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45151,7 +45930,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Identifier":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Identifier"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
 			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45159,7 +45938,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "InstantiatesCanonical":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesCanonical"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesCanonical"))
 			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
@@ -45167,7 +45946,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "InstantiatesURI":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("InstantiatesURI"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesURI"))
 			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
@@ -45175,7 +45954,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "BasedOn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BasedOn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
 			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45183,7 +45962,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Replaces":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Replaces"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Replaces"))
 			it.Replaces, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45191,7 +45970,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Requisition":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Requisition"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Requisition"))
 			it.Requisition, err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45199,7 +45978,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Status":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Status"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
 			it.Status, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45207,7 +45986,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Intent":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Intent"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Intent"))
 			it.Intent, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45215,7 +45994,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Category":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Category"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
 			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45223,7 +46002,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Priority":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Priority"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Priority"))
 			it.Priority, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45231,7 +46010,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "DoNotPerform":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DoNotPerform"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DoNotPerform"))
 			it.DoNotPerform, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -45239,7 +46018,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45247,7 +46026,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "OrderDetail":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OrderDetail"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OrderDetail"))
 			it.OrderDetail, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45255,7 +46034,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "QuantityQuantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("QuantityQuantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QuantityQuantity"))
 			it.QuantityQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45263,7 +46042,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "QuantityRatio":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("QuantityRatio"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QuantityRatio"))
 			it.QuantityRatio, err = ec.unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45271,7 +46050,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "QuantityRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("QuantityRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QuantityRange"))
 			it.QuantityRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45279,7 +46058,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Subject":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Subject"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
 			it.Subject, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45287,7 +46066,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Encounter":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Encounter"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Encounter"))
 			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45295,7 +46074,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "OccurrenceDateTime":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OccurrenceDateTime"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OccurrenceDateTime"))
 			it.OccurrenceDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
 			if err != nil {
 				return it, err
@@ -45303,7 +46082,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "OccurrencePeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OccurrencePeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OccurrencePeriod"))
 			it.OccurrencePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45311,7 +46090,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "OccurrenceTiming":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OccurrenceTiming"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OccurrenceTiming"))
 			it.OccurrenceTiming, err = ec.unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45319,7 +46098,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "AsNeededBoolean":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededBoolean"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AsNeededBoolean"))
 			it.AsNeededBoolean, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
@@ -45327,7 +46106,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "AsNeededCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AsNeededCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AsNeededCodeableConcept"))
 			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45335,7 +46114,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "AuthoredOn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("AuthoredOn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthoredOn"))
 			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -45343,7 +46122,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Requester":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Requester"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Requester"))
 			it.Requester, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45351,7 +46130,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "PerformerType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PerformerType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PerformerType"))
 			it.PerformerType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45359,7 +46138,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Performer":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Performer"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Performer"))
 			it.Performer, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45367,7 +46146,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "LocationCode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LocationCode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LocationCode"))
 			it.LocationCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45375,7 +46154,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "LocationReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("LocationReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LocationReference"))
 			it.LocationReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45383,7 +46162,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "ReasonCode":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonCode"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
 			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45391,7 +46170,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "ReasonReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ReasonReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonReference"))
 			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45399,7 +46178,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Insurance":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Insurance"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Insurance"))
 			it.Insurance, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45407,7 +46186,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "SupportingInfo":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SupportingInfo"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SupportingInfo"))
 			it.SupportingInfo, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45415,7 +46194,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Specimen":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Specimen"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Specimen"))
 			it.Specimen, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45423,7 +46202,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "BodySite":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BodySite"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BodySite"))
 			it.BodySite, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45431,7 +46210,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "Note":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Note"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
 			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45439,7 +46218,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "PatientInstruction":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PatientInstruction"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PatientInstruction"))
 			it.PatientInstruction, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45447,7 +46226,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 		case "RelevantHistory":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("RelevantHistory"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RelevantHistory"))
 			it.RelevantHistory, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45467,7 +46246,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45475,7 +46254,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "Type":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Type"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
 			it.Type, err = ec.unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
@@ -45483,7 +46262,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "When":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("When"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("When"))
 			it.When, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
@@ -45491,7 +46270,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "Who":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Who"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Who"))
 			it.Who, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45499,7 +46278,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "OnBehalfOf":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("OnBehalfOf"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnBehalfOf"))
 			it.OnBehalfOf, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45507,7 +46286,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "TargetFormat":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TargetFormat"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("TargetFormat"))
 			it.TargetFormat, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45515,7 +46294,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "SigFormat":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("SigFormat"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SigFormat"))
 			it.SigFormat, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45523,7 +46302,7 @@ func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context
 		case "Data":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Data"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Data"))
 			it.Data, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
@@ -45543,7 +46322,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45551,7 +46330,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 		case "Event":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Event"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Event"))
 			it.Event, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -45559,7 +46338,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 		case "Repeat":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Repeat"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Repeat"))
 			it.Repeat, err = ec.unmarshalOFHIRTimingRepeatInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeatInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45567,7 +46346,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45587,7 +46366,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45595,7 +46374,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "BoundsDuration":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BoundsDuration"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BoundsDuration"))
 			it.BoundsDuration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45603,7 +46382,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "BoundsRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BoundsRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BoundsRange"))
 			it.BoundsRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45611,7 +46390,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "BoundsPeriod":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("BoundsPeriod"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BoundsPeriod"))
 			it.BoundsPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45619,7 +46398,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "Count":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Count"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Count"))
 			it.Count, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45627,7 +46406,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "CountMax":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("CountMax"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CountMax"))
 			it.CountMax, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45635,7 +46414,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "Duration":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Duration"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Duration"))
 			it.Duration, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45643,7 +46422,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "DurationMax":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DurationMax"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DurationMax"))
 			it.DurationMax, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45651,7 +46430,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "DurationUnit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DurationUnit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DurationUnit"))
 			it.DurationUnit, err = ec.unmarshalOTimingRepeatDurationUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -45659,7 +46438,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "Frequency":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Frequency"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Frequency"))
 			it.Frequency, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45667,7 +46446,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "FrequencyMax":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("FrequencyMax"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("FrequencyMax"))
 			it.FrequencyMax, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45675,7 +46454,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "Period":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Period"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45683,7 +46462,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "PeriodMax":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PeriodMax"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PeriodMax"))
 			it.PeriodMax, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
@@ -45691,7 +46470,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "PeriodUnit":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("PeriodUnit"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PeriodUnit"))
 			it.PeriodUnit, err = ec.unmarshalOTimingRepeatPeriodUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -45699,7 +46478,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "DayOfWeek":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("DayOfWeek"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DayOfWeek"))
 			it.DayOfWeek, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45707,7 +46486,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "TimeOfDay":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("TimeOfDay"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("TimeOfDay"))
 			it.TimeOfDay, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
@@ -45715,7 +46494,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "When":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("When"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("When"))
 			it.When, err = ec.unmarshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx, v)
 			if err != nil {
 				return it, err
@@ -45723,7 +46502,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 		case "Offset":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Offset"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Offset"))
 			it.Offset, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
@@ -45743,7 +46522,7 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 		case "ID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
 			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45751,7 +46530,7 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 		case "Code":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
 			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45759,7 +46538,7 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 		case "ValueCodeableConcept":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueCodeableConcept"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueCodeableConcept"))
 			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
@@ -45767,7 +46546,7 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 		case "ValueQuantity":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueQuantity"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueQuantity"))
 			it.ValueQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45775,7 +46554,7 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 		case "ValueRange":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueRange"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueRange"))
 			it.ValueRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45783,7 +46562,7 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 		case "ValueReference":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ValueReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueReference"))
 			it.ValueReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
@@ -45803,7 +46582,7 @@ func (ec *executionContext) unmarshalInputFilterInput(ctx context.Context, obj i
 		case "search":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("search"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("search"))
 			it.Search, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -45811,7 +46590,7 @@ func (ec *executionContext) unmarshalInputFilterInput(ctx context.Context, obj i
 		case "filterBy":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("filterBy"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filterBy"))
 			it.FilterBy, err = ec.unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, v)
 			if err != nil {
 				return it, err
@@ -45831,7 +46610,7 @@ func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj i
 		case "fieldName":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldName"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldName"))
 			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -45839,7 +46618,7 @@ func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj i
 		case "fieldType":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldType"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldType"))
 			it.FieldType, err = ec.unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx, v)
 			if err != nil {
 				return it, err
@@ -45847,7 +46626,7 @@ func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj i
 		case "comparisonOperation":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("comparisonOperation"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comparisonOperation"))
 			it.ComparisonOperation, err = ec.unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx, v)
 			if err != nil {
 				return it, err
@@ -45855,7 +46634,7 @@ func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj i
 		case "fieldValue":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldValue"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldValue"))
 			it.FieldValue, err = ec.unmarshalNAny2interface(ctx, v)
 			if err != nil {
 				return it, err
@@ -45875,7 +46654,7 @@ func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, o
 		case "first":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("first"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
 			it.First, err = ec.unmarshalOInt2int(ctx, v)
 			if err != nil {
 				return it, err
@@ -45883,7 +46662,7 @@ func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, o
 		case "last":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("last"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
 			it.Last, err = ec.unmarshalOInt2int(ctx, v)
 			if err != nil {
 				return it, err
@@ -45891,7 +46670,7 @@ func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, o
 		case "after":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("after"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
 			it.After, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -45899,7 +46678,7 @@ func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, o
 		case "before":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("before"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
 			it.Before, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -45919,7 +46698,7 @@ func (ec *executionContext) unmarshalInputSortInput(ctx context.Context, obj int
 		case "sortBy":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("sortBy"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sortBy"))
 			it.SortBy, err = ec.unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, v)
 			if err != nil {
 				return it, err
@@ -45939,7 +46718,7 @@ func (ec *executionContext) unmarshalInputSortParam(ctx context.Context, obj int
 		case "fieldName":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("fieldName"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldName"))
 			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -45947,7 +46726,7 @@ func (ec *executionContext) unmarshalInputSortParam(ctx context.Context, obj int
 		case "sortOrder":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("sortOrder"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sortOrder"))
 			it.SortOrder, err = ec.unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx, v)
 			if err != nil {
 				return it, err
@@ -45967,7 +46746,7 @@ func (ec *executionContext) unmarshalInputUSSDClinicalRequest(ctx context.Contex
 		case "patientID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("patientID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
 			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -45975,7 +46754,7 @@ func (ec *executionContext) unmarshalInputUSSDClinicalRequest(ctx context.Contex
 		case "msisdn":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("msisdn"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
 			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -45983,7 +46762,7 @@ func (ec *executionContext) unmarshalInputUSSDClinicalRequest(ctx context.Contex
 		case "ussdSessionID":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("ussdSessionID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ussdSessionID"))
 			it.UssdSessionID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -50928,7 +51707,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 func (ec *executionContext) unmarshalNAllergyIntoleranceCriticalityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCriticalityEnum(ctx context.Context, v interface{}) (clinical.AllergyIntoleranceCriticalityEnum, error) {
 	var res clinical.AllergyIntoleranceCriticalityEnum
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNAllergyIntoleranceCriticalityEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCriticalityEnum(ctx context.Context, sel ast.SelectionSet, v clinical.AllergyIntoleranceCriticalityEnum) graphql.Marshaler {
@@ -50937,7 +51716,7 @@ func (ec *executionContext) marshalNAllergyIntoleranceCriticalityEnum2gitlabᚗs
 
 func (ec *executionContext) unmarshalNAny2interface(ctx context.Context, v interface{}) (interface{}, error) {
 	res, err := graphql.UnmarshalAny(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNAny2interface(ctx context.Context, sel ast.SelectionSet, v interface{}) graphql.Marshaler {
@@ -50958,7 +51737,7 @@ func (ec *executionContext) marshalNAny2interface(ctx context.Context, sel ast.S
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
@@ -50974,7 +51753,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 func (ec *executionContext) unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) (base.Code, error) {
 	var res base.Code
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v base.Code) graphql.Marshaler {
@@ -50984,7 +51763,7 @@ func (ec *executionContext) marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbase�
 func (ec *executionContext) unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, v interface{}) (base.DateTime, error) {
 	var res base.DateTime
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v base.DateTime) graphql.Marshaler {
@@ -50994,7 +51773,7 @@ func (ec *executionContext) marshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋb
 func (ec *executionContext) unmarshalNEncounterStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx context.Context, v interface{}) (clinical.EncounterStatusEnum, error) {
 	var res clinical.EncounterStatusEnum
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNEncounterStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.EncounterStatusEnum) graphql.Marshaler {
@@ -51013,7 +51792,7 @@ func (ec *executionContext) marshalNFHIRAllergyIntolerance2ᚖgitlabᚗslade360e
 
 func (ec *executionContext) unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx context.Context, v interface{}) (clinical.FHIRAllergyIntoleranceInput, error) {
 	res, err := ec.unmarshalInputFHIRAllergyIntoleranceInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRAllergyIntoleranceRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAllergyIntoleranceRelayConnection) graphql.Marshaler {
@@ -51056,7 +51835,7 @@ func (ec *executionContext) marshalNFHIRAppointment2ᚖgitlabᚗslade360emrᚗco
 
 func (ec *executionContext) unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx context.Context, v interface{}) (clinical.FHIRAppointmentInput, error) {
 	res, err := ec.unmarshalInputFHIRAppointmentInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRAppointmentParticipant2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantᚄ(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAppointmentParticipant) graphql.Marshaler {
@@ -51118,10 +51897,10 @@ func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitl
 	var err error
 	res := make([]*clinical.FHIRAppointmentParticipantInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRAppointmentParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -51129,7 +51908,7 @@ func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitl
 
 func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx context.Context, v interface{}) (*clinical.FHIRAppointmentParticipantInput, error) {
 	res, err := ec.unmarshalInputFHIRAppointmentParticipantInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRAppointmentRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointmentRelayConnection) graphql.Marshaler {
@@ -51213,7 +51992,7 @@ func (ec *executionContext) marshalNFHIRCodeableConcept2ᚖgitlabᚗslade360emr�
 
 func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) (clinical.FHIRCodeableConceptInput, error) {
 	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRCodeableConceptInput, error) {
@@ -51228,10 +52007,10 @@ func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚕᚖgitlabᚗsl
 	var err error
 	res := make([]*clinical.FHIRCodeableConceptInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -51239,7 +52018,7 @@ func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚕᚖgitlabᚗsl
 
 func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) (*clinical.FHIRCodeableConceptInput, error) {
 	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRCoding2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCoding(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCoding) graphql.Marshaler {
@@ -51295,7 +52074,7 @@ func (ec *executionContext) marshalNFHIRCoding2ᚖgitlabᚗslade360emrᚗcomᚋg
 
 func (ec *executionContext) unmarshalNFHIRCodingInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx context.Context, v interface{}) (clinical.FHIRCodingInput, error) {
 	res, err := ec.unmarshalInputFHIRCodingInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRCodingInput, error) {
@@ -51310,10 +52089,10 @@ func (ec *executionContext) unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emr
 	var err error
 	res := make([]*clinical.FHIRCodingInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRCodingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -51321,7 +52100,7 @@ func (ec *executionContext) unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emr
 
 func (ec *executionContext) unmarshalNFHIRCodingInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInput(ctx context.Context, v interface{}) (*clinical.FHIRCodingInput, error) {
 	res, err := ec.unmarshalInputFHIRCodingInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRComposition2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRComposition(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRComposition) graphql.Marshaler {
@@ -51336,7 +52115,7 @@ func (ec *executionContext) marshalNFHIRComposition2ᚖgitlabᚗslade360emrᚗco
 
 func (ec *executionContext) unmarshalNFHIRCompositionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionInput(ctx context.Context, v interface{}) (clinical.FHIRCompositionInput, error) {
 	res, err := ec.unmarshalInputFHIRCompositionInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRCompositionRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCompositionRelayConnection) graphql.Marshaler {
@@ -51379,7 +52158,7 @@ func (ec *executionContext) marshalNFHIRCondition2ᚖgitlabᚗslade360emrᚗcom�
 
 func (ec *executionContext) unmarshalNFHIRConditionInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionInput(ctx context.Context, v interface{}) (clinical.FHIRConditionInput, error) {
 	res, err := ec.unmarshalInputFHIRConditionInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRConditionRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRConditionRelayConnection) graphql.Marshaler {
@@ -51422,7 +52201,7 @@ func (ec *executionContext) marshalNFHIREncounter2ᚖgitlabᚗslade360emrᚗcom�
 
 func (ec *executionContext) unmarshalNFHIREncounterInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterInput(ctx context.Context, v interface{}) (clinical.FHIREncounterInput, error) {
 	res, err := ec.unmarshalInputFHIREncounterInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIREncounterRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREncounterRelayConnection) graphql.Marshaler {
@@ -51465,7 +52244,7 @@ func (ec *executionContext) marshalNFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗ
 
 func (ec *executionContext) unmarshalNFHIREpisodeOfCareInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareInput(ctx context.Context, v interface{}) (clinical.FHIREpisodeOfCareInput, error) {
 	res, err := ec.unmarshalInputFHIREpisodeOfCareInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIREpisodeOfCareRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIREpisodeOfCareRelayConnection) graphql.Marshaler {
@@ -51555,10 +52334,10 @@ func (ec *executionContext) unmarshalNFHIRIdentifierInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRIdentifierInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -51566,7 +52345,7 @@ func (ec *executionContext) unmarshalNFHIRIdentifierInput2ᚕᚖgitlabᚗslade36
 
 func (ec *executionContext) unmarshalNFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx context.Context, v interface{}) (*clinical.FHIRIdentifierInput, error) {
 	res, err := ec.unmarshalInputFHIRIdentifierInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRMedicationRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationRequest) graphql.Marshaler {
@@ -51581,7 +52360,7 @@ func (ec *executionContext) marshalNFHIRMedicationRequest2ᚖgitlabᚗslade360em
 
 func (ec *executionContext) unmarshalNFHIRMedicationRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestInput(ctx context.Context, v interface{}) (clinical.FHIRMedicationRequestInput, error) {
 	res, err := ec.unmarshalInputFHIRMedicationRequestInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRMedicationRequestRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequestRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRMedicationRequestRelayConnection) graphql.Marshaler {
@@ -51624,7 +52403,7 @@ func (ec *executionContext) marshalNFHIRObservation2ᚖgitlabᚗslade360emrᚗco
 
 func (ec *executionContext) unmarshalNFHIRObservationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationInput(ctx context.Context, v interface{}) (clinical.FHIRObservationInput, error) {
 	res, err := ec.unmarshalInputFHIRObservationInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRObservationRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRObservationRelayConnection) graphql.Marshaler {
@@ -51667,7 +52446,7 @@ func (ec *executionContext) marshalNFHIROrganization2ᚖgitlabᚗslade360emrᚗc
 
 func (ec *executionContext) unmarshalNFHIROrganizationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationInput(ctx context.Context, v interface{}) (clinical.FHIROrganizationInput, error) {
 	res, err := ec.unmarshalInputFHIROrganizationInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIROrganizationRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIROrganizationRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIROrganizationRelayConnection) graphql.Marshaler {
@@ -51710,7 +52489,7 @@ func (ec *executionContext) marshalNFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋ
 
 func (ec *executionContext) unmarshalNFHIRPatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientInput(ctx context.Context, v interface{}) (clinical.FHIRPatientInput, error) {
 	res, err := ec.unmarshalInputFHIRPatientInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRPatientRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRPatientRelayConnection) graphql.Marshaler {
@@ -51753,7 +52532,7 @@ func (ec *executionContext) marshalNFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋg
 
 func (ec *executionContext) unmarshalNFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx context.Context, v interface{}) (*clinical.FHIRPeriodInput, error) {
 	res, err := ec.unmarshalInputFHIRPeriodInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRQuantity2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantity(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRQuantity) graphql.Marshaler {
@@ -51772,12 +52551,12 @@ func (ec *executionContext) marshalNFHIRQuantity2ᚖgitlabᚗslade360emrᚗcom�
 
 func (ec *executionContext) unmarshalNFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (clinical.FHIRQuantityInput, error) {
 	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (*clinical.FHIRQuantityInput, error) {
 	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceᚄ(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRReference) graphql.Marshaler {
@@ -51839,10 +52618,10 @@ func (ec *executionContext) unmarshalNFHIRReferenceInput2ᚕᚖgitlabᚗslade360
 	var err error
 	res := make([]*clinical.FHIRReferenceInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -51850,7 +52629,7 @@ func (ec *executionContext) unmarshalNFHIRReferenceInput2ᚕᚖgitlabᚗslade360
 
 func (ec *executionContext) unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx context.Context, v interface{}) (*clinical.FHIRReferenceInput, error) {
 	res, err := ec.unmarshalInputFHIRReferenceInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRServiceRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRServiceRequest) graphql.Marshaler {
@@ -51865,7 +52644,7 @@ func (ec *executionContext) marshalNFHIRServiceRequest2ᚖgitlabᚗslade360emr�
 
 func (ec *executionContext) unmarshalNFHIRServiceRequestInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestInput(ctx context.Context, v interface{}) (clinical.FHIRServiceRequestInput, error) {
 	res, err := ec.unmarshalInputFHIRServiceRequestInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRServiceRequestRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequestRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRServiceRequestRelayConnection) graphql.Marshaler {
@@ -51899,7 +52678,7 @@ func (ec *executionContext) marshalNFHIRServiceRequestRelayPayload2ᚖgitlabᚗs
 func (ec *executionContext) unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, v interface{}) (base.FieldType, error) {
 	var res base.FieldType
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, sel ast.SelectionSet, v base.FieldType) graphql.Marshaler {
@@ -51908,7 +52687,7 @@ func (ec *executionContext) marshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋ
 
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
 	res, err := graphql.UnmarshalFloat(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
@@ -51924,7 +52703,7 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 func (ec *executionContext) unmarshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐHumanNameUseEnum(ctx context.Context, v interface{}) (clinical.HumanNameUseEnum, error) {
 	var res clinical.HumanNameUseEnum
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐHumanNameUseEnum(ctx context.Context, sel ast.SelectionSet, v clinical.HumanNameUseEnum) graphql.Marshaler {
@@ -51933,7 +52712,7 @@ func (ec *executionContext) marshalNHumanNameUseEnum2gitlabᚗslade360emrᚗcom�
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -51949,7 +52728,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 func (ec *executionContext) unmarshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx context.Context, v interface{}) (clinical.IdentifierUseEnum, error) {
 	var res clinical.IdentifierUseEnum
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx context.Context, sel ast.SelectionSet, v clinical.IdentifierUseEnum) graphql.Marshaler {
@@ -51958,7 +52737,7 @@ func (ec *executionContext) marshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcom
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
@@ -51973,7 +52752,7 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 
 func (ec *executionContext) unmarshalNMap2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
 	res, err := graphql.UnmarshalMap(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNMap2map(ctx context.Context, sel ast.SelectionSet, v map[string]interface{}) graphql.Marshaler {
@@ -52004,10 +52783,10 @@ func (ec *executionContext) unmarshalNMap2ᚕmapᚄ(ctx context.Context, v inter
 	var err error
 	res := make([]map[string]interface{}, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNMap2map(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -52025,7 +52804,7 @@ func (ec *executionContext) marshalNMap2ᚕmapᚄ(ctx context.Context, sel ast.S
 func (ec *executionContext) unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, v interface{}) (base.Operation, error) {
 	var res base.Operation
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, sel ast.SelectionSet, v base.Operation) graphql.Marshaler {
@@ -52045,7 +52824,7 @@ func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 func (ec *executionContext) unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, v interface{}) (base.SortOrder, error) {
 	var res base.SortOrder
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, sel ast.SelectionSet, v base.SortOrder) graphql.Marshaler {
@@ -52054,7 +52833,7 @@ func (ec *executionContext) marshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋ
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -52079,10 +52858,10 @@ func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -52100,7 +52879,7 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 func (ec *executionContext) unmarshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, v interface{}) (base.URI, error) {
 	var res base.URI
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v base.URI) graphql.Marshaler {
@@ -52109,7 +52888,7 @@ func (ec *executionContext) marshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbase�
 
 func (ec *executionContext) unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx context.Context, v interface{}) (clinical.USSDClinicalRequest, error) {
 	res, err := ec.unmarshalInputUSSDClinicalRequest(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNUSSDLastVisitClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDLastVisitClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDLastVisitClinicalResponse) graphql.Marshaler {
@@ -52157,7 +52936,7 @@ func (ec *executionContext) marshalNUSSDPatientProfileClinicalResponse2ᚖgitlab
 func (ec *executionContext) unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, v interface{}) (base.XHTML, error) {
 	var res base.XHTML
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, sel ast.SelectionSet, v base.XHTML) graphql.Marshaler {
@@ -52166,7 +52945,7 @@ func (ec *executionContext) marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbase
 
 func (ec *executionContext) unmarshalN_Any2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
 	res, err := graphql.UnmarshalMap(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN_Any2map(ctx context.Context, sel ast.SelectionSet, v map[string]interface{}) graphql.Marshaler {
@@ -52197,10 +52976,10 @@ func (ec *executionContext) unmarshalN_Any2ᚕmapᚄ(ctx context.Context, v inte
 	var err error
 	res := make([]map[string]interface{}, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalN_Any2map(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -52254,7 +53033,7 @@ func (ec *executionContext) marshalN_Entity2ᚕgithubᚗcomᚋ99designsᚋgqlgen
 
 func (ec *executionContext) unmarshalN_FieldSet2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN_FieldSet2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -52314,7 +53093,7 @@ func (ec *executionContext) marshalN__Directive2ᚕgithubᚗcomᚋ99designsᚋgq
 
 func (ec *executionContext) unmarshalN__DirectiveLocation2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__DirectiveLocation2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -52339,10 +53118,10 @@ func (ec *executionContext) unmarshalN__DirectiveLocation2ᚕstringᚄ(ctx conte
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalN__DirectiveLocation2string(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -52487,7 +53266,7 @@ func (ec *executionContext) marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 
 func (ec *executionContext) unmarshalN__TypeKind2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -52506,7 +53285,7 @@ func (ec *executionContext) unmarshalOAddressTypeEnum2ᚖgitlabᚗslade360emrᚗ
 	}
 	var res = new(clinical.AddressTypeEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAddressTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AddressTypeEnum) graphql.Marshaler {
@@ -52522,7 +53301,7 @@ func (ec *executionContext) unmarshalOAddressUseEnum2ᚖgitlabᚗslade360emrᚗc
 	}
 	var res = new(clinical.AddressUseEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAddressUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAddressUseEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AddressUseEnum) graphql.Marshaler {
@@ -52538,7 +53317,7 @@ func (ec *executionContext) unmarshalOAgeComparatorEnum2ᚖgitlabᚗslade360emr�
 	}
 	var res = new(clinical.AgeComparatorEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAgeComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAgeComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AgeComparatorEnum) graphql.Marshaler {
@@ -52563,10 +53342,10 @@ func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2ᚕᚖgitla
 	var err error
 	res := make([]*clinical.AllergyIntoleranceCategoryEnum, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOAllergyIntoleranceCategoryEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -52618,7 +53397,7 @@ func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2ᚖgitlab�
 	}
 	var res = new(clinical.AllergyIntoleranceCategoryEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceCategoryEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AllergyIntoleranceCategoryEnum) graphql.Marshaler {
@@ -52634,7 +53413,7 @@ func (ec *executionContext) unmarshalOAllergyIntoleranceReactionSeverityEnum2ᚖ
 	}
 	var res = new(clinical.AllergyIntoleranceReactionSeverityEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AllergyIntoleranceReactionSeverityEnum) graphql.Marshaler {
@@ -52650,7 +53429,7 @@ func (ec *executionContext) unmarshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗsla
 	}
 	var res = new(clinical.AllergyIntoleranceTypeEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAllergyIntoleranceTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AllergyIntoleranceTypeEnum) graphql.Marshaler {
@@ -52666,7 +53445,7 @@ func (ec *executionContext) unmarshalOAppointmentParticipantRequiredEnum2ᚖgitl
 	}
 	var res = new(clinical.AppointmentParticipantRequiredEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentParticipantRequiredEnum) graphql.Marshaler {
@@ -52682,7 +53461,7 @@ func (ec *executionContext) unmarshalOAppointmentParticipantStatusEnum2ᚖgitlab
 	}
 	var res = new(clinical.AppointmentParticipantStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentParticipantStatusEnum) graphql.Marshaler {
@@ -52698,7 +53477,7 @@ func (ec *executionContext) unmarshalOAppointmentStatusEnum2ᚖgitlabᚗslade360
 	}
 	var res = new(clinical.AppointmentStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentStatusEnum) graphql.Marshaler {
@@ -52714,7 +53493,7 @@ func (ec *executionContext) unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcom
 	}
 	var res = new(base.Base64Binary)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, sel ast.SelectionSet, v *base.Base64Binary) graphql.Marshaler {
@@ -52726,7 +53505,7 @@ func (ec *executionContext) marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcom�
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
@@ -52738,7 +53517,7 @@ func (ec *executionContext) unmarshalOBoolean2ᚖbool(ctx context.Context, v int
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalBoolean(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast.SelectionSet, v *bool) graphql.Marshaler {
@@ -52763,10 +53542,10 @@ func (ec *executionContext) unmarshalOCanonical2ᚕᚖgitlabᚗslade360emrᚗcom
 	var err error
 	res := make([]*base.Canonical, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -52790,7 +53569,7 @@ func (ec *executionContext) unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋ
 	}
 	var res = new(base.Canonical)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, sel ast.SelectionSet, v *base.Canonical) graphql.Marshaler {
@@ -52815,10 +53594,10 @@ func (ec *executionContext) unmarshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgo
 	var err error
 	res := make([]*base.Code, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -52842,7 +53621,7 @@ func (ec *executionContext) unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋ
 	}
 	var res = new(base.Code)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v *base.Code) graphql.Marshaler {
@@ -52858,7 +53637,7 @@ func (ec *executionContext) unmarshalOCompositionAttesterModeEnum2ᚖgitlabᚗsl
 	}
 	var res = new(clinical.CompositionAttesterModeEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCompositionAttesterModeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionAttesterModeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.CompositionAttesterModeEnum) graphql.Marshaler {
@@ -52874,7 +53653,7 @@ func (ec *executionContext) unmarshalOCompositionStatusEnum2ᚖgitlabᚗslade360
 	}
 	var res = new(clinical.CompositionStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCompositionStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCompositionStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.CompositionStatusEnum) graphql.Marshaler {
@@ -52890,7 +53669,7 @@ func (ec *executionContext) unmarshalOContactPointSystemEnum2ᚖgitlabᚗslade36
 	}
 	var res = new(clinical.ContactPointSystemEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOContactPointSystemEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointSystemEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ContactPointSystemEnum) graphql.Marshaler {
@@ -52906,7 +53685,7 @@ func (ec *executionContext) unmarshalOContactPointUseEnum2ᚖgitlabᚗslade360em
 	}
 	var res = new(clinical.ContactPointUseEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOContactPointUseEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContactPointUseEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ContactPointUseEnum) graphql.Marshaler {
@@ -52922,7 +53701,7 @@ func (ec *executionContext) unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360em
 	}
 	var res = new(clinical.ContributorTypeEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ContributorTypeEnum) graphql.Marshaler {
@@ -52938,7 +53717,7 @@ func (ec *executionContext) unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360em
 	}
 	var res = new(clinical.CountComparatorEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.CountComparatorEnum) graphql.Marshaler {
@@ -52954,7 +53733,7 @@ func (ec *executionContext) unmarshalODataRequirementSortDirectionEnum2ᚖgitlab
 	}
 	var res = new(clinical.DataRequirementSortDirectionEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DataRequirementSortDirectionEnum) graphql.Marshaler {
@@ -52970,7 +53749,7 @@ func (ec *executionContext) unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋ
 	}
 	var res = new(base.Date)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, sel ast.SelectionSet, v *base.Date) graphql.Marshaler {
@@ -52995,10 +53774,10 @@ func (ec *executionContext) unmarshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcom�
 	var err error
 	res := make([]*base.DateTime, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53022,7 +53801,7 @@ func (ec *executionContext) unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋg
 	}
 	var res = new(base.DateTime)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v *base.DateTime) graphql.Marshaler {
@@ -53038,7 +53817,7 @@ func (ec *executionContext) unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgo
 	}
 	var res = new(base.Decimal)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, sel ast.SelectionSet, v *base.Decimal) graphql.Marshaler {
@@ -53054,7 +53833,7 @@ func (ec *executionContext) unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade36
 	}
 	var res = new(clinical.DistanceComparatorEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DistanceComparatorEnum) graphql.Marshaler {
@@ -53070,7 +53849,7 @@ func (ec *executionContext) unmarshalODurationComparatorEnum2ᚖgitlabᚗslade36
 	}
 	var res = new(clinical.DurationComparatorEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalODurationComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDurationComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DurationComparatorEnum) graphql.Marshaler {
@@ -53086,7 +53865,7 @@ func (ec *executionContext) unmarshalOEncounterLocationStatusEnum2ᚖgitlabᚗsl
 	}
 	var res = new(clinical.EncounterLocationStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEncounterLocationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EncounterLocationStatusEnum) graphql.Marshaler {
@@ -53102,7 +53881,7 @@ func (ec *executionContext) unmarshalOEncounterStatusHistoryStatusEnum2ᚖgitlab
 	}
 	var res = new(clinical.EncounterStatusHistoryStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEncounterStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusHistoryStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EncounterStatusHistoryStatusEnum) graphql.Marshaler {
@@ -53118,7 +53897,7 @@ func (ec *executionContext) unmarshalOEpisodeOfCareStatusEnum2ᚖgitlabᚗslade3
 	}
 	var res = new(clinical.EpisodeOfCareStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEpisodeOfCareStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EpisodeOfCareStatusEnum) graphql.Marshaler {
@@ -53134,7 +53913,7 @@ func (ec *executionContext) unmarshalOEpisodeOfCareStatusHistoryStatusEnum2ᚖgi
 	}
 	var res = new(clinical.EpisodeOfCareStatusHistoryStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOEpisodeOfCareStatusHistoryStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCareStatusHistoryStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.EpisodeOfCareStatusHistoryStatusEnum) graphql.Marshaler {
@@ -53206,10 +53985,10 @@ func (ec *executionContext) unmarshalOFHIRAddressInput2ᚕᚖgitlabᚗslade360em
 	var err error
 	res := make([]*clinical.FHIRAddressInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAddressInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAddressInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53220,7 +53999,7 @@ func (ec *executionContext) unmarshalOFHIRAddressInput2ᚖgitlabᚗslade360emr�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRAddressInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAge(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAge) graphql.Marshaler {
@@ -53235,7 +54014,7 @@ func (ec *executionContext) unmarshalOFHIRAgeInput2ᚖgitlabᚗslade360emrᚗcom
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRAgeInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAllergyIntolerance) graphql.Marshaler {
@@ -53354,10 +54133,10 @@ func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2ᚕᚖ
 	var err error
 	res := make([]*clinical.FHIRAllergyintoleranceReactionInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAllergyintoleranceReactionInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyintoleranceReactionInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53368,7 +54147,7 @@ func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2ᚖgit
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRAllergyintoleranceReactionInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAnnotation2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotation(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAnnotation) graphql.Marshaler {
@@ -53433,10 +54212,10 @@ func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRAnnotationInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAnnotationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAnnotationInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53447,7 +54226,7 @@ func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚖgitlabᚗslade360em
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRAnnotationInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRAppointment2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointment) graphql.Marshaler {
@@ -53566,10 +54345,10 @@ func (ec *executionContext) unmarshalOFHIRAttachmentInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRAttachmentInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRAttachmentInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachmentInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53580,7 +54359,7 @@ func (ec *executionContext) unmarshalOFHIRAttachmentInput2ᚖgitlabᚗslade360em
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRAttachmentInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCodeableConcept2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCodeableConcept) graphql.Marshaler {
@@ -53645,10 +54424,10 @@ func (ec *executionContext) unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗsl
 	var err error
 	res := make([]*clinical.FHIRCodeableConceptInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53659,7 +54438,7 @@ func (ec *executionContext) unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRComposition2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRComposition(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRComposition) graphql.Marshaler {
@@ -53731,10 +54510,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionAttesterInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIRCompositionAttesterInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionAttesterInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionAttesterInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53745,7 +54524,7 @@ func (ec *executionContext) unmarshalOFHIRCompositionAttesterInput2ᚖgitlabᚗs
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRCompositionAttesterInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCompositionEvent2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEvent(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionEvent) graphql.Marshaler {
@@ -53810,10 +54589,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionEventInput2ᚕᚖgitlabᚗs
 	var err error
 	res := make([]*clinical.FHIRCompositionEventInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionEventInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionEventInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53824,7 +54603,7 @@ func (ec *executionContext) unmarshalOFHIRCompositionEventInput2ᚖgitlabᚗslad
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRCompositionEventInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCompositionRelatesto2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatesto(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionRelatesto) graphql.Marshaler {
@@ -53889,10 +54668,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionRelatestoInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIRCompositionRelatestoInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionRelatestoInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelatestoInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -53903,7 +54682,7 @@ func (ec *executionContext) unmarshalOFHIRCompositionRelatestoInput2ᚖgitlabᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRCompositionRelatestoInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCompositionRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRCompositionRelayEdge) graphql.Marshaler {
@@ -54015,10 +54794,10 @@ func (ec *executionContext) unmarshalOFHIRCompositionSectionInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIRCompositionSectionInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRCompositionSectionInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionSectionInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54029,7 +54808,7 @@ func (ec *executionContext) unmarshalOFHIRCompositionSectionInput2ᚖgitlabᚗsl
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRCompositionSectionInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRCondition2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCondition(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRCondition) graphql.Marshaler {
@@ -54101,10 +54880,10 @@ func (ec *executionContext) unmarshalOFHIRConditionEvidenceInput2ᚕᚖgitlabᚗ
 	var err error
 	res := make([]*clinical.FHIRConditionEvidenceInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRConditionEvidenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionEvidenceInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54115,7 +54894,7 @@ func (ec *executionContext) unmarshalOFHIRConditionEvidenceInput2ᚖgitlabᚗsla
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRConditionEvidenceInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRConditionRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRConditionRelayEdge) graphql.Marshaler {
@@ -54227,10 +55006,10 @@ func (ec *executionContext) unmarshalOFHIRConditionStageInput2ᚕᚖgitlabᚗsla
 	var err error
 	res := make([]*clinical.FHIRConditionStageInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRConditionStageInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRConditionStageInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54241,7 +55020,7 @@ func (ec *executionContext) unmarshalOFHIRConditionStageInput2ᚖgitlabᚗslade3
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRConditionStageInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRContactDetail) graphql.Marshaler {
@@ -54306,10 +55085,10 @@ func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslad
 	var err error
 	res := make([]*clinical.FHIRContactDetailInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54320,7 +55099,7 @@ func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade36
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRContactDetailInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRContactPoint2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPoint(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRContactPoint) graphql.Marshaler {
@@ -54385,10 +55164,10 @@ func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade
 	var err error
 	res := make([]*clinical.FHIRContactPointInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRContactPointInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54399,7 +55178,7 @@ func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚖgitlabᚗslade360
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRContactPointInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRDatarequirementSort) graphql.Marshaler {
@@ -54464,10 +55243,10 @@ func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIRDatarequirementSortInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54478,7 +55257,7 @@ func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗs
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRDatarequirementSortInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRDosage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosage(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRDosage) graphql.Marshaler {
@@ -54590,10 +55369,10 @@ func (ec *executionContext) unmarshalOFHIRDosageDoseandrateInput2ᚕᚖgitlabᚗ
 	var err error
 	res := make([]*clinical.FHIRDosageDoseandrateInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRDosageDoseandrateInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageDoseandrateInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54604,7 +55383,7 @@ func (ec *executionContext) unmarshalOFHIRDosageDoseandrateInput2ᚖgitlabᚗsla
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRDosageDoseandrateInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOFHIRDosageInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx context.Context, v interface{}) ([]*clinical.FHIRDosageInput, error) {
@@ -54622,10 +55401,10 @@ func (ec *executionContext) unmarshalOFHIRDosageInput2ᚕᚖgitlabᚗslade360emr
 	var err error
 	res := make([]*clinical.FHIRDosageInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRDosageInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDosageInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54636,7 +55415,7 @@ func (ec *executionContext) unmarshalOFHIRDosageInput2ᚖgitlabᚗslade360emrᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRDosageInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRDuration2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDuration(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRDuration) graphql.Marshaler {
@@ -54651,7 +55430,7 @@ func (ec *executionContext) unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emr�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRDurationInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounter2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounter(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREncounter) graphql.Marshaler {
@@ -54723,10 +55502,10 @@ func (ec *executionContext) unmarshalOFHIREncounterClasshistoryInput2ᚕᚖgitla
 	var err error
 	res := make([]*clinical.FHIREncounterClasshistoryInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterClasshistoryInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterClasshistoryInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54737,7 +55516,7 @@ func (ec *executionContext) unmarshalOFHIREncounterClasshistoryInput2ᚖgitlab�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREncounterClasshistoryInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterDiagnosis2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosis(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterDiagnosis) graphql.Marshaler {
@@ -54802,10 +55581,10 @@ func (ec *executionContext) unmarshalOFHIREncounterDiagnosisInput2ᚕᚖgitlab�
 	var err error
 	res := make([]*clinical.FHIREncounterDiagnosisInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterDiagnosisInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterDiagnosisInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54816,7 +55595,7 @@ func (ec *executionContext) unmarshalOFHIREncounterDiagnosisInput2ᚖgitlabᚗsl
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREncounterDiagnosisInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterHospitalization2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterHospitalization(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREncounterHospitalization) graphql.Marshaler {
@@ -54831,7 +55610,7 @@ func (ec *executionContext) unmarshalOFHIREncounterHospitalizationInput2ᚖgitla
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREncounterHospitalizationInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterLocation2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocation(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterLocation) graphql.Marshaler {
@@ -54896,10 +55675,10 @@ func (ec *executionContext) unmarshalOFHIREncounterLocationInput2ᚕᚖgitlabᚗ
 	var err error
 	res := make([]*clinical.FHIREncounterLocationInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterLocationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterLocationInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54910,7 +55689,7 @@ func (ec *executionContext) unmarshalOFHIREncounterLocationInput2ᚖgitlabᚗsla
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREncounterLocationInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterParticipant2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipant(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterParticipant) graphql.Marshaler {
@@ -54975,10 +55754,10 @@ func (ec *executionContext) unmarshalOFHIREncounterParticipantInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIREncounterParticipantInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterParticipantInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -54989,7 +55768,7 @@ func (ec *executionContext) unmarshalOFHIREncounterParticipantInput2ᚖgitlabᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREncounterParticipantInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREncounterRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREncounterRelayEdge) graphql.Marshaler {
@@ -55101,10 +55880,10 @@ func (ec *executionContext) unmarshalOFHIREncounterStatushistoryInput2ᚕᚖgitl
 	var err error
 	res := make([]*clinical.FHIREncounterStatushistoryInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREncounterStatushistoryInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREncounterStatushistoryInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55115,7 +55894,7 @@ func (ec *executionContext) unmarshalOFHIREncounterStatushistoryInput2ᚖgitlab�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREncounterStatushistoryInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREpisodeOfCare) graphql.Marshaler {
@@ -55234,10 +56013,10 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareDiagnosisInput2ᚕᚖgitl
 	var err error
 	res := make([]*clinical.FHIREpisodeofcareDiagnosisInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREpisodeofcareDiagnosisInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareDiagnosisInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55248,7 +56027,7 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareDiagnosisInput2ᚖgitlab�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIREpisodeofcareStatushistory2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistory(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREpisodeofcareStatushistory) graphql.Marshaler {
@@ -55313,10 +56092,10 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareStatushistoryInput2ᚕᚖ
 	var err error
 	res := make([]*clinical.FHIREpisodeofcareStatushistoryInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIREpisodeofcareStatushistoryInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeofcareStatushistoryInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55327,7 +56106,7 @@ func (ec *executionContext) unmarshalOFHIREpisodeofcareStatushistoryInput2ᚖgit
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIREpisodeofcareStatushistoryInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRHumanName2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanName(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRHumanName) graphql.Marshaler {
@@ -55392,10 +56171,10 @@ func (ec *executionContext) unmarshalOFHIRHumanNameInput2ᚕᚖgitlabᚗslade360
 	var err error
 	res := make([]*clinical.FHIRHumanNameInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRHumanNameInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRHumanNameInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55406,7 +56185,7 @@ func (ec *executionContext) unmarshalOFHIRHumanNameInput2ᚖgitlabᚗslade360emr
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRHumanNameInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRIdentifier2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifier(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRIdentifier) graphql.Marshaler {
@@ -55471,10 +56250,10 @@ func (ec *executionContext) unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade36
 	var err error
 	res := make([]*clinical.FHIRIdentifierInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55485,7 +56264,7 @@ func (ec *executionContext) unmarshalOFHIRIdentifierInput2ᚖgitlabᚗslade360em
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRIdentifierInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationRequest) graphql.Marshaler {
@@ -55554,7 +56333,7 @@ func (ec *executionContext) unmarshalOFHIRMedicationrequestDispenserequestInput2
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRMedicationrequestDispenserequestInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationrequestInitialfill2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestInitialfill(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationrequestInitialfill) graphql.Marshaler {
@@ -55569,7 +56348,7 @@ func (ec *executionContext) unmarshalOFHIRMedicationrequestInitialfillInput2ᚖg
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRMedicationrequestInitialfillInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationrequestSubstitution2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRMedicationrequestSubstitution(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRMedicationrequestSubstitution) graphql.Marshaler {
@@ -55584,7 +56363,7 @@ func (ec *executionContext) unmarshalOFHIRMedicationrequestSubstitutionInput2ᚖ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRMedicationrequestSubstitutionInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRNarrative2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrative(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRNarrative) graphql.Marshaler {
@@ -55599,7 +56378,7 @@ func (ec *executionContext) unmarshalOFHIRNarrativeInput2ᚖgitlabᚗslade360emr
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRNarrativeInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRObservation2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRObservation) graphql.Marshaler {
@@ -55671,10 +56450,10 @@ func (ec *executionContext) unmarshalOFHIRObservationComponentInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIRObservationComponentInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRObservationComponentInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationComponentInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55685,7 +56464,7 @@ func (ec *executionContext) unmarshalOFHIRObservationComponentInput2ᚖgitlabᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRObservationComponentInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRObservationReferencerange2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerange(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRObservationReferencerange) graphql.Marshaler {
@@ -55750,10 +56529,10 @@ func (ec *executionContext) unmarshalOFHIRObservationReferencerangeInput2ᚕᚖg
 	var err error
 	res := make([]*clinical.FHIRObservationReferencerangeInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRObservationReferencerangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationReferencerangeInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55764,7 +56543,7 @@ func (ec *executionContext) unmarshalOFHIRObservationReferencerangeInput2ᚖgitl
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRObservationReferencerangeInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRObservationRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRObservationRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRObservationRelayEdge) graphql.Marshaler {
@@ -55937,10 +56716,10 @@ func (ec *executionContext) unmarshalOFHIRPatientCommunicationInput2ᚕᚖgitlab
 	var err error
 	res := make([]*clinical.FHIRPatientCommunicationInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPatientCommunicationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientCommunicationInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -55951,7 +56730,7 @@ func (ec *executionContext) unmarshalOFHIRPatientCommunicationInput2ᚖgitlabᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRPatientCommunicationInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRPatientContact2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContact(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPatientContact) graphql.Marshaler {
@@ -56016,10 +56795,10 @@ func (ec *executionContext) unmarshalOFHIRPatientContactInput2ᚕᚖgitlabᚗsla
 	var err error
 	res := make([]*clinical.FHIRPatientContactInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPatientContactInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientContactInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56030,7 +56809,7 @@ func (ec *executionContext) unmarshalOFHIRPatientContactInput2ᚖgitlabᚗslade3
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRPatientContactInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRPatientLink2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLink(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPatientLink) graphql.Marshaler {
@@ -56095,10 +56874,10 @@ func (ec *executionContext) unmarshalOFHIRPatientLinkInput2ᚕᚖgitlabᚗslade3
 	var err error
 	res := make([]*clinical.FHIRPatientLinkInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPatientLinkInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientLinkInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56109,7 +56888,7 @@ func (ec *executionContext) unmarshalOFHIRPatientLinkInput2ᚖgitlabᚗslade360e
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRPatientLinkInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRPatientRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatientRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPatientRelayEdge) graphql.Marshaler {
@@ -56221,10 +57000,10 @@ func (ec *executionContext) unmarshalOFHIRPeriodInput2ᚕᚖgitlabᚗslade360emr
 	var err error
 	res := make([]*clinical.FHIRPeriodInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56235,7 +57014,7 @@ func (ec *executionContext) unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRPeriodInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRQuantity2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantity(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRQuantity) graphql.Marshaler {
@@ -56247,7 +57026,7 @@ func (ec *executionContext) marshalOFHIRQuantity2ᚖgitlabᚗslade360emrᚗcom�
 
 func (ec *executionContext) unmarshalOFHIRQuantityInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (clinical.FHIRQuantityInput, error) {
 	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx context.Context, v interface{}) (*clinical.FHIRQuantityInput, error) {
@@ -56255,7 +57034,7 @@ func (ec *executionContext) unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emr�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRRange2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRange(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRRange) graphql.Marshaler {
@@ -56270,7 +57049,7 @@ func (ec *executionContext) unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗc
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRRangeInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRRatio2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRatio(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRRatio) graphql.Marshaler {
@@ -56285,7 +57064,7 @@ func (ec *executionContext) unmarshalOFHIRRatioInput2ᚖgitlabᚗslade360emrᚗc
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRRatioInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRReference) graphql.Marshaler {
@@ -56350,10 +57129,10 @@ func (ec *executionContext) unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360
 	var err error
 	res := make([]*clinical.FHIRReferenceInput, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56364,7 +57143,7 @@ func (ec *executionContext) unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emr
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRReferenceInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRSampledData2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRSampledData(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRSampledData) graphql.Marshaler {
@@ -56379,7 +57158,7 @@ func (ec *executionContext) unmarshalOFHIRSampledDataInput2ᚖgitlabᚗslade360e
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRSampledDataInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRServiceRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRServiceRequest) graphql.Marshaler {
@@ -56448,7 +57227,7 @@ func (ec *executionContext) unmarshalOFHIRTimingInput2ᚖgitlabᚗslade360emrᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRTimingInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIRTimingRepeat2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRTimingRepeat(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRTimingRepeat) graphql.Marshaler {
@@ -56463,7 +57242,7 @@ func (ec *executionContext) unmarshalOFHIRTimingRepeatInput2ᚖgitlabᚗslade360
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRTimingRepeatInput(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) ([]*base.FilterParam, error) {
@@ -56481,10 +57260,10 @@ func (ec *executionContext) unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗc
 	var err error
 	res := make([]*base.FilterParam, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56495,7 +57274,7 @@ func (ec *executionContext) unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcom�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFilterParam(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
@@ -56503,7 +57282,7 @@ func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interf
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalID(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
@@ -56519,7 +57298,7 @@ func (ec *executionContext) unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgo
 	}
 	var res = new(base.Instant)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx context.Context, sel ast.SelectionSet, v *base.Instant) graphql.Marshaler {
@@ -56531,7 +57310,7 @@ func (ec *executionContext) marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
@@ -56543,7 +57322,7 @@ func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interfac
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalInt(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
@@ -56558,7 +57337,7 @@ func (ec *executionContext) unmarshalOInt2ᚖint64(ctx context.Context, v interf
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalInt64(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInt2ᚖint64(ctx context.Context, sel ast.SelectionSet, v *int64) graphql.Marshaler {
@@ -56573,7 +57352,7 @@ func (ec *executionContext) unmarshalOInteger2ᚖstring(ctx context.Context, v i
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOInteger2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
@@ -56589,7 +57368,7 @@ func (ec *executionContext) unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋg
 	}
 	var res = new(base.Markdown)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, sel ast.SelectionSet, v *base.Markdown) graphql.Marshaler {
@@ -56605,7 +57384,7 @@ func (ec *executionContext) unmarshalONarrativeStatusEnum2ᚖgitlabᚗslade360em
 	}
 	var res = new(clinical.NarrativeStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalONarrativeStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNarrativeStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.NarrativeStatusEnum) graphql.Marshaler {
@@ -56621,7 +57400,7 @@ func (ec *executionContext) unmarshalOObservationStatusEnum2ᚖgitlabᚗslade360
 	}
 	var res = new(clinical.ObservationStatusEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOObservationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐObservationStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ObservationStatusEnum) graphql.Marshaler {
@@ -56637,7 +57416,7 @@ func (ec *executionContext) unmarshalOPatientContactGenderEnum2ᚖgitlabᚗslade
 	}
 	var res = new(clinical.PatientContactGenderEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPatientContactGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientContactGenderEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientContactGenderEnum) graphql.Marshaler {
@@ -56653,7 +57432,7 @@ func (ec *executionContext) unmarshalOPatientGenderEnum2ᚖgitlabᚗslade360emr�
 	}
 	var res = new(clinical.PatientGenderEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPatientGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientGenderEnum) graphql.Marshaler {
@@ -56669,7 +57448,7 @@ func (ec *executionContext) unmarshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360em
 	}
 	var res = new(clinical.PatientLinkTypeEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientLinkTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientLinkTypeEnum) graphql.Marshaler {
@@ -56684,7 +57463,7 @@ func (ec *executionContext) unmarshalOPositiveInt2ᚖstring(ctx context.Context,
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPositiveInt2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
@@ -56700,7 +57479,7 @@ func (ec *executionContext) unmarshalOQuantityComparatorEnum2ᚖgitlabᚗslade36
 	}
 	var res = new(clinical.QuantityComparatorEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOQuantityComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.QuantityComparatorEnum) graphql.Marshaler {
@@ -56725,10 +57504,10 @@ func (ec *executionContext) unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcom
 	var err error
 	res := make([]*base.SortParam, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56739,12 +57518,12 @@ func (ec *executionContext) unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputSortParam(ctx, v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
@@ -56766,10 +57545,10 @@ func (ec *executionContext) unmarshalOString2ᚕstring(ctx context.Context, v in
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOString2string(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56802,10 +57581,10 @@ func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v
 	var err error
 	res := make([]*string, len(vSlice))
 	for i := range vSlice {
-		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithIndex(i))
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
 		if err != nil {
-			return nil, graphql.WrapErrorWithInputPath(ctx, err)
+			return nil, err
 		}
 	}
 	return res, nil
@@ -56828,7 +57607,7 @@ func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v in
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
@@ -56843,7 +57622,7 @@ func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalTime(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
@@ -56859,7 +57638,7 @@ func (ec *executionContext) unmarshalOTimingRepeatDurationUnitEnum2ᚖgitlabᚗs
 	}
 	var res = new(clinical.TimingRepeatDurationUnitEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTimingRepeatDurationUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatDurationUnitEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.TimingRepeatDurationUnitEnum) graphql.Marshaler {
@@ -56875,7 +57654,7 @@ func (ec *executionContext) unmarshalOTimingRepeatPeriodUnitEnum2ᚖgitlabᚗsla
 	}
 	var res = new(clinical.TimingRepeatPeriodUnitEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTimingRepeatPeriodUnitEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatPeriodUnitEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.TimingRepeatPeriodUnitEnum) graphql.Marshaler {
@@ -56891,7 +57670,7 @@ func (ec *executionContext) unmarshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360e
 	}
 	var res = new(clinical.TimingRepeatWhenEnum)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐTimingRepeatWhenEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.TimingRepeatWhenEnum) graphql.Marshaler {
@@ -56907,7 +57686,7 @@ func (ec *executionContext) unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋb
 	}
 	var res = new(base.URI)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v *base.URI) graphql.Marshaler {
@@ -56923,7 +57702,7 @@ func (ec *executionContext) unmarshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋb
 	}
 	var res = new(base.URL)
 	err := res.UnmarshalGQL(v)
-	return res, graphql.WrapErrorWithInputPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx context.Context, sel ast.SelectionSet, v *base.URL) graphql.Marshaler {
@@ -56938,7 +57717,7 @@ func (ec *executionContext) unmarshalOUnsignedInt2ᚖstring(ctx context.Context,
 		return nil, nil
 	}
 	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.WrapErrorWithInputPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOUnsignedInt2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
