@@ -23,13 +23,10 @@ extend type Dummy @key(fields: "id") {
   id: ID @external
 }
 
-extend type PageInfo
-@key(fields: "hasNextPage")
-@key(fields: "hasPreviousPage") {
+extend type PageInfo {
   hasNextPage: Boolean! @external
   hasPreviousPage: Boolean! @external
 }
-
 
 # supported content types
 enum ContentType {

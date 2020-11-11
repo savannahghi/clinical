@@ -6960,13 +6960,10 @@ extend type Dummy @key(fields: "id") {
   id: ID @external
 }
 
-extend type PageInfo
-@key(fields: "hasNextPage")
-@key(fields: "hasPreviousPage") {
+extend type PageInfo {
   hasNextPage: Boolean! @external
   hasPreviousPage: Boolean! @external
 }
-
 
 # supported content types
 enum ContentType {
@@ -14044,7 +14041,7 @@ directive @extends on OBJECT
 `, BuiltIn: true},
 	{Name: "federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Dummy | PageInfo
+union _Entity = Dummy
 
 type _Service {
   sdl: String
@@ -46797,13 +46794,6 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._Dummy(ctx, sel, obj)
-	case base.PageInfo:
-		return ec._PageInfo(ctx, sel, &obj)
-	case *base.PageInfo:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._PageInfo(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
@@ -50799,7 +50789,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
-var pageInfoImplementors = []string{"PageInfo", "_Entity"}
+var pageInfoImplementors = []string{"PageInfo"}
 
 func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *base.PageInfo) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, pageInfoImplementors)
