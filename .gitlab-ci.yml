@@ -63,11 +63,12 @@ deploy_develop_to_staging:
     DOCKER_TLS_CERTDIR: ""
   resource_group: staging # control deploy concurrency
   script:
-    - docker build -q --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f $CI_PROJECT_DIR/Dockerfile . -t eu.gcr.io/bewell-app-testing/clinical-staging:latest
+    - docker build -q --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f $CI_PROJECT_DIR/Dockerfile . -t eu.gcr.io/bewell-app-testing/clinical-staging:$(echo $CI_COMMIT_SHA | cut -c1-8)
     - google-cloud-sdk/bin/gcloud auth configure-docker
-    - docker -- push eu.gcr.io/bewell-app-testing/clinical-staging:latest
-    - google-cloud-sdk/bin/gcloud run deploy clinical-staging --image eu.gcr.io/bewell-app-testing/clinical-staging:latest --region europe-west1 --platform managed --allow-unauthenticated --update-env-vars "GOOGLE_CLOUD_PROJECT=$STAGING_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$STAGING_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$STAGING_CLOUD_HEALTH_PUBSUB_TOPIC,CLOUD_HEALTH_DATASET_ID=$STAGING_CLOUD_HEALTH_DATASET_ID,CLOUD_HEALTH_FHIRSTORE_ID=$STAGING_CLOUD_HEALTH_FHIRSTORE_ID,AIT_USERNAME=$STAGING_AIT_USERNAME,AIT_ENVIRONMENT=$STAGING_AIT_ENVIRONMENT,AIT_SENDER_ID=$STAGING_AIT_SENDER_ID,AIT_API_KEY=$STAGING_AIT_API_KEY"
+    - docker -- push eu.gcr.io/bewell-app-testing/clinical-staging:$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - google-cloud-sdk/bin/gcloud run deploy clinical-staging --image eu.gcr.io/bewell-app-testing/clinical-staging:$(echo $CI_COMMIT_SHA | cut -c1-8) --region europe-west1 --platform managed --allow-unauthenticated --update-env-vars "GOOGLE_CLOUD_PROJECT=$STAGING_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$STAGING_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$STAGING_CLOUD_HEALTH_PUBSUB_TOPIC,CLOUD_HEALTH_DATASET_ID=$STAGING_CLOUD_HEALTH_DATASET_ID,CLOUD_HEALTH_FHIRSTORE_ID=$STAGING_CLOUD_HEALTH_FHIRSTORE_ID,AIT_USERNAME=$STAGING_AIT_USERNAME,AIT_ENVIRONMENT=$STAGING_AIT_ENVIRONMENT,AIT_SENDER_ID=$STAGING_AIT_SENDER_ID,AIT_API_KEY=$STAGING_AIT_API_KEY"
     - google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-staging --quiet
+    - google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-staging --to-latest --region europe-west1 --platform managed --quiet
   tags:
     - healthcloud-multi
 
@@ -92,13 +93,16 @@ deploy_develop_to_testing:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    GATEWAY_RELOAD_ENDPOINT: $TESTING_GATEWAY_RELOAD_ENDPOINT
   resource_group: testing # control deploy concurrency
   script:
-    - docker build -q --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f $CI_PROJECT_DIR/Dockerfile . -t eu.gcr.io/bewell-app/clinical-testing:latest
+    - docker build -q --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f $CI_PROJECT_DIR/Dockerfile . -t eu.gcr.io/bewell-app/clinical-testing:$(echo $CI_COMMIT_SHA | cut -c1-8)
     - google-cloud-sdk/bin/gcloud auth configure-docker
-    - docker -- push eu.gcr.io/bewell-app/clinical-testing:latest
-    - google-cloud-sdk/bin/gcloud run deploy clinical-testing --image eu.gcr.io/bewell-app/clinical-testing:latest --region europe-west1 --platform managed --allow-unauthenticated  --update-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$TESTING_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$TESTING_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$TESTING_CLOUD_HEALTH_FHIRSTORE_ID_PRO,AIT_USERNAME=$AIT_USERNAME,AIT_ENVIRONMENT=$AIT_ENVIRONMENT,AIT_SENDER_ID=$AIT_SENDER_ID,AIT_API_KEY=$AIT_API_KEY"
+    - docker -- push eu.gcr.io/bewell-app/clinical-testing:$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - google-cloud-sdk/bin/gcloud run deploy clinical-testing --image eu.gcr.io/bewell-app/clinical-testing:$(echo $CI_COMMIT_SHA | cut -c1-8) --region europe-west1 --platform managed --allow-unauthenticated  --update-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$TESTING_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$TESTING_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$TESTING_CLOUD_HEALTH_FHIRSTORE_ID_PRO,AIT_USERNAME=$AIT_USERNAME,AIT_ENVIRONMENT=$AIT_ENVIRONMENT,AIT_SENDER_ID=$AIT_SENDER_ID,AIT_API_KEY=$AIT_API_KEY"
     - google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-testing --quiet
+    - google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-testing --to-latest | cut -c1-8) --region europe-west1 --platform managed --quiet
+    - bash reload.sh
   tags:
     - healthcloud-multi
 
@@ -123,12 +127,15 @@ deploy_master_to_prod:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    GATEWAY_RELOAD_ENDPOINT: $PROD_GATEWAY_RELOAD_ENDPOINT
   resource_group: prod # control deploy concurrency
   script:
-    - docker build -q --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f $CI_PROJECT_DIR/Dockerfile . -t eu.gcr.io/bewell-app/clinical-prod:latest
+    - docker build -q --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f $CI_PROJECT_DIR/Dockerfile . -t eu.gcr.io/bewell-app/clinical-prod:$(echo $CI_COMMIT_SHA | cut -c1-8)
     - google-cloud-sdk/bin/gcloud auth configure-docker
-    - docker -- push eu.gcr.io/bewell-app/clinical-prod:latest
-    - google-cloud-sdk/bin/gcloud run deploy clinical-prod --image eu.gcr.io/bewell-app/clinical-prod:latest --region europe-west1 --platform managed --allow-unauthenticated  --update-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$PROD_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$PROD_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$PROD_CLOUD_HEALTH_FHIRSTORE_ID_PRO,AIT_USERNAME=$PROD_AIT_USERNAME,AIT_ENVIRONMENT=$PROD_AIT_ENVIRONMENT,AIT_SENDER_ID=$PROD_AIT_SENDER_ID,AIT_API_KEY=$PROD_AIT_API_KEY"
+    - docker -- push eu.gcr.io/bewell-app/clinical-prod:$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - google-cloud-sdk/bin/gcloud run deploy clinical-prod --image eu.gcr.io/bewell-app/clinical-prod:$(echo $CI_COMMIT_SHA | cut -c1-8) --region europe-west1 --platform managed --allow-unauthenticated  --update-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$PROD_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$PROD_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$PROD_CLOUD_HEALTH_FHIRSTORE_ID_PRO,AIT_USERNAME=$PROD_AIT_USERNAME,AIT_ENVIRONMENT=$PROD_AIT_ENVIRONMENT,AIT_SENDER_ID=$PROD_AIT_SENDER_ID,AIT_API_KEY=$PROD_AIT_API_KEY"
     - google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-prod --quiet
+    - google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-prod --to-latest --region europe-west1 --platform managed --quiet
+    - bash reload.sh
   tags:
     - healthcloud-multi
