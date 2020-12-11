@@ -96,31 +96,6 @@ func (p FHIRPatient) RenderProblems() base.Markdown {
 	return base.Markdown(defaultProblem)
 }
 
-// RenderAllergies returns the patient's allergies
-func (p FHIRPatient) RenderAllergies() base.Markdown {
-	defaultAllergies := base.Markdown("Allergies: No known allergies")
-	if p.ID == nil {
-		return defaultAllergies
-	}
-	clinicalService := NewService()
-	ctx := context.Background()
-	allergySummary, err := clinicalService.AllergySummary(ctx, *p.ID)
-	if err != nil {
-		return defaultAllergies
-	}
-
-	allergies := ""
-	if len(allergySummary) > 0 {
-		allergies = strings.Join(allergySummary, ",")
-	}
-
-	if len(allergies) > 0 {
-		patientAllergies := fmt.Sprintf("Allergies: %s", allergies)
-		return base.Markdown(patientAllergies)
-	}
-	return base.Markdown(defaultAllergies)
-}
-
 func trimString(inp string, maxLength int) string {
 	if len(inp) <= maxLength {
 		return inp

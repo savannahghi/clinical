@@ -49,17 +49,6 @@ func validOrganizationPayload() FHIROrganizationInput {
 	}
 }
 
-func organizationUpdatePayload(organizationID string) FHIROrganizationInput {
-	active := false
-	name := "Ubora Test Hospital"
-	return FHIROrganizationInput{
-		ID:         &organizationID,
-		Active:     &active,
-		Identifier: IdentifierPayload(), // ! must be included
-		Name:       &name,               // ! must be included
-	}
-}
-
 // The telecom for this organization is 'home'
 func invalidOrganizationPayload() FHIROrganizationInput {
 	name := "Ubora Test Hospital"
@@ -117,52 +106,6 @@ func TestService_CreateFHIROrganization(t *testing.T) {
 	}
 }
 
-func TestService_GetFHIROrganization(t *testing.T) {
-	ctx := context.Background()
-	service := NewService()
-	// create an organization
-	orgPayload := validOrganizationPayload()
-	res, err := service.CreateFHIROrganization(ctx, orgPayload)
-	if err != nil {
-		t.Fatalf("unable to search organization resource %s: ", err)
-	}
-	type args struct {
-		ctx context.Context
-		id  string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *FHIROrganizationRelayPayload
-		wantErr bool
-	}{
-		{
-			name:    "Successfully get a created organisation",
-			args:    args{ctx: ctx, id: *res.Resource.ID},
-			wantErr: false,
-		},
-		{
-			name:    "get a non existent organisation",
-			args:    args{ctx: ctx, id: "123"},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			actual, err := service.GetFHIROrganization(tt.args.ctx, tt.args.id)
-			if tt.wantErr {
-				assert.NotNil(t, err)
-				assert.Nil(t, actual)
-			}
-			if !tt.wantErr {
-				assert.Nil(t, err)
-				assert.NotNil(t, actual)
-			}
-
-		})
-	}
-}
-
 func TestService_SearchFHIROrganization(t *testing.T) {
 	ctx := context.Background()
 	service := NewService()
@@ -209,95 +152,6 @@ func TestService_SearchFHIROrganization(t *testing.T) {
 				assert.Nil(t, err)
 				assert.NotNil(t, res)
 			}
-		})
-	}
-}
-
-func TestService_UpdateFHIROrganization(t *testing.T) {
-	ctx := context.Background()
-	service := NewService()
-	// create an organization
-	orgPayload := validOrganizationPayload()
-	res, err := service.CreateFHIROrganization(ctx, orgPayload)
-	if err != nil {
-		t.Fatalf("unable to create organization resource %s: ", err)
-	}
-	// deactivate the created organization
-	organizationID := *res.Resource.ID
-	organizationInput := organizationUpdatePayload(organizationID)
-	type args struct {
-		ctx   context.Context
-		input FHIROrganizationInput
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{
-			name:    "Update organization",
-			args:    args{ctx: ctx, input: organizationInput},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			updatedOrg, err := service.UpdateFHIROrganization(tt.args.ctx, tt.args.input)
-			if tt.wantErr {
-				assert.NotNil(t, err)
-				assert.Nil(t, updatedOrg)
-			}
-			if !tt.wantErr {
-				assert.Nil(t, err)
-				assert.NotNil(t, updatedOrg)
-				assert.Equal(t, *updatedOrg.Resource.Active, false)
-			}
-
-		})
-	}
-}
-
-func TestService_DeleteFHIROrganization(t *testing.T) {
-	ctx := context.Background()
-	service := NewService()
-	// create an organization
-	orgPayload := validOrganizationPayload()
-	organization, err := service.CreateFHIROrganization(ctx, orgPayload)
-	if err != nil {
-		t.Fatalf("unable to search organization resource %s: ", err)
-	}
-	type args struct {
-		ctx context.Context
-		id  string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{
-			name:    "Successfully delete an organization",
-			args:    args{ctx: ctx, id: *organization.Resource.ID},
-			wantErr: false,
-		},
-		{
-			name:    "Test delete an non existent organization",
-			args:    args{ctx: ctx, id: "Organization/123"},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			res, err := service.DeleteFHIROrganization(tt.args.ctx, tt.args.id)
-			if tt.wantErr {
-				assert.NotNil(t, err)
-				assert.Equal(t, res, false)
-			}
-			if !tt.wantErr {
-				assert.Nil(t, err)
-				assert.Equal(t, res, true)
-			}
-
 		})
 	}
 }

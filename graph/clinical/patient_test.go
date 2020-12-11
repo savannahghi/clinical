@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -242,18 +241,6 @@ func PatientResourceFHIRPayload(t *testing.T) FHIRPatientInput {
 	}
 }
 
-// CreateTestFHIRPatient - helper to create a test patient in FHIR
-func CreateTestFHIRPatient(t *testing.T) FHIRPatientRelayPayload {
-	service := NewService()
-	patientPayload := PatientResourceFHIRPayload(t)
-	ctx := context.Background()
-	patient, err := service.CreateFHIRPatient(ctx, patientPayload)
-	if err != nil {
-		t.Fatalf("unable to create patient resource %s: ", err)
-	}
-	return *patient
-}
-
 // GetTestFHIRPatient - retrieve a created test patient in FHIR
 func GetTestFHIRPatient(t *testing.T, id string) FHIRPatientRelayPayload {
 	service := NewService()
@@ -263,11 +250,4 @@ func GetTestFHIRPatient(t *testing.T, id string) FHIRPatientRelayPayload {
 		t.Fatalf("unable to retrieve patient resource %s: ", err)
 	}
 	return *patient
-}
-
-func TestService_GetCreateFHIRPatient(t *testing.T) {
-	createdPatient := CreateTestFHIRPatient(t)
-	patientID := *createdPatient.Resource.ID
-	patient := GetTestFHIRPatient(t, patientID)
-	assert.NotNil(t, patient)
 }

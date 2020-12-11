@@ -5,15 +5,14 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/segmentio/ksuid"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
 
 func (r *dummyResolver) ID(ctx context.Context, obj *clinical.Dummy) (*string, error) {
-	newID := ksuid.New().String()
-	return &newID, nil // it's a dummy
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Dummy returns generated.DummyResolver implementation.

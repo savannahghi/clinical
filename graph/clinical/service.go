@@ -298,37 +298,6 @@ func (s Service) ProblemSummary(
 	return output, nil
 }
 
-// AllergySummary returns a short list of the patient's active and confirmed
-// allergies (by name)
-func (s Service) AllergySummary(
-	ctx context.Context, patientID string) ([]string, error) {
-	s.checkPreconditions()
-
-	params := map[string]interface{}{
-		"clinical-status":     "active",
-		"verification-status": "confirmed",
-		"type":                "allergy",
-		"criticality":         "high",
-		"patient":             fmt.Sprintf("Patient/%s", patientID),
-	}
-	results, err := s.SearchFHIRAllergyIntolerance(ctx, params)
-	if err != nil {
-		return nil, fmt.Errorf("error when searching for patient allergies: %w", err)
-	}
-	output := []string{}
-	for _, edge := range results.Edges {
-		allergy := edge.Node
-		if allergy.Code == nil {
-			return nil, fmt.Errorf("server error: every allergy must have a code")
-		}
-		if allergy.Code.Text == "" {
-			return nil, fmt.Errorf("server error: every allergy code must have it's text set")
-		}
-		output = append(output, allergy.Code.Text)
-	}
-	return output, nil
-}
-
 // VisitSummary returns a narrative friendly display of the data that has
 // been associated with a single visit
 func (s Service) VisitSummary(
@@ -509,27 +478,6 @@ func (s Service) VisitSummary(
 		}
 	}
 	return output, nil
-}
-
-// PatientTimeline returns the patient's visit note timeline (a list of
-// narratives that are sorted with the most recent one first), while
-// respecting the approval level
-func (s Service) PatientTimeline(
-	ctx context.Context, episodeID string) ([]map[string]interface{}, error) {
-	episode, accessLevel, err := s.getTimelineEpisode(ctx, episodeID)
-	if err != nil {
-		return nil, err
-	}
-	encounterSearchParams := map[string]interface{}{
-		"patient": *episode.Patient.Reference,
-		"sort":    "-date", // reverse chronological order
-	}
-	count := MaxClinicalRecordPageSize
-	if accessLevel == "PROFILE_AND_RECENT_VISITS_ACCESS" {
-		count = LimitedProfileEncounterCount
-	}
-	encounterSearchParams["_count"] = strconv.Itoa(count)
-	return s.getTimelineVisitSummaries(ctx, encounterSearchParams, count)
 }
 
 // PatientTimelineWithCount returns the patient's visit note timeline (a list of
@@ -2115,30 +2063,6 @@ func (s Service) sendAlertToAdmin(patientName string, patientContact string) err
 	return nil
 }
 
-// GetFHIRServiceRequest retrieves instances of FHIRServiceRequest by ID
-func (s Service) GetFHIRServiceRequest(ctx context.Context, id string) (*FHIRServiceRequestRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "ServiceRequest"
-	var resource FHIRServiceRequest
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIRServiceRequestRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
-}
-
 // SearchFHIRServiceRequest provides a search API for FHIRServiceRequest
 func (s Service) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*FHIRServiceRequestRelayConnection, error) {
 	s.checkPreconditions()
@@ -2194,40 +2118,6 @@ func (s Service) CreateFHIRServiceRequest(ctx context.Context, input FHIRService
 	}
 
 	data, err := s.clinicalRepository.CreateFHIRResource(resourceType, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIRServiceRequestRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// UpdateFHIRServiceRequest updates a FHIRServiceRequest instance
-// The resource must have it's ID set.
-func (s Service) UpdateFHIRServiceRequest(ctx context.Context, input FHIRServiceRequestInput) (*FHIRServiceRequestRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "ServiceRequest"
-	resource := FHIRServiceRequest{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
 	}
@@ -2304,30 +2194,6 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 	}
 	err = fmt.Errorf("failed to send message")
 	return err
-}
-
-// GetFHIRAllergyIntolerance retrieves instances of FHIRAllergyIntolerance by ID
-func (s Service) GetFHIRAllergyIntolerance(ctx context.Context, id string) (*FHIRAllergyIntoleranceRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "AllergyIntolerance"
-	var resource FHIRAllergyIntolerance
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIRAllergyIntoleranceRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
 }
 
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
@@ -2434,43 +2300,6 @@ func (s Service) UpdateFHIRAllergyIntolerance(ctx context.Context, input FHIRAll
 		Resource: &resource,
 	}
 	return output, nil
-}
-
-// DeleteFHIRAllergyIntolerance deletes the FHIRAllergyIntolerance identified by the supplied ID
-func (s Service) DeleteFHIRAllergyIntolerance(ctx context.Context, id string) (bool, error) {
-	resourceType := "AllergyIntolerance"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
-
-// GetFHIRComposition retrieves instances of FHIRComposition by ID
-func (s Service) GetFHIRComposition(ctx context.Context, id string) (*FHIRCompositionRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "Composition"
-	var resource FHIRComposition
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIRCompositionRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
 }
 
 // SearchFHIRComposition provides a search API for FHIRComposition
@@ -2592,30 +2421,6 @@ func (s Service) DeleteFHIRComposition(ctx context.Context, id string) (bool, er
 	return true, nil
 }
 
-// GetFHIRCondition retrieves instances of FHIRCondition by ID
-func (s Service) GetFHIRCondition(ctx context.Context, id string) (*FHIRConditionRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "Condition"
-	var resource FHIRCondition
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIRConditionRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
-}
-
 // SearchFHIRCondition provides a search API for FHIRCondition
 func (s Service) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*FHIRConditionRelayConnection, error) {
 	s.checkPreconditions()
@@ -2722,19 +2527,6 @@ func (s Service) UpdateFHIRCondition(ctx context.Context, input FHIRConditionInp
 	return output, nil
 }
 
-// DeleteFHIRCondition deletes the FHIRCondition identified by the supplied ID
-func (s Service) DeleteFHIRCondition(ctx context.Context, id string) (bool, error) {
-	resourceType := "Condition"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
-
 // GetFHIREncounter retrieves instances of FHIREncounter by ID
 func (s Service) GetFHIREncounter(ctx context.Context, id string) (*FHIREncounterRelayPayload, error) {
 	s.checkPreconditions()
@@ -2831,53 +2623,6 @@ func (s Service) CreateFHIREncounter(ctx context.Context, input FHIREncounterInp
 	return output, nil
 }
 
-// UpdateFHIREncounter updates a FHIREncounter instance
-// The resource must have it's ID set.
-func (s Service) UpdateFHIREncounter(ctx context.Context, input FHIREncounterInput) (*FHIREncounterRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "Encounter"
-	resource := FHIREncounter{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIREncounterRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// DeleteFHIREncounter deletes the FHIREncounter identified by the supplied ID
-func (s Service) DeleteFHIREncounter(ctx context.Context, id string) (bool, error) {
-	resourceType := "Encounter"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
-
 // GetFHIREpisodeOfCare retrieves instances of FHIREpisodeOfCare by ID
 func (s Service) GetFHIREpisodeOfCare(ctx context.Context, id string) (*FHIREpisodeOfCareRelayPayload, error) {
 	s.checkPreconditions()
@@ -2943,106 +2688,6 @@ func (s Service) SearchFHIREpisodeOfCare(ctx context.Context, params map[string]
 		})
 	}
 	return &output, nil
-}
-
-// CreateFHIREpisodeOfCare creates a FHIREpisodeOfCare instance
-func (s Service) CreateFHIREpisodeOfCare(ctx context.Context, input FHIREpisodeOfCareInput) (*FHIREpisodeOfCareRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "EpisodeOfCare"
-	resource := FHIREpisodeOfCare{}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.CreateFHIRResource(resourceType, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIREpisodeOfCareRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// UpdateFHIREpisodeOfCare updates a FHIREpisodeOfCare instance
-// The resource must have it's ID set.
-func (s Service) UpdateFHIREpisodeOfCare(ctx context.Context, input FHIREpisodeOfCareInput) (*FHIREpisodeOfCareRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "EpisodeOfCare"
-	resource := FHIREpisodeOfCare{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIREpisodeOfCareRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// DeleteFHIREpisodeOfCare deletes the FHIREpisodeOfCare identified by the supplied ID
-func (s Service) DeleteFHIREpisodeOfCare(ctx context.Context, id string) (bool, error) {
-	resourceType := "EpisodeOfCare"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
-
-// GetFHIRMedicationRequest retrieves instances of FHIRMedicationRequest by ID
-func (s Service) GetFHIRMedicationRequest(ctx context.Context, id string) (*FHIRMedicationRequestRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "MedicationRequest"
-	var resource FHIRMedicationRequest
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIRMedicationRequestRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
 }
 
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
@@ -3164,30 +2809,6 @@ func (s Service) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bo
 	return true, nil
 }
 
-// GetFHIRObservation retrieves instances of FHIRObservation by ID
-func (s Service) GetFHIRObservation(ctx context.Context, id string) (*FHIRObservationRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "Observation"
-	var resource FHIRObservation
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIRObservationRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
-}
-
 // SearchFHIRObservation provides a search API for FHIRObservation
 func (s Service) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*FHIRObservationRelayConnection, error) {
 	s.checkPreconditions()
@@ -3258,77 +2879,6 @@ func (s Service) CreateFHIRObservation(ctx context.Context, input FHIRObservatio
 		Resource: &resource,
 	}
 	return output, nil
-}
-
-// UpdateFHIRObservation updates a FHIRObservation instance
-// The resource must have it's ID set.
-func (s Service) UpdateFHIRObservation(ctx context.Context, input FHIRObservationInput) (*FHIRObservationRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "Observation"
-	resource := FHIRObservation{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIRObservationRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// DeleteFHIRObservation deletes the FHIRObservation identified by the supplied ID
-func (s Service) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
-	resourceType := "Observation"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
-
-// GetFHIROrganization retrieves instances of FHIROrganization by ID
-func (s Service) GetFHIROrganization(ctx context.Context, id string) (*FHIROrganizationRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "Organization"
-	var resource FHIROrganization
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIROrganizationRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
 }
 
 // SearchFHIROrganization provides a search API for FHIROrganization
@@ -3403,53 +2953,6 @@ func (s Service) CreateFHIROrganization(ctx context.Context, input FHIROrganizat
 	return output, nil
 }
 
-// UpdateFHIROrganization updates a FHIROrganization instance
-// ! The resource must have it's ID set.
-func (s Service) UpdateFHIROrganization(ctx context.Context, input FHIROrganizationInput) (*FHIROrganizationRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "Organization"
-	resource := FHIROrganization{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIROrganizationRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// DeleteFHIROrganization deletes the FHIROrganization identified by the supplied ID
-func (s Service) DeleteFHIROrganization(ctx context.Context, id string) (bool, error) {
-	resourceType := "Organization"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
-
 // GetFHIRPatient retrieves instances of FHIRPatient by ID
 func (s Service) GetFHIRPatient(ctx context.Context, id string) (*FHIRPatientRelayPayload, error) {
 	s.checkPreconditions()
@@ -3477,135 +2980,6 @@ func (s Service) GetFHIRPatient(ctx context.Context, id string) (*FHIRPatientRel
 		HasOpenEpisodes: hasOpenEpisodes,
 	}
 	return payload, nil
-}
-
-// SearchFHIRPatient provides a search API for FHIRPatient
-func (s Service) SearchFHIRPatient(ctx context.Context, params map[string]interface{}) (*FHIRPatientRelayConnection, error) {
-	s.checkPreconditions()
-
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := s.validateSearchParams(params)
-	if err != nil {
-		return nil, err
-	}
-
-	resourceName := "Patient"
-	path := "_search"
-	output := FHIRPatientRelayConnection{}
-
-	resources, err := s.searchFilterHelper(ctx, resourceName, path, urlParams)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, result := range resources {
-		var resource FHIRPatient
-
-		resourceBs, err := json.Marshal(result)
-		if err != nil {
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
-		}
-
-		err = json.Unmarshal(resourceBs, &resource)
-		if err != nil {
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
-			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
-		}
-		hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
-		if err != nil {
-			return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
-		}
-		output.Edges = append(output.Edges, &FHIRPatientRelayEdge{
-			Node:            &resource,
-			HasOpenEpisodes: hasOpenEpisodes,
-		})
-	}
-	return &output, nil
-}
-
-// CreateFHIRPatient creates a FHIRPatient instance
-func (s Service) CreateFHIRPatient(ctx context.Context, input FHIRPatientInput) (*FHIRPatientRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "Patient"
-	resource := FHIRPatient{}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.CreateFHIRResource(resourceType, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIRPatientRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// UpdateFHIRPatient updates a FHIRPatient instance
-// The resource must have it's ID set.
-func (s Service) UpdateFHIRPatient(ctx context.Context, input FHIRPatientInput) (*FHIRPatientRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "Patient"
-	resource := FHIRPatient{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
-	}
-	output := &FHIRPatientRelayPayload{
-		Resource:        &resource,
-		HasOpenEpisodes: hasOpenEpisodes,
-	}
-	return output, nil
-}
-
-// DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
-func (s Service) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	resourceType := "Patient"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
 }
 
 func (s Service) birthdateMapper(resource map[string]interface{}) map[string]interface{} {
