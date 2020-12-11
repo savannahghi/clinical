@@ -40,7 +40,7 @@ lint_and_test:
   tags:
     - healthcloud-multi
 
-deploy_develop_to_staging:
+deploy_to_staging:
   before_script:
     # Instead of writing our GCP service account private key into a file, supply it as env variable
     - /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file $GCLOUD_STAGING_SERVICE_ACCOUNT
@@ -51,6 +51,7 @@ deploy_develop_to_staging:
   stage: deploy
   only:
     - develop
+    - refactor
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
@@ -65,7 +66,7 @@ deploy_develop_to_staging:
   tags:
     - healthcloud-multi
 
-deploy_develop_to_testing:
+deploy_to_testing:
   before_script:
     # Instead of writing our GCP service account private key into a file, supply it as env variable
     - /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file $GCLOUD_PRODUCTION_SERVICE_ACCOUNT
@@ -92,7 +93,7 @@ deploy_develop_to_testing:
   tags:
     - healthcloud-multi
 
-deploy_master_to_prod:
+deploy_to_prod:
   before_script:
     # Instead of writing our GCP service account private key into a file, supply it as env variable
     - /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file $GCLOUD_PRODUCTION_SERVICE_ACCOUNT
