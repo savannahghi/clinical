@@ -78,3 +78,17 @@ func ComposeOneHealthEpisodeOfCare(
 		},
 	}
 }
+
+//createAlertMessage Create a nice message to be sent.
+func composeAlertMessage(names []*FHIRHumanName) string {
+	if names == nil {
+		return ""
+	}
+	contactName := names[0].Text
+
+	text := fmt.Sprintf(
+		"Dear %s. Your visit was successfully closed.",
+		contactName,
+	)
+	return text
+}

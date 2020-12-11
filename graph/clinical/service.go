@@ -1141,55 +1141,6 @@ func (s Service) sendEpisodeEndAlert(ctx context.Context, patientID string) erro
 	return nil
 }
 
-//createAlertMessage Create a nice message to be sent.
-func composeAlertMessage(names []*FHIRHumanName) string {
-	if names == nil {
-		return ""
-	}
-	contactName := names[0].Text
-
-	text := fmt.Sprintf(
-		"Dear %s. Your visit was successfully closed.",
-		contactName,
-	)
-	return text
-}
-
-// EndInactiveEpisodes ends all open EpisodeOfCare Instances that have been inactive for the period specified.
-// Period is specified by an environment variable
-func (s Service) EndInactiveEpisodes(ctx context.Context, inactiveDuration float64) (bool, error) {
-	s.checkPreconditions()
-
-	searchParams := map[string]interface{}{
-		"status": "active",
-	}
-
-	episodesOfCareList, err := s.SearchFHIREpisodeOfCare(ctx, searchParams)
-	if err != nil {
-		return false, err
-	}
-
-	for _, episodeOfCare := range episodesOfCareList.Edges {
-
-		episodeStartTime := episodeOfCare.Node.Period.Start.Time()
-
-		standardActivityDuration := inactiveDuration * time.Hour.Hours()
-		episodeActivityDuration := time.Since(episodeStartTime.UTC()).Hours()
-
-		if episodeActivityDuration >= standardActivityDuration {
-			episodeID := episodeOfCare.Node.ID
-
-			_, err := s.EndEpisode(ctx, *episodeID)
-			if err != nil {
-				return false, err
-			}
-
-		}
-	}
-
-	return true, err
-}
-
 // CreatePatient creates or updates a patient record on FHIR
 func (s Service) CreatePatient(
 	ctx context.Context, input PatientInput) (*PatientPayload, error) {
