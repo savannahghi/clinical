@@ -45,20 +45,3 @@ func SingleFHIRCodingPayload(code base.Code, display string) *FHIRCodingInput {
 		UserSelected: &userSelected,
 	}
 }
-
-// SingleFHIRDurationPayload - compose a duration payload
-func SingleFHIRDurationPayload() *FHIRDurationInput {
-	var value base.Decimal
-	var comparator DurationComparatorEnum = "less_than"
-	var system base.URI = "http://terminology.hl7.org/CodeSystem/v2-0131"
-	unit := "Hours"
-	var code base.Code = "HU"
-
-	return &FHIRDurationInput{
-		Value:      &value,
-		Comparator: &comparator,
-		Unit:       &unit,
-		System:     &system,
-		Code:       &code,
-	}
-}

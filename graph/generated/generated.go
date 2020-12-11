@@ -19,6 +19,7 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
+	"gitlab.slade360emr.com/go/clinical/graph/model"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -19144,7 +19145,7 @@ func (ec *executionContext) _FHIRConditionStage_Type(ctx context.Context, field 
 	return ec.marshalOFHIRCodeableConcept2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContactDetail_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContactDetail) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRContactDetail_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContactDetail) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19176,7 +19177,7 @@ func (ec *executionContext) _FHIRContactDetail_ID(ctx context.Context, field gra
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContactDetail_Name(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContactDetail) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRContactDetail_Name(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContactDetail) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19208,7 +19209,7 @@ func (ec *executionContext) _FHIRContactDetail_Name(ctx context.Context, field g
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContactDetail_Telecom(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContactDetail) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRContactDetail_Telecom(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContactDetail) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19432,7 +19433,7 @@ func (ec *executionContext) _FHIRContactPoint_Period(ctx context.Context, field 
 	return ec.marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContributor_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContributor) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRContributor_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19464,7 +19465,7 @@ func (ec *executionContext) _FHIRContributor_ID(ctx context.Context, field graph
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContributor_Type(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContributor) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRContributor_Type(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19491,12 +19492,12 @@ func (ec *executionContext) _FHIRContributor_Type(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*clinical.ContributorTypeEnum)
+	res := resTmp.(*model.ContributorTypeEnum)
 	fc.Result = res
-	return ec.marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx, field.Selections, res)
+	return ec.marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContributor_Name(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContributor) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRContributor_Name(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19528,7 +19529,7 @@ func (ec *executionContext) _FHIRContributor_Name(ctx context.Context, field gra
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContributor_Contact(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContributor) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRContributor_Contact(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19555,12 +19556,12 @@ func (ec *executionContext) _FHIRContributor_Contact(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*clinical.FHIRContactDetail)
+	res := resTmp.([]*model.FHIRContactDetail)
 	fc.Result = res
-	return ec.marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetail(ctx, field.Selections, res)
+	return ec.marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRCount_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCount) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRCount_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19592,7 +19593,7 @@ func (ec *executionContext) _FHIRCount_ID(ctx context.Context, field graphql.Col
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRCount_Value(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCount) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRCount_Value(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19624,7 +19625,7 @@ func (ec *executionContext) _FHIRCount_Value(ctx context.Context, field graphql.
 	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRCount_Comparator(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCount) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRCount_Comparator(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19651,12 +19652,12 @@ func (ec *executionContext) _FHIRCount_Comparator(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*clinical.CountComparatorEnum)
+	res := resTmp.(*model.CountComparatorEnum)
 	fc.Result = res
-	return ec.marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx, field.Selections, res)
+	return ec.marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRCount_Unit(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCount) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRCount_Unit(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19688,7 +19689,7 @@ func (ec *executionContext) _FHIRCount_Unit(ctx context.Context, field graphql.C
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRCount_System(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCount) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRCount_System(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19720,7 +19721,7 @@ func (ec *executionContext) _FHIRCount_System(ctx context.Context, field graphql
 	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRCount_Code(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCount) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRCount_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19752,7 +19753,7 @@ func (ec *executionContext) _FHIRCount_Code(ctx context.Context, field graphql.C
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19784,7 +19785,7 @@ func (ec *executionContext) _FHIRDataRequirement_ID(ctx context.Context, field g
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_Type(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_Type(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19816,7 +19817,7 @@ func (ec *executionContext) _FHIRDataRequirement_Type(ctx context.Context, field
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_Profile(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_Profile(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19848,7 +19849,7 @@ func (ec *executionContext) _FHIRDataRequirement_Profile(ctx context.Context, fi
 	return ec.marshalOCanonical2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_SubjectCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_SubjectCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19880,7 +19881,7 @@ func (ec *executionContext) _FHIRDataRequirement_SubjectCodeableConcept(ctx cont
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_SubjectReference(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_SubjectReference(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19912,7 +19913,7 @@ func (ec *executionContext) _FHIRDataRequirement_SubjectReference(ctx context.Co
 	return ec.marshalOFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_MustSupport(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_MustSupport(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19944,7 +19945,7 @@ func (ec *executionContext) _FHIRDataRequirement_MustSupport(ctx context.Context
 	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_CodeFilter(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_CodeFilter(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19976,7 +19977,7 @@ func (ec *executionContext) _FHIRDataRequirement_CodeFilter(ctx context.Context,
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_DateFilter(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_DateFilter(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20008,7 +20009,7 @@ func (ec *executionContext) _FHIRDataRequirement_DateFilter(ctx context.Context,
 	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_Limit(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_Limit(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20040,7 +20041,7 @@ func (ec *executionContext) _FHIRDataRequirement_Limit(ctx context.Context, fiel
 	return ec.marshalOPositiveInt2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDataRequirement_Sort(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDataRequirement) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDataRequirement_Sort(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20067,12 +20068,12 @@ func (ec *executionContext) _FHIRDataRequirement_Sort(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*clinical.FHIRDatarequirementSort)
+	res := resTmp.([]*model.FHIRDatarequirementSort)
 	fc.Result = res
-	return ec.marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSort(ctx, field.Selections, res)
+	return ec.marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementCodefilter_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementCodefilter_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20104,7 +20105,7 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_ID(ctx context.Contex
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementCodefilter_Path(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementCodefilter_Path(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20136,7 +20137,7 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_Path(ctx context.Cont
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementCodefilter_SearchParam(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementCodefilter_SearchParam(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20168,7 +20169,7 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_SearchParam(ctx conte
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementCodefilter_ValueSet(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementCodefilter_ValueSet(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20200,7 +20201,7 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_ValueSet(ctx context.
 	return ec.marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementCodefilter_Code(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementCodefilter_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20232,7 +20233,7 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter_Code(ctx context.Cont
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementDatefilter_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20264,7 +20265,7 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ID(ctx context.Contex
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementDatefilter_Path(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementDatefilter_Path(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20296,7 +20297,7 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_Path(ctx context.Cont
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementDatefilter_SearchParam(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementDatefilter_SearchParam(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20328,7 +20329,7 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_SearchParam(ctx conte
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDateTime(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDateTime(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20360,7 +20361,7 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDateTime(ctx con
 	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ValuePeriod(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementDatefilter_ValuePeriod(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20392,7 +20393,7 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ValuePeriod(ctx conte
 	return ec.marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDuration(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDuration(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20424,7 +20425,7 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDuration(ctx con
 	return ec.marshalOFHIRDuration2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDuration(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementSort_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementSort) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementSort_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementSort) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20456,7 +20457,7 @@ func (ec *executionContext) _FHIRDatarequirementSort_ID(ctx context.Context, fie
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementSort_Path(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementSort) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementSort_Path(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementSort) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20488,7 +20489,7 @@ func (ec *executionContext) _FHIRDatarequirementSort_Path(ctx context.Context, f
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDatarequirementSort_Direction(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDatarequirementSort) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDatarequirementSort_Direction(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementSort) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20515,12 +20516,12 @@ func (ec *executionContext) _FHIRDatarequirementSort_Direction(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*clinical.DataRequirementSortDirectionEnum)
+	res := resTmp.(*model.DataRequirementSortDirectionEnum)
 	fc.Result = res
-	return ec.marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx, field.Selections, res)
+	return ec.marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDistance_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDistance) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDistance_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20552,7 +20553,7 @@ func (ec *executionContext) _FHIRDistance_ID(ctx context.Context, field graphql.
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDistance_Value(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDistance) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDistance_Value(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20584,7 +20585,7 @@ func (ec *executionContext) _FHIRDistance_Value(ctx context.Context, field graph
 	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDistance_Comparator(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDistance) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDistance_Comparator(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20611,12 +20612,12 @@ func (ec *executionContext) _FHIRDistance_Comparator(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*clinical.DistanceComparatorEnum)
+	res := resTmp.(*model.DistanceComparatorEnum)
 	fc.Result = res
-	return ec.marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx, field.Selections, res)
+	return ec.marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDistance_Unit(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDistance) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDistance_Unit(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20648,7 +20649,7 @@ func (ec *executionContext) _FHIRDistance_Unit(ctx context.Context, field graphq
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDistance_System(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDistance) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDistance_System(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20680,7 +20681,7 @@ func (ec *executionContext) _FHIRDistance_System(ctx context.Context, field grap
 	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRDistance_Code(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDistance) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRDistance_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -26669,7 +26670,7 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution_Reason(ctx contex
 	return ec.marshalOFHIRCodeableConcept2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRMoney_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMoney) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRMoney_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRMoney) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -26701,7 +26702,7 @@ func (ec *executionContext) _FHIRMoney_ID(ctx context.Context, field graphql.Col
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRMoney_Value(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMoney) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRMoney_Value(ctx context.Context, field graphql.CollectedField, obj *model.FHIRMoney) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -26733,7 +26734,7 @@ func (ec *executionContext) _FHIRMoney_Value(ctx context.Context, field graphql.
 	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRMoney_Currency(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMoney) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRMoney_Currency(ctx context.Context, field graphql.CollectedField, obj *model.FHIRMoney) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33188,7 +33189,7 @@ func (ec *executionContext) _FHIRServiceRequestRelayPayload_resource(ctx context
 	return ec.marshalNFHIRServiceRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33220,7 +33221,7 @@ func (ec *executionContext) _FHIRSignature_ID(ctx context.Context, field graphql
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_Type(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_Type(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33255,7 +33256,7 @@ func (ec *executionContext) _FHIRSignature_Type(ctx context.Context, field graph
 	return ec.marshalNFHIRCoding2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_When(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_When(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33287,7 +33288,7 @@ func (ec *executionContext) _FHIRSignature_When(ctx context.Context, field graph
 	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_Who(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_Who(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33322,7 +33323,7 @@ func (ec *executionContext) _FHIRSignature_Who(ctx context.Context, field graphq
 	return ec.marshalNFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_OnBehalfOf(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_OnBehalfOf(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33354,7 +33355,7 @@ func (ec *executionContext) _FHIRSignature_OnBehalfOf(ctx context.Context, field
 	return ec.marshalOFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_TargetFormat(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_TargetFormat(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33386,7 +33387,7 @@ func (ec *executionContext) _FHIRSignature_TargetFormat(ctx context.Context, fie
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_SigFormat(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_SigFormat(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -33418,7 +33419,7 @@ func (ec *executionContext) _FHIRSignature_SigFormat(ctx context.Context, field 
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_Data(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSignature) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRSignature_Data(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -34157,7 +34158,7 @@ func (ec *executionContext) _FHIRTimingRepeat_Offset(ctx context.Context, field 
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRUsageContext_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRUsageContext) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRUsageContext_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -34189,7 +34190,7 @@ func (ec *executionContext) _FHIRUsageContext_ID(ctx context.Context, field grap
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRUsageContext_Code(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRUsageContext) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRUsageContext_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -34224,7 +34225,7 @@ func (ec *executionContext) _FHIRUsageContext_Code(ctx context.Context, field gr
 	return ec.marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRUsageContext_ValueCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRUsageContext) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRUsageContext_ValueCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -34256,7 +34257,7 @@ func (ec *executionContext) _FHIRUsageContext_ValueCodeableConcept(ctx context.C
 	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRUsageContext_ValueQuantity(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRUsageContext) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRUsageContext_ValueQuantity(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -34288,7 +34289,7 @@ func (ec *executionContext) _FHIRUsageContext_ValueQuantity(ctx context.Context,
 	return ec.marshalOFHIRQuantity2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantity(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRUsageContext_ValueRange(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRUsageContext) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRUsageContext_ValueRange(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -34320,7 +34321,7 @@ func (ec *executionContext) _FHIRUsageContext_ValueRange(ctx context.Context, fi
 	return ec.marshalOFHIRRange2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRange(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRUsageContext_ValueReference(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRUsageContext) (ret graphql.Marshaler) {
+func (ec *executionContext) _FHIRUsageContext_ValueReference(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -39101,8 +39102,8 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRContactDetailInput(ctx context.Context, obj interface{}) (clinical.FHIRContactDetailInput, error) {
-	var it clinical.FHIRContactDetailInput
+func (ec *executionContext) unmarshalInputFHIRContactDetailInput(ctx context.Context, obj interface{}) (model.FHIRContactDetailInput, error) {
+	var it model.FHIRContactDetailInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39197,8 +39198,8 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Context, obj interface{}) (clinical.FHIRContributorInput, error) {
-	var it clinical.FHIRContributorInput
+func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Context, obj interface{}) (model.FHIRContributorInput, error) {
+	var it model.FHIRContributorInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39215,7 +39216,7 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx, v)
+			it.Type, err = ec.unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39231,7 +39232,7 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Contact"))
-			it.Contact, err = ec.unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx, v)
+			it.Contact, err = ec.unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39241,8 +39242,8 @@ func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, obj interface{}) (clinical.FHIRCountInput, error) {
-	var it clinical.FHIRCountInput
+func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, obj interface{}) (model.FHIRCountInput, error) {
+	var it model.FHIRCountInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39267,7 +39268,7 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
-			it.Comparator, err = ec.unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx, v)
+			it.Comparator, err = ec.unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39301,8 +39302,8 @@ func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, ob
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.Context, obj interface{}) (clinical.FHIRDataRequirementInput, error) {
-	var it clinical.FHIRDataRequirementInput
+func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.Context, obj interface{}) (model.FHIRDataRequirementInput, error) {
+	var it model.FHIRDataRequirementInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39383,7 +39384,7 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Sort"))
-			it.Sort, err = ec.unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx, v)
+			it.Sort, err = ec.unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39393,8 +39394,8 @@ func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx context.Context, obj interface{}) (clinical.FHIRDatarequirementCodefilterInput, error) {
-	var it clinical.FHIRDatarequirementCodefilterInput
+func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx context.Context, obj interface{}) (model.FHIRDatarequirementCodefilterInput, error) {
+	var it model.FHIRDatarequirementCodefilterInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39445,8 +39446,8 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx context.Context, obj interface{}) (clinical.FHIRDatarequirementDatefilterInput, error) {
-	var it clinical.FHIRDatarequirementDatefilterInput
+func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx context.Context, obj interface{}) (model.FHIRDatarequirementDatefilterInput, error) {
+	var it model.FHIRDatarequirementDatefilterInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39505,8 +39506,8 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx context.Context, obj interface{}) (clinical.FHIRDatarequirementSortInput, error) {
-	var it clinical.FHIRDatarequirementSortInput
+func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx context.Context, obj interface{}) (model.FHIRDatarequirementSortInput, error) {
+	var it model.FHIRDatarequirementSortInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39531,7 +39532,7 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Direction"))
-			it.Direction, err = ec.unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx, v)
+			it.Direction, err = ec.unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39541,8 +39542,8 @@ func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context, obj interface{}) (clinical.FHIRDistanceInput, error) {
-	var it clinical.FHIRDistanceInput
+func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context, obj interface{}) (model.FHIRDistanceInput, error) {
+	var it model.FHIRDistanceInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -39567,7 +39568,7 @@ func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
-			it.Comparator, err = ec.unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx, v)
+			it.Comparator, err = ec.unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -41157,8 +41158,8 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRMoneyInput(ctx context.Context, obj interface{}) (clinical.FHIRMoneyInput, error) {
-	var it clinical.FHIRMoneyInput
+func (ec *executionContext) unmarshalInputFHIRMoneyInput(ctx context.Context, obj interface{}) (model.FHIRMoneyInput, error) {
+	var it model.FHIRMoneyInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -42761,8 +42762,8 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context, obj interface{}) (clinical.FHIRSignatureInput, error) {
-	var it clinical.FHIRSignatureInput
+func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context, obj interface{}) (model.FHIRSignatureInput, error) {
+	var it model.FHIRSignatureInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -43037,8 +43038,8 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Context, obj interface{}) (clinical.FHIRUsageContextInput, error) {
-	var it clinical.FHIRUsageContextInput
+func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Context, obj interface{}) (model.FHIRUsageContextInput, error) {
+	var it model.FHIRUsageContextInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -44938,7 +44939,7 @@ func (ec *executionContext) _FHIRConditionStage(ctx context.Context, sel ast.Sel
 
 var fHIRContactDetailImplementors = []string{"FHIRContactDetail"}
 
-func (ec *executionContext) _FHIRContactDetail(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRContactDetail) graphql.Marshaler {
+func (ec *executionContext) _FHIRContactDetail(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRContactDetail) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRContactDetailImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45000,7 +45001,7 @@ func (ec *executionContext) _FHIRContactPoint(ctx context.Context, sel ast.Selec
 
 var fHIRContributorImplementors = []string{"FHIRContributor"}
 
-func (ec *executionContext) _FHIRContributor(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRContributor) graphql.Marshaler {
+func (ec *executionContext) _FHIRContributor(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRContributor) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRContributorImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45030,7 +45031,7 @@ func (ec *executionContext) _FHIRContributor(ctx context.Context, sel ast.Select
 
 var fHIRCountImplementors = []string{"FHIRCount"}
 
-func (ec *executionContext) _FHIRCount(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRCount) graphql.Marshaler {
+func (ec *executionContext) _FHIRCount(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRCount) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRCountImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45064,7 +45065,7 @@ func (ec *executionContext) _FHIRCount(ctx context.Context, sel ast.SelectionSet
 
 var fHIRDataRequirementImplementors = []string{"FHIRDataRequirement"}
 
-func (ec *executionContext) _FHIRDataRequirement(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRDataRequirement) graphql.Marshaler {
+func (ec *executionContext) _FHIRDataRequirement(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDataRequirement) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDataRequirementImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45106,7 +45107,7 @@ func (ec *executionContext) _FHIRDataRequirement(ctx context.Context, sel ast.Se
 
 var fHIRDatarequirementCodefilterImplementors = []string{"FHIRDatarequirementCodefilter"}
 
-func (ec *executionContext) _FHIRDatarequirementCodefilter(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRDatarequirementCodefilter) graphql.Marshaler {
+func (ec *executionContext) _FHIRDatarequirementCodefilter(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDatarequirementCodefilter) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDatarequirementCodefilterImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45138,7 +45139,7 @@ func (ec *executionContext) _FHIRDatarequirementCodefilter(ctx context.Context, 
 
 var fHIRDatarequirementDatefilterImplementors = []string{"FHIRDatarequirementDatefilter"}
 
-func (ec *executionContext) _FHIRDatarequirementDatefilter(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRDatarequirementDatefilter) graphql.Marshaler {
+func (ec *executionContext) _FHIRDatarequirementDatefilter(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDatarequirementDatefilter) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDatarequirementDatefilterImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45172,7 +45173,7 @@ func (ec *executionContext) _FHIRDatarequirementDatefilter(ctx context.Context, 
 
 var fHIRDatarequirementSortImplementors = []string{"FHIRDatarequirementSort"}
 
-func (ec *executionContext) _FHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRDatarequirementSort) graphql.Marshaler {
+func (ec *executionContext) _FHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDatarequirementSort) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDatarequirementSortImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45200,7 +45201,7 @@ func (ec *executionContext) _FHIRDatarequirementSort(ctx context.Context, sel as
 
 var fHIRDistanceImplementors = []string{"FHIRDistance"}
 
-func (ec *executionContext) _FHIRDistance(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRDistance) graphql.Marshaler {
+func (ec *executionContext) _FHIRDistance(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDistance) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDistanceImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -46287,7 +46288,7 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution(ctx context.Conte
 
 var fHIRMoneyImplementors = []string{"FHIRMoney"}
 
-func (ec *executionContext) _FHIRMoney(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRMoney) graphql.Marshaler {
+func (ec *executionContext) _FHIRMoney(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRMoney) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMoneyImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -47414,7 +47415,7 @@ func (ec *executionContext) _FHIRServiceRequestRelayPayload(ctx context.Context,
 
 var fHIRSignatureImplementors = []string{"FHIRSignature"}
 
-func (ec *executionContext) _FHIRSignature(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRSignature) graphql.Marshaler {
+func (ec *executionContext) _FHIRSignature(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRSignature) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRSignatureImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -47549,7 +47550,7 @@ func (ec *executionContext) _FHIRTimingRepeat(ctx context.Context, sel ast.Selec
 
 var fHIRUsageContextImplementors = []string{"FHIRUsageContext"}
 
-func (ec *executionContext) _FHIRUsageContext(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRUsageContext) graphql.Marshaler {
+func (ec *executionContext) _FHIRUsageContext(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRUsageContext) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRUsageContextImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -50328,48 +50329,48 @@ func (ec *executionContext) marshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋ
 	return v
 }
 
-func (ec *executionContext) unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, v interface{}) (*clinical.ContributorTypeEnum, error) {
+func (ec *executionContext) unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx context.Context, v interface{}) (*model.ContributorTypeEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(clinical.ContributorTypeEnum)
+	var res = new(model.ContributorTypeEnum)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.ContributorTypeEnum) graphql.Marshaler {
+func (ec *executionContext) marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx context.Context, sel ast.SelectionSet, v *model.ContributorTypeEnum) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx context.Context, v interface{}) (*clinical.CountComparatorEnum, error) {
+func (ec *executionContext) unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx context.Context, v interface{}) (*model.CountComparatorEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(clinical.CountComparatorEnum)
+	var res = new(model.CountComparatorEnum)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐCountComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.CountComparatorEnum) graphql.Marshaler {
+func (ec *executionContext) marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *model.CountComparatorEnum) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx context.Context, v interface{}) (*clinical.DataRequirementSortDirectionEnum, error) {
+func (ec *executionContext) unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx context.Context, v interface{}) (*model.DataRequirementSortDirectionEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(clinical.DataRequirementSortDirectionEnum)
+	var res = new(model.DataRequirementSortDirectionEnum)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDataRequirementSortDirectionEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DataRequirementSortDirectionEnum) graphql.Marshaler {
+func (ec *executionContext) marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx context.Context, sel ast.SelectionSet, v *model.DataRequirementSortDirectionEnum) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -50460,16 +50461,16 @@ func (ec *executionContext) marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 	return v
 }
 
-func (ec *executionContext) unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx context.Context, v interface{}) (*clinical.DistanceComparatorEnum, error) {
+func (ec *executionContext) unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx context.Context, v interface{}) (*model.DistanceComparatorEnum, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(clinical.DistanceComparatorEnum)
+	var res = new(model.DistanceComparatorEnum)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐDistanceComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.DistanceComparatorEnum) graphql.Marshaler {
+func (ec *executionContext) marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *model.DistanceComparatorEnum) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -51634,7 +51635,7 @@ func (ec *executionContext) unmarshalOFHIRConditionStageInput2ᚖgitlabᚗslade3
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRContactDetail) graphql.Marshaler {
+func (ec *executionContext) marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v []*model.FHIRContactDetail) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -51661,7 +51662,7 @@ func (ec *executionContext) marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOFHIRContactDetail2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetail(ctx, sel, v[i])
+			ret[i] = ec.marshalOFHIRContactDetail2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -51674,14 +51675,14 @@ func (ec *executionContext) marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emr
 	return ret
 }
 
-func (ec *executionContext) marshalOFHIRContactDetail2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRContactDetail) graphql.Marshaler {
+func (ec *executionContext) marshalOFHIRContactDetail2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v *model.FHIRContactDetail) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._FHIRContactDetail(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx context.Context, v interface{}) ([]*clinical.FHIRContactDetailInput, error) {
+func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx context.Context, v interface{}) ([]*model.FHIRContactDetailInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -51694,10 +51695,10 @@ func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslad
 		}
 	}
 	var err error
-	res := make([]*clinical.FHIRContactDetailInput, len(vSlice))
+	res := make([]*model.FHIRContactDetailInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -51705,7 +51706,7 @@ func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslad
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactDetailInput(ctx context.Context, v interface{}) (*clinical.FHIRContactDetailInput, error) {
+func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx context.Context, v interface{}) (*model.FHIRContactDetailInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -51792,7 +51793,7 @@ func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚖgitlabᚗslade360
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRDatarequirementSort) graphql.Marshaler {
+func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v []*model.FHIRDatarequirementSort) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -51819,7 +51820,7 @@ func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOFHIRDatarequirementSort2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSort(ctx, sel, v[i])
+			ret[i] = ec.marshalOFHIRDatarequirementSort2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -51832,14 +51833,14 @@ func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade
 	return ret
 }
 
-func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRDatarequirementSort) graphql.Marshaler {
+func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v *model.FHIRDatarequirementSort) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._FHIRDatarequirementSort(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) ([]*clinical.FHIRDatarequirementSortInput, error) {
+func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) ([]*model.FHIRDatarequirementSortInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -51852,10 +51853,10 @@ func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlab�
 		}
 	}
 	var err error
-	res := make([]*clinical.FHIRDatarequirementSortInput, len(vSlice))
+	res := make([]*model.FHIRDatarequirementSortInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -51863,7 +51864,7 @@ func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlab�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) (*clinical.FHIRDatarequirementSortInput, error) {
+func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) (*model.FHIRDatarequirementSortInput, error) {
 	if v == nil {
 		return nil, nil
 	}
