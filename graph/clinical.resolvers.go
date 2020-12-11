@@ -7,7 +7,6 @@ import (
 	"context"
 
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
-	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
 
 func (r *mutationResolver) DeleteFHIRAllergyIntolerance(ctx context.Context, id string) (bool, error) {
@@ -201,12 +200,3 @@ func (r *queryResolver) PatientTimeline(ctx context.Context, episodeID string) (
 	r.CheckDependencies()
 	return r.clinicalService.PatientTimeline(ctx, episodeID)
 }
-
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
-
-// Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
-
-type mutationResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }

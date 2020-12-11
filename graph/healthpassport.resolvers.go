@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
+	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
 
 func (r *mutationResolver) StartEpisodeByOtp(ctx context.Context, input clinical.OTPEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error) {
@@ -255,3 +256,12 @@ func (r *queryResolver) FindPatients(ctx context.Context, search string) (*clini
 	r.CheckDependencies()
 	panic(fmt.Errorf("not implemented")) // TODO Wire this up
 }
+
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+
+// Query returns generated.QueryResolver implementation.
+func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
+
+type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }
