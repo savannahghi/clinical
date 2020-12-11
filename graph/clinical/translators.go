@@ -179,12 +179,15 @@ func ContactsToContactPointInput(
 func ContactsToContactPoint(
 	phones []*PhoneNumberInput, emails []*EmailInput,
 	firestoreClient *firestore.Client,
-) ([]*ContactPoint, error) {
+) ([]*FHIRContactPoint, error) {
 	if phones == nil && emails == nil {
 		return nil, nil
 	}
-	output := []*ContactPoint{}
+	output := []*FHIRContactPoint{}
 	rank := int64(1)
+	contactUse := ContactPointUseEnumHome
+	emailSystem := ContactPointSystemEnumEmail
+	phoneSystem := ContactPointSystemEnumPhone
 
 	for _, phone := range phones {
 		// TODO Restore saving opt in
@@ -193,12 +196,12 @@ func ContactsToContactPoint(
 		if err != nil {
 			return nil, fmt.Errorf("invalid phone number: %v", err)
 		}
-		phoneContact := &ContactPoint{
-			System: ContactPointSystemPhone,
-			Use:    DefaultContactUse,
-			Rank:   rank,
+		phoneContact := &FHIRContactPoint{
+			System: &phoneSystem,
+			Use:    &contactUse,
+			Rank:   &rank,
 			Period: DefaultPeriod(),
-			Value:  validPhone,
+			Value:  &validPhone,
 		}
 		output = append(output, phoneContact)
 		rank++
@@ -210,12 +213,12 @@ func ContactsToContactPoint(
 		if err != nil {
 			return nil, fmt.Errorf("invalid email: %v", err)
 		}
-		emailContact := &ContactPoint{
-			System: ContactPointSystemEmail,
-			Use:    DefaultContactUse,
-			Rank:   rank,
+		emailContact := &FHIRContactPoint{
+			System: &emailSystem,
+			Use:    &contactUse,
+			Rank:   &rank,
 			Period: DefaultPeriod(),
-			Value:  email.Email,
+			Value:  &email.Email,
 		}
 		output = append(output, emailContact)
 		rank++
@@ -420,4 +423,22 @@ func GetPatientIDFromEpisode(patientRef string) (string, error) {
 	}
 	patientID := patientRefParts[1]
 	return patientID, nil
+}
+
+// MaritalStatusEnumToCodeableConcept turns the simple enum selected in the
+// user interface to a FHIR codeable concept
+func MaritalStatusEnumToCodeableConcept(val MaritalStatus) *FHIRCodeableConcept {
+	sel := true
+	disp := MaritalStatusDisplay(val)
+	output := &FHIRCodeableConcept{
+		Coding: []*FHIRCoding{
+			{
+				Code:         base.Code(val.String()),
+				Display:      disp,
+				UserSelected: &sel,
+			},
+		},
+		Text: MaritalStatusDisplay(val),
+	}
+	return output
 }

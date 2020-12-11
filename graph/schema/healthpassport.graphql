@@ -1,4 +1,3 @@
-
 enum MaritalStatus {
   A
   D
@@ -173,6 +172,36 @@ extend type Query {
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
   patientSearch(search: String!): PatientConnection!
   openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
+
+  searchFHIRMedicationRequest(
+    params: Map!
+  ): FHIRMedicationRequestRelayConnection!
+
+  searchFHIRAllergyIntolerance(
+    params: Map!
+  ): FHIRAllergyIntoleranceRelayConnection!
+
+  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
+
+  patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
+
+  searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
+
+  problemSummary(patientID: String!): [String!]!
+
+  searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
+
+  searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
+
+  visitSummary(encounterID: String!): Map!
+
+  searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
+
+  findPatientsByMSISDN(msisdn: String!): PatientConnection!
+
+  getPatient(id: ID!): PatientPayload!
+
+  findPatients(search: String!): PatientConnection!
 }
 
 extend type Mutation {
@@ -181,12 +210,64 @@ extend type Mutation {
   startEpisodeByBreakGlass(
     input: BreakGlassEpisodeCreationInput!
   ): EpisodeOfCarePayload!
-  startEncounter(episodeID: String!): String!
-  endEncounter(encounterID: String!): Boolean!
   endEpisode(episodeID: String!): Boolean!
-  registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
-  updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
   deletePatient(input: RetirePatientInput!): Boolean!
+
+  updateFHIRMedicationRequest(
+    input: FHIRMedicationRequestInput!
+  ): FHIRMedicationRequestRelayPayload!
+
+  createFHIRMedicationRequest(
+    input: FHIRMedicationRequestInput!
+  ): FHIRMedicationRequestRelayPayload!
+
+  createFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+
+  updateFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+
+  createFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
+
+  updateFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
+
+  startEncounter(episodeID: String!): String!
+
   addNextOfKin(input: SimpleNextOfKinInput!): PatientPayload!
+
+  registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  createUpdatePatientExtraInformation(
+    input: PatientExtraInformationInput!
+  ): Boolean!
+
   addNHIF(input: SimpleNHIFInput): PatientPayload!
+
+  endEncounter(encounterID: String!): Boolean!
+
+  deleteFHIRMedicationRequest(id: ID!): Boolean!
+
+  createFHIRServiceRequest(
+    input: FHIRServiceRequestInput!
+  ): FHIRServiceRequestRelayPayload!
+
+  deleteFHIRServiceRequest(id: ID!): Boolean!
+
+  createFHIRObservation(
+    input: FHIRObservationInput!
+  ): FHIRObservationRelayPayload!
+
+  createFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+
+  updateFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+
+  deleteFHIRComposition(id: ID!): Boolean!
 }

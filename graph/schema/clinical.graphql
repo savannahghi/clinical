@@ -1,28 +1,21 @@
 extend type Query {
   getFHIRAllergyIntolerance(id: ID!): FHIRAllergyIntoleranceRelayPayload!
-  searchFHIRAllergyIntolerance(
-    params: Map!
-  ): FHIRAllergyIntoleranceRelayConnection!
+
 
   getFHIRComposition(id: ID!): FHIRCompositionRelayPayload!
-  searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
 
   getFHIRCondition(id: ID!): FHIRConditionRelayPayload!
-  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
+
 
   getFHIREncounter(id: ID!): FHIREncounterRelayPayload!
-  searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
 
   getFHIREpisodeOfCare(id: ID!): FHIREpisodeOfCareRelayPayload!
   searchFHIREpisodeOfCare(params: Map!): FHIREpisodeOfCareRelayConnection!
 
   getFHIRMedicationRequest(id: ID!): FHIRMedicationRequestRelayPayload!
-  searchFHIRMedicationRequest(
-    params: Map!
-  ): FHIRMedicationRequestRelayConnection!
+  
 
   getFHIRObservation(id: ID!): FHIRObservationRelayPayload!
-  searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
 
   getFHIROrganization(id: ID!): FHIROrganizationRelayPayload!
   searchFHIROrganization(params: Map!): FHIROrganizationRelayConnection!
@@ -31,33 +24,16 @@ extend type Query {
   searchFHIRPatient(params: Map!): FHIRPatientRelayConnection!
 
   getFHIRServiceRequest(id: ID!): FHIRServiceRequestRelayPayload!
-  searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
   allergySummary(patientID: String!): [String!]!
-  problemSummary(patientID: String!): [String!]!
   patientTimeline(episodeID: String!): [Map!]!
-  patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
-  visitSummary(encounterID: String!): Map!
 }
 
 extend type Mutation {
-  createFHIRAllergyIntolerance(
-    input: FHIRAllergyIntoleranceInput!
-  ): FHIRAllergyIntoleranceRelayPayload!
-  updateFHIRAllergyIntolerance(
-    input: FHIRAllergyIntoleranceInput!
-  ): FHIRAllergyIntoleranceRelayPayload!
+  
   deleteFHIRAllergyIntolerance(id: ID!): Boolean!
 
-  createFHIRComposition(
-    input: FHIRCompositionInput!
-  ): FHIRCompositionRelayPayload!
-  updateFHIRComposition(
-    input: FHIRCompositionInput!
-  ): FHIRCompositionRelayPayload!
-  deleteFHIRComposition(id: ID!): Boolean!
 
-  createFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
-  updateFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
+  
   deleteFHIRCondition(id: ID!): Boolean!
 
   createFHIREncounter(input: FHIREncounterInput!): FHIREncounterRelayPayload!
@@ -72,17 +48,7 @@ extend type Mutation {
   ): FHIREpisodeOfCareRelayPayload!
   deleteFHIREpisodeOfCare(id: ID!): Boolean!
 
-  createFHIRMedicationRequest(
-    input: FHIRMedicationRequestInput!
-  ): FHIRMedicationRequestRelayPayload!
-  updateFHIRMedicationRequest(
-    input: FHIRMedicationRequestInput!
-  ): FHIRMedicationRequestRelayPayload!
-  deleteFHIRMedicationRequest(id: ID!): Boolean!
 
-  createFHIRObservation(
-    input: FHIRObservationInput!
-  ): FHIRObservationRelayPayload!
   updateFHIRObservation(
     input: FHIRObservationInput!
   ): FHIRObservationRelayPayload!
@@ -100,11 +66,7 @@ extend type Mutation {
   updateFHIRPatient(input: FHIRPatientInput!): FHIRPatientRelayPayload!
   deleteFHIRPatient(id: ID!): Boolean!
 
-  createFHIRServiceRequest(
-    input: FHIRServiceRequestInput!
-  ): FHIRServiceRequestRelayPayload!
   updateFHIRServiceRequest(
     input: FHIRServiceRequestInput!
   ): FHIRServiceRequestRelayPayload!
-  deleteFHIRServiceRequest(id: ID!): Boolean!
 }

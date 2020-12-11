@@ -3848,3 +3848,69 @@ func (s Service) contactMapper(resource map[string]interface{}) map[string]inter
 
 	return resourceCopy
 }
+
+// CreateUpdatePatientExtraInformation updates a patient's extra info
+func (s Service) CreateUpdatePatientExtraInformation(
+	ctx context.Context, input PatientExtraInformationInput) (bool, error) {
+	s.checkPreconditions()
+
+	patientPayload, err := s.FindPatientByID(ctx, input.PatientID)
+	if err != nil {
+		return false, fmt.Errorf("unable to get patient with ID %s: %w", input.PatientID, err)
+	}
+	patient := patientPayload.PatientRecord
+
+	patches := []map[string]interface{}{}
+	op := "add" // the content will be appended to the element identified in the path
+
+	if input.MaritalStatus != nil {
+		inputMaritalStatus := MaritalStatusEnumToCodeableConcept(*input.MaritalStatus)
+		if patient.MaritalStatus != inputMaritalStatus {
+			patch := make(map[string]interface{})
+			patch["op"] = op
+			patch["path"] = "/maritalStatus"
+			patch["value"] = inputMaritalStatus
+			patches = append(patches, patch)
+		}
+	}
+
+	if input.Languages != nil {
+		langs := []base.Language{}
+		for _, l := range input.Languages {
+			langs = append(langs, *l)
+		}
+		communicationInput := LanguagesToCommunicationInputs(langs)
+		if len(input.Languages) > 0 {
+			patch := make(map[string]interface{})
+			patch["op"] = op
+			patch["path"] = "/communication"
+			patch["value"] = communicationInput
+			patches = append(patches, patch)
+		}
+	}
+
+	if len(input.Emails) > 0 {
+		emailInput, err := ContactsToContactPoint(nil, input.Emails, s.firestoreClient)
+		if err != nil {
+			return false, fmt.Errorf("unable to process email addresses")
+		}
+		telecom := patient.Telecom
+		if telecom == nil {
+			telecom = []*FHIRContactPoint{}
+		}
+		telecom = append(telecom, emailInput...)
+
+		patch := make(map[string]interface{})
+		patch["op"] = op
+		patch["path"] = "/telecom"
+		patch["value"] = telecom
+		patches = append(patches, patch)
+	}
+
+	cloudhealthService := cloudhealth.NewService()
+	_, err = cloudhealthService.PatchFHIRResource("Patient", input.PatientID, patches)
+	if err != nil {
+		return false, fmt.Errorf("UpdatePatient: %v", err)
+	}
+	return true, nil
+}

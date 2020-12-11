@@ -77,11 +77,11 @@ func DefaultPeriodInput() *FHIRPeriodInput {
 }
 
 // DefaultPeriod sets up a period input covering roughly a century from when it's run
-func DefaultPeriod() *Period {
+func DefaultPeriod() *FHIRPeriod {
 	now := time.Now()
 	farFuture := time.Now().Add(time.Hour * CenturyHours)
-	return &Period{
-		Start: &now,
-		End:   &farFuture,
+	return &FHIRPeriod{
+		Start: base.DateTime(now.Format(timeFormatStr)),
+		End:   base.DateTime(farFuture.Format(timeFormatStr)),
 	}
 }
