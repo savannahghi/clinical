@@ -169,8 +169,11 @@ input PhotoInput {
 
 extend type Query {
   openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
+
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
+
   patientSearch(search: String!): PatientConnection!
+  
   openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
 
   searchFHIRMedicationRequest(
@@ -196,8 +199,6 @@ extend type Query {
   visitSummary(encounterID: String!): Map!
 
   searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
-
-  findPatientsByMSISDN(msisdn: String!): PatientConnection!
 
   getPatient(id: ID!): PatientPayload!
 

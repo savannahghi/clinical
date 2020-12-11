@@ -10,52 +10,10 @@ import (
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
 
-func (r *mutationResolver) CreateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.CreateFHIRAllergyIntolerance(ctx, input)
-}
-
-func (r *mutationResolver) UpdateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.UpdateFHIRAllergyIntolerance(ctx, input)
-}
-
 func (r *mutationResolver) DeleteFHIRAllergyIntolerance(ctx context.Context, id string) (bool, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.DeleteFHIRAllergyIntolerance(ctx, id)
-}
-
-func (r *mutationResolver) CreateFHIRComposition(ctx context.Context, input clinical.FHIRCompositionInput) (*clinical.FHIRCompositionRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.CreateFHIRComposition(ctx, input)
-}
-
-func (r *mutationResolver) UpdateFHIRComposition(ctx context.Context, input clinical.FHIRCompositionInput) (*clinical.FHIRCompositionRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.UpdateFHIRComposition(ctx, input)
-}
-
-func (r *mutationResolver) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.DeleteFHIRComposition(ctx, id)
-}
-
-func (r *mutationResolver) CreateFHIRCondition(ctx context.Context, input clinical.FHIRConditionInput) (*clinical.FHIRConditionRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.CreateFHIRCondition(ctx, input)
-}
-
-func (r *mutationResolver) UpdateFHIRCondition(ctx context.Context, input clinical.FHIRConditionInput) (*clinical.FHIRConditionRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.UpdateFHIRCondition(ctx, input)
 }
 
 func (r *mutationResolver) DeleteFHIRCondition(ctx context.Context, id string) (bool, error) {
@@ -98,30 +56,6 @@ func (r *mutationResolver) DeleteFHIREpisodeOfCare(ctx context.Context, id strin
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.DeleteFHIREpisodeOfCare(ctx, id)
-}
-
-func (r *mutationResolver) CreateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.CreateFHIRMedicationRequest(ctx, input)
-}
-
-func (r *mutationResolver) UpdateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.UpdateFHIRMedicationRequest(ctx, input)
-}
-
-func (r *mutationResolver) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.DeleteFHIRMedicationRequest(ctx, id)
-}
-
-func (r *mutationResolver) CreateFHIRObservation(ctx context.Context, input clinical.FHIRObservationInput) (*clinical.FHIRObservationRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.CreateFHIRObservation(ctx, input)
 }
 
 func (r *mutationResolver) UpdateFHIRObservation(ctx context.Context, input clinical.FHIRObservationInput) (*clinical.FHIRObservationRelayPayload, error) {
@@ -172,22 +106,10 @@ func (r *mutationResolver) DeleteFHIRPatient(ctx context.Context, id string) (bo
 	return r.clinicalService.DeleteFHIRPatient(ctx, id)
 }
 
-func (r *mutationResolver) CreateFHIRServiceRequest(ctx context.Context, input clinical.FHIRServiceRequestInput) (*clinical.FHIRServiceRequestRelayPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.CreateFHIRServiceRequest(ctx, input)
-}
-
 func (r *mutationResolver) UpdateFHIRServiceRequest(ctx context.Context, input clinical.FHIRServiceRequestInput) (*clinical.FHIRServiceRequestRelayPayload, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.UpdateFHIRServiceRequest(ctx, input)
-}
-
-func (r *mutationResolver) DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.DeleteFHIRServiceRequest(ctx, id)
 }
 
 func (r *queryResolver) GetFHIRAllergyIntolerance(ctx context.Context, id string) (*clinical.FHIRAllergyIntoleranceRelayPayload, error) {
@@ -196,22 +118,10 @@ func (r *queryResolver) GetFHIRAllergyIntolerance(ctx context.Context, id string
 	return r.clinicalService.GetFHIRAllergyIntolerance(ctx, id)
 }
 
-func (r *queryResolver) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*clinical.FHIRAllergyIntoleranceRelayConnection, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRAllergyIntolerance(ctx, params)
-}
-
 func (r *queryResolver) GetFHIRComposition(ctx context.Context, id string) (*clinical.FHIRCompositionRelayPayload, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.GetFHIRComposition(ctx, id)
-}
-
-func (r *queryResolver) SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRCompositionRelayConnection, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRComposition(ctx, params)
 }
 
 func (r *queryResolver) GetFHIRCondition(ctx context.Context, id string) (*clinical.FHIRConditionRelayPayload, error) {
@@ -220,22 +130,10 @@ func (r *queryResolver) GetFHIRCondition(ctx context.Context, id string) (*clini
 	return r.clinicalService.GetFHIRCondition(ctx, id)
 }
 
-func (r *queryResolver) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRConditionRelayConnection, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRCondition(ctx, params)
-}
-
 func (r *queryResolver) GetFHIREncounter(ctx context.Context, id string) (*clinical.FHIREncounterRelayPayload, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.GetFHIREncounter(ctx, id)
-}
-
-func (r *queryResolver) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*clinical.FHIREncounterRelayConnection, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIREncounter(ctx, params)
 }
 
 func (r *queryResolver) GetFHIREpisodeOfCare(ctx context.Context, id string) (*clinical.FHIREpisodeOfCareRelayPayload, error) {
@@ -256,22 +154,10 @@ func (r *queryResolver) GetFHIRMedicationRequest(ctx context.Context, id string)
 	return r.clinicalService.GetFHIRMedicationRequest(ctx, id)
 }
 
-func (r *queryResolver) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRMedicationRequestRelayConnection, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRMedicationRequest(ctx, params)
-}
-
 func (r *queryResolver) GetFHIRObservation(ctx context.Context, id string) (*clinical.FHIRObservationRelayPayload, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.GetFHIRObservation(ctx, id)
-}
-
-func (r *queryResolver) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*clinical.FHIRObservationRelayConnection, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRObservation(ctx, params)
 }
 
 func (r *queryResolver) GetFHIROrganization(ctx context.Context, id string) (*clinical.FHIROrganizationRelayPayload, error) {
@@ -304,40 +190,16 @@ func (r *queryResolver) GetFHIRServiceRequest(ctx context.Context, id string) (*
 	return r.clinicalService.GetFHIRServiceRequest(ctx, id)
 }
 
-func (r *queryResolver) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRServiceRequestRelayConnection, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRServiceRequest(ctx, params)
-}
-
 func (r *queryResolver) AllergySummary(ctx context.Context, patientID string) ([]string, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.AllergySummary(ctx, patientID)
 }
 
-func (r *queryResolver) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.ProblemSummary(ctx, patientID)
-}
-
 func (r *queryResolver) PatientTimeline(ctx context.Context, episodeID string) ([]map[string]interface{}, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.PatientTimeline(ctx, episodeID)
-}
-
-func (r *queryResolver) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.PatientTimelineWithCount(ctx, episodeID, count)
-}
-
-func (r *queryResolver) VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.VisitSummary(ctx, encounterID, clinical.MaxClinicalRecordPageSize)
 }
 
 // Mutation returns generated.MutationResolver implementation.
