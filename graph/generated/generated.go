@@ -52,6 +52,11 @@ type ComplexityRoot struct {
 		ID func(childComplexity int) int
 	}
 
+	EpisodeOfCarePayload struct {
+		EpisodeOfCare func(childComplexity int) int
+		TotalVisits   func(childComplexity int) int
+	}
+
 	FHIRAddress struct {
 		City       func(childComplexity int) int
 		Country    func(childComplexity int) int
@@ -131,56 +136,6 @@ type ComplexityRoot struct {
 		ID              func(childComplexity int) int
 		Text            func(childComplexity int) int
 		Time            func(childComplexity int) int
-	}
-
-	FHIRAppointment struct {
-		AppointmentType       func(childComplexity int) int
-		BasedOn               func(childComplexity int) int
-		CancelationReason     func(childComplexity int) int
-		Comment               func(childComplexity int) int
-		Created               func(childComplexity int) int
-		Description           func(childComplexity int) int
-		End                   func(childComplexity int) int
-		ID                    func(childComplexity int) int
-		Identifier            func(childComplexity int) int
-		MinutesDuration       func(childComplexity int) int
-		Participant           func(childComplexity int) int
-		PatientInstruction    func(childComplexity int) int
-		Priority              func(childComplexity int) int
-		ReasonCode            func(childComplexity int) int
-		ReasonReference       func(childComplexity int) int
-		RequestedPeriod       func(childComplexity int) int
-		ServiceCategory       func(childComplexity int) int
-		ServiceType           func(childComplexity int) int
-		Slot                  func(childComplexity int) int
-		Specialty             func(childComplexity int) int
-		Start                 func(childComplexity int) int
-		Status                func(childComplexity int) int
-		SupportingInformation func(childComplexity int) int
-		Text                  func(childComplexity int) int
-	}
-
-	FHIRAppointmentParticipant struct {
-		Actor    func(childComplexity int) int
-		ID       func(childComplexity int) int
-		Period   func(childComplexity int) int
-		Required func(childComplexity int) int
-		Status   func(childComplexity int) int
-		Type     func(childComplexity int) int
-	}
-
-	FHIRAppointmentRelayConnection struct {
-		Edges    func(childComplexity int) int
-		PageInfo func(childComplexity int) int
-	}
-
-	FHIRAppointmentRelayEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
-	}
-
-	FHIRAppointmentRelayPayload struct {
-		Resource func(childComplexity int) int
 	}
 
 	FHIRAttachment struct {
@@ -1017,8 +972,9 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		AddNextOfKin                 func(childComplexity int, input clinical.SimpleNextOfKinInput) int
+		AddNhif                      func(childComplexity int, input *clinical.SimpleNHIFInput) int
 		CreateFHIRAllergyIntolerance func(childComplexity int, input clinical.FHIRAllergyIntoleranceInput) int
-		CreateFHIRAppointment        func(childComplexity int, input clinical.FHIRAppointmentInput) int
 		CreateFHIRComposition        func(childComplexity int, input clinical.FHIRCompositionInput) int
 		CreateFHIRCondition          func(childComplexity int, input clinical.FHIRConditionInput) int
 		CreateFHIREncounter          func(childComplexity int, input clinical.FHIREncounterInput) int
@@ -1029,7 +985,6 @@ type ComplexityRoot struct {
 		CreateFHIRPatient            func(childComplexity int, input clinical.FHIRPatientInput) int
 		CreateFHIRServiceRequest     func(childComplexity int, input clinical.FHIRServiceRequestInput) int
 		DeleteFHIRAllergyIntolerance func(childComplexity int, id string) int
-		DeleteFHIRAppointment        func(childComplexity int, id string) int
 		DeleteFHIRComposition        func(childComplexity int, id string) int
 		DeleteFHIRCondition          func(childComplexity int, id string) int
 		DeleteFHIREncounter          func(childComplexity int, id string) int
@@ -1039,8 +994,14 @@ type ComplexityRoot struct {
 		DeleteFHIROrganization       func(childComplexity int, id string) int
 		DeleteFHIRPatient            func(childComplexity int, id string) int
 		DeleteFHIRServiceRequest     func(childComplexity int, id string) int
+		DeletePatient                func(childComplexity int, input clinical.RetirePatientInput) int
+		EndEncounter                 func(childComplexity int, encounterID string) int
+		EndEpisode                   func(childComplexity int, episodeID string) int
+		RegisterPatient              func(childComplexity int, input clinical.SimplePatientRegistrationInput) int
+		StartEncounter               func(childComplexity int, episodeID string) int
+		StartEpisodeByBreakGlass     func(childComplexity int, input clinical.BreakGlassEpisodeCreationInput) int
+		StartEpisodeByOtp            func(childComplexity int, input clinical.OTPEpisodeCreationInput) int
 		UpdateFHIRAllergyIntolerance func(childComplexity int, input clinical.FHIRAllergyIntoleranceInput) int
-		UpdateFHIRAppointment        func(childComplexity int, input clinical.FHIRAppointmentInput) int
 		UpdateFHIRComposition        func(childComplexity int, input clinical.FHIRCompositionInput) int
 		UpdateFHIRCondition          func(childComplexity int, input clinical.FHIRConditionInput) int
 		UpdateFHIREncounter          func(childComplexity int, input clinical.FHIREncounterInput) int
@@ -1050,6 +1011,8 @@ type ComplexityRoot struct {
 		UpdateFHIROrganization       func(childComplexity int, input clinical.FHIROrganizationInput) int
 		UpdateFHIRPatient            func(childComplexity int, input clinical.FHIRPatientInput) int
 		UpdateFHIRServiceRequest     func(childComplexity int, input clinical.FHIRServiceRequestInput) int
+		UpdatePatient                func(childComplexity int, input clinical.SimplePatientRegistrationInput) int
+		UpgradeEpisode               func(childComplexity int, input clinical.OTPEpisodeUpgradeInput) int
 	}
 
 	PageInfo struct {
@@ -1057,10 +1020,27 @@ type ComplexityRoot struct {
 		HasPreviousPage func(childComplexity int) int
 	}
 
+	PatientConnection struct {
+		Edges    func(childComplexity int) int
+		PageInfo func(childComplexity int) int
+	}
+
+	PatientEdge struct {
+		Cursor          func(childComplexity int) int
+		HasOpenEpisodes func(childComplexity int) int
+		Node            func(childComplexity int) int
+	}
+
+	PatientPayload struct {
+		HasOpenEpisodes func(childComplexity int) int
+		OpenEpisodes    func(childComplexity int) int
+		PatientRecord   func(childComplexity int) int
+	}
+
 	Query struct {
 		AllergySummary               func(childComplexity int, patientID string) int
+		FindPatientsByMsisdn         func(childComplexity int, msisdn string) int
 		GetFHIRAllergyIntolerance    func(childComplexity int, id string) int
-		GetFHIRAppointment           func(childComplexity int, id string) int
 		GetFHIRComposition           func(childComplexity int, id string) int
 		GetFHIRCondition             func(childComplexity int, id string) int
 		GetFHIREncounter             func(childComplexity int, id string) int
@@ -1070,14 +1050,13 @@ type ComplexityRoot struct {
 		GetFHIROrganization          func(childComplexity int, id string) int
 		GetFHIRPatient               func(childComplexity int, id string) int
 		GetFHIRServiceRequest        func(childComplexity int, id string) int
+		OpenEpisodes                 func(childComplexity int, patientReference string) int
+		OpenOrganizationEpisodes     func(childComplexity int, providerSladeCode string) int
+		PatientSearch                func(childComplexity int, search string) int
 		PatientTimeline              func(childComplexity int, episodeID string) int
 		PatientTimelineWithCount     func(childComplexity int, episodeID string, count int) int
 		ProblemSummary               func(childComplexity int, patientID string) int
-		RequestUSSDFullHistory       func(childComplexity int, input clinical.USSDClinicalRequest) int
-		RequestUSSDLastVisit         func(childComplexity int, input clinical.USSDClinicalRequest) int
-		RequestUSSDPatientProfile    func(childComplexity int, input clinical.USSDClinicalRequest) int
 		SearchFHIRAllergyIntolerance func(childComplexity int, params map[string]interface{}) int
-		SearchFHIRAppointment        func(childComplexity int, params map[string]interface{}) int
 		SearchFHIRComposition        func(childComplexity int, params map[string]interface{}) int
 		SearchFHIRCondition          func(childComplexity int, params map[string]interface{}) int
 		SearchFHIREncounter          func(childComplexity int, params map[string]interface{}) int
@@ -1092,27 +1071,6 @@ type ComplexityRoot struct {
 		__resolve_entities           func(childComplexity int, representations []map[string]interface{}) int
 	}
 
-	USSDLastVisitClinicalResponse struct {
-		ShortLink    func(childComplexity int) int
-		Summary      func(childComplexity int) int
-		Text         func(childComplexity int) int
-		VisitSummary func(childComplexity int) int
-	}
-
-	USSDMedicalHistoryClinicalResponse struct {
-		FullHistory func(childComplexity int) int
-		ShortLink   func(childComplexity int) int
-		Summary     func(childComplexity int) int
-		Text        func(childComplexity int) int
-	}
-
-	USSDPatientProfileClinicalResponse struct {
-		PatientProfile func(childComplexity int) int
-		ShortLink      func(childComplexity int) int
-		Summary        func(childComplexity int) int
-		Text           func(childComplexity int) int
-	}
-
 	Service struct {
 		SDL func(childComplexity int) int
 	}
@@ -1125,9 +1083,6 @@ type MutationResolver interface {
 	CreateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error)
 	UpdateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error)
 	DeleteFHIRAllergyIntolerance(ctx context.Context, id string) (bool, error)
-	CreateFHIRAppointment(ctx context.Context, input clinical.FHIRAppointmentInput) (*clinical.FHIRAppointmentRelayPayload, error)
-	UpdateFHIRAppointment(ctx context.Context, input clinical.FHIRAppointmentInput) (*clinical.FHIRAppointmentRelayPayload, error)
-	DeleteFHIRAppointment(ctx context.Context, id string) (bool, error)
 	CreateFHIRComposition(ctx context.Context, input clinical.FHIRCompositionInput) (*clinical.FHIRCompositionRelayPayload, error)
 	UpdateFHIRComposition(ctx context.Context, input clinical.FHIRCompositionInput) (*clinical.FHIRCompositionRelayPayload, error)
 	DeleteFHIRComposition(ctx context.Context, id string) (bool, error)
@@ -1155,12 +1110,21 @@ type MutationResolver interface {
 	CreateFHIRServiceRequest(ctx context.Context, input clinical.FHIRServiceRequestInput) (*clinical.FHIRServiceRequestRelayPayload, error)
 	UpdateFHIRServiceRequest(ctx context.Context, input clinical.FHIRServiceRequestInput) (*clinical.FHIRServiceRequestRelayPayload, error)
 	DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error)
+	StartEpisodeByOtp(ctx context.Context, input clinical.OTPEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error)
+	UpgradeEpisode(ctx context.Context, input clinical.OTPEpisodeUpgradeInput) (*clinical.EpisodeOfCarePayload, error)
+	StartEpisodeByBreakGlass(ctx context.Context, input clinical.BreakGlassEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error)
+	StartEncounter(ctx context.Context, episodeID string) (string, error)
+	EndEncounter(ctx context.Context, encounterID string) (bool, error)
+	EndEpisode(ctx context.Context, episodeID string) (bool, error)
+	RegisterPatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error)
+	UpdatePatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error)
+	DeletePatient(ctx context.Context, input clinical.RetirePatientInput) (bool, error)
+	AddNextOfKin(ctx context.Context, input clinical.SimpleNextOfKinInput) (*clinical.PatientPayload, error)
+	AddNhif(ctx context.Context, input *clinical.SimpleNHIFInput) (*clinical.PatientPayload, error)
 }
 type QueryResolver interface {
 	GetFHIRAllergyIntolerance(ctx context.Context, id string) (*clinical.FHIRAllergyIntoleranceRelayPayload, error)
 	SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*clinical.FHIRAllergyIntoleranceRelayConnection, error)
-	GetFHIRAppointment(ctx context.Context, id string) (*clinical.FHIRAppointmentRelayPayload, error)
-	SearchFHIRAppointment(ctx context.Context, params map[string]interface{}) (*clinical.FHIRAppointmentRelayConnection, error)
 	GetFHIRComposition(ctx context.Context, id string) (*clinical.FHIRCompositionRelayPayload, error)
 	SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRCompositionRelayConnection, error)
 	GetFHIRCondition(ctx context.Context, id string) (*clinical.FHIRConditionRelayPayload, error)
@@ -1181,12 +1145,13 @@ type QueryResolver interface {
 	SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRServiceRequestRelayConnection, error)
 	AllergySummary(ctx context.Context, patientID string) ([]string, error)
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
-	RequestUSSDFullHistory(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDMedicalHistoryClinicalResponse, error)
-	RequestUSSDLastVisit(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDLastVisitClinicalResponse, error)
-	RequestUSSDPatientProfile(ctx context.Context, input clinical.USSDClinicalRequest) (*clinical.USSDPatientProfileClinicalResponse, error)
 	PatientTimeline(ctx context.Context, episodeID string) ([]map[string]interface{}, error)
 	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
 	VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error)
+	OpenOrganizationEpisodes(ctx context.Context, providerSladeCode string) ([]*clinical.FHIREpisodeOfCare, error)
+	FindPatientsByMsisdn(ctx context.Context, msisdn string) (*clinical.PatientConnection, error)
+	PatientSearch(ctx context.Context, search string) (*clinical.PatientConnection, error)
+	OpenEpisodes(ctx context.Context, patientReference string) ([]*clinical.FHIREpisodeOfCare, error)
 }
 
 type executableSchema struct {
@@ -1210,6 +1175,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Dummy.ID(childComplexity), true
+
+	case "EpisodeOfCarePayload.episodeOfCare":
+		if e.complexity.EpisodeOfCarePayload.EpisodeOfCare == nil {
+			break
+		}
+
+		return e.complexity.EpisodeOfCarePayload.EpisodeOfCare(childComplexity), true
+
+	case "EpisodeOfCarePayload.totalVisits":
+		if e.complexity.EpisodeOfCarePayload.TotalVisits == nil {
+			break
+		}
+
+		return e.complexity.EpisodeOfCarePayload.TotalVisits(childComplexity), true
 
 	case "FHIRAddress.City":
 		if e.complexity.FHIRAddress.City == nil {
@@ -1609,251 +1588,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FHIRAnnotation.Time(childComplexity), true
-
-	case "FHIRAppointment.AppointmentType":
-		if e.complexity.FHIRAppointment.AppointmentType == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.AppointmentType(childComplexity), true
-
-	case "FHIRAppointment.BasedOn":
-		if e.complexity.FHIRAppointment.BasedOn == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.BasedOn(childComplexity), true
-
-	case "FHIRAppointment.CancelationReason":
-		if e.complexity.FHIRAppointment.CancelationReason == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.CancelationReason(childComplexity), true
-
-	case "FHIRAppointment.Comment":
-		if e.complexity.FHIRAppointment.Comment == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Comment(childComplexity), true
-
-	case "FHIRAppointment.Created":
-		if e.complexity.FHIRAppointment.Created == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Created(childComplexity), true
-
-	case "FHIRAppointment.Description":
-		if e.complexity.FHIRAppointment.Description == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Description(childComplexity), true
-
-	case "FHIRAppointment.End":
-		if e.complexity.FHIRAppointment.End == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.End(childComplexity), true
-
-	case "FHIRAppointment.ID":
-		if e.complexity.FHIRAppointment.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.ID(childComplexity), true
-
-	case "FHIRAppointment.Identifier":
-		if e.complexity.FHIRAppointment.Identifier == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Identifier(childComplexity), true
-
-	case "FHIRAppointment.MinutesDuration":
-		if e.complexity.FHIRAppointment.MinutesDuration == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.MinutesDuration(childComplexity), true
-
-	case "FHIRAppointment.Participant":
-		if e.complexity.FHIRAppointment.Participant == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Participant(childComplexity), true
-
-	case "FHIRAppointment.PatientInstruction":
-		if e.complexity.FHIRAppointment.PatientInstruction == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.PatientInstruction(childComplexity), true
-
-	case "FHIRAppointment.Priority":
-		if e.complexity.FHIRAppointment.Priority == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Priority(childComplexity), true
-
-	case "FHIRAppointment.ReasonCode":
-		if e.complexity.FHIRAppointment.ReasonCode == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.ReasonCode(childComplexity), true
-
-	case "FHIRAppointment.ReasonReference":
-		if e.complexity.FHIRAppointment.ReasonReference == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.ReasonReference(childComplexity), true
-
-	case "FHIRAppointment.RequestedPeriod":
-		if e.complexity.FHIRAppointment.RequestedPeriod == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.RequestedPeriod(childComplexity), true
-
-	case "FHIRAppointment.ServiceCategory":
-		if e.complexity.FHIRAppointment.ServiceCategory == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.ServiceCategory(childComplexity), true
-
-	case "FHIRAppointment.ServiceType":
-		if e.complexity.FHIRAppointment.ServiceType == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.ServiceType(childComplexity), true
-
-	case "FHIRAppointment.Slot":
-		if e.complexity.FHIRAppointment.Slot == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Slot(childComplexity), true
-
-	case "FHIRAppointment.Specialty":
-		if e.complexity.FHIRAppointment.Specialty == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Specialty(childComplexity), true
-
-	case "FHIRAppointment.Start":
-		if e.complexity.FHIRAppointment.Start == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Start(childComplexity), true
-
-	case "FHIRAppointment.Status":
-		if e.complexity.FHIRAppointment.Status == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Status(childComplexity), true
-
-	case "FHIRAppointment.SupportingInformation":
-		if e.complexity.FHIRAppointment.SupportingInformation == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.SupportingInformation(childComplexity), true
-
-	case "FHIRAppointment.Text":
-		if e.complexity.FHIRAppointment.Text == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointment.Text(childComplexity), true
-
-	case "FHIRAppointmentParticipant.Actor":
-		if e.complexity.FHIRAppointmentParticipant.Actor == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentParticipant.Actor(childComplexity), true
-
-	case "FHIRAppointmentParticipant.ID":
-		if e.complexity.FHIRAppointmentParticipant.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentParticipant.ID(childComplexity), true
-
-	case "FHIRAppointmentParticipant.Period":
-		if e.complexity.FHIRAppointmentParticipant.Period == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentParticipant.Period(childComplexity), true
-
-	case "FHIRAppointmentParticipant.Required":
-		if e.complexity.FHIRAppointmentParticipant.Required == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentParticipant.Required(childComplexity), true
-
-	case "FHIRAppointmentParticipant.Status":
-		if e.complexity.FHIRAppointmentParticipant.Status == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentParticipant.Status(childComplexity), true
-
-	case "FHIRAppointmentParticipant.Type":
-		if e.complexity.FHIRAppointmentParticipant.Type == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentParticipant.Type(childComplexity), true
-
-	case "FHIRAppointmentRelayConnection.edges":
-		if e.complexity.FHIRAppointmentRelayConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentRelayConnection.Edges(childComplexity), true
-
-	case "FHIRAppointmentRelayConnection.pageInfo":
-		if e.complexity.FHIRAppointmentRelayConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentRelayConnection.PageInfo(childComplexity), true
-
-	case "FHIRAppointmentRelayEdge.cursor":
-		if e.complexity.FHIRAppointmentRelayEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentRelayEdge.Cursor(childComplexity), true
-
-	case "FHIRAppointmentRelayEdge.node":
-		if e.complexity.FHIRAppointmentRelayEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentRelayEdge.Node(childComplexity), true
-
-	case "FHIRAppointmentRelayPayload.resource":
-		if e.complexity.FHIRAppointmentRelayPayload.Resource == nil {
-			break
-		}
-
-		return e.complexity.FHIRAppointmentRelayPayload.Resource(childComplexity), true
 
 	case "FHIRAttachment.ContentType":
 		if e.complexity.FHIRAttachment.ContentType == nil {
@@ -5859,6 +5593,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRUsageContext.ValueReference(childComplexity), true
 
+	case "Mutation.addNextOfKin":
+		if e.complexity.Mutation.AddNextOfKin == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addNextOfKin_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddNextOfKin(childComplexity, args["input"].(clinical.SimpleNextOfKinInput)), true
+
+	case "Mutation.addNHIF":
+		if e.complexity.Mutation.AddNhif == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addNHIF_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddNhif(childComplexity, args["input"].(*clinical.SimpleNHIFInput)), true
+
 	case "Mutation.createFHIRAllergyIntolerance":
 		if e.complexity.Mutation.CreateFHIRAllergyIntolerance == nil {
 			break
@@ -5870,18 +5628,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateFHIRAllergyIntolerance(childComplexity, args["input"].(clinical.FHIRAllergyIntoleranceInput)), true
-
-	case "Mutation.createFHIRAppointment":
-		if e.complexity.Mutation.CreateFHIRAppointment == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createFHIRAppointment_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateFHIRAppointment(childComplexity, args["input"].(clinical.FHIRAppointmentInput)), true
 
 	case "Mutation.createFHIRComposition":
 		if e.complexity.Mutation.CreateFHIRComposition == nil {
@@ -6003,18 +5749,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFHIRAllergyIntolerance(childComplexity, args["id"].(string)), true
 
-	case "Mutation.deleteFHIRAppointment":
-		if e.complexity.Mutation.DeleteFHIRAppointment == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_deleteFHIRAppointment_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.DeleteFHIRAppointment(childComplexity, args["id"].(string)), true
-
 	case "Mutation.deleteFHIRComposition":
 		if e.complexity.Mutation.DeleteFHIRComposition == nil {
 			break
@@ -6123,6 +5857,90 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFHIRServiceRequest(childComplexity, args["id"].(string)), true
 
+	case "Mutation.deletePatient":
+		if e.complexity.Mutation.DeletePatient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deletePatient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeletePatient(childComplexity, args["input"].(clinical.RetirePatientInput)), true
+
+	case "Mutation.endEncounter":
+		if e.complexity.Mutation.EndEncounter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_endEncounter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EndEncounter(childComplexity, args["encounterID"].(string)), true
+
+	case "Mutation.endEpisode":
+		if e.complexity.Mutation.EndEpisode == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_endEpisode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EndEpisode(childComplexity, args["episodeID"].(string)), true
+
+	case "Mutation.registerPatient":
+		if e.complexity.Mutation.RegisterPatient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_registerPatient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RegisterPatient(childComplexity, args["input"].(clinical.SimplePatientRegistrationInput)), true
+
+	case "Mutation.startEncounter":
+		if e.complexity.Mutation.StartEncounter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_startEncounter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.StartEncounter(childComplexity, args["episodeID"].(string)), true
+
+	case "Mutation.startEpisodeByBreakGlass":
+		if e.complexity.Mutation.StartEpisodeByBreakGlass == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_startEpisodeByBreakGlass_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.StartEpisodeByBreakGlass(childComplexity, args["input"].(clinical.BreakGlassEpisodeCreationInput)), true
+
+	case "Mutation.startEpisodeByOTP":
+		if e.complexity.Mutation.StartEpisodeByOtp == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_startEpisodeByOTP_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.StartEpisodeByOtp(childComplexity, args["input"].(clinical.OTPEpisodeCreationInput)), true
+
 	case "Mutation.updateFHIRAllergyIntolerance":
 		if e.complexity.Mutation.UpdateFHIRAllergyIntolerance == nil {
 			break
@@ -6134,18 +5952,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateFHIRAllergyIntolerance(childComplexity, args["input"].(clinical.FHIRAllergyIntoleranceInput)), true
-
-	case "Mutation.updateFHIRAppointment":
-		if e.complexity.Mutation.UpdateFHIRAppointment == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateFHIRAppointment_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateFHIRAppointment(childComplexity, args["input"].(clinical.FHIRAppointmentInput)), true
 
 	case "Mutation.updateFHIRComposition":
 		if e.complexity.Mutation.UpdateFHIRComposition == nil {
@@ -6255,6 +6061,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateFHIRServiceRequest(childComplexity, args["input"].(clinical.FHIRServiceRequestInput)), true
 
+	case "Mutation.updatePatient":
+		if e.complexity.Mutation.UpdatePatient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updatePatient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdatePatient(childComplexity, args["input"].(clinical.SimplePatientRegistrationInput)), true
+
+	case "Mutation.upgradeEpisode":
+		if e.complexity.Mutation.UpgradeEpisode == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_upgradeEpisode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpgradeEpisode(childComplexity, args["input"].(clinical.OTPEpisodeUpgradeInput)), true
+
 	case "PageInfo.hasNextPage":
 		if e.complexity.PageInfo.HasNextPage == nil {
 			break
@@ -6269,6 +6099,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PageInfo.HasPreviousPage(childComplexity), true
 
+	case "PatientConnection.edges":
+		if e.complexity.PatientConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.PatientConnection.Edges(childComplexity), true
+
+	case "PatientConnection.pageInfo":
+		if e.complexity.PatientConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.PatientConnection.PageInfo(childComplexity), true
+
+	case "PatientEdge.cursor":
+		if e.complexity.PatientEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.PatientEdge.Cursor(childComplexity), true
+
+	case "PatientEdge.hasOpenEpisodes":
+		if e.complexity.PatientEdge.HasOpenEpisodes == nil {
+			break
+		}
+
+		return e.complexity.PatientEdge.HasOpenEpisodes(childComplexity), true
+
+	case "PatientEdge.node":
+		if e.complexity.PatientEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.PatientEdge.Node(childComplexity), true
+
+	case "PatientPayload.hasOpenEpisodes":
+		if e.complexity.PatientPayload.HasOpenEpisodes == nil {
+			break
+		}
+
+		return e.complexity.PatientPayload.HasOpenEpisodes(childComplexity), true
+
+	case "PatientPayload.openEpisodes":
+		if e.complexity.PatientPayload.OpenEpisodes == nil {
+			break
+		}
+
+		return e.complexity.PatientPayload.OpenEpisodes(childComplexity), true
+
+	case "PatientPayload.patientRecord":
+		if e.complexity.PatientPayload.PatientRecord == nil {
+			break
+		}
+
+		return e.complexity.PatientPayload.PatientRecord(childComplexity), true
+
 	case "Query.allergySummary":
 		if e.complexity.Query.AllergySummary == nil {
 			break
@@ -6281,6 +6167,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AllergySummary(childComplexity, args["patientID"].(string)), true
 
+	case "Query.findPatientsByMSISDN":
+		if e.complexity.Query.FindPatientsByMsisdn == nil {
+			break
+		}
+
+		args, err := ec.field_Query_findPatientsByMSISDN_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FindPatientsByMsisdn(childComplexity, args["msisdn"].(string)), true
+
 	case "Query.getFHIRAllergyIntolerance":
 		if e.complexity.Query.GetFHIRAllergyIntolerance == nil {
 			break
@@ -6292,18 +6190,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetFHIRAllergyIntolerance(childComplexity, args["id"].(string)), true
-
-	case "Query.getFHIRAppointment":
-		if e.complexity.Query.GetFHIRAppointment == nil {
-			break
-		}
-
-		args, err := ec.field_Query_getFHIRAppointment_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetFHIRAppointment(childComplexity, args["id"].(string)), true
 
 	case "Query.getFHIRComposition":
 		if e.complexity.Query.GetFHIRComposition == nil {
@@ -6413,6 +6299,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetFHIRServiceRequest(childComplexity, args["id"].(string)), true
 
+	case "Query.openEpisodes":
+		if e.complexity.Query.OpenEpisodes == nil {
+			break
+		}
+
+		args, err := ec.field_Query_openEpisodes_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OpenEpisodes(childComplexity, args["patientReference"].(string)), true
+
+	case "Query.openOrganizationEpisodes":
+		if e.complexity.Query.OpenOrganizationEpisodes == nil {
+			break
+		}
+
+		args, err := ec.field_Query_openOrganizationEpisodes_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OpenOrganizationEpisodes(childComplexity, args["providerSladeCode"].(string)), true
+
+	case "Query.patientSearch":
+		if e.complexity.Query.PatientSearch == nil {
+			break
+		}
+
+		args, err := ec.field_Query_patientSearch_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.PatientSearch(childComplexity, args["search"].(string)), true
+
 	case "Query.patientTimeline":
 		if e.complexity.Query.PatientTimeline == nil {
 			break
@@ -6449,42 +6371,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ProblemSummary(childComplexity, args["patientID"].(string)), true
 
-	case "Query.requestUSSDFullHistory":
-		if e.complexity.Query.RequestUSSDFullHistory == nil {
-			break
-		}
-
-		args, err := ec.field_Query_requestUSSDFullHistory_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.RequestUSSDFullHistory(childComplexity, args["input"].(clinical.USSDClinicalRequest)), true
-
-	case "Query.requestUSSDLastVisit":
-		if e.complexity.Query.RequestUSSDLastVisit == nil {
-			break
-		}
-
-		args, err := ec.field_Query_requestUSSDLastVisit_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.RequestUSSDLastVisit(childComplexity, args["input"].(clinical.USSDClinicalRequest)), true
-
-	case "Query.requestUSSDPatientProfile":
-		if e.complexity.Query.RequestUSSDPatientProfile == nil {
-			break
-		}
-
-		args, err := ec.field_Query_requestUSSDPatientProfile_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.RequestUSSDPatientProfile(childComplexity, args["input"].(clinical.USSDClinicalRequest)), true
-
 	case "Query.searchFHIRAllergyIntolerance":
 		if e.complexity.Query.SearchFHIRAllergyIntolerance == nil {
 			break
@@ -6496,18 +6382,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.SearchFHIRAllergyIntolerance(childComplexity, args["params"].(map[string]interface{})), true
-
-	case "Query.searchFHIRAppointment":
-		if e.complexity.Query.SearchFHIRAppointment == nil {
-			break
-		}
-
-		args, err := ec.field_Query_searchFHIRAppointment_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.SearchFHIRAppointment(childComplexity, args["params"].(map[string]interface{})), true
 
 	case "Query.searchFHIRComposition":
 		if e.complexity.Query.SearchFHIRComposition == nil {
@@ -6648,90 +6522,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.__resolve_entities(childComplexity, args["representations"].([]map[string]interface{})), true
 
-	case "USSDLastVisitClinicalResponse.shortLink":
-		if e.complexity.USSDLastVisitClinicalResponse.ShortLink == nil {
-			break
-		}
-
-		return e.complexity.USSDLastVisitClinicalResponse.ShortLink(childComplexity), true
-
-	case "USSDLastVisitClinicalResponse.summary":
-		if e.complexity.USSDLastVisitClinicalResponse.Summary == nil {
-			break
-		}
-
-		return e.complexity.USSDLastVisitClinicalResponse.Summary(childComplexity), true
-
-	case "USSDLastVisitClinicalResponse.text":
-		if e.complexity.USSDLastVisitClinicalResponse.Text == nil {
-			break
-		}
-
-		return e.complexity.USSDLastVisitClinicalResponse.Text(childComplexity), true
-
-	case "USSDLastVisitClinicalResponse.visitSummary":
-		if e.complexity.USSDLastVisitClinicalResponse.VisitSummary == nil {
-			break
-		}
-
-		return e.complexity.USSDLastVisitClinicalResponse.VisitSummary(childComplexity), true
-
-	case "USSDMedicalHistoryClinicalResponse.fullHistory":
-		if e.complexity.USSDMedicalHistoryClinicalResponse.FullHistory == nil {
-			break
-		}
-
-		return e.complexity.USSDMedicalHistoryClinicalResponse.FullHistory(childComplexity), true
-
-	case "USSDMedicalHistoryClinicalResponse.shortLink":
-		if e.complexity.USSDMedicalHistoryClinicalResponse.ShortLink == nil {
-			break
-		}
-
-		return e.complexity.USSDMedicalHistoryClinicalResponse.ShortLink(childComplexity), true
-
-	case "USSDMedicalHistoryClinicalResponse.summary":
-		if e.complexity.USSDMedicalHistoryClinicalResponse.Summary == nil {
-			break
-		}
-
-		return e.complexity.USSDMedicalHistoryClinicalResponse.Summary(childComplexity), true
-
-	case "USSDMedicalHistoryClinicalResponse.text":
-		if e.complexity.USSDMedicalHistoryClinicalResponse.Text == nil {
-			break
-		}
-
-		return e.complexity.USSDMedicalHistoryClinicalResponse.Text(childComplexity), true
-
-	case "USSDPatientProfileClinicalResponse.patientProfile":
-		if e.complexity.USSDPatientProfileClinicalResponse.PatientProfile == nil {
-			break
-		}
-
-		return e.complexity.USSDPatientProfileClinicalResponse.PatientProfile(childComplexity), true
-
-	case "USSDPatientProfileClinicalResponse.shortLink":
-		if e.complexity.USSDPatientProfileClinicalResponse.ShortLink == nil {
-			break
-		}
-
-		return e.complexity.USSDPatientProfileClinicalResponse.ShortLink(childComplexity), true
-
-	case "USSDPatientProfileClinicalResponse.summary":
-		if e.complexity.USSDPatientProfileClinicalResponse.Summary == nil {
-			break
-		}
-
-		return e.complexity.USSDPatientProfileClinicalResponse.Summary(childComplexity), true
-
-	case "USSDPatientProfileClinicalResponse.text":
-		if e.complexity.USSDPatientProfileClinicalResponse.Text == nil {
-			break
-		}
-
-		return e.complexity.USSDPatientProfileClinicalResponse.Text(childComplexity), true
-
 	case "_Service.sdl":
 		if e.complexity.Service.SDL == nil {
 			break
@@ -6809,9 +6599,6 @@ var sources = []*ast.Source{
     params: Map!
   ): FHIRAllergyIntoleranceRelayConnection!
 
-  getFHIRAppointment(id: ID!): FHIRAppointmentRelayPayload!
-  searchFHIRAppointment(params: Map!): FHIRAppointmentRelayConnection!
-
   getFHIRComposition(id: ID!): FHIRCompositionRelayPayload!
   searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
 
@@ -6840,18 +6627,8 @@ var sources = []*ast.Source{
 
   getFHIRServiceRequest(id: ID!): FHIRServiceRequestRelayPayload!
   searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
-
   allergySummary(patientID: String!): [String!]!
   problemSummary(patientID: String!): [String!]!
-  requestUSSDFullHistory(
-    input: USSDClinicalRequest!
-  ): USSDMedicalHistoryClinicalResponse!
-  requestUSSDLastVisit(
-    input: USSDClinicalRequest!
-  ): USSDLastVisitClinicalResponse!
-  requestUSSDPatientProfile(
-    input: USSDClinicalRequest!
-  ): USSDPatientProfileClinicalResponse!
   patientTimeline(episodeID: String!): [Map!]!
   patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
   visitSummary(encounterID: String!): Map!
@@ -6865,14 +6642,6 @@ extend type Mutation {
     input: FHIRAllergyIntoleranceInput!
   ): FHIRAllergyIntoleranceRelayPayload!
   deleteFHIRAllergyIntolerance(id: ID!): Boolean!
-
-  createFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  updateFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  deleteFHIRAppointment(id: ID!): Boolean!
 
   createFHIRComposition(
     input: FHIRCompositionInput!
@@ -7072,6 +6841,199 @@ enum Operation {
 # This server attempts to be Relay spec compliant
 interface Node {
   id: ID!
+}
+`, BuiltIn: false},
+	{Name: "graph/schema/healthpassport.graphql", Input: `
+enum MaritalStatus {
+  A
+  D
+  I
+  L
+  M
+  P
+  S
+  T
+  U
+  W
+  UNK
+}
+
+enum RelationshipType {
+  C
+  E
+  F
+  I
+  N
+  O
+  S
+  U
+}
+
+enum IDDocumentType {
+  national_id
+  passport
+  alien_id
+}
+
+type PatientEdge {
+  cursor: String!
+  node: FHIRPatient!
+  hasOpenEpisodes: Boolean!
+}
+
+type PatientConnection {
+  edges: [PatientEdge]
+  pageInfo: PageInfo!
+}
+
+type PatientPayload {
+  patientRecord: FHIRPatient!
+  hasOpenEpisodes: Boolean!
+  openEpisodes: [FHIREpisodeOfCare]
+}
+
+type EpisodeOfCarePayload {
+  episodeOfCare: FHIREpisodeOfCare!
+  totalVisits: Int!
+}
+
+input OTPEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  msisdn: String!
+  otp: String!
+  fullAccess: Boolean!
+}
+
+input OTPEpisodeUpgradeInput {
+  episodeID: String!
+  msisdn: String!
+  otp: String!
+}
+
+input BreakGlassEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  practitionerUID: String!
+  msisdn: String!
+  patientPhone: String!
+  otp: String!
+  fullAccess: Boolean!
+}
+
+input PhysicalAddress {
+  mapsCode: String! # can be a Plus Code or Google Maps co-ordinates
+  physicalAddress: String!
+}
+
+input PostalAddress {
+  postalAddress: String!
+  postalCode: String!
+}
+
+input SimplePatientRegistrationInput {
+  id: ID
+  names: [NameInput!]!
+  gender: String!
+  identificationDocuments: [IdentificationDocument!]!
+  birthDate: Date!
+  phoneNumbers: [PhoneNumberInput!]!
+  photos: [PhotoInput]
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  active: Boolean!
+  replicateUSSD: Boolean
+}
+
+input SimpleNextOfKinInput {
+  patientID: String!
+  names: [NameInput!]!
+  phoneNumbers: [PhoneNumberInput!]!
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  gender: String!
+  birthDate: Date!
+  relationship: RelationshipType!
+  active: Boolean!
+}
+
+input SimpleNHIFInput {
+  patientID: String!
+  membershipNumber: String!
+  frontImageBase64: String
+  frontImageContentType: ContentType
+  rearImageBase64: String
+  rearImageContentType: ContentType
+}
+
+input PatientExtraInformationInput {
+  patientID: String!
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  emails: [EmailInput]
+}
+
+input RetirePatientInput {
+  id: ID! # ID of patient to be retired
+}
+
+input EmailInput {
+  email: String!
+  communicationOptIn: Boolean!
+}
+
+input NameInput {
+  firstName: String!
+  lastName: String!
+  otherNames: String
+}
+
+input IdentificationDocument {
+  documentType: IDDocumentType!
+  documentNumber: String!
+  title: String
+  imageContentType: ContentType
+  imageBase64: String
+}
+
+input PhoneNumberInput {
+  msisdn: String!
+  verificationCode: String!
+  isUSSD: Boolean!
+  communicationOptIn: Boolean!
+}
+
+input PhotoInput {
+  photoContentType: ContentType!
+  photoBase64data: String!
+  photoFilename: String!
+}
+
+extend type Query {
+  openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
+  findPatientsByMSISDN(msisdn: String!): PatientConnection!
+  patientSearch(search: String!): PatientConnection!
+  openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
+}
+
+extend type Mutation {
+  startEpisodeByOTP(input: OTPEpisodeCreationInput!): EpisodeOfCarePayload!
+  upgradeEpisode(input: OTPEpisodeUpgradeInput!): EpisodeOfCarePayload!
+  startEpisodeByBreakGlass(
+    input: BreakGlassEpisodeCreationInput!
+  ): EpisodeOfCarePayload!
+  startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
+  endEpisode(episodeID: String!): Boolean!
+  registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
+  updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
+  deletePatient(input: RetirePatientInput!): Boolean!
+  addNextOfKin(input: SimpleNextOfKinInput!): PatientPayload!
+  addNHIF(input: SimpleNHIFInput): PatientPayload!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/fhir/AllergyIntolerance.graphql", Input: `"""
@@ -7445,358 +7407,6 @@ FHIRAllergyIntoleranceRelayConnection is a Relay connection for AllergyIntoleran
 """
 type FHIRAllergyIntoleranceRelayConnection {
   edges: [FHIRAllergyIntoleranceRelayEdge]
-  pageInfo: PageInfo!
-}
-
-`, BuiltIn: false},
-	{Name: "graph/schema/fhir/Appointment.graphql", Input: `"""
-AppointmentStatusEnum is a FHIR enum
-"""
-enum AppointmentStatusEnum {
-  proposed
-  pending
-  booked
-  arrived
-  fulfilled
-  cancelled
-  noshow
-  entered_in_error # ` + "`" + `original: entered-in-error` + "`" + `
-  checked_in # ` + "`" + `original: checked-in` + "`" + `
-  waitlist
-}
-
-"""
-AppointmentParticipantRequiredEnum is a FHIR enum
-"""
-enum AppointmentParticipantRequiredEnum {
-  required
-  optional
-  information_only # ` + "`" + `original: information-only` + "`" + `
-}
-
-"""
-AppointmentParticipantStatusEnum is a FHIR enum
-"""
-enum AppointmentParticipantStatusEnum {
-  accepted
-  declined
-  tentative
-  needs_action # ` + "`" + `original: needs-action` + "`" + `
-}
-
-"""
-FHIRAppointmentInput: input for Appointment
-"""
-input FHIRAppointmentInput {
-  """
-  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
-  """
-  ID: ID
-
-  """
-  This records identifiers associated with this appointment concern that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
-  """
-  Identifier: [FHIRIdentifierInput]
-  """
-  The overall status of the Appointment. Each of the participants has their own participation status which indicates their involvement in the process, however this status indicates the shared status.
-  """
-  Status: AppointmentStatusEnum
-  """
-  The coded reason for the appointment being cancelled. This is often used in reporting/billing/futher processing to determine if further actions are required, or specific fees apply.
-  """
-  CancelationReason: FHIRCodeableConceptInput
-  """
-  A broad categorization of the service that is to be performed during this appointment.
-  """
-  ServiceCategory: [FHIRCodeableConceptInput]
-  """
-  The specific service that is to be performed during this appointment.
-  """
-  ServiceType: [FHIRCodeableConceptInput]
-  """
-  The specialty of a practitioner that would be required to perform the service requested in this appointment.
-  """
-  Specialty: [FHIRCodeableConceptInput]
-  """
-  The style of appointment or patient that has been booked in the slot (not service type).
-  """
-  AppointmentType: FHIRCodeableConceptInput
-  """
-  The coded reason that this appointment is being scheduled. This is more clinical than administrative.
-  """
-  ReasonCode: Code
-  """
-  Reason the appointment has been scheduled to take place, as specified using information from another resource. When the patient arrives and the encounter begins it may be used as the admission diagnosis. The indication will typically be a Condition (with other resources referenced in the evidence.detail), or a Procedure.
-  """
-  ReasonReference: [FHIRReferenceInput]
-  """
-  The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).
-  """
-  Priority: Int
-  """
-  The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.
-  """
-  Description: String
-  """
-  Additional information to support the appointment provided when making the appointment.
-  """
-  SupportingInformation: [FHIRReferenceInput]
-  """
-  Date/Time that the appointment is to take place.
-  """
-  Start: Instant
-  """
-  Date/Time that the appointment is to conclude.
-  """
-  End: Instant
-  """
-  Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a 30 minute appointment is being requested, but any time would work.  Also, if there is, for example, a planned 15 minute break in the middle of a long appointment, the duration may be 15 minutes less than the difference between the start and end.
-  """
-  MinutesDuration: Int
-  """
-  The slots from the participants' schedules that will be filled by the appointment.
-  """
-  Slot: [FHIRReferenceInput]
-  """
-  The date that this appointment was initially created. This could be different to the meta.lastModified value on the initial entry, as this could have been before the resource was created on the FHIR server, and should remain unchanged over the lifespan of the appointment.
-  """
-  Created: DateTime
-  """
-  Additional comments about the appointment.
-  """
-  Comment: String
-  """
-  While Appointment.comment contains information for internal use, Appointment.patientInstructions is used to capture patient facing information about the Appointment (e.g. please bring your referral or fast from 8pm night before).
-  """
-  PatientInstruction: String
-  """
-  The service request this appointment is allocated to assess (e.g. incoming referral or procedure request).
-  """
-  BasedOn: [FHIRReferenceInput]
-  """
-  List of participants involved in the appointment.
-  """
-  Participant: [FHIRAppointmentParticipantInput!]!
-  """
-      A set of date ranges (potentially including times) that the appointment is preferred to be scheduled within.
-
-  The duration (usually in minutes) could also be provided to indicate the length of the appointment to fill and populate the start/end times for the actual allocated time. However, in other situations the duration may be calculated by the scheduling system.
-  """
-  RequestedPeriod: [FHIRPeriodInput]
-}
-"""
-FHIRAppointmentParticipantInput: input for AppointmentParticipant
-"""
-input FHIRAppointmentParticipantInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  Role of participant in the appointment.
-  """
-  Type: [FHIRCodeableConceptInput]
-  """
-  A Person, Location/HealthcareService or Device that is participating in the appointment.
-  """
-  Actor: FHIRReferenceInput
-  """
-  Whether this participant is required to be present at the meeting. This covers a use-case where two doctors need to meet to discuss the results for a specific patient, and the patient is not required to be present.
-  """
-  Required: AppointmentParticipantRequiredEnum
-  """
-  Participation status of the actor.
-  """
-  Status: AppointmentParticipantStatusEnum
-  """
-  Participation period of the actor.
-  """
-  Period: FHIRPeriodInput
-}
-
-"""
-FHIRAppointmentParticipant definition: a booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. this may result in one or more encounter(s).
-"""
-type FHIRAppointmentParticipant {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  Role of participant in the appointment.
-  """
-  Type: [FHIRCodeableConcept]
-
-  """
-  A Person, Location/HealthcareService or Device that is participating in the appointment.
-  """
-  Actor: FHIRReference
-
-  """
-  Whether this participant is required to be present at the meeting. This covers a use-case where two doctors need to meet to discuss the results for a specific patient, and the patient is not required to be present.
-  """
-  Required: AppointmentParticipantRequiredEnum
-
-  """
-  Participation status of the actor.
-  """
-  Status: AppointmentParticipantStatusEnum
-
-  """
-  Participation period of the actor.
-  """
-  Period: FHIRPeriod
-}
-
-"""
-FHIRAppointment definition: a booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. this may result in one or more encounter(s).
-"""
-type FHIRAppointment {
-  """
-  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
-  """
-  ID: ID
-
-  """
-  A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.
-  """
-  Text: FHIRNarrative
-
-  """
-  This records identifiers associated with this appointment concern that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
-  """
-  Identifier: [FHIRIdentifier]
-
-  """
-  The overall status of the Appointment. Each of the participants has their own participation status which indicates their involvement in the process, however this status indicates the shared status.
-  """
-  Status: AppointmentStatusEnum
-
-  """
-  The coded reason for the appointment being cancelled. This is often used in reporting/billing/futher processing to determine if further actions are required, or specific fees apply.
-  """
-  CancelationReason: FHIRCodeableConcept
-
-  """
-  A broad categorization of the service that is to be performed during this appointment.
-  """
-  ServiceCategory: [FHIRCodeableConcept]
-
-  """
-  The specific service that is to be performed during this appointment.
-  """
-  ServiceType: [FHIRCodeableConcept]
-
-  """
-  The specialty of a practitioner that would be required to perform the service requested in this appointment.
-  """
-  Specialty: [FHIRCodeableConcept]
-
-  """
-  The style of appointment or patient that has been booked in the slot (not service type).
-  """
-  AppointmentType: FHIRCodeableConcept
-
-  """
-  The coded reason that this appointment is being scheduled. This is more clinical than administrative.
-  """
-  ReasonCode: Code
-
-  """
-  Reason the appointment has been scheduled to take place, as specified using information from another resource. When the patient arrives and the encounter begins it may be used as the admission diagnosis. The indication will typically be a Condition (with other resources referenced in the evidence.detail), or a Procedure.
-  """
-  ReasonReference: [FHIRReference]
-
-  """
-  The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).
-  """
-  Priority: Int
-
-  """
-  The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.
-  """
-  Description: String
-
-  """
-  Additional information to support the appointment provided when making the appointment.
-  """
-  SupportingInformation: [FHIRReference]
-
-  """
-  Date/Time that the appointment is to take place.
-  """
-  Start: Instant
-
-  """
-  Date/Time that the appointment is to conclude.
-  """
-  End: Instant
-
-  """
-  Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a 30 minute appointment is being requested, but any time would work.  Also, if there is, for example, a planned 15 minute break in the middle of a long appointment, the duration may be 15 minutes less than the difference between the start and end.
-  """
-  MinutesDuration: Int
-
-  """
-  The slots from the participants' schedules that will be filled by the appointment.
-  """
-  Slot: [FHIRReference]
-
-  """
-  The date that this appointment was initially created. This could be different to the meta.lastModified value on the initial entry, as this could have been before the resource was created on the FHIR server, and should remain unchanged over the lifespan of the appointment.
-  """
-  Created: DateTime
-
-  """
-  Additional comments about the appointment.
-  """
-  Comment: String
-
-  """
-  While Appointment.comment contains information for internal use, Appointment.patientInstructions is used to capture patient facing information about the Appointment (e.g. please bring your referral or fast from 8pm night before).
-  """
-  PatientInstruction: String
-
-  """
-  The service request this appointment is allocated to assess (e.g. incoming referral or procedure request).
-  """
-  BasedOn: [FHIRReference]
-
-  """
-  List of participants involved in the appointment.
-  """
-  Participant: [FHIRAppointmentParticipant!]!
-
-  """
-      A set of date ranges (potentially including times) that the appointment is preferred to be scheduled within.
-
-  The duration (usually in minutes) could also be provided to indicate the length of the appointment to fill and populate the start/end times for the actual allocated time. However, in other situations the duration may be calculated by the scheduling system.
-  """
-  RequestedPeriod: [FHIRPeriod]
-}
-
-"""
-FHIRAppointmentRelayPayload is used to return single instances of Appointment
-"""
-type FHIRAppointmentRelayPayload {
-  resource: FHIRAppointment!
-}
-
-"""
-FHIRAppointmentRelayEdge is a Relay edge for Appointment
-"""
-type FHIRAppointmentRelayEdge {
-  cursor: String
-  node: FHIRAppointment
-}
-
-"""
-FHIRAppointmentRelayConnection is a Relay connection for Appointment
-"""
-type FHIRAppointmentRelayConnection {
-  edges: [FHIRAppointmentRelayEdge]
   pageInfo: PageInfo!
 }
 
@@ -14000,35 +13610,6 @@ enum ContributorTypeEnum {
   endorser
 }
 `, BuiltIn: false},
-	{Name: "graph/schema/fhir/summaries.graphql", Input: `input USSDClinicalRequest {
-  patientID: String!
-  msisdn: String!
-  ussdSessionID: String!
-}
-
-type USSDLastVisitClinicalResponse {
-  shortLink: String!
-  summary: String!
-  text: String!
-  visitSummary: Map!
-}
-
-type USSDPatientProfileClinicalResponse {
-  shortLink: String!
-  summary: String!
-  text: String!
-  patientProfile: Map!
-}
-
-type USSDMedicalHistoryClinicalResponse {
-  shortLink: String!
-  summary: String!
-  text: String!
-  fullHistory: Map!
-}
-
-
-`, BuiltIn: false},
 	{Name: "federation/directives.graphql", Input: `
 scalar _Any
 scalar _FieldSet
@@ -14059,13 +13640,13 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_createFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_addNHIF_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 clinical.FHIRAllergyIntoleranceInput
+	var arg0 *clinical.SimpleNHIFInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
+		arg0, err = ec.unmarshalOSimpleNHIFInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimpleNHIFInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -14074,13 +13655,28 @@ func (ec *executionContext) field_Mutation_createFHIRAllergyIntolerance_args(ctx
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createFHIRAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_addNextOfKin_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 clinical.FHIRAppointmentInput
+	var arg0 clinical.SimpleNextOfKinInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx, tmp)
+		arg0, err = ec.unmarshalNSimpleNextOfKinInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimpleNextOfKinInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.FHIRAllergyIntoleranceInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -14239,21 +13835,6 @@ func (ec *executionContext) field_Mutation_deleteFHIRAllergyIntolerance_args(ctx
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteFHIRAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_deleteFHIRComposition_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -14389,13 +13970,13 @@ func (ec *executionContext) field_Mutation_deleteFHIRServiceRequest_args(ctx con
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deletePatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 clinical.FHIRAllergyIntoleranceInput
+	var arg0 clinical.RetirePatientInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
+		arg0, err = ec.unmarshalNRetirePatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRetirePatientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -14404,13 +13985,103 @@ func (ec *executionContext) field_Mutation_updateFHIRAllergyIntolerance_args(ctx
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateFHIRAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_endEncounter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 clinical.FHIRAppointmentInput
+	var arg0 string
+	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["encounterID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_endEpisode_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["episodeID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("episodeID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["episodeID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_registerPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.SimplePatientRegistrationInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx, tmp)
+		arg0, err = ec.unmarshalNSimplePatientRegistrationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimplePatientRegistrationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_startEncounter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["episodeID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("episodeID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["episodeID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_startEpisodeByBreakGlass_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.BreakGlassEpisodeCreationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNBreakGlassEpisodeCreationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐBreakGlassEpisodeCreationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_startEpisodeByOTP_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.OTPEpisodeCreationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNOTPEpisodeCreationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐOTPEpisodeCreationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.FHIRAllergyIntoleranceInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNFHIRAllergyIntoleranceInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -14554,6 +14225,36 @@ func (ec *executionContext) field_Mutation_updateFHIRServiceRequest_args(ctx con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updatePatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.SimplePatientRegistrationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNSimplePatientRegistrationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimplePatientRegistrationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_upgradeEpisode_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.OTPEpisodeUpgradeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNOTPEpisodeUpgradeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐOTPEpisodeUpgradeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -14599,22 +14300,22 @@ func (ec *executionContext) field_Query_allergySummary_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_findPatientsByMSISDN_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["msisdn"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["msisdn"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getFHIRAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -14764,6 +14465,51 @@ func (ec *executionContext) field_Query_getFHIRServiceRequest_args(ctx context.C
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_openEpisodes_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientReference"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientReference"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientReference"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_openOrganizationEpisodes_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["providerSladeCode"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("providerSladeCode"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["providerSladeCode"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_patientSearch_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["search"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("search"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["search"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_patientTimelineWithCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -14818,67 +14564,7 @@ func (ec *executionContext) field_Query_problemSummary_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_requestUSSDFullHistory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 clinical.USSDClinicalRequest
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_requestUSSDLastVisit_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 clinical.USSDClinicalRequest
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_requestUSSDPatientProfile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 clinical.USSDClinicalRequest
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_searchFHIRAllergyIntolerance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 map[string]interface{}
-	if tmp, ok := rawArgs["params"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
-		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["params"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_searchFHIRAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
@@ -15111,6 +14797,76 @@ func (ec *executionContext) _Dummy_id(ctx context.Context, field graphql.Collect
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _EpisodeOfCarePayload_episodeOfCare(ctx context.Context, field graphql.CollectedField, obj *clinical.EpisodeOfCarePayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "EpisodeOfCarePayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EpisodeOfCare, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIREpisodeOfCare)
+	fc.Result = res
+	return ec.marshalNFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _EpisodeOfCarePayload_totalVisits(ctx context.Context, field graphql.CollectedField, obj *clinical.EpisodeOfCarePayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "EpisodeOfCarePayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalVisits, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAddress_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAddress) (ret graphql.Marshaler) {
@@ -16959,1135 +16715,6 @@ func (ec *executionContext) _FHIRAnnotation_Text(ctx context.Context, field grap
 	res := resTmp.(*base.Markdown)
 	fc.Result = res
 	return ec.marshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Text(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRNarrative)
-	fc.Result = res
-	return ec.marshalOFHIRNarrative2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRNarrative(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Identifier(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Identifier, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRIdentifier)
-	fc.Result = res
-	return ec.marshalOFHIRIdentifier2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifier(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Status(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Status, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.AppointmentStatusEnum)
-	fc.Result = res
-	return ec.marshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_CancelationReason(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CancelationReason, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_ServiceCategory(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ServiceCategory, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_ServiceType(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ServiceType, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Specialty(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Specialty, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_AppointmentType(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AppointmentType, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_ReasonCode(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ReasonCode, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_ReasonReference(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ReasonReference, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Priority(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Priority, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Description(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Description, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_SupportingInformation(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SupportingInformation, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Start(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Start, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Instant)
-	fc.Result = res
-	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_End(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.End, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Instant)
-	fc.Result = res
-	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_MinutesDuration(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.MinutesDuration, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Slot(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Slot, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Created(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Created, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.DateTime)
-	fc.Result = res
-	return ec.marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Comment(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Comment, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_PatientInstruction(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PatientInstruction, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_BasedOn(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BasedOn, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_Participant(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Participant, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRAppointmentParticipant)
-	fc.Result = res
-	return ec.marshalNFHIRAppointmentParticipant2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointment_RequestedPeriod(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointment) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointment",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.RequestedPeriod, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRPeriod)
-	fc.Result = res
-	return ec.marshalOFHIRPeriod2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentParticipant_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentParticipant) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentParticipant",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentParticipant_Type(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentParticipant) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentParticipant",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentParticipant_Actor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentParticipant) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentParticipant",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Actor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentParticipant_Required(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentParticipant) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentParticipant",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Required, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.AppointmentParticipantRequiredEnum)
-	fc.Result = res
-	return ec.marshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentParticipant_Status(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentParticipant) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentParticipant",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Status, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.AppointmentParticipantStatusEnum)
-	fc.Result = res
-	return ec.marshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentParticipant_Period(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentParticipant) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentParticipant",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Period, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRPeriod)
-	fc.Result = res
-	return ec.marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentRelayConnection_edges(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentRelayConnection) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentRelayConnection",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRAppointmentRelayEdge)
-	fc.Result = res
-	return ec.marshalOFHIRAppointmentRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayEdge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentRelayConnection) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentRelayConnection",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*base.PageInfo)
-	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentRelayEdge) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentRelayEdge",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentRelayEdge) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentRelayEdge",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRAppointment)
-	fc.Result = res
-	return ec.marshalOFHIRAppointment2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRAppointmentRelayPayload_resource(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAppointmentRelayPayload) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRAppointmentRelayPayload",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Resource, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRAppointment)
-	fc.Result = res
-	return ec.marshalNFHIRAppointment2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAttachment_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAttachment) (ret graphql.Marshaler) {
@@ -36721,132 +35348,6 @@ func (ec *executionContext) _Mutation_deleteFHIRAllergyIntolerance(ctx context.C
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_createFHIRAppointment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_createFHIRAppointment_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateFHIRAppointment(rctx, args["input"].(clinical.FHIRAppointmentInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRAppointmentRelayPayload)
-	fc.Result = res
-	return ec.marshalNFHIRAppointmentRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayPayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_updateFHIRAppointment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_updateFHIRAppointment_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateFHIRAppointment(rctx, args["input"].(clinical.FHIRAppointmentInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRAppointmentRelayPayload)
-	fc.Result = res
-	return ec.marshalNFHIRAppointmentRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayPayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_deleteFHIRAppointment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deleteFHIRAppointment_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteFHIRAppointment(rctx, args["id"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Mutation_createFHIRComposition(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -37981,6 +36482,468 @@ func (ec *executionContext) _Mutation_deleteFHIRServiceRequest(ctx context.Conte
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_startEpisodeByOTP(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_startEpisodeByOTP_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().StartEpisodeByOtp(rctx, args["input"].(clinical.OTPEpisodeCreationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.EpisodeOfCarePayload)
+	fc.Result = res
+	return ec.marshalNEpisodeOfCarePayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCarePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_upgradeEpisode(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_upgradeEpisode_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpgradeEpisode(rctx, args["input"].(clinical.OTPEpisodeUpgradeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.EpisodeOfCarePayload)
+	fc.Result = res
+	return ec.marshalNEpisodeOfCarePayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCarePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_startEpisodeByBreakGlass(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_startEpisodeByBreakGlass_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().StartEpisodeByBreakGlass(rctx, args["input"].(clinical.BreakGlassEpisodeCreationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.EpisodeOfCarePayload)
+	fc.Result = res
+	return ec.marshalNEpisodeOfCarePayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCarePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_startEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_startEncounter_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().StartEncounter(rctx, args["episodeID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_endEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_endEncounter_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().EndEncounter(rctx, args["encounterID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_endEpisode(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_endEpisode_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().EndEpisode(rctx, args["episodeID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_registerPatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_registerPatient_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RegisterPatient(rctx, args["input"].(clinical.SimplePatientRegistrationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.PatientPayload)
+	fc.Result = res
+	return ec.marshalNPatientPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updatePatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updatePatient_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdatePatient(rctx, args["input"].(clinical.SimplePatientRegistrationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.PatientPayload)
+	fc.Result = res
+	return ec.marshalNPatientPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deletePatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deletePatient_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeletePatient(rctx, args["input"].(clinical.RetirePatientInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addNextOfKin(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addNextOfKin_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddNextOfKin(rctx, args["input"].(clinical.SimpleNextOfKinInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.PatientPayload)
+	fc.Result = res
+	return ec.marshalNPatientPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addNHIF(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addNHIF_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddNhif(rctx, args["input"].(*clinical.SimpleNHIFInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.PatientPayload)
+	fc.Result = res
+	return ec.marshalNPatientPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -38049,6 +37012,280 @@ func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientConnection_edges(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.PatientEdge)
+	fc.Result = res
+	return ec.marshalOPatientEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*base.PageInfo)
+	fc.Result = res
+	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientEdge_node(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIRPatient)
+	fc.Result = res
+	return ec.marshalNFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientEdge_hasOpenEpisodes(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasOpenEpisodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientPayload_patientRecord(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PatientRecord, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.FHIRPatient)
+	fc.Result = res
+	return ec.marshalNFHIRPatient2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPatient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientPayload_hasOpenEpisodes(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasOpenEpisodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PatientPayload_openEpisodes(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "PatientPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OpenEpisodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIREpisodeOfCare)
+	fc.Result = res
+	return ec.marshalOFHIREpisodeOfCare2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getFHIRAllergyIntolerance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -38133,90 +37370,6 @@ func (ec *executionContext) _Query_searchFHIRAllergyIntolerance(ctx context.Cont
 	res := resTmp.(*clinical.FHIRAllergyIntoleranceRelayConnection)
 	fc.Result = res
 	return ec.marshalNFHIRAllergyIntoleranceRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntoleranceRelayConnection(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getFHIRAppointment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getFHIRAppointment_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetFHIRAppointment(rctx, args["id"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRAppointmentRelayPayload)
-	fc.Result = res
-	return ec.marshalNFHIRAppointmentRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayPayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_searchFHIRAppointment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_searchFHIRAppointment_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SearchFHIRAppointment(rctx, args["params"].(map[string]interface{}))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRAppointmentRelayConnection)
-	fc.Result = res
-	return ec.marshalNFHIRAppointmentRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getFHIRComposition(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -39059,132 +38212,6 @@ func (ec *executionContext) _Query_problemSummary(ctx context.Context, field gra
 	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_requestUSSDFullHistory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_requestUSSDFullHistory_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RequestUSSDFullHistory(rctx, args["input"].(clinical.USSDClinicalRequest))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.USSDMedicalHistoryClinicalResponse)
-	fc.Result = res
-	return ec.marshalNUSSDMedicalHistoryClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_requestUSSDLastVisit(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_requestUSSDLastVisit_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RequestUSSDLastVisit(rctx, args["input"].(clinical.USSDClinicalRequest))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.USSDLastVisitClinicalResponse)
-	fc.Result = res
-	return ec.marshalNUSSDLastVisitClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDLastVisitClinicalResponse(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_requestUSSDPatientProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_requestUSSDPatientProfile_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RequestUSSDPatientProfile(rctx, args["input"].(clinical.USSDClinicalRequest))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.USSDPatientProfileClinicalResponse)
-	fc.Result = res
-	return ec.marshalNUSSDPatientProfileClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDPatientProfileClinicalResponse(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Query_patientTimeline(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -39309,6 +38336,174 @@ func (ec *executionContext) _Query_visitSummary(ctx context.Context, field graph
 	res := resTmp.(map[string]interface{})
 	fc.Result = res
 	return ec.marshalNMap2map(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_openOrganizationEpisodes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_openOrganizationEpisodes_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OpenOrganizationEpisodes(rctx, args["providerSladeCode"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIREpisodeOfCare)
+	fc.Result = res
+	return ec.marshalNFHIREpisodeOfCare2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_findPatientsByMSISDN(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_findPatientsByMSISDN_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().FindPatientsByMsisdn(rctx, args["msisdn"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.PatientConnection)
+	fc.Result = res
+	return ec.marshalNPatientConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_patientSearch(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_patientSearch_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().PatientSearch(rctx, args["search"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.PatientConnection)
+	fc.Result = res
+	return ec.marshalNPatientConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_openEpisodes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_openEpisodes_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OpenEpisodes(rctx, args["patientReference"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*clinical.FHIREpisodeOfCare)
+	fc.Result = res
+	return ec.marshalNFHIREpisodeOfCare2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query__entities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -39457,426 +38652,6 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDLastVisitClinicalResponse_shortLink(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDLastVisitClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ShortLink, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDLastVisitClinicalResponse_summary(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDLastVisitClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Summary, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDLastVisitClinicalResponse_text(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDLastVisitClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDLastVisitClinicalResponse_visitSummary(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDLastVisitClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDLastVisitClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.VisitSummary, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(map[string]interface{})
-	fc.Result = res
-	return ec.marshalNMap2map(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_shortLink(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDMedicalHistoryClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ShortLink, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_summary(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDMedicalHistoryClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Summary, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_text(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDMedicalHistoryClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDMedicalHistoryClinicalResponse_fullHistory(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDMedicalHistoryClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDMedicalHistoryClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.FullHistory, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(map[string]interface{})
-	fc.Result = res
-	return ec.marshalNMap2map(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDPatientProfileClinicalResponse_shortLink(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDPatientProfileClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDPatientProfileClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ShortLink, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDPatientProfileClinicalResponse_summary(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDPatientProfileClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDPatientProfileClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Summary, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDPatientProfileClinicalResponse_text(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDPatientProfileClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDPatientProfileClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _USSDPatientProfileClinicalResponse_patientProfile(ctx context.Context, field graphql.CollectedField, obj *clinical.USSDPatientProfileClinicalResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "USSDPatientProfileClinicalResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PatientProfile, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(map[string]interface{})
-	fc.Result = res
-	return ec.marshalNMap2map(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) __Service_sdl(ctx context.Context, field graphql.CollectedField, obj *fedruntime.Service) (ret graphql.Marshaler) {
@@ -40998,6 +39773,102 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx context.Context, obj interface{}) (clinical.BreakGlassEpisodeCreationInput, error) {
+	var it clinical.BreakGlassEpisodeCreationInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "providerCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("providerCode"))
+			it.ProviderCode, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "practitionerUID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("practitionerUID"))
+			it.PractitionerUID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msisdn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
+			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "patientPhone":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientPhone"))
+			it.PatientPhone, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "otp":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("otp"))
+			it.Otp, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "fullAccess":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fullAccess"))
+			it.FullAccess, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputEmailInput(ctx context.Context, obj interface{}) (clinical.EmailInput, error) {
+	var it clinical.EmailInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "email":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "communicationOptIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("communicationOptIn"))
+			it.CommunicationOptIn, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, obj interface{}) (clinical.FHIRAddressInput, error) {
 	var it clinical.FHIRAddressInput
 	var asMap = obj.(map[string]interface{})
@@ -41457,262 +40328,6 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			it.Text, err = ec.unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRAppointmentInput(ctx context.Context, obj interface{}) (clinical.FHIRAppointmentInput, error) {
-	var it clinical.FHIRAppointmentInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Identifier":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
-			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRIdentifierInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Status":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
-			it.Status, err = ec.unmarshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "CancelationReason":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CancelationReason"))
-			it.CancelationReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ServiceCategory":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ServiceCategory"))
-			it.ServiceCategory, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ServiceType":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ServiceType"))
-			it.ServiceType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Specialty":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Specialty"))
-			it.Specialty, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "AppointmentType":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AppointmentType"))
-			it.AppointmentType, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ReasonCode":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
-			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ReasonReference":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonReference"))
-			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Priority":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Priority"))
-			it.Priority, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Description":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Description"))
-			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "SupportingInformation":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SupportingInformation"))
-			it.SupportingInformation, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Start":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Start"))
-			it.Start, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "End":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("End"))
-			it.End, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "MinutesDuration":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MinutesDuration"))
-			it.MinutesDuration, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Slot":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Slot"))
-			it.Slot, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Created":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Created"))
-			it.Created, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Comment":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comment"))
-			it.Comment, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "PatientInstruction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PatientInstruction"))
-			it.PatientInstruction, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "BasedOn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
-			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Participant":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Participant"))
-			it.Participant, err = ec.unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "RequestedPeriod":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RequestedPeriod"))
-			it.RequestedPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRAppointmentParticipantInput(ctx context.Context, obj interface{}) (clinical.FHIRAppointmentParticipantInput, error) {
-	var it clinical.FHIRAppointmentParticipantInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Type":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Actor":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Actor"))
-			it.Actor, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Required":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Required"))
-			it.Required, err = ec.unmarshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Status":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
-			it.Status, err = ec.unmarshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Period":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
-			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -46642,6 +45257,182 @@ func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Context, obj interface{}) (clinical.IdentificationDocument, error) {
+	var it clinical.IdentificationDocument
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "documentType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("documentType"))
+			it.DocumentType, err = ec.unmarshalNIDDocumentType2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIDDocumentType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "documentNumber":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("documentNumber"))
+			it.DocumentNumber, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "title":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "imageContentType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("imageContentType"))
+			it.ImageContentType, err = ec.unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "imageBase64":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("imageBase64"))
+			it.ImageBase64, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputNameInput(ctx context.Context, obj interface{}) (clinical.NameInput, error) {
+	var it clinical.NameInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "firstName":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
+			it.FirstName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastName":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
+			it.LastName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "otherNames":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("otherNames"))
+			it.OtherNames, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputOTPEpisodeCreationInput(ctx context.Context, obj interface{}) (clinical.OTPEpisodeCreationInput, error) {
+	var it clinical.OTPEpisodeCreationInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "providerCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("providerCode"))
+			it.ProviderCode, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msisdn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
+			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "otp":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("otp"))
+			it.Otp, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "fullAccess":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fullAccess"))
+			it.FullAccess, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputOTPEpisodeUpgradeInput(ctx context.Context, obj interface{}) (clinical.OTPEpisodeUpgradeInput, error) {
+	var it clinical.OTPEpisodeUpgradeInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "episodeID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("episodeID"))
+			it.EpisodeID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msisdn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
+			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "otp":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("otp"))
+			it.Otp, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, obj interface{}) (base.PaginationInput, error) {
 	var it base.PaginationInput
 	var asMap = obj.(map[string]interface{})
@@ -46677,6 +45468,482 @@ func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
 			it.Before, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPatientExtraInformationInput(ctx context.Context, obj interface{}) (clinical.PatientExtraInformationInput, error) {
+	var it clinical.PatientExtraInformationInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "maritalStatus":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maritalStatus"))
+			it.MaritalStatus, err = ec.unmarshalOMaritalStatus2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐMaritalStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "languages":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("languages"))
+			it.Languages, err = ec.unmarshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "emails":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("emails"))
+			it.Emails, err = ec.unmarshalOEmailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEmailInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, obj interface{}) (clinical.PhoneNumberInput, error) {
+	var it clinical.PhoneNumberInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "msisdn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
+			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "verificationCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verificationCode"))
+			it.VerificationCode, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "isUSSD":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isUSSD"))
+			it.IsUssd, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "communicationOptIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("communicationOptIn"))
+			it.CommunicationOptIn, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPhotoInput(ctx context.Context, obj interface{}) (clinical.PhotoInput, error) {
+	var it clinical.PhotoInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "photoContentType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("photoContentType"))
+			it.PhotoContentType, err = ec.unmarshalNContentType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "photoBase64data":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("photoBase64data"))
+			it.PhotoBase64data, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "photoFilename":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("photoFilename"))
+			it.PhotoFilename, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPhysicalAddress(ctx context.Context, obj interface{}) (clinical.PhysicalAddress, error) {
+	var it clinical.PhysicalAddress
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "mapsCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mapsCode"))
+			it.MapsCode, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "physicalAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("physicalAddress"))
+			it.PhysicalAddress, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPostalAddress(ctx context.Context, obj interface{}) (clinical.PostalAddress, error) {
+	var it clinical.PostalAddress
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "postalAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postalAddress"))
+			it.PostalAddress, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "postalCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postalCode"))
+			it.PostalCode, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputRetirePatientInput(ctx context.Context, obj interface{}) (clinical.RetirePatientInput, error) {
+	var it clinical.RetirePatientInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputSimpleNHIFInput(ctx context.Context, obj interface{}) (clinical.SimpleNHIFInput, error) {
+	var it clinical.SimpleNHIFInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "membershipNumber":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("membershipNumber"))
+			it.MembershipNumber, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "frontImageBase64":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("frontImageBase64"))
+			it.FrontImageBase64, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "frontImageContentType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("frontImageContentType"))
+			it.FrontImageContentType, err = ec.unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "rearImageBase64":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rearImageBase64"))
+			it.RearImageBase64, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "rearImageContentType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rearImageContentType"))
+			it.RearImageContentType, err = ec.unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputSimpleNextOfKinInput(ctx context.Context, obj interface{}) (clinical.SimpleNextOfKinInput, error) {
+	var it clinical.SimpleNextOfKinInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "names":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("names"))
+			it.Names, err = ec.unmarshalNNameInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNameInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "phoneNumbers":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phoneNumbers"))
+			it.PhoneNumbers, err = ec.unmarshalNPhoneNumberInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhoneNumberInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "emails":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("emails"))
+			it.Emails, err = ec.unmarshalOEmailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEmailInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "physicalAddresses":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("physicalAddresses"))
+			it.PhysicalAddresses, err = ec.unmarshalOPhysicalAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhysicalAddress(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "postalAddresses":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postalAddresses"))
+			it.PostalAddresses, err = ec.unmarshalOPostalAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPostalAddress(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "gender":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gender"))
+			it.Gender, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "birthDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthDate"))
+			it.BirthDate, err = ec.unmarshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "relationship":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("relationship"))
+			it.Relationship, err = ec.unmarshalNRelationshipType2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRelationshipType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "active":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("active"))
+			it.Active, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputSimplePatientRegistrationInput(ctx context.Context, obj interface{}) (clinical.SimplePatientRegistrationInput, error) {
+	var it clinical.SimplePatientRegistrationInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "names":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("names"))
+			it.Names, err = ec.unmarshalNNameInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNameInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "gender":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gender"))
+			it.Gender, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "identificationDocuments":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identificationDocuments"))
+			it.IdentificationDocuments, err = ec.unmarshalNIdentificationDocument2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentificationDocumentᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "birthDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthDate"))
+			it.BirthDate, err = ec.unmarshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "phoneNumbers":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phoneNumbers"))
+			it.PhoneNumbers, err = ec.unmarshalNPhoneNumberInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhoneNumberInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "photos":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("photos"))
+			it.Photos, err = ec.unmarshalOPhotoInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhotoInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "emails":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("emails"))
+			it.Emails, err = ec.unmarshalOEmailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEmailInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "physicalAddresses":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("physicalAddresses"))
+			it.PhysicalAddresses, err = ec.unmarshalOPhysicalAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhysicalAddress(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "postalAddresses":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postalAddresses"))
+			it.PostalAddresses, err = ec.unmarshalOPostalAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPostalAddress(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "maritalStatus":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maritalStatus"))
+			it.MaritalStatus, err = ec.unmarshalOMaritalStatus2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐMaritalStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "languages":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("languages"))
+			it.Languages, err = ec.unmarshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "active":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("active"))
+			it.Active, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "replicateUSSD":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("replicateUSSD"))
+			it.ReplicateUSSD, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -46725,42 +45992,6 @@ func (ec *executionContext) unmarshalInputSortParam(ctx context.Context, obj int
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sortOrder"))
 			it.SortOrder, err = ec.unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputUSSDClinicalRequest(ctx context.Context, obj interface{}) (clinical.USSDClinicalRequest, error) {
-	var it clinical.USSDClinicalRequest
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "patientID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
-			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "msisdn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
-			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ussdSessionID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ussdSessionID"))
-			it.UssdSessionID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -46825,6 +46056,38 @@ func (ec *executionContext) _Dummy(ctx context.Context, sel ast.SelectionSet, ob
 				res = ec._Dummy_id(ctx, field, obj)
 				return res
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var episodeOfCarePayloadImplementors = []string{"EpisodeOfCarePayload"}
+
+func (ec *executionContext) _EpisodeOfCarePayload(ctx context.Context, sel ast.SelectionSet, obj *clinical.EpisodeOfCarePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, episodeOfCarePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("EpisodeOfCarePayload")
+		case "episodeOfCare":
+			out.Values[i] = ec._EpisodeOfCarePayload_episodeOfCare(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "totalVisits":
+			out.Values[i] = ec._EpisodeOfCarePayload_totalVisits(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -47139,195 +46402,6 @@ func (ec *executionContext) _FHIRAnnotation(ctx context.Context, sel ast.Selecti
 			out.Values[i] = ec._FHIRAnnotation_Time(ctx, field, obj)
 		case "Text":
 			out.Values[i] = ec._FHIRAnnotation_Text(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAppointmentImplementors = []string{"FHIRAppointment"}
-
-func (ec *executionContext) _FHIRAppointment(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRAppointment) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAppointmentImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAppointment")
-		case "ID":
-			out.Values[i] = ec._FHIRAppointment_ID(ctx, field, obj)
-		case "Text":
-			out.Values[i] = ec._FHIRAppointment_Text(ctx, field, obj)
-		case "Identifier":
-			out.Values[i] = ec._FHIRAppointment_Identifier(ctx, field, obj)
-		case "Status":
-			out.Values[i] = ec._FHIRAppointment_Status(ctx, field, obj)
-		case "CancelationReason":
-			out.Values[i] = ec._FHIRAppointment_CancelationReason(ctx, field, obj)
-		case "ServiceCategory":
-			out.Values[i] = ec._FHIRAppointment_ServiceCategory(ctx, field, obj)
-		case "ServiceType":
-			out.Values[i] = ec._FHIRAppointment_ServiceType(ctx, field, obj)
-		case "Specialty":
-			out.Values[i] = ec._FHIRAppointment_Specialty(ctx, field, obj)
-		case "AppointmentType":
-			out.Values[i] = ec._FHIRAppointment_AppointmentType(ctx, field, obj)
-		case "ReasonCode":
-			out.Values[i] = ec._FHIRAppointment_ReasonCode(ctx, field, obj)
-		case "ReasonReference":
-			out.Values[i] = ec._FHIRAppointment_ReasonReference(ctx, field, obj)
-		case "Priority":
-			out.Values[i] = ec._FHIRAppointment_Priority(ctx, field, obj)
-		case "Description":
-			out.Values[i] = ec._FHIRAppointment_Description(ctx, field, obj)
-		case "SupportingInformation":
-			out.Values[i] = ec._FHIRAppointment_SupportingInformation(ctx, field, obj)
-		case "Start":
-			out.Values[i] = ec._FHIRAppointment_Start(ctx, field, obj)
-		case "End":
-			out.Values[i] = ec._FHIRAppointment_End(ctx, field, obj)
-		case "MinutesDuration":
-			out.Values[i] = ec._FHIRAppointment_MinutesDuration(ctx, field, obj)
-		case "Slot":
-			out.Values[i] = ec._FHIRAppointment_Slot(ctx, field, obj)
-		case "Created":
-			out.Values[i] = ec._FHIRAppointment_Created(ctx, field, obj)
-		case "Comment":
-			out.Values[i] = ec._FHIRAppointment_Comment(ctx, field, obj)
-		case "PatientInstruction":
-			out.Values[i] = ec._FHIRAppointment_PatientInstruction(ctx, field, obj)
-		case "BasedOn":
-			out.Values[i] = ec._FHIRAppointment_BasedOn(ctx, field, obj)
-		case "Participant":
-			out.Values[i] = ec._FHIRAppointment_Participant(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "RequestedPeriod":
-			out.Values[i] = ec._FHIRAppointment_RequestedPeriod(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAppointmentParticipantImplementors = []string{"FHIRAppointmentParticipant"}
-
-func (ec *executionContext) _FHIRAppointmentParticipant(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRAppointmentParticipant) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAppointmentParticipantImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAppointmentParticipant")
-		case "ID":
-			out.Values[i] = ec._FHIRAppointmentParticipant_ID(ctx, field, obj)
-		case "Type":
-			out.Values[i] = ec._FHIRAppointmentParticipant_Type(ctx, field, obj)
-		case "Actor":
-			out.Values[i] = ec._FHIRAppointmentParticipant_Actor(ctx, field, obj)
-		case "Required":
-			out.Values[i] = ec._FHIRAppointmentParticipant_Required(ctx, field, obj)
-		case "Status":
-			out.Values[i] = ec._FHIRAppointmentParticipant_Status(ctx, field, obj)
-		case "Period":
-			out.Values[i] = ec._FHIRAppointmentParticipant_Period(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAppointmentRelayConnectionImplementors = []string{"FHIRAppointmentRelayConnection"}
-
-func (ec *executionContext) _FHIRAppointmentRelayConnection(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRAppointmentRelayConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAppointmentRelayConnectionImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAppointmentRelayConnection")
-		case "edges":
-			out.Values[i] = ec._FHIRAppointmentRelayConnection_edges(ctx, field, obj)
-		case "pageInfo":
-			out.Values[i] = ec._FHIRAppointmentRelayConnection_pageInfo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAppointmentRelayEdgeImplementors = []string{"FHIRAppointmentRelayEdge"}
-
-func (ec *executionContext) _FHIRAppointmentRelayEdge(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRAppointmentRelayEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAppointmentRelayEdgeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAppointmentRelayEdge")
-		case "cursor":
-			out.Values[i] = ec._FHIRAppointmentRelayEdge_cursor(ctx, field, obj)
-		case "node":
-			out.Values[i] = ec._FHIRAppointmentRelayEdge_node(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAppointmentRelayPayloadImplementors = []string{"FHIRAppointmentRelayPayload"}
-
-func (ec *executionContext) _FHIRAppointmentRelayPayload(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRAppointmentRelayPayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAppointmentRelayPayloadImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAppointmentRelayPayload")
-		case "resource":
-			out.Values[i] = ec._FHIRAppointmentRelayPayload_resource(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -50628,21 +49702,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createFHIRAppointment":
-			out.Values[i] = ec._Mutation_createFHIRAppointment(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "updateFHIRAppointment":
-			out.Values[i] = ec._Mutation_updateFHIRAppointment(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "deleteFHIRAppointment":
-			out.Values[i] = ec._Mutation_deleteFHIRAppointment(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "createFHIRComposition":
 			out.Values[i] = ec._Mutation_createFHIRComposition(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -50778,6 +49837,61 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "startEpisodeByOTP":
+			out.Values[i] = ec._Mutation_startEpisodeByOTP(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "upgradeEpisode":
+			out.Values[i] = ec._Mutation_upgradeEpisode(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "startEpisodeByBreakGlass":
+			out.Values[i] = ec._Mutation_startEpisodeByBreakGlass(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "startEncounter":
+			out.Values[i] = ec._Mutation_startEncounter(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "endEncounter":
+			out.Values[i] = ec._Mutation_endEncounter(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "endEpisode":
+			out.Values[i] = ec._Mutation_endEpisode(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "registerPatient":
+			out.Values[i] = ec._Mutation_registerPatient(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatePatient":
+			out.Values[i] = ec._Mutation_updatePatient(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deletePatient":
+			out.Values[i] = ec._Mutation_deletePatient(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "addNextOfKin":
+			out.Values[i] = ec._Mutation_addNextOfKin(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "addNHIF":
+			out.Values[i] = ec._Mutation_addNHIF(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -50810,6 +49924,106 @@ func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var patientConnectionImplementors = []string{"PatientConnection"}
+
+func (ec *executionContext) _PatientConnection(ctx context.Context, sel ast.SelectionSet, obj *clinical.PatientConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, patientConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PatientConnection")
+		case "edges":
+			out.Values[i] = ec._PatientConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._PatientConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var patientEdgeImplementors = []string{"PatientEdge"}
+
+func (ec *executionContext) _PatientEdge(ctx context.Context, sel ast.SelectionSet, obj *clinical.PatientEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, patientEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PatientEdge")
+		case "cursor":
+			out.Values[i] = ec._PatientEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "node":
+			out.Values[i] = ec._PatientEdge_node(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "hasOpenEpisodes":
+			out.Values[i] = ec._PatientEdge_hasOpenEpisodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var patientPayloadImplementors = []string{"PatientPayload"}
+
+func (ec *executionContext) _PatientPayload(ctx context.Context, sel ast.SelectionSet, obj *clinical.PatientPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, patientPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PatientPayload")
+		case "patientRecord":
+			out.Values[i] = ec._PatientPayload_patientRecord(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "hasOpenEpisodes":
+			out.Values[i] = ec._PatientPayload_hasOpenEpisodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "openEpisodes":
+			out.Values[i] = ec._PatientPayload_openEpisodes(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -50859,34 +50073,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_searchFHIRAllergyIntolerance(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "getFHIRAppointment":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getFHIRAppointment(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "searchFHIRAppointment":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_searchFHIRAppointment(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -51172,48 +50358,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
-		case "requestUSSDFullHistory":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_requestUSSDFullHistory(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "requestUSSDLastVisit":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_requestUSSDLastVisit(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "requestUSSDPatientProfile":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_requestUSSDPatientProfile(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
 		case "patientTimeline":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -51256,6 +50400,62 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "openOrganizationEpisodes":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_openOrganizationEpisodes(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "findPatientsByMSISDN":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_findPatientsByMSISDN(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "patientSearch":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_patientSearch(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "openEpisodes":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_openEpisodes(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "_entities":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -51288,132 +50488,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var uSSDLastVisitClinicalResponseImplementors = []string{"USSDLastVisitClinicalResponse"}
-
-func (ec *executionContext) _USSDLastVisitClinicalResponse(ctx context.Context, sel ast.SelectionSet, obj *clinical.USSDLastVisitClinicalResponse) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, uSSDLastVisitClinicalResponseImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("USSDLastVisitClinicalResponse")
-		case "shortLink":
-			out.Values[i] = ec._USSDLastVisitClinicalResponse_shortLink(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "summary":
-			out.Values[i] = ec._USSDLastVisitClinicalResponse_summary(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "text":
-			out.Values[i] = ec._USSDLastVisitClinicalResponse_text(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "visitSummary":
-			out.Values[i] = ec._USSDLastVisitClinicalResponse_visitSummary(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var uSSDMedicalHistoryClinicalResponseImplementors = []string{"USSDMedicalHistoryClinicalResponse"}
-
-func (ec *executionContext) _USSDMedicalHistoryClinicalResponse(ctx context.Context, sel ast.SelectionSet, obj *clinical.USSDMedicalHistoryClinicalResponse) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, uSSDMedicalHistoryClinicalResponseImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("USSDMedicalHistoryClinicalResponse")
-		case "shortLink":
-			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_shortLink(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "summary":
-			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_summary(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "text":
-			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_text(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "fullHistory":
-			out.Values[i] = ec._USSDMedicalHistoryClinicalResponse_fullHistory(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var uSSDPatientProfileClinicalResponseImplementors = []string{"USSDPatientProfileClinicalResponse"}
-
-func (ec *executionContext) _USSDPatientProfileClinicalResponse(ctx context.Context, sel ast.SelectionSet, obj *clinical.USSDPatientProfileClinicalResponse) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, uSSDPatientProfileClinicalResponseImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("USSDPatientProfileClinicalResponse")
-		case "shortLink":
-			out.Values[i] = ec._USSDPatientProfileClinicalResponse_shortLink(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "summary":
-			out.Values[i] = ec._USSDPatientProfileClinicalResponse_summary(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "text":
-			out.Values[i] = ec._USSDPatientProfileClinicalResponse_text(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "patientProfile":
-			out.Values[i] = ec._USSDPatientProfileClinicalResponse_patientProfile(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -51740,6 +50814,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNBreakGlassEpisodeCreationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐBreakGlassEpisodeCreationInput(ctx context.Context, v interface{}) (clinical.BreakGlassEpisodeCreationInput, error) {
+	res, err := ec.unmarshalInputBreakGlassEpisodeCreationInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) (base.Code, error) {
 	var res base.Code
 	err := res.UnmarshalGQL(v)
@@ -51747,6 +50826,26 @@ func (ec *executionContext) unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbas
 }
 
 func (ec *executionContext) marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v base.Code) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNContentType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, v interface{}) (base.ContentType, error) {
+	var res base.ContentType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNContentType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, sel ast.SelectionSet, v base.ContentType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, v interface{}) (base.Date, error) {
+	var res base.Date
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, sel ast.SelectionSet, v base.Date) graphql.Marshaler {
 	return v
 }
 
@@ -51768,6 +50867,20 @@ func (ec *executionContext) unmarshalNEncounterStatusEnum2gitlabᚗslade360emr�
 
 func (ec *executionContext) marshalNEncounterStatusEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx context.Context, sel ast.SelectionSet, v clinical.EncounterStatusEnum) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) marshalNEpisodeOfCarePayload2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCarePayload(ctx context.Context, sel ast.SelectionSet, v clinical.EpisodeOfCarePayload) graphql.Marshaler {
+	return ec._EpisodeOfCarePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNEpisodeOfCarePayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEpisodeOfCarePayload(ctx context.Context, sel ast.SelectionSet, v *clinical.EpisodeOfCarePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._EpisodeOfCarePayload(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNFHIRAllergyIntolerance2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAllergyIntolerance) graphql.Marshaler {
@@ -51811,122 +50924,6 @@ func (ec *executionContext) marshalNFHIRAllergyIntoleranceRelayPayload2ᚖgitlab
 		return graphql.Null
 	}
 	return ec._FHIRAllergyIntoleranceRelayPayload(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNFHIRAppointment2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointment) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._FHIRAppointment(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNFHIRAppointmentInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentInput(ctx context.Context, v interface{}) (clinical.FHIRAppointmentInput, error) {
-	res, err := ec.unmarshalInputFHIRAppointmentInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNFHIRAppointmentParticipant2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantᚄ(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAppointmentParticipant) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNFHIRAppointmentParticipant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipant(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalNFHIRAppointmentParticipant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipant(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointmentParticipant) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._FHIRAppointmentParticipant(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInputᚄ(ctx context.Context, v interface{}) ([]*clinical.FHIRAppointmentParticipantInput, error) {
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*clinical.FHIRAppointmentParticipantInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNFHIRAppointmentParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalNFHIRAppointmentParticipantInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentParticipantInput(ctx context.Context, v interface{}) (*clinical.FHIRAppointmentParticipantInput, error) {
-	res, err := ec.unmarshalInputFHIRAppointmentParticipantInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNFHIRAppointmentRelayConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayConnection(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointmentRelayConnection) graphql.Marshaler {
-	return ec._FHIRAppointmentRelayConnection(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNFHIRAppointmentRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayConnection(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointmentRelayConnection) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._FHIRAppointmentRelayConnection(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNFHIRAppointmentRelayPayload2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayPayload(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRAppointmentRelayPayload) graphql.Marshaler {
-	return ec._FHIRAppointmentRelayPayload(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNFHIRAppointmentRelayPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayPayload(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointmentRelayPayload) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._FHIRAppointmentRelayPayload(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNFHIRCodeableConcept2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx context.Context, sel ast.SelectionSet, v clinical.FHIRCodeableConcept) graphql.Marshaler {
@@ -52220,6 +51217,43 @@ func (ec *executionContext) marshalNFHIREncounterRelayPayload2ᚖgitlabᚗslade3
 		return graphql.Null
 	}
 	return ec._FHIREncounterRelayPayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNFHIREpisodeOfCare2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCareᚄ(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREpisodeOfCare) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) marshalNFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREpisodeOfCare) graphql.Marshaler {
@@ -52715,6 +51749,42 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNIDDocumentType2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIDDocumentType(ctx context.Context, v interface{}) (clinical.IDDocumentType, error) {
+	var res clinical.IDDocumentType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNIDDocumentType2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIDDocumentType(ctx context.Context, sel ast.SelectionSet, v clinical.IDDocumentType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNIdentificationDocument2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentificationDocumentᚄ(ctx context.Context, v interface{}) ([]*clinical.IdentificationDocument, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*clinical.IdentificationDocument, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNIdentificationDocument2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentificationDocument(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalNIdentificationDocument2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentificationDocument(ctx context.Context, v interface{}) (*clinical.IdentificationDocument, error) {
+	res, err := ec.unmarshalInputIdentificationDocument(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNIdentifierUseEnum2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐIdentifierUseEnum(ctx context.Context, v interface{}) (clinical.IdentifierUseEnum, error) {
 	var res clinical.IdentifierUseEnum
 	err := res.UnmarshalGQL(v)
@@ -52791,6 +51861,42 @@ func (ec *executionContext) marshalNMap2ᚕmapᚄ(ctx context.Context, sel ast.S
 	return ret
 }
 
+func (ec *executionContext) unmarshalNNameInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNameInputᚄ(ctx context.Context, v interface{}) ([]*clinical.NameInput, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*clinical.NameInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNNameInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNameInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalNNameInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐNameInput(ctx context.Context, v interface{}) (*clinical.NameInput, error) {
+	res, err := ec.unmarshalInputNameInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNOTPEpisodeCreationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐOTPEpisodeCreationInput(ctx context.Context, v interface{}) (clinical.OTPEpisodeCreationInput, error) {
+	res, err := ec.unmarshalInputOTPEpisodeCreationInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNOTPEpisodeUpgradeInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐOTPEpisodeUpgradeInput(ctx context.Context, v interface{}) (clinical.OTPEpisodeUpgradeInput, error) {
+	res, err := ec.unmarshalInputOTPEpisodeUpgradeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, v interface{}) (base.Operation, error) {
 	var res base.Operation
 	err := res.UnmarshalGQL(v)
@@ -52809,6 +51915,85 @@ func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 		return graphql.Null
 	}
 	return ec._PageInfo(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNPatientConnection2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientConnection(ctx context.Context, sel ast.SelectionSet, v clinical.PatientConnection) graphql.Marshaler {
+	return ec._PatientConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPatientConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientConnection(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._PatientConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNPatientPayload2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx context.Context, sel ast.SelectionSet, v clinical.PatientPayload) graphql.Marshaler {
+	return ec._PatientPayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPatientPayload2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientPayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._PatientPayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNPhoneNumberInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhoneNumberInputᚄ(ctx context.Context, v interface{}) ([]*clinical.PhoneNumberInput, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*clinical.PhoneNumberInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNPhoneNumberInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhoneNumberInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalNPhoneNumberInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhoneNumberInput(ctx context.Context, v interface{}) (*clinical.PhoneNumberInput, error) {
+	res, err := ec.unmarshalInputPhoneNumberInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNRelationshipType2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRelationshipType(ctx context.Context, v interface{}) (clinical.RelationshipType, error) {
+	var res clinical.RelationshipType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNRelationshipType2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRelationshipType(ctx context.Context, sel ast.SelectionSet, v clinical.RelationshipType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNRetirePatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRetirePatientInput(ctx context.Context, v interface{}) (clinical.RetirePatientInput, error) {
+	res, err := ec.unmarshalInputRetirePatientInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNSimpleNextOfKinInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimpleNextOfKinInput(ctx context.Context, v interface{}) (clinical.SimpleNextOfKinInput, error) {
+	res, err := ec.unmarshalInputSimpleNextOfKinInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNSimplePatientRegistrationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimplePatientRegistrationInput(ctx context.Context, v interface{}) (clinical.SimplePatientRegistrationInput, error) {
+	res, err := ec.unmarshalInputSimplePatientRegistrationInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, v interface{}) (base.SortOrder, error) {
@@ -52874,53 +52059,6 @@ func (ec *executionContext) unmarshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbase
 
 func (ec *executionContext) marshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v base.URI) graphql.Marshaler {
 	return v
-}
-
-func (ec *executionContext) unmarshalNUSSDClinicalRequest2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDClinicalRequest(ctx context.Context, v interface{}) (clinical.USSDClinicalRequest, error) {
-	res, err := ec.unmarshalInputUSSDClinicalRequest(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNUSSDLastVisitClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDLastVisitClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDLastVisitClinicalResponse) graphql.Marshaler {
-	return ec._USSDLastVisitClinicalResponse(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNUSSDLastVisitClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDLastVisitClinicalResponse(ctx context.Context, sel ast.SelectionSet, v *clinical.USSDLastVisitClinicalResponse) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._USSDLastVisitClinicalResponse(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNUSSDMedicalHistoryClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDMedicalHistoryClinicalResponse) graphql.Marshaler {
-	return ec._USSDMedicalHistoryClinicalResponse(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNUSSDMedicalHistoryClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDMedicalHistoryClinicalResponse(ctx context.Context, sel ast.SelectionSet, v *clinical.USSDMedicalHistoryClinicalResponse) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._USSDMedicalHistoryClinicalResponse(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNUSSDPatientProfileClinicalResponse2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDPatientProfileClinicalResponse(ctx context.Context, sel ast.SelectionSet, v clinical.USSDPatientProfileClinicalResponse) graphql.Marshaler {
-	return ec._USSDPatientProfileClinicalResponse(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNUSSDPatientProfileClinicalResponse2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐUSSDPatientProfileClinicalResponse(ctx context.Context, sel ast.SelectionSet, v *clinical.USSDPatientProfileClinicalResponse) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._USSDPatientProfileClinicalResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, v interface{}) (base.XHTML, error) {
@@ -53429,54 +52567,6 @@ func (ec *executionContext) marshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade
 	return v
 }
 
-func (ec *executionContext) unmarshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx context.Context, v interface{}) (*clinical.AppointmentParticipantRequiredEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(clinical.AppointmentParticipantRequiredEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOAppointmentParticipantRequiredEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantRequiredEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentParticipantRequiredEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx context.Context, v interface{}) (*clinical.AppointmentParticipantStatusEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(clinical.AppointmentParticipantStatusEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOAppointmentParticipantStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentParticipantStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentParticipantStatusEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx context.Context, v interface{}) (*clinical.AppointmentStatusEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(clinical.AppointmentStatusEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOAppointmentStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐAppointmentStatusEnum(ctx context.Context, sel ast.SelectionSet, v *clinical.AppointmentStatusEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
 func (ec *executionContext) unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, v interface{}) (*base.Base64Binary, error) {
 	if v == nil {
 		return nil, nil
@@ -53685,6 +52775,22 @@ func (ec *executionContext) marshalOContactPointUseEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
+func (ec *executionContext) unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, v interface{}) (*base.ContentType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(base.ContentType)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, sel ast.SelectionSet, v *base.ContentType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐContributorTypeEnum(ctx context.Context, v interface{}) (*clinical.ContributorTypeEnum, error) {
 	if v == nil {
 		return nil, nil
@@ -53847,6 +52953,38 @@ func (ec *executionContext) marshalODurationComparatorEnum2ᚖgitlabᚗslade360e
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) unmarshalOEmailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEmailInput(ctx context.Context, v interface{}) ([]*clinical.EmailInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*clinical.EmailInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOEmailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEmailInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOEmailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEmailInput(ctx context.Context, v interface{}) (*clinical.EmailInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputEmailInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOEncounterLocationStatusEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐEncounterLocationStatusEnum(ctx context.Context, v interface{}) (*clinical.EncounterLocationStatusEnum, error) {
@@ -54217,60 +53355,6 @@ func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚖgitlabᚗslade360em
 	}
 	res, err := ec.unmarshalInputFHIRAnnotationInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOFHIRAppointment2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointment(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointment) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRAppointment(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRAppointmentRelayEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAppointmentRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRAppointmentRelayEdge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayEdge(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRAppointmentRelayEdge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAppointmentRelayEdge(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRAppointmentRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRAppointmentRelayEdge(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOFHIRAttachment2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRAttachment(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRAttachment) graphql.Marshaler {
@@ -55887,6 +54971,46 @@ func (ec *executionContext) unmarshalOFHIREncounterStatushistoryInput2ᚖgitlab�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalOFHIREpisodeOfCare2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIREpisodeOfCare) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) marshalOFHIREpisodeOfCare2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIREpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIREpisodeOfCare) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -56928,75 +56052,11 @@ func (ec *executionContext) marshalOFHIRPatientRelayEdge2ᚖgitlabᚗslade360emr
 	return ec._FHIRPatientRelayEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOFHIRPeriod2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRPeriod) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
 func (ec *executionContext) marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx context.Context, sel ast.SelectionSet, v *clinical.FHIRPeriod) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._FHIRPeriod(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRPeriodInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx context.Context, v interface{}) ([]*clinical.FHIRPeriodInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*clinical.FHIRPeriodInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
 }
 
 func (ec *executionContext) unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx context.Context, v interface{}) (*clinical.FHIRPeriodInput, error) {
@@ -57267,6 +56327,15 @@ func (ec *executionContext) unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalID(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	return graphql.MarshalID(v)
+}
+
 func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -57352,6 +56421,186 @@ func (ec *executionContext) marshalOInteger2ᚖstring(ctx context.Context, sel a
 	return graphql.MarshalString(*v)
 }
 
+func (ec *executionContext) unmarshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) (base.Language, error) {
+	var res base.Language
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v base.Language) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) ([]base.Language, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]base.Language, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v []base.Language) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) unmarshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) ([]*base.Language, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*base.Language, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v []*base.Language) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) unmarshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) (*base.Language, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(base.Language)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v *base.Language) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOMaritalStatus2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐMaritalStatus(ctx context.Context, v interface{}) (clinical.MaritalStatus, error) {
+	var res clinical.MaritalStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMaritalStatus2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐMaritalStatus(ctx context.Context, sel ast.SelectionSet, v clinical.MaritalStatus) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOMaritalStatus2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐMaritalStatus(ctx context.Context, v interface{}) (*clinical.MaritalStatus, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(clinical.MaritalStatus)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMaritalStatus2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐMaritalStatus(ctx context.Context, sel ast.SelectionSet, v *clinical.MaritalStatus) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, v interface{}) (*base.Markdown, error) {
 	if v == nil {
 		return nil, nil
@@ -57416,6 +56665,53 @@ func (ec *executionContext) marshalOPatientContactGenderEnum2ᚖgitlabᚗslade36
 	return v
 }
 
+func (ec *executionContext) marshalOPatientEdge2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientEdge(ctx context.Context, sel ast.SelectionSet, v []*clinical.PatientEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPatientEdge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOPatientEdge2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientEdge(ctx context.Context, sel ast.SelectionSet, v *clinical.PatientEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PatientEdge(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOPatientGenderEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPatientGenderEnum(ctx context.Context, v interface{}) (*clinical.PatientGenderEnum, error) {
 	if v == nil {
 		return nil, nil
@@ -57448,6 +56744,70 @@ func (ec *executionContext) marshalOPatientLinkTypeEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
+func (ec *executionContext) unmarshalOPhotoInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhotoInput(ctx context.Context, v interface{}) ([]*clinical.PhotoInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*clinical.PhotoInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOPhotoInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhotoInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOPhotoInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhotoInput(ctx context.Context, v interface{}) (*clinical.PhotoInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputPhotoInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOPhysicalAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhysicalAddress(ctx context.Context, v interface{}) ([]*clinical.PhysicalAddress, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*clinical.PhysicalAddress, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOPhysicalAddress2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhysicalAddress(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOPhysicalAddress2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPhysicalAddress(ctx context.Context, v interface{}) (*clinical.PhysicalAddress, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputPhysicalAddress(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOPositiveInt2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -57461,6 +56821,38 @@ func (ec *executionContext) marshalOPositiveInt2ᚖstring(ctx context.Context, s
 		return graphql.Null
 	}
 	return graphql.MarshalString(*v)
+}
+
+func (ec *executionContext) unmarshalOPostalAddress2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPostalAddress(ctx context.Context, v interface{}) ([]*clinical.PostalAddress, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*clinical.PostalAddress, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOPostalAddress2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPostalAddress(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOPostalAddress2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐPostalAddress(ctx context.Context, v interface{}) (*clinical.PostalAddress, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputPostalAddress(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOQuantityComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐQuantityComparatorEnum(ctx context.Context, v interface{}) (*clinical.QuantityComparatorEnum, error) {
@@ -57477,6 +56869,14 @@ func (ec *executionContext) marshalOQuantityComparatorEnum2ᚖgitlabᚗslade360e
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) unmarshalOSimpleNHIFInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimpleNHIFInput(ctx context.Context, v interface{}) (*clinical.SimpleNHIFInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputSimpleNHIFInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) ([]*base.SortParam, error) {

@@ -1,276 +1,13 @@
 package clinical
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
-	"net/url"
 	"strconv"
 
-	"github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 )
-
-func (s Service) lookupUSSDSessionPatient(ctx context.Context, input USSDClinicalRequest) (*FHIRPatient, error) {
-	patient, err := s.GetFHIRPatient(ctx, input.PatientID)
-	if err != nil {
-		return nil, err
-	}
-	return patient.Resource, nil
-}
-
-// GetFHIRPatient retrieves instances of FHIRPatient by ID
-func (s Service) GetFHIRPatient(ctx context.Context, id string) (*FHIRPatientRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "Patient"
-	var resource FHIRPatient
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
-	}
-	payload := &FHIRPatientRelayPayload{
-		Resource:        &resource,
-		HasOpenEpisodes: hasOpenEpisodes,
-	}
-	return payload, nil
-}
-
-// SearchFHIRPatient provides a search API for FHIRPatient
-func (s Service) SearchFHIRPatient(ctx context.Context, params map[string]interface{}) (*FHIRPatientRelayConnection, error) {
-	s.checkPreconditions()
-
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := s.validateSearchParams(params)
-	if err != nil {
-		return nil, err
-	}
-
-	resourceName := "Patient"
-	path := "_search"
-	output := FHIRPatientRelayConnection{}
-
-	resources, err := s.searchFilterHelper(ctx, resourceName, path, urlParams)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, result := range resources {
-		var resource FHIRPatient
-
-		resourceBs, err := json.Marshal(result)
-		if err != nil {
-			logrus.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
-		}
-
-		err = json.Unmarshal(resourceBs, &resource)
-		if err != nil {
-			logrus.Errorf("unable to unmarshal %s: %v", resourceName, err)
-			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
-		}
-		hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
-		if err != nil {
-			return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
-		}
-		output.Edges = append(output.Edges, &FHIRPatientRelayEdge{
-			Node:            &resource,
-			HasOpenEpisodes: hasOpenEpisodes,
-		})
-	}
-	return &output, nil
-}
-
-// OpenEpisodes returns the IDs of a patient's open episodes
-func (s Service) OpenEpisodes(
-	ctx context.Context, patientReference string) ([]*FHIREpisodeOfCare, error) {
-	s.checkPreconditions()
-
-	searchParams := url.Values{}
-	searchParams.Add("status:exact", "active")
-	searchParams.Add("patient", patientReference)
-
-	bs, err := s.clinicalRepository.POSTRequest(
-		"EpisodeOfCare", "_search", searchParams, nil)
-	if err != nil {
-		return nil, fmt.Errorf("unable to search for episode of care: %v", err)
-	}
-
-	respMap := make(map[string]interface{})
-	err = json.Unmarshal(bs, &respMap)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal FHIR episode of care search response: %v", err)
-	}
-
-	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
-	for _, k := range mandatoryKeys {
-		_, found := respMap[k]
-		if !found {
-			return nil, fmt.Errorf("search response does not have key '%s'", k)
-		}
-	}
-	resourceType, ok := respMap["resourceType"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the resourceType is not a string")
-	}
-	if resourceType != "Bundle" {
-		return nil, fmt.Errorf("search: the resourceType value is not 'Bundle' as expected")
-	}
-	resultType, ok := respMap["type"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the type is not a string")
-	}
-	if resultType != "searchset" {
-		return nil, fmt.Errorf("search: the type value is not 'searchset' as expected")
-	}
-
-	output := []*FHIREpisodeOfCare{}
-	respEntries := respMap["entry"]
-	if respEntries == nil {
-		return output, nil
-	}
-	entries, ok := respEntries.([]interface{})
-	if !ok {
-		return nil, fmt.Errorf("search: entries is not a list of maps, it is: %T", respEntries)
-	}
-
-	for _, en := range entries {
-		entry, ok := en.(map[string]interface{})
-		if !ok {
-			return nil, fmt.Errorf("expected each entry to be map, they are %T instead", en)
-		}
-		expectedKeys := []string{"fullUrl", "resource", "search"}
-		for _, k := range expectedKeys {
-			_, found := entry[k]
-			if !found {
-				return nil, fmt.Errorf("search entry does not have key '%s'", k)
-			}
-		}
-		resource := entry["resource"]
-		var episode FHIREpisodeOfCare
-		resourceBs, err := json.Marshal(resource)
-		if err != nil {
-			return nil, fmt.Errorf("unable to marshal resource to JSON: %v", err)
-		}
-		err = json.Unmarshal(resourceBs, &episode)
-		if err != nil {
-			return nil, fmt.Errorf("unable to unmarshal resource: %v", err)
-		}
-		output = append(output, &episode)
-	}
-	return output, nil
-}
-
-// HasOpenEpisode determines if a patient has an open episode
-func (s Service) HasOpenEpisode(
-	ctx context.Context, patient FHIRPatient) (bool, error) {
-	s.checkPreconditions()
-	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	episodes, err := s.OpenEpisodes(ctx, patientReference)
-	if err != nil {
-		return false, err
-	}
-	return len(episodes) > 0, nil
-}
-
-// CreateFHIRPatient creates a FHIRPatient instance
-func (s Service) CreateFHIRPatient(ctx context.Context, input FHIRPatientInput) (*FHIRPatientRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "Patient"
-	resource := FHIRPatient{}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.CreateFHIRResource(resourceType, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIRPatientRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// UpdateFHIRPatient updates a FHIRPatient instance
-// The resource must have it's ID set.
-func (s Service) UpdateFHIRPatient(ctx context.Context, input FHIRPatientInput) (*FHIRPatientRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "Patient"
-	resource := FHIRPatient{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	hasOpenEpisodes, err := s.HasOpenEpisode(ctx, resource)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
-	}
-	output := &FHIRPatientRelayPayload{
-		Resource:        &resource,
-		HasOpenEpisodes: hasOpenEpisodes,
-	}
-	return output, nil
-}
-
-// DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
-func (s Service) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	resourceType := "Patient"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
 
 // FHIRPatient definition: demographics and other administrative information about an individual or animal receiving care or other health-related services.
 type FHIRPatient struct {
@@ -527,22 +264,6 @@ type FHIRPatientRelayPayload struct {
 	HasOpenEpisodes bool         `json:"hasOpenEpisodes,omitempty"`
 }
 
-// USSDClinicalRequest is used to request the patient profile, medical
-// history etc
-type USSDClinicalRequest struct {
-	PatientID     string `json:"patientID" firestore:"patientID"`
-	Msisdn        string `json:"msisdn" firestore:"msisdn"`
-	UssdSessionID string `json:"ussdSessionID" firestore:"ussdSessionID"`
-}
-
-// USSDClinicalResponse is used to return the patient profile, medical history
-// or visit information etc
-type USSDClinicalResponse struct {
-	ShortLink string `json:"shortLink"`
-	Summary   string `json:"summary"`
-	Text      string `json:"text"`
-}
-
 // PatientGenderEnum is a FHIR enum
 type PatientGenderEnum string
 
@@ -717,26 +438,16 @@ func (e PatientLinkTypeEnum) MarshalGQL(w io.Writer) {
 	}
 }
 
-// USSDLastVisitClinicalResponse is used to return the patient visit information
-type USSDLastVisitClinicalResponse struct {
-	ShortLink    string                 `json:"shortLink"`
-	Summary      string                 `json:"summary"`
-	Text         string                 `json:"text"`
-	VisitSummary map[string]interface{} `json:"visitSummary"`
+// PatientEdge is a Relay style edge for listings of FHIR patient records.
+type PatientEdge struct {
+	Cursor          string       `json:"cursor"`
+	Node            *FHIRPatient `json:"node"`
+	HasOpenEpisodes bool         `json:"hasOpenEpisodes"`
 }
 
-// USSDMedicalHistoryClinicalResponse returns full medical history response
-type USSDMedicalHistoryClinicalResponse struct {
-	ShortLink   string                 `json:"shortLink"`
-	Summary     string                 `json:"summary"`
-	Text        string                 `json:"text"`
-	FullHistory map[string]interface{} `json:"fullHistory"`
-}
-
-// USSDPatientProfileClinicalResponse returns the patient profile information
-type USSDPatientProfileClinicalResponse struct {
-	ShortLink      string                 `json:"shortLink"`
-	Summary        string                 `json:"summary"`
-	Text           string                 `json:"text"`
-	PatientProfile map[string]interface{} `json:"patientProfile"`
+// PatientConnection is a Relay style connection for use in listings of FHIR
+// patient records.
+type PatientConnection struct {
+	Edges    []*PatientEdge `json:"edges"`
+	PageInfo *base.PageInfo `json:"pageInfo"`
 }

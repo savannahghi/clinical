@@ -1,159 +1,13 @@
 package clinical
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"strconv"
 
-	"github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 )
-
-// GetFHIREpisodeOfCare retrieves instances of FHIREpisodeOfCare by ID
-func (s Service) GetFHIREpisodeOfCare(ctx context.Context, id string) (*FHIREpisodeOfCareRelayPayload, error) {
-	s.checkPreconditions()
-
-	resourceType := "EpisodeOfCare"
-	var resource FHIREpisodeOfCare
-
-	data, err := s.clinicalRepository.GetFHIRResource(resourceType, id)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
-	}
-
-	payload := &FHIREpisodeOfCareRelayPayload{
-		Resource: &resource,
-	}
-	return payload, nil
-}
-
-// SearchFHIREpisodeOfCare provides a search API for FHIREpisodeOfCare
-func (s Service) SearchFHIREpisodeOfCare(ctx context.Context, params map[string]interface{}) (*FHIREpisodeOfCareRelayConnection, error) {
-	s.checkPreconditions()
-
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := s.validateSearchParams(params)
-	if err != nil {
-		return nil, err
-	}
-
-	resourceName := "EpisodeOfCare"
-	path := "_search"
-	output := FHIREpisodeOfCareRelayConnection{}
-
-	resources, err := s.searchFilterHelper(ctx, resourceName, path, urlParams)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, result := range resources {
-		var resource FHIREpisodeOfCare
-
-		resourceBs, err := json.Marshal(result)
-		if err != nil {
-			logrus.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
-		}
-
-		err = json.Unmarshal(resourceBs, &resource)
-		if err != nil {
-			logrus.Errorf("unable to unmarshal %s: %v", resourceName, err)
-			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
-		}
-		output.Edges = append(output.Edges, &FHIREpisodeOfCareRelayEdge{
-			Node: &resource,
-		})
-	}
-	return &output, nil
-}
-
-// CreateFHIREpisodeOfCare creates a FHIREpisodeOfCare instance
-func (s Service) CreateFHIREpisodeOfCare(ctx context.Context, input FHIREpisodeOfCareInput) (*FHIREpisodeOfCareRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "EpisodeOfCare"
-	resource := FHIREpisodeOfCare{}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.CreateFHIRResource(resourceType, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIREpisodeOfCareRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// UpdateFHIREpisodeOfCare updates a FHIREpisodeOfCare instance
-// The resource must have it's ID set.
-func (s Service) UpdateFHIREpisodeOfCare(ctx context.Context, input FHIREpisodeOfCareInput) (*FHIREpisodeOfCareRelayPayload, error) {
-	s.checkPreconditions()
-	resourceType := "EpisodeOfCare"
-	resource := FHIREpisodeOfCare{}
-
-	if input.ID == nil {
-		return nil, fmt.Errorf("can't update with a nil ID")
-	}
-
-	payload, err := base.StructToMap(input)
-	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
-	}
-
-	data, err := s.clinicalRepository.UpdateFHIRResource(resourceType, *input.ID, payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
-	}
-
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
-	}
-
-	output := &FHIREpisodeOfCareRelayPayload{
-		Resource: &resource,
-	}
-	return output, nil
-}
-
-// DeleteFHIREpisodeOfCare deletes the FHIREpisodeOfCare identified by the supplied ID
-func (s Service) DeleteFHIREpisodeOfCare(ctx context.Context, id string) (bool, error) {
-	resourceType := "EpisodeOfCare"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
-	}
-	return true, nil
-}
 
 // FHIREpisodeOfCare definition: an association between a patient and an organization / healthcare provider(s) during which time encounters may occur. the managing organization assumes a level of responsibility for the patient during this time.
 type FHIREpisodeOfCare struct {
@@ -447,4 +301,11 @@ func (e EpisodeOfCareStatusHistoryStatusEnum) MarshalGQL(w io.Writer) {
 	if err != nil {
 		log.Printf("%v\n", err)
 	}
+}
+
+// EpisodeOfCarePayload is used to return the results after creation of
+// episodes of care
+type EpisodeOfCarePayload struct {
+	EpisodeOfCare *FHIREpisodeOfCare `json:"episodeOfCare"`
+	TotalVisits   int                `json:"totalVisits"`
 }

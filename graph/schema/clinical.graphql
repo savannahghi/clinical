@@ -4,9 +4,6 @@ extend type Query {
     params: Map!
   ): FHIRAllergyIntoleranceRelayConnection!
 
-  getFHIRAppointment(id: ID!): FHIRAppointmentRelayPayload!
-  searchFHIRAppointment(params: Map!): FHIRAppointmentRelayConnection!
-
   getFHIRComposition(id: ID!): FHIRCompositionRelayPayload!
   searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
 
@@ -35,18 +32,8 @@ extend type Query {
 
   getFHIRServiceRequest(id: ID!): FHIRServiceRequestRelayPayload!
   searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
-
   allergySummary(patientID: String!): [String!]!
   problemSummary(patientID: String!): [String!]!
-  requestUSSDFullHistory(
-    input: USSDClinicalRequest!
-  ): USSDMedicalHistoryClinicalResponse!
-  requestUSSDLastVisit(
-    input: USSDClinicalRequest!
-  ): USSDLastVisitClinicalResponse!
-  requestUSSDPatientProfile(
-    input: USSDClinicalRequest!
-  ): USSDPatientProfileClinicalResponse!
   patientTimeline(episodeID: String!): [Map!]!
   patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
   visitSummary(encounterID: String!): Map!
@@ -60,14 +47,6 @@ extend type Mutation {
     input: FHIRAllergyIntoleranceInput!
   ): FHIRAllergyIntoleranceRelayPayload!
   deleteFHIRAllergyIntolerance(id: ID!): Boolean!
-
-  createFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  updateFHIRAppointment(
-    input: FHIRAppointmentInput!
-  ): FHIRAppointmentRelayPayload!
-  deleteFHIRAppointment(id: ID!): Boolean!
 
   createFHIRComposition(
     input: FHIRCompositionInput!
