@@ -126,9 +126,14 @@ func IDToIdentifier(
 // ContactsToContactPointInput translates phone and email contacts to
 // FHIR contact points
 func ContactsToContactPointInput(
-	phones []*PhoneNumberInput, emails []*EmailInput,
+	phones []*PhoneNumberInput,
+	emails []*EmailInput,
 	firestoreClient *firestore.Client,
+	otpClient *base.InterServiceClient,
 ) ([]*FHIRContactPointInput, error) {
+	if otpClient == nil {
+		return nil, fmt.Errorf("nil OTP client")
+	}
 	if phones == nil && emails == nil {
 		return nil, nil
 	}
@@ -138,17 +143,20 @@ func ContactsToContactPointInput(
 	use := ContactPointUseEnumHome
 
 	for _, phone := range phones {
-		validPhone, err := base.ValidateMSISDN(
-			phone.Msisdn, phone.VerificationCode, false, firestoreClient)
+		isVerified, normalized, err := VerifyOTP(
+			phone.Msisdn, phone.VerificationCode, otpClient)
 		if err != nil {
-			return nil, fmt.Errorf("invalid phone number: %s", err)
+			return nil, fmt.Errorf("invalid phone: %w", err)
+		}
+		if !isVerified {
+			return nil, fmt.Errorf("invalid OTP")
 		}
 		phoneContact := &FHIRContactPointInput{
 			System: &phoneSystem,
 			Use:    &use,
 			Rank:   &rank,
 			Period: DefaultPeriodInput(),
-			Value:  &validPhone,
+			Value:  &normalized,
 		}
 		output = append(output, phoneContact)
 		rank++
@@ -178,8 +186,10 @@ func ContactsToContactPointInput(
 // ContactsToContactPoint translates phone and email contacts to
 // FHIR contact points
 func ContactsToContactPoint(
-	phones []*PhoneNumberInput, emails []*EmailInput,
+	phones []*PhoneNumberInput,
+	emails []*EmailInput,
 	firestoreClient *firestore.Client,
+	otpClient *base.InterServiceClient,
 ) ([]*FHIRContactPoint, error) {
 	if phones == nil && emails == nil {
 		return nil, nil
@@ -191,17 +201,20 @@ func ContactsToContactPoint(
 	phoneSystem := ContactPointSystemEnumPhone
 
 	for _, phone := range phones {
-		validPhone, err := base.ValidateMSISDN(
-			phone.Msisdn, phone.VerificationCode, false, firestoreClient)
+		isVerified, normalized, err := VerifyOTP(
+			phone.Msisdn, phone.VerificationCode, otpClient)
 		if err != nil {
-			return nil, fmt.Errorf("invalid phone number: %v", err)
+			return nil, fmt.Errorf("invalid phone: %w", err)
+		}
+		if !isVerified {
+			return nil, fmt.Errorf("invalid OTP")
 		}
 		phoneContact := &FHIRContactPoint{
 			System: &phoneSystem,
 			Use:    &contactUse,
 			Rank:   &rank,
 			Period: DefaultPeriod(),
-			Value:  &validPhone,
+			Value:  &normalized,
 		}
 		output = append(output, phoneContact)
 		rank++

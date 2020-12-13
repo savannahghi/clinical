@@ -304,7 +304,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test start episode by Break Glass
+		// TODO Test start episode by Break Glass...use patient's phone, not doctor's
 	}
 
 	for _, tt := range tests {

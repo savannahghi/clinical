@@ -60,6 +60,7 @@ const (
 	smsService        = "sms"
 	twilioService     = "twilio"
 	engagementService = "engagement"
+	otpService        = "otp"
 )
 
 // specific endpoint paths for ISC
@@ -76,6 +77,10 @@ const (
 	// engagement ISC paths
 	uploadEndpoint    = "internal/upload/"
 	getUploadEndpoint = "internal/upload/%s/"
+
+	// OTP ISC paths
+	verifyOTPEndpoint = "internal/verify_otp/"
+	sendOTPEndpoint   = "internal/send_otp/"
 )
 
 // NewService initializes a new clinical service
@@ -102,6 +107,11 @@ func NewService() *Service {
 	}
 
 	engagementClient, err := base.SetupISCclient(*config, engagementService)
+	if err != nil {
+		log.Panicf("unable to set up engagement ISC client: %v", err)
+	}
+
+	otpClient, err := base.SetupISCclient(*config, otpService)
 	if err != nil {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
 	}
@@ -134,6 +144,7 @@ func NewService() *Service {
 		twilio:             twilioISC,
 		sms:                smsISC,
 		engagement:         engagementClient,
+		otp:                otpClient,
 	}
 }
 
@@ -145,6 +156,7 @@ type Service struct {
 	sms                *base.SmsISC
 	firestoreClient    *firestore.Client
 	engagement         *base.InterServiceClient
+	otp                *base.InterServiceClient
 }
 
 func (s Service) checkPreconditions() {
@@ -170,6 +182,10 @@ func (s Service) checkPreconditions() {
 
 	if s.engagement == nil {
 		log.Panicf("nil uploads ISC in clinical service")
+	}
+
+	if s.otp == nil {
+		log.Panicf("nil OTP ISC in clinical service")
 	}
 }
 
@@ -727,26 +743,30 @@ func (s Service) Encounters(
 func (s Service) StartEpisodeByOtp(
 	ctx context.Context, input OTPEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	validPhone, err := base.ValidateMSISDN(
-		input.Msisdn,
-		input.Otp,
-		false,
-		s.firestoreClient,
-	)
+
+	isVerified, normalized, err := VerifyOTP(input.Msisdn, input.Otp, s.otp)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
 		return nil, fmt.Errorf(
 			"invalid phone: got %s when validating %s", err, input.Msisdn)
 	}
+	if !isVerified {
+		return nil, fmt.Errorf("invalid OTP")
+	}
+
 	organizationID, err := s.GetORCreateOrganization(ctx, input.ProviderCode)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"internal server error in retrieving service provider : %v", err)
 	}
 	ep := ComposeOneHealthEpisodeOfCare(
-		validPhone, input.FullAccess, *organizationID, input.ProviderCode,
-		input.PatientID)
+		normalized,
+		input.FullAccess,
+		*organizationID,
+		input.ProviderCode,
+		input.PatientID,
+	)
 	return s.CreateEpisodeOfCare(ctx, ep)
 }
 
@@ -791,17 +811,15 @@ func (s Service) UpgradeEpisode(
 	}
 
 	// validate the MSISDN and OTP
-	_, err = base.ValidateMSISDN(
-		input.Msisdn,
-		input.Otp,
-		false,
-		s.firestoreClient,
-	)
+	isVerified, _, err := VerifyOTP(input.Msisdn, input.Otp, s.otp)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
 		return nil, fmt.Errorf(
 			"invalid phone: got %s when validating %s", err, input.Msisdn)
+	}
+	if !isVerified {
+		return nil, fmt.Errorf("invalid OTP")
 	}
 
 	// patch the episode status
@@ -830,17 +848,17 @@ func (s Service) UpgradeEpisode(
 func (s Service) StartEpisodeByBreakGlass(
 	ctx context.Context, input BreakGlassEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	validPhone, err := base.ValidateMSISDN(
-		input.Msisdn,
-		input.Otp,
-		false,
-		s.firestoreClient,
-	)
+
+	isVerified, normalized, err := VerifyOTP(input.Msisdn, input.Otp, s.otp)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
 		return nil, fmt.Errorf("invalid phone number/OTP: %w", err)
 	}
+	if !isVerified {
+		return nil, fmt.Errorf("invalid OTP")
+	}
+
 	_, err = base.SaveDataToFirestore(
 		s.firestoreClient, s.getBreakGlassCollectionName(), input)
 	if err != nil {
@@ -848,7 +866,7 @@ func (s Service) StartEpisodeByBreakGlass(
 	}
 
 	// alert patient
-	err = s.sendAlertToPatient(ctx, validPhone, input.PatientID)
+	err = s.sendAlertToPatient(ctx, normalized, input.PatientID)
 	if err != nil {
 		log.Printf("failed to send alert message during StartEpisodeByBreakGlass login: %s", err)
 	}
@@ -863,7 +881,7 @@ func (s Service) StartEpisodeByBreakGlass(
 	pp, err := s.FindPatientByID(ctx, input.PatientID)
 	if err == nil {
 		patientName := pp.PatientRecord.Name[0].Text
-		err = s.sendAlertToAdmin(patientName, validPhone)
+		err = s.sendAlertToAdmin(patientName, normalized)
 		if err != nil {
 			log.Printf("failed to send alert message to admin during StartEpisodeByBreakGlass login: %s", err)
 		}
@@ -874,7 +892,12 @@ func (s Service) StartEpisodeByBreakGlass(
 			"internal server error in retrieving service provider : %v", err)
 	}
 	ep := ComposeOneHealthEpisodeOfCare(
-		validPhone, input.FullAccess, *organizationID, input.ProviderCode, input.PatientID)
+		normalized,
+		input.FullAccess,
+		*organizationID,
+		input.ProviderCode,
+		input.PatientID,
+	)
 	return s.CreateEpisodeOfCare(ctx, ep)
 }
 
@@ -1545,7 +1568,7 @@ func (s Service) AddNextOfKin(
 	}
 
 	contacts, err := ContactsToContactPointInput(
-		input.PhoneNumbers, input.Emails, s.firestoreClient)
+		input.PhoneNumbers, input.Emails, s.firestoreClient, s.otp)
 	if err != nil {
 		return nil, fmt.Errorf("invalid contacts: %v", err)
 	}
@@ -1964,7 +1987,7 @@ func (s Service) SimplePatientRegistrationInputToPatientInput(
 	s.checkPreconditions()
 
 	contacts, err := ContactsToContactPointInput(
-		input.PhoneNumbers, input.Emails, s.firestoreClient)
+		input.PhoneNumbers, input.Emails, s.firestoreClient, s.otp)
 	if err != nil {
 		return nil, fmt.Errorf("can't register patient with invalid contacts: %v", err)
 	}
@@ -3287,7 +3310,8 @@ func (s Service) CreateUpdatePatientExtraInformation(
 	}
 
 	if len(input.Emails) > 0 {
-		emailInput, err := ContactsToContactPoint(nil, input.Emails, s.firestoreClient)
+		emailInput, err := ContactsToContactPoint(
+			nil, input.Emails, s.firestoreClient, s.otp)
 		if err != nil {
 			return false, fmt.Errorf("unable to process email addresses")
 		}

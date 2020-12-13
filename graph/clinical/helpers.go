@@ -1,7 +1,10 @@
 package clinical
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -91,4 +94,113 @@ func composeAlertMessage(names []*FHIRHumanName) string {
 		contactName,
 	)
 	return text
+}
+
+// VerifyOTP sends an inter-service API call to the OTP service and checks if
+// the supplied verification code is valid.
+func VerifyOTP(
+	msisdn string,
+	otp string,
+	otpClient *base.InterServiceClient,
+) (bool, string, error) {
+	if otpClient == nil {
+		return false, "", fmt.Errorf("nil OTP client")
+	}
+
+	normalized, err := base.NormalizeMSISDN(msisdn)
+	if err != nil {
+		return false, "", fmt.Errorf("invalid phone format: %w", err)
+	}
+
+	type VerifyOTP struct {
+		Msisdn           string `json:"msisdn"`
+		VerificationCode string `json:"verificationCode"`
+	}
+
+	verifyPayload := VerifyOTP{
+		Msisdn:           msisdn,
+		VerificationCode: otp,
+	}
+
+	resp, err := otpClient.MakeRequest(
+		http.MethodPost, verifyOTPEndpoint, verifyPayload)
+	if err != nil {
+		return false, "", fmt.Errorf(
+			"can't complete OTP verification request: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return false, "", fmt.Errorf(
+			"OTP verification call got non OK status: %s", resp.Status)
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false, "", fmt.Errorf("can't read OTP response data: %w", err)
+	}
+
+	type otpResponse struct {
+		IsVerified bool `json:"IsVerified"`
+	}
+
+	var r otpResponse
+	err = json.Unmarshal(data, &r)
+	if err != nil {
+		return false, "", fmt.Errorf(
+			"can't unmarshal OTP response data from JSON: %w", err)
+	}
+
+	return r.IsVerified, normalized, nil
+}
+
+// RequestOTP sends an inter-service API call to the OTP service to request
+// a new OTP.
+func RequestOTP(
+	msisdn string,
+	otpClient *base.InterServiceClient,
+) (string, error) {
+	if otpClient == nil {
+		return "", fmt.Errorf("nil OTP client")
+	}
+
+	normalized, err := base.NormalizeMSISDN(msisdn)
+	if err != nil {
+		return "", fmt.Errorf("invalid phone format: %w", err)
+	}
+
+	type Msisdn struct {
+		Msisdn string `json:"msisdn"`
+	}
+	requestPayload := Msisdn{
+		Msisdn: normalized,
+	}
+	resp, err := otpClient.MakeRequest(
+		http.MethodPost, sendOTPEndpoint, requestPayload)
+	if err != nil {
+		return "", fmt.Errorf("can't complete OTP request: %w", err)
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("can't read OTP response data: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("OTP API response data: \n%s\n", string(data))
+		return "", fmt.Errorf(
+			"OTP request got non OK status: %s", resp.Status)
+	}
+
+	type otpResponse struct {
+		OTP string `json:"otp"`
+	}
+
+	var r otpResponse
+	err = json.Unmarshal(data, &r)
+	if err != nil {
+		return "", fmt.Errorf(
+			"can't unmarshal OTP response data from JSON: %w", err)
+	}
+
+	return r.OTP, nil
 }
