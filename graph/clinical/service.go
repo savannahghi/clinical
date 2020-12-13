@@ -554,14 +554,15 @@ func (s Service) getTimelineVisitSummaries(
 
 // CreateEpisodeOfCare is the final common pathway for creation of episodes of
 // care.
-func (s Service) CreateEpisodeOfCare(ctx context.Context, ep FHIREpisodeOfCare) (*EpisodeOfCarePayload, error) {
+func (s Service) CreateEpisodeOfCare(
+	ctx context.Context,
+	ep FHIREpisodeOfCare,
+) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
 	payload, err := base.StructToMap(ep)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
-
-	// TODO Check all potential nil pointers e.g ep.Patient
 
 	// search for the episode of care before creating new one.
 	episodeOfCareSearchParams := map[string]interface{}{
@@ -829,8 +830,6 @@ func (s Service) StartEpisodeByBreakGlass(
 	if err != nil {
 		return nil, fmt.Errorf("unable to log break glass operation: %v", err)
 	}
-
-	// TODO Validate phone and save opt in information (phone opt in) - previously a call to  base.ValidateAndSaveMSISDN
 
 	// alert patient
 	err = s.sendAlertToPatient(ctx, validPhone, input.PatientID)
@@ -1512,7 +1511,6 @@ func (s Service) UpdatePatient(
 func (s Service) AddNextOfKin(
 	ctx context.Context, input SimpleNextOfKinInput) (*PatientPayload, error) {
 	s.checkPreconditions()
-
 	if input.PatientID == "" {
 		return nil, fmt.Errorf("a patient ID must be specified")
 	}
@@ -1523,9 +1521,91 @@ func (s Service) AddNextOfKin(
 			"can't get patient with ID %s: %v", input.PatientID, err)
 	}
 
-	// TODO add/update existing next of kin records
-	// TODO save next of kin birthDate
-	return nil, nil
+	updatedContacts := []*FHIRPatientContactInput{}
+
+	names := NameToHumanName(input.Names)
+	if len(names) == 0 {
+		return nil, fmt.Errorf("the contact must have a name")
+	}
+
+	contacts, err := ContactsToContactPointInput(
+		input.PhoneNumbers, input.Emails, s.firestoreClient)
+	if err != nil {
+		return nil, fmt.Errorf("invalid contacts: %v", err)
+	}
+
+	if len(names) != 1 {
+		return nil, fmt.Errorf("the contact should have one name")
+	}
+
+	addresses := PhysicalPostalAddressesToCombinedFHIRAddress(
+		input.PhysicalAddresses,
+		input.PostalAddresses,
+	)
+	userSelected := true
+	relationshipSystem := base.URI(RelationshipSystem)
+	relationshipVersion := RelationshipVersion
+	gender := PatientContactGenderEnum(input.Gender)
+	if !gender.IsValid() {
+		return nil, fmt.Errorf(
+			"'%s' is not a valid gender; valid values are %s",
+			input.Gender,
+			AllPatientContactGenderEnum,
+		)
+	}
+	updatedContacts = append(updatedContacts, &FHIRPatientContactInput{
+		Relationship: []*FHIRCodeableConceptInput{
+			{
+				Coding: []*FHIRCodingInput{
+					{
+						Display:      RelationshipTypeDisplay(input.Relationship),
+						System:       &relationshipSystem,
+						Version:      &relationshipVersion,
+						Code:         base.Code(input.Relationship.String()),
+						UserSelected: &userSelected,
+					},
+				},
+				Text: RelationshipTypeDisplay(input.Relationship),
+			},
+		},
+		Name:    names[0],
+		Telecom: contacts,
+		Address: addresses,
+		Gender:  &gender,
+		Period:  DefaultPeriodInput(),
+	})
+	patches := []map[string]interface{}{
+		{
+			"op":    "add",
+			"path":  "/contact",
+			"value": updatedContacts,
+		},
+	}
+	cloudhealthService := cloudhealth.NewService()
+	data, err := cloudhealthService.PatchFHIRResource(
+		"Patient", input.PatientID, patches)
+	if err != nil {
+		return nil, fmt.Errorf("UpdatePatient: %v", err)
+	}
+	patient := FHIRPatient{}
+	err = json.Unmarshal(data, &patient)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to unmarshal patient response JSON: data: %v\n, error: %v",
+			string(data), err)
+	}
+	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
+	openEpisodes, err := s.OpenEpisodes(ctx, patientReference)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to get open episodes for patient %s: %w", patientReference, err)
+	}
+
+	return &PatientPayload{
+		PatientRecord:   &patient,
+		OpenEpisodes:    openEpisodes,
+		HasOpenEpisodes: len(openEpisodes) > 0,
+	}, nil
 }
 
 // AddNhif patches a patient with NHIF details
@@ -1545,30 +1625,6 @@ func (s Service) AddNhif(
 		return nil, fmt.Errorf(
 			"can't get patient with ID %s: %v", input.PatientID, err)
 	}
-
-	// if input.FrontImageBase64 != nil && input.FrontImageContentType != nil {
-	// frontImageContentType := *input.FrontImageContentType
-	// uploadInput := &uploads.UploadInput{
-	// 	ContentType: frontImageContentType.String(),
-	// 	Language:    base.LanguageEn.String(),
-	// 	Base64data:  *input.FrontImageBase64,
-	// 	Title:       NHIFImageFrontPicName,
-	// 	Filename:    input.PatientID,
-	// }
-	// TODO Upload images
-	// }
-
-	// if input.RearImageBase64 != nil && input.RearImageContentType != nil {
-	// rearImage := *input.RearImageContentType
-	// uploadInput := &uploads.UploadInput{
-	// 	ContentType: rearImage.String(),
-	// 	Language:    base.LanguageEn.String(),
-	// 	Base64data:  *input.RearImageBase64,
-	// 	Title:       NHIFImageRearPicName,
-	// 	Filename:    input.PatientID,
-	// }
-	// TODO Upload images
-	// }
 
 	existingIdentifers := patientPayload.PatientRecord.Identifier
 	updatedIdentifierInputs := []*FHIRIdentifierInput{}

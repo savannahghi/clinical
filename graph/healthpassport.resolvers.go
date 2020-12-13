@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
@@ -17,16 +16,16 @@ func (r *mutationResolver) StartEpisodeByOtp(ctx context.Context, input clinical
 	return r.clinicalService.StartEpisodeByOtp(ctx, input)
 }
 
-func (r *mutationResolver) UpgradeEpisode(ctx context.Context, input clinical.OTPEpisodeUpgradeInput) (*clinical.EpisodeOfCarePayload, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.UpgradeEpisode(ctx, input)
-}
-
 func (r *mutationResolver) StartEpisodeByBreakGlass(ctx context.Context, input clinical.BreakGlassEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.StartEpisodeByBreakGlass(ctx, input)
+}
+
+func (r *mutationResolver) UpgradeEpisode(ctx context.Context, input clinical.OTPEpisodeUpgradeInput) (*clinical.EpisodeOfCarePayload, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.UpgradeEpisode(ctx, input)
 }
 
 func (r *mutationResolver) EndEpisode(ctx context.Context, episodeID string) (bool, error) {
@@ -35,10 +34,58 @@ func (r *mutationResolver) EndEpisode(ctx context.Context, episodeID string) (bo
 	return r.clinicalService.EndEpisode(ctx, episodeID)
 }
 
+func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string) (string, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.StartEncounter(ctx, episodeID)
+}
+
+func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.EndEncounter(ctx, encounterID)
+}
+
+func (r *mutationResolver) RegisterPatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.RegisterPatient(ctx, input)
+}
+
+func (r *mutationResolver) UpdatePatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.UpdatePatient(ctx, input)
+}
+
+func (r *mutationResolver) AddNextOfKin(ctx context.Context, input clinical.SimpleNextOfKinInput) (*clinical.PatientPayload, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.AddNextOfKin(ctx, input)
+}
+
+func (r *mutationResolver) AddNhif(ctx context.Context, input *clinical.SimpleNHIFInput) (*clinical.PatientPayload, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.AddNhif(ctx, input)
+}
+
+func (r *mutationResolver) CreateUpdatePatientExtraInformation(ctx context.Context, input clinical.PatientExtraInformationInput) (bool, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.CreateUpdatePatientExtraInformation(ctx, input)
+}
+
 func (r *mutationResolver) DeletePatient(ctx context.Context, input clinical.RetirePatientInput) (bool, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.DeletePatient(ctx, input)
+}
+
+func (r *mutationResolver) CreateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.clinicalService.CreateFHIRMedicationRequest(ctx, input)
 }
 
 func (r *mutationResolver) UpdateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error) {
@@ -47,10 +94,10 @@ func (r *mutationResolver) UpdateFHIRMedicationRequest(ctx context.Context, inpu
 	return r.clinicalService.UpdateFHIRMedicationRequest(ctx, input)
 }
 
-func (r *mutationResolver) CreateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error) {
+func (r *mutationResolver) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.CreateFHIRMedicationRequest(ctx, input)
+	return r.clinicalService.DeleteFHIRMedicationRequest(ctx, id)
 }
 
 func (r *mutationResolver) CreateFHIRAllergyIntolerance(ctx context.Context, input clinical.FHIRAllergyIntoleranceInput) (*clinical.FHIRAllergyIntoleranceRelayPayload, error) {
@@ -75,54 +122,6 @@ func (r *mutationResolver) UpdateFHIRCondition(ctx context.Context, input clinic
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.UpdateFHIRCondition(ctx, input)
-}
-
-func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string) (string, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.StartEncounter(ctx, episodeID)
-}
-
-func (r *mutationResolver) AddNextOfKin(ctx context.Context, input clinical.SimpleNextOfKinInput) (*clinical.PatientPayload, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.AddNextOfKin(ctx, input)
-}
-
-func (r *mutationResolver) RegisterPatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.RegisterPatient(ctx, input)
-}
-
-func (r *mutationResolver) UpdatePatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.UpdatePatient(ctx, input)
-}
-
-func (r *mutationResolver) CreateUpdatePatientExtraInformation(ctx context.Context, input clinical.PatientExtraInformationInput) (bool, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	panic(fmt.Errorf("not implemented")) // TODO Wire this up
-}
-
-func (r *mutationResolver) AddNhif(ctx context.Context, input *clinical.SimpleNHIFInput) (*clinical.PatientPayload, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.AddNhif(ctx, input)
-}
-
-func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.EndEncounter(ctx, encounterID)
-}
-
-func (r *mutationResolver) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.DeleteFHIRMedicationRequest(ctx, id)
 }
 
 func (r *mutationResolver) CreateFHIRServiceRequest(ctx context.Context, input clinical.FHIRServiceRequestInput) (*clinical.FHIRServiceRequestRelayPayload, error) {
@@ -161,22 +160,22 @@ func (r *mutationResolver) DeleteFHIRComposition(ctx context.Context, id string)
 	return r.clinicalService.DeleteFHIRComposition(ctx, id)
 }
 
-func (r *queryResolver) OpenOrganizationEpisodes(ctx context.Context, providerSladeCode string) ([]*clinical.FHIREpisodeOfCare, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.OpenOrganizationEpisodes(ctx, providerSladeCode)
-}
-
 func (r *queryResolver) FindPatientsByMsisdn(ctx context.Context, msisdn string) (*clinical.PatientConnection, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.FindPatientsByMSISDN(ctx, msisdn)
 }
 
-func (r *queryResolver) PatientSearch(ctx context.Context, search string) (*clinical.PatientConnection, error) {
+func (r *queryResolver) FindPatients(ctx context.Context, search string) (*clinical.PatientConnection, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
 	return r.clinicalService.PatientSearch(ctx, search)
+}
+
+func (r *queryResolver) GetPatient(ctx context.Context, id string) (*clinical.PatientPayload, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.FindPatientByID(ctx, id)
 }
 
 func (r *queryResolver) OpenEpisodes(ctx context.Context, patientReference string) ([]*clinical.FHIREpisodeOfCare, error) {
@@ -185,22 +184,22 @@ func (r *queryResolver) OpenEpisodes(ctx context.Context, patientReference strin
 	return r.clinicalService.OpenEpisodes(ctx, patientReference)
 }
 
-func (r *queryResolver) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRMedicationRequestRelayConnection, error) {
-	r.CheckDependencies()
+func (r *queryResolver) OpenOrganizationEpisodes(ctx context.Context, providerSladeCode string) ([]*clinical.FHIREpisodeOfCare, error) {
 	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRMedicationRequest(ctx, params)
+	r.CheckDependencies()
+	return r.clinicalService.OpenOrganizationEpisodes(ctx, providerSladeCode)
 }
 
-func (r *queryResolver) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*clinical.FHIRAllergyIntoleranceRelayConnection, error) {
-	r.CheckDependencies()
+func (r *queryResolver) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
 	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRAllergyIntolerance(ctx, params)
+	r.CheckDependencies()
+	return r.clinicalService.ProblemSummary(ctx, patientID)
 }
 
-func (r *queryResolver) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRConditionRelayConnection, error) {
-	r.CheckDependencies()
+func (r *queryResolver) VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error) {
 	r.CheckUserTokenInContext(ctx)
-	return r.clinicalService.SearchFHIRCondition(ctx, params)
+	r.CheckDependencies()
+	return r.clinicalService.VisitSummary(ctx, encounterID, clinical.MaxClinicalRecordPageSize)
 }
 
 func (r *queryResolver) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
@@ -215,10 +214,16 @@ func (r *queryResolver) SearchFHIREncounter(ctx context.Context, params map[stri
 	return r.clinicalService.SearchFHIREncounter(ctx, params)
 }
 
-func (r *queryResolver) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
-	r.CheckUserTokenInContext(ctx)
+func (r *queryResolver) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRConditionRelayConnection, error) {
 	r.CheckDependencies()
-	return r.clinicalService.ProblemSummary(ctx, patientID)
+	r.CheckUserTokenInContext(ctx)
+	return r.clinicalService.SearchFHIRCondition(ctx, params)
+}
+
+func (r *queryResolver) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*clinical.FHIRAllergyIntoleranceRelayConnection, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.clinicalService.SearchFHIRAllergyIntolerance(ctx, params)
 }
 
 func (r *queryResolver) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*clinical.FHIRObservationRelayConnection, error) {
@@ -227,34 +232,22 @@ func (r *queryResolver) SearchFHIRObservation(ctx context.Context, params map[st
 	return r.clinicalService.SearchFHIRObservation(ctx, params)
 }
 
+func (r *queryResolver) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRMedicationRequestRelayConnection, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.clinicalService.SearchFHIRMedicationRequest(ctx, params)
+}
+
 func (r *queryResolver) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRServiceRequestRelayConnection, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.SearchFHIRServiceRequest(ctx, params)
 }
 
-func (r *queryResolver) VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.VisitSummary(ctx, encounterID, clinical.MaxClinicalRecordPageSize)
-}
-
 func (r *queryResolver) SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRCompositionRelayConnection, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.SearchFHIRComposition(ctx, params)
-}
-
-func (r *queryResolver) GetPatient(ctx context.Context, id string) (*clinical.PatientPayload, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	panic(fmt.Errorf("not implemented")) // TODO Wire this up
-}
-
-func (r *queryResolver) FindPatients(ctx context.Context, search string) (*clinical.PatientConnection, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	panic(fmt.Errorf("not implemented")) // TODO Wire this up
 }
 
 // Mutation returns generated.MutationResolver implementation.

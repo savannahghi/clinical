@@ -168,59 +168,79 @@ input PhotoInput {
 }
 
 extend type Query {
-  openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
-
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
 
-  patientSearch(search: String!): PatientConnection!
+  findPatients(search: String!): PatientConnection!
+
+  getPatient(id: ID!): PatientPayload!
   
   openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
 
-  searchFHIRMedicationRequest(
-    params: Map!
-  ): FHIRMedicationRequestRelayConnection!
+  openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
 
-  searchFHIRAllergyIntolerance(
-    params: Map!
-  ): FHIRAllergyIntoleranceRelayConnection!
+  problemSummary(patientID: String!): [String!]!
 
-  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
+  visitSummary(encounterID: String!): Map!
 
   patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
 
   searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
 
-  problemSummary(patientID: String!): [String!]!
+  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
+
+  searchFHIRAllergyIntolerance(
+    params: Map!
+  ): FHIRAllergyIntoleranceRelayConnection!
 
   searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
 
+  searchFHIRMedicationRequest(
+    params: Map!
+  ): FHIRMedicationRequestRelayConnection!
+
   searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
 
-  visitSummary(encounterID: String!): Map!
-
   searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
-
-  getPatient(id: ID!): PatientPayload!
-
-  findPatients(search: String!): PatientConnection!
 }
 
 extend type Mutation {
   startEpisodeByOTP(input: OTPEpisodeCreationInput!): EpisodeOfCarePayload!
-  upgradeEpisode(input: OTPEpisodeUpgradeInput!): EpisodeOfCarePayload!
+
   startEpisodeByBreakGlass(
     input: BreakGlassEpisodeCreationInput!
   ): EpisodeOfCarePayload!
+  
+  upgradeEpisode(input: OTPEpisodeUpgradeInput!): EpisodeOfCarePayload!
+
   endEpisode(episodeID: String!): Boolean!
+
+  startEncounter(episodeID: String!): String!
+
+  endEncounter(encounterID: String!): Boolean!
+
+  registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  addNextOfKin(input: SimpleNextOfKinInput!): PatientPayload!
+
+  addNHIF(input: SimpleNHIFInput): PatientPayload!
+
+  createUpdatePatientExtraInformation(
+    input: PatientExtraInformationInput!
+  ): Boolean!
+
   deletePatient(input: RetirePatientInput!): Boolean!
+
+  createFHIRMedicationRequest(
+    input: FHIRMedicationRequestInput!
+  ): FHIRMedicationRequestRelayPayload!
 
   updateFHIRMedicationRequest(
     input: FHIRMedicationRequestInput!
   ): FHIRMedicationRequestRelayPayload!
 
-  createFHIRMedicationRequest(
-    input: FHIRMedicationRequestInput!
-  ): FHIRMedicationRequestRelayPayload!
+  deleteFHIRMedicationRequest(id: ID!): Boolean!
 
   createFHIRAllergyIntolerance(
     input: FHIRAllergyIntoleranceInput!
@@ -233,24 +253,6 @@ extend type Mutation {
   createFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
 
   updateFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
-
-  startEncounter(episodeID: String!): String!
-
-  addNextOfKin(input: SimpleNextOfKinInput!): PatientPayload!
-
-  registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
-
-  updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
-
-  createUpdatePatientExtraInformation(
-    input: PatientExtraInformationInput!
-  ): Boolean!
-
-  addNHIF(input: SimpleNHIFInput): PatientPayload!
-
-  endEncounter(encounterID: String!): Boolean!
-
-  deleteFHIRMedicationRequest(id: ID!): Boolean!
 
   createFHIRServiceRequest(
     input: FHIRServiceRequestInput!

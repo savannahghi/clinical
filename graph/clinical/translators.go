@@ -136,7 +136,6 @@ func ContactsToContactPointInput(
 	use := ContactPointUseEnumHome
 
 	for _, phone := range phones {
-		// TODO Save phone opt in info
 		validPhone, err := base.ValidateMSISDN(
 			phone.Msisdn, phone.VerificationCode, false, firestoreClient)
 		if err != nil {
@@ -190,7 +189,6 @@ func ContactsToContactPoint(
 	phoneSystem := ContactPointSystemEnumPhone
 
 	for _, phone := range phones {
-		// TODO Restore saving opt in
 		validPhone, err := base.ValidateMSISDN(
 			phone.Msisdn, phone.VerificationCode, false, firestoreClient)
 		if err != nil {
@@ -251,7 +249,7 @@ func PhotosToAttachments(
 		hash := base.Base64Binary(base64.StdEncoding.EncodeToString(h.Sum(nil)))
 
 		size := len(data)
-		url := base.URL("https://static.bewell.co.ke/logo.png") // TODO Replace with real PNG
+		url := base.URL("https://static.bewell.co.ke/logo.png") // TODO Replace with real upload link
 		now := base.DateTime(time.Now().Format(timeFormatStr))
 		contentType := base.Code(photo.PhotoContentType.String())
 		language := base.Code(DefaultLanguage)
@@ -267,7 +265,6 @@ func PhotosToAttachments(
 		}
 		output = append(output, attachment)
 	}
-
 	return output, nil
 }
 
@@ -441,4 +438,52 @@ func MaritalStatusEnumToCodeableConcept(val MaritalStatus) *FHIRCodeableConcept 
 		Text: MaritalStatusDisplay(val),
 	}
 	return output
+}
+
+// PhysicalPostalAddressesToCombinedFHIRAddress translates address inputs to
+// a single FHIR address.
+//
+// It is used for patient contacts (e.g next of kin) where the spec has only
+// one address per next of kin.
+func PhysicalPostalAddressesToCombinedFHIRAddress(
+	physical []*PhysicalAddress,
+	postal []*PostalAddress,
+) *FHIRAddressInput {
+	if physical == nil && postal == nil {
+		return nil
+	}
+	addressUse := AddressUseEnumHome
+	postalAddrType := AddressTypeEnumPostal
+	ke := CountryKe.String()
+
+	addr := &FHIRAddressInput{
+		Use:     &addressUse,
+		Type:    &postalAddrType,
+		Country: &ke,
+		Period:  DefaultPeriodInput(),
+		Line:    nil, // will be replaced below
+		Text:    "",  // will be replaced below
+	}
+
+	postalAddressLines := []string{}
+	for _, postal := range postal {
+		postalAddressLines = append(postalAddressLines, postal.PostalAddress)
+		postalAddressLines = append(postalAddressLines, postal.PostalCode)
+		if addr.PostalCode == nil {
+			postalCode := base.Code(postal.PostalCode)
+			addr.PostalCode = &postalCode
+		}
+	}
+	combinedPostalAddress := strings.Join(postalAddressLines, "\n")
+	addr.Line = &combinedPostalAddress
+
+	physicalAddressLines := []string{}
+	for _, physical := range physical {
+		physicalAddressLines = append(physicalAddressLines, physical.PhysicalAddress)
+		physicalAddressLines = append(physicalAddressLines, physical.MapsCode)
+	}
+	combinedPhysicalAddress := strings.Join(physicalAddressLines, "\n")
+	addr.Text = combinedPhysicalAddress
+
+	return addr
 }
