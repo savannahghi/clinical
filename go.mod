@@ -25,9 +25,10 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/vektah/gqlparser/v2 v2.1.0
 	gitlab.slade360emr.com/go/base v0.0.83
-	gitlab.slade360emr.com/go/cloudhealth v0.0.6
+	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
 	golang.org/x/sys v0.0.0-20201211090839-8ad439b19e0f // indirect
 	golang.org/x/tools v0.0.0-20201211185031-d93e913c1a58 // indirect
+	google.golang.org/api v0.36.0
 	google.golang.org/genproto v0.0.0-20201211151036-40ec1c210f7a // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

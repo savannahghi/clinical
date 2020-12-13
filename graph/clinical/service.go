@@ -20,7 +20,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
-	"gitlab.slade360emr.com/go/cloudhealth/cloudhealth"
+	"gitlab.slade360emr.com/go/clinical/cloudhealth"
 )
 
 // constants and defaults
