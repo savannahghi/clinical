@@ -56,21 +56,26 @@ const (
 
 // dependencies names. Should match the names in the yaml file
 const (
-	mailgunService = "mailgun"
-	smsService     = "sms"
-	twilioService  = "twilio"
+	mailgunService    = "mailgun"
+	smsService        = "sms"
+	twilioService     = "twilio"
+	engagementService = "engagement"
 )
 
 // specific endpoint paths for ISC
 const (
-	// mailgun isc paths
-	sendEmail = "internal/send_email"
+	// mailgun ISC paths
+	sendEmailEndpoint = "internal/send_email"
 
-	// twilio isc paths
-	sendTwilioSMS = "internal/send_sms"
+	// twilio ISC paths
+	sendTwilioSMSEndpoint = "internal/send_sms"
 
-	// sms isc paths
-	sendSMS = "internal/send_sms"
+	// sms ISC paths
+	sendSMSEndpoint = "internal/send_sms"
+
+	// engagement ISC paths
+	uploadEndpoint    = "internal/upload/"
+	getUploadEndpoint = "internal/upload/%s/"
 )
 
 // NewService initializes a new clinical service
@@ -96,13 +101,18 @@ func NewService() *Service {
 		log.Panicf("unable to set up SMS ISC client: %v", err)
 	}
 
+	engagementClient, err := base.SetupISCclient(*config, engagementService)
+	if err != nil {
+		log.Panicf("unable to set up engagement ISC client: %v", err)
+	}
+
 	smsISC := &base.SmsISC{
 		Isc:      smsClient,
-		EndPoint: sendSMS,
+		EndPoint: sendSMSEndpoint,
 	}
 	twilioISC := &base.SmsISC{
 		Isc:      twilioClient,
-		EndPoint: sendTwilioSMS,
+		EndPoint: sendTwilioSMSEndpoint,
 	}
 
 	fc := &base.FirebaseClient{}
@@ -123,6 +133,7 @@ func NewService() *Service {
 		mailgun:            mailgunClient,
 		twilio:             twilioISC,
 		sms:                smsISC,
+		engagement:         engagementClient,
 	}
 }
 
@@ -133,27 +144,32 @@ type Service struct {
 	twilio             *base.SmsISC
 	sms                *base.SmsISC
 	firestoreClient    *firestore.Client
+	engagement         *base.InterServiceClient
 }
 
 func (s Service) checkPreconditions() {
 	if s.clinicalRepository == nil {
-		log.Panicf("*cloudhealth.Service is nil")
+		log.Panicf("*cloudhealth service is nil")
 	}
 
 	if s.firestoreClient == nil {
-		log.Panicf("nil firestore client in health passport service")
+		log.Panicf("nil firestore client in clinical service")
 	}
 
 	if s.mailgun == nil {
-		log.Panicf("nil mailgun ISC in health passport service")
+		log.Panicf("nil mailgun ISC in clinical service")
 	}
 
 	if s.twilio == nil {
-		log.Panicf("nil twilio ISC in health passport service")
+		log.Panicf("nil twilio ISC in clinical service")
 	}
 
 	if s.sms == nil {
-		log.Panicf("nil SMS service in health passport service")
+		log.Panicf("nil SMS service in clinical service")
+	}
+
+	if s.engagement == nil {
+		log.Panicf("nil uploads ISC in clinical service")
 	}
 }
 
@@ -1959,7 +1975,7 @@ func (s Service) SimplePatientRegistrationInputToPatientInput(
 		return nil, fmt.Errorf("can't register patient with invalid identifiers: %v", err)
 	}
 
-	photos, err := PhotosToAttachments(ctx, input.Photos)
+	photos, err := PhotosToAttachments(ctx, input.Photos, s.engagement)
 	if err != nil {
 		return nil, fmt.Errorf("can't process patient photos: %v", err)
 	}
@@ -1996,7 +2012,7 @@ func (s Service) SendPatientWelcomeEmail(ctx context.Context, emailaddress strin
 		"subject": EmailWelcomeSubject,
 	}
 
-	resp, err := s.mailgun.MakeRequest(http.MethodPost, sendEmail, body)
+	resp, err := s.mailgun.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send welcome email: %w", err)
 	}
@@ -2057,7 +2073,7 @@ func (s Service) sendAlertToAdmin(patientName string, patientContact string) err
 		"subject": subject,
 	}
 
-	resp, err := s.mailgun.MakeRequest(http.MethodPost, sendEmail, body)
+	resp, err := s.mailgun.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send Alert to admin email: %w", err)
 	}

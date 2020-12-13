@@ -2,9 +2,11 @@ package clinical
 
 import (
 	"context"
-	"crypto/sha512"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strings"
 	"time"
 
@@ -229,27 +231,50 @@ func ContactsToContactPoint(
 func PhotosToAttachments(
 	ctx context.Context,
 	photos []*PhotoInput,
+	engagement *base.InterServiceClient,
 ) ([]*FHIRAttachmentInput, error) {
 	if photos == nil {
 		return []*FHIRAttachmentInput{}, nil
 	}
+
 	output := []*FHIRAttachmentInput{}
 	for _, photo := range photos {
-		data, err := base64.StdEncoding.DecodeString(photo.PhotoBase64data)
+		uploadInput := base.UploadInput{
+			Title:       "Patient Photo",
+			ContentType: photo.PhotoContentType.String(),
+			Language:    base.LanguageEn.String(),
+			Base64data:  photo.PhotoBase64data,
+			Filename:    photo.PhotoFilename,
+		}
+
+		resp, err := engagement.MakeRequest(
+			http.MethodPost,
+			uploadEndpoint,
+			uploadInput,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error sending upload: %w", err)
+		}
+
+		respData, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, fmt.Errorf("error reading upload response: %w", err)
+		}
+
+		upload := base.Upload{}
+		err = json.Unmarshal(respData, &upload)
+		if err != nil {
+			return nil, fmt.Errorf("can't unmarshal upload response: %w", err)
+		}
+
+		data, err := base64.StdEncoding.DecodeString(upload.Base64data)
 		if err != nil {
 			return nil, errors.Wrap(err, "upload base64 decode error")
 		}
 
-		// sha hash
-		h := sha512.New()
-		_, err = h.Write(data)
-		if err != nil {
-			return nil, fmt.Errorf("unable to calculate upload hash: %w", err)
-		}
-		hash := base.Base64Binary(base64.StdEncoding.EncodeToString(h.Sum(nil)))
-
+		hash := base.Base64Binary(upload.Hash)
 		size := len(data)
-		url := base.URL("https://static.bewell.co.ke/logo.png") // TODO Replace with real upload link
+		url := base.URL(upload.URL)
 		now := base.DateTime(time.Now().Format(timeFormatStr))
 		contentType := base.Code(photo.PhotoContentType.String())
 		language := base.Code(DefaultLanguage)
