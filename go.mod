@@ -9,7 +9,7 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/99designs/gqlgen v0.13.0
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
-	github.com/aws/aws-sdk-go v1.36.6 // indirect
+	github.com/aws/aws-sdk-go v1.36.7 // indirect
 	github.com/bearbin/go-age v0.0.0-20140407072555-316d0c1e7cd1
 	github.com/getsentry/sentry-go v0.9.0 // indirect
 	github.com/google/pprof v0.0.0-20201211104106-9bd6f8a8ed4b // indirect
@@ -23,9 +23,10 @@ require (
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.6.1
 	github.com/vektah/gqlparser/v2 v2.1.0
-	gitlab.slade360emr.com/go/base v0.0.82
+	gitlab.slade360emr.com/go/base v0.0.83
 	gitlab.slade360emr.com/go/cloudhealth v0.0.6
 	golang.org/x/sys v0.0.0-20201211090839-8ad439b19e0f // indirect
-	golang.org/x/tools v0.0.0-20201211025543-abf6a1d87e11 // indirect
+	golang.org/x/tools v0.0.0-20201211185031-d93e913c1a58 // indirect
+	google.golang.org/genproto v0.0.0-20201211151036-40ec1c210f7a // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

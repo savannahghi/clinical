@@ -1,0 +1,156 @@
+package graph_test
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"testing"
+
+	log "github.com/sirupsen/logrus"
+	"gitlab.slade360emr.com/go/base"
+	"gitlab.slade360emr.com/go/clinical/graph"
+)
+
+// these are set up once in TestMain and used by all the acceptance tests in
+// this package
+var srv *http.Server
+var baseURL string
+var serverErr error
+
+func TestMain(m *testing.M) {
+	// setup
+	os.Setenv("ENVIRONMENT", "staging")
+	os.Setenv("ROOT_COLLECTION_SUFFIX", "staging")
+	os.Setenv("CLOUD_HEALTH_PUBSUB_TOPIC", "healthcloud-bewell-staging")
+	os.Setenv("CLOUD_HEALTH_DATASET_ID", "healthcloud-bewell-staging")
+	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-bewell-fhir-staging")
+
+	ctx := context.Background()
+	srv, baseURL, serverErr = base.StartTestServer(
+		ctx,
+		graph.PrepareServer,
+		graph.ClinicalAllowedOrigins,
+	) // set the globals
+	if serverErr != nil {
+		log.Printf("unable to start test server: %s", serverErr)
+	}
+
+	// run the tests
+	log.Printf("about to run tests")
+	code := m.Run()
+	log.Printf("finished running tests")
+
+	// cleanup here
+	defer func() {
+		err := srv.Shutdown(ctx)
+		if err != nil {
+			log.Printf("test server shutdown error: %s", err)
+		}
+	}()
+	os.Exit(code)
+}
+
+func TestRouter(t *testing.T) {
+	router, err := graph.Router()
+	if err != nil {
+		t.Errorf("can't initialize router: %v", err)
+		return
+	}
+
+	if router == nil {
+		t.Errorf("nil router")
+		return
+	}
+}
+
+func TestHealthStatusCheck(t *testing.T) {
+	client := http.DefaultClient
+
+	type args struct {
+		url        string
+		httpMethod string
+		body       io.Reader
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		{
+			name: "successful health check",
+			args: args{
+				url: fmt.Sprintf(
+					"%s/health",
+					baseURL,
+				),
+				httpMethod: http.MethodPost,
+				body:       nil,
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r, err := http.NewRequest(
+				tt.args.httpMethod,
+				tt.args.url,
+				tt.args.body,
+			)
+
+			if err != nil {
+				t.Errorf("can't create new request: %v", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range base.GetDefaultHeaders(t, baseURL, "profile") {
+				r.Header.Add(k, v)
+			}
+
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("HTTP error: %v", err)
+				return
+			}
+
+			if !tt.wantErr && resp == nil {
+				t.Errorf("unexpected nil response (did not expect an error)")
+				return
+			}
+
+			if tt.wantErr {
+				return
+			}
+
+			data, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read response body: %v", err)
+				return
+			}
+
+			if data == nil {
+				t.Errorf("nil response body data")
+				return
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("expected status %d, got %d and response %s", tt.wantStatus, resp.StatusCode, string(data))
+				return
+			}
+
+			if !tt.wantErr && resp == nil {
+				t.Errorf("unexpected nil response (did not expect an error)")
+				return
+			}
+		})
+	}
+}

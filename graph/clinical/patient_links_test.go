@@ -2,19 +2,10 @@ package clinical
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/google/uuid"
 )
-
-func TestMain(m *testing.M) {
-	os.Setenv("ROOT_COLLECTION_SUFFIX", "staging")
-	os.Setenv("CLOUD_HEALTH_PUBSUB_TOPIC", "healthcloud-bewell-staging")
-	os.Setenv("CLOUD_HEALTH_DATASET_ID", "healthcloud-bewell-staging")
-	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-bewell-fhir-staging")
-	os.Exit(m.Run())
-}
 
 func TestGeneratePatientLink(t *testing.T) {
 	type args struct {
