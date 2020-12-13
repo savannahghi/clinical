@@ -6229,103 +6229,6 @@ enum Language {
   en
   sw
 }
-
-"""
-PractitionerSpecialties is a list of recognised health worker specialties.
-
-See: https://medicalboard.co.ke/resources_page/gazetted-specialties/
-"""
-enum PractitionerSpecialty {
-  UNSPECIFIED
-  ANAESTHESIA
-  CARDIOTHORACIC_SURGERY
-  CLINICAL_MEDICAL_GENETICS
-  CLINCICAL_PATHOLOGY
-  GENERAL_PATHOLOGY
-  ANATOMIC_PATHOLOGY
-  CLINICAL_ONCOLOGY
-  DERMATOLOGY
-  EAR_NOSE_AND_THROAT
-  EMERGENCY_MEDICINE
-  FAMILY_MEDICINE
-  GENERAL_SURGERY
-  GERIATRICS
-  IMMUNOLOGY
-  INFECTIOUS_DISEASE
-  INTERNAL_MEDICINE
-  MICROBIOLOGY
-  NEUROSURGERY
-  OBSTETRICS_AND_GYNAECOLOGY
-  OCCUPATIONAL_MEDICINE
-  OPHTHALMOLOGY
-  ORTHOPAEDIC_SURGERY
-  ONCOLOGY
-  ONCOLOGY_RADIOTHERAPY
-  PAEDIATRICS_AND_CHILD_HEALTH
-  PALLIATIVE_MEDICINE
-  PLASTIC_AND_RECONSTRUCTIVE_SURGERY
-  PSYCHIATRY
-  PUBLIC_HEALTH
-  RADIOLOGY
-  UROLOGY
-}
-
-input PaginationInput {
-  first: Int
-  last: Int
-  after: String
-  before: String
-}
-
-input FilterInput {
-  search: String
-  filterBy: [FilterParam]
-}
-
-input FilterParam {
-  fieldName: String!
-  fieldType: FieldType!
-  comparisonOperation: Operation!
-  fieldValue: Any!
-}
-
-enum SortOrder {
-  ASC
-  DESC
-}
-
-enum FieldType {
-  BOOLEAN
-  TIMESTAMP
-  NUMBER
-  INTEGER
-  STRING
-}
-
-input SortInput {
-  sortBy: [SortParam]
-}
-
-input SortParam {
-  fieldName: String!
-  sortOrder: SortOrder!
-}
-
-enum Operation {
-  LESS_THAN
-  LESS_THAN_OR_EQUAL_TO
-  EQUAL
-  GREATER_THAN
-  GREATER_THAN_OR_EQUAL_TO
-  IN
-  CONTAINS
-}
-
-# Node is needed by the Relay spec
-# This server attempts to be Relay spec compliant
-interface Node {
-  id: ID!
-}
 `, BuiltIn: false},
 	{Name: "graph/schema/healthpassport.graphql", Input: `enum MaritalStatus {
   A
@@ -43098,78 +43001,6 @@ func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFilterInput(ctx context.Context, obj interface{}) (base.FilterInput, error) {
-	var it base.FilterInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "search":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("search"))
-			it.Search, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "filterBy":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filterBy"))
-			it.FilterBy, err = ec.unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFilterParam(ctx context.Context, obj interface{}) (base.FilterParam, error) {
-	var it base.FilterParam
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "fieldName":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldName"))
-			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "fieldType":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldType"))
-			it.FieldType, err = ec.unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "comparisonOperation":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comparisonOperation"))
-			it.ComparisonOperation, err = ec.unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "fieldValue":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldValue"))
-			it.FieldValue, err = ec.unmarshalNAny2interface(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Context, obj interface{}) (clinical.IdentificationDocument, error) {
 	var it clinical.IdentificationDocument
 	var asMap = obj.(map[string]interface{})
@@ -43337,50 +43168,6 @@ func (ec *executionContext) unmarshalInputOTPEpisodeUpgradeInput(ctx context.Con
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("otp"))
 			it.Otp, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, obj interface{}) (base.PaginationInput, error) {
-	var it base.PaginationInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "first":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-			it.First, err = ec.unmarshalOInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "last":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-			it.Last, err = ec.unmarshalOInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "after":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-			it.After, err = ec.unmarshalOString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "before":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-			it.Before, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -43866,66 +43653,9 @@ func (ec *executionContext) unmarshalInputSimplePatientRegistrationInput(ctx con
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputSortInput(ctx context.Context, obj interface{}) (base.SortInput, error) {
-	var it base.SortInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "sortBy":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sortBy"))
-			it.SortBy, err = ec.unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputSortParam(ctx context.Context, obj interface{}) (base.SortParam, error) {
-	var it base.SortParam
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "fieldName":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fieldName"))
-			it.FieldName, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "sortOrder":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sortOrder"))
-			it.SortOrder, err = ec.unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
-
-func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj base.Node) graphql.Marshaler {
-	switch obj := (obj).(type) {
-	case nil:
-		return graphql.Null
-	default:
-		panic(fmt.Errorf("unexpected type %T", obj))
-	}
-}
 
 func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, obj fedruntime.Entity) graphql.Marshaler {
 	switch obj := (obj).(type) {
@@ -48429,27 +48159,6 @@ func (ec *executionContext) marshalNAllergyIntoleranceCriticalityEnum2gitlabᚗs
 	return v
 }
 
-func (ec *executionContext) unmarshalNAny2interface(ctx context.Context, v interface{}) (interface{}, error) {
-	res, err := graphql.UnmarshalAny(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNAny2interface(ctx context.Context, sel ast.SelectionSet, v interface{}) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := graphql.MarshalAny(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -49232,16 +48941,6 @@ func (ec *executionContext) marshalNFHIRServiceRequestRelayPayload2ᚖgitlabᚗs
 	return ec._FHIRServiceRequestRelayPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, v interface{}) (base.FieldType, error) {
-	var res base.FieldType
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNFieldType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFieldType(ctx context.Context, sel ast.SelectionSet, v base.FieldType) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
 	res, err := graphql.UnmarshalFloat(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -49430,16 +49129,6 @@ func (ec *executionContext) unmarshalNOTPEpisodeUpgradeInput2gitlabᚗslade360em
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, v interface{}) (base.Operation, error) {
-	var res base.Operation
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNOperation2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐOperation(ctx context.Context, sel ast.SelectionSet, v base.Operation) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *base.PageInfo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -49532,16 +49221,6 @@ func (ec *executionContext) unmarshalNSimpleNextOfKinInput2gitlabᚗslade360emr�
 func (ec *executionContext) unmarshalNSimplePatientRegistrationInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimplePatientRegistrationInput(ctx context.Context, v interface{}) (clinical.SimplePatientRegistrationInput, error) {
 	res, err := ec.unmarshalInputSimplePatientRegistrationInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, v interface{}) (base.SortOrder, error) {
-	var res base.SortOrder
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNSortOrder2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortOrder(ctx context.Context, sel ast.SelectionSet, v base.SortOrder) graphql.Marshaler {
-	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -53833,38 +53512,6 @@ func (ec *executionContext) unmarshalOFHIRTimingRepeatInput2ᚖgitlabᚗslade360
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOFilterParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) ([]*base.FilterParam, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*base.FilterParam, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOFilterParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐFilterParam(ctx context.Context, v interface{}) (*base.FilterParam, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFilterParam(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -53903,15 +53550,6 @@ func (ec *executionContext) marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgo�
 		return graphql.Null
 	}
 	return v
-}
-
-func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	return graphql.MarshalInt(v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
@@ -54414,38 +54052,6 @@ func (ec *executionContext) unmarshalOSimpleNHIFInput2ᚖgitlabᚗslade360emrᚗ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputSimpleNHIFInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOSortParam2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) ([]*base.SortParam, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*base.SortParam, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOSortParam2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐSortParam(ctx context.Context, v interface{}) (*base.SortParam, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputSortParam(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
