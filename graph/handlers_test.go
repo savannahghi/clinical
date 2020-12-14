@@ -1472,18 +1472,22 @@ func TestGraphQLStartEncounter(t *testing.T) {
 		t.Errorf("error in getting GraphQL headers: %w", err)
 		return
 	}
+	episode, _, _, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
 
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Mashaa Test start encounter
 		{
 			name: "invalid query",
 			args: args{
@@ -1494,6 +1498,23 @@ func TestGraphQLStartEncounter(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					mutation StartEncounter($episodeID: String!) {
+						startEncounter(episodeID: $episodeID)  
+					  }
+					`,
+					"variables": map[string]interface{}{
+						"episodeID": episode.ID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -1564,6 +1585,21 @@ func TestGraphQLStartEncounter(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					if key == "data" {
+						if nestedMap["startEncounter"] == "" {
+							t.Errorf("got blank encounter ID")
+							return
+						}
+					}
+
+				}
+				
 			}
 
 			if tt.wantStatus != resp.StatusCode {
