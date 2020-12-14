@@ -2502,6 +2502,21 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 		return
 	}
 
+	patient, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get patient: %v", err)
+		return
+	}
+
+	if patient.ID == nil {
+		t.Errorf("nil patient ID")
+		return
+	}
+
+	patientID := *patient.ID
+
+	var emails []map[string]interface{}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -2512,7 +2527,6 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg @Mathenge Test create or update patient extra information
 		{
 			name: "invalid query",
 			args: args{
@@ -2523,6 +2537,29 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation updatePatientExtraInformation($input: PatientExtraInformationInput!){
+						createUpdatePatientExtraInformation(input: $input)
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"patientID":     patientID,
+							"languages":     []string{"en"},
+							"maritalStatus": "S",
+							"emails": append(emails, map[string]interface{}{
+								"email":              base.GenerateRandomEmail(),
+								"communicationOptIn": true,
+							}),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -2592,6 +2629,20 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					if key == "data" {
+						if nestedMap["createUpdatePatientExtraInformation"] == false {
+							t.Errorf("expected true but got false instead")
+							return
+						}
+					}
 				}
 			}
 
