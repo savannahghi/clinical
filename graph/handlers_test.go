@@ -852,7 +852,6 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test start episode by OTP
 		{
 			name: "invalid query",
 			args: args{
@@ -1773,17 +1772,50 @@ func TestGraphQSearchFHIREncounter(t *testing.T) {
 		return
 	}
 
+	episode, _, _, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Ngure Test search FHIR encounter
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchFHIREncounter($params: Map!) {
+						searchFHIREncounter(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Status
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"episode-of-care": fmt.Sprintf(
+								"EpisodeOfCare/%s", *episode.ID),
+							"status": "in-progress",
+							"_count": "1",
+							"_sort":  "-_last_updated",
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -1859,10 +1891,38 @@ func TestGraphQSearchFHIREncounter(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errorMessage, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected, got error: %s", errorMessage)
 					return
+				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					log.Printf("response: \n%s\n", nestedMap)
+
+					encounters, ok := nestedMap["searchFHIREncounter"].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast nested map key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					edges, ok := encounters["edges"].([]interface{})
+					if !ok {
+						t.Errorf("can't cast edges to []interface{}")
+						return
+					}
+
+					if len(edges) != 1 {
+						t.Errorf(
+							"expected to get exactly one encounter in the response, got %d", len(edges))
+						return
+					}
 				}
 			}
 
