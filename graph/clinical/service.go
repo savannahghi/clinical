@@ -3042,11 +3042,11 @@ func (s Service) periodMapper(period map[string]interface{}) map[string]interfac
 
 	parsedStartDate := ParseDate(periodCopy["start"].(string))
 
-	periodCopy["start"] = parsedStartDate
+	periodCopy["start"] = base.DateTime(parsedStartDate.Format(timeFormatStr))
 
 	parsedEndDate := ParseDate(periodCopy["end"].(string))
 
-	periodCopy["end"] = parsedEndDate
+	periodCopy["end"] = base.DateTime(parsedEndDate.Format(timeFormatStr))
 
 	return periodCopy
 }
@@ -3183,7 +3183,7 @@ func (s Service) photoMapper(resource map[string]interface{}) map[string]interfa
 
 			parsedDate := ParseDate(photo["creation"].(string))
 
-			photo["creation"] = parsedDate
+			photo["creation"] = base.DateTime(parsedDate.Format(timeFormatStr))
 
 			newPhotos = append(newPhotos, photo)
 		}

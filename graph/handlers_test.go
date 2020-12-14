@@ -578,7 +578,7 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 	}
 }
 
-func TestGraphQFindPatients(t *testing.T) {
+func TestGraphQLFindPatients(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -593,6 +593,13 @@ func TestGraphQFindPatients(t *testing.T) {
 		return
 	}
 
+	patient, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get patient: %v", err)
+		return
+	}
+	names := patient.Names()
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -603,7 +610,6 @@ func TestGraphQFindPatients(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Maluki Test find patients
 		{
 			name: "invalid query",
 			args: args{
@@ -614,6 +620,35 @@ func TestGraphQFindPatients(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query FindPatient($search:String!) {
+						findPatients(search:$search){
+						  edges{     
+							node{
+							  Active
+							  Name{
+								Text
+								Family
+								Given
+							  }
+							  Telecom{
+								Value
+							  }
+							}
+						  }   
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"search": names,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -683,6 +718,43 @@ func TestGraphQFindPatients(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					if key == "data" {
+						_, present := nestedMap["findPatients"]
+						if !present {
+							t.Errorf("can't find patient data")
+							return
+						}
+
+						patientMap, ok := nestedMap["findPatients"].(map[string]interface{})
+						if !ok {
+							t.Errorf("cannot cast key value of %v to type map[string]interface{}", patientMap)
+							return
+						}
+
+						_, found := patientMap["edges"]
+						if !found {
+							t.Errorf("can't find patient edges data")
+							return
+						}
+						edges, ok := patientMap["edges"].([]interface{})
+						if !ok {
+							t.Errorf("cannot cast key value of %v to type []interface{}", edges)
+							return
+						}
+
+						if len(edges) == 0 {
+							t.Error("can't find the patient")
+							return
+						}
+					}
 				}
 			}
 
