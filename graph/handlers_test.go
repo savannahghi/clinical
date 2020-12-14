@@ -189,7 +189,7 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 		return
 	}
 
-	simplePatientRegInput, err := getSimplePatientRegistration()
+	simplePatientRegInput, err := getTestSimplePatientRegistration()
 	if err != nil {
 		t.Errorf("can't genereate simple patient reg inpit: %v", err)
 		return
@@ -823,13 +823,13 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 		return
 	}
 
-	phoneNumber, otp, err := getVerifiedPhoneandOTP()
+	phoneNumber, otp, err := getTestVerifiedPhoneandOTP()
 	if err != nil {
 		t.Errorf("unable to get verified phone number and OTP")
 		return
 	}
 
-	patient, err := getPatient(ctx)
+	patient, err := getTestPatient(ctx)
 	if err != nil {
 		t.Errorf("could not get patient: %v", err)
 		return
@@ -1249,7 +1249,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 		return
 	}
 
-	episode, _, err := getEpisodeOfCare(
+	episode, _, err := getTestEpisodeOfCare(
 		ctx,
 		base.TestUserPhoneNumber,
 		false, testProviderCode,
@@ -1518,6 +1518,13 @@ func TestGraphQLEndEncounter(t *testing.T) {
 		return
 	}
 
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -1528,7 +1535,6 @@ func TestGraphQLEndEncounter(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Ngure Test end encounter
 		{
 			name: "invalid query",
 			args: args{
@@ -1539,6 +1545,21 @@ func TestGraphQLEndEncounter(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation EndExam($encounterID: String!) {
+						endEncounter(encounterID: $encounterID)
+					  }`,
+					"variables": map[string]interface{}{
+						"encounterID": encounterID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
