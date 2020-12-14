@@ -596,7 +596,6 @@ func (s Service) CreateEpisodeOfCare(
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
 
-	// TODO! Refactor this!!!
 	// search for the episode of care before creating new one.
 	episodeOfCareSearchParams := map[string]interface{}{
 		"patient":      fmt.Sprintf(*ep.Patient.Reference),
@@ -607,50 +606,49 @@ func (s Service) CreateEpisodeOfCare(
 	}
 
 	episodeOfCarePayload, err := s.SearchFHIREpisodeOfCare(ctx, episodeOfCareSearchParams)
-
-	if err == nil {
-		if len(episodeOfCarePayload.Edges) == 1 {
-			episodeOfCare := *episodeOfCarePayload.Edges[0].Node
-			encounters, err := s.Encounters(ctx, *episodeOfCare.Patient.Reference, nil)
-			if err == nil {
-				output := &EpisodeOfCarePayload{
-					EpisodeOfCare: &episodeOfCare,
-					TotalVisits:   len(encounters),
-				}
-				return output, nil
-			}
-		}
-
-		cloudhealthService := cloudhealth.NewService()
-		data, err := cloudhealthService.CreateFHIRResource("EpisodeOfCare", payload)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to create episode of care resource: %v", err)
-		}
-		episode := &FHIREpisodeOfCare{}
-		err = json.Unmarshal(data, episode)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to unmarshal episode of care response JSON: data: %v\n, error: %v",
-				string(data), err)
-		}
-
-		encounters, err := s.Encounters(ctx, *episode.Patient.Reference, nil)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to get encounters for episode %s: %v",
-				*episode.ID, err,
-			)
-		}
-		output := &EpisodeOfCarePayload{
-			EpisodeOfCare: episode,
-			TotalVisits:   len(encounters),
-		}
-		return output, nil
-
+	if err != nil {
+		return nil, fmt.Errorf("unable to get patients episodes of care: %v", err)
 	}
 
-	return nil, fmt.Errorf("unable to get patients episodes of care: %v", err)
+	// don't create a new episode if there is an ongoing one
+	if len(episodeOfCarePayload.Edges) >= 1 {
+		episodeOfCare := *episodeOfCarePayload.Edges[0].Node
+		encounters, err := s.Encounters(ctx, *episodeOfCare.Patient.Reference, nil)
+		if err == nil {
+			output := &EpisodeOfCarePayload{
+				EpisodeOfCare: &episodeOfCare,
+				TotalVisits:   len(encounters),
+			}
+			return output, nil
+		}
+	}
+
+	// create a new episode if none has been found
+	data, err := s.clinicalRepository.CreateFHIRResource("EpisodeOfCare", payload)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to create episode of care resource: %v", err)
+	}
+	episode := &FHIREpisodeOfCare{}
+	err = json.Unmarshal(data, episode)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to unmarshal episode of care response JSON: data: %v\n, error: %v",
+			string(data), err)
+	}
+
+	encounters, err := s.Encounters(ctx, *episode.Patient.Reference, nil)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to get encounters for episode %s: %v",
+			*episode.ID, err,
+		)
+	}
+	output := &EpisodeOfCarePayload{
+		EpisodeOfCare: episode,
+		TotalVisits:   len(encounters),
+	}
+	return output, nil
 }
 
 // Encounters returns encounters that belong to the indicated patient.
@@ -668,8 +666,8 @@ func (s Service) Encounters(
 		searchParams.Add("status:exact", status.String())
 	}
 	searchParams.Add("patient", patientReference)
-	cloudhealthService := cloudhealth.NewService()
-	bs, err := cloudhealthService.POSTRequest("Encounter", "_search", searchParams, nil)
+
+	bs, err := s.clinicalRepository.POSTRequest("Encounter", "_search", searchParams, nil)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search for encounter: %v", err)
 	}
@@ -832,8 +830,7 @@ func (s Service) UpgradeEpisode(
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
 
-	cloudhealthService := cloudhealth.NewService()
-	_, err = cloudhealthService.UpdateFHIRResource(
+	_, err = s.clinicalRepository.UpdateFHIRResource(
 		"EpisodeOfCare", *episode.ID, payload)
 	if err != nil {
 		return nil, fmt.Errorf(
@@ -1080,8 +1077,8 @@ func (s Service) EndEncounter(
 	if err != nil {
 		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %v", err)
 	}
-	cloudhealthService := cloudhealth.NewService()
-	_, err = cloudhealthService.UpdateFHIRResource(resourceType, encounterID, payload)
+
+	_, err = s.clinicalRepository.UpdateFHIRResource(resourceType, encounterID, payload)
 	if err != nil {
 		return false, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
 	}
@@ -1131,8 +1128,7 @@ func (s Service) EndEpisode(
 		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %v", err)
 	}
 
-	cloudhealthService := cloudhealth.NewService()
-	_, err = cloudhealthService.UpdateFHIRResource(resourceType, episodeID, payload)
+	_, err = s.clinicalRepository.UpdateFHIRResource(resourceType, episodeID, payload)
 	if err != nil {
 		return false, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
 	}
@@ -1209,8 +1205,7 @@ func (s Service) CreatePatient(
 		return nil, fmt.Errorf("unable to turn patient input into a map: %v", err)
 	}
 
-	cloudhealthService := cloudhealth.NewService()
-	data, err := cloudhealthService.CreateFHIRResource("Patient", payload)
+	data, err := s.clinicalRepository.CreateFHIRResource("Patient", payload)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update patient resource: %v", err)
 	}
@@ -1272,8 +1267,7 @@ func (s Service) DeletePatient(
 		},
 	}
 
-	cloudhealthService := cloudhealth.NewService()
-	resp, err := cloudhealthService.PatchFHIRResource(
+	resp, err := s.clinicalRepository.PatchFHIRResource(
 		"Patient",
 		*patientPayload.PatientRecord.ID,
 		payload,
@@ -1291,8 +1285,8 @@ func (s Service) DeletePatient(
 func (s Service) FindPatientByID(
 	ctx context.Context, id string) (*PatientPayload, error) {
 	s.checkPreconditions()
-	cloudhealthService := cloudhealth.NewService()
-	data, err := cloudhealthService.GetFHIRResource("Patient", id)
+
+	data, err := s.clinicalRepository.GetFHIRResource("Patient", id)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"unable to get patient with ID %s, err: %v", id, err)
@@ -1323,8 +1317,8 @@ func (s Service) PatientSearch(
 
 	params := url.Values{}
 	params.Add("_content", search) // entire doc
-	cloudhealthService := cloudhealth.NewService()
-	bs, err := cloudhealthService.POSTRequest(
+
+	bs, err := s.clinicalRepository.POSTRequest(
 		"Patient", "_search", params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search: %v", err)
@@ -1522,8 +1516,7 @@ func (s Service) UpdatePatient(
 		patches = append(patches, patch)
 	}
 
-	cloudhealthService := cloudhealth.NewService()
-	data, err := cloudhealthService.PatchFHIRResource("Patient", input.ID, patches)
+	data, err := s.clinicalRepository.PatchFHIRResource("Patient", input.ID, patches)
 	if err != nil {
 		return nil, fmt.Errorf("UpdatePatient: %v", err)
 	}
@@ -1621,8 +1614,8 @@ func (s Service) AddNextOfKin(
 			"value": updatedContacts,
 		},
 	}
-	cloudhealthService := cloudhealth.NewService()
-	data, err := cloudhealthService.PatchFHIRResource(
+
+	data, err := s.clinicalRepository.PatchFHIRResource(
 		"Patient", input.PatientID, patches)
 	if err != nil {
 		return nil, fmt.Errorf("UpdatePatient: %v", err)
@@ -1703,8 +1696,8 @@ func (s Service) AddNhif(
 			"value": updatedIdentifierInputs,
 		},
 	}
-	cloudhealthService := cloudhealth.NewService()
-	data, err := cloudhealthService.PatchFHIRResource(
+
+	data, err := s.clinicalRepository.PatchFHIRResource(
 		"Patient", input.PatientID, patches)
 	if err != nil {
 		return nil, fmt.Errorf("UpdatePatient: %v", err)
@@ -1737,8 +1730,7 @@ func (s Service) GetActiveEpisode(ctx context.Context, episodeID string) (*FHIRE
 	searchParams.Add("status:exact", EpisodeOfCareStatusEnumActive.String())
 	searchParams.Add("_id", episodeID) // logical ID of the resource
 
-	cloudhealthService := cloudhealth.NewService()
-	bs, err := cloudhealthService.POSTRequest(
+	bs, err := s.clinicalRepository.POSTRequest(
 		"EpisodeOfCare", "_search", searchParams, nil)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search for episode of care: %v", err)
@@ -1814,8 +1806,7 @@ func (s Service) GetActiveEpisode(ctx context.Context, episodeID string) (*FHIRE
 func (s Service) SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*FHIREpisodeOfCare, error) {
 	s.checkPreconditions()
 
-	cloudhealthService := cloudhealth.NewService()
-	bs, err := cloudhealthService.POSTRequest(
+	bs, err := s.clinicalRepository.POSTRequest(
 		"EpisodeOfCare", "_search", searchParams, nil)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search for episode of care: %v", err)
@@ -3331,8 +3322,7 @@ func (s Service) CreateUpdatePatientExtraInformation(
 		patches = append(patches, patch)
 	}
 
-	cloudhealthService := cloudhealth.NewService()
-	_, err = cloudhealthService.PatchFHIRResource("Patient", input.PatientID, patches)
+	_, err = s.clinicalRepository.PatchFHIRResource("Patient", input.PatientID, patches)
 	if err != nil {
 		return false, fmt.Errorf("UpdatePatient: %v", err)
 	}

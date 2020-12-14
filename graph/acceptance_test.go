@@ -102,9 +102,7 @@ func getVerifiedPhoneandOTP() (string, string, error) {
 }
 
 func getPatient(ctx context.Context) (*clinical.FHIRPatient, error) {
-
 	srv := clinical.NewService()
-
 	simplePatientRegInput, err := getSimplePatientRegistration()
 	if err != nil {
 		return nil, fmt.Errorf("can't genereate simple patient reg inpit: %v", err)
@@ -116,4 +114,40 @@ func getPatient(ctx context.Context) (*clinical.FHIRPatient, error) {
 	}
 
 	return patientPayload.PatientRecord, nil
+}
+
+func getEpisodeOfCare(
+	ctx context.Context,
+	msisdn string,
+	fullAccess bool,
+	providerCode string,
+) (*clinical.FHIREpisodeOfCare, *clinical.FHIRPatient, error) {
+	srv := clinical.NewService()
+	normalized, err := base.NormalizeMSISDN(msisdn)
+	if err != nil {
+		return nil, nil, fmt.Errorf("can't normalize phone number: %w", err)
+	}
+
+	patient, err := getPatient(ctx)
+	if err != nil {
+		return nil, nil, fmt.Errorf("can't create test patient: %w", err)
+	}
+
+	orgID, err := srv.GetORCreateOrganization(ctx, providerCode)
+	if err != nil {
+		return nil, nil, fmt.Errorf("can't get or create test organization : %v", err)
+	}
+
+	ep := clinical.ComposeOneHealthEpisodeOfCare(
+		normalized,
+		fullAccess,
+		*orgID,
+		providerCode,
+		*patient.ID,
+	)
+	epPayload, err := srv.CreateEpisodeOfCare(ctx, ep)
+	if err != nil {
+		return nil, nil, fmt.Errorf("can't create episode of care: %w", err)
+	}
+	return epPayload.EpisodeOfCare, patient, nil
 }

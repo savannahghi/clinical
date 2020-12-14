@@ -989,7 +989,6 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 						}
 					}
 				}
-
 			}
 
 			if tt.wantStatus != resp.StatusCode {
@@ -1250,6 +1249,16 @@ func TestGraphQLEndEpisode(t *testing.T) {
 		return
 	}
 
+	episode, _, err := getEpisodeOfCare(
+		ctx,
+		base.TestUserPhoneNumber,
+		false, testProviderCode,
+	)
+	if err != nil {
+		t.Errorf("can't create test episode: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -1260,7 +1269,6 @@ func TestGraphQLEndEpisode(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Mashaa Test end episode
 		{
 			name: "invalid query",
 			args: args{
@@ -1271,6 +1279,21 @@ func TestGraphQLEndEpisode(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation EndEpisode($episodeID: String!) {
+						endEpisode(episodeID: $episodeID)
+					  }`,
+					"variables": map[string]interface{}{
+						"episodeID": episode.ID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -1341,13 +1364,24 @@ func TestGraphQLEndEpisode(t *testing.T) {
 					t.Errorf("error not expected got error: %w", err)
 					return
 				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					if nestedMap["endEpisode"] != true {
+						t.Errorf("endEpisode result is not `true`")
+						return
+					}
+				}
 			}
 
 			if tt.wantStatus != resp.StatusCode {
 				t.Errorf("Bad status reponse returned")
 				return
 			}
-
 		})
 	}
 }

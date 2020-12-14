@@ -23,5 +23,6 @@ require (
 	github.com/vektah/gqlparser/v2 v2.1.0
 	gitlab.slade360emr.com/go/base v0.0.84
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
+	golang.org/x/sys v0.0.0-20201214095126-aec9a390925b // indirect
 	google.golang.org/api v0.36.0
 )
