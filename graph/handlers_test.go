@@ -2113,6 +2113,16 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 		return
 	}
 
+	_, _, err = getTestEpisodeOfCare(
+		ctx,
+		base.TestUserPhoneNumber,
+		false, testProviderCode,
+	)
+	if err != nil {
+		t.Errorf("can't create test episode: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -2123,7 +2133,6 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Mashaa Test open organization episodes
 		{
 			name: "invalid query",
 			args: args{
@@ -2134,6 +2143,33 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					query openOrganizationEpisodes($providerSladeCode: String!) {
+						openOrganizationEpisodes(providerSladeCode: $providerSladeCode) {
+						  ID
+						  Status
+						  Patient {
+							Identifier {
+							  Value
+							}
+							Display
+						  }
+						}
+					  }
+					`,
+					"variables": map[string]interface{}{
+						"providerSladeCode": testProviderCode,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
