@@ -1,6 +1,7 @@
 package graph_test
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -78,4 +79,41 @@ func getSimplePatientRegistration() (*clinical.SimplePatientRegistrationInput, e
 			base.LanguageSw,
 		},
 	}, nil
+}
+
+func getVerifiedPhoneandOTP() (string, string, error) {
+	config, err := base.LoadDepsFromYAML()
+	if err != nil {
+		return "", "", fmt.Errorf("unable to load dependencies from YAML: %s", err)
+	}
+
+	otpClient, err := base.SetupISCclient(*config, clinical.OtpService)
+	if err != nil {
+		return "", "", fmt.Errorf("unable to set up engagement ISC client: %v", err)
+	}
+
+	validPhone := base.TestUserPhoneNumber
+	validOTP, err := clinical.RequestOTP(validPhone, otpClient)
+	if err != nil {
+		return "", "", fmt.Errorf("unable to generate OTP: %v", err)
+	}
+
+	return validPhone, validOTP, err
+}
+
+func getPatient(ctx context.Context) (*clinical.FHIRPatient, error) {
+
+	srv := clinical.NewService()
+
+	simplePatientRegInput, err := getSimplePatientRegistration()
+	if err != nil {
+		return nil, fmt.Errorf("can't genereate simple patient reg inpit: %v", err)
+	}
+
+	patientPayload, err := srv.RegisterPatient(ctx, *simplePatientRegInput)
+	if err != nil {
+		return nil, fmt.Errorf("can't register patient: %v", err)
+	}
+
+	return patientPayload.PatientRecord, nil
 }

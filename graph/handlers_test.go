@@ -20,6 +20,7 @@ import (
 
 const (
 	testHTTPClientTimeout = 180
+	testProviderCode      = "123"
 )
 
 // these are set up once in TestMain and used by all the acceptance tests in
@@ -481,7 +482,7 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test find patients by MSISDN
+		// TODO @criticalpath @Maluki Test find patients by MSISDN
 		{
 			name: "invalid query",
 			args: args{
@@ -598,7 +599,7 @@ func TestGraphQFindPatients(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test find patients
+		// TODO @criticalpath @Maluki Test find patients
 		{
 			name: "invalid query",
 			args: args{
@@ -715,7 +716,7 @@ func TestGraphQGetPatient(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test get patient
+		// TODO @criticalpath @Maluki Test get patient
 		{
 			name: "invalid query",
 			args: args{
@@ -822,6 +823,25 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 		return
 	}
 
+	phoneNumber, otp, err := getVerifiedPhoneandOTP()
+	if err != nil {
+		t.Errorf("unable to get verified phone number and OTP")
+		return
+	}
+
+	patient, err := getPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get patient: %v", err)
+		return
+	}
+
+	if patient.ID == nil {
+		t.Errorf("nil patient ID")
+		return
+	}
+
+	patientID := *patient.ID
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -843,6 +863,47 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation StartOTPEpisode($input: OTPEpisodeCreationInput!) {
+						startEpisodeByOTP(input: $input) {
+						  episodeOfCare {
+							ID
+							Status
+							Period {
+							  Start
+							}
+							ManagingOrganization {
+							  Display
+							}
+							Patient {
+							  Identifier {
+								Value
+							  }
+							  Display
+							}
+							Type {
+							  Text
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"patientID":    patientID,
+							"providerCode": testProviderCode,
+							"otp":          otp,
+							"msisdn":       phoneNumber,
+							"fullAccess":   false,
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -899,6 +960,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 				t.Errorf("bad data returned")
 				return
 			}
+
 			if tt.wantErr {
 				_, ok := data["errors"]
 				if !ok {
@@ -913,6 +975,21 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 					t.Errorf("error not expected got error: %w", err)
 					return
 				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					if key == "episodeOfCare" {
+						if nestedMap["ID"] == "" {
+							t.Errorf("got blank ID")
+							return
+						}
+					}
+				}
+
 			}
 
 			if tt.wantStatus != resp.StatusCode {
@@ -949,7 +1026,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test start episode by Break Glass...use patient's phone, not doctor's
+		// TODO @criticalpath @Mashaa Test start episode by Break Glass...use patient's phone, not doctor's
 		{
 			name: "invalid query",
 			args: args{
@@ -1066,7 +1143,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test upgrade episode
+		// TODO @criticalpath @Mashaa Test upgrade episode
 		{
 			name: "invalid query",
 			args: args{
@@ -1183,7 +1260,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test end episode
+		// TODO @criticalpath @Mashaa Test end episode
 		{
 			name: "invalid query",
 			args: args{
@@ -1300,7 +1377,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test start encounter
+		// TODO @criticalpath @Mashaa Test start encounter
 		{
 			name: "invalid query",
 			args: args{
@@ -1417,7 +1494,7 @@ func TestGraphQLEndEncounter(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test end encounter
+		// TODO @criticalpath @Ngure Test end encounter
 		{
 			name: "invalid query",
 			args: args{
@@ -1534,7 +1611,7 @@ func TestGraphQOpenEpisodes(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test open episodes
+		// TODO @criticalpath @Mashaa Test open episodes
 		{
 			name: "invalid query",
 			args: args{
@@ -1651,7 +1728,7 @@ func TestGraphQSearchFHIREncounter(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test search FHIR encounter
+		// TODO @criticalpath @Ngure Test search FHIR encounter
 		{
 			name: "invalid query",
 			args: args{
@@ -1768,7 +1845,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath Test open organization episodes
+		// TODO @criticalpath @Mashaa Test open organization episodes
 		{
 			name: "invalid query",
 			args: args{
@@ -1885,7 +1962,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg Test add next of kin
+		// TODO @patientreg @Mathenge Test add next of kin
 		{
 			name: "invalid query",
 			args: args{
@@ -2002,7 +2079,7 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg Test update patient
+		// TODO @patientreg @Mathenge Test update patient
 		{
 			name: "invalid query",
 			args: args{
@@ -2118,7 +2195,7 @@ func TestGraphQLAddNHIF(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg Test add NHIF
+		// TODO @patientreg @Mathenge Test add NHIF
 		{
 			name: "invalid query",
 			args: args{
@@ -2235,7 +2312,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg Test create or update patient extra information
+		// TODO @patientreg @Mathenge Test create or update patient extra information
 		{
 			name: "invalid query",
 			args: args{
@@ -2352,7 +2429,7 @@ func TestGraphQLDeletePatient(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg Test delete patient
+		// TODO @patientreg @Mathenge Test delete patient
 		{
 			name: "invalid query",
 			args: args{

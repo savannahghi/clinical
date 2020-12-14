@@ -61,7 +61,7 @@ func TestVerifyOTP(t *testing.T) {
 		return
 	}
 
-	otpClient, err := base.SetupISCclient(*config, otpService)
+	otpClient, err := base.SetupISCclient(*config, OtpService)
 	if err != nil {
 		t.Errorf("unable to set up engagement ISC client: %v", err)
 		return
@@ -125,7 +125,7 @@ func TestRequestOTP(t *testing.T) {
 		return
 	}
 
-	otpClient, err := base.SetupISCclient(*config, otpService)
+	otpClient, err := base.SetupISCclient(*config, OtpService)
 	if err != nil {
 		t.Errorf("unable to set up engagement ISC client: %v", err)
 		return

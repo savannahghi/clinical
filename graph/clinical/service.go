@@ -60,7 +60,7 @@ const (
 	smsService        = "sms"
 	twilioService     = "twilio"
 	engagementService = "engagement"
-	otpService        = "otp"
+	OtpService        = "otp"
 )
 
 // specific endpoint paths for ISC
@@ -111,7 +111,7 @@ func NewService() *Service {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
 	}
 
-	otpClient, err := base.SetupISCclient(*config, otpService)
+	otpClient, err := base.SetupISCclient(*config, OtpService)
 	if err != nil {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
 	}
@@ -596,11 +596,12 @@ func (s Service) CreateEpisodeOfCare(
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
 
+	// TODO! Refactor this!!!
 	// search for the episode of care before creating new one.
 	episodeOfCareSearchParams := map[string]interface{}{
 		"patient":      fmt.Sprintf(*ep.Patient.Reference),
 		"status":       string(EpisodeOfCareStatusEnumActive),
-		"organization": ep.ManagingOrganization.Reference,
+		"organization": *ep.ManagingOrganization.Reference,
 		"_sort":        "date",
 		"_count":       "1",
 	}
