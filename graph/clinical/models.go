@@ -102,7 +102,6 @@ type BreakGlassEpisodeCreationInput struct {
 	ProviderCode    string `json:"providerCode" firestore:"providerCode"`
 	PractitionerUID string `json:"practitionerUID" firestore:"practitionerUID"`
 	Msisdn          string `json:"msisdn" firestore:"msisdn"`
-	PatientPhone    string `json:"patientPhone" firestore:"patientPhone"`
 	Otp             string `json:"otp" firestore:"otp"`
 	FullAccess      bool   `json:"fullAccess" firestore:"fullAccess"`
 }

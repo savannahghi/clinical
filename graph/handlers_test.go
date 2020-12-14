@@ -23,6 +23,8 @@ const (
 	testHTTPClientTimeout = 180
 	testProviderCode      = "123"
 	dateFormat            = "2006-01-02"
+	testProviderPhone     = "+254721000111"   
+	testProviderUID = "0b1fcd62-46df-4cbc-9096-7849859dcd76"
 )
 
 // these are set up once in TestMain and used by all the acceptance tests in
@@ -1009,6 +1011,25 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 		return
 	}
 
+	validPhone, otp, err := getTestVerifiedPhoneandOTP()
+	if err != nil {
+		t.Errorf("unable to get verified phone number and OTP")
+		return
+	}
+
+	patient, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get patient: %v", err)
+		return
+	}
+
+	if patient.ID == nil {
+		t.Errorf("nil patient ID")
+		return
+	}
+
+	patientID := *patient.ID
+
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := base.GetGraphQLHeaders(ctx)
 	if err != nil {
@@ -1026,7 +1047,6 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Mashaa Test start episode by Break Glass...use patient's phone, not doctor's
 		{
 			name: "invalid query",
 			args: args{
@@ -1037,6 +1057,48 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation StartBreakGlassEpisode($input: BreakGlassEpisodeCreationInput!) {
+						startEpisodeByBreakGlass(input: $input) {
+							episodeOfCare {
+							  ID
+							  Status
+							  Period {
+								Start
+							  }
+							  ManagingOrganization {
+								Display
+							  }
+							  Patient {
+								Identifier {
+								  Value
+								}
+								Display
+							  }
+							  Type {
+								Text
+							  }
+							}
+						  }
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"practitionerUID": testProviderUID, 
+							"patientID":       patientID,
+							"providerCode":    testProviderCode,
+							"otp":             otp,
+							"msisdn":		validPhone, 
+							"fullAccess":      false,
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -1082,17 +1144,13 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 				return
 			}
 
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
 			data := map[string]interface{}{}
 			err = json.Unmarshal(dataResponse, &data)
 			if err != nil {
 				t.Errorf("bad data returned")
 				return
 			}
+
 			if tt.wantErr {
 				_, ok := data["errors"]
 				if !ok {
@@ -1107,8 +1165,21 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
-			}
 
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					if key == "episodeOfCare" {
+						if nestedMap["ID"] == "" {
+							t.Errorf("got blank ID")
+							return
+						}
+					}
+				}
+			}
 			if tt.wantStatus != resp.StatusCode {
 				t.Errorf("Bad status reponse returned")
 				return

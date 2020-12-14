@@ -5788,7 +5788,6 @@ input BreakGlassEpisodeCreationInput {
   providerCode: String!
   practitionerUID: String!
   msisdn: String!
-  patientPhone: String!
   otp: String!
   fullAccess: Boolean!
 }
@@ -34602,14 +34601,6 @@ func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx con
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
 			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "patientPhone":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientPhone"))
-			it.PatientPhone, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

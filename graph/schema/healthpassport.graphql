@@ -70,7 +70,6 @@ input BreakGlassEpisodeCreationInput {
   providerCode: String!
   practitionerUID: String!
   msisdn: String!
-  patientPhone: String!
   otp: String!
   fullAccess: Boolean!
 }
