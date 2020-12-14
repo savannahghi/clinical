@@ -455,121 +455,6 @@ mutation SimplePatientRegistration($input: SimplePatientRegistrationInput!) {
 		})
 	}
 }
-func TestGraphQLUpdatePatient(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test update patient
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-		})
-	}
-}
 
 func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
@@ -596,7 +481,7 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test find patients by MSISDN
+		// TODO @criticalpath Test find patients by MSISDN
 		{
 			name: "invalid query",
 			args: args{
@@ -713,7 +598,7 @@ func TestGraphQFindPatients(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test find patients
+		// TODO @criticalpath Test find patients
 		{
 			name: "invalid query",
 			args: args{
@@ -830,7 +715,7 @@ func TestGraphQGetPatient(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test get patient
+		// TODO @criticalpath Test get patient
 		{
 			name: "invalid query",
 			args: args{
@@ -947,7 +832,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test start episode by OTP
+		// TODO @criticalpath Test start episode by OTP
 		{
 			name: "invalid query",
 			args: args{
@@ -1064,7 +949,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test start episode by Break Glass...use patient's phone, not doctor's
+		// TODO @criticalpath Test start episode by Break Glass...use patient's phone, not doctor's
 		{
 			name: "invalid query",
 			args: args{
@@ -1181,7 +1066,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test upgrade episode
+		// TODO @criticalpath Test upgrade episode
 		{
 			name: "invalid query",
 			args: args{
@@ -1298,7 +1183,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test end episode
+		// TODO @criticalpath Test end episode
 		{
 			name: "invalid query",
 			args: args{
@@ -1415,7 +1300,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test start encounter
+		// TODO @criticalpath Test start encounter
 		{
 			name: "invalid query",
 			args: args{
@@ -1532,7 +1417,358 @@ func TestGraphQLEndEncounter(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test end encounter
+		// TODO @criticalpath Test end encounter
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQOpenEpisodes(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @criticalpath Test open episodes
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQSearchFHIREncounter(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @criticalpath Test search FHIR encounter
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @criticalpath Test open organization episodes
 		{
 			name: "invalid query",
 			args: args{
@@ -1649,7 +1885,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test add next of kin
+		// TODO @patientreg Test add next of kin
 		{
 			name: "invalid query",
 			args: args{
@@ -1740,6 +1976,123 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 		})
 	}
 }
+
+func TestGraphQLUpdatePatient(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @patientreg Test update patient
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+		})
+	}
+}
+
 func TestGraphQLAddNHIF(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
@@ -1765,7 +2118,7 @@ func TestGraphQLAddNHIF(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test add NHIF
+		// TODO @patientreg Test add NHIF
 		{
 			name: "invalid query",
 			args: args{
@@ -1882,7 +2235,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test create or update patient extra information
+		// TODO @patientreg Test create or update patient extra information
 		{
 			name: "invalid query",
 			args: args{
@@ -1999,7 +2352,358 @@ func TestGraphQLDeletePatient(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test delete patient
+		// TODO @patientreg Test delete patient
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQVisitSummary(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @timeline Test visit summary
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQPatientTimelineWithCount(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @timeline Test patient timeline with count
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQProblemSummary(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @timeline Test problem summary
 		{
 			name: "invalid query",
 			args: args{
@@ -2116,7 +2820,7 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test create medication request
+		// TODO @medication Test create medication request
 		{
 			name: "invalid query",
 			args: args{
@@ -2233,7 +2937,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test update medication request
+		// TODO @medication Test update medication request
 		{
 			name: "invalid query",
 			args: args{
@@ -2350,7 +3054,124 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test delete medication request
+		// TODO @medication Test delete medication request
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @medication Test search FHIR medication request
 		{
 			name: "invalid query",
 			args: args{
@@ -2467,7 +3288,7 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test create allergy intolerance
+		// TODO @allergy Test create allergy intolerance
 		{
 			name: "invalid query",
 			args: args{
@@ -2584,7 +3405,124 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test update FHIR allergy intolerance
+		// TODO @allergy Test update FHIR allergy intolerance
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @allergy Test search FHIR allergy intolerance
 		{
 			name: "invalid query",
 			args: args{
@@ -2701,7 +3639,7 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test create FHIR condition
+		// TODO @condition Test create FHIR condition
 		{
 			name: "invalid query",
 			args: args{
@@ -2818,7 +3756,124 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test update FHIR condition
+		// TODO @condition Test update FHIR condition
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQSearchFHIRCondition(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @condition Test search FHIR condition
 		{
 			name: "invalid query",
 			args: args{
@@ -2935,7 +3990,7 @@ func TestGraphQCreateFHIRServiceRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test create FHIR service request
+		// TODO @servicerequest Test create FHIR service request
 		{
 			name: "invalid query",
 			args: args{
@@ -3052,7 +4107,124 @@ func TestGraphQDeleteFHIRServiceRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test delete FHIR service request
+		// TODO @servicerequest Test delete FHIR service request
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @servicerequest Test search FHIR service request
 		{
 			name: "invalid query",
 			args: args{
@@ -3169,7 +4341,7 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test create FHIR observation
+		// TODO @observation Test create FHIR observation
 		{
 			name: "invalid query",
 			args: args{
@@ -3261,6 +4433,122 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 	}
 }
 
+func TestGraphQSearchFHIRObservation(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		// TODO @observation Test search FHIR observation
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				_, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got error: %w", err)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+		})
+	}
+}
+
 func TestGraphQCreateFHIRComposition(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
@@ -3286,7 +4574,7 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test create FHIR composition
+		// TODO @composition Test create FHIR composition
 		{
 			name: "invalid query",
 			args: args{
@@ -3403,7 +4691,7 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test update FHIR composition
+		// TODO @composition Test update FHIR composition
 		{
 			name: "invalid query",
 			args: args{
@@ -3553,1294 +4841,7 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
 		},
-		// TODO Delete a composition that exists
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQOpenEpisodes(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test open episodes
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test open organization episodes
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQProblemSummary(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test problem summary
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQVisitSummary(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test visit summary
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQPatientTimelineWithCount(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test patient timeline with count
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQSearchFHIREncounter(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test search FHIR encounter
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQSearchFHIRCondition(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test search FHIR condition
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test search FHIR allergy intolerance
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQSearchFHIRObservation(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test search FHIR observation
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test search FHIR medication request
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				_, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got error: %w", err)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO Test search FHIR service request
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
+		// TODO @composition Delete a composition that exists (additional test case)
 	}
 
 	for _, tt := range tests {
@@ -4946,7 +4947,7 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test search FHIR composition
+		// TODO @composition Test search FHIR composition
 		{
 			name: "invalid query",
 			args: args{

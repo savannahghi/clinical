@@ -599,7 +599,7 @@ func (s Service) CreateEpisodeOfCare(
 	// search for the episode of care before creating new one.
 	episodeOfCareSearchParams := map[string]interface{}{
 		"patient":      fmt.Sprintf(*ep.Patient.Reference),
-		"status":       string(EpisodeOfCareStatusActive),
+		"status":       string(EpisodeOfCareStatusEnumActive),
 		"organization": ep.ManagingOrganization.Reference,
 		"_sort":        "date",
 		"_count":       "1",
@@ -968,7 +968,7 @@ func (s Service) OpenOrganizationEpisodes(
 	}
 	organizationReference := fmt.Sprintf("Organization/%s", *organizationID)
 	searchParams := url.Values{}
-	searchParams.Add("status", EpisodeOfCareStatusActive.String())
+	searchParams.Add("status", EpisodeOfCareStatusEnumActive.String())
 	searchParams.Add("organization", organizationReference)
 	return s.SearchEpisodesByParam(ctx, searchParams)
 }
@@ -1181,7 +1181,7 @@ func (s Service) sendEpisodeEndAlert(ctx context.Context, patientID string) erro
 
 // CreatePatient creates or updates a patient record on FHIR
 func (s Service) CreatePatient(
-	ctx context.Context, input PatientInput) (*PatientPayload, error) {
+	ctx context.Context, input FHIRPatientInput) (*PatientPayload, error) {
 	s.checkPreconditions()
 
 	// set the record ID if not set
@@ -1450,7 +1450,7 @@ func (s Service) UpdatePatient(
 		patch["value"] = patientInput.Identifier
 		patches = append(patches, patch)
 	}
-	if patientInput.Active != *patientPayload.PatientRecord.Active {
+	if patientInput.Active != patientPayload.PatientRecord.Active {
 		patch := make(map[string]interface{})
 		patch["op"] = op
 		patch["path"] = "/active"
@@ -1471,14 +1471,14 @@ func (s Service) UpdatePatient(
 		patch["value"] = patientInput.Telecom
 		patches = append(patches, patch)
 	}
-	if patientInput.Gender != patientPayload.PatientRecord.Gender.String() {
+	if patientInput.Gender != patientPayload.PatientRecord.Gender {
 		patch := make(map[string]interface{})
 		patch["op"] = op
 		patch["path"] = "/gender"
 		patch["value"] = patientInput.Gender
 		patches = append(patches, patch)
 	}
-	if patientInput.BirthDate != *patientPayload.PatientRecord.BirthDate {
+	if patientInput.BirthDate != patientPayload.PatientRecord.BirthDate {
 		patch := make(map[string]interface{})
 		patch["op"] = op
 		patch["path"] = "/birthDate"
@@ -1733,7 +1733,7 @@ func (s Service) GetActiveEpisode(ctx context.Context, episodeID string) (*FHIRE
 	s.checkPreconditions()
 
 	searchParams := url.Values{}
-	searchParams.Add("status:exact", EpisodeOfCareStatusActive.String())
+	searchParams.Add("status:exact", EpisodeOfCareStatusEnumActive.String())
 	searchParams.Add("_id", episodeID) // logical ID of the resource
 
 	cloudhealthService := cloudhealth.NewService()
@@ -1911,7 +1911,7 @@ func (s Service) SearchEpisodesByParam(ctx context.Context, searchParams url.Val
 func (s Service) OpenEpisodes(
 	ctx context.Context, patientReference string) ([]*FHIREpisodeOfCare, error) {
 	searchParams := url.Values{}
-	searchParams.Add("status:exact", EpisodeOfCareStatusActive.String())
+	searchParams.Add("status:exact", EpisodeOfCareStatusEnumActive.String())
 	searchParams.Add("patient", patientReference)
 	return s.SearchEpisodesByParam(ctx, searchParams)
 }
@@ -1983,7 +1983,7 @@ func (s Service) getBreakGlassCollectionName() string {
 // SimplePatientRegistrationInputToPatientInput transforms a patient input into
 // a
 func (s Service) SimplePatientRegistrationInputToPatientInput(
-	ctx context.Context, input SimplePatientRegistrationInput) (*PatientInput, error) {
+	ctx context.Context, input SimplePatientRegistrationInput) (*FHIRPatientInput, error) {
 	s.checkPreconditions()
 
 	contacts, err := ContactsToContactPointInput(
@@ -2004,10 +2004,11 @@ func (s Service) SimplePatientRegistrationInputToPatientInput(
 	}
 
 	// fullPatientInput is to be filled up by processing the simple patient input
-	patientInput := PatientInput{
-		BirthDate: input.BirthDate,
-		Gender:    input.Gender,
-		Active:    input.Active,
+	gender := PatientGenderEnum(input.Gender)
+	patientInput := FHIRPatientInput{
+		BirthDate: &input.BirthDate,
+		Gender:    &gender,
+		Active:    &input.Active,
 	}
 	patientInput.Identifier = ids
 	patientInput.Telecom = contacts
@@ -2201,6 +2202,7 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 		return err
 	}
 	patientContacts := patientPayload.PatientRecord.Contact
+	phone := ContactPointSystemEnumPhone
 
 	for _, patientRelation := range patientContacts {
 		if patientRelation.Name == nil {
@@ -2221,7 +2223,7 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 						if number.Value == nil {
 							continue
 						}
-						if number.System.String() == ContactPointSystemPhone.String() {
+						if number.System == &phone {
 							text := createAlertMessage(*patientRelation.Name.Given[0])
 							err := base.SendSMS(
 								[]string{*number.Value}, text, *s.sms, *s.twilio)

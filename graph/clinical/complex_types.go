@@ -61,7 +61,7 @@ type FHIRAddressInput struct {
 	Text string `json:"text,omitempty"`
 
 	// This component contains the house number, apartment number, street name, street direction,  P.O. Box number, delivery hints, and similar address information.
-	Line *string `json:"line,omitempty"`
+	Line []*string `json:"line,omitempty"`
 
 	// The name of the city, town, suburb, village or other community or delivery center.
 	City *string `json:"city,omitempty"`

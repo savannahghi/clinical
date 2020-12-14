@@ -18,9 +18,9 @@ import (
 // simple patient registration defaults
 // should be reviewed later (ticket created)
 const (
-	DefaultCountry    = CountryKe
-	DefaultAddressUse = AddressUseHome
-	DefaultContactUse = ContactPointUseHome
+	DefaultCountry    = "ke"
+	DefaultAddressUse = AddressUseEnumHome
+	DefaultContactUse = ContactPointUseEnumHome
 
 	IDIdentifierSystem     = "healthcloud.iddocument"
 	MSISDNIdentifierSystem = "healthcloud.msisdn"
@@ -317,7 +317,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 	}
 	output := []*FHIRAddressInput{}
 	addrUse := AddressUseEnumHome
-	country := DefaultCountry.String()
+	country := DefaultCountry
 	physicalAddrType := AddressTypeEnumPhysical
 	postalAddrType := AddressTypeEnumPostal
 
@@ -330,7 +330,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 			Country:    &country,
 			Period:     DefaultPeriodInput(),
 			PostalCode: &postalCode,
-			Line:       &postal.PostalAddress,
+			Line:       []*string{&postal.PostalAddress},
 			Text:       text,
 		}
 		output = append(output, postalAddr)
@@ -346,7 +346,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 			Country:    &country,
 			Period:     DefaultPeriodInput(),
 			PostalCode: &mapsCode,
-			Line:       &physical.PhysicalAddress,
+			Line:       []*string{&physical.PhysicalAddress},
 			Text:       text,
 		}
 		output = append(output, physicalAddr)
@@ -429,23 +429,27 @@ func MaritalStatusEnumToCodeableConceptInput(val MaritalStatus) *FHIRCodeableCon
 
 // LanguagesToCommunicationInputs translates the supplied languages to FHIR
 // communication preferences
-func LanguagesToCommunicationInputs(languages []base.Language) []*CommunicationInput {
-	output := []*CommunicationInput{}
+func LanguagesToCommunicationInputs(languages []base.Language) []*FHIRPatientCommunicationInput {
+	output := []*FHIRPatientCommunicationInput{}
+	preferred := false
+	userSelected := true
+	system := base.URI(base.LanguageCodingSystem)
+	version := base.LanguageCodingVersion
 	for _, language := range languages {
-		comm := &CommunicationInput{
-			Language: &CodeableConceptInput{
-				Coding: []*CodingInput{
+		comm := &FHIRPatientCommunicationInput{
+			Language: &FHIRCodeableConceptInput{
+				Coding: []*FHIRCodingInput{
 					{
-						Code:         language.String(),
+						Code:         base.Code(language.String()),
 						Display:      base.LanguageNames[language],
-						UserSelected: true,
-						System:       base.LanguageCodingSystem,
-						Version:      base.LanguageCodingVersion,
+						UserSelected: &userSelected,
+						System:       &system,
+						Version:      &version,
 					},
 				},
 				Text: base.LanguageNames[language],
 			},
-			Preferred: false,
+			Preferred: &preferred,
 		}
 		output = append(output, comm)
 	}
@@ -495,12 +499,12 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 	}
 	addressUse := AddressUseEnumHome
 	postalAddrType := AddressTypeEnumPostal
-	ke := CountryKe.String()
+	country := DefaultCountry
 
 	addr := &FHIRAddressInput{
 		Use:     &addressUse,
 		Type:    &postalAddrType,
-		Country: &ke,
+		Country: &country,
 		Period:  DefaultPeriodInput(),
 		Line:    nil, // will be replaced below
 		Text:    "",  // will be replaced below
@@ -516,7 +520,7 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 		}
 	}
 	combinedPostalAddress := strings.Join(postalAddressLines, "\n")
-	addr.Line = &combinedPostalAddress
+	addr.Line = []*string{&combinedPostalAddress}
 
 	physicalAddressLines := []string{}
 	for _, physical := range physical {

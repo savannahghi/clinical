@@ -14,27 +14,30 @@ const (
 
 // DefaultCommunication returns default values for patient / person communication
 // preferences
-func DefaultCommunication() []*CommunicationInput {
-	return []*CommunicationInput{
+func DefaultCommunication() []*FHIRPatientCommunicationInput {
+	userSelected := false
+	preferred := true
+	system := base.URI("urn:ietf:bcp:47")
+	return []*FHIRPatientCommunicationInput{
 		{
-			Language: &CodeableConceptInput{
-				Coding: []*CodingInput{
+			Language: &FHIRCodeableConceptInput{
+				Coding: []*FHIRCodingInput{
 					{
-						System:       "urn:ietf:bcp:47",
+						System:       &system,
 						Code:         "en",
 						Display:      "English",
-						UserSelected: false,
+						UserSelected: &userSelected,
 					},
 					{
-						System:       "urn:ietf:bcp:47",
+						System:       &system,
 						Code:         "en-US",
 						Display:      "English (United States)",
-						UserSelected: false,
+						UserSelected: &userSelected,
 					},
 				},
 				Text: DefaultLanguage,
 			},
-			Preferred: true,
+			Preferred: &preferred,
 		},
 	}
 }

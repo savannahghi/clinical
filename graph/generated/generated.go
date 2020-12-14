@@ -10855,7 +10855,7 @@ input FHIRAddressInput {
   """
   This component contains the house number, apartment number, street name, street direction,  P.O. Box number, delivery hints, and similar address information.
   """
-  Line: String
+  Line: [String]
   """
   The name of the city, town, suburb, village or other community or delivery center.
   """
@@ -34705,7 +34705,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Line"))
-			it.Line, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Line, err = ec.unmarshalOString2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
