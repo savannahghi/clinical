@@ -46,7 +46,7 @@ func ContactPointPayload() []*FHIRContactPointInput {
 	var rank int64 = 1
 	var ContactPointSystemEmail ContactPointSystemEnum = "email"
 	var ContactPointUseHome ContactPointUseEnum = "home"
-	email := "juha@kalulu.com"
+	email := base.GenerateRandomEmail()
 	var rank2 int64 = 2
 	return []*FHIRContactPointInput{
 		{
