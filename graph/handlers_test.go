@@ -2069,6 +2069,28 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 		return
 	}
 
+	phoneNumber, otp, err := getTestVerifiedPhoneandOTP()
+	if err != nil {
+		t.Errorf("unable to get verified phone number and OTP")
+		return
+	}
+
+	patient, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get patient: %v", err)
+		return
+	}
+
+	if patient.ID == nil {
+		t.Errorf("nil patient ID")
+		return
+	}
+
+	patientID := *patient.ID
+
+	var names []map[string]interface{}
+	var phoneNumbers []map[string]interface{}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -2079,7 +2101,6 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg @Mathenge Test add next of kin
 		{
 			name: "invalid query",
 			args: args{
@@ -2090,6 +2111,41 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation AddKin($input: SimpleNextOfKinInput! ) {
+						addNextOfKin(input:$input){
+						  patientRecord{   
+						  ID
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"patientID": patientID,
+							"names": append(names, map[string]interface{}{
+								"firstName": "Dennis",
+								"lastName":  "Menace",
+							}),
+							"gender":       "male",
+							"birthDate":    "1900-01-01",
+							"relationship": "C",
+							"active":       true,
+							"phoneNumbers": append(phoneNumbers, map[string]interface{}{
+								"msisdn":             phoneNumber,
+								"verificationCode":   otp,
+								"isUSSD":             false,
+								"communicationOptIn": true,
+							}),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -2160,6 +2216,33 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 					t.Errorf("error not expected got error: %w", err)
 					return
 				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					if key == "data" {
+						_, present := nestedMap["addNextOfKin"]
+						if !present {
+							t.Errorf("can't find next of kin payload")
+							return
+						}
+						addNextOfKinMap := nestedMap["addNextOfKin"].(map[string]interface{})
+
+						_, found := addNextOfKinMap["patientRecord"]
+						if !found {
+							t.Errorf("can't find patient record")
+							return
+						}
+						patientRecordMap := addNextOfKinMap["patientRecord"].(map[string]interface{})
+						if patientRecordMap["ID"] == "" {
+							t.Errorf("got blank ID")
+							return
+						}
+					}
+				}
+
 			}
 
 			if tt.wantStatus != resp.StatusCode {
