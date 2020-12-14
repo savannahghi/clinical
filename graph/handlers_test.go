@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/brianvoe/gofakeit/v5"
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
@@ -21,6 +22,7 @@ import (
 const (
 	testHTTPClientTimeout = 180
 	testProviderCode      = "123"
+	dateFormat            = "2006-01-02"
 )
 
 // these are set up once in TestMain and used by all the acceptance tests in
@@ -4756,6 +4758,15 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 		return
 	}
 
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+
+	recorded := time.Now().Format(dateFormat)
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -4766,7 +4777,77 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @composition Test create FHIR composition
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation CreateComposition($input: FHIRCompositionInput!) {
+						createFHIRComposition(input: $input) {
+						  resource {
+							ID
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"Status": "preliminary",
+							"Date":   recorded,
+							"Title":  gofakeit.HipsterSentence(10),
+							"Type": map[string]interface{}{
+								"Text": "Consult Note",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://loinc.org",
+										"Code":         "11488-4",
+										"Display":      "Consult Note",
+										"UserSelected": false,
+									},
+								},
+							},
+							"Category": []map[string]interface{}{
+								{
+									"Text": "Consult Note",
+									"Coding": []map[string]interface{}{
+										{
+											"System":       "http://loinc.org",
+											"Code":         "11488-4",
+											"Display":      "Consult Note",
+											"UserSelected": false,
+										},
+									},
+								},
+							},
+							"Subject": map[string]interface{}{
+								"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+								"Type":      "Patient",
+								"Display":   patient.Names(),
+							},
+							"Encounter": map[string]interface{}{
+								"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+								"Type":      "Encounter",
+								"Display":   fmt.Sprintf("Encounter/%s", encounterID),
+							},
+							"Section": []map[string]interface{}{
+								{
+									"Title": "patientHistory",
+									"Text": map[string]interface{}{
+										"Status": "generated",
+										"Div":    gofakeit.HipsterSentence(10),
+									},
+								},
+							},
+							"Author": []map[string]interface{}{
+								{
+									"Display": gofakeit.Name(),
+								},
+							},
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -4842,10 +4923,34 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errorMessage, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got error: %s", errorMessage)
 					return
+				}
+
+				log.Printf("response: \n%s\n", data)
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "createFHIRComposition" {
+							compositionData, ok := nestedMap[nestedKey].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast nested composition data to map")
+								return
+							}
+							if compositionData["id"] == "" {
+								t.Errorf("got back blank ID for new composition")
+								return
+							}
+							return
+						}
+					}
 				}
 			}
 
