@@ -10508,15 +10508,15 @@ input FHIRHumanNameInput {
   """
   Given name.
   """
-  Given: String
+  Given: [String!]!
   """
   Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the start of the name.
   """
-  Prefix: String
+  Prefix: [String]
   """
   Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the end of the name.
   """
-  Suffix: String
+  Suffix: [String]
   """
   Indicates the period of time when this name was valid for the named person.
   """
@@ -37041,7 +37041,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Family"))
-			it.Family, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Family, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37049,7 +37049,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Given"))
-			it.Given, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Given, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37057,7 +37057,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Prefix"))
-			it.Prefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Prefix, err = ec.unmarshalOString2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37065,7 +37065,7 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Suffix"))
-			it.Suffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Suffix, err = ec.unmarshalOString2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

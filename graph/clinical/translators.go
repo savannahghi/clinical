@@ -45,8 +45,8 @@ func NameToHumanName(names []*NameInput) []*FHIRHumanNameInput {
 			"%s, %s %s", name.LastName, name.FirstName, otherNames)
 		use := HumanNameUseEnumOfficial
 		humanName := &FHIRHumanNameInput{
-			Given:  &name.FirstName,
-			Family: &name.LastName,
+			Given:  []string{name.FirstName},
+			Family: name.LastName,
 			Use:    use,
 			Period: DefaultPeriodInput(),
 			Text:   fullName,
@@ -143,6 +143,9 @@ func ContactsToContactPointInput(
 	use := ContactPointUseEnumHome
 
 	for _, phone := range phones {
+		if phone.IsUssd {
+			continue // don't verify USSD
+		}
 		isVerified, normalized, err := VerifyOTP(
 			phone.Msisdn, phone.VerificationCode, otpClient)
 		if err != nil {

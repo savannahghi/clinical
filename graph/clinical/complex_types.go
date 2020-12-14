@@ -553,16 +553,16 @@ type FHIRHumanNameInput struct {
 	Text string `json:"text,omitempty"`
 
 	// The part of a name that links to the genealogy. In some cultures (e.g. Eritrea) the family name of a son is the first name of his father.
-	Family *string `json:"family,omitempty"`
+	Family string `json:"family,omitempty"`
 
 	// Given name.
-	Given *string `json:"given,omitempty"`
+	Given []string `json:"given,omitempty"`
 
 	// Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the start of the name.
-	Prefix *string `json:"prefix,omitempty"`
+	Prefix []*string `json:"prefix,omitempty"`
 
 	// Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the end of the name.
-	Suffix *string `json:"suffix,omitempty"`
+	Suffix []*string `json:"suffix,omitempty"`
 
 	// Indicates the period of time when this name was valid for the named person.
 	Period *FHIRPeriodInput `json:"period,omitempty"`

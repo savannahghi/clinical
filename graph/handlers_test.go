@@ -188,17 +188,183 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 		return
 	}
 
+	simplePatientRegInput, err := getSimplePatientRegistration()
+	if err != nil {
+		t.Errorf("can't genereate simple patient reg inpit: %v", err)
+		return
+	}
+
+	patientRegInput, err := base.StructToMap(simplePatientRegInput)
+	if err != nil {
+		t.Errorf("can't convert simple patient reg input to map: %v", err)
+		return
+	}
+	validInput := map[string]interface{}{
+		"input": patientRegInput,
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO Test register patient
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+mutation SimplePatientRegistration($input: SimplePatientRegistrationInput!) {
+	registerPatient(input: $input) {
+		patientRecord {
+			ID
+			Identifier {
+				ID
+				Use
+				Type {
+					ID
+					Text
+					Coding {
+						System
+						Version
+						Display
+						Code
+						UserSelected
+					}
+				}
+				System
+				Value
+				Period {
+					ID
+					Start
+					End
+				}
+			}
+			Active
+			Name {
+				ID
+				Use
+				Text
+				Family
+				Given
+				Prefix
+				Suffix
+				Period {
+					ID
+					Start
+					End
+				}
+			}
+			Telecom {
+				ID
+				System
+				Value
+				Use
+				Rank
+				Period {
+					ID
+					Start
+					End
+				}
+			}
+			Gender
+			BirthDate
+			Address {
+				ID
+				Use
+				Type
+				Text
+				Line
+				City
+				District
+				State
+				PostalCode
+				Country
+				Period {
+					ID
+					Start
+					End
+				}
+			}     
+			Photo {
+				Data
+			}
+			Contact {
+				ID
+				Relationship {
+					ID
+					Text
+					Coding {
+						System
+						Version
+						Display
+						Code
+						UserSelected
+					}
+				}
+				Name {
+					ID
+					Use
+					Text
+					Family
+					Given
+					Prefix
+					Suffix
+					Period {
+						ID
+						Start
+						End
+					}
+				}
+				Gender
+				Period {
+					ID
+					Start
+					End
+				}
+				Address {
+					ID
+					Use
+					Type
+					Text
+					Line
+					City
+					District
+					State
+					PostalCode
+					Country
+					Period {
+						ID
+						Start
+						End
+					}
+				}
+				Telecom {
+					ID
+					System
+					Value
+					Use
+					Rank
+					Period {
+						ID
+						Start
+						End
+					}
+				}
+			}
+		}
+	}
+	}
+					`,
+					"variables": validInput,
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -274,9 +440,9 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errors, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got error: %s", errors)
 					return
 				}
 			}

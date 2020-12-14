@@ -1,11 +1,6 @@
 package clinical
 
 import (
-	"context"
-	"encoding/base64"
-	"io/ioutil"
-	"testing"
-
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -41,28 +36,6 @@ func IdentifierPayload() []*FHIRIdentifierInput {
 		Code:          "msisdn",
 	}
 	return []*FHIRIdentifierInput{SingleIdentifierPayload(&identifier)}
-}
-
-// SingleNamePayload - compose a single FHIR name input
-func SingleNamePayload() *FHIRHumanNameInput {
-	fullName := "Prof Pogrey Kiogothe Sr"
-	var nameUseOfficial HumanNameUseEnum = "official"
-	contactFamilyName := "Paul Kiogothe"
-	return &FHIRHumanNameInput{
-		Use:    nameUseOfficial,
-		Text:   fullName,
-		Family: &contactFamilyName,
-		// FHIR API expects an array for the below fields
-		// Given:  &givenName,
-		// Prefix: &prefix,
-		// Suffix: &suffix,
-	}
-}
-
-// NamePayload - compose a list of FHIR input names
-func NamePayload() []*FHIRHumanNameInput {
-	names := SingleNamePayload()
-	return []*FHIRHumanNameInput{names}
 }
 
 //ContactPointPayload - compose a test FHIR contact point input
@@ -122,53 +95,6 @@ func AddressPayload() []*FHIRAddressInput {
 	return []*FHIRAddressInput{adresses}
 }
 
-// MaritalStatusPayload - compose an FHIR marital status input
-func MaritalStatusPayload() *FHIRCodeableConceptInput {
-	var maritalSystemURI base.URI = "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"
-	userSelected := true
-	version := "2018-08-12"
-	return &FHIRCodeableConceptInput{
-		Text: "Married",
-		Coding: []*FHIRCodingInput{
-			{
-				System:       &maritalSystemURI,
-				Code:         "M",
-				Version:      &version,
-				Display:      "Married",
-				UserSelected: &userSelected,
-			},
-		},
-	}
-}
-
-// PhotoPayload - compose an FHIRAttachmentInput
-func PhotoPayload(t *testing.T) []*FHIRAttachmentInput {
-	var contentType base.Code = "application/json"
-	var language base.Code = "en"
-	bs, err := ioutil.ReadFile("testdata/photo.jpg")
-	if err != nil {
-		t.Fatalf("unable to read test photo %s: ", err)
-	}
-	var photoBase64 = base.Base64Binary(base64.StdEncoding.EncodeToString(bs))
-	var now base.DateTime = "2018-01-01"
-	var URL base.URL = "https://healthcloud.co.ke"
-	var hash base.Base64Binary = "fake"
-	size := 1
-	title := "Test Photo Attachment"
-	return []*FHIRAttachmentInput{
-		{
-			ContentType: &contentType,
-			Language:    &language,
-			Data:        &photoBase64,
-			Title:       &title,
-			Creation:    &now,
-			URL:         &URL,
-			Hash:        &hash,
-			Size:        &size,
-		},
-	}
-}
-
 // FHIRCodingPayload - compose a list of FHIRCodingInput
 func FHIRCodingPayload(code base.Code, display string) []*FHIRCodingInput {
 	codingInput := SingleFHIRCodingPayload(code, display)
@@ -181,73 +107,4 @@ func SingleCodeableConceptPayload(code base.Code, display, text string) *FHIRCod
 		Text:   text,
 		Coding: FHIRCodingPayload(code, display),
 	}
-}
-
-// CodeableConceptPayload - compose many FHIRCodeableConceptInput
-func CodeableConceptPayload() []*FHIRCodeableConceptInput {
-	display := "Next-of-Kin"
-	var code base.Code = "N"
-	text := "Married"
-
-	codeableConceptInput := SingleCodeableConceptPayload(code, display, text)
-	return []*FHIRCodeableConceptInput{codeableConceptInput}
-}
-
-// ContactPayload - compose a test FHIRPatientContactInput
-func ContactPayload() []*FHIRPatientContactInput {
-	var contactGender PatientContactGenderEnum = "female"
-	return []*FHIRPatientContactInput{
-		{
-			Relationship: CodeableConceptPayload(),
-			Name:         SingleNamePayload(),
-			Telecom:      ContactPointPayload(),
-			Address:      SingleAddressPayload(),
-			Gender:       &contactGender,
-		},
-	}
-}
-
-// PatientCommunicationPayload - compose a patient FHIR communication
-func PatientCommunicationPayload() []*FHIRPatientCommunicationInput {
-	// var languageSystem base.URI = "urn:ietf:bcp:47"
-	preferredLanguage := true
-	var code base.Code = "sw"
-
-	return []*FHIRPatientCommunicationInput{
-		{
-			Language:  SingleCodeableConceptPayload(code, "Swahili", "English"),
-			Preferred: &preferredLanguage,
-		},
-	}
-}
-
-// PatientResourceFHIRPayload - fixture to create patient in FHIR
-func PatientResourceFHIRPayload(t *testing.T) FHIRPatientInput {
-	active := true
-	var gender PatientGenderEnum = "male"
-
-	return FHIRPatientInput{
-		Identifier:    IdentifierPayload(),
-		Active:        &active,
-		Name:          NamePayload(),
-		Telecom:       ContactPointPayload(),
-		Gender:        &gender,
-		BirthDate:     &base.Date{Year: 1985, Month: 1, Day: 1},
-		Address:       AddressPayload(),
-		MaritalStatus: MaritalStatusPayload(),
-		Photo:         PhotoPayload(t),
-		Contact:       ContactPayload(),
-		Communication: PatientCommunicationPayload(),
-	}
-}
-
-// GetTestFHIRPatient - retrieve a created test patient in FHIR
-func GetTestFHIRPatient(t *testing.T, id string) FHIRPatientRelayPayload {
-	service := NewService()
-	ctx := context.Background()
-	patient, err := service.GetFHIRPatient(ctx, id)
-	if err != nil {
-		t.Fatalf("unable to retrieve patient resource %s: ", err)
-	}
-	return *patient
 }

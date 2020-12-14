@@ -81,6 +81,8 @@ github.com/aws/aws-sdk-go v1.36.7/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zK
 github.com/aymerick/raymond v2.0.3-0.20180322193309-b565731e1464+incompatible/go.mod h1:osfaiScAUVup+UC9Nfq76eWqDhXlp+4UYaA8uhTBO6g=
 github.com/bearbin/go-age v0.0.0-20140407072555-316d0c1e7cd1 h1:esuvcwPtL1Q9V3VddJ/t8V0Syw6HyRHgyMrLVsCl/IU=
 github.com/bearbin/go-age v0.0.0-20140407072555-316d0c1e7cd1/go.mod h1:74S2AyUVLNHXov5+dDdQZgOjQIzmmllrzfQcDz76F6k=
+github.com/brianvoe/gofakeit/v5 v5.11.1 h1:PxJu5+or2fM+MqEwLsKc7GmWzRXNHDzvbo4Xvj0J1o4=
+github.com/brianvoe/gofakeit/v5 v5.11.1/go.mod h1:/ZENnKqX+XrN8SORLe/fu5lZDIo1tuPncWuRD+eyhSI=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/census-instrumentation/opencensus-proto v0.3.0 h1:t/LhUZLVitR1Ow2YOnduCsavhwFUklBMoGVYUCqmCqk=
 github.com/census-instrumentation/opencensus-proto v0.3.0/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=

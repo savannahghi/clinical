@@ -110,34 +110,6 @@ type ContactPointInput struct {
 	Period *FHIRPeriodInput   `json:"period"`
 }
 
-// HumanName description from FHIR: A human's name with the ability to identify
-// parts and usage.
-type HumanName struct {
-	ID     string    `json:"id"`
-	Use    NameUse   `json:"use"`
-	Text   *string   `json:"text"`
-	Family string    `json:"family"`
-	Given  []string  `json:"given"`
-	Prefix []*string `json:"prefix"`
-	Suffix []*string `json:"suffix"`
-	Period *Period   `json:"period"`
-}
-
-//IsEntity ...
-func (h HumanName) IsEntity() {}
-
-// HumanNameInput is used to input patient names.
-type HumanNameInput struct {
-	ID     *string          `json:"id"`
-	Use    NameUse          `json:"use"`
-	Text   *string          `json:"text"`
-	Family string           `json:"family"`
-	Given  []string         `json:"given"`
-	Prefix []*string        `json:"prefix"`
-	Suffix []*string        `json:"suffix"`
-	Period *FHIRPeriodInput `json:"period"`
-}
-
 // Address description from FHIR: An address expressed using postal conventions
 // (as opposed to GPS or other location definition formats).
 //
