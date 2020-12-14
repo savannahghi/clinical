@@ -19,8 +19,8 @@ import (
 
 // constants used to configure the OCL service
 const (
-	OCLAPIURLEnvVarName  = "OPENCONCEPT_LAB_API_URL"
-	OCLTokenEnvVarName   = "OPENCONCEPT_LAB_TOKEN"
+	OCLAPIURLEnvVarName  = "OPENCONCEPTLAB_API_URL"
+	OCLTokenEnvVarName   = "OPENCONCEPTLAB_TOKEN"
 	OCLAPITimeoutSeconds = 30
 )
 
