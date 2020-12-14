@@ -1756,13 +1756,28 @@ func TestGraphQOpenEpisodes(t *testing.T) {
 		t.Errorf("nil context")
 		return
 	}
+	_, patient, err := getTestEpisodeOfCare(
+		ctx,
+		base.TestUserPhoneNumber,
+		false, testProviderCode,
+	)
+	if err != nil {
+		t.Errorf("can't create test episode: %w", err)
+		return
+	}
+	if patient.ID == nil {
+		t.Errorf("nil patient ID")
+		return
+	}
 
+	patientID := *patient.ID
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := base.GetGraphQLHeaders(ctx)
 	if err != nil {
 		t.Errorf("error in getting GraphQL headers: %w", err)
 		return
 	}
+	patientRef:= fmt.Sprintf("Patient/%s", patientID)
 
 	type args struct {
 		query map[string]interface{}
@@ -1785,6 +1800,32 @@ func TestGraphQOpenEpisodes(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					query searchOpenEpisodes($patientReference: String!) {
+						openEpisodes(patientReference: $patientReference) {
+						  ID
+						  Status
+						  Patient {
+							Identifier {
+							  Value
+							}
+							Display
+						  }
+						}
+					  }
+					`,
+					"variables": map[string]interface{}{
+						"patientReference": patientRef,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -1854,6 +1895,19 @@ func TestGraphQOpenEpisodes(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					if key == "data" {
+						if nestedMap["openEpisodes"] == nil {
+							t.Errorf("empty open episodes found")
+							return
+						}
+					}
 				}
 			}
 

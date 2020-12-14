@@ -1802,7 +1802,6 @@ func (s Service) GetActiveEpisode(ctx context.Context, episodeID string) (*FHIRE
 // SearchEpisodesByParam search episodes by params
 func (s Service) SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*FHIREpisodeOfCare, error) {
 	s.checkPreconditions()
-
 	bs, err := s.clinicalRepository.POSTRequest(
 		"EpisodeOfCare", "_search", searchParams, nil)
 	if err != nil {
@@ -1870,7 +1869,7 @@ func (s Service) SearchEpisodesByParam(ctx context.Context, searchParams url.Val
 		startDateAsMap["year"] = resStart.Year()
 		startDateAsMap["month"] = int(resStart.Month())
 		startDateAsMap["day"] = resStart.Day()
-		period["start"] = resStart
+		period["start"] = base.DateTime(resStart.Format(timeFormatStr))
 
 		// parse period->end as map[string]interface{}
 		resEnd := ParseDate(period["end"].(string))
@@ -1878,7 +1877,7 @@ func (s Service) SearchEpisodesByParam(ctx context.Context, searchParams url.Val
 		endDateAsMap["year"] = resEnd.Year()
 		endDateAsMap["month"] = int(resEnd.Month())
 		endDateAsMap["day"] = resEnd.Day()
-		period["end"] = resEnd
+		period["end"] = base.DateTime(resEnd.Format(timeFormatStr))
 
 		//update the original period resource
 		resource["period"] = period
