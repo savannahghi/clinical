@@ -560,9 +560,9 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -677,9 +677,9 @@ func TestGraphQFindPatients(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -794,9 +794,9 @@ func TestGraphQGetPatient(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -971,9 +971,9 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 
@@ -1102,9 +1102,9 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -1219,9 +1219,9 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -1360,9 +1360,9 @@ func TestGraphQLEndEpisode(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 
@@ -1488,9 +1488,9 @@ func TestGraphQLStartEncounter(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -1626,9 +1626,9 @@ func TestGraphQLEndEncounter(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -1743,9 +1743,9 @@ func TestGraphQOpenEpisodes(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -2038,9 +2038,9 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -2211,9 +2211,9 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 				for key := range data {
@@ -2355,9 +2355,9 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -2471,9 +2471,9 @@ func TestGraphQLAddNHIF(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -2588,9 +2588,9 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -2705,9 +2705,9 @@ func TestGraphQLDeletePatient(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -2822,9 +2822,9 @@ func TestGraphQVisitSummary(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -2939,9 +2939,9 @@ func TestGraphQPatientTimelineWithCount(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3056,9 +3056,9 @@ func TestGraphQProblemSummary(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3173,9 +3173,9 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3290,9 +3290,9 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3407,9 +3407,9 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3524,9 +3524,9 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3641,9 +3641,9 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3758,9 +3758,9 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3875,9 +3875,9 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -3906,17 +3906,113 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 		return
 	}
 
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+
+	recordedDate := time.Now().Format(dateFormat)
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @condition Test create FHIR condition
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation CreateFHIRCondition($input: FHIRConditionInput!) {
+						createFHIRCondition(input: $input) {
+						  resource {
+							ID
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"Code": map[string]interface{}{
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "OCL:/orgs/CIEL/sources/CIEL/",
+										"Code":         "113488",
+										"Display":      "Pulmonary Tuberculosis",
+										"UserSelected": true,
+									},
+								},
+								"Text": "Pulmonary Tuberculosis",
+							},
+							"ClinicalStatus": map[string]interface{}{
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://terminology.hl7.org/CodeSystem/condition-clinical",
+										"Code":         "active",
+										"Display":      "Active",
+										"UserSelected": false,
+									},
+								},
+								"Text": "Active",
+							},
+							"VerificationStatus": map[string]interface{}{
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+										"Code":         "confirmed",
+										"Display":      "Confirmed",
+										"UserSelected": false,
+									},
+								},
+								"Text": "Active",
+							},
+							"RecordedDate": recordedDate,
+							"Category": []map[string]interface{}{
+								{
+									"Coding": []map[string]interface{}{
+										{
+											"System":       "http://terminology.hl7.org/CodeSystem/condition-category",
+											"Code":         "encounter-diagnosis",
+											"Display":      "encounter-diagnosis",
+											"UserSelected": false,
+										},
+									},
+									"Text": "encounter-diagnosis",
+								},
+							},
+							"Subject": map[string]interface{}{
+								"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+								"Type":      "Patient",
+								"Display":   fmt.Sprintf("Patient/%s", *patient.ID),
+							},
+							"Encounter": map[string]interface{}{
+								"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+								"Type":      "Encounter",
+								"Display":   "Encounter",
+							},
+							"Note": []map[string]interface{}{
+								{
+									"AuthorString": gofakeit.Name(),
+									"Text":         gofakeit.HipsterSentence(20),
+								},
+							},
+							"Recorder": map[string]interface{}{
+								"Display": gofakeit.Name(),
+							},
+							"Asserter": map[string]interface{}{
+								"Display": gofakeit.Name(),
+							},
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -3992,9 +4088,9 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -4003,7 +4099,6 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 				t.Errorf("Bad status reponse returned")
 				return
 			}
-
 		})
 	}
 }
@@ -4109,9 +4204,9 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -4226,9 +4321,9 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -4341,11 +4436,10 @@ func TestGraphQCreateFHIRServiceRequest(t *testing.T) {
 					return
 				}
 			}
-
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -4460,9 +4554,9 @@ func TestGraphQDeleteFHIRServiceRequest(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -4577,9 +4671,9 @@ func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -4694,9 +4788,9 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -4811,9 +4905,9 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -5147,9 +5241,9 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -5286,9 +5380,9 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -5403,9 +5497,9 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
@@ -5561,9 +5655,9 @@ func TestGraphQLListConcepts(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				_, ok := data["errors"]
+				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got error: %w", err)
+					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
 			}
