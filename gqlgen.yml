@@ -1,7 +1,7 @@
 schema:
   - graph/schema/*.graphql
   - graph/schema/**/*.graphql
-
+  - graph/*.graphql
 exec:
   filename: graph/generated/generated.go
   package: generated
@@ -23,6 +23,7 @@ autobind:
   - "gitlab.slade360emr.com/go/base"
   - "gitlab.slade360emr.com/go/clinical/graph/model"
   - "gitlab.slade360emr.com/go/clinical/graph/clinical"
+  - "gitlab.slade360emr.com/go/clinical/graph/openconceptlab"
 
 models:
   ID:

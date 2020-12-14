@@ -19,7 +19,6 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
-	"gitlab.slade360emr.com/go/clinical/graph/model"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -292,12 +291,6 @@ type ComplexityRoot struct {
 		Type       func(childComplexity int) int
 	}
 
-	FHIRContactDetail struct {
-		ID      func(childComplexity int) int
-		Name    func(childComplexity int) int
-		Telecom func(childComplexity int) int
-	}
-
 	FHIRContactPoint struct {
 		ID     func(childComplexity int) int
 		Period func(childComplexity int) int
@@ -305,67 +298,6 @@ type ComplexityRoot struct {
 		System func(childComplexity int) int
 		Use    func(childComplexity int) int
 		Value  func(childComplexity int) int
-	}
-
-	FHIRContributor struct {
-		Contact func(childComplexity int) int
-		ID      func(childComplexity int) int
-		Name    func(childComplexity int) int
-		Type    func(childComplexity int) int
-	}
-
-	FHIRCount struct {
-		Code       func(childComplexity int) int
-		Comparator func(childComplexity int) int
-		ID         func(childComplexity int) int
-		System     func(childComplexity int) int
-		Unit       func(childComplexity int) int
-		Value      func(childComplexity int) int
-	}
-
-	FHIRDataRequirement struct {
-		CodeFilter             func(childComplexity int) int
-		DateFilter             func(childComplexity int) int
-		ID                     func(childComplexity int) int
-		Limit                  func(childComplexity int) int
-		MustSupport            func(childComplexity int) int
-		Profile                func(childComplexity int) int
-		Sort                   func(childComplexity int) int
-		SubjectCodeableConcept func(childComplexity int) int
-		SubjectReference       func(childComplexity int) int
-		Type                   func(childComplexity int) int
-	}
-
-	FHIRDatarequirementCodefilter struct {
-		Code        func(childComplexity int) int
-		ID          func(childComplexity int) int
-		Path        func(childComplexity int) int
-		SearchParam func(childComplexity int) int
-		ValueSet    func(childComplexity int) int
-	}
-
-	FHIRDatarequirementDatefilter struct {
-		ID            func(childComplexity int) int
-		Path          func(childComplexity int) int
-		SearchParam   func(childComplexity int) int
-		ValueDateTime func(childComplexity int) int
-		ValueDuration func(childComplexity int) int
-		ValuePeriod   func(childComplexity int) int
-	}
-
-	FHIRDatarequirementSort struct {
-		Direction func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Path      func(childComplexity int) int
-	}
-
-	FHIRDistance struct {
-		Code       func(childComplexity int) int
-		Comparator func(childComplexity int) int
-		ID         func(childComplexity int) int
-		System     func(childComplexity int) int
-		Unit       func(childComplexity int) int
-		Value      func(childComplexity int) int
 	}
 
 	FHIRDosage struct {
@@ -634,12 +566,6 @@ type ComplexityRoot struct {
 		AllowedCodeableConcept func(childComplexity int) int
 		ID                     func(childComplexity int) int
 		Reason                 func(childComplexity int) int
-	}
-
-	FHIRMoney struct {
-		Currency func(childComplexity int) int
-		ID       func(childComplexity int) int
-		Value    func(childComplexity int) int
 	}
 
 	FHIRNarrative struct {
@@ -924,17 +850,6 @@ type ComplexityRoot struct {
 		Resource func(childComplexity int) int
 	}
 
-	FHIRSignature struct {
-		Data         func(childComplexity int) int
-		ID           func(childComplexity int) int
-		OnBehalfOf   func(childComplexity int) int
-		SigFormat    func(childComplexity int) int
-		TargetFormat func(childComplexity int) int
-		Type         func(childComplexity int) int
-		When         func(childComplexity int) int
-		Who          func(childComplexity int) int
-	}
-
 	FHIRTiming struct {
 		Code   func(childComplexity int) int
 		Event  func(childComplexity int) int
@@ -961,15 +876,6 @@ type ComplexityRoot struct {
 		PeriodUnit     func(childComplexity int) int
 		TimeOfDay      func(childComplexity int) int
 		When           func(childComplexity int) int
-	}
-
-	FHIRUsageContext struct {
-		Code                 func(childComplexity int) int
-		ID                   func(childComplexity int) int
-		ValueCodeableConcept func(childComplexity int) int
-		ValueQuantity        func(childComplexity int) int
-		ValueRange           func(childComplexity int) int
-		ValueReference       func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -1026,6 +932,7 @@ type ComplexityRoot struct {
 		FindPatients                 func(childComplexity int, search string) int
 		FindPatientsByMsisdn         func(childComplexity int, msisdn string) int
 		GetPatient                   func(childComplexity int, id string) int
+		ListConcepts                 func(childComplexity int, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) int
 		OpenEpisodes                 func(childComplexity int, patientReference string) int
 		OpenOrganizationEpisodes     func(childComplexity int, providerSladeCode string) int
 		PatientTimelineWithCount     func(childComplexity int, episodeID string, count int) int
@@ -1093,6 +1000,7 @@ type QueryResolver interface {
 	SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRMedicationRequestRelayConnection, error)
 	SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRServiceRequestRelayConnection, error)
 	SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRCompositionRelayConnection, error)
+	ListConcepts(ctx context.Context, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error)
 }
 
 type executableSchema struct {
@@ -2244,27 +2152,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRConditionStage.Type(childComplexity), true
 
-	case "FHIRContactDetail.ID":
-		if e.complexity.FHIRContactDetail.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRContactDetail.ID(childComplexity), true
-
-	case "FHIRContactDetail.Name":
-		if e.complexity.FHIRContactDetail.Name == nil {
-			break
-		}
-
-		return e.complexity.FHIRContactDetail.Name(childComplexity), true
-
-	case "FHIRContactDetail.Telecom":
-		if e.complexity.FHIRContactDetail.Telecom == nil {
-			break
-		}
-
-		return e.complexity.FHIRContactDetail.Telecom(childComplexity), true
-
 	case "FHIRContactPoint.ID":
 		if e.complexity.FHIRContactPoint.ID == nil {
 			break
@@ -2306,286 +2193,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FHIRContactPoint.Value(childComplexity), true
-
-	case "FHIRContributor.Contact":
-		if e.complexity.FHIRContributor.Contact == nil {
-			break
-		}
-
-		return e.complexity.FHIRContributor.Contact(childComplexity), true
-
-	case "FHIRContributor.ID":
-		if e.complexity.FHIRContributor.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRContributor.ID(childComplexity), true
-
-	case "FHIRContributor.Name":
-		if e.complexity.FHIRContributor.Name == nil {
-			break
-		}
-
-		return e.complexity.FHIRContributor.Name(childComplexity), true
-
-	case "FHIRContributor.Type":
-		if e.complexity.FHIRContributor.Type == nil {
-			break
-		}
-
-		return e.complexity.FHIRContributor.Type(childComplexity), true
-
-	case "FHIRCount.Code":
-		if e.complexity.FHIRCount.Code == nil {
-			break
-		}
-
-		return e.complexity.FHIRCount.Code(childComplexity), true
-
-	case "FHIRCount.Comparator":
-		if e.complexity.FHIRCount.Comparator == nil {
-			break
-		}
-
-		return e.complexity.FHIRCount.Comparator(childComplexity), true
-
-	case "FHIRCount.ID":
-		if e.complexity.FHIRCount.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRCount.ID(childComplexity), true
-
-	case "FHIRCount.System":
-		if e.complexity.FHIRCount.System == nil {
-			break
-		}
-
-		return e.complexity.FHIRCount.System(childComplexity), true
-
-	case "FHIRCount.Unit":
-		if e.complexity.FHIRCount.Unit == nil {
-			break
-		}
-
-		return e.complexity.FHIRCount.Unit(childComplexity), true
-
-	case "FHIRCount.Value":
-		if e.complexity.FHIRCount.Value == nil {
-			break
-		}
-
-		return e.complexity.FHIRCount.Value(childComplexity), true
-
-	case "FHIRDataRequirement.CodeFilter":
-		if e.complexity.FHIRDataRequirement.CodeFilter == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.CodeFilter(childComplexity), true
-
-	case "FHIRDataRequirement.DateFilter":
-		if e.complexity.FHIRDataRequirement.DateFilter == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.DateFilter(childComplexity), true
-
-	case "FHIRDataRequirement.ID":
-		if e.complexity.FHIRDataRequirement.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.ID(childComplexity), true
-
-	case "FHIRDataRequirement.Limit":
-		if e.complexity.FHIRDataRequirement.Limit == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.Limit(childComplexity), true
-
-	case "FHIRDataRequirement.MustSupport":
-		if e.complexity.FHIRDataRequirement.MustSupport == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.MustSupport(childComplexity), true
-
-	case "FHIRDataRequirement.Profile":
-		if e.complexity.FHIRDataRequirement.Profile == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.Profile(childComplexity), true
-
-	case "FHIRDataRequirement.Sort":
-		if e.complexity.FHIRDataRequirement.Sort == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.Sort(childComplexity), true
-
-	case "FHIRDataRequirement.SubjectCodeableConcept":
-		if e.complexity.FHIRDataRequirement.SubjectCodeableConcept == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.SubjectCodeableConcept(childComplexity), true
-
-	case "FHIRDataRequirement.SubjectReference":
-		if e.complexity.FHIRDataRequirement.SubjectReference == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.SubjectReference(childComplexity), true
-
-	case "FHIRDataRequirement.Type":
-		if e.complexity.FHIRDataRequirement.Type == nil {
-			break
-		}
-
-		return e.complexity.FHIRDataRequirement.Type(childComplexity), true
-
-	case "FHIRDatarequirementCodefilter.Code":
-		if e.complexity.FHIRDatarequirementCodefilter.Code == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementCodefilter.Code(childComplexity), true
-
-	case "FHIRDatarequirementCodefilter.ID":
-		if e.complexity.FHIRDatarequirementCodefilter.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementCodefilter.ID(childComplexity), true
-
-	case "FHIRDatarequirementCodefilter.Path":
-		if e.complexity.FHIRDatarequirementCodefilter.Path == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementCodefilter.Path(childComplexity), true
-
-	case "FHIRDatarequirementCodefilter.SearchParam":
-		if e.complexity.FHIRDatarequirementCodefilter.SearchParam == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementCodefilter.SearchParam(childComplexity), true
-
-	case "FHIRDatarequirementCodefilter.ValueSet":
-		if e.complexity.FHIRDatarequirementCodefilter.ValueSet == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementCodefilter.ValueSet(childComplexity), true
-
-	case "FHIRDatarequirementDatefilter.ID":
-		if e.complexity.FHIRDatarequirementDatefilter.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementDatefilter.ID(childComplexity), true
-
-	case "FHIRDatarequirementDatefilter.Path":
-		if e.complexity.FHIRDatarequirementDatefilter.Path == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementDatefilter.Path(childComplexity), true
-
-	case "FHIRDatarequirementDatefilter.SearchParam":
-		if e.complexity.FHIRDatarequirementDatefilter.SearchParam == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementDatefilter.SearchParam(childComplexity), true
-
-	case "FHIRDatarequirementDatefilter.ValueDateTime":
-		if e.complexity.FHIRDatarequirementDatefilter.ValueDateTime == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementDatefilter.ValueDateTime(childComplexity), true
-
-	case "FHIRDatarequirementDatefilter.ValueDuration":
-		if e.complexity.FHIRDatarequirementDatefilter.ValueDuration == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementDatefilter.ValueDuration(childComplexity), true
-
-	case "FHIRDatarequirementDatefilter.ValuePeriod":
-		if e.complexity.FHIRDatarequirementDatefilter.ValuePeriod == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementDatefilter.ValuePeriod(childComplexity), true
-
-	case "FHIRDatarequirementSort.Direction":
-		if e.complexity.FHIRDatarequirementSort.Direction == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementSort.Direction(childComplexity), true
-
-	case "FHIRDatarequirementSort.ID":
-		if e.complexity.FHIRDatarequirementSort.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementSort.ID(childComplexity), true
-
-	case "FHIRDatarequirementSort.Path":
-		if e.complexity.FHIRDatarequirementSort.Path == nil {
-			break
-		}
-
-		return e.complexity.FHIRDatarequirementSort.Path(childComplexity), true
-
-	case "FHIRDistance.Code":
-		if e.complexity.FHIRDistance.Code == nil {
-			break
-		}
-
-		return e.complexity.FHIRDistance.Code(childComplexity), true
-
-	case "FHIRDistance.Comparator":
-		if e.complexity.FHIRDistance.Comparator == nil {
-			break
-		}
-
-		return e.complexity.FHIRDistance.Comparator(childComplexity), true
-
-	case "FHIRDistance.ID":
-		if e.complexity.FHIRDistance.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRDistance.ID(childComplexity), true
-
-	case "FHIRDistance.System":
-		if e.complexity.FHIRDistance.System == nil {
-			break
-		}
-
-		return e.complexity.FHIRDistance.System(childComplexity), true
-
-	case "FHIRDistance.Unit":
-		if e.complexity.FHIRDistance.Unit == nil {
-			break
-		}
-
-		return e.complexity.FHIRDistance.Unit(childComplexity), true
-
-	case "FHIRDistance.Value":
-		if e.complexity.FHIRDistance.Value == nil {
-			break
-		}
-
-		return e.complexity.FHIRDistance.Value(childComplexity), true
 
 	case "FHIRDosage.AdditionalInstruction":
 		if e.complexity.FHIRDosage.AdditionalInstruction == nil {
@@ -3874,27 +3481,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FHIRMedicationrequestSubstitution.Reason(childComplexity), true
-
-	case "FHIRMoney.Currency":
-		if e.complexity.FHIRMoney.Currency == nil {
-			break
-		}
-
-		return e.complexity.FHIRMoney.Currency(childComplexity), true
-
-	case "FHIRMoney.ID":
-		if e.complexity.FHIRMoney.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRMoney.ID(childComplexity), true
-
-	case "FHIRMoney.Value":
-		if e.complexity.FHIRMoney.Value == nil {
-			break
-		}
-
-		return e.complexity.FHIRMoney.Value(childComplexity), true
 
 	case "FHIRNarrative.Div":
 		if e.complexity.FHIRNarrative.Div == nil {
@@ -5282,62 +4868,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRServiceRequestRelayPayload.Resource(childComplexity), true
 
-	case "FHIRSignature.Data":
-		if e.complexity.FHIRSignature.Data == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.Data(childComplexity), true
-
-	case "FHIRSignature.ID":
-		if e.complexity.FHIRSignature.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.ID(childComplexity), true
-
-	case "FHIRSignature.OnBehalfOf":
-		if e.complexity.FHIRSignature.OnBehalfOf == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.OnBehalfOf(childComplexity), true
-
-	case "FHIRSignature.SigFormat":
-		if e.complexity.FHIRSignature.SigFormat == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.SigFormat(childComplexity), true
-
-	case "FHIRSignature.TargetFormat":
-		if e.complexity.FHIRSignature.TargetFormat == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.TargetFormat(childComplexity), true
-
-	case "FHIRSignature.Type":
-		if e.complexity.FHIRSignature.Type == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.Type(childComplexity), true
-
-	case "FHIRSignature.When":
-		if e.complexity.FHIRSignature.When == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.When(childComplexity), true
-
-	case "FHIRSignature.Who":
-		if e.complexity.FHIRSignature.Who == nil {
-			break
-		}
-
-		return e.complexity.FHIRSignature.Who(childComplexity), true
-
 	case "FHIRTiming.Code":
 		if e.complexity.FHIRTiming.Code == nil {
 			break
@@ -5491,48 +5021,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FHIRTimingRepeat.When(childComplexity), true
-
-	case "FHIRUsageContext.Code":
-		if e.complexity.FHIRUsageContext.Code == nil {
-			break
-		}
-
-		return e.complexity.FHIRUsageContext.Code(childComplexity), true
-
-	case "FHIRUsageContext.ID":
-		if e.complexity.FHIRUsageContext.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRUsageContext.ID(childComplexity), true
-
-	case "FHIRUsageContext.ValueCodeableConcept":
-		if e.complexity.FHIRUsageContext.ValueCodeableConcept == nil {
-			break
-		}
-
-		return e.complexity.FHIRUsageContext.ValueCodeableConcept(childComplexity), true
-
-	case "FHIRUsageContext.ValueQuantity":
-		if e.complexity.FHIRUsageContext.ValueQuantity == nil {
-			break
-		}
-
-		return e.complexity.FHIRUsageContext.ValueQuantity(childComplexity), true
-
-	case "FHIRUsageContext.ValueRange":
-		if e.complexity.FHIRUsageContext.ValueRange == nil {
-			break
-		}
-
-		return e.complexity.FHIRUsageContext.ValueRange(childComplexity), true
-
-	case "FHIRUsageContext.ValueReference":
-		if e.complexity.FHIRUsageContext.ValueReference == nil {
-			break
-		}
-
-		return e.complexity.FHIRUsageContext.ValueReference(childComplexity), true
 
 	case "Mutation.addNextOfKin":
 		if e.complexity.Mutation.AddNextOfKin == nil {
@@ -5939,6 +5427,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetPatient(childComplexity, args["id"].(string)), true
+
+	case "Query.listConcepts":
+		if e.complexity.Query.ListConcepts == nil {
+			break
+		}
+
+		args, err := ec.field_Query_listConcepts_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ListConcepts(childComplexity, args["org"].(string), args["source"].(string), args["verbose"].(bool), args["q"].(*string), args["sortAsc"].(*string), args["sortDesc"].(*string), args["conceptClass"].(*string), args["dataType"].(*string), args["locale"].(*string), args["includeRetired"].(*bool), args["includeMappings"].(*bool), args["includeInverseMappings"].(*bool)), true
 
 	case "Query.openEpisodes":
 		if e.complexity.Query.OpenEpisodes == nil {
@@ -6491,6 +5991,25 @@ extend type Mutation {
   ): FHIRCompositionRelayPayload!
 
   deleteFHIRComposition(id: ID!): Boolean!
+}
+`, BuiltIn: false},
+	{Name: "graph/schema/ocl.graphql", Input: `extend type Query {
+  listConcepts(
+    org: String!
+    source: String!
+    verbose: Boolean!
+
+    # optional params
+    q: String
+    sortAsc: String
+    sortDesc: String
+    conceptClass: String
+    dataType: String
+    locale: String
+    includeRetired: Boolean
+    includeMappings: Boolean
+    includeInverseMappings: Boolean
+  ): [Map!]!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/fhir/AllergyIntolerance.graphql", Input: `"""
@@ -10674,37 +10193,7 @@ type FHIRServiceRequestRelayConnection {
 }
 
 `, BuiltIn: false},
-	{Name: "graph/schema/fhir/complex_types.graphql", Input: `"""
-FHIRUsageContextInput: input for UsageContext
-"""
-input FHIRUsageContextInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  A code that identifies the type of context being specified by this usage context.
-  """
-  Code: Code!
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueCodeableConcept: Code
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueQuantity: FHIRQuantityInput
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueRange: FHIRRangeInput
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueReference: FHIRReferenceInput
-}
-
+	{Name: "graph/schema/fhir/complex_types.graphql", Input: `
 """
 FHIRTimingRepeatInput: input for TimingRepeat
 """
@@ -10805,44 +10294,7 @@ input FHIRTimingInput {
   """
   Code: Code!
 }
-"""
-FHIRSignatureInput: input for Signature
-"""
-input FHIRSignatureInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
 
-  """
-  An indication of the reason that the entity signed this document. This may be explicitly included as part of the signature information and can be used when determining accountability for various actions concerning the document.
-  """
-  Type: [FHIRCodingInput!]!
-  """
-  When the digital signature was signed.
-  """
-  When: Instant
-  """
-  A reference to an application-usable description of the identity that signed  (e.g. the signature used their private key).
-  """
-  Who: FHIRReferenceInput!
-  """
-  A reference to an application-usable description of the identity that is represented by the signature.
-  """
-  OnBehalfOf: FHIRReferenceInput
-  """
-  A mime type that indicates the technical format of the target resources signed by the signature.
-  """
-  TargetFormat: Code
-  """
-  A mime type that indicates the technical format of the signature. Important mime types are application/signature+xml for X ML DigSig, application/jose for JWS, and image/* for a graphical image of a signature, etc.
-  """
-  SigFormat: Code
-  """
-  The base64 encoding of the Signature content. When signature is not recorded electronically this element would be empty.
-  """
-  Data: Base64Binary
-}
 """
 FHIRSampledDataInput: input for SampledData
 """
@@ -10996,24 +10448,6 @@ input FHIRNarrativeInput {
   The actual narrative content, a stripped down version of XHTML.
   """
   Div: XHTML!
-}
-"""
-FHIRMoneyInput: input for Money
-"""
-input FHIRMoneyInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  Numerical value (with implicit precision).
-  """
-  Value: Decimal
-  """
-  ISO 4217 Currency Code.
-  """
-  Currency: Code
 }
 
 """
@@ -11219,210 +10653,7 @@ input FHIRDosageInput {
   """
   MaxDosePerLifetime: FHIRQuantityInput
 }
-"""
-FHIRDistanceInput: input for Distance
-"""
-input FHIRDistanceInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
 
-  """
-  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-  """
-  Value: Decimal
-  """
-  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
-  """
-  Comparator: DistanceComparatorEnum
-  """
-  A human-readable form of the unit.
-  """
-  Unit: String
-  """
-  The identification of the system that provides the coded form of the unit.
-  """
-  System: URI
-  """
-  A computer processable form of the unit in some unit representation system.
-  """
-  Code: Code
-}
-"""
-FHIRDatarequirementSortInput: input for DatarequirementSort
-"""
-input FHIRDatarequirementSortInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  The attribute of the sort. The specified path must be resolvable from the type of the required data. The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements. Note that the index must be an integer constant.
-  """
-  Path: String
-  """
-  The direction of the sort, ascending or descending.
-  """
-  Direction: DataRequirementSortDirectionEnum
-}
-"""
-FHIRDatarequirementDatefilterInput: input for DatarequirementDatefilter
-"""
-input FHIRDatarequirementDatefilterInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  The date-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type date, dateTime, Period, Schedule, or Timing.
-  """
-  Path: String
-  """
-  A date parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type date, dateTime, Period, Schedule, or Timing.
-  """
-  SearchParam: String
-  """
-  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
-  """
-  ValueDateTime: Date
-  """
-  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
-  """
-  ValuePeriod: FHIRPeriodInput
-  """
-  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
-  """
-  ValueDuration: FHIRDurationInput
-}
-"""
-FHIRDatarequirementCodefilterInput: input for DatarequirementCodefilter
-"""
-input FHIRDatarequirementCodefilterInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  The code-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type code, Coding, or CodeableConcept.
-  """
-  Path: String
-  """
-  A token parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type code, Coding, or CodeableConcept.
-  """
-  SearchParam: String
-  """
-  The valueset for the code filter. The valueSet and code elements are additive. If valueSet is specified, the filter will return only those data items for which the value of the code-valued element specified in the path is a member of the specified valueset.
-  """
-  ValueSet: Canonical
-  """
-  The codes for the code filter. If values are given, the filter will return only those data items for which the code-valued attribute specified by the path has a value that is one of the specified codes. If codes are specified in addition to a value set, the filter returns items matching a code in the value set or one of the specified codes.
-  """
-  Code: Code
-}
-"""
-FHIRDataRequirementInput: input for DataRequirement
-"""
-input FHIRDataRequirementInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.
-  """
-  Type: Code
-  """
-  The profile of the required data, specified as the uri of the profile definition.
-  """
-  Profile: Canonical
-  """
-  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
-  """
-  SubjectCodeableConcept: Code
-  """
-  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
-  """
-  SubjectReference: FHIRReferenceInput
-  """
-      Indicates that specific elements of the type are referenced by the knowledge module and must be supported by the consumer in order to obtain an effective evaluation. This does not mean that a value is required for this element, only that the consuming system must understand the element and be able to provide values for it if they are available.
-
-  The value of mustSupport SHALL be a FHIRPath resolveable on the type of the DataRequirement. The path SHALL consist only of identifiers, constant indexers, and .resolve() (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details).
-  """
-  MustSupport: String
-  """
-  Code filters specify additional constraints on the data, specifying the value set of interest for a particular element of the data. Each code filter defines an additional constraint on the data, i.e. code filters are AND'ed, not OR'ed.
-  """
-  CodeFilter: Code
-  """
-  Date filters specify additional constraints on the data in terms of the applicable date range for specific elements. Each date filter specifies an additional constraint on the data, i.e. date filters are AND'ed, not OR'ed.
-  """
-  DateFilter: Date
-  """
-  Specifies a maximum number of results that are required (uses the _count search parameter).
-  """
-  Limit: PositiveInt
-  """
-  Specifies the order of the results to be returned.
-  """
-  Sort: [FHIRDatarequirementSortInput]
-}
-"""
-FHIRCountInput: input for Count
-"""
-input FHIRCountInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-  """
-  Value: Decimal
-  """
-  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
-  """
-  Comparator: CountComparatorEnum
-  """
-  A human-readable form of the unit.
-  """
-  Unit: String
-  """
-  The identification of the system that provides the coded form of the unit.
-  """
-  System: URI
-  """
-  A computer processable form of the unit in some unit representation system.
-  """
-  Code: Code
-}
-"""
-FHIRContributorInput: input for Contributor
-"""
-input FHIRContributorInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  The type of contributor.
-  """
-  Type: ContributorTypeEnum
-  """
-  The name of the individual or organization responsible for the contribution.
-  """
-  Name: String
-  """
-  Contact details to assist a user in finding and communicating with the contributor.
-  """
-  Contact: [FHIRContactDetailInput]
-}
 """
 FHIRContactPointInput: input for ContactPoint
 """
@@ -11453,24 +10684,7 @@ input FHIRContactPointInput {
   """
   Period: FHIRPeriodInput
 }
-"""
-FHIRContactDetailInput: input for ContactDetail
-"""
-input FHIRContactDetailInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
 
-  """
-  The name of an individual to contact.
-  """
-  Name: String
-  """
-  The contact details for the individual (if a name was provided) or the organization.
-  """
-  Telecom: [FHIRContactPointInput]
-}
 """
 FHIRCodingInput: input for Coding
 """
@@ -11669,41 +10883,6 @@ input FHIRAddressInput {
 }
 
 """
-FHIRUsageContext definition: specifies clinical/business/etc. metadata that can be used to retrieve, index and/or categorize an artifact. this metadata can either be specific to the applicable population (e.g., age category, drg) or the specific context of care (e.g., venue, care setting, provider of care).
-"""
-type FHIRUsageContext {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  A code that identifies the type of context being specified by this usage context.
-  """
-  Code: Code!
-
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueCodeableConcept: Code
-
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueQuantity: FHIRQuantity
-
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueRange: FHIRRange
-
-  """
-  A value that defines the context specified in this context of use. The interpretation of the value is defined by the code.
-  """
-  ValueReference: FHIRReference
-}
-
-"""
 FHIRTimingRepeat definition: specifies an event that may occur multiple times. timing schedules are used to record when things are planned, expected or requested to occur. the most common usage is in dosage instructions for medications. they are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.
 """
 type FHIRTimingRepeat {
@@ -11821,51 +11000,6 @@ type FHIRTiming {
   A code for the timing schedule (or just text in code.text). Some codes such as BID are ubiquitous, but many institutions define their own additional codes. If a code is provided, the code is understood to be a complete statement of whatever is specified in the structured timing data, and either the code or the data may be used to interpret the Timing, with the exception that .repeat.bounds still applies over the code (and is not contained in the code).
   """
   Code: Code!
-}
-
-"""
-FHIRSignature definition: a signature along with supporting context. the signature may be a digital signature that is cryptographic in nature, or some other signature acceptable to the domain. this other signature may be as simple as a graphical image representing a hand-written signature, or a signature ceremony different signature approaches have different utilities.
-"""
-type FHIRSignature {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  An indication of the reason that the entity signed this document. This may be explicitly included as part of the signature information and can be used when determining accountability for various actions concerning the document.
-  """
-  Type: [FHIRCoding!]!
-
-  """
-  When the digital signature was signed.
-  """
-  When: Instant
-
-  """
-  A reference to an application-usable description of the identity that signed  (e.g. the signature used their private key).
-  """
-  Who: FHIRReference!
-
-  """
-  A reference to an application-usable description of the identity that is represented by the signature.
-  """
-  OnBehalfOf: FHIRReference
-
-  """
-  A mime type that indicates the technical format of the target resources signed by the signature.
-  """
-  TargetFormat: Code
-
-  """
-  A mime type that indicates the technical format of the signature. Important mime types are application/signature+xml for X ML DigSig, application/jose for JWS, and image/* for a graphical image of a signature, etc.
-  """
-  SigFormat: Code
-
-  """
-  The base64 encoding of the Signature content. When signature is not recorded electronically this element would be empty.
-  """
-  Data: Base64Binary
 }
 
 """
@@ -12079,26 +11213,6 @@ type FHIRNarrative {
   The actual narrative content, a stripped down version of XHTML.
   """
   Div: XHTML!
-}
-
-"""
-FHIRMoney definition: an amount of economic utility in some recognized currency.
-"""
-type FHIRMoney {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  Numerical value (with implicit precision).
-  """
-  Value: Decimal
-
-  """
-  ISO 4217 Currency Code.
-  """
-  Currency: Code
 }
 
 """
@@ -12341,242 +11455,6 @@ type FHIRDosage {
   MaxDosePerLifetime: FHIRQuantity
 }
 
-"""
-FHIRDistance definition: a length - a value with a unit that is a physical distance.
-"""
-type FHIRDistance {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-  """
-  Value: Decimal
-
-  """
-  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
-  """
-  Comparator: DistanceComparatorEnum
-
-  """
-  A human-readable form of the unit.
-  """
-  Unit: String
-
-  """
-  The identification of the system that provides the coded form of the unit.
-  """
-  System: URI
-
-  """
-  A computer processable form of the unit in some unit representation system.
-  """
-  Code: Code
-}
-
-"""
-FHIRDatarequirementSort definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
-"""
-type FHIRDatarequirementSort {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The attribute of the sort. The specified path must be resolvable from the type of the required data. The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements. Note that the index must be an integer constant.
-  """
-  Path: String
-
-  """
-  The direction of the sort, ascending or descending.
-  """
-  Direction: DataRequirementSortDirectionEnum
-}
-
-"""
-FHIRDatarequirementDatefilter definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
-"""
-type FHIRDatarequirementDatefilter {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The date-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type date, dateTime, Period, Schedule, or Timing.
-  """
-  Path: String
-
-  """
-  A date parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type date, dateTime, Period, Schedule, or Timing.
-  """
-  SearchParam: String
-
-  """
-  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
-  """
-  ValueDateTime: Date
-
-  """
-  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
-  """
-  ValuePeriod: FHIRPeriod
-
-  """
-  The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime is specified, the filter will return only those data items that are equal to the specified dateTime. If a Duration is specified, the filter will return only those data items that fall within Duration before now.
-  """
-  ValueDuration: FHIRDuration
-}
-
-"""
-FHIRDatarequirementCodefilter definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
-"""
-type FHIRDatarequirementCodefilter {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The code-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type code, Coding, or CodeableConcept.
-  """
-  Path: String
-
-  """
-  A token parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type code, Coding, or CodeableConcept.
-  """
-  SearchParam: String
-
-  """
-  The valueset for the code filter. The valueSet and code elements are additive. If valueSet is specified, the filter will return only those data items for which the value of the code-valued element specified in the path is a member of the specified valueset.
-  """
-  ValueSet: Canonical
-
-  """
-  The codes for the code filter. If values are given, the filter will return only those data items for which the code-valued attribute specified by the path has a value that is one of the specified codes. If codes are specified in addition to a value set, the filter returns items matching a code in the value set or one of the specified codes.
-  """
-  Code: Code
-}
-
-"""
-FHIRDataRequirement definition: describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
-"""
-type FHIRDataRequirement {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.
-  """
-  Type: Code
-
-  """
-  The profile of the required data, specified as the uri of the profile definition.
-  """
-  Profile: [Canonical]
-
-  """
-  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
-  """
-  SubjectCodeableConcept: Code
-
-  """
-  The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
-  """
-  SubjectReference: FHIRReference
-
-  """
-      Indicates that specific elements of the type are referenced by the knowledge module and must be supported by the consumer in order to obtain an effective evaluation. This does not mean that a value is required for this element, only that the consuming system must understand the element and be able to provide values for it if they are available.
-
-  The value of mustSupport SHALL be a FHIRPath resolveable on the type of the DataRequirement. The path SHALL consist only of identifiers, constant indexers, and .resolve() (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details).
-  """
-  MustSupport: [String]
-
-  """
-  Code filters specify additional constraints on the data, specifying the value set of interest for a particular element of the data. Each code filter defines an additional constraint on the data, i.e. code filters are AND'ed, not OR'ed.
-  """
-  CodeFilter: Code
-
-  """
-  Date filters specify additional constraints on the data in terms of the applicable date range for specific elements. Each date filter specifies an additional constraint on the data, i.e. date filters are AND'ed, not OR'ed.
-  """
-  DateFilter: Date
-
-  """
-  Specifies a maximum number of results that are required (uses the _count search parameter).
-  """
-  Limit: PositiveInt
-
-  """
-  Specifies the order of the results to be returned.
-  """
-  Sort: [FHIRDatarequirementSort]
-}
-
-"""
-FHIRCount definition: a measured amount (or an amount that can potentially be measured). note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.
-"""
-type FHIRCount {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-  """
-  Value: Decimal
-
-  """
-  How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
-  """
-  Comparator: CountComparatorEnum
-
-  """
-  A human-readable form of the unit.
-  """
-  Unit: String
-
-  """
-  The identification of the system that provides the coded form of the unit.
-  """
-  System: URI
-
-  """
-  A computer processable form of the unit in some unit representation system.
-  """
-  Code: Code
-}
-
-"""
-FHIRContributor definition: a contributor to the content of a knowledge asset, including authors, editors, reviewers, and endorsers.
-"""
-type FHIRContributor {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The type of contributor.
-  """
-  Type: ContributorTypeEnum
-
-  """
-  The name of the individual or organization responsible for the contribution.
-  """
-  Name: String
-
-  """
-  Contact details to assist a user in finding and communicating with the contributor.
-  """
-  Contact: [FHIRContactDetail]
-}
 
 """
 FHIRContactPoint definition: details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc.
@@ -12611,26 +11489,6 @@ type FHIRContactPoint {
   Time period when the contact point was/is in use.
   """
   Period: FHIRPeriod
-}
-
-"""
-FHIRContactDetail definition: specifies contact information for a person or organization.
-"""
-type FHIRContactDetail {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  The name of an individual to contact.
-  """
-  Name: String
-
-  """
-  The contact details for the individual (if a name was provided) or the organization.
-  """
-  Telecom: [FHIRContactPoint]
 }
 
 """
@@ -13027,44 +11885,6 @@ enum DurationComparatorEnum {
   less_than_or_equal_to # ` + "`" + `original: <=` + "`" + `
   greater_than_or_equal_to # ` + "`" + `original: >=` + "`" + `
   greater_than # ` + "`" + `original: >` + "`" + `
-}
-
-"""
-DistanceComparatorEnum is a FHIR enum
-"""
-enum DistanceComparatorEnum {
-  less_than # ` + "`" + `original: <` + "`" + `
-  less_than_or_equal_to # ` + "`" + `original: <=` + "`" + `
-  greater_than_or_equal_to # ` + "`" + `original: >=` + "`" + `
-  greater_than # ` + "`" + `original: >` + "`" + `
-}
-
-"""
-DataRequirementSortDirectionEnum is a FHIR enum
-"""
-enum DataRequirementSortDirectionEnum {
-  ascending
-  descending
-}
-
-"""
-CountComparatorEnum is a FHIR enum
-"""
-enum CountComparatorEnum {
-  less_than # ` + "`" + `original: <` + "`" + `
-  less_than_or_equal_to # ` + "`" + `original: <=` + "`" + `
-  greater_than_or_equal_to # ` + "`" + `original: >=` + "`" + `
-  greater_than # ` + "`" + `original: >` + "`" + `
-}
-
-"""
-ContributorTypeEnum is a FHIR enum
-"""
-enum ContributorTypeEnum {
-  author
-  editor
-  reviewer
-  endorser
 }
 `, BuiltIn: false},
 	{Name: "federation/directives.graphql", Input: `
@@ -13544,6 +12364,120 @@ func (ec *executionContext) field_Query_getPatient_args(ctx context.Context, raw
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_listConcepts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["org"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("org"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["org"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["source"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("source"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["source"] = arg1
+	var arg2 bool
+	if tmp, ok := rawArgs["verbose"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verbose"))
+		arg2, err = ec.unmarshalNBoolean2bool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["verbose"] = arg2
+	var arg3 *string
+	if tmp, ok := rawArgs["q"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("q"))
+		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["q"] = arg3
+	var arg4 *string
+	if tmp, ok := rawArgs["sortAsc"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sortAsc"))
+		arg4, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sortAsc"] = arg4
+	var arg5 *string
+	if tmp, ok := rawArgs["sortDesc"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sortDesc"))
+		arg5, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sortDesc"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["conceptClass"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("conceptClass"))
+		arg6, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["conceptClass"] = arg6
+	var arg7 *string
+	if tmp, ok := rawArgs["dataType"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dataType"))
+		arg7, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["dataType"] = arg7
+	var arg8 *string
+	if tmp, ok := rawArgs["locale"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("locale"))
+		arg8, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["locale"] = arg8
+	var arg9 *bool
+	if tmp, ok := rawArgs["includeRetired"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeRetired"))
+		arg9, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["includeRetired"] = arg9
+	var arg10 *bool
+	if tmp, ok := rawArgs["includeMappings"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeMappings"))
+		arg10, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["includeMappings"] = arg10
+	var arg11 *bool
+	if tmp, ok := rawArgs["includeInverseMappings"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeInverseMappings"))
+		arg11, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["includeInverseMappings"] = arg11
 	return args, nil
 }
 
@@ -19021,102 +17955,6 @@ func (ec *executionContext) _FHIRConditionStage_Type(ctx context.Context, field 
 	return ec.marshalOFHIRCodeableConcept2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRContactDetail_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContactDetail) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRContactDetail",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRContactDetail_Name(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContactDetail) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRContactDetail",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRContactDetail_Telecom(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContactDetail) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRContactDetail",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Telecom, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRContactPoint)
-	fc.Result = res
-	return ec.marshalOFHIRContactPoint2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPoint(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _FHIRContactPoint_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRContactPoint) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -19307,1286 +18145,6 @@ func (ec *executionContext) _FHIRContactPoint_Period(ctx context.Context, field 
 	res := resTmp.(*clinical.FHIRPeriod)
 	fc.Result = res
 	return ec.marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRContributor_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRContributor",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRContributor_Type(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRContributor",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.ContributorTypeEnum)
-	fc.Result = res
-	return ec.marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRContributor_Name(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRContributor",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRContributor_Contact(ctx context.Context, field graphql.CollectedField, obj *model.FHIRContributor) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRContributor",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Contact, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.FHIRContactDetail)
-	fc.Result = res
-	return ec.marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRCount_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRCount",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRCount_Value(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRCount",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Value, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Decimal)
-	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRCount_Comparator(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRCount",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Comparator, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.CountComparatorEnum)
-	fc.Result = res
-	return ec.marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRCount_Unit(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRCount",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Unit, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRCount_System(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRCount",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.System, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.URI)
-	fc.Result = res
-	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRCount_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRCount) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRCount",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Code, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_Type(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_Profile(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Profile, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*base.Canonical)
-	fc.Result = res
-	return ec.marshalOCanonical2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_SubjectCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SubjectCodeableConcept, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_SubjectReference(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SubjectReference, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_MustSupport(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.MustSupport, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*string)
-	fc.Result = res
-	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_CodeFilter(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CodeFilter, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_DateFilter(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DateFilter, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Date)
-	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_Limit(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Limit, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOPositiveInt2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDataRequirement_Sort(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDataRequirement) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDataRequirement",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Sort, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.FHIRDatarequirementSort)
-	fc.Result = res
-	return ec.marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementCodefilter_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementCodefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementCodefilter_Path(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementCodefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Path, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementCodefilter_SearchParam(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementCodefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SearchParam, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementCodefilter_ValueSet(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementCodefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValueSet, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Canonical)
-	fc.Result = res
-	return ec.marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementCodefilter_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementCodefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementCodefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Code, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementDatefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementDatefilter_Path(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementDatefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Path, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementDatefilter_SearchParam(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementDatefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SearchParam, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDateTime(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementDatefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValueDateTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Date)
-	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ValuePeriod(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementDatefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValuePeriod, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRPeriod)
-	fc.Result = res
-	return ec.marshalOFHIRPeriod2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriod(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementDatefilter_ValueDuration(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementDatefilter) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementDatefilter",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValueDuration, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRDuration)
-	fc.Result = res
-	return ec.marshalOFHIRDuration2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDuration(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementSort_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementSort) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementSort",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementSort_Path(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementSort) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementSort",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Path, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDatarequirementSort_Direction(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDatarequirementSort) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDatarequirementSort",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Direction, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.DataRequirementSortDirectionEnum)
-	fc.Result = res
-	return ec.marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDistance_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDistance",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDistance_Value(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDistance",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Value, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Decimal)
-	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDistance_Comparator(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDistance",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Comparator, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.DistanceComparatorEnum)
-	fc.Result = res
-	return ec.marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDistance_Unit(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDistance",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Unit, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDistance_System(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDistance",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.System, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.URI)
-	fc.Result = res
-	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRDistance_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRDistance) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRDistance",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Code, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRDosage_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDosage) (ret graphql.Marshaler) {
@@ -26544,102 +24102,6 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution_Reason(ctx contex
 	res := resTmp.(*clinical.FHIRCodeableConcept)
 	fc.Result = res
 	return ec.marshalOFHIRCodeableConcept2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRMoney_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRMoney) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRMoney",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRMoney_Value(ctx context.Context, field graphql.CollectedField, obj *model.FHIRMoney) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRMoney",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Value, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Decimal)
-	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRMoney_Currency(ctx context.Context, field graphql.CollectedField, obj *model.FHIRMoney) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRMoney",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Currency, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRNarrative_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRNarrative) (ret graphql.Marshaler) {
@@ -33065,268 +30527,6 @@ func (ec *executionContext) _FHIRServiceRequestRelayPayload_resource(ctx context
 	return ec.marshalNFHIRServiceRequest2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRServiceRequest(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _FHIRSignature_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRSignature_Type(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*clinical.FHIRCoding)
-	fc.Result = res
-	return ec.marshalNFHIRCoding2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRSignature_When(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.When, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Instant)
-	fc.Result = res
-	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRSignature_Who(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Who, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalNFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRSignature_OnBehalfOf(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OnBehalfOf, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRSignature_TargetFormat(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TargetFormat, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRSignature_SigFormat(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SigFormat, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRSignature_Data(ctx context.Context, field graphql.CollectedField, obj *model.FHIRSignature) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRSignature",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Data, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Base64Binary)
-	fc.Result = res
-	return ec.marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _FHIRTiming_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTiming) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -34032,201 +31232,6 @@ func (ec *executionContext) _FHIRTimingRepeat_Offset(ctx context.Context, field 
 	res := resTmp.(*int)
 	fc.Result = res
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRUsageContext_ID(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRUsageContext",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRUsageContext_Code(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRUsageContext",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Code, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(base.Code)
-	fc.Result = res
-	return ec.marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRUsageContext_ValueCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRUsageContext",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValueCodeableConcept, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*base.Code)
-	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRUsageContext_ValueQuantity(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRUsageContext",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValueQuantity, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRQuantity)
-	fc.Result = res
-	return ec.marshalOFHIRQuantity2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantity(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRUsageContext_ValueRange(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRUsageContext",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValueRange, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRRange)
-	fc.Result = res
-	return ec.marshalOFHIRRange2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRange(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _FHIRUsageContext_ValueReference(ctx context.Context, field graphql.CollectedField, obj *model.FHIRUsageContext) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "FHIRUsageContext",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ValueReference, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*clinical.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_startEpisodeByOTP(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -36251,6 +33256,48 @@ func (ec *executionContext) _Query_searchFHIRComposition(ctx context.Context, fi
 	res := resTmp.(*clinical.FHIRCompositionRelayConnection)
 	fc.Result = res
 	return ec.marshalNFHIRCompositionRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelayConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_listConcepts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_listConcepts_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ListConcepts(rctx, args["org"].(string), args["source"].(string), args["verbose"].(bool), args["q"].(*string), args["sortAsc"].(*string), args["sortDesc"].(*string), args["conceptClass"].(*string), args["dataType"].(*string), args["locale"].(*string), args["includeRetired"].(*bool), args["includeMappings"].(*bool), args["includeInverseMappings"].(*bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]map[string]interface{})
+	fc.Result = res
+	return ec.marshalNMap2ᚕmapᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query__entities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -38936,42 +35983,6 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRContactDetailInput(ctx context.Context, obj interface{}) (model.FHIRContactDetailInput, error) {
-	var it model.FHIRContactDetailInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
-			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Telecom":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Telecom"))
-			it.Telecom, err = ec.unmarshalOFHIRContactPointInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPointInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Context, obj interface{}) (clinical.FHIRContactPointInput, error) {
 	var it clinical.FHIRContactPointInput
 	var asMap = obj.(map[string]interface{})
@@ -39023,410 +36034,6 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
 			it.Period, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRContributorInput(ctx context.Context, obj interface{}) (model.FHIRContributorInput, error) {
-	var it model.FHIRContributorInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Type":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
-			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Contact":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Contact"))
-			it.Contact, err = ec.unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRCountInput(ctx context.Context, obj interface{}) (model.FHIRCountInput, error) {
-	var it model.FHIRCountInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Value":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
-			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Comparator":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
-			it.Comparator, err = ec.unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Unit":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Unit"))
-			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "System":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
-			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Code":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRDataRequirementInput(ctx context.Context, obj interface{}) (model.FHIRDataRequirementInput, error) {
-	var it model.FHIRDataRequirementInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Type":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Profile":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Profile"))
-			it.Profile, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "SubjectCodeableConcept":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SubjectCodeableConcept"))
-			it.SubjectCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "SubjectReference":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SubjectReference"))
-			it.SubjectReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "MustSupport":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MustSupport"))
-			it.MustSupport, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "CodeFilter":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CodeFilter"))
-			it.CodeFilter, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "DateFilter":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DateFilter"))
-			it.DateFilter, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Limit":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Limit"))
-			it.Limit, err = ec.unmarshalOPositiveInt2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Sort":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Sort"))
-			it.Sort, err = ec.unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRDatarequirementCodefilterInput(ctx context.Context, obj interface{}) (model.FHIRDatarequirementCodefilterInput, error) {
-	var it model.FHIRDatarequirementCodefilterInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Path":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Path"))
-			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "SearchParam":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SearchParam"))
-			it.SearchParam, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValueSet":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueSet"))
-			it.ValueSet, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Code":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRDatarequirementDatefilterInput(ctx context.Context, obj interface{}) (model.FHIRDatarequirementDatefilterInput, error) {
-	var it model.FHIRDatarequirementDatefilterInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Path":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Path"))
-			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "SearchParam":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SearchParam"))
-			it.SearchParam, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValueDateTime":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDateTime"))
-			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValuePeriod":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValuePeriod"))
-			it.ValuePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRPeriodInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValueDuration":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDuration"))
-			it.ValueDuration, err = ec.unmarshalOFHIRDurationInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRDurationInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRDatarequirementSortInput(ctx context.Context, obj interface{}) (model.FHIRDatarequirementSortInput, error) {
-	var it model.FHIRDatarequirementSortInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Path":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Path"))
-			it.Path, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Direction"))
-			it.Direction, err = ec.unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRDistanceInput(ctx context.Context, obj interface{}) (model.FHIRDistanceInput, error) {
-	var it model.FHIRDistanceInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Value":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
-			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Comparator":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Comparator"))
-			it.Comparator, err = ec.unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Unit":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Unit"))
-			it.Unit, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "System":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
-			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Code":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40983,42 +37590,6 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Reason"))
 			it.Reason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRMoneyInput(ctx context.Context, obj interface{}) (model.FHIRMoneyInput, error) {
-	var it model.FHIRMoneyInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Value":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
-			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Currency":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Currency"))
-			it.Currency, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -42596,82 +39167,6 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRSignatureInput(ctx context.Context, obj interface{}) (model.FHIRSignatureInput, error) {
-	var it model.FHIRSignatureInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Type":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalNFHIRCodingInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCodingInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "When":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("When"))
-			it.When, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Who":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Who"))
-			it.Who, err = ec.unmarshalNFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OnBehalfOf":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnBehalfOf"))
-			it.OnBehalfOf, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "TargetFormat":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("TargetFormat"))
-			it.TargetFormat, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "SigFormat":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SigFormat"))
-			it.SigFormat, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Data":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Data"))
-			it.Data, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, obj interface{}) (clinical.FHIRTimingInput, error) {
 	var it clinical.FHIRTimingInput
 	var asMap = obj.(map[string]interface{})
@@ -42863,66 +39358,6 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Offset"))
 			it.Offset, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRUsageContextInput(ctx context.Context, obj interface{}) (model.FHIRUsageContextInput, error) {
-	var it model.FHIRUsageContextInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Code":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValueCodeableConcept":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueCodeableConcept"))
-			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValueQuantity":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueQuantity"))
-			it.ValueQuantity, err = ec.unmarshalOFHIRQuantityInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRQuantityInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValueRange":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueRange"))
-			it.ValueRange, err = ec.unmarshalOFHIRRangeInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRRangeInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ValueReference":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueReference"))
-			it.ValueReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRReferenceInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -44598,34 +41033,6 @@ func (ec *executionContext) _FHIRConditionStage(ctx context.Context, sel ast.Sel
 	return out
 }
 
-var fHIRContactDetailImplementors = []string{"FHIRContactDetail"}
-
-func (ec *executionContext) _FHIRContactDetail(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRContactDetail) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRContactDetailImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRContactDetail")
-		case "ID":
-			out.Values[i] = ec._FHIRContactDetail_ID(ctx, field, obj)
-		case "Name":
-			out.Values[i] = ec._FHIRContactDetail_Name(ctx, field, obj)
-		case "Telecom":
-			out.Values[i] = ec._FHIRContactDetail_Telecom(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var fHIRContactPointImplementors = []string{"FHIRContactPoint"}
 
 func (ec *executionContext) _FHIRContactPoint(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRContactPoint) graphql.Marshaler {
@@ -44649,240 +41056,6 @@ func (ec *executionContext) _FHIRContactPoint(ctx context.Context, sel ast.Selec
 			out.Values[i] = ec._FHIRContactPoint_Rank(ctx, field, obj)
 		case "Period":
 			out.Values[i] = ec._FHIRContactPoint_Period(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRContributorImplementors = []string{"FHIRContributor"}
-
-func (ec *executionContext) _FHIRContributor(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRContributor) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRContributorImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRContributor")
-		case "ID":
-			out.Values[i] = ec._FHIRContributor_ID(ctx, field, obj)
-		case "Type":
-			out.Values[i] = ec._FHIRContributor_Type(ctx, field, obj)
-		case "Name":
-			out.Values[i] = ec._FHIRContributor_Name(ctx, field, obj)
-		case "Contact":
-			out.Values[i] = ec._FHIRContributor_Contact(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRCountImplementors = []string{"FHIRCount"}
-
-func (ec *executionContext) _FHIRCount(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRCount) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRCountImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRCount")
-		case "ID":
-			out.Values[i] = ec._FHIRCount_ID(ctx, field, obj)
-		case "Value":
-			out.Values[i] = ec._FHIRCount_Value(ctx, field, obj)
-		case "Comparator":
-			out.Values[i] = ec._FHIRCount_Comparator(ctx, field, obj)
-		case "Unit":
-			out.Values[i] = ec._FHIRCount_Unit(ctx, field, obj)
-		case "System":
-			out.Values[i] = ec._FHIRCount_System(ctx, field, obj)
-		case "Code":
-			out.Values[i] = ec._FHIRCount_Code(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRDataRequirementImplementors = []string{"FHIRDataRequirement"}
-
-func (ec *executionContext) _FHIRDataRequirement(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDataRequirement) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDataRequirementImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRDataRequirement")
-		case "ID":
-			out.Values[i] = ec._FHIRDataRequirement_ID(ctx, field, obj)
-		case "Type":
-			out.Values[i] = ec._FHIRDataRequirement_Type(ctx, field, obj)
-		case "Profile":
-			out.Values[i] = ec._FHIRDataRequirement_Profile(ctx, field, obj)
-		case "SubjectCodeableConcept":
-			out.Values[i] = ec._FHIRDataRequirement_SubjectCodeableConcept(ctx, field, obj)
-		case "SubjectReference":
-			out.Values[i] = ec._FHIRDataRequirement_SubjectReference(ctx, field, obj)
-		case "MustSupport":
-			out.Values[i] = ec._FHIRDataRequirement_MustSupport(ctx, field, obj)
-		case "CodeFilter":
-			out.Values[i] = ec._FHIRDataRequirement_CodeFilter(ctx, field, obj)
-		case "DateFilter":
-			out.Values[i] = ec._FHIRDataRequirement_DateFilter(ctx, field, obj)
-		case "Limit":
-			out.Values[i] = ec._FHIRDataRequirement_Limit(ctx, field, obj)
-		case "Sort":
-			out.Values[i] = ec._FHIRDataRequirement_Sort(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRDatarequirementCodefilterImplementors = []string{"FHIRDatarequirementCodefilter"}
-
-func (ec *executionContext) _FHIRDatarequirementCodefilter(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDatarequirementCodefilter) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDatarequirementCodefilterImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRDatarequirementCodefilter")
-		case "ID":
-			out.Values[i] = ec._FHIRDatarequirementCodefilter_ID(ctx, field, obj)
-		case "Path":
-			out.Values[i] = ec._FHIRDatarequirementCodefilter_Path(ctx, field, obj)
-		case "SearchParam":
-			out.Values[i] = ec._FHIRDatarequirementCodefilter_SearchParam(ctx, field, obj)
-		case "ValueSet":
-			out.Values[i] = ec._FHIRDatarequirementCodefilter_ValueSet(ctx, field, obj)
-		case "Code":
-			out.Values[i] = ec._FHIRDatarequirementCodefilter_Code(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRDatarequirementDatefilterImplementors = []string{"FHIRDatarequirementDatefilter"}
-
-func (ec *executionContext) _FHIRDatarequirementDatefilter(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDatarequirementDatefilter) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDatarequirementDatefilterImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRDatarequirementDatefilter")
-		case "ID":
-			out.Values[i] = ec._FHIRDatarequirementDatefilter_ID(ctx, field, obj)
-		case "Path":
-			out.Values[i] = ec._FHIRDatarequirementDatefilter_Path(ctx, field, obj)
-		case "SearchParam":
-			out.Values[i] = ec._FHIRDatarequirementDatefilter_SearchParam(ctx, field, obj)
-		case "ValueDateTime":
-			out.Values[i] = ec._FHIRDatarequirementDatefilter_ValueDateTime(ctx, field, obj)
-		case "ValuePeriod":
-			out.Values[i] = ec._FHIRDatarequirementDatefilter_ValuePeriod(ctx, field, obj)
-		case "ValueDuration":
-			out.Values[i] = ec._FHIRDatarequirementDatefilter_ValueDuration(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRDatarequirementSortImplementors = []string{"FHIRDatarequirementSort"}
-
-func (ec *executionContext) _FHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDatarequirementSort) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDatarequirementSortImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRDatarequirementSort")
-		case "ID":
-			out.Values[i] = ec._FHIRDatarequirementSort_ID(ctx, field, obj)
-		case "Path":
-			out.Values[i] = ec._FHIRDatarequirementSort_Path(ctx, field, obj)
-		case "Direction":
-			out.Values[i] = ec._FHIRDatarequirementSort_Direction(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRDistanceImplementors = []string{"FHIRDistance"}
-
-func (ec *executionContext) _FHIRDistance(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRDistance) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRDistanceImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRDistance")
-		case "ID":
-			out.Values[i] = ec._FHIRDistance_ID(ctx, field, obj)
-		case "Value":
-			out.Values[i] = ec._FHIRDistance_Value(ctx, field, obj)
-		case "Comparator":
-			out.Values[i] = ec._FHIRDistance_Comparator(ctx, field, obj)
-		case "Unit":
-			out.Values[i] = ec._FHIRDistance_Unit(ctx, field, obj)
-		case "System":
-			out.Values[i] = ec._FHIRDistance_System(ctx, field, obj)
-		case "Code":
-			out.Values[i] = ec._FHIRDistance_Code(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -45936,34 +42109,6 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution(ctx context.Conte
 			out.Values[i] = ec._FHIRMedicationrequestSubstitution_AllowedCodeableConcept(ctx, field, obj)
 		case "Reason":
 			out.Values[i] = ec._FHIRMedicationrequestSubstitution_Reason(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMoneyImplementors = []string{"FHIRMoney"}
-
-func (ec *executionContext) _FHIRMoney(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRMoney) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMoneyImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMoney")
-		case "ID":
-			out.Values[i] = ec._FHIRMoney_ID(ctx, field, obj)
-		case "Value":
-			out.Values[i] = ec._FHIRMoney_Value(ctx, field, obj)
-		case "Currency":
-			out.Values[i] = ec._FHIRMoney_Currency(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -47074,50 +43219,6 @@ func (ec *executionContext) _FHIRServiceRequestRelayPayload(ctx context.Context,
 	return out
 }
 
-var fHIRSignatureImplementors = []string{"FHIRSignature"}
-
-func (ec *executionContext) _FHIRSignature(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRSignature) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRSignatureImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRSignature")
-		case "ID":
-			out.Values[i] = ec._FHIRSignature_ID(ctx, field, obj)
-		case "Type":
-			out.Values[i] = ec._FHIRSignature_Type(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "When":
-			out.Values[i] = ec._FHIRSignature_When(ctx, field, obj)
-		case "Who":
-			out.Values[i] = ec._FHIRSignature_Who(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "OnBehalfOf":
-			out.Values[i] = ec._FHIRSignature_OnBehalfOf(ctx, field, obj)
-		case "TargetFormat":
-			out.Values[i] = ec._FHIRSignature_TargetFormat(ctx, field, obj)
-		case "SigFormat":
-			out.Values[i] = ec._FHIRSignature_SigFormat(ctx, field, obj)
-		case "Data":
-			out.Values[i] = ec._FHIRSignature_Data(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var fHIRTimingImplementors = []string{"FHIRTiming"}
 
 func (ec *executionContext) _FHIRTiming(ctx context.Context, sel ast.SelectionSet, obj *clinical.FHIRTiming) graphql.Marshaler {
@@ -47198,43 +43299,6 @@ func (ec *executionContext) _FHIRTimingRepeat(ctx context.Context, sel ast.Selec
 			out.Values[i] = ec._FHIRTimingRepeat_When(ctx, field, obj)
 		case "Offset":
 			out.Values[i] = ec._FHIRTimingRepeat_Offset(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRUsageContextImplementors = []string{"FHIRUsageContext"}
-
-func (ec *executionContext) _FHIRUsageContext(ctx context.Context, sel ast.SelectionSet, obj *model.FHIRUsageContext) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRUsageContextImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRUsageContext")
-		case "ID":
-			out.Values[i] = ec._FHIRUsageContext_ID(ctx, field, obj)
-		case "Code":
-			out.Values[i] = ec._FHIRUsageContext_Code(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "ValueCodeableConcept":
-			out.Values[i] = ec._FHIRUsageContext_ValueCodeableConcept(ctx, field, obj)
-		case "ValueQuantity":
-			out.Values[i] = ec._FHIRUsageContext_ValueQuantity(ctx, field, obj)
-		case "ValueRange":
-			out.Values[i] = ec._FHIRUsageContext_ValueRange(ctx, field, obj)
-		case "ValueReference":
-			out.Values[i] = ec._FHIRUsageContext_ValueReference(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -47749,6 +43813,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_searchFHIRComposition(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "listConcepts":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_listConcepts(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -49741,42 +45819,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) unmarshalOCanonical2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, v interface{}) ([]*base.Canonical, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*base.Canonical, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOCanonical2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, sel ast.SelectionSet, v []*base.Canonical) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
 func (ec *executionContext) unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, v interface{}) (*base.Canonical, error) {
 	if v == nil {
 		return nil, nil
@@ -49925,54 +45967,6 @@ func (ec *executionContext) marshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋ
 	return v
 }
 
-func (ec *executionContext) unmarshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx context.Context, v interface{}) (*model.ContributorTypeEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(model.ContributorTypeEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOContributorTypeEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐContributorTypeEnum(ctx context.Context, sel ast.SelectionSet, v *model.ContributorTypeEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx context.Context, v interface{}) (*model.CountComparatorEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(model.CountComparatorEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOCountComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐCountComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *model.CountComparatorEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx context.Context, v interface{}) (*model.DataRequirementSortDirectionEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(model.DataRequirementSortDirectionEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalODataRequirementSortDirectionEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDataRequirementSortDirectionEnum(ctx context.Context, sel ast.SelectionSet, v *model.DataRequirementSortDirectionEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
 func (ec *executionContext) unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, v interface{}) (*base.Date, error) {
 	if v == nil {
 		return nil, nil
@@ -50051,22 +46045,6 @@ func (ec *executionContext) unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgo
 }
 
 func (ec *executionContext) marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, sel ast.SelectionSet, v *base.Decimal) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx context.Context, v interface{}) (*model.DistanceComparatorEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(model.DistanceComparatorEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalODistanceComparatorEnum2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐDistanceComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *model.DistanceComparatorEnum) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -51231,85 +47209,6 @@ func (ec *executionContext) unmarshalOFHIRConditionStageInput2ᚖgitlabᚗslade3
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOFHIRContactDetail2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v []*model.FHIRContactDetail) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRContactDetail2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRContactDetail2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetail(ctx context.Context, sel ast.SelectionSet, v *model.FHIRContactDetail) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRContactDetail(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx context.Context, v interface{}) ([]*model.FHIRContactDetailInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*model.FHIRContactDetailInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOFHIRContactDetailInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRContactDetailInput(ctx context.Context, v interface{}) (*model.FHIRContactDetailInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRContactDetailInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalOFHIRContactPoint2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRContactPoint(ctx context.Context, sel ast.SelectionSet, v []*clinical.FHIRContactPoint) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -51386,85 +47285,6 @@ func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚖgitlabᚗslade360
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRContactPointInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v []*model.FHIRDatarequirementSort) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRDatarequirementSort2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRDatarequirementSort2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSort(ctx context.Context, sel ast.SelectionSet, v *model.FHIRDatarequirementSort) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRDatarequirementSort(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) ([]*model.FHIRDatarequirementSortInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*model.FHIRDatarequirementSortInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOFHIRDatarequirementSortInput2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋmodelᚐFHIRDatarequirementSortInput(ctx context.Context, v interface{}) (*model.FHIRDatarequirementSortInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRDatarequirementSortInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

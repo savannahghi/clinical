@@ -8,6 +8,7 @@ import (
 
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
+	"gitlab.slade360emr.com/go/clinical/graph/openconceptlab"
 )
 
 //go:generate go run github.com/99designs/gqlgen
@@ -15,14 +16,17 @@ import (
 // Resolver wires up the resolvers needed for the clinical services
 type Resolver struct {
 	clinicalService *clinical.Service
+	oclService      *openconceptlab.Service
 }
 
 // NewResolver initializes a working top leve Resolver that has been initialized
 // with all necessary dependencies
 func NewResolver() *Resolver {
 	clinicalService := clinical.NewService()
+	oclService := openconceptlab.NewService()
 	return &Resolver{
 		clinicalService: clinicalService,
+		oclService:      oclService,
 	}
 }
 
@@ -38,6 +42,10 @@ func (r *Resolver) CheckUserTokenInContext(ctx context.Context) *auth.Token {
 // CheckDependencies ensures that the resolver has what it needs in order to work
 func (r *Resolver) CheckDependencies() {
 	if r.clinicalService == nil {
-		log.Panicf("graph.Resolver: clinicalService is nil")
+		log.Panicf("nil clinicalService in resolver")
+	}
+
+	if r.oclService == nil {
+		log.Panicf("nil oclService in resolver")
 	}
 }
