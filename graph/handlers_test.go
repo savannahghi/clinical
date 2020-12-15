@@ -4244,6 +4244,14 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 		return
 	}
 
+	_, patient, _, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("failed to create a patient")
+	}
+
+	ID := patient.ID
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -4259,12 +4267,63 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 			name: "invalid query",
 			args: args{
 				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
+					"query": `
+					query SearchMedicationRequests($params: Map!) {
+						searchFHIRMedicationRequest(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Status
+							  Intent
+							  Priority
+							  Subject {
+								Reference
+								Type
+								Display
+							  }
+							  MedicationCodeableConcept{
+								Text
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  DosageInstruction{
+								Text
+								PatientInstruction
+							  }
+							  Requester{
+								Display
+							  }
+							  Encounter {
+								Reference
+								Type
+								Display
+							  }
+							  SupportingInformation {
+								ID
+								Reference
+								Display
+							  }
+							  AuthoredOn
+							  Note{
+								AuthorString
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient": ID,
+						},
+					},
 				},
 			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -4335,6 +4394,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+				
 			}
 
 			if tt.wantStatus != resp.StatusCode {
