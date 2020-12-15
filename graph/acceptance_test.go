@@ -483,11 +483,11 @@ func getTestSimpleServiceRequest(
 	msisdn string,
 	fullAccess bool,
 	providerCode string,
-) (*clinical.FHIRServiceRequestInput, error) {
+) (*clinical.FHIRServiceRequestInput, string, string, error) {
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, msisdn, false, providerCode)
 	if err != nil {
-		return nil, fmt.Errorf("can't create a service request: %w", err)
+		return nil, "", "", fmt.Errorf("can't create a service request: %w", err)
 	}
 	patientName := patient.Names()
 	requester := gofakeit.Name()
@@ -548,7 +548,7 @@ func getTestSimpleServiceRequest(
 				},
 			},
 		},
-	}, nil
+	}, encounterID, *patient.ID, nil
 }
 
 func getTestServiceRequest(
@@ -556,19 +556,19 @@ func getTestServiceRequest(
 	msisdn string,
 	fullAccess bool,
 	providerCode string,
-) (*clinical.FHIRServiceRequest, error) {
+) (*clinical.FHIRServiceRequest, string, string, error) {
 	srv := clinical.NewService()
-	simpleServiceRequestInput, err := getTestSimpleServiceRequest(ctx,
+	simpleServiceRequestInput, encounterID, patientID, err := getTestSimpleServiceRequest(ctx,
 		msisdn, fullAccess, providerCode)
 	if err != nil {
-		return nil, fmt.Errorf("can't genereate simple service request input: %v", err)
+		return nil, "", "", fmt.Errorf("can't genereate simple service request input: %v", err)
 	}
 
 	serviceRequestPayload, err := srv.CreateFHIRServiceRequest(ctx, *simpleServiceRequestInput)
 	if err != nil {
-		return nil, fmt.Errorf("can't create service request: %v", err)
+		return nil, "", "", fmt.Errorf("can't create service request: %v", err)
 	}
 
-	return serviceRequestPayload.Resource, nil
+	return serviceRequestPayload.Resource, encounterID, patientID, nil
 
 }
