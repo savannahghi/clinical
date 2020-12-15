@@ -3266,7 +3266,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 	}
 }
 
-func TestGraphQVisitSummary(t *testing.T) {
+func TestGraphQLVisitSummary(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -3281,6 +3281,12 @@ func TestGraphQVisitSummary(t *testing.T) {
 		return
 	}
 
+	encounterID, err := patientVisitSummary(ctx)
+	if err != nil {
+		t.Errorf("can't create a visit summary")
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -3291,7 +3297,6 @@ func TestGraphQVisitSummary(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @timeline @mathenge Test visit summary
 		{
 			name: "invalid query",
 			args: args{
@@ -3302,6 +3307,21 @@ func TestGraphQVisitSummary(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query VisitSummary($encounterID: String!) {
+						visitSummary(encounterID: $encounterID)
+					  }`,
+					"variables": map[string]interface{}{
+						"encounterID": encounterID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -3371,6 +3391,156 @@ func TestGraphQVisitSummary(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					for nestedKey := range nestedMap {
+						if nestedKey == "visitSummary" {
+							output, ok := nestedMap[nestedKey].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast output to map[string]interface{}")
+								return
+							}
+
+							for summary := range output {
+								switch summary {
+								case "Condition":
+									condition, ok := output["Condition"].([]interface{})
+									if !ok {
+										t.Errorf("can't cast output to []interface{}")
+										return
+									}
+
+									for _, c := range condition {
+										conditionMap, ok := c.(map[string]interface{})
+										if !ok {
+											t.Errorf("can't cast to map[string]interface{}")
+											return
+										}
+										if conditionMap["subject"] == nil {
+											t.Errorf("can't find a condition")
+											return
+										}
+									}
+
+								case "Encounter":
+									encounter, ok := output["Encounter"].([]interface{})
+									if !ok {
+										t.Errorf("can't cast encounter to []interface{}")
+										return
+									}
+
+									for _, e := range encounter {
+										encounterMap, ok := e.(map[string]interface{})
+										if !ok {
+											t.Errorf("can't cast to map[string]interface{}")
+											return
+										}
+										if encounterMap["subject"] == nil {
+											t.Errorf("can't find a encounter")
+											return
+										}
+									}
+								case "Observation":
+									observation, ok := output["Observation"].([]interface{})
+									if !ok {
+										t.Errorf("can't cast observation to []interface{}")
+										return
+									}
+
+									for _, o := range observation {
+										observationMap, ok := o.(map[string]interface{})
+										if !ok {
+											t.Errorf("can't cast to map[string]interface{}")
+											return
+										}
+										if observationMap["subject"] == nil {
+											t.Errorf("can't find a observation")
+											return
+										}
+									}
+								case "Composition":
+									composition, ok := output["Composition"].([]interface{})
+									if !ok {
+										t.Errorf("can't cast composition to []interface{}")
+										return
+									}
+
+									for _, co := range composition {
+										compositionMap, ok := co.(map[string]interface{})
+										if !ok {
+											t.Errorf("can't cast to map[string]interface{}")
+											return
+										}
+										log.Printf("%v", compositionMap)
+										if compositionMap["subject"] == nil {
+											t.Errorf("can't find a composition")
+											return
+										}
+									}
+								case "ServiceRequest":
+									serviceRequest, ok := output["ServiceRequest"].([]interface{})
+									if !ok {
+										t.Errorf("can't cast serviceRequest to []interface{}")
+										return
+									}
+
+									for _, sr := range serviceRequest {
+										serviceRequestMap, ok := sr.(map[string]interface{})
+										if !ok {
+											t.Errorf("can't cast to map[string]interface{}")
+											return
+										}
+										if serviceRequestMap["subject"] == nil {
+											t.Errorf("can't find a serviceRequest")
+											return
+										}
+									}
+								case "MedicationRequest":
+									medicationRequest, ok := output["MedicationRequest"].([]interface{})
+									if !ok {
+										t.Errorf("can't cast medicationRequest to []interface{}")
+										return
+									}
+
+									for _, mr := range medicationRequest {
+										medicationRequestMap, ok := mr.(map[string]interface{})
+										if !ok {
+											t.Errorf("can't cast to map[string]interface{}")
+											return
+										}
+										if medicationRequestMap["subject"] == nil {
+											t.Errorf("can't find a medicationRequest")
+											return
+										}
+									}
+								case "AllergyIntolerance":
+									allergyIntolerance, ok := output["AllergyIntolerance"].([]interface{})
+									if !ok {
+										t.Errorf("can't cast allergyIntolerance to []interface{}")
+										return
+									}
+
+									for _, a := range allergyIntolerance {
+										allergyIntoleranceMap, ok := a.(map[string]interface{})
+										if !ok {
+											t.Errorf("can't cast to map[string]interface{}")
+											return
+										}
+										if allergyIntoleranceMap["subject"] == nil {
+											t.Errorf("can't find a allergyIntolerance")
+											return
+										}
+									}
+								}
+							}
+
+						}
+					}
 				}
 			}
 
@@ -6107,8 +6277,13 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 		return
 	}
 
-	serviceRequest, _, _, err := getTestServiceRequest(
+	_, _, encounterID, err := getTestEncounterID(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+	serviceRequest, _, err := getTestServiceRequest(ctx, encounterID)
 	if err != nil {
 		t.Errorf("error creating test service request: %w", err)
 		return
@@ -6263,8 +6438,13 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 		return
 	}
 
-	serviceRequest, encounterID, patientID, err := getTestServiceRequest(
+	_, _, encounterID, err := getTestEncounterID(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+	serviceRequest, patientID, err := getTestServiceRequest(ctx, encounterID)
 	if err != nil {
 		t.Errorf("error creating test service request: %w", err)
 		return
@@ -6690,7 +6870,13 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 		return
 	}
 
-	_, patient, status, encounterID, err := createFHIRTestObservation(ctx)
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("can't create test encounter: %w", err)
+		return
+	}
+	_, patient, status, err := createFHIRTestObservation(ctx, encounterID)
 	if err != nil {
 		t.Errorf("can't create FHIR test observation: %w", err)
 		return
@@ -7241,7 +7427,13 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 		return
 	}
 
-	composition, _, _, err := createTestFHIRComposition(ctx)
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+	composition, _, err := createTestFHIRComposition(ctx, encounterID)
 	if err != nil {
 		t.Errorf("can't create test composition: %w", err)
 		return
@@ -7426,7 +7618,13 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 		return
 	}
 
-	_, patient, encounterID, err := createTestFHIRComposition(ctx)
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+	_, patient, err := createTestFHIRComposition(ctx, encounterID)
 	if err != nil {
 		t.Errorf("can't create test composition: %w", err)
 		return

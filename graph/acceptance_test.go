@@ -358,18 +358,16 @@ func getTestFHIRMedicationRequestID(t *testing.T) string {
 	return ""
 }
 
-func createFHIRTestObservation(ctx context.Context) (
+func createFHIRTestObservation(ctx context.Context, encounterID string) (
 	*clinical.FHIRObservation,
 	*clinical.FHIRPatient,
 	*clinical.ObservationStatusEnum,
-	string, // encounter ID
 	error,
 ) {
 	instantRecorded := base.Instant(time.Now().Format(instantFormat))
-	_, patient, encounterID, err := getTestEncounterID(
-		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		return nil, nil, nil, "", fmt.Errorf("can't create test encounter: %w", err)
+		return nil, nil, nil, fmt.Errorf("can't create test patient: %w", err)
 	}
 	srv := clinical.NewService()
 	status := clinical.ObservationStatusEnumPreliminary
@@ -473,21 +471,19 @@ func createFHIRTestObservation(ctx context.Context) (
 	}
 	obsPl, err := srv.CreateFHIRObservation(ctx, inp)
 	if err != nil {
-		return nil, nil, nil, "", fmt.Errorf("can't create FHIR observation: %w", err)
+		return nil, nil, nil, fmt.Errorf("can't create FHIR observation: %w", err)
 	}
-	return obsPl.Resource, patient, &status, encounterID, nil
+	return obsPl.Resource, patient, &status, nil
 }
 
-func getTestSimpleServiceRequest(
-	ctx context.Context,
-	msisdn string,
-	fullAccess bool,
-	providerCode string,
-) (*clinical.FHIRServiceRequestInput, string, string, error) {
-	_, patient, encounterID, err := getTestEncounterID(
-		ctx, msisdn, false, providerCode)
+func getTestSimpleServiceRequest(ctx context.Context, encounterID string) (
+	*clinical.FHIRServiceRequestInput,
+	string,
+	error,
+) {
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		return nil, "", "", fmt.Errorf("can't create a service request: %w", err)
+		return nil, "", fmt.Errorf("can't create a test patient: %w", err)
 	}
 	patientName := patient.Names()
 	requester := gofakeit.Name()
@@ -548,33 +544,35 @@ func getTestSimpleServiceRequest(
 				},
 			},
 		},
-	}, encounterID, *patient.ID, nil
+	}, *patient.ID, nil
 }
 
-func getTestServiceRequest(
-	ctx context.Context,
-	msisdn string,
-	fullAccess bool,
-	providerCode string,
-) (*clinical.FHIRServiceRequest, string, string, error) {
+func getTestServiceRequest(ctx context.Context, encounterID string) (
+	*clinical.FHIRServiceRequest,
+	string,
+	error,
+) {
 	srv := clinical.NewService()
-	simpleServiceRequestInput, encounterID, patientID, err := getTestSimpleServiceRequest(ctx,
-		msisdn, fullAccess, providerCode)
+	simpleServiceRequestInput, patientID, err := getTestSimpleServiceRequest(ctx, encounterID)
 	if err != nil {
-		return nil, "", "", fmt.Errorf("can't genereate simple service request input: %v", err)
+		return nil, "", fmt.Errorf("can't genereate simple service request input: %v", err)
 	}
 
 	serviceRequestPayload, err := srv.CreateFHIRServiceRequest(ctx, *simpleServiceRequestInput)
 	if err != nil {
-		return nil, "", "", fmt.Errorf("can't create service request: %v", err)
+		return nil, "", fmt.Errorf("can't create service request: %v", err)
 	}
 
-	return serviceRequestPayload.Resource, encounterID, patientID, nil
+	return serviceRequestPayload.Resource, patientID, nil
 }
 
 func createTestFHIRComposition(
 	ctx context.Context,
-) (*clinical.FHIRComposition, *clinical.FHIRPatient, string, error) {
+	encounterID string,
+) (*clinical.FHIRComposition,
+	*clinical.FHIRPatient,
+	error,
+) {
 	srv := clinical.NewService()
 	status := clinical.CompositionStatusEnumPreliminary
 	now := time.Now()
@@ -584,10 +582,10 @@ func createTestFHIRComposition(
 	historyTitle := "Patient History"
 	notSelected := false
 	generatedStatus := clinical.NarrativeStatusEnumGenerated
-	_, patient, encounterID, err := getTestEncounterID(
-		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("can't create an encounter ID: %w", err)
+		return nil, nil, fmt.Errorf("can't create patient: %w", err)
 	}
 	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
 	patientType := base.URI("Patient")
@@ -596,7 +594,7 @@ func createTestFHIRComposition(
 
 	recorded, err := base.NewDate(now.Day(), int(now.Month()), now.Year())
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("can't initialize recorded date: %w", err)
+		return nil, nil, fmt.Errorf("can't initialize recorded date: %w", err)
 	}
 	inp := clinical.FHIRCompositionInput{
 		Status: &status,
@@ -653,9 +651,152 @@ func createTestFHIRComposition(
 	}
 	compPl, err := srv.CreateFHIRComposition(ctx, inp)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("can't create composition payload: %w", err)
+		return nil, nil, fmt.Errorf("can't create composition payload: %w", err)
 	}
-	return compPl.Resource, patient, encounterID, nil
+	return compPl.Resource, patient, nil
+}
+
+func createTestConditionInput(
+	encounterID string,
+	patientID string,
+) (*clinical.FHIRConditionInput, error) {
+	system := base.URI("OCL:/orgs/CIEL/sources/CIEL/")
+	userSelected := true
+	falseUserSelected := false
+	clinicalSystem := base.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+	verificationStatusSystem := base.URI("http://terminology.hl7.org/CodeSystem/condition-ver-status")
+	categorySystem := base.URI("http://terminology.hl7.org/CodeSystem/condition-category")
+	name := gofakeit.Name()
+	text := base.Markdown(gofakeit.HipsterSentence(20))
+	encounterType := base.URI("Encounter")
+	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
+	subjectType := base.URI("Patient")
+	patRef := fmt.Sprintf("Patient/%s", patientID)
+	dateRecorded := base.Date{
+		Year:  gofakeit.Year(),
+		Month: 12,
+		Day:   gofakeit.Day(),
+	}
+
+	return &clinical.FHIRConditionInput{
+		Code: &clinical.FHIRCodeableConceptInput{
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &system,
+					Code:         base.Code("113488"),
+					Display:      "Pulmonary Tuberculosis",
+					UserSelected: &userSelected,
+				},
+			},
+			Text: "Pulmonary Tuberculosis",
+		},
+		ClinicalStatus: &clinical.FHIRCodeableConceptInput{
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &clinicalSystem,
+					Code:         base.Code("active"),
+					Display:      "Active",
+					UserSelected: &falseUserSelected,
+				},
+			},
+			Text: "Active",
+		},
+		VerificationStatus: &clinical.FHIRCodeableConceptInput{
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &verificationStatusSystem,
+					Code:         base.Code("confirmed"),
+					Display:      "Confirmed",
+					UserSelected: &falseUserSelected,
+				},
+			},
+			Text: "Active",
+		},
+		RecordedDate: &dateRecorded,
+		Category: []*clinical.FHIRCodeableConceptInput{
+			{
+				Coding: []*clinical.FHIRCodingInput{
+					{
+						System:       &categorySystem,
+						Code:         base.Code("encounter-diagnosis"),
+						Display:      "encounter-diagnosis",
+						UserSelected: &falseUserSelected,
+					},
+				},
+				Text: "encounter-diagnosis",
+			},
+		},
+		Subject: &clinical.FHIRReferenceInput{
+			Reference: &patRef,
+			Type:      &subjectType,
+			Display:   patRef,
+		},
+		Encounter: &clinical.FHIRReferenceInput{
+			Reference: &encounterRef,
+			Type:      &encounterType,
+			Display:   "Encounter",
+		},
+		Note: []*clinical.FHIRAnnotationInput{
+			{
+				AuthorString: &name,
+				Text:         &text,
+			},
+		},
+		Recorder: &clinical.FHIRReferenceInput{
+			Display: gofakeit.Name(),
+		},
+		Asserter: &clinical.FHIRReferenceInput{
+			Display: gofakeit.Name(),
+		},
+	}, nil
+}
+
+func createTestCondition(
+	ctx context.Context,
+	encounterID,
+	patientID string,
+) (*clinical.FHIRCondition, error) {
+	srv := clinical.NewService()
+	conditionInput, err := createTestConditionInput(encounterID, patientID)
+	if err != nil {
+		return nil, err
+	}
+	condition, err := srv.CreateFHIRCondition(ctx, *conditionInput)
+	if err != nil {
+		return nil, fmt.Errorf("can't create a test condition")
+	}
+	return condition.Resource, nil
+}
+
+func patientVisitSummary(ctx context.Context) (string, error) {
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		return "", fmt.Errorf("error creating test encounter ID: %w", err)
+	}
+	patientID := *patient.ID
+
+	_, _, _, err = createFHIRTestObservation(ctx, encounterID)
+	if err != nil {
+		return "", fmt.Errorf("can't create FHIR test observation: %w", err)
+	}
+
+	_, _, err = createTestFHIRComposition(ctx, encounterID)
+	if err != nil {
+		return "", fmt.Errorf("can't create test composition: %w", err)
+	}
+
+	_, _, err = getTestServiceRequest(ctx, encounterID)
+	if err != nil {
+		return "", fmt.Errorf("error creating test service request: %w", err)
+	}
+
+	_, err = createTestCondition(ctx, encounterID, patientID)
+	if err != nil {
+		return "", fmt.Errorf("error creating test condition: %w", err)
+	}
+
+	return encounterID, nil
 }
 
 func getTestAllergyIntoleranceID(ctx context.Context, t *testing.T) string {
