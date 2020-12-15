@@ -4330,7 +4330,6 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @medication @maluki Test search FHIR medication request
 		{
 			name: "valid query",
 			args: args{
@@ -6704,7 +6703,6 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
 			body, err := mapToJSONReader(tt.args.query)
 			if err != nil {
 				t.Errorf("unable to get GQL JSON io Reader: %s", err)
@@ -7131,16 +7129,36 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 		return
 	}
 
+	composition, err := createTestFHIRComposition(ctx)
+	if err != nil {
+		t.Errorf("can't create test composition: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
+		{
+			name: "valid query - case that exists",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation DeleteComposition($id: ID!) {
+						deleteFHIRComposition(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"id": *composition.ID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "valid composition delete",
 			args: args{
@@ -7174,7 +7192,6 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
 		},
-		// TODO @composition @ngure Delete a composition that exists (additional test case)
 	}
 
 	for _, tt := range tests {
@@ -7244,6 +7261,33 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					if key == "data" {
+						respMap, present := nestedMap["deleteFHIRComposition"]
+						if !present {
+							t.Errorf("can't find delete response")
+							return
+						}
+
+						deleted, ok := nestedMap["deleteFHIRComposition"].(bool)
+						if !ok {
+							t.Errorf("cannot cast key value of %v to type map[string]interface{}", respMap)
+							return
+						}
+
+						if !deleted {
+							t.Errorf("expected the composition to have been successfully deleted, it wasn't")
+							return
+						}
+					}
+				}
 			}
 
 			if tt.wantStatus != resp.StatusCode {
@@ -7273,7 +7317,6 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args

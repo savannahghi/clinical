@@ -570,5 +570,90 @@ func getTestServiceRequest(
 	}
 
 	return serviceRequestPayload.Resource, encounterID, patientID, nil
+}
 
+func createTestFHIRComposition(
+	ctx context.Context,
+) (*clinical.FHIRComposition, error) {
+	srv := clinical.NewService()
+	status := clinical.CompositionStatusEnumPreliminary
+	now := time.Now()
+	title := gofakeit.HipsterSentence(10)
+	author := gofakeit.Name()
+	system := base.URI("http://loinc.org")
+	historyTitle := "Patient History"
+	notSelected := false
+	generatedStatus := clinical.NarrativeStatusEnumGenerated
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		return nil, fmt.Errorf("can't create an encounter ID: %w", err)
+	}
+	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
+	patientType := base.URI("Patient")
+	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
+	encounterType := base.URI("Encounter")
+
+	recorded, err := base.NewDate(now.Day(), int(now.Month()), now.Year())
+	if err != nil {
+		return nil, fmt.Errorf("can't initialize recorded date: %w", err)
+	}
+	inp := clinical.FHIRCompositionInput{
+		Status: &status,
+		Date:   recorded,
+		Title:  &title,
+		Author: []*clinical.FHIRReferenceInput{
+			{
+				Display: author,
+			},
+		},
+		Type: &clinical.FHIRCodeableConceptInput{
+			Text: "Consult Note",
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &system,
+					Code:         base.Code("11488-4"),
+					Display:      "Consult Note",
+					UserSelected: &notSelected,
+				},
+			},
+		},
+		Category: []*clinical.FHIRCodeableConceptInput{
+			{
+				Text: "Consult Note",
+				Coding: []*clinical.FHIRCodingInput{
+					{
+						System:       &system,
+						Code:         base.Code("11488-4"),
+						Display:      "Consult Note",
+						UserSelected: &notSelected,
+					},
+				},
+			},
+		},
+		Section: []*clinical.FHIRCompositionSectionInput{
+			{
+				Title: &historyTitle,
+				Text: &clinical.FHIRNarrativeInput{
+					Status: &generatedStatus,
+					Div:    base.XHTML(gofakeit.HipsterSentence(10)),
+				},
+			},
+		},
+		Encounter: &clinical.FHIRReferenceInput{
+			Reference: &encounterRef,
+			Type:      &encounterType,
+			Display:   encounterRef,
+		},
+		Subject: &clinical.FHIRReferenceInput{
+			Reference: &patientRef,
+			Type:      &patientType,
+			Display:   patientRef,
+		},
+	}
+	compPl, err := srv.CreateFHIRComposition(ctx, inp)
+	if err != nil {
+		return nil, fmt.Errorf("can't create composition payload: %w", err)
+	}
+	return compPl.Resource, nil
 }
