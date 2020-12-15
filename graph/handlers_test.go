@@ -6054,7 +6054,6 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 	}
 
 	instantRecorded := time.Now().Format(instantFormat)
-
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
@@ -6268,7 +6267,6 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 
 func TestGraphQSearchFHIRObservation(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
-
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
@@ -6281,16 +6279,116 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 		return
 	}
 
+	_, patient, status, encounterID, err := createFHIRTestObservation(ctx)
+	if err != nil {
+		t.Errorf("can't create FHIR test observation: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchObservations($params: Map!) {
+						searchFHIRObservation(params: $params) {
+						  edges {
+							node {
+							  ID
+							Status
+							Code {
+							  Text
+							  Coding {
+								Display
+								Code
+								System
+								UserSelected
+							  }
+							}
+							ValueQuantity {
+							  Value
+							  Unit
+							  System
+							  Code
+							}
+							ReferenceRange {
+							  Text
+							  Low {
+								Value
+								Unit
+								System
+								Code
+							  }
+							  High {
+								Value
+								Unit
+								System
+								Code
+							  }
+							  Type {
+								Text
+								Coding {
+								  Code
+								  UserSelected
+								  System
+								  Display
+								}
+							  }
+							}
+							Interpretation {
+							  Text
+							  Coding {
+								Display
+								Code
+								System
+								UserSelected
+							  }
+							}
+							Category {
+							  Text
+							  Coding {
+								Code
+								System
+								Display
+								UserSelected
+							  }
+							}
+							Issued
+							EffectiveInstant
+							Subject {
+							  Reference
+							  Type
+							  Display
+							}
+							Encounter {
+							  Reference
+							  Type
+							  Display
+							  }
+							}
+						  }
+						  }
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient":   fmt.Sprintf("Patient/%s", *patient.ID),
+							"status":    status.String(),
+							"encounter": fmt.Sprintf("Encounter/%s", encounterID),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
