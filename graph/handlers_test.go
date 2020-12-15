@@ -4127,6 +4127,12 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 		return
 	}
 
+	medicationRequestID := getTestFHIRMedicationRequestID(t)
+	if medicationRequestID == "" {
+		t.Errorf("empty medication request ID")
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -4137,17 +4143,53 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @medication @maluki Test delete medication request
 		{
-			name: "invalid query",
+			name: "valid query",
 			args: args{
 				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
+					"query": `
+					mutation DeleteFHIRMedicationRequest($id: ID!) {
+						deleteFHIRMedicationRequest(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"id": medicationRequestID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "invalid: pass unknown variables",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					mutation DeleteFHIRMedicationRequest($id: ID!) {
+						deleteFHIRMedicationRequest(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"ID": "some_unknown_id",
+					},
 				},
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "invalid: wrong ID provided",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					mutation DeleteFHIRMedicationRequest($id: ID!) {
+						deleteFHIRMedicationRequest(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"id": "some_unknown_id",
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -4217,6 +4259,33 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "deleteFHIRMedicationRequest" {
+							result, resultFound := nestedMap[nestedKey]
+							if !resultFound {
+								t.Errorf("response[deleteFHIRMedicationRequest] = ' '")
+								return
+							}
+							resultBool, castOk := result.(bool)
+							if !castOk {
+								t.Errorf("failed to delete medicationRequest")
+								return
+							}
+							if !resultBool {
+								t.Errorf("failed to delete medicationRequest")
+								return
+							}
+						}
+					}
 				}
 			}
 
