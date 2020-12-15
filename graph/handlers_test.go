@@ -23,6 +23,7 @@ const (
 	testHTTPClientTimeout = 180
 	testProviderCode      = "123"
 	dateFormat            = "2006-01-02"
+	instantFormat         = "2006-01-02T15:04:05.999-07:00"
 	testProviderPhone     = "+254721000111"
 	testProviderUID       = "0b1fcd62-46df-4cbc-9096-7849859dcd76"
 )
@@ -4228,14 +4229,12 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @allergy @mashaa Test create allergy intolerance
 		{
 			name: "invalid query",
 			args: args{
@@ -5492,6 +5491,42 @@ func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "createFHIRObservation" {
+							output, ok := nestedMap[nestedKey].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast output to map[string]interface{}")
+								return
+							}
+
+							resource, ok := output["resource"].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast resource to map[string]interface{}")
+								return
+							}
+
+							log.Printf("resource: %v", resource)
+
+							id, prs := resource["ID"]
+							if !prs {
+								t.Errorf("ID not present in medication request resource")
+								return
+							}
+							if id == "" {
+								t.Errorf("blank medication request ID")
+								return
+							}
+						}
+					}
+				}
 			}
 
 			if tt.wantStatus != resp.StatusCode {
@@ -5505,7 +5540,6 @@ func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
 
 func TestGraphQCreateFHIRObservation(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
-
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
@@ -5518,17 +5552,128 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 		return
 	}
 
+	instantRecorded := time.Now().Format(instantFormat)
+
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("can't create test encounter: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @observation @ngure Test create FHIR observation
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation AddObservation($input: FHIRObservationInput!) {
+						createFHIRObservation(input: $input) {
+						  resource {
+							ID
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"Status": "preliminary",
+							"Category": []map[string]interface{}{
+								{
+									"Text": "Vital Signs",
+									"Coding": []map[string]interface{}{
+										{
+											"Code":         "vital-signs",
+											"System":       "http://terminology.hl7.org/CodeSystem/observation-category",
+											"Display":      "Vital Signs",
+											"UserSelected": false,
+										},
+									},
+								},
+							},
+							"Code": map[string]interface{}{
+								"Text": "Body Weight",
+								"Coding": []map[string]interface{}{
+									{
+										"Display":      "Body Weight",
+										"Code":         "29463-7",
+										"System":       "http://loinc.org",
+										"UserSelected": true,
+									},
+								},
+							},
+							"ValueQuantity": map[string]interface{}{
+								"Value":  72,
+								"Unit":   "kg",
+								"System": "http://unitsofmeasure.org",
+								"Code":   "kg",
+							},
+							"ReferenceRange": []map[string]interface{}{
+								{
+									"Low": map[string]interface{}{
+										"Value":  "0",
+										"Unit":   "kg",
+										"System": "http://unitsofmeasure.org",
+										"Code":   "kg",
+									},
+									"High": map[string]interface{}{
+										"Value":  "300",
+										"Unit":   "kg",
+										"System": "http://unitsofmeasure.org",
+										"Code":   "kg",
+									},
+									"Text": "0kg to 300kg",
+									"Type": map[string]interface{}{
+										"Text": "Normal Range",
+										"Coding": []map[string]interface{}{
+											{
+												"Code":         "normal",
+												"UserSelected": false,
+												"System":       "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
+												"Display":      "Normal Range",
+											},
+										},
+									},
+								},
+							},
+							"Issued":           instantRecorded,
+							"EffectiveInstant": instantRecorded,
+							"Encounter": map[string]interface{}{
+								"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+								"Type":      "Encounter",
+								"Display":   fmt.Sprintf("Encounter/%s", encounterID),
+							},
+							"Subject": map[string]interface{}{
+								"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+								"Type":      "Patient",
+								"Display":   patient.Names(),
+							},
+							"Interpretation": []map[string]interface{}{
+								{
+									"Text": "Normal",
+									"Coding": []map[string]interface{}{
+										{
+											"Display":      "Normal",
+											"Code":         "N",
+											"System":       "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+											"UserSelected": false,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
