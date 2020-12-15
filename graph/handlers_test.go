@@ -5996,7 +5996,7 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 		return
 	}
 
-	serviceRequest, err := getTestServiceRequest(
+	serviceRequest, _, _, err := getTestServiceRequest(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
 		t.Errorf("error creating test service request: %w", err)
@@ -6137,7 +6137,7 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 	}
 }
 
-func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
+func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -6152,6 +6152,18 @@ func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
 		return
 	}
 
+	serviceRequest, encounterID, patientID, err := getTestServiceRequest(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test service request: %w", err)
+		return
+	}
+
+	if serviceRequest.ID == nil {
+		t.Errorf("can't find service request ID")
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -6162,7 +6174,6 @@ func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @servicerequest @mathenge Test search FHIR service request
 		{
 			name: "invalid query",
 			args: args{
@@ -6173,6 +6184,66 @@ func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchFHIRServiceRequests($params: Map!) {
+						searchFHIRServiceRequest(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Status
+							  Intent
+							  Priority
+							  Subject {
+								Reference
+								Type
+								Display
+							  }
+							  Encounter {
+								Reference
+								Type
+								Display
+							  }
+							  SupportingInfo{
+								ID
+								Reference
+								Display
+							  }
+							  Requester{
+								Display
+							  }
+							  Code{
+								Coding{
+								  Display
+								  Code
+								}
+							  }
+							  Category {
+								Text
+								Coding {
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient":   patientID,
+							"encounter": fmt.Sprintf("Encounter/%s", encounterID),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -6251,32 +6322,10 @@ func TestGraphQSearchFHIRServiceRequest(t *testing.T) {
 						return
 					}
 
-					for nestedKey := range nestedMap {
-						if nestedKey == "createFHIRObservation" {
-							output, ok := nestedMap[nestedKey].(map[string]interface{})
-							if !ok {
-								t.Errorf("can't cast output to map[string]interface{}")
-								return
-							}
-
-							resource, ok := output["resource"].(map[string]interface{})
-							if !ok {
-								t.Errorf("can't cast resource to map[string]interface{}")
-								return
-							}
-
-							log.Printf("resource: %v", resource)
-
-							id, prs := resource["ID"]
-							if !prs {
-								t.Errorf("ID not present in medication request resource")
-								return
-							}
-							if id == "" {
-								t.Errorf("blank medication request ID")
-								return
-							}
-						}
+					_, ok = nestedMap["searchFHIRServiceRequest"].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast nested map key value of %v to type map[string]interface{}", key)
+						return
 					}
 				}
 			}
