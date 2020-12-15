@@ -5030,14 +5030,14 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 		return
 	}
 
-	_, patient, _, err := getTestEncounterID(
+	_, patient, encounterID, err := getTestEncounterID(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %w", err)
 		return
 	}
 
-	allergyID := getTestAllergyIntoleranceID(ctx, t)
+	allergyID := getTestAllergyIntoleranceID(ctx, patient, encounterID, t)
 	if allergyID == "" {
 		t.Errorf("emtyp allergy intolerance ID")
 		return
@@ -5053,7 +5053,6 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @allergy @mashaa Test update FHIR allergy intolerance
 		{
 			name: "invalid query",
 			args: args{
@@ -5258,6 +5257,21 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 		return
 	}
 
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+	allergyID := getTestAllergyIntoleranceID(ctx, patient, encounterID, t)
+	if allergyID == "" {
+		t.Errorf("emtyp allergy intolerance ID")
+		return
+	}
+
+	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
+	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -5268,7 +5282,6 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @allergy @mashaa Test search FHIR allergy intolerance
 		{
 			name: "invalid query",
 			args: args{
@@ -5279,6 +5292,94 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					query AllergySearch($params: Map!) {
+						searchFHIRAllergyIntolerance(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Type
+							  RecordedDate
+							  Category
+							  Criticality
+							  ClinicalStatus{
+								Text
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  VerificationStatus{
+								Text
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  Patient{
+								Reference
+								Type
+								Display
+							  }
+							  Code {
+								Text
+								Coding {
+								  Code
+								  System
+								  Display
+								}
+							  }
+							  Encounter{
+								Reference
+								Type
+							  }
+							  Asserter{
+								Display
+							  }
+							  Note{
+								AuthorString
+								Text
+							  }
+							  Reaction{
+								Description
+								Severity
+								Substance{
+								  Text
+								  Coding {
+									System
+									Code
+									Display
+									UserSelected
+								  }
+								}         
+							  }
+							  Recorder{
+								Display
+							  }
+							}
+						  }
+						}
+					  }
+					  `,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient":   patientRef,
+							"encounter": encounterRef,
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -5348,6 +5449,40 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "searchFHIRAllergyIntolerance" {
+							resultI, resultFound := nestedMap[nestedKey]
+							if !resultFound {
+								t.Errorf("response[searchFHIRAllergyIntolerance] = ' '")
+								return
+							}
+							result, resultConvert := resultI.(map[string]interface{})
+							if !resultConvert {
+								t.Errorf("cannot convert result to a map[string]interface{}")
+								return
+							}
+
+							edgesI, edgesFound := result["edges"]
+							if !edgesFound {
+								t.Errorf("no allergy intollerance request was returned")
+								return
+							}
+							if edgesI == nil {
+								t.Errorf("no allergy intollerance request was found")
+								return
+							}
+
+						}
+					}
 				}
 			}
 

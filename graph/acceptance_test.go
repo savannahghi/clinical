@@ -799,18 +799,11 @@ func patientVisitSummary(ctx context.Context) (string, error) {
 	return encounterID, nil
 }
 
-func getTestAllergyIntoleranceID(ctx context.Context, t *testing.T) string {
+func getTestAllergyIntoleranceID(ctx context.Context, patient *clinical.FHIRPatient, encounterID string, t *testing.T) string {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := base.GetGraphQLHeaders(ctx)
 	if err != nil {
 		t.Errorf("error in getting GraphQL headers: %w", err)
-		return ""
-	}
-
-	_, patient, encounterID, err := getTestEncounterID(
-		ctx, base.TestUserPhoneNumber, false, testProviderCode)
-	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
 		return ""
 	}
 
