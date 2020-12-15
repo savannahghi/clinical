@@ -2,11 +2,17 @@ package graph_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strconv"
+	"testing"
+	"time"
 
 	"github.com/brianvoe/gofakeit/v5"
 	"github.com/segmentio/ksuid"
+	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
@@ -172,4 +178,183 @@ func getTestEncounterID(
 	}
 
 	return episode, patient, encounterID, nil
+}
+
+func getTestFHIRMedicationRequestID(t *testing.T) string {
+
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return ""
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return ""
+	}
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return ""
+	}
+
+	patientName := patient.Names()
+	requester := gofakeit.Name()
+	dateRecorded := time.Now().Format(dateFormat)
+
+	query := map[string]interface{}{
+		"query": `mutation CreateMedicationRequest($input: FHIRMedicationRequestInput!) {
+			createFHIRMedicationRequest(input: $input) {
+			  resource {
+				ID
+			  }
+			}
+		  }`,
+		"variables": map[string]interface{}{
+			"input": map[string]interface{}{
+				"Status":   "active",
+				"Intent":   "proposal",
+				"Priority": "routine",
+				"Subject": map[string]interface{}{
+					"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+					"Type":      "Patient",
+					"Display":   patientName,
+				},
+				"Encounter": map[string]interface{}{
+					"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+					"Type":      "Encounter",
+					"Display":   fmt.Sprintf("Encounter/%s", encounterID),
+				},
+				"SupportingInformation": []map[string]interface{}{
+					{
+						"ID":        "113488",
+						"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+						"Display":   "Pulmonary Tuberculosis",
+					},
+				},
+				"Requester": map[string]interface{}{
+					"Display": requester,
+				},
+				"Note": []map[string]interface{}{
+					{
+						"AuthorString": requester,
+						"Text":         gofakeit.HipsterSentence(10),
+					},
+				},
+				"MedicationCodeableConcept": map[string]interface{}{
+					"Text": "Panadol Extra",
+					"Coding": []map[string]interface{}{
+						{
+							"System":       "OCL:/orgs/CIEL/sources/CIEL/",
+							"Code":         "999999",
+							"Display":      "Panadol Extra",
+							"UserSelected": true,
+						},
+					},
+				},
+				"DosageInstruction": []map[string]interface{}{
+					{
+						"Text":               "500 mg 5/7 B.D.",
+						"PatientInstruction": "Take two tablets after meals, three times a day",
+					},
+				},
+				"AuthoredOn": dateRecorded,
+			},
+		},
+	}
+
+	body, err := mapToJSONReader(query)
+	if err != nil {
+		t.Errorf("unable to get GQL JSON io Reader: %s", err)
+		return ""
+	}
+
+	r, err := http.NewRequest(
+		http.MethodPost,
+		graphQLURL,
+		body,
+	)
+	if err != nil {
+		t.Errorf("unable to compose request: %s", err)
+		return ""
+	}
+
+	if r == nil {
+		t.Errorf("nil request")
+		return ""
+	}
+
+	for k, v := range headers {
+		r.Header.Add(k, v)
+	}
+	client := http.Client{
+		Timeout: time.Second * testHTTPClientTimeout,
+	}
+	resp, err := client.Do(r)
+	if err != nil {
+		t.Errorf("request error: %s", err)
+		return ""
+	}
+
+	dataResponse, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("can't read request body: %s", err)
+		return ""
+	}
+
+	if dataResponse == nil {
+		t.Errorf("nil response data")
+		return ""
+	}
+
+	data := map[string]interface{}{}
+	err = json.Unmarshal(dataResponse, &data)
+	if err != nil {
+		t.Errorf("bad data returned")
+		return ""
+	}
+
+	for key := range data {
+		nestedMap, ok := data[key].(map[string]interface{})
+		if !ok {
+			t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+			return ""
+		}
+
+		for nestedKey := range nestedMap {
+			if nestedKey == "createFHIRMedicationRequest" {
+				output, ok := nestedMap[nestedKey].(map[string]interface{})
+				if !ok {
+					t.Errorf("can't cast output to map[string]interface{}")
+					return ""
+				}
+
+				resource, ok := output["resource"].(map[string]interface{})
+				if !ok {
+					t.Errorf("can't cast resource to map[string]interface{}")
+					return ""
+				}
+
+				log.Printf("resource: %v", resource)
+
+				id, prs := resource["ID"]
+				if !prs {
+					t.Errorf("ID not present in medication request resource")
+					return ""
+				}
+				if id == "" {
+					t.Errorf("blank medication request ID")
+					return ""
+				}
+
+				idString := id.(string)
+				return idString
+			}
+		}
+	}
+	return ""
 }
