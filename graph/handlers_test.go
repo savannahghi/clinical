@@ -4410,8 +4410,8 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 					`,
 					"variables": map[string]interface{}{
 						"input": map[string]interface{}{
-							"Type":   "allergy",
-							"Criticality":   "high",
+							"Type":        "allergy",
+							"Criticality": "high",
 							"ClinicalStatus": map[string]interface{}{
 								"Text": "Panadol Extra",
 								"Coding": []map[string]interface{}{
@@ -4445,10 +4445,10 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 								"Display":   patientName,
 							},
 							"Recorder": map[string]interface{}{
-								"Display":   recordingDoctor,
+								"Display": recordingDoctor,
 							},
 							"Asserter": map[string]interface{}{
-								"Display":   recordingDoctor,
+								"Display": recordingDoctor,
 							},
 							"Note": []map[string]interface{}{
 								{
@@ -4459,7 +4459,7 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 							"Reaction": []map[string]interface{}{
 								{
 									"Description": requester,
-									"Severity":         "severe",
+									"Severity":    "severe",
 									"Substance": map[string]interface{}{
 										"Text": "Panadol Extra",
 										"Coding": []map[string]interface{}{
@@ -5082,6 +5082,18 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 		return
 	}
 
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+
+	patientName := patient.Names()
+	recorder := gofakeit.Name()
+	asserter := gofakeit.Name()
+	dateRecorded := time.Now().Format(dateFormat)
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -5092,7 +5104,96 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @condition @sala Test update FHIR condition
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation UpdateFHIRCondition($input: FHIRConditionInput!) {
+						updateFHIRCondition(input: $input) {
+						  resource {
+							ID
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"ID":           "113488",
+							"RecordedDate": dateRecorded,
+							"ClinicalStatus": map[string]interface{}{
+								"Text": "Resolved",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://terminology.hl7.org/CodeSystem/condition-clinical",
+										"Code":         "resolved",
+										"Display":      "Resolved",
+										"UserSelected": true,
+									},
+								},
+							},
+							"VerificationStatus": map[string]interface{}{
+								"Text": "Active",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+										"Code":         "confirmed",
+										"Display":      "confirmed",
+										"UserSelected": true,
+									},
+								},
+							},
+							"Category": []map[string]interface{}{
+								{
+									"Text": "encounter-diagnosis",
+									"Coding": []map[string]interface{}{
+										{
+											"System":       "http://terminology.hl7.org/CodeSystem/condition-category",
+											"Code":         "encounter-diagnosis",
+											"Display":      "encounter-diagnosis",
+											"UserSelected": true,
+										},
+									},
+								},
+							},
+							"Code": map[string]interface{}{
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "OCL:/orgs/CIEL/sources/CIEL/",
+										"Code":         "113488",
+										"Display":      "Pulmonary Tuberculosis",
+										"UserSelected": true,
+									},
+								},
+								"Text": "Pulmonary Tuberculosis",
+							},
+							"Subject": map[string]interface{}{
+								"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+								"Type":      "Patient",
+								"Display":   patientName,
+							},
+							"Encounter": map[string]interface{}{
+								"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+								"Type":      "Encounter",
+								"Display":   fmt.Sprintf("Encounter/%s", encounterID),
+							},
+							"Recorder": map[string]interface{}{
+								"Display": recorder,
+							},
+							"Asserter": map[string]interface{}{
+								"Display": asserter,
+							},
+							"Note": []map[string]interface{}{
+								{
+									"AuthorString": recorder,
+									"Text":         "A good reason",
+								},
+							},
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -5172,6 +5273,39 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "updateFHIRCondition" {
+							output, ok := nestedMap[nestedKey].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast output to map[string]interface{}")
+								return
+							}
+
+							resource, ok := output["resource"].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast resource to map[string]interface{}")
+								return
+							}
+
+							id, prs := resource["ID"]
+							if !prs {
+								t.Errorf("ID not present in service request resource")
+								return
+							}
+							if id == "" {
+								t.Errorf("blank service request ID")
+								return
+							}
+						}
+					}
 				}
 			}
 
@@ -6049,7 +6183,6 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @observation @ngure Test search FHIR observation
 		{
 			name: "invalid query",
 			args: args{
