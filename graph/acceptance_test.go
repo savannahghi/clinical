@@ -574,7 +574,7 @@ func getTestServiceRequest(
 
 func createTestFHIRComposition(
 	ctx context.Context,
-) (*clinical.FHIRComposition, error) {
+) (*clinical.FHIRComposition, *clinical.FHIRPatient, string, error) {
 	srv := clinical.NewService()
 	status := clinical.CompositionStatusEnumPreliminary
 	now := time.Now()
@@ -587,7 +587,7 @@ func createTestFHIRComposition(
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		return nil, fmt.Errorf("can't create an encounter ID: %w", err)
+		return nil, nil, "", fmt.Errorf("can't create an encounter ID: %w", err)
 	}
 	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
 	patientType := base.URI("Patient")
@@ -596,7 +596,7 @@ func createTestFHIRComposition(
 
 	recorded, err := base.NewDate(now.Day(), int(now.Month()), now.Year())
 	if err != nil {
-		return nil, fmt.Errorf("can't initialize recorded date: %w", err)
+		return nil, nil, "", fmt.Errorf("can't initialize recorded date: %w", err)
 	}
 	inp := clinical.FHIRCompositionInput{
 		Status: &status,
@@ -653,7 +653,7 @@ func createTestFHIRComposition(
 	}
 	compPl, err := srv.CreateFHIRComposition(ctx, inp)
 	if err != nil {
-		return nil, fmt.Errorf("can't create composition payload: %w", err)
+		return nil, nil, "", fmt.Errorf("can't create composition payload: %w", err)
 	}
-	return compPl.Resource, nil
+	return compPl.Resource, patient, encounterID, nil
 }

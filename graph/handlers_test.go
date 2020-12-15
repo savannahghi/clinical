@@ -17,6 +17,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph"
+	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
 const (
@@ -7129,7 +7130,7 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 		return
 	}
 
-	composition, err := createTestFHIRComposition(ctx)
+	composition, _, _, err := createTestFHIRComposition(ctx)
 	if err != nil {
 		t.Errorf("can't create test composition: %w", err)
 		return
@@ -7314,6 +7315,12 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 		return
 	}
 
+	_, patient, encounterID, err := createTestFHIRComposition(ctx)
+	if err != nil {
+		t.Errorf("can't create test composition: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -7323,7 +7330,62 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @composition @ngure Test search FHIR composition
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchCompositions($params: Map!) {
+						searchFHIRComposition(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Status
+							  Type {
+								Text
+								Coding {
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  Category {
+								Text
+								Coding {
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  Author {
+								Reference
+								Display
+							  }
+							  Title
+							  Section {
+								Title
+								Text {
+								  Status
+								  Div
+								}
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"status":    clinical.CompositionStatusEnumPreliminary.String(),
+							"patient":   fmt.Sprintf("Patient/%s", *patient.ID),
+							"encounter": fmt.Sprintf("Encounter/%s", encounterID),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -7336,7 +7398,6 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 			wantErr:    true,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
@@ -7403,6 +7464,27 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", data[key])
+						return
+					}
+
+					if key == "data" {
+						respMap, present := nestedMap["searchFHIRComposition"]
+						if !present {
+							t.Errorf("can't find delete response")
+							return
+						}
+
+						_, ok := respMap.(map[string]interface{})
+						if !ok {
+							t.Errorf("can't cast respMap %v to map[string]interface{}", respMap)
+						}
+					}
 				}
 			}
 

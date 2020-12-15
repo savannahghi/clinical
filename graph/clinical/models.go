@@ -12,7 +12,7 @@ import (
 
 // Dummy ..
 type Dummy struct {
-	id string
+	ID string `json:"id"`
 }
 
 //IsEntity ...
@@ -23,7 +23,7 @@ func (d *Dummy) IsNode() {}
 
 // SetID sets the trace's ID
 func (d *Dummy) SetID(id string) {
-	d.id = id
+	d.ID = id
 }
 
 // NameInput is used to input patient names.
