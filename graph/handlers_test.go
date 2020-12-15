@@ -5402,6 +5402,12 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 		return
 	}
 
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get test patient: %v", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -5412,7 +5418,69 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @condition @sala Test search FHIR condition
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchMedicationRequests($params: Map!) {
+						searchFHIRMedicationRequest(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Status
+							  Intent
+							  Priority
+							  Subject {
+								Reference
+								Type
+								Display
+							  }
+							  MedicationCodeableConcept{
+								Text
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  DosageInstruction{
+								Text
+								PatientInstruction
+							  }
+							  Requester{
+								Display
+							  }
+							  Encounter {
+								Reference
+								Type
+								Display
+							  }
+							  SupportingInformation {
+								ID
+								Reference
+								Display
+							  }
+							  AuthoredOn
+							  Note{
+								AuthorString
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient": fmt.Sprintf("Patient/%s", *patient.ID),
+							"_count":  "1",
+							"_sort":   "-_last_updated",
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -5479,6 +5547,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 				t.Errorf("bad data returned")
 				return
 			}
+
 			if tt.wantErr {
 				_, ok := data["errors"]
 				if !ok {
@@ -5493,13 +5562,40 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					if key == "data" {
+						_, present := nestedMap["searchFHIRMedicationRequest"]
+						if !present {
+							t.Errorf("can't find medication request data")
+							return
+						}
+
+						medicationMap, ok := nestedMap["searchFHIRMedicationRequest"].(map[string]interface{})
+						if !ok {
+							t.Errorf("cannot cast key value of %v to type map[string]interface{}", medicationMap)
+							return
+						}
+
+						_, found := medicationMap["edges"]
+						if !found {
+							t.Errorf("can't find FHIR medication edges data")
+							return
+						}
+					}
+				}
 			}
 
 			if tt.wantStatus != resp.StatusCode {
 				t.Errorf("Bad status reponse returned")
 				return
 			}
-
 		})
 	}
 }
