@@ -657,3 +657,223 @@ func createTestFHIRComposition(
 	}
 	return compPl.Resource, patient, encounterID, nil
 }
+
+func getTestAllergyIntoleranceID(ctx context.Context, t *testing.T) string {
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return ""
+	}
+
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return ""
+	}
+
+	patientName := patient.Names()
+	requester := gofakeit.Name()
+	dateRecorded := time.Now().Format(dateFormat)
+	recordingDoctor := gofakeit.Name()
+	substanceID := "1234"
+	substanceDisplayName := gofakeit.Name()
+
+	query := map[string]interface{}{
+		"query": `
+					mutation CreateAllergy($input: FHIRAllergyIntoleranceInput!) {
+						createFHIRAllergyIntolerance(input:$input) {
+						resource {
+						  ID
+						}
+					  }
+					}  
+					`,
+		"variables": map[string]interface{}{
+			"input": map[string]interface{}{
+				"Type":        "allergy",
+				"Criticality": "high",
+				"ClinicalStatus": map[string]interface{}{
+					"Text": "Panadol Extra",
+					"Coding": []map[string]interface{}{
+						{
+							"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+							"Code":         "active",
+							"Display":      "Active",
+							"UserSelected": false,
+						},
+					},
+				},
+				"VerificationStatus": map[string]interface{}{
+					"Text": "Panadol Extra",
+					"Coding": []map[string]interface{}{
+						{
+							"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+							"Code":         "confirmed",
+							"Display":      "confirmed",
+							"UserSelected": false,
+						},
+					},
+				},
+				"Encounter": map[string]interface{}{
+					"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+					"Type":      "Encounter",
+					"Display":   fmt.Sprintf("Encounter/%s", encounterID),
+				},
+				"Patient": map[string]interface{}{
+					"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+					"Type":      "Patient",
+					"Display":   patientName,
+				},
+				"Recorder": map[string]interface{}{
+					"Display": recordingDoctor,
+				},
+				"Asserter": map[string]interface{}{
+					"Display": recordingDoctor,
+				},
+				"Note": []map[string]interface{}{
+					{
+						"AuthorString": requester,
+						"Text":         gofakeit.HipsterSentence(10),
+					},
+				},
+				"Reaction": []map[string]interface{}{
+					{
+						"Description": requester,
+						"Severity":    "severe",
+						"Substance": map[string]interface{}{
+							"Text": "Panadol Extra",
+							"Coding": []map[string]interface{}{
+								{
+									"System":       "OCL:/orgs/CIEL/sources/CIEL/'",
+									"Code":         substanceID,
+									"Display":      substanceDisplayName,
+									"UserSelected": true,
+								},
+							},
+						},
+						"Manifestation": []map[string]interface{}{
+							{
+								"Text": "Panadol Extra",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "OCL:/orgs/CIEL/sources/CIEL/'",
+										"Code":         substanceID,
+										"Display":      substanceDisplayName,
+										"UserSelected": true,
+									},
+								},
+							},
+						},
+					},
+				},
+				"Code": map[string]interface{}{
+					"Text": "Panadol Extra",
+					"Coding": []map[string]interface{}{
+						{
+							"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+							"Code":         substanceID,
+							"Display":      substanceDisplayName,
+							"UserSelected": false,
+						},
+					},
+				},
+				"RecordedDate": dateRecorded,
+			},
+		},
+	}
+
+	body, err := mapToJSONReader(query)
+	if err != nil {
+		t.Errorf("unable to get GQL JSON io Reader: %s", err)
+		return ""
+	}
+
+	r, err := http.NewRequest(
+		http.MethodPost,
+		graphQLURL,
+		body,
+	)
+	if err != nil {
+		t.Errorf("unable to compose request: %s", err)
+		return ""
+	}
+
+	if r == nil {
+		t.Errorf("nil request")
+		return ""
+	}
+
+	for k, v := range headers {
+		r.Header.Add(k, v)
+	}
+	client := http.Client{
+		Timeout: time.Second * testHTTPClientTimeout,
+	}
+	resp, err := client.Do(r)
+	if err != nil {
+		t.Errorf("request error: %s", err)
+		return ""
+	}
+
+	dataResponse, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("can't read request body: %s", err)
+		return ""
+	}
+
+	if dataResponse == nil {
+		t.Errorf("nil response data")
+		return ""
+	}
+
+	data := map[string]interface{}{}
+	err = json.Unmarshal(dataResponse, &data)
+	if err != nil {
+		t.Errorf("bad data returned")
+		return ""
+	}
+
+	for key := range data {
+		nestedMap, ok := data[key].(map[string]interface{})
+		if !ok {
+			t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+			return ""
+		}
+
+		for nestedKey := range nestedMap {
+			if nestedKey == "createFHIRAllergyIntolerance" {
+				output, ok := nestedMap[nestedKey].(map[string]interface{})
+				if !ok {
+					t.Errorf("can't cast output to map[string]interface{}")
+					return ""
+				}
+
+				resource, ok := output["resource"].(map[string]interface{})
+				if !ok {
+					t.Errorf("can't cast resource to map[string]interface{}")
+					return ""
+				}
+
+				idI, prs := resource["ID"]
+				if !prs {
+					t.Errorf("ID not present in allergy intolerance resource")
+					return ""
+				}
+				id, idConvert := idI.(string)
+				if !idConvert {
+					t.Errorf("mulformed ID returned")
+					return ""
+				}
+				if id == "" {
+					t.Errorf("blank allergy intolerance request ID")
+					return ""
+				}
+				return id
+			}
+		}
+	}
+
+	return ""
+}

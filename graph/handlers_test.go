@@ -4860,6 +4860,19 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 		return
 	}
 
+	_, patient, _, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+
+	allergyID := getTestAllergyIntoleranceID(ctx, t)
+	if allergyID == "" {
+		t.Errorf("emtyp allergy intolerance ID")
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -4875,12 +4888,65 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 			name: "invalid query",
 			args: args{
 				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
+					"query": `
+					mutation UpdateAllergy($input: FHIRAllergyIntoleranceInput!) {
+						updateFHIRAllergyIntolerance(input: $input) {
+						  resource {
+							ID
+						  }
+						}
+					  }
+					  `,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"ID":          allergyID,
+							"Type":        "allergy",
+							"Category":    []string{},
+							"Criticality": clinical.AllergyIntoleranceCriticalityEnumLow,
+							"ClinicalStatus": map[string]interface{}{
+								"Text": "Resolved",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://terminology.hl7.org/CodeSystem/condition-clinical",
+										"Code":         "resolved",
+										"Display":      "Resolved",
+										"UserSelected": true,
+									},
+								},
+							},
+							"VerificationStatus": map[string]interface{}{
+								"Text": "Panadol Extra",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+										"Code":         "confirmed",
+										"Display":      "confirmed",
+										"UserSelected": false,
+									},
+								},
+							},
+							"Code": map[string]interface{}{
+								"Text": "Panadol Extra",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+										"Code":         "1234",
+										"Display":      "substanceDisplayName",
+										"UserSelected": false,
+									},
+								},
+							},
+							"Patient": map[string]interface{}{
+								"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+								"Type":      "Patient",
+								"Display":   "patientName",
+							},
+						},
+					},
 				},
 			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -4951,6 +5017,51 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "updateFHIRAllergyIntolerance" {
+							output, ok := nestedMap[nestedKey].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast output to map[string]interface{}")
+								return
+							}
+
+							resource, ok := output["resource"].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast resource to map[string]interface{}")
+								return
+							}
+
+							idI, prs := resource["ID"]
+							if !prs {
+								t.Errorf("ID not present in allergy intolerance resource")
+								return
+							}
+							id, idConvert := idI.(string)
+							if !idConvert {
+								t.Errorf("mulformed ID returned")
+								return
+							}
+							if id == "" {
+								t.Errorf("blank allergy intolerance request ID")
+								return
+							}
+
+							if id != allergyID {
+								t.Errorf("wrong allergy intolerance request ID returned")
+								return
+							}
+						}
+					}
+				}
+
 			}
 
 			if tt.wantStatus != resp.StatusCode {
