@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -1971,7 +1972,7 @@ func TestGraphQLEndEncounter(t *testing.T) {
 	}
 }
 
-func TestGraphQOpenEpisodes(t *testing.T) {
+func TestGraphQLOpenEpisodes(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -2141,7 +2142,7 @@ func TestGraphQOpenEpisodes(t *testing.T) {
 	}
 }
 
-func TestGraphQSearchFHIREncounter(t *testing.T) {
+func TestGraphQLSearchFHIREncounter(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -3588,7 +3589,7 @@ func TestGraphQLVisitSummary(t *testing.T) {
 	}
 }
 
-func TestGraphQPatientTimelineWithCount(t *testing.T) {
+func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -3917,7 +3918,7 @@ func TestGraphQPatientTimelineWithCount(t *testing.T) {
 	}
 }
 
-func TestGraphQProblemSummary(t *testing.T) {
+func TestGraphQLProblemSummary(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -3932,6 +3933,32 @@ func TestGraphQProblemSummary(t *testing.T) {
 		return
 	}
 
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get patient: %v", err)
+		return
+	}
+
+	if patient.ID == nil {
+		t.Errorf("nil patient ID")
+		return
+	}
+
+	patientID := *patient.ID
+
+	_, err = createTestCondition(ctx, encounterID, patientID)
+	if err != nil {
+		t.Errorf("error creating a test condition: %v", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -3942,7 +3969,21 @@ func TestGraphQProblemSummary(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @timeline @sala Test problem summary
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query ProblemSummary($patientID: String!) {
+						problemSummary(patientID: $patientID)
+					}`,
+					"variables": map[string]interface{}{
+						"patientID": patientID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -4003,26 +4044,49 @@ func TestGraphQProblemSummary(t *testing.T) {
 				return
 			}
 
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
 			if tt.wantErr {
+				data := map[string]interface{}{}
+				err = json.Unmarshal(dataResponse, &data)
+				if err != nil {
+					t.Errorf("bad data returned: %s", string(dataResponse))
+					return
+				}
 				_, ok := data["errors"]
 				if !ok {
 					t.Errorf("expected an error")
 					return
 				}
 			}
-
 			if !tt.wantErr {
-				errMsg, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+				data := map[string]map[string][]string{}
+				err = json.Unmarshal(dataResponse, &data)
+				if err != nil {
+					t.Errorf("bad data returned: %s", string(dataResponse))
 					return
 				}
+				errMsg, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got: %s", errMsg)
+					return
+				}
+
+				for key := range data {
+					nestedMap, present := data[key]
+					if !present {
+						t.Errorf("key %s not found in %v", key, data)
+						return
+					}
+					expected := map[string][]string{
+						"problemSummary": {
+							"Pulmonary Tuberculosis",
+						},
+					}
+					if !reflect.DeepEqual(expected, nestedMap) {
+						t.Errorf("expected %v got %v", expected, nestedMap)
+						return
+					}
+				}
+
 			}
 
 			if tt.wantStatus != resp.StatusCode {

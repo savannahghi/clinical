@@ -692,12 +692,12 @@ func createTestConditionInput(
 				Coding: []*clinical.FHIRCodingInput{
 					{
 						System:       &categorySystem,
-						Code:         base.Code("encounter-diagnosis"),
-						Display:      "encounter-diagnosis",
+						Code:         base.Code("problem-list-item"),
+						Display:      "problem-list-item",
 						UserSelected: &falseUserSelected,
 					},
 				},
-				Text: "encounter-diagnosis",
+				Text: "problem-list-item",
 			},
 		},
 		Subject: &clinical.FHIRReferenceInput{
