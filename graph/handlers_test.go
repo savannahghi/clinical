@@ -4313,13 +4313,12 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 		return
 	}
 
-	_, patient, _, err := getTestEncounterID(
-		ctx, base.TestUserPhoneNumber, false, testProviderCode)
-	if err != nil {
-		t.Errorf("failed to create a patient")
+	// create a medication request
+	medicationRequestID := getTestFHIRMedicationRequestID(t)
+	if medicationRequestID == "" {
+		t.Errorf("empty medicationrequest ID")
+		return
 	}
-
-	ID := patient.ID
 
 	type args struct {
 		query map[string]interface{}
@@ -4333,7 +4332,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 	}{
 		// TODO @medication @maluki Test search FHIR medication request
 		{
-			name: "invalid query",
+			name: "valid query",
 			args: args{
 				query: map[string]interface{}{
 					"query": `
@@ -4386,13 +4385,75 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 					  }`,
 					"variables": map[string]interface{}{
 						"params": map[string]interface{}{
-							"patient": ID,
+							"status": "active",
 						},
 					},
 				},
 			},
 			wantStatus: http.StatusOK,
 			wantErr:    false,
+		},
+		{
+			name: "invalid: wrong parameter",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					query SearchMedicationRequests($params: Map!) {
+						searchFHIRMedicationRequest(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Status
+							  Intent
+							  Priority
+							  Subject {
+								Reference
+								Type
+								Display
+							  }
+							  MedicationCodeableConcept{
+								Text
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  DosageInstruction{
+								Text
+								PatientInstruction
+							  }
+							  Requester{
+								Display
+							  }
+							  Encounter {
+								Reference
+								Type
+								Display
+							  }
+							  SupportingInformation {
+								ID
+								Reference
+								Display
+							  }
+							  AuthoredOn
+							  Note{
+								AuthorString
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"status": "111111111",
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    true,
 		},
 	}
 
@@ -4463,7 +4524,41 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
-				
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "searchFHIRMedicationRequest" {
+							resultI, resultFound := nestedMap[nestedKey]
+							if !resultFound {
+								t.Errorf("response[searchFHIRMedicationRequest] = ' '")
+								return
+							}
+							result, resultConvert := resultI.(map[string]interface{})
+							if !resultConvert {
+								t.Errorf("cannot convert result to a map[string]interface{}")
+								return
+							}
+
+							edgesI, edgesFound := result["edges"]
+							if !edgesFound {
+								t.Errorf("no medication request was returned")
+								return
+							}
+							if edgesI == nil {
+								t.Errorf("no medication request was found")
+								return
+							}
+
+						}
+					}
+				}
+
 			}
 
 			if tt.wantStatus != resp.StatusCode {
@@ -5462,6 +5557,12 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 		return
 	}
 
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get test patient: %v", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -5472,7 +5573,69 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @condition @sala Test search FHIR condition
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchMedicationRequests($params: Map!) {
+						searchFHIRMedicationRequest(params: $params) {
+						  edges {
+							node {
+							  ID
+							  Status
+							  Intent
+							  Priority
+							  Subject {
+								Reference
+								Type
+								Display
+							  }
+							  MedicationCodeableConcept{
+								Text
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+							  }
+							  DosageInstruction{
+								Text
+								PatientInstruction
+							  }
+							  Requester{
+								Display
+							  }
+							  Encounter {
+								Reference
+								Type
+								Display
+							  }
+							  SupportingInformation {
+								ID
+								Reference
+								Display
+							  }
+							  AuthoredOn
+							  Note{
+								AuthorString
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient": fmt.Sprintf("Patient/%s", *patient.ID),
+							"_count":  "1",
+							"_sort":   "-_last_updated",
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -5539,6 +5702,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 				t.Errorf("bad data returned")
 				return
 			}
+
 			if tt.wantErr {
 				_, ok := data["errors"]
 				if !ok {
@@ -5553,13 +5717,40 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					if key == "data" {
+						_, present := nestedMap["searchFHIRMedicationRequest"]
+						if !present {
+							t.Errorf("can't find medication request data")
+							return
+						}
+
+						medicationMap, ok := nestedMap["searchFHIRMedicationRequest"].(map[string]interface{})
+						if !ok {
+							t.Errorf("cannot cast key value of %v to type map[string]interface{}", medicationMap)
+							return
+						}
+
+						_, found := medicationMap["edges"]
+						if !found {
+							t.Errorf("can't find FHIR medication edges data")
+							return
+						}
+					}
+				}
 			}
 
 			if tt.wantStatus != resp.StatusCode {
 				t.Errorf("Bad status reponse returned")
 				return
 			}
-
 		})
 	}
 }
@@ -6114,7 +6305,6 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 	}
 
 	instantRecorded := time.Now().Format(instantFormat)
-
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
@@ -6328,7 +6518,6 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 
 func TestGraphQSearchFHIRObservation(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
-
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
@@ -6341,16 +6530,116 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 		return
 	}
 
+	_, patient, status, encounterID, err := createFHIRTestObservation(ctx)
+	if err != nil {
+		t.Errorf("can't create FHIR test observation: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchObservations($params: Map!) {
+						searchFHIRObservation(params: $params) {
+						  edges {
+							node {
+							  ID
+							Status
+							Code {
+							  Text
+							  Coding {
+								Display
+								Code
+								System
+								UserSelected
+							  }
+							}
+							ValueQuantity {
+							  Value
+							  Unit
+							  System
+							  Code
+							}
+							ReferenceRange {
+							  Text
+							  Low {
+								Value
+								Unit
+								System
+								Code
+							  }
+							  High {
+								Value
+								Unit
+								System
+								Code
+							  }
+							  Type {
+								Text
+								Coding {
+								  Code
+								  UserSelected
+								  System
+								  Display
+								}
+							  }
+							}
+							Interpretation {
+							  Text
+							  Coding {
+								Display
+								Code
+								System
+								UserSelected
+							  }
+							}
+							Category {
+							  Text
+							  Coding {
+								Code
+								System
+								Display
+								UserSelected
+							  }
+							}
+							Issued
+							EffectiveInstant
+							Subject {
+							  Reference
+							  Type
+							  Display
+							}
+							Encounter {
+							  Reference
+							  Type
+							  Display
+							  }
+							}
+						  }
+						  }
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient":   fmt.Sprintf("Patient/%s", *patient.ID),
+							"status":    status.String(),
+							"encounter": fmt.Sprintf("Encounter/%s", encounterID),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{

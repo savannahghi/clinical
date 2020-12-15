@@ -179,7 +179,6 @@ func getTestEncounterID(
 
 	return episode, patient, encounterID, nil
 }
-
 func getTestFHIRMedicationRequestID(t *testing.T) string {
 
 	ctx := base.GetAuthenticatedContext(t)
@@ -357,6 +356,126 @@ func getTestFHIRMedicationRequestID(t *testing.T) string {
 		}
 	}
 	return ""
+}
+
+func createFHIRTestObservation(ctx context.Context) (
+	*clinical.FHIRObservation,
+	*clinical.FHIRPatient,
+	*clinical.ObservationStatusEnum,
+	string, // encounter ID
+	error,
+) {
+	instantRecorded := base.Instant(time.Now().Format(instantFormat))
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		return nil, nil, nil, "", fmt.Errorf("can't create test encounter: %w", err)
+	}
+	srv := clinical.NewService()
+	status := clinical.ObservationStatusEnumPreliminary
+	categorySystem := base.URI("http://terminology.hl7.org/CodeSystem/observation-category")
+	loincSystem := base.URI("http://loinc.org")
+	notSelected := false
+	selected := true
+	refrangeText := "0kg to 300kg"
+	refrangeSystem := base.URI("http://terminology.hl7.org/CodeSystem/referencerange-meaning")
+	interpretationSystem := base.URI("http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation")
+	patientType := base.URI("Patient")
+	encounterType := base.URI("Encounter")
+	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
+	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
+
+	inp := clinical.FHIRObservationInput{
+		Status: &status,
+		Category: []*clinical.FHIRCodeableConceptInput{
+			{
+				Text: "Vital Signs",
+				Coding: []*clinical.FHIRCodingInput{
+					{
+						Code:         "vital-signs",
+						System:       &categorySystem,
+						Display:      "Vital Signs",
+						UserSelected: &notSelected,
+					},
+				},
+			},
+		},
+		Code: clinical.FHIRCodeableConceptInput{
+			Text: "Body weight",
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					Code:         "29463-7",
+					System:       &loincSystem,
+					Display:      "Body Weight",
+					UserSelected: &selected,
+				},
+			},
+		},
+		ValueQuantity: &clinical.FHIRQuantityInput{
+			Value:  72,
+			Unit:   "kg",
+			System: base.URI("http://unitsofmeasure.org"),
+			Code:   base.Code("kg"),
+		},
+		ReferenceRange: []*clinical.FHIRObservationReferencerangeInput{
+			{
+				Low: &clinical.FHIRQuantityInput{
+					Value:  0,
+					Unit:   "kg",
+					System: base.URI("http://unitsofmeasure.org"),
+					Code:   "kg",
+				},
+				High: &clinical.FHIRQuantityInput{
+					Value:  300,
+					Unit:   "kg",
+					System: base.URI("http://unitsofmeasure.org"),
+					Code:   "kg",
+				},
+				Text: &refrangeText,
+				Type: &clinical.FHIRCodeableConceptInput{
+					Text: "Normal Range",
+					Coding: []*clinical.FHIRCodingInput{
+						{
+							Code:         "normal",
+							System:       &refrangeSystem,
+							Display:      "Normal Range",
+							UserSelected: &notSelected,
+						},
+					},
+				},
+			},
+		},
+		Issued:           &instantRecorded,
+		EffectiveInstant: &instantRecorded,
+		Encounter: &clinical.FHIRReferenceInput{
+			Reference: &encounterRef,
+			Type:      &encounterType,
+			Display:   encounterRef,
+		},
+		Subject: &clinical.FHIRReferenceInput{
+			Reference: &patientRef,
+			Type:      &patientType,
+			Display:   patientRef,
+		},
+		Interpretation: []*clinical.FHIRCodeableConceptInput{
+			{
+				Text: "Normal",
+				Coding: []*clinical.FHIRCodingInput{
+					{
+						Code:         "N",
+						System:       &interpretationSystem,
+						Display:      "Normal",
+						UserSelected: &notSelected,
+					},
+				},
+			},
+		},
+	}
+	obsPl, err := srv.CreateFHIRObservation(ctx, inp)
+	if err != nil {
+		return nil, nil, nil, "", fmt.Errorf("can't create FHIR observation: %w", err)
+	}
+	return obsPl.Resource, patient, &status, encounterID, nil
 }
 
 func getTestSimpleServiceRequest(
