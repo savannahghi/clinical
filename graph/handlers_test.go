@@ -5152,7 +5152,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 	}
 }
 
-func TestGraphQCreateFHIRServiceRequest(t *testing.T) {
+func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -5167,6 +5167,16 @@ func TestGraphQCreateFHIRServiceRequest(t *testing.T) {
 		return
 	}
 
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+
+	patientName := patient.Names()
+	requester := gofakeit.Name()
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -5177,7 +5187,6 @@ func TestGraphQCreateFHIRServiceRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @servicerequest @mathenge Test create FHIR service request
 		{
 			name: "invalid query",
 			args: args{
@@ -5188,6 +5197,73 @@ func TestGraphQCreateFHIRServiceRequest(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation CreateServiceRequest($input: FHIRServiceRequestInput!) {
+						createFHIRServiceRequest(input: $input) {
+						  resource {
+							ID
+							}
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"Status":   "active",
+							"Intent":   "proposal",
+							"Priority": "routine",
+							"Subject": map[string]interface{}{
+								"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+								"Type":      "Patient",
+								"Display":   patientName,
+							},
+							"Encounter": map[string]interface{}{
+								"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+								"Type":      "Encounter",
+								"Display":   fmt.Sprintf("Encounter/%s", encounterID),
+							},
+							"SupportingInfo": []map[string]interface{}{
+								{
+									"ID":        "113488",
+									"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+									"Display":   "Pulmonary Tuberculosis",
+								},
+							},
+							"Category": []map[string]interface{}{
+								{
+									"Text": "Laboratory procedure",
+									"Coding": []map[string]interface{}{
+										{
+											"System":       "OCL:/orgs/CIEL/sources/CIEL/",
+											"Code":         "108252007",
+											"Display":      "Laboratory procedure",
+											"UserSelected": true,
+										},
+									},
+								},
+							},
+							"Requester": map[string]interface{}{
+								"Display": requester,
+							},
+							"Code": map[string]interface{}{
+								"Text": "Hospital re-admission",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "OCL:/orgs/CIEL/sources/CIEL/",
+										"Code":         "417005",
+										"Display":      "Hospital re-admission",
+										"UserSelected": true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -5257,6 +5333,40 @@ func TestGraphQCreateFHIRServiceRequest(t *testing.T) {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
 				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					for nestedKey := range nestedMap {
+						if nestedKey == "createFHIRServiceRequest" {
+							output, ok := nestedMap[nestedKey].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast output to map[string]interface{}")
+								return
+							}
+
+							resource, ok := output["resource"].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast resource to map[string]interface{}")
+								return
+							}
+
+							id, present := resource["ID"]
+							if !present {
+								t.Errorf("ID not present in service request resource")
+								return
+							}
+							if id == "" {
+								t.Errorf("blank service request ID")
+								return
+							}
+						}
+					}
+				}
+
 			}
 
 			if tt.wantStatus != resp.StatusCode {
