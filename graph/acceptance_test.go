@@ -358,3 +358,98 @@ func getTestFHIRMedicationRequestID(t *testing.T) string {
 	}
 	return ""
 }
+
+func getTestSimpleServiceRequest(
+	ctx context.Context,
+	msisdn string,
+	fullAccess bool,
+	providerCode string,
+) (*clinical.FHIRServiceRequestInput, error) {
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, msisdn, false, providerCode)
+	if err != nil {
+		return nil, fmt.Errorf("can't create a service request: %w", err)
+	}
+	patientName := patient.Names()
+	requester := gofakeit.Name()
+	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
+	patientType := base.URI("Patient")
+	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
+	encounterType := base.URI("Encounter")
+	active := base.Code(clinical.EpisodeOfCareStatusEnumActive)
+	system := base.URI("OCL:/orgs/CIEL/sources/CIEL/")
+	userSelected := true
+	intent := base.Code("proposal")
+	priority := base.Code("routine")
+
+	return &clinical.FHIRServiceRequestInput{
+		Status:   &active,
+		Intent:   &intent,
+		Priority: &priority,
+		Subject: &clinical.FHIRReferenceInput{
+			Reference: &patientRef,
+			Type:      &patientType,
+			Display:   patientName,
+		},
+		Encounter: &clinical.FHIRReferenceInput{
+			Reference: &encounterRef,
+			Type:      &encounterType,
+			Display:   encounterRef,
+		},
+		SupportingInfo: []*clinical.FHIRReferenceInput{
+			{
+				Reference: &encounterRef,
+				Display:   "Pulmonary Tuberculosis",
+			},
+		},
+		Category: []*clinical.FHIRCodeableConceptInput{
+			{
+				Text: "Laboratory procedure",
+				Coding: []*clinical.FHIRCodingInput{
+					{
+						System:       &system,
+						Code:         "108252007",
+						Display:      "Laboratory procedure",
+						UserSelected: &userSelected,
+					},
+				},
+			},
+		},
+		Requester: &clinical.FHIRReferenceInput{
+			Display: requester,
+		},
+		Code: &clinical.FHIRCodeableConceptInput{
+			Text: "Hospital re-admission",
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &system,
+					Code:         "417005",
+					Display:      "Hospital re-admission",
+					UserSelected: &userSelected,
+				},
+			},
+		},
+	}, nil
+}
+
+func getTestServiceRequest(
+	ctx context.Context,
+	msisdn string,
+	fullAccess bool,
+	providerCode string,
+) (*clinical.FHIRServiceRequest, error) {
+	srv := clinical.NewService()
+	simpleServiceRequestInput, err := getTestSimpleServiceRequest(ctx,
+		msisdn, fullAccess, providerCode)
+	if err != nil {
+		return nil, fmt.Errorf("can't genereate simple service request input: %v", err)
+	}
+
+	serviceRequestPayload, err := srv.CreateFHIRServiceRequest(ctx, *simpleServiceRequestInput)
+	if err != nil {
+		return nil, fmt.Errorf("can't create service request: %v", err)
+	}
+
+	return serviceRequestPayload.Resource, nil
+
+}

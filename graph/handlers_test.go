@@ -5661,7 +5661,7 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 	}
 }
 
-func TestGraphQDeleteFHIRServiceRequest(t *testing.T) {
+func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
 
 	if ctx == nil {
@@ -5676,6 +5676,18 @@ func TestGraphQDeleteFHIRServiceRequest(t *testing.T) {
 		return
 	}
 
+	serviceRequest, err := getTestServiceRequest(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test service request: %w", err)
+		return
+	}
+
+	if serviceRequest.ID == nil {
+		t.Errorf("can't find service request ID")
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -5686,7 +5698,6 @@ func TestGraphQDeleteFHIRServiceRequest(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @servicerequest @mathenge Test delete FHIR service request
 		{
 			name: "invalid query",
 			args: args{
@@ -5697,6 +5708,21 @@ func TestGraphQDeleteFHIRServiceRequest(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation DeleteFHIRServiceRequest($id: ID!) {
+						deleteFHIRServiceRequest(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"id": *serviceRequest.ID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -5766,6 +5792,19 @@ func TestGraphQDeleteFHIRServiceRequest(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					if nestedMap["deleteFHIRServiceRequest"] == false {
+						t.Errorf("service request was not deleted successfully")
+						return
+					}
+
 				}
 			}
 
