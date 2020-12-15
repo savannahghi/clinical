@@ -229,8 +229,6 @@ extend type Mutation {
     input: PatientExtraInformationInput!
   ): Boolean!
 
-  deletePatient(input: RetirePatientInput!): Boolean!
-
   createFHIRMedicationRequest(
     input: FHIRMedicationRequestInput!
   ): FHIRMedicationRequestRelayPayload!

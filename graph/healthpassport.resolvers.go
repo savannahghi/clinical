@@ -76,12 +76,6 @@ func (r *mutationResolver) CreateUpdatePatientExtraInformation(ctx context.Conte
 	return r.clinicalService.CreateUpdatePatientExtraInformation(ctx, input)
 }
 
-func (r *mutationResolver) DeletePatient(ctx context.Context, input clinical.RetirePatientInput) (bool, error) {
-	r.CheckUserTokenInContext(ctx)
-	r.CheckDependencies()
-	return r.clinicalService.DeletePatient(ctx, input)
-}
-
 func (r *mutationResolver) CreateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)

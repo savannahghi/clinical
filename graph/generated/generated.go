@@ -891,7 +891,6 @@ type ComplexityRoot struct {
 		DeleteFHIRComposition               func(childComplexity int, id string) int
 		DeleteFHIRMedicationRequest         func(childComplexity int, id string) int
 		DeleteFHIRServiceRequest            func(childComplexity int, id string) int
-		DeletePatient                       func(childComplexity int, input clinical.RetirePatientInput) int
 		EndEncounter                        func(childComplexity int, encounterID string) int
 		EndEpisode                          func(childComplexity int, episodeID string) int
 		RegisterPatient                     func(childComplexity int, input clinical.SimplePatientRegistrationInput) int
@@ -969,7 +968,6 @@ type MutationResolver interface {
 	AddNextOfKin(ctx context.Context, input clinical.SimpleNextOfKinInput) (*clinical.PatientPayload, error)
 	AddNhif(ctx context.Context, input *clinical.SimpleNHIFInput) (*clinical.PatientPayload, error)
 	CreateUpdatePatientExtraInformation(ctx context.Context, input clinical.PatientExtraInformationInput) (bool, error)
-	DeletePatient(ctx context.Context, input clinical.RetirePatientInput) (bool, error)
 	CreateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error)
 	UpdateFHIRMedicationRequest(ctx context.Context, input clinical.FHIRMedicationRequestInput) (*clinical.FHIRMedicationRequestRelayPayload, error)
 	DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error)
@@ -5166,18 +5164,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFHIRServiceRequest(childComplexity, args["id"].(string)), true
 
-	case "Mutation.deletePatient":
-		if e.complexity.Mutation.DeletePatient == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_deletePatient_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.DeletePatient(childComplexity, args["input"].(clinical.RetirePatientInput)), true
-
 	case "Mutation.endEncounter":
 		if e.complexity.Mutation.EndEncounter == nil {
 			break
@@ -5946,8 +5932,6 @@ extend type Mutation {
   createUpdatePatientExtraInformation(
     input: PatientExtraInformationInput!
   ): Boolean!
-
-  deletePatient(input: RetirePatientInput!): Boolean!
 
   createFHIRMedicationRequest(
     input: FHIRMedicationRequestInput!
@@ -12093,21 +12077,6 @@ func (ec *executionContext) field_Mutation_deleteFHIRServiceRequest_args(ctx con
 		}
 	}
 	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_deletePatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 clinical.RetirePatientInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNRetirePatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRetirePatientInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -31695,48 +31664,6 @@ func (ec *executionContext) _Mutation_createUpdatePatientExtraInformation(ctx co
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_deletePatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deletePatient_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeletePatient(rctx, args["input"].(clinical.RetirePatientInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Mutation_createFHIRMedicationRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -43371,11 +43298,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deletePatient":
-			out.Values[i] = ec._Mutation_deletePatient(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "createFHIRMedicationRequest":
 			out.Values[i] = ec._Mutation_createFHIRMedicationRequest(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -45192,11 +45114,6 @@ func (ec *executionContext) unmarshalNRelationshipType2gitlabᚗslade360emrᚗco
 
 func (ec *executionContext) marshalNRelationshipType2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRelationshipType(ctx context.Context, sel ast.SelectionSet, v clinical.RelationshipType) graphql.Marshaler {
 	return v
-}
-
-func (ec *executionContext) unmarshalNRetirePatientInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐRetirePatientInput(ctx context.Context, v interface{}) (clinical.RetirePatientInput, error) {
-	res, err := ec.unmarshalInputRetirePatientInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNSimpleNextOfKinInput2gitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐSimpleNextOfKinInput(ctx context.Context, v interface{}) (clinical.SimpleNextOfKinInput, error) {

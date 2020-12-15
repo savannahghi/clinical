@@ -193,7 +193,7 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 		return
 	}
 
-	simplePatientRegInput, err := getTestSimplePatientRegistration()
+	simplePatientRegInput, _, err := getTestSimplePatientRegistration()
 	if err != nil {
 		t.Errorf("can't genereate simple patient reg inpit: %v", err)
 		return
@@ -476,17 +476,21 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 		return
 	}
 
+	_, msisdn, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("error in getting test patient: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Maluki Test find patients by MSISDN
 		{
 			name: "invalid query",
 			args: args{
@@ -497,6 +501,57 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query FindPatientByMSISDN($msisdn: String!) {
+						findPatientsByMSISDN(msisdn: $msisdn) {
+						  edges {
+							hasOpenEpisodes
+							node {
+							  ID
+							  Active
+							  Gender
+							  BirthDate
+							  Telecom{
+								System
+								Value
+							  }
+							  Name {
+								Given
+								Family
+								Use
+								Text
+								Prefix
+								Suffix
+								Period {
+								  Start
+								  End
+								}
+							  }
+							  Photo{
+								ID
+								ContentType
+								Language
+								Data
+								URL
+								Size
+								Hash
+								Title
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"msisdn": msisdn,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -593,7 +648,7 @@ func TestGraphQLFindPatients(t *testing.T) {
 		return
 	}
 
-	patient, err := getTestPatient(ctx)
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
 		t.Errorf("could not get patient: %v", err)
 		return
@@ -782,6 +837,12 @@ func TestGraphQGetPatient(t *testing.T) {
 		return
 	}
 
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("can't get test patient: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -792,7 +853,42 @@ func TestGraphQGetPatient(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @criticalpath @Maluki Test get patient
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `                    
+					query GetPatientInfo($id: ID!) {
+					  getPatient(id: $id) {
+						hasOpenEpisodes
+						openEpisodes{
+						  ID
+						  Status
+						  Patient{
+							Reference
+							Type
+							Display
+						  }
+						}
+						patientRecord {
+						  ID
+						  Name {
+							Text
+						  }
+						  Telecom {
+							Value
+						  }
+						}
+					  }
+					}`,
+					"variables": map[string]interface{}{
+						"id": *patient.ID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -904,7 +1000,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 		return
 	}
 
-	patient, err := getTestPatient(ctx)
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
 		t.Errorf("could not get patient: %v", err)
 		return
@@ -1088,7 +1184,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 		return
 	}
 
-	patient, err := getTestPatient(ctx)
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
 		t.Errorf("could not get patient: %v", err)
 		return
@@ -2383,7 +2479,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 		return
 	}
 
-	patient, err := getTestPatient(ctx)
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
 		t.Errorf("could not get patient: %v", err)
 		return
@@ -2577,6 +2673,25 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 		return
 	}
 
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("can't get test patient: %w", err)
+		return
+	}
+
+	newPatientInputData, _, err := getTestSimplePatientRegistration()
+	if err != nil {
+		t.Errorf("can't genereate simple patient reg inpit: %v", err)
+		return
+	}
+
+	patientInputWithUpdatedData, err := base.StructToMap(newPatientInputData)
+	if err != nil {
+		t.Errorf("can't convert simple patient reg input to map: %v", err)
+		return
+	}
+	patientInputWithUpdatedData["id"] = *patient.ID
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -2587,7 +2702,167 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg @Mathenge Test update patient
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation SimplePatientUpdate($input: SimplePatientRegistrationInput!) {
+						updatePatient(input: $input) {
+						  patientRecord {
+							ID
+							Identifier {
+							  ID
+							  Use
+							  Type {
+								ID
+								Text
+								Coding {
+								  System
+								  Version
+								  Display
+								  Code
+								  UserSelected
+								}
+							  }
+							  System
+							  Value
+							  Period {
+								ID
+								Start
+								End
+							  }
+							}
+							Active
+							Name {
+							  ID
+							  Use
+							  Text
+							  Family
+							  Given
+							  Prefix
+							  Suffix
+							  Period {
+								ID
+								Start
+								End
+							  }
+							}
+							Telecom {
+							  ID
+							  System
+							  Value
+							  Use
+							  Rank
+							  Period {
+								ID
+								Start
+								End
+							  }
+							}
+							Gender
+							BirthDate
+							Address {
+							  ID
+							  Use
+							  Type
+							  Text
+							  Line
+							  City
+							  District
+							  State
+							  PostalCode
+							  Country
+							  Period {
+								ID
+								Start
+								End
+							  }
+							}     
+							Photo {
+							  ID
+							  ContentType
+							  Language
+							  Data
+							  URL
+							  Size
+							  Hash
+							  Title
+							  Creation
+							}
+							Contact {
+							  ID
+							  Relationship {
+								ID
+								Text
+								Coding {
+								  System
+								  Version
+								  Display
+								  Code
+								  UserSelected
+								}
+							  }
+							  Name {
+								ID
+								Use
+								Text
+								Family
+								Given
+								Prefix
+								Suffix
+								Period {
+								  ID
+								  Start
+								  End
+								}
+							  }
+							  Gender
+							  Period {
+								ID
+								Start
+								End
+							  }
+							  Address {
+								ID
+								Use
+								Type
+								Text
+								Line
+								City
+								District
+								State
+								PostalCode
+								Country
+								Period {
+								  ID
+								  Start
+								  End
+								}
+							  }
+							  Telecom {
+								ID
+								System
+								Value
+								Use
+								Rank
+								Period {
+								  ID
+								  Start
+								  End
+								}
+							  }
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": patientInputWithUpdatedData,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -2693,17 +2968,43 @@ func TestGraphQLAddNHIF(t *testing.T) {
 		return
 	}
 
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("error in getting test patient: %w", err)
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @patientreg @Mathenge Test add NHIF
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation AddNHIF($input: SimpleNHIFInput) {
+						addNHIF(input: $input) {
+							patientRecord {
+							  ID
+							}
+						} 
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"patientID":        *patient.ID,
+							"membershipNumber": gofakeit.BuzzWord(),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -2810,7 +3111,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 		return
 	}
 
-	patient, err := getTestPatient(ctx)
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
 		t.Errorf("could not get patient: %v", err)
 		return
@@ -2951,123 +3252,6 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 							return
 						}
 					}
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
-				return
-			}
-
-		})
-	}
-}
-
-func TestGraphQLDeletePatient(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		// TODO @patientreg @Mathenge Test delete patient
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				errMsg, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
-					return
 				}
 			}
 

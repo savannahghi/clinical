@@ -1221,63 +1221,6 @@ func (s Service) CreatePatient(
 	return output, nil
 }
 
-// DeletePatient is used to inactivate / retire a health record.
-// It is used to implement "forget me".
-//
-// The patient's identifiers and name are removed. Their date of birth is set to the
-// start of the year. They are then marked as inactive.
-//
-// This is done because there may already be patient records linked to this patient.
-func (s Service) DeletePatient(
-	ctx context.Context, input RetirePatientInput) (bool, error) {
-	s.checkPreconditions()
-
-	patientPayload, err := s.FindPatientByID(ctx, input.ID)
-	if err != nil {
-		return false, fmt.Errorf("no patient with ID %s: %w", input.ID, err)
-	}
-
-	dob := patientPayload.PatientRecord.BirthDate
-	dob.Month = 1 // anonymize
-	dob.Day = 1   // anonymize
-
-	payload := []map[string]interface{}{
-		{
-			"op":    "replace",
-			"path":  "/active",
-			"value": false,
-		},
-		{
-			"op":    "replace",
-			"path":  "/identifier",
-			"value": nil,
-		},
-		{
-			"op":    "replace",
-			"path":  "/name",
-			"value": nil,
-		},
-		{
-			"op":    "replace",
-			"path":  "/birthDate",
-			"value": dob,
-		},
-	}
-
-	resp, err := s.clinicalRepository.PatchFHIRResource(
-		"Patient",
-		*patientPayload.PatientRecord.ID,
-		payload,
-	)
-	if err != nil {
-		return false, fmt.Errorf(
-			"unable to anonymize (forget) patient, response %s, error: %v",
-			string(resp), err,
-		)
-	}
-	return true, nil
-}
-
 // FindPatientByID retrieves a single patient by their ID
 func (s Service) FindPatientByID(
 	ctx context.Context, id string) (*PatientPayload, error) {
