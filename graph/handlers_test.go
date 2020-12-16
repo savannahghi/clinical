@@ -3281,7 +3281,7 @@ func TestGraphQLVisitSummary(t *testing.T) {
 		return
 	}
 
-	encounterID, err := patientVisitSummary(ctx)
+	encounterID, _, err := patientVisitSummary(ctx)
 	if err != nil {
 		t.Errorf("can't create a visit summary")
 		return
@@ -3415,6 +3415,11 @@ func TestGraphQLVisitSummary(t *testing.T) {
 										return
 									}
 
+									if len(condition) == 0 {
+										t.Errorf("can't find a condition count")
+										return
+									}
+
 									for _, c := range condition {
 										conditionMap, ok := c.(map[string]interface{})
 										if !ok {
@@ -3431,6 +3436,11 @@ func TestGraphQLVisitSummary(t *testing.T) {
 									encounter, ok := output["Encounter"].([]interface{})
 									if !ok {
 										t.Errorf("can't cast encounter to []interface{}")
+										return
+									}
+
+									if len(encounter) == 0 {
+										t.Errorf("can't find a encounter count")
 										return
 									}
 
@@ -3452,6 +3462,11 @@ func TestGraphQLVisitSummary(t *testing.T) {
 										return
 									}
 
+									if len(observation) == 0 {
+										t.Errorf("can't find a observation count")
+										return
+									}
+
 									for _, o := range observation {
 										observationMap, ok := o.(map[string]interface{})
 										if !ok {
@@ -3467,6 +3482,11 @@ func TestGraphQLVisitSummary(t *testing.T) {
 									composition, ok := output["Composition"].([]interface{})
 									if !ok {
 										t.Errorf("can't cast composition to []interface{}")
+										return
+									}
+
+									if len(composition) == 0 {
+										t.Errorf("can't find a composition count")
 										return
 									}
 
@@ -3489,6 +3509,11 @@ func TestGraphQLVisitSummary(t *testing.T) {
 										return
 									}
 
+									if len(serviceRequest) == 0 {
+										t.Errorf("can't find a serviceRequest count")
+										return
+									}
+
 									for _, sr := range serviceRequest {
 										serviceRequestMap, ok := sr.(map[string]interface{})
 										if !ok {
@@ -3504,6 +3529,11 @@ func TestGraphQLVisitSummary(t *testing.T) {
 									medicationRequest, ok := output["MedicationRequest"].([]interface{})
 									if !ok {
 										t.Errorf("can't cast medicationRequest to []interface{}")
+										return
+									}
+
+									if len(medicationRequest) == 0 {
+										t.Errorf("can't find a medicationRequest count")
 										return
 									}
 
@@ -3525,13 +3555,18 @@ func TestGraphQLVisitSummary(t *testing.T) {
 										return
 									}
 
+									if len(allergyIntolerance) == 0 {
+										t.Errorf("can't find a allergyIntolerance count")
+										return
+									}
+
 									for _, a := range allergyIntolerance {
 										allergyIntoleranceMap, ok := a.(map[string]interface{})
 										if !ok {
 											t.Errorf("can't cast to map[string]interface{}")
 											return
 										}
-										if allergyIntoleranceMap["subject"] == nil {
+										if allergyIntoleranceMap["encounter"] == nil {
 											t.Errorf("can't find a allergyIntolerance")
 											return
 										}
@@ -3568,6 +3603,12 @@ func TestGraphQPatientTimelineWithCount(t *testing.T) {
 		return
 	}
 
+	_, episodeID, err := patientVisitSummary(ctx)
+	if err != nil {
+		t.Errorf("can't create a visit summary")
+		return
+	}
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -3578,7 +3619,6 @@ func TestGraphQPatientTimelineWithCount(t *testing.T) {
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @timeline @mashaa Test patient timeline with count
 		{
 			name: "invalid query",
 			args: args{
@@ -3589,6 +3629,22 @@ func TestGraphQPatientTimelineWithCount(t *testing.T) {
 			},
 			wantStatus: http.StatusUnprocessableEntity,
 			wantErr:    true,
+		},
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query PatientTimelineWithCount($episodeID: String!, $count: Int!){
+						patientTimelineWithCount(episodeID: $episodeID, count: $count)
+					  }`,
+					"variables": map[string]interface{}{
+						"episodeID": episodeID,
+						"count":     1,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
 		},
 	}
 
@@ -3658,6 +3714,197 @@ func TestGraphQPatientTimelineWithCount(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					for nestedKey := range nestedMap {
+						if nestedKey == "patientTimelineWithCount" {
+							output, ok := nestedMap[nestedKey].([]interface{})
+							if !ok {
+								t.Errorf("can't cast output to []interface {}")
+								return
+							}
+
+							for _, summary := range output {
+								summaryMap, ok := summary.(map[string]interface{})
+								if !ok {
+									t.Errorf("can't cast output to map[string]interface{}")
+									return
+								}
+								for summaryKey := range summaryMap {
+									switch summaryKey {
+									case "Condition":
+										condition, ok := summaryMap["Condition"].([]interface{})
+										if !ok {
+											t.Errorf("can't cast summary to []interface{}")
+											return
+										}
+
+										if len(condition) == 0 {
+											t.Errorf("can't find a condition count")
+											return
+										}
+
+										for _, c := range condition {
+											conditionMap, ok := c.(map[string]interface{})
+											if !ok {
+												t.Errorf("can't cast to map[string]interface{}")
+												return
+											}
+											if conditionMap["subject"] == nil {
+												t.Errorf("can't find a condition")
+												return
+											}
+										}
+
+									case "Encounter":
+										encounter, ok := summaryMap["Encounter"].([]interface{})
+										if !ok {
+											t.Errorf("can't cast encounter to []interface{}")
+											return
+										}
+
+										if len(encounter) == 0 {
+											t.Errorf("can't find a encounter count")
+											return
+										}
+
+										for _, e := range encounter {
+											encounterMap, ok := e.(map[string]interface{})
+											if !ok {
+												t.Errorf("can't cast to map[string]interface{}")
+												return
+											}
+											if encounterMap["subject"] == nil {
+												t.Errorf("can't find a encounter")
+												return
+											}
+										}
+									case "Observation":
+										observation, ok := summaryMap["Observation"].([]interface{})
+										if !ok {
+											t.Errorf("can't cast observation to []interface{}")
+											return
+										}
+
+										if len(observation) == 0 {
+											t.Errorf("can't find a observation count")
+											return
+										}
+
+										for _, o := range observation {
+											observationMap, ok := o.(map[string]interface{})
+											if !ok {
+												t.Errorf("can't cast to map[string]interface{}")
+												return
+											}
+											if observationMap["subject"] == nil {
+												t.Errorf("can't find a observation")
+												return
+											}
+										}
+									case "Composition":
+										composition, ok := summaryMap["Composition"].([]interface{})
+										if !ok {
+											t.Errorf("can't cast composition to []interface{}")
+											return
+										}
+
+										if len(composition) == 0 {
+											t.Errorf("can't find a composition count")
+											return
+										}
+
+										for _, co := range composition {
+											compositionMap, ok := co.(map[string]interface{})
+											if !ok {
+												t.Errorf("can't cast to map[string]interface{}")
+												return
+											}
+											if compositionMap["subject"] == nil {
+												t.Errorf("can't find a composition")
+												return
+											}
+										}
+									case "ServiceRequest":
+										serviceRequest, ok := summaryMap["ServiceRequest"].([]interface{})
+										if !ok {
+											t.Errorf("can't cast serviceRequest to []interface{}")
+											return
+										}
+
+										if len(serviceRequest) == 0 {
+											t.Errorf("can't find a serviceRequest count")
+											return
+										}
+
+										for _, sr := range serviceRequest {
+											serviceRequestMap, ok := sr.(map[string]interface{})
+											if !ok {
+												t.Errorf("can't cast to map[string]interface{}")
+												return
+											}
+											if serviceRequestMap["subject"] == nil {
+												t.Errorf("can't find a serviceRequest")
+												return
+											}
+										}
+									case "MedicationRequest":
+										medicationRequest, ok := summaryMap["MedicationRequest"].([]interface{})
+										if !ok {
+											t.Errorf("can't cast medicationRequest to []interface{}")
+											return
+										}
+
+										if len(medicationRequest) == 0 {
+											t.Errorf("can't find a medicationRequest count")
+											return
+										}
+
+										for _, mr := range medicationRequest {
+											medicationRequestMap, ok := mr.(map[string]interface{})
+											if !ok {
+												t.Errorf("can't cast to map[string]interface{}")
+												return
+											}
+											if medicationRequestMap["subject"] == nil {
+												t.Errorf("can't find a medicationRequest")
+												return
+											}
+										}
+									case "AllergyIntolerance":
+										allergyIntolerance, ok := summaryMap["AllergyIntolerance"].([]interface{})
+										if !ok {
+											t.Errorf("can't cast allergyIntolerance to []interface{}")
+											return
+										}
+										if len(allergyIntolerance) == 0 {
+											t.Errorf("can't find a allergyIntolerance count")
+											return
+										}
+
+										for _, a := range allergyIntolerance {
+											allergyIntoleranceMap, ok := a.(map[string]interface{})
+											if !ok {
+												t.Errorf("can't cast to map[string]interface{}")
+												return
+											}
+											if allergyIntoleranceMap["encounter"] == nil {
+												t.Errorf("can't find a allergyIntolerance")
+												return
+											}
+										}
+									}
+								}
+
+							}
+
+						}
+					}
 				}
 			}
 
@@ -4039,7 +4286,11 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 	}
 
 	// create FHIRMedicationRequest
-	medicationRequestID := getTestFHIRMedicationRequestID(t)
+	medicationRequestID, err := getTestFHIRMedicationRequestID(ctx, encounterID)
+	if err != nil {
+		t.Errorf("error creating test medication request")
+		return
+	}
 	if medicationRequestID == "" {
 		t.Errorf("failed to create medication request: %w", err)
 		return
@@ -4298,7 +4549,18 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 		return
 	}
 
-	medicationRequestID := getTestFHIRMedicationRequestID(t)
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+
+	medicationRequestID, err := getTestFHIRMedicationRequestID(ctx, encounterID)
+	if err != nil {
+		t.Errorf("error creating test medication request")
+		return
+	}
 	if medicationRequestID == "" {
 		t.Errorf("empty medication request ID")
 		return
@@ -4485,7 +4747,18 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 	}
 
 	// create a medication request
-	medicationRequestID := getTestFHIRMedicationRequestID(t)
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
+
+	medicationRequestID, err := getTestFHIRMedicationRequestID(ctx, encounterID)
+	if err != nil {
+		t.Errorf("error creating test medication request")
+		return
+	}
 	if medicationRequestID == "" {
 		t.Errorf("empty medicationrequest ID")
 		return
@@ -5037,7 +5310,11 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 		return
 	}
 
-	allergyID := getTestAllergyIntoleranceID(ctx, patient, encounterID, t)
+	allergyID, err := getTestAllergyIntoleranceID(ctx, patient, encounterID)
+	if err != nil {
+		t.Errorf("can't get test allergy intolerance")
+		return
+	}
 	if allergyID == "" {
 		t.Errorf("emtyp allergy intolerance ID")
 		return
@@ -5263,9 +5540,13 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 		t.Errorf("error creating test encounter ID: %w", err)
 		return
 	}
-	allergyID := getTestAllergyIntoleranceID(ctx, patient, encounterID, t)
+	allergyID, err := getTestAllergyIntoleranceID(ctx, patient, encounterID)
+	if err != nil {
+		t.Errorf("can't get test allergy intolerance")
+		return
+	}
 	if allergyID == "" {
-		t.Errorf("emtyp allergy intolerance ID")
+		t.Errorf("empty allergy intolerance ID")
 		return
 	}
 

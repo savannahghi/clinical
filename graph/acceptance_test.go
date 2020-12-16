@@ -7,12 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"testing"
 	"time"
 
 	"github.com/brianvoe/gofakeit/v5"
 	"github.com/segmentio/ksuid"
-	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
@@ -179,26 +177,16 @@ func getTestEncounterID(
 
 	return episode, patient, encounterID, nil
 }
-func getTestFHIRMedicationRequestID(t *testing.T) string {
 
-	ctx := base.GetAuthenticatedContext(t)
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return ""
-	}
-
+func getTestFHIRMedicationRequestID(ctx context.Context, encounterID string) (string, error) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := base.GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return ""
+		return "", fmt.Errorf("error in getting GraphQL headers: %w", err)
 	}
-	_, patient, encounterID, err := getTestEncounterID(
-		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
-		return ""
+		return "", fmt.Errorf("error creating test patient: %w", err)
 	}
 
 	patientName := patient.Names()
@@ -268,8 +256,7 @@ func getTestFHIRMedicationRequestID(t *testing.T) string {
 
 	body, err := mapToJSONReader(query)
 	if err != nil {
-		t.Errorf("unable to get GQL JSON io Reader: %s", err)
-		return ""
+		return "", fmt.Errorf("unable to get GQL JSON io Reader: %s", err)
 	}
 
 	r, err := http.NewRequest(
@@ -278,13 +265,11 @@ func getTestFHIRMedicationRequestID(t *testing.T) string {
 		body,
 	)
 	if err != nil {
-		t.Errorf("unable to compose request: %s", err)
-		return ""
+		return "", fmt.Errorf("unable to compose request: %s", err)
 	}
 
 	if r == nil {
-		t.Errorf("nil request")
-		return ""
+		return "", fmt.Errorf("nil request")
 	}
 
 	for k, v := range headers {
@@ -295,67 +280,56 @@ func getTestFHIRMedicationRequestID(t *testing.T) string {
 	}
 	resp, err := client.Do(r)
 	if err != nil {
-		t.Errorf("request error: %s", err)
-		return ""
+		return "", fmt.Errorf("request error: %s", err)
 	}
 
 	dataResponse, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		t.Errorf("can't read request body: %s", err)
-		return ""
+		return "", fmt.Errorf("can't read request body: %s", err)
 	}
 
 	if dataResponse == nil {
-		t.Errorf("nil response data")
-		return ""
+		return "", fmt.Errorf("nil response data")
 	}
 
 	data := map[string]interface{}{}
 	err = json.Unmarshal(dataResponse, &data)
 	if err != nil {
-		t.Errorf("bad data returned")
-		return ""
+		return "", fmt.Errorf("bad data returned")
 	}
 
 	for key := range data {
 		nestedMap, ok := data[key].(map[string]interface{})
 		if !ok {
-			t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
-			return ""
+			return "", fmt.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
 		}
 
 		for nestedKey := range nestedMap {
 			if nestedKey == "createFHIRMedicationRequest" {
 				output, ok := nestedMap[nestedKey].(map[string]interface{})
 				if !ok {
-					t.Errorf("can't cast output to map[string]interface{}")
-					return ""
+					return "", fmt.Errorf("can't cast output to map[string]interface{}")
 				}
 
 				resource, ok := output["resource"].(map[string]interface{})
 				if !ok {
-					t.Errorf("can't cast resource to map[string]interface{}")
-					return ""
+					return "", fmt.Errorf("can't cast resource to map[string]interface{}")
 				}
-
-				log.Printf("resource: %v", resource)
 
 				id, prs := resource["ID"]
 				if !prs {
-					t.Errorf("ID not present in medication request resource")
-					return ""
+					return "", fmt.Errorf("ID not present in medication request resource")
 				}
 				if id == "" {
-					t.Errorf("blank medication request ID")
-					return ""
+					return "", fmt.Errorf("blank medication request ID")
 				}
 
 				idString := id.(string)
-				return idString
+				return idString, nil
 			}
 		}
 	}
-	return ""
+	return "", err
 }
 
 func createFHIRTestObservation(ctx context.Context, encounterID string) (
@@ -768,43 +742,52 @@ func createTestCondition(
 	return condition.Resource, nil
 }
 
-func patientVisitSummary(ctx context.Context) (string, error) {
-	_, patient, encounterID, err := getTestEncounterID(
+func patientVisitSummary(ctx context.Context) (string, string, error) {
+	episode, patient, encounterID, err := getTestEncounterID(
 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		return "", fmt.Errorf("error creating test encounter ID: %w", err)
+		return "", "", fmt.Errorf("error creating test encounter ID: %w", err)
 	}
 	patientID := *patient.ID
 
 	_, _, _, err = createFHIRTestObservation(ctx, encounterID)
 	if err != nil {
-		return "", fmt.Errorf("can't create FHIR test observation: %w", err)
+		return "", "", fmt.Errorf("can't create FHIR test observation: %w", err)
 	}
 
 	_, _, err = createTestFHIRComposition(ctx, encounterID)
 	if err != nil {
-		return "", fmt.Errorf("can't create test composition: %w", err)
+		return "", "", fmt.Errorf("can't create test composition: %w", err)
 	}
 
 	_, _, err = getTestServiceRequest(ctx, encounterID)
 	if err != nil {
-		return "", fmt.Errorf("error creating test service request: %w", err)
+		return "", "", fmt.Errorf("error creating test service request: %w", err)
 	}
 
 	_, err = createTestCondition(ctx, encounterID, patientID)
 	if err != nil {
-		return "", fmt.Errorf("error creating test condition: %w", err)
+		return "", "", fmt.Errorf("error creating test condition: %w", err)
 	}
 
-	return encounterID, nil
+	_, err = getTestFHIRMedicationRequestID(ctx, encounterID)
+	if err != nil {
+		return "", "", fmt.Errorf("error creating test medication request: %w", err)
+	}
+
+	_, err = getTestAllergyIntoleranceID(ctx, patient, encounterID)
+	if err != nil {
+		return "", "", fmt.Errorf("error creating test allergy intolerance: %w", err)
+	}
+
+	return encounterID, *episode.ID, nil
 }
 
-func getTestAllergyIntoleranceID(ctx context.Context, patient *clinical.FHIRPatient, encounterID string, t *testing.T) string {
+func getTestAllergyIntoleranceID(ctx context.Context, patient *clinical.FHIRPatient, encounterID string) (string, error) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := base.GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
-		return ""
+		return "", fmt.Errorf("error in getting GraphQL headers: %w", err)
 	}
 
 	patientName := patient.Names()
@@ -920,8 +903,7 @@ func getTestAllergyIntoleranceID(ctx context.Context, patient *clinical.FHIRPati
 
 	body, err := mapToJSONReader(query)
 	if err != nil {
-		t.Errorf("unable to get GQL JSON io Reader: %s", err)
-		return ""
+		return "", fmt.Errorf("unable to get GQL JSON io Reader: %s", err)
 	}
 
 	r, err := http.NewRequest(
@@ -930,13 +912,11 @@ func getTestAllergyIntoleranceID(ctx context.Context, patient *clinical.FHIRPati
 		body,
 	)
 	if err != nil {
-		t.Errorf("unable to compose request: %s", err)
-		return ""
+		return "", fmt.Errorf("unable to compose request: %s", err)
 	}
 
 	if r == nil {
-		t.Errorf("nil request")
-		return ""
+		return "", fmt.Errorf("nil request")
 	}
 
 	for k, v := range headers {
@@ -947,67 +927,57 @@ func getTestAllergyIntoleranceID(ctx context.Context, patient *clinical.FHIRPati
 	}
 	resp, err := client.Do(r)
 	if err != nil {
-		t.Errorf("request error: %s", err)
-		return ""
+		return "", fmt.Errorf("request error: %s", err)
 	}
 
 	dataResponse, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		t.Errorf("can't read request body: %s", err)
-		return ""
+		return "", fmt.Errorf("can't read request body: %s", err)
 	}
 
 	if dataResponse == nil {
-		t.Errorf("nil response data")
-		return ""
+		return "", fmt.Errorf("nil response data")
 	}
 
 	data := map[string]interface{}{}
 	err = json.Unmarshal(dataResponse, &data)
 	if err != nil {
-		t.Errorf("bad data returned")
-		return ""
+		return "", fmt.Errorf("bad data returned")
 	}
 
 	for key := range data {
 		nestedMap, ok := data[key].(map[string]interface{})
 		if !ok {
-			t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
-			return ""
+			return "", fmt.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
 		}
 
 		for nestedKey := range nestedMap {
 			if nestedKey == "createFHIRAllergyIntolerance" {
 				output, ok := nestedMap[nestedKey].(map[string]interface{})
 				if !ok {
-					t.Errorf("can't cast output to map[string]interface{}")
-					return ""
+					return "", fmt.Errorf("can't cast output to map[string]interface{}")
 				}
 
 				resource, ok := output["resource"].(map[string]interface{})
 				if !ok {
-					t.Errorf("can't cast resource to map[string]interface{}")
-					return ""
+					return "", fmt.Errorf("can't cast resource to map[string]interface{}")
 				}
 
 				idI, prs := resource["ID"]
 				if !prs {
-					t.Errorf("ID not present in allergy intolerance resource")
-					return ""
+					return "", fmt.Errorf("ID not present in allergy intolerance resource")
 				}
 				id, idConvert := idI.(string)
 				if !idConvert {
-					t.Errorf("mulformed ID returned")
-					return ""
+					return "", fmt.Errorf("mulformed ID returned")
 				}
 				if id == "" {
-					t.Errorf("blank allergy intolerance request ID")
-					return ""
+					return "", fmt.Errorf("blank allergy intolerance request ID")
 				}
-				return id
+				return id, nil
 			}
 		}
 	}
 
-	return ""
+	return "", err
 }
