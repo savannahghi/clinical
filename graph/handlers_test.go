@@ -7432,7 +7432,6 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 
 func TestGraphQUpdateFHIRComposition(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
-
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
@@ -7445,17 +7444,102 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 		return
 	}
 
+	_, patient, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("can't create test encounter: %w", err)
+		return
+	}
+
+	composition, _, err := createTestFHIRComposition(ctx, encounterID)
+	if err != nil {
+		t.Errorf("can't create test composition: %w", err)
+		return
+	}
+	recorded := time.Now().Format(dateFormat)
+
 	type args struct {
 		query map[string]interface{}
 	}
-
 	tests := []struct {
 		name       string
 		args       args
 		wantStatus int
 		wantErr    bool
 	}{
-		// TODO @composition @ngure Test update FHIR composition
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation UpdateComposition($input: FHIRCompositionInput!) {
+						updateFHIRComposition(input: $input) {
+						  resource {
+							ID  
+							Status
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"input": map[string]interface{}{
+							"ID":     *composition.ID,
+							"Status": "final", // this is the edit...make the composition final
+							"Date":   recorded,
+							"Title":  gofakeit.HipsterSentence(10),
+							"Type": map[string]interface{}{
+								"Text": "Consult Note",
+								"Coding": []map[string]interface{}{
+									{
+										"System":       "http://loinc.org",
+										"Code":         "11488-4",
+										"Display":      "Consult Note",
+										"UserSelected": false,
+									},
+								},
+							},
+							"Category": []map[string]interface{}{
+								{
+									"Text": "Consult Note",
+									"Coding": []map[string]interface{}{
+										{
+											"System":       "http://loinc.org",
+											"Code":         "11488-4",
+											"Display":      "Consult Note",
+											"UserSelected": false,
+										},
+									},
+								},
+							},
+							"Subject": map[string]interface{}{
+								"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
+								"Type":      "Patient",
+								"Display":   patient.Names(),
+							},
+							"Encounter": map[string]interface{}{
+								"Reference": fmt.Sprintf("Encounter/%s", encounterID),
+								"Type":      "Encounter",
+								"Display":   fmt.Sprintf("Encounter/%s", encounterID),
+							},
+							"Section": []map[string]interface{}{
+								{
+									"Title": "patientHistory",
+									"Text": map[string]interface{}{
+										"Status": "generated",
+										"Div":    gofakeit.HipsterSentence(10),
+									},
+								},
+							},
+							"Author": []map[string]interface{}{
+								{
+									"Display": gofakeit.Name(),
+								},
+							},
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
 		{
 			name: "invalid query",
 			args: args{
@@ -7468,7 +7552,6 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 			wantErr:    true,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
@@ -7535,6 +7618,32 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 				if ok {
 					t.Errorf("error not expected got: %w", errMsg)
 					return
+				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+					for nestedKey := range nestedMap {
+						if nestedKey == "createFHIRComposition" {
+							compositionData, ok := nestedMap[nestedKey].(map[string]interface{})
+							if !ok {
+								t.Errorf("can't cast nested composition data to map")
+								return
+							}
+							if compositionData["ID"] == "" {
+								t.Errorf("got back blank ID for new composition")
+								return
+							}
+							if compositionData["Status"] != "final" {
+								t.Errorf("got back non final status after updating composition status to final")
+								return
+							}
+							return
+						}
+					}
 				}
 			}
 
