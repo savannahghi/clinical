@@ -6274,20 +6274,13 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 			name: "valid query",
 			args: args{
 				query: map[string]interface{}{
-					"query": `query SearchMedicationRequests($params: Map!) {
-						searchFHIRMedicationRequest(params: $params) {
+					"query": `query ConditionSearch($params: Map!) {
+						searchFHIRCondition(params: $params) {
 						  edges {
 							node {
 							  ID
-							  Status
-							  Intent
-							  Priority
-							  Subject {
-								Reference
-								Type
-								Display
-							  }
-							  MedicationCodeableConcept{
+							  RecordedDate
+							  ClinicalStatus{
 								Text
 								Coding{
 								  System
@@ -6296,26 +6289,64 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 								  UserSelected
 								}
 							  }
-							  DosageInstruction{
+							  VerificationStatus{
 								Text
-								PatientInstruction
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
 							  }
-							  Requester{
-								Display
+							  Category{
+								Text
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
 							  }
-							  Encounter {
+							  Subject{
 								Reference
 								Type
 								Display
 							  }
-							  SupportingInformation {
-								ID
+							  Encounter{
 								Reference
+								Type
+							  }
+							  Evidence{
+								Detail{
+								  Display
+								}
+							  }
+							  Asserter{
 								Display
 							  }
-							  AuthoredOn
 							  Note{
 								AuthorString
+								Text
+							  }
+							  Severity{
+								ID
+								Coding{
+								  Display
+								}
+								Text
+							  }
+							  OnsetString
+							  Recorder{
+								Display
+							  }
+							  Code{
+								Coding{
+								  System
+								  Code
+								  Display
+								  UserSelected
+								}
+								Text
 							  }
 							}
 						  }
@@ -6423,21 +6454,21 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 					}
 
 					if key == "data" {
-						_, present := nestedMap["searchFHIRMedicationRequest"]
+						_, present := nestedMap["searchFHIRCondition"]
 						if !present {
 							t.Errorf("can't find medication request data")
 							return
 						}
 
-						medicationMap, ok := nestedMap["searchFHIRMedicationRequest"].(map[string]interface{})
+						conditionMap, ok := nestedMap["searchFHIRCondition"].(map[string]interface{})
 						if !ok {
-							t.Errorf("cannot cast key value of %v to type map[string]interface{}", medicationMap)
+							t.Errorf("cannot cast key value of %v to type map[string]interface{}", conditionMap)
 							return
 						}
 
-						_, found := medicationMap["edges"]
+						_, found := conditionMap["edges"]
 						if !found {
-							t.Errorf("can't find FHIR medication edges data")
+							t.Errorf("can't find FHIR condition edges data")
 							return
 						}
 					}

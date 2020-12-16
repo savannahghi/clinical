@@ -25,7 +25,7 @@ lint_and_test:
     - errcheck -ignore 'os:.*,' $(go list ./... | grep -v /vendor/)
     - gosec ./...
     - go-acc -o coverage.txt --ignore generated,cmd ./...
-    - grep -v "generated.go" coverage.txt | grep -v "_gen.go" | grep -v "mocks.go" | grep -v "*resolver*go" | grep -v "server.go" > coverage.out
+    - grep -v "generated.go" coverage.txt | grep -v "_gen.go" | grep -v "mocks.go" | grep -v "*resolver*go" | grep -v "server.go" | grep -v "complex_types.go" > coverage.out
     - go tool cover -html=coverage.out -o coverage.html
     - gocov convert coverage.out > coverage.json
     - gocov report coverage.json > coverage_report.txt

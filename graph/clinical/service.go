@@ -1104,7 +1104,7 @@ func (s Service) EndEpisode(
 	for _, edge := range encounterConn.Edges {
 		_, err = s.EndEncounter(ctx, *edge.Node.ID)
 		if err != nil {
-			// !TODO track or log the ones we have failed to close
+			log.Printf("unable to end encounter %s", *edge.Node.ID)
 			continue
 		}
 	}
@@ -1129,48 +1129,7 @@ func (s Service) EndEpisode(
 	if err != nil {
 		return false, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
 	}
-	patientReference := *episodePayload.Resource.Patient.Reference
-	patientID, err := GetPatientIDFromEpisode(patientReference)
-	if err != nil {
-		return false, fmt.Errorf("unable to retrieve patientID from episodeOfCare: %w", err)
-	}
-	err = s.sendEpisodeEndAlert(ctx, patientID)
-	if err != nil {
-		return false, err
-	}
-
 	return true, nil
-}
-
-// sendEpisodeEndAlert send an alert to the patient informing a visit has been closed
-func (s Service) sendEpisodeEndAlert(ctx context.Context, patientID string) error {
-	patientPayload, err := s.GetFHIRPatient(ctx, patientID)
-	if err != nil {
-		return err
-	}
-	patientName := patientPayload.Resource.Name
-	patientContacts := patientPayload.Resource.Telecom
-
-	for _, contact := range patientContacts {
-		if *contact.System == ContactPointSystemEnumPhone {
-
-			message := composeAlertMessage(patientName)
-			phone := *contact.Value
-
-			if phone == "" {
-				continue
-			}
-			err := base.SendSMS(
-				[]string{*contact.Value}, message, *s.sms, *s.twilio)
-			if err != nil {
-				return err
-			}
-
-			return nil
-
-		}
-	}
-	return nil
 }
 
 // CreatePatient creates or updates a patient record on FHIR
@@ -1182,11 +1141,6 @@ func (s Service) CreatePatient(
 	if input.ID == nil {
 		newID := uuid.New().String()
 		input.ID = &newID
-	}
-
-	// set the default communication preferences if not set
-	if input.Communication == nil {
-		input.Communication = DefaultCommunication()
 	}
 
 	// set or add the default record identifier

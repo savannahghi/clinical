@@ -1,10 +1,6 @@
 package clinical
 
 import (
-	"fmt"
-	"io"
-	"log"
-	"strconv"
 	"time"
 
 	"gitlab.slade360emr.com/go/base"
@@ -415,74 +411,4 @@ type FHIRObservationRelayEdge struct {
 // FHIRObservationRelayPayload is used to return single instances of Observation
 type FHIRObservationRelayPayload struct {
 	Resource *FHIRObservation `json:"resource,omitempty"`
-}
-
-// ObservationStatusEnum is a FHIR enum
-type ObservationStatusEnum string
-
-const (
-	// ObservationStatusEnumRegistered ...
-	ObservationStatusEnumRegistered ObservationStatusEnum = "registered"
-	// ObservationStatusEnumPreliminary ...
-	ObservationStatusEnumPreliminary ObservationStatusEnum = "preliminary"
-	// ObservationStatusEnumFinal ...
-	ObservationStatusEnumFinal ObservationStatusEnum = "final"
-	// ObservationStatusEnumAmended ...
-	ObservationStatusEnumAmended ObservationStatusEnum = "amended"
-	// ObservationStatusEnumCorrected ...
-	ObservationStatusEnumCorrected ObservationStatusEnum = "corrected"
-	// ObservationStatusEnumCancelled ...
-	ObservationStatusEnumCancelled ObservationStatusEnum = "cancelled"
-	// ObservationStatusEnumEnteredInError ...
-	ObservationStatusEnumEnteredInError ObservationStatusEnum = "entered_in_error"
-	// ObservationStatusEnumUnknown ...
-	ObservationStatusEnumUnknown ObservationStatusEnum = "unknown"
-)
-
-// AllObservationStatusEnum ...
-var AllObservationStatusEnum = []ObservationStatusEnum{
-	ObservationStatusEnumRegistered,
-	ObservationStatusEnumPreliminary,
-	ObservationStatusEnumFinal,
-	ObservationStatusEnumAmended,
-	ObservationStatusEnumCorrected,
-	ObservationStatusEnumCancelled,
-	ObservationStatusEnumEnteredInError,
-	ObservationStatusEnumUnknown,
-}
-
-// IsValid ...
-func (e ObservationStatusEnum) IsValid() bool {
-	switch e {
-	case ObservationStatusEnumRegistered, ObservationStatusEnumPreliminary, ObservationStatusEnumFinal, ObservationStatusEnumAmended, ObservationStatusEnumCorrected, ObservationStatusEnumCancelled, ObservationStatusEnumEnteredInError, ObservationStatusEnumUnknown:
-		return true
-	}
-	return false
-}
-
-// String ...
-func (e ObservationStatusEnum) String() string {
-	return string(e)
-}
-
-// UnmarshalGQL ...
-func (e *ObservationStatusEnum) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = ObservationStatusEnum(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid ObservationStatusEnum", str)
-	}
-	return nil
-}
-
-// MarshalGQL writes the observation status to the supplied writer as a quoted string
-func (e ObservationStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
 }

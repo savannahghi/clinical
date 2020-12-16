@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/segmentio/ksuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -216,6 +217,33 @@ func TestRelationshipType(t *testing.T) {
 			assert.NotNil(t, err)
 			tt.args.MarshalGQL(os.Stdout)
 
+		})
+	}
+}
+
+func TestDummy_SetID(t *testing.T) {
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "valid case",
+			args: args{
+				id: ksuid.New().String(),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &Dummy{}
+			d.SetID(tt.args.id)
+			if d.ID != tt.args.id {
+				t.Errorf("set ID not successful")
+				return
+			}
 		})
 	}
 }

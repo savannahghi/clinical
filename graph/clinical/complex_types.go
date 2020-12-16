@@ -1864,3 +1864,921 @@ func (e TimingRepeatWhenEnum) MarshalGQL(w io.Writer) {
 		log.Printf("%v\n", err)
 	}
 }
+
+// AllergyIntoleranceCategoryEnum is a FHIR enum
+type AllergyIntoleranceCategoryEnum string
+
+const (
+	// AllergyIntoleranceCategoryEnumFood ...
+	AllergyIntoleranceCategoryEnumFood AllergyIntoleranceCategoryEnum = "food"
+	// AllergyIntoleranceCategoryEnumMedication ...
+	AllergyIntoleranceCategoryEnumMedication AllergyIntoleranceCategoryEnum = "medication"
+	// AllergyIntoleranceCategoryEnumEnvironment ...
+	AllergyIntoleranceCategoryEnumEnvironment AllergyIntoleranceCategoryEnum = "environment"
+	// AllergyIntoleranceCategoryEnumBiologic ...
+	AllergyIntoleranceCategoryEnumBiologic AllergyIntoleranceCategoryEnum = "biologic"
+)
+
+// AllAllergyIntoleranceCategoryEnum ...
+var AllAllergyIntoleranceCategoryEnum = []AllergyIntoleranceCategoryEnum{
+	AllergyIntoleranceCategoryEnumFood,
+	AllergyIntoleranceCategoryEnumMedication,
+	AllergyIntoleranceCategoryEnumEnvironment,
+	AllergyIntoleranceCategoryEnumBiologic,
+}
+
+// IsValid ...
+func (e AllergyIntoleranceCategoryEnum) IsValid() bool {
+	switch e {
+	case AllergyIntoleranceCategoryEnumFood, AllergyIntoleranceCategoryEnumMedication, AllergyIntoleranceCategoryEnumEnvironment, AllergyIntoleranceCategoryEnumBiologic:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e AllergyIntoleranceCategoryEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *AllergyIntoleranceCategoryEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AllergyIntoleranceCategoryEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AllergyIntoleranceCategoryEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the allergy intolerance category to the supplied writer as a quoted string
+func (e AllergyIntoleranceCategoryEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// AllergyIntoleranceCriticalityEnum is a FHIR enum
+type AllergyIntoleranceCriticalityEnum string
+
+const (
+	// AllergyIntoleranceCriticalityEnumLow ...
+	AllergyIntoleranceCriticalityEnumLow AllergyIntoleranceCriticalityEnum = "low"
+	// AllergyIntoleranceCriticalityEnumHigh ...
+	AllergyIntoleranceCriticalityEnumHigh AllergyIntoleranceCriticalityEnum = "high"
+	// AllergyIntoleranceCriticalityEnumUnableToAssess ...
+	AllergyIntoleranceCriticalityEnumUnableToAssess AllergyIntoleranceCriticalityEnum = "unable_to_assess"
+)
+
+// AllAllergyIntoleranceCriticalityEnum ...
+var AllAllergyIntoleranceCriticalityEnum = []AllergyIntoleranceCriticalityEnum{
+	AllergyIntoleranceCriticalityEnumLow,
+	AllergyIntoleranceCriticalityEnumHigh,
+	AllergyIntoleranceCriticalityEnumUnableToAssess,
+}
+
+// IsValid ...
+func (e AllergyIntoleranceCriticalityEnum) IsValid() bool {
+	switch e {
+	case AllergyIntoleranceCriticalityEnumLow, AllergyIntoleranceCriticalityEnumHigh, AllergyIntoleranceCriticalityEnumUnableToAssess:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e AllergyIntoleranceCriticalityEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *AllergyIntoleranceCriticalityEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AllergyIntoleranceCriticalityEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AllergyIntoleranceCriticalityEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the allergy intolerance criticality to the supplied writer as a quoted string
+func (e AllergyIntoleranceCriticalityEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// AllergyIntoleranceTypeEnum is a FHIR enum
+type AllergyIntoleranceTypeEnum string
+
+const (
+	// AllergyIntoleranceTypeEnumAllergy ...
+	AllergyIntoleranceTypeEnumAllergy AllergyIntoleranceTypeEnum = "allergy"
+	// AllergyIntoleranceTypeEnumIntolerance ...
+	AllergyIntoleranceTypeEnumIntolerance AllergyIntoleranceTypeEnum = "intolerance"
+)
+
+// AllAllergyIntoleranceTypeEnum ...
+var AllAllergyIntoleranceTypeEnum = []AllergyIntoleranceTypeEnum{
+	AllergyIntoleranceTypeEnumAllergy,
+	AllergyIntoleranceTypeEnumIntolerance,
+}
+
+// IsValid ...
+func (e AllergyIntoleranceTypeEnum) IsValid() bool {
+	switch e {
+	case AllergyIntoleranceTypeEnumAllergy, AllergyIntoleranceTypeEnumIntolerance:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e AllergyIntoleranceTypeEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *AllergyIntoleranceTypeEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AllergyIntoleranceTypeEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AllergyIntoleranceTypeEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the allergy intolerance type to the supplied writer as a quoted string
+func (e AllergyIntoleranceTypeEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// AllergyIntoleranceReactionSeverityEnum is a FHIR enum
+type AllergyIntoleranceReactionSeverityEnum string
+
+const (
+	// AllergyIntoleranceReactionSeverityEnumMild ...
+	AllergyIntoleranceReactionSeverityEnumMild AllergyIntoleranceReactionSeverityEnum = "mild"
+	// AllergyIntoleranceReactionSeverityEnumModerate ...
+	AllergyIntoleranceReactionSeverityEnumModerate AllergyIntoleranceReactionSeverityEnum = "moderate"
+	// AllergyIntoleranceReactionSeverityEnumSevere ...
+	AllergyIntoleranceReactionSeverityEnumSevere AllergyIntoleranceReactionSeverityEnum = "severe"
+)
+
+// AllAllergyIntoleranceReactionSeverityEnum ...
+var AllAllergyIntoleranceReactionSeverityEnum = []AllergyIntoleranceReactionSeverityEnum{
+	AllergyIntoleranceReactionSeverityEnumMild,
+	AllergyIntoleranceReactionSeverityEnumModerate,
+	AllergyIntoleranceReactionSeverityEnumSevere,
+}
+
+// IsValid ...
+func (e AllergyIntoleranceReactionSeverityEnum) IsValid() bool {
+	switch e {
+	case AllergyIntoleranceReactionSeverityEnumMild, AllergyIntoleranceReactionSeverityEnumModerate, AllergyIntoleranceReactionSeverityEnumSevere:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e AllergyIntoleranceReactionSeverityEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *AllergyIntoleranceReactionSeverityEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AllergyIntoleranceReactionSeverityEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AllergyIntolerance_ReactionSeverityEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the allergy intolerance reaction severity to the supplied writer as a quoted string
+func (e AllergyIntoleranceReactionSeverityEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// CompositionStatusEnum is a FHIR enum
+type CompositionStatusEnum string
+
+const (
+	// CompositionStatusEnumPreliminary ...
+	CompositionStatusEnumPreliminary CompositionStatusEnum = "preliminary"
+	// CompositionStatusEnumFinal ...
+	CompositionStatusEnumFinal CompositionStatusEnum = "final"
+	// CompositionStatusEnumAmended ...
+	CompositionStatusEnumAmended CompositionStatusEnum = "amended"
+	// CompositionStatusEnumEnteredInError ...
+	CompositionStatusEnumEnteredInError CompositionStatusEnum = "entered_in_error"
+)
+
+// AllCompositionStatusEnum ...
+var AllCompositionStatusEnum = []CompositionStatusEnum{
+	CompositionStatusEnumPreliminary,
+	CompositionStatusEnumFinal,
+	CompositionStatusEnumAmended,
+	CompositionStatusEnumEnteredInError,
+}
+
+// IsValid ...
+func (e CompositionStatusEnum) IsValid() bool {
+	switch e {
+	case CompositionStatusEnumPreliminary, CompositionStatusEnumFinal, CompositionStatusEnumAmended, CompositionStatusEnumEnteredInError:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e CompositionStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *CompositionStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = CompositionStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid CompositionStatusEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the composition status to the supplied writer as a quoted string
+func (e CompositionStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// CompositionAttesterModeEnum is a FHIR enum
+type CompositionAttesterModeEnum string
+
+const (
+	// CompositionAttesterModeEnumPersonal ...
+	CompositionAttesterModeEnumPersonal CompositionAttesterModeEnum = "personal"
+	// CompositionAttesterModeEnumProfessional ...
+	CompositionAttesterModeEnumProfessional CompositionAttesterModeEnum = "professional"
+	// CompositionAttesterModeEnumLegal ...
+	CompositionAttesterModeEnumLegal CompositionAttesterModeEnum = "legal"
+	// CompositionAttesterModeEnumOfficial ...
+	CompositionAttesterModeEnumOfficial CompositionAttesterModeEnum = "official"
+)
+
+// AllCompositionAttesterModeEnum ...
+var AllCompositionAttesterModeEnum = []CompositionAttesterModeEnum{
+	CompositionAttesterModeEnumPersonal,
+	CompositionAttesterModeEnumProfessional,
+	CompositionAttesterModeEnumLegal,
+	CompositionAttesterModeEnumOfficial,
+}
+
+// IsValid ...
+func (e CompositionAttesterModeEnum) IsValid() bool {
+	switch e {
+	case CompositionAttesterModeEnumPersonal, CompositionAttesterModeEnumProfessional, CompositionAttesterModeEnumLegal, CompositionAttesterModeEnumOfficial:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e CompositionAttesterModeEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *CompositionAttesterModeEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = CompositionAttesterModeEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Composition_AttesterModeEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the composition attester mode to the supplied writer as a quoted string
+func (e CompositionAttesterModeEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// EncounterStatusEnum is a FHIR enum
+type EncounterStatusEnum string
+
+const (
+	// EncounterStatusEnumPlanned ...
+	EncounterStatusEnumPlanned EncounterStatusEnum = "planned"
+	// EncounterStatusEnumArrived ...
+	EncounterStatusEnumArrived EncounterStatusEnum = "arrived"
+	// EncounterStatusEnumTriaged ...
+	EncounterStatusEnumTriaged EncounterStatusEnum = "triaged"
+	// EncounterStatusEnumInProgress ...
+	EncounterStatusEnumInProgress EncounterStatusEnum = "in_progress"
+	// EncounterStatusEnumOnleave ...
+	EncounterStatusEnumOnleave EncounterStatusEnum = "onleave"
+	// EncounterStatusEnumFinished ...
+	EncounterStatusEnumFinished EncounterStatusEnum = "finished"
+	// EncounterStatusEnumCancelled ...
+	EncounterStatusEnumCancelled EncounterStatusEnum = "cancelled"
+	// EncounterStatusEnumEnteredInError ...
+	EncounterStatusEnumEnteredInError EncounterStatusEnum = "entered_in_error"
+	// EncounterStatusEnumUnknown ...
+	EncounterStatusEnumUnknown EncounterStatusEnum = "unknown"
+)
+
+// AllEncounterStatusEnum ...
+var AllEncounterStatusEnum = []EncounterStatusEnum{
+	EncounterStatusEnumPlanned,
+	EncounterStatusEnumArrived,
+	EncounterStatusEnumTriaged,
+	EncounterStatusEnumInProgress,
+	EncounterStatusEnumOnleave,
+	EncounterStatusEnumFinished,
+	EncounterStatusEnumCancelled,
+	EncounterStatusEnumEnteredInError,
+	EncounterStatusEnumUnknown,
+}
+
+// IsValid ...
+func (e EncounterStatusEnum) IsValid() bool {
+	switch e {
+	case EncounterStatusEnumPlanned, EncounterStatusEnumArrived, EncounterStatusEnumTriaged, EncounterStatusEnumInProgress, EncounterStatusEnumOnleave, EncounterStatusEnumFinished, EncounterStatusEnumCancelled, EncounterStatusEnumEnteredInError, EncounterStatusEnumUnknown:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e EncounterStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *EncounterStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = EncounterStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid EncounterStatusEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the encounter status to the supplied writer as a quoted string
+func (e EncounterStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// EncounterLocationStatusEnum is a FHIR enum
+type EncounterLocationStatusEnum string
+
+const (
+	// EncounterLocationStatusEnumPlanned ...
+	EncounterLocationStatusEnumPlanned EncounterLocationStatusEnum = "planned"
+	// EncounterLocationStatusEnumActive ...
+	EncounterLocationStatusEnumActive EncounterLocationStatusEnum = "active"
+	// EncounterLocationStatusEnumReserved ...
+	EncounterLocationStatusEnumReserved EncounterLocationStatusEnum = "reserved"
+	// EncounterLocationStatusEnumCompleted ...
+	EncounterLocationStatusEnumCompleted EncounterLocationStatusEnum = "completed"
+)
+
+// AllEncounterLocationStatusEnum ...
+var AllEncounterLocationStatusEnum = []EncounterLocationStatusEnum{
+	EncounterLocationStatusEnumPlanned,
+	EncounterLocationStatusEnumActive,
+	EncounterLocationStatusEnumReserved,
+	EncounterLocationStatusEnumCompleted,
+}
+
+// IsValid ...
+func (e EncounterLocationStatusEnum) IsValid() bool {
+	switch e {
+	case EncounterLocationStatusEnumPlanned, EncounterLocationStatusEnumActive, EncounterLocationStatusEnumReserved, EncounterLocationStatusEnumCompleted:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e EncounterLocationStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *EncounterLocationStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = EncounterLocationStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Encounter_LocationStatusEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the encounter location status to the supplied writer as a quoted string
+func (e EncounterLocationStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// EncounterStatusHistoryStatusEnum is a FHIR enum
+type EncounterStatusHistoryStatusEnum string
+
+const (
+	// EncounterStatusHistoryStatusEnumPlanned ...
+	EncounterStatusHistoryStatusEnumPlanned EncounterStatusHistoryStatusEnum = "planned"
+	// EncounterStatusHistoryStatusEnumArrived ...
+	EncounterStatusHistoryStatusEnumArrived EncounterStatusHistoryStatusEnum = "arrived"
+	// EncounterStatusHistoryStatusEnumTriaged ...
+	EncounterStatusHistoryStatusEnumTriaged EncounterStatusHistoryStatusEnum = "triaged"
+	// EncounterStatusHistoryStatusEnumInProgress ...
+	EncounterStatusHistoryStatusEnumInProgress EncounterStatusHistoryStatusEnum = "in_progress"
+	// EncounterStatusHistoryStatusEnumOnleave ...
+	EncounterStatusHistoryStatusEnumOnleave EncounterStatusHistoryStatusEnum = "onleave"
+	// EncounterStatusHistoryStatusEnumFinished ...
+	EncounterStatusHistoryStatusEnumFinished EncounterStatusHistoryStatusEnum = "finished"
+	// EncounterStatusHistoryStatusEnumCancelled ...
+	EncounterStatusHistoryStatusEnumCancelled EncounterStatusHistoryStatusEnum = "cancelled"
+	// EncounterStatusHistoryStatusEnumEnteredInError ...
+	EncounterStatusHistoryStatusEnumEnteredInError EncounterStatusHistoryStatusEnum = "entered_in_error"
+	// EncounterStatusHistoryStatusEnumUnknown ...
+	EncounterStatusHistoryStatusEnumUnknown EncounterStatusHistoryStatusEnum = "unknown"
+)
+
+// AllEncounterStatusHistoryStatusEnum ...
+var AllEncounterStatusHistoryStatusEnum = []EncounterStatusHistoryStatusEnum{
+	EncounterStatusHistoryStatusEnumPlanned,
+	EncounterStatusHistoryStatusEnumArrived,
+	EncounterStatusHistoryStatusEnumTriaged,
+	EncounterStatusHistoryStatusEnumInProgress,
+	EncounterStatusHistoryStatusEnumOnleave,
+	EncounterStatusHistoryStatusEnumFinished,
+	EncounterStatusHistoryStatusEnumCancelled,
+	EncounterStatusHistoryStatusEnumEnteredInError,
+	EncounterStatusHistoryStatusEnumUnknown,
+}
+
+// IsValid ...
+func (e EncounterStatusHistoryStatusEnum) IsValid() bool {
+	switch e {
+	case EncounterStatusHistoryStatusEnumPlanned, EncounterStatusHistoryStatusEnumArrived, EncounterStatusHistoryStatusEnumTriaged, EncounterStatusHistoryStatusEnumInProgress, EncounterStatusHistoryStatusEnumOnleave, EncounterStatusHistoryStatusEnumFinished, EncounterStatusHistoryStatusEnumCancelled, EncounterStatusHistoryStatusEnumEnteredInError, EncounterStatusHistoryStatusEnumUnknown:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e EncounterStatusHistoryStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *EncounterStatusHistoryStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = EncounterStatusHistoryStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Encounter_StatusHistoryStatusEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the given enum  to the supplied writer as a quoted string
+func (e EncounterStatusHistoryStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// EpisodeOfCareStatusEnum is a FHIR enum
+type EpisodeOfCareStatusEnum string
+
+const (
+	// EpisodeOfCareStatusEnumPlanned ...
+	EpisodeOfCareStatusEnumPlanned EpisodeOfCareStatusEnum = "planned"
+	// EpisodeOfCareStatusEnumWaitlist ...
+	EpisodeOfCareStatusEnumWaitlist EpisodeOfCareStatusEnum = "waitlist"
+	// EpisodeOfCareStatusEnumActive ...
+	EpisodeOfCareStatusEnumActive EpisodeOfCareStatusEnum = "active"
+	// EpisodeOfCareStatusEnumOnhold ...
+	EpisodeOfCareStatusEnumOnhold EpisodeOfCareStatusEnum = "onhold"
+	// EpisodeOfCareStatusEnumFinished ...
+	EpisodeOfCareStatusEnumFinished EpisodeOfCareStatusEnum = "finished"
+	// EpisodeOfCareStatusEnumCancelled ...
+	EpisodeOfCareStatusEnumCancelled EpisodeOfCareStatusEnum = "cancelled"
+	// EpisodeOfCareStatusEnumEnteredInError ...
+	EpisodeOfCareStatusEnumEnteredInError EpisodeOfCareStatusEnum = "entered_in_error"
+)
+
+// AllEpisodeOfCareStatusEnum ...
+var AllEpisodeOfCareStatusEnum = []EpisodeOfCareStatusEnum{
+	EpisodeOfCareStatusEnumPlanned,
+	EpisodeOfCareStatusEnumWaitlist,
+	EpisodeOfCareStatusEnumActive,
+	EpisodeOfCareStatusEnumOnhold,
+	EpisodeOfCareStatusEnumFinished,
+	EpisodeOfCareStatusEnumCancelled,
+	EpisodeOfCareStatusEnumEnteredInError,
+}
+
+// IsValid ...
+func (e EpisodeOfCareStatusEnum) IsValid() bool {
+	switch e {
+	case EpisodeOfCareStatusEnumPlanned, EpisodeOfCareStatusEnumWaitlist, EpisodeOfCareStatusEnumActive, EpisodeOfCareStatusEnumOnhold, EpisodeOfCareStatusEnumFinished, EpisodeOfCareStatusEnumCancelled, EpisodeOfCareStatusEnumEnteredInError:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e EpisodeOfCareStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *EpisodeOfCareStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = EpisodeOfCareStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid EpisodeOfCareStatusEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the episode of care status to the supplied writer as a quoted string
+func (e EpisodeOfCareStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// EpisodeOfCareStatusHistoryStatusEnum is a FHIR enum
+type EpisodeOfCareStatusHistoryStatusEnum string
+
+const (
+	// EpisodeOfCareStatusHistoryStatusEnumPlanned ...
+	EpisodeOfCareStatusHistoryStatusEnumPlanned EpisodeOfCareStatusHistoryStatusEnum = "planned"
+	// EpisodeOfCareStatusHistoryStatusEnumWaitlist ...
+	EpisodeOfCareStatusHistoryStatusEnumWaitlist EpisodeOfCareStatusHistoryStatusEnum = "waitlist"
+	// EpisodeOfCareStatusHistoryStatusEnumActive ...
+	EpisodeOfCareStatusHistoryStatusEnumActive EpisodeOfCareStatusHistoryStatusEnum = "active"
+	// EpisodeOfCareStatusHistoryStatusEnumOnhold ...
+	EpisodeOfCareStatusHistoryStatusEnumOnhold EpisodeOfCareStatusHistoryStatusEnum = "onhold"
+	// EpisodeOfCareStatusHistoryStatusEnumFinished ...
+	EpisodeOfCareStatusHistoryStatusEnumFinished EpisodeOfCareStatusHistoryStatusEnum = "finished"
+	// EpisodeOfCareStatusHistoryStatusEnumCancelled ...
+	EpisodeOfCareStatusHistoryStatusEnumCancelled EpisodeOfCareStatusHistoryStatusEnum = "cancelled"
+	// EpisodeOfCareStatusHistoryStatusEnumEnteredInError ...
+	EpisodeOfCareStatusHistoryStatusEnumEnteredInError EpisodeOfCareStatusHistoryStatusEnum = "entered_in_error"
+)
+
+// AllEpisodeOfCareStatusHistoryStatusEnum ...
+var AllEpisodeOfCareStatusHistoryStatusEnum = []EpisodeOfCareStatusHistoryStatusEnum{
+	EpisodeOfCareStatusHistoryStatusEnumPlanned,
+	EpisodeOfCareStatusHistoryStatusEnumWaitlist,
+	EpisodeOfCareStatusHistoryStatusEnumActive,
+	EpisodeOfCareStatusHistoryStatusEnumOnhold,
+	EpisodeOfCareStatusHistoryStatusEnumFinished,
+	EpisodeOfCareStatusHistoryStatusEnumCancelled,
+	EpisodeOfCareStatusHistoryStatusEnumEnteredInError,
+}
+
+// IsValid ...
+func (e EpisodeOfCareStatusHistoryStatusEnum) IsValid() bool {
+	switch e {
+	case EpisodeOfCareStatusHistoryStatusEnumPlanned, EpisodeOfCareStatusHistoryStatusEnumWaitlist, EpisodeOfCareStatusHistoryStatusEnumActive, EpisodeOfCareStatusHistoryStatusEnumOnhold, EpisodeOfCareStatusHistoryStatusEnumFinished, EpisodeOfCareStatusHistoryStatusEnumCancelled, EpisodeOfCareStatusHistoryStatusEnumEnteredInError:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e EpisodeOfCareStatusHistoryStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *EpisodeOfCareStatusHistoryStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = EpisodeOfCareStatusHistoryStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid EpisodeOfCare_StatusHistoryStatusEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the status of the episode of care status history to the supplied writer as a quoted string
+func (e EpisodeOfCareStatusHistoryStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// ObservationStatusEnum is a FHIR enum
+type ObservationStatusEnum string
+
+const (
+	// ObservationStatusEnumRegistered ...
+	ObservationStatusEnumRegistered ObservationStatusEnum = "registered"
+	// ObservationStatusEnumPreliminary ...
+	ObservationStatusEnumPreliminary ObservationStatusEnum = "preliminary"
+	// ObservationStatusEnumFinal ...
+	ObservationStatusEnumFinal ObservationStatusEnum = "final"
+	// ObservationStatusEnumAmended ...
+	ObservationStatusEnumAmended ObservationStatusEnum = "amended"
+	// ObservationStatusEnumCorrected ...
+	ObservationStatusEnumCorrected ObservationStatusEnum = "corrected"
+	// ObservationStatusEnumCancelled ...
+	ObservationStatusEnumCancelled ObservationStatusEnum = "cancelled"
+	// ObservationStatusEnumEnteredInError ...
+	ObservationStatusEnumEnteredInError ObservationStatusEnum = "entered_in_error"
+	// ObservationStatusEnumUnknown ...
+	ObservationStatusEnumUnknown ObservationStatusEnum = "unknown"
+)
+
+// AllObservationStatusEnum ...
+var AllObservationStatusEnum = []ObservationStatusEnum{
+	ObservationStatusEnumRegistered,
+	ObservationStatusEnumPreliminary,
+	ObservationStatusEnumFinal,
+	ObservationStatusEnumAmended,
+	ObservationStatusEnumCorrected,
+	ObservationStatusEnumCancelled,
+	ObservationStatusEnumEnteredInError,
+	ObservationStatusEnumUnknown,
+}
+
+// IsValid ...
+func (e ObservationStatusEnum) IsValid() bool {
+	switch e {
+	case ObservationStatusEnumRegistered, ObservationStatusEnumPreliminary, ObservationStatusEnumFinal, ObservationStatusEnumAmended, ObservationStatusEnumCorrected, ObservationStatusEnumCancelled, ObservationStatusEnumEnteredInError, ObservationStatusEnumUnknown:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e ObservationStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *ObservationStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ObservationStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ObservationStatusEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the observation status to the supplied writer as a quoted string
+func (e ObservationStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// PatientGenderEnum is a FHIR enum
+type PatientGenderEnum string
+
+const (
+	// PatientGenderEnumMale ...
+	PatientGenderEnumMale PatientGenderEnum = "male"
+	// PatientGenderEnumFemale ...
+	PatientGenderEnumFemale PatientGenderEnum = "female"
+	// PatientGenderEnumOther ...
+	PatientGenderEnumOther PatientGenderEnum = "other"
+	// PatientGenderEnumUnknown ...
+	PatientGenderEnumUnknown PatientGenderEnum = "unknown"
+)
+
+// AllPatientGenderEnum ...
+var AllPatientGenderEnum = []PatientGenderEnum{
+	PatientGenderEnumMale,
+	PatientGenderEnumFemale,
+	PatientGenderEnumOther,
+	PatientGenderEnumUnknown,
+}
+
+// IsValid ...
+func (e PatientGenderEnum) IsValid() bool {
+	switch e {
+	case PatientGenderEnumMale, PatientGenderEnumFemale, PatientGenderEnumOther, PatientGenderEnumUnknown:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e PatientGenderEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *PatientGenderEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PatientGenderEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid PatientGenderEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the patient gender to the supplied writer as a quoted string
+func (e PatientGenderEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// PatientContactGenderEnum is a FHIR enum
+type PatientContactGenderEnum string
+
+const (
+	// PatientContactGenderEnumMale ...
+	PatientContactGenderEnumMale PatientContactGenderEnum = "male"
+	// PatientContactGenderEnumFemale ...
+	PatientContactGenderEnumFemale PatientContactGenderEnum = "female"
+	// PatientContactGenderEnumOther ...
+	PatientContactGenderEnumOther PatientContactGenderEnum = "other"
+	// PatientContactGenderEnumUnknown ...
+	PatientContactGenderEnumUnknown PatientContactGenderEnum = "unknown"
+)
+
+// AllPatientContactGenderEnum ...
+var AllPatientContactGenderEnum = []PatientContactGenderEnum{
+	PatientContactGenderEnumMale,
+	PatientContactGenderEnumFemale,
+	PatientContactGenderEnumOther,
+	PatientContactGenderEnumUnknown,
+}
+
+// IsValid ...
+func (e PatientContactGenderEnum) IsValid() bool {
+	switch e {
+	case PatientContactGenderEnumMale, PatientContactGenderEnumFemale, PatientContactGenderEnumOther, PatientContactGenderEnumUnknown:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e PatientContactGenderEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *PatientContactGenderEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PatientContactGenderEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Patient_ContactGenderEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the patient contact gender to the supplied writer as a quoted string
+func (e PatientContactGenderEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+// PatientLinkTypeEnum is a FHIR enum
+type PatientLinkTypeEnum string
+
+const (
+	// PatientLinkTypeEnumReplacedBy ...
+	PatientLinkTypeEnumReplacedBy PatientLinkTypeEnum = "replaced_by"
+	// PatientLinkTypeEnumReplaces ...
+	PatientLinkTypeEnumReplaces PatientLinkTypeEnum = "replaces"
+	// PatientLinkTypeEnumRefer ...
+	PatientLinkTypeEnumRefer PatientLinkTypeEnum = "refer"
+	// PatientLinkTypeEnumSeealso ...
+	PatientLinkTypeEnumSeealso PatientLinkTypeEnum = "seealso"
+)
+
+// AllPatientLinkTypeEnum ...
+var AllPatientLinkTypeEnum = []PatientLinkTypeEnum{
+	PatientLinkTypeEnumReplacedBy,
+	PatientLinkTypeEnumReplaces,
+	PatientLinkTypeEnumRefer,
+	PatientLinkTypeEnumSeealso,
+}
+
+// IsValid ...
+func (e PatientLinkTypeEnum) IsValid() bool {
+	switch e {
+	case PatientLinkTypeEnumReplacedBy, PatientLinkTypeEnumReplaces, PatientLinkTypeEnumRefer, PatientLinkTypeEnumSeealso:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e PatientLinkTypeEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *PatientLinkTypeEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PatientLinkTypeEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Patient_LinkTypeEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the patient link type to the supplied writer as a quoted string
+func (e PatientLinkTypeEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}

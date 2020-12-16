@@ -39,7 +39,6 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Dummy() DummyResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -953,9 +952,6 @@ type ComplexityRoot struct {
 	}
 }
 
-type DummyResolver interface {
-	ID(ctx context.Context, obj *clinical.Dummy) (*string, error)
-}
 type MutationResolver interface {
 	StartEpisodeByOtp(ctx context.Context, input clinical.OTPEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error)
 	StartEpisodeByBreakGlass(ctx context.Context, input clinical.BreakGlassEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error)
@@ -12687,14 +12683,14 @@ func (ec *executionContext) _Dummy_id(ctx context.Context, field graphql.Collect
 		Object:     "Dummy",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Dummy().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12703,9 +12699,9 @@ func (ec *executionContext) _Dummy_id(ctx context.Context, field graphql.Collect
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _EpisodeOfCarePayload_episodeOfCare(ctx context.Context, field graphql.CollectedField, obj *clinical.EpisodeOfCarePayload) (ret graphql.Marshaler) {
@@ -39973,16 +39969,7 @@ func (ec *executionContext) _Dummy(ctx context.Context, sel ast.SelectionSet, ob
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Dummy")
 		case "id":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Dummy_id(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._Dummy_id(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

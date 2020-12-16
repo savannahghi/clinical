@@ -21,16 +21,6 @@ type ReferenceInput struct {
 	Identifier *SingleIdentifierInput
 }
 
-// SingleFHIRPeriodPayload - compose a period payload
-func SingleFHIRPeriodPayload() *FHIRPeriodInput {
-	var start base.DateTime = "2019-01-03"
-	var end base.DateTime = "2019-05-03"
-	return &FHIRPeriodInput{
-		Start: start,
-		End:   end,
-	}
-}
-
 // SingleFHIRCodingPayload - compose an FHIRCodingInput
 func SingleFHIRCodingPayload(code base.Code, display string) *FHIRCodingInput {
 	userSelected := true

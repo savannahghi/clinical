@@ -12,36 +12,6 @@ const (
 	healthCloudIdentifiersVersion = "0.0.1"
 )
 
-// DefaultCommunication returns default values for patient / person communication
-// preferences
-func DefaultCommunication() []*FHIRPatientCommunicationInput {
-	userSelected := false
-	preferred := true
-	system := base.URI("urn:ietf:bcp:47")
-	return []*FHIRPatientCommunicationInput{
-		{
-			Language: &FHIRCodeableConceptInput{
-				Coding: []*FHIRCodingInput{
-					{
-						System:       &system,
-						Code:         "en",
-						Display:      "English",
-						UserSelected: &userSelected,
-					},
-					{
-						System:       &system,
-						Code:         "en-US",
-						Display:      "English (United States)",
-						UserSelected: &userSelected,
-					},
-				},
-				Text: DefaultLanguage,
-			},
-			Preferred: &preferred,
-		},
-	}
-}
-
 // DefaultIdentifier assigns a patient a code to function as their
 // medical record number.
 func DefaultIdentifier() *FHIRIdentifierInput {

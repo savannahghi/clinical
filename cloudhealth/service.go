@@ -18,11 +18,8 @@ const (
 // NewService initializes a Google Cloud Healthcare API service
 func NewService() *Service {
 	projectID := base.MustGetEnvVar(base.GoogleCloudProjectIDEnvVarName)
-
-	base.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
-
+	_ = base.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
 	datasetID := base.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
-
 	fhirStoreID := base.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
 
 	ctx := context.Background()
@@ -30,7 +27,6 @@ func NewService() *Service {
 	if err != nil {
 		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
 	}
-
 	service := &Service{
 		healthcareService: hsv,
 		projectID:         projectID,
