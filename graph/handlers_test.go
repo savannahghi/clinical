@@ -8643,6 +8643,11 @@ func TestGraphQLAllergySummary(t *testing.T) {
 		return
 	}
 
+	// we have intermittent CI failures that could be related to replication
+	// lag or latency issues on the backing data store (unproven).
+	// If that is the case, then this sleep would reduce the failure rate.
+	time.Sleep(time.Second * 5)
+
 	type args struct {
 		query map[string]interface{}
 	}
