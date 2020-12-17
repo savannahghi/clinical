@@ -3221,3 +3221,47 @@ func (s Service) CreateUpdatePatientExtraInformation(
 	}
 	return true, nil
 }
+
+// DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
+func (s Service) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
+	resourceType := "Patient"
+	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
+	if err != nil {
+		return false, fmt.Errorf(
+			"unable to delete %s, response %s, error: %v",
+			resourceType, string(resp), err,
+		)
+	}
+	return true, nil
+}
+
+// AllergySummary returns a short list of the patient's active and confirmed
+// allergies (by name)
+func (s Service) AllergySummary(
+	ctx context.Context, patientID string) ([]string, error) {
+	s.checkPreconditions()
+
+	params := map[string]interface{}{
+		"clinical-status":     "active",
+		"verification-status": "confirmed",
+		"type":                "allergy",
+		"criticality":         "high",
+		"patient":             fmt.Sprintf("Patient/%s", patientID),
+	}
+	results, err := s.SearchFHIRAllergyIntolerance(ctx, params)
+	if err != nil {
+		return nil, fmt.Errorf("error when searching for patient allergies: %w", err)
+	}
+	output := []string{}
+	for _, edge := range results.Edges {
+		allergy := edge.Node
+		if allergy.Code == nil {
+			return nil, fmt.Errorf("server error: every allergy must have a code")
+		}
+		if allergy.Code.Text == "" {
+			return nil, fmt.Errorf("server error: every allergy code must have it's text set")
+		}
+		output = append(output, allergy.Code.Text)
+	}
+	return output, nil
+}

@@ -775,7 +775,7 @@ func patientVisitSummary(ctx context.Context) (string, string, error) {
 		return "", "", fmt.Errorf("error creating test medication request: %w", err)
 	}
 
-	_, err = getTestAllergyIntoleranceID(ctx, patient, encounterID)
+	_, err = createTestAllergy(ctx, patient, encounterID)
 	if err != nil {
 		return "", "", fmt.Errorf("error creating test allergy intolerance: %w", err)
 	}
@@ -783,201 +783,129 @@ func patientVisitSummary(ctx context.Context) (string, string, error) {
 	return encounterID, *episode.ID, nil
 }
 
-func getTestAllergyIntoleranceID(ctx context.Context, patient *clinical.FHIRPatient, encounterID string) (string, error) {
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
-	if err != nil {
-		return "", fmt.Errorf("error in getting GraphQL headers: %w", err)
-	}
-
+func createTestAllergy(
+	ctx context.Context,
+	patient *clinical.FHIRPatient,
+	encounterID string,
+) (string, error) {
+	srv := clinical.NewService()
 	patientName := patient.Names()
-	requester := gofakeit.Name()
-	dateRecorded := time.Now().Format(dateFormat)
+	now := time.Now()
+	dateRecorded, err := base.NewDate(now.Day(), int(now.Month()), now.Year())
+	if err != nil {
+		return "", fmt.Errorf("can't initialize date recorded")
+	}
 	recordingDoctor := gofakeit.Name()
 	substanceID := "1234"
 	substanceDisplayName := gofakeit.Name()
+	allergyType := clinical.AllergyIntoleranceTypeEnumAllergy
+	allergySystem := base.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
+	clinicalStatusSystem := base.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical")
+	verificationSystem := base.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
+	notSelected := false
+	selected := true
+	encounterReference := fmt.Sprintf("Encounter/%s", encounterID)
+	encounterType := base.URI("Encounter")
+	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
+	patientType := base.URI("Patient")
+	annotationText := base.Markdown(gofakeit.HipsterSentence(10))
+	reactionDescription := "some reaction"
+	reactionSeverity := clinical.AllergyIntoleranceReactionSeverityEnumMild
+	oclSystem := base.URI("OCL:/orgs/CIEL/sources/CIEL/")
 
-	query := map[string]interface{}{
-		"query": `
-					mutation CreateAllergy($input: FHIRAllergyIntoleranceInput!) {
-						createFHIRAllergyIntolerance(input:$input) {
-						resource {
-						  ID
-						}
-					  }
-					}  
-					`,
-		"variables": map[string]interface{}{
-			"input": map[string]interface{}{
-				"Type":        "allergy",
-				"Criticality": "high",
-				"ClinicalStatus": map[string]interface{}{
-					"Text": "Panadol Extra",
-					"Coding": []map[string]interface{}{
+	inp := clinical.FHIRAllergyIntoleranceInput{
+		Type:         &allergyType,
+		Criticality:  clinical.AllergyIntoleranceCriticalityEnumHigh,
+		RecordedDate: dateRecorded,
+		Code: clinical.FHIRCodeableConceptInput{
+			Text: "Panadol Extra",
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &allergySystem,
+					Code:         base.Code(substanceID),
+					Display:      substanceDisplayName,
+					UserSelected: &notSelected,
+				},
+			},
+		},
+		ClinicalStatus: clinical.FHIRCodeableConceptInput{
+			Text: "Panadol Extra",
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &clinicalStatusSystem,
+					Code:         base.Code("active"),
+					Display:      "Active",
+					UserSelected: &notSelected,
+				},
+			},
+		},
+		VerificationStatus: clinical.FHIRCodeableConceptInput{
+			Text: "Panadol Extra",
+			Coding: []*clinical.FHIRCodingInput{
+				{
+					System:       &verificationSystem,
+					Code:         "confirmed",
+					Display:      "Confirmed",
+					UserSelected: &notSelected,
+				},
+			},
+		},
+		Recorder: &clinical.FHIRReferenceInput{
+			Display: recordingDoctor,
+		},
+		Asserter: &clinical.FHIRReferenceInput{
+			Display: recordingDoctor,
+		},
+		Encounter: &clinical.FHIRReferenceInput{
+			Reference: &encounterReference,
+			Type:      &encounterType,
+			Display:   fmt.Sprintf("Encounter/%s", encounterID),
+		},
+		Patient: &clinical.FHIRReferenceInput{
+			Reference: &patientReference,
+			Type:      &patientType,
+			Display:   patientName,
+		},
+		Note: []*clinical.FHIRAnnotationInput{
+			{
+				AuthorString: &recordingDoctor,
+				Text:         &annotationText,
+			},
+		},
+		Reaction: []*clinical.FHIRAllergyintoleranceReactionInput{
+			{
+				Description: &reactionDescription,
+				Severity:    &reactionSeverity,
+				Substance: &clinical.FHIRCodeableConceptInput{
+					Text: "Panadol Extra",
+					Coding: []*clinical.FHIRCodingInput{
 						{
-							"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
-							"Code":         "active",
-							"Display":      "Active",
-							"UserSelected": false,
+							System:       &oclSystem,
+							Code:         base.Code(substanceID),
+							Display:      substanceDisplayName,
+							UserSelected: &selected,
 						},
 					},
 				},
-				"VerificationStatus": map[string]interface{}{
-					"Text": "Panadol Extra",
-					"Coding": []map[string]interface{}{
-						{
-							"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
-							"Code":         "confirmed",
-							"Display":      "confirmed",
-							"UserSelected": false,
-						},
-					},
-				},
-				"Encounter": map[string]interface{}{
-					"Reference": fmt.Sprintf("Encounter/%s", encounterID),
-					"Type":      "Encounter",
-					"Display":   fmt.Sprintf("Encounter/%s", encounterID),
-				},
-				"Patient": map[string]interface{}{
-					"Reference": fmt.Sprintf("Patient/%s", *patient.ID),
-					"Type":      "Patient",
-					"Display":   patientName,
-				},
-				"Recorder": map[string]interface{}{
-					"Display": recordingDoctor,
-				},
-				"Asserter": map[string]interface{}{
-					"Display": recordingDoctor,
-				},
-				"Note": []map[string]interface{}{
+				Manifestation: []*clinical.FHIRCodeableConceptInput{
 					{
-						"AuthorString": requester,
-						"Text":         gofakeit.HipsterSentence(10),
-					},
-				},
-				"Reaction": []map[string]interface{}{
-					{
-						"Description": requester,
-						"Severity":    "severe",
-						"Substance": map[string]interface{}{
-							"Text": "Panadol Extra",
-							"Coding": []map[string]interface{}{
-								{
-									"System":       "OCL:/orgs/CIEL/sources/CIEL/'",
-									"Code":         substanceID,
-									"Display":      substanceDisplayName,
-									"UserSelected": true,
-								},
-							},
-						},
-						"Manifestation": []map[string]interface{}{
+						Text: "Rashes",
+						Coding: []*clinical.FHIRCodingInput{
 							{
-								"Text": "Panadol Extra",
-								"Coding": []map[string]interface{}{
-									{
-										"System":       "OCL:/orgs/CIEL/sources/CIEL/'",
-										"Code":         substanceID,
-										"Display":      substanceDisplayName,
-										"UserSelected": true,
-									},
-								},
+								System:       &oclSystem,
+								Code:         base.Code("a code"),
+								Display:      "Rashes",
+								UserSelected: &selected,
 							},
 						},
 					},
 				},
-				"Code": map[string]interface{}{
-					"Text": "Panadol Extra",
-					"Coding": []map[string]interface{}{
-						{
-							"System":       "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
-							"Code":         substanceID,
-							"Display":      substanceDisplayName,
-							"UserSelected": false,
-						},
-					},
-				},
-				"RecordedDate": dateRecorded,
 			},
 		},
 	}
-
-	body, err := mapToJSONReader(query)
+	allergyPl, err := srv.CreateFHIRAllergyIntolerance(ctx, inp)
 	if err != nil {
-		return "", fmt.Errorf("unable to get GQL JSON io Reader: %s", err)
+		return "", fmt.Errorf("can't create allergy intolerance")
 	}
-
-	r, err := http.NewRequest(
-		http.MethodPost,
-		graphQLURL,
-		body,
-	)
-	if err != nil {
-		return "", fmt.Errorf("unable to compose request: %s", err)
-	}
-
-	if r == nil {
-		return "", fmt.Errorf("nil request")
-	}
-
-	for k, v := range headers {
-		r.Header.Add(k, v)
-	}
-	client := http.Client{
-		Timeout: time.Second * testHTTPClientTimeout,
-	}
-	resp, err := client.Do(r)
-	if err != nil {
-		return "", fmt.Errorf("request error: %s", err)
-	}
-
-	dataResponse, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("can't read request body: %s", err)
-	}
-
-	if dataResponse == nil {
-		return "", fmt.Errorf("nil response data")
-	}
-
-	data := map[string]interface{}{}
-	err = json.Unmarshal(dataResponse, &data)
-	if err != nil {
-		return "", fmt.Errorf("bad data returned")
-	}
-
-	for key := range data {
-		nestedMap, ok := data[key].(map[string]interface{})
-		if !ok {
-			return "", fmt.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
-		}
-
-		for nestedKey := range nestedMap {
-			if nestedKey == "createFHIRAllergyIntolerance" {
-				output, ok := nestedMap[nestedKey].(map[string]interface{})
-				if !ok {
-					return "", fmt.Errorf("can't cast output to map[string]interface{}")
-				}
-
-				resource, ok := output["resource"].(map[string]interface{})
-				if !ok {
-					return "", fmt.Errorf("can't cast resource to map[string]interface{}")
-				}
-
-				idI, prs := resource["ID"]
-				if !prs {
-					return "", fmt.Errorf("ID not present in allergy intolerance resource")
-				}
-				id, idConvert := idI.(string)
-				if !idConvert {
-					return "", fmt.Errorf("mulformed ID returned")
-				}
-				if id == "" {
-					return "", fmt.Errorf("blank allergy intolerance request ID")
-				}
-				return id, nil
-			}
-		}
-	}
-
-	return "", err
+	return *allergyPl.Resource.ID, nil
 }

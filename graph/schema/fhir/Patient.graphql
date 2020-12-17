@@ -410,4 +410,3 @@ type FHIRPatientRelayConnection {
   hasOpenEpisodes: Boolean!
   pageInfo: PageInfo!
 }
-

@@ -154,6 +154,12 @@ func (r *mutationResolver) DeleteFHIRComposition(ctx context.Context, id string)
 	return r.clinicalService.DeleteFHIRComposition(ctx, id)
 }
 
+func (r *mutationResolver) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.clinicalService.DeleteFHIRPatient(ctx, id)
+}
+
 func (r *queryResolver) FindPatientsByMsisdn(ctx context.Context, msisdn string) (*clinical.PatientConnection, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
@@ -242,6 +248,12 @@ func (r *queryResolver) SearchFHIRComposition(ctx context.Context, params map[st
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
 	return r.clinicalService.SearchFHIRComposition(ctx, params)
+}
+
+func (r *queryResolver) AllergySummary(ctx context.Context, patientID string) ([]string, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.clinicalService.AllergySummary(ctx, patientID)
 }
 
 // Mutation returns generated.MutationResolver implementation.

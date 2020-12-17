@@ -98,9 +98,7 @@ func Router() (*mux.Router, error) {
 	r.Use(base.RequestDebugMiddleware())
 
 	// Unauthenticated routes
-	if base.IsDebug() {
-		r.Path("/ide").HandlerFunc(playground.Handler("GraphQL IDE", "/graphql"))
-	}
+	r.Path("/ide").HandlerFunc(playground.Handler("GraphQL IDE", "/graphql"))
 
 	// check server status.
 	r.Path("/health").HandlerFunc(base.HealthStatusCheck)

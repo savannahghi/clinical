@@ -5374,7 +5374,7 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 		return
 	}
 
-	allergyID, err := getTestAllergyIntoleranceID(ctx, patient, encounterID)
+	allergyID, err := createTestAllergy(ctx, patient, encounterID)
 	if err != nil {
 		t.Errorf("can't get test allergy intolerance")
 		return
@@ -5604,7 +5604,7 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 		t.Errorf("error creating test encounter ID: %w", err)
 		return
 	}
-	allergyID, err := getTestAllergyIntoleranceID(ctx, patient, encounterID)
+	allergyID, err := createTestAllergy(ctx, patient, encounterID)
 	if err != nil {
 		t.Errorf("can't get test allergy intolerance")
 		return
@@ -8580,6 +8580,353 @@ func TestGraphQLListConcepts(t *testing.T) {
 				return
 			}
 
+		})
+	}
+}
+
+func TestGraphQLAllergySummary(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, true, testProviderCode)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("could not get patient: %v", err)
+		return
+	}
+
+	if patient.ID == nil {
+		t.Errorf("nil patient ID")
+		return
+	}
+
+	patientID := *patient.ID
+
+	_, err = createTestAllergy(ctx, patient, encounterID)
+	if err != nil {
+		t.Errorf("error creating a test condition: %v", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query AllergySummary($patientID: String!) {
+						allergySummary(patientID: $patientID)
+					}`,
+					"variables": map[string]interface{}{
+						"patientID": patientID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			if tt.wantErr {
+				data := map[string]interface{}{}
+				err = json.Unmarshal(dataResponse, &data)
+				if err != nil {
+					t.Errorf("bad data returned: %s", string(dataResponse))
+					return
+				}
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+			if !tt.wantErr {
+				data := map[string]map[string][]string{}
+				err = json.Unmarshal(dataResponse, &data)
+				if err != nil {
+					t.Errorf("bad data returned: %s", string(dataResponse))
+					return
+				}
+				errMsg, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got: %s", errMsg)
+					return
+				}
+
+				for key := range data {
+					nestedMap, present := data[key]
+					if !present {
+						t.Errorf("key %s not found in %v", key, data)
+						return
+					}
+					expected := map[string][]string{
+						"allergySummary": {
+							"Panadol Extra",
+						},
+					}
+					if !reflect.DeepEqual(expected, nestedMap) {
+						t.Errorf("expected %v got %v", expected, nestedMap)
+						return
+					}
+				}
+
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
+
+		})
+	}
+}
+
+func TestGraphQLDeleteFHIRPatient(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	patient, _, err := getTestPatient(ctx)
+	if err != nil {
+		t.Errorf("unable to generate test encounter ID: %w", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		{
+			name: "valid query - case that exists",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation DeletePatient($id: ID!) {
+						deleteFHIRPatient(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"id": *patient.ID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "invalid format",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation deleteFHIRPatient($id: ID!) {
+						deleteFHIRPatient
+						// bad format
+					  }`,
+					"variables": map[string]interface{}{
+						"id": ksuid.New().String(),
+					},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				errMsg, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got: %w", errMsg)
+					return
+				}
+
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
+
+					if key == "data" {
+						respMap, present := nestedMap["deleteFHIRPatient"]
+						if !present {
+							t.Errorf("can't find delete response")
+							return
+						}
+
+						deleted, ok := nestedMap["deleteFHIRPatient"].(bool)
+						if !ok {
+							t.Errorf("cannot cast key value of %v to type map[string]interface{}", respMap)
+							return
+						}
+
+						if !deleted {
+							t.Errorf("expected the composition to have been successfully deleted, it wasn't")
+							return
+						}
+					}
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
 		})
 	}
 }

@@ -8,9 +8,10 @@ require (
 	github.com/99designs/gqlgen v0.13.0
 	github.com/agnivade/levenshtein v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
-	github.com/aws/aws-sdk-go v1.36.9 // indirect
+	github.com/aws/aws-sdk-go v1.36.10 // indirect
 	github.com/bearbin/go-age v0.0.0-20140407072555-316d0c1e7cd1
 	github.com/brianvoe/gofakeit/v5 v5.11.1
+	github.com/google/pprof v0.0.0-20201216223654-096c08e13fa9 // indirect
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0

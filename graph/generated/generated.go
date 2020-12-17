@@ -889,6 +889,7 @@ type ComplexityRoot struct {
 		CreateUpdatePatientExtraInformation func(childComplexity int, input clinical.PatientExtraInformationInput) int
 		DeleteFHIRComposition               func(childComplexity int, id string) int
 		DeleteFHIRMedicationRequest         func(childComplexity int, id string) int
+		DeleteFHIRPatient                   func(childComplexity int, id string) int
 		DeleteFHIRServiceRequest            func(childComplexity int, id string) int
 		EndEncounter                        func(childComplexity int, encounterID string) int
 		EndEpisode                          func(childComplexity int, episodeID string) int
@@ -927,6 +928,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		AllergySummary               func(childComplexity int, patientID string) int
 		FindPatients                 func(childComplexity int, search string) int
 		FindPatientsByMsisdn         func(childComplexity int, msisdn string) int
 		GetPatient                   func(childComplexity int, id string) int
@@ -977,6 +979,7 @@ type MutationResolver interface {
 	CreateFHIRComposition(ctx context.Context, input clinical.FHIRCompositionInput) (*clinical.FHIRCompositionRelayPayload, error)
 	UpdateFHIRComposition(ctx context.Context, input clinical.FHIRCompositionInput) (*clinical.FHIRCompositionRelayPayload, error)
 	DeleteFHIRComposition(ctx context.Context, id string) (bool, error)
+	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	FindPatientsByMsisdn(ctx context.Context, msisdn string) (*clinical.PatientConnection, error)
@@ -994,6 +997,7 @@ type QueryResolver interface {
 	SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRMedicationRequestRelayConnection, error)
 	SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*clinical.FHIRServiceRequestRelayConnection, error)
 	SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*clinical.FHIRCompositionRelayConnection, error)
+	AllergySummary(ctx context.Context, patientID string) ([]string, error)
 	ListConcepts(ctx context.Context, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error)
 }
 
@@ -5148,6 +5152,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFHIRMedicationRequest(childComplexity, args["id"].(string)), true
 
+	case "Mutation.deleteFHIRPatient":
+		if e.complexity.Mutation.DeleteFHIRPatient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteFHIRPatient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteFHIRPatient(childComplexity, args["id"].(string)), true
+
 	case "Mutation.deleteFHIRServiceRequest":
 		if e.complexity.Mutation.DeleteFHIRServiceRequest == nil {
 			break
@@ -5373,6 +5389,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PatientPayload.PatientRecord(childComplexity), true
+
+	case "Query.allergySummary":
+		if e.complexity.Query.AllergySummary == nil {
+			break
+		}
+
+		args, err := ec.field_Query_allergySummary_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AllergySummary(childComplexity, args["patientID"].(string)), true
 
 	case "Query.findPatients":
 		if e.complexity.Query.FindPatients == nil {
@@ -5900,6 +5928,8 @@ extend type Query {
   searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
 
   searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
+
+  allergySummary(patientID: String!): [String!]!
 }
 
 extend type Mutation {
@@ -5970,6 +6000,8 @@ extend type Mutation {
   ): FHIRCompositionRelayPayload!
 
   deleteFHIRComposition(id: ID!): Boolean!
+
+  deleteFHIRPatient(id: ID!): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/ocl.graphql", Input: `extend type Query {
@@ -9778,7 +9810,6 @@ type FHIRPatientRelayConnection {
   hasOpenEpisodes: Boolean!
   pageInfo: PageInfo!
 }
-
 `, BuiltIn: false},
 	{Name: "graph/schema/fhir/ServiceRequest.graphql", Input: `"""
 FHIRServiceRequestInput: input for ServiceRequest
@@ -12061,6 +12092,21 @@ func (ec *executionContext) field_Mutation_deleteFHIRMedicationRequest_args(ctx 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteFHIRPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_deleteFHIRServiceRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -12283,6 +12329,21 @@ func (ec *executionContext) field_Query__entities_args(ctx context.Context, rawA
 		}
 	}
 	args["representations"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_allergySummary_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
 	return args, nil
 }
 
@@ -32206,6 +32267,48 @@ func (ec *executionContext) _Mutation_deleteFHIRComposition(ctx context.Context,
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_deleteFHIRPatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteFHIRPatient_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteFHIRPatient(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -33178,6 +33281,48 @@ func (ec *executionContext) _Query_searchFHIRComposition(ctx context.Context, fi
 	res := resTmp.(*clinical.FHIRCompositionRelayConnection)
 	fc.Result = res
 	return ec.marshalNFHIRCompositionRelayConnection2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋclinicalᚋgraphᚋclinicalᚐFHIRCompositionRelayConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_allergySummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_allergySummary_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().AllergySummary(rctx, args["patientID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_listConcepts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -43350,6 +43495,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "deleteFHIRPatient":
+			out.Values[i] = ec._Mutation_deleteFHIRPatient(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -43713,6 +43863,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_searchFHIRComposition(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "allergySummary":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_allergySummary(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
