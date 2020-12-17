@@ -1139,8 +1139,18 @@ func (e AgeComparatorEnum) IsValid() bool {
 	return false
 }
 
-// String ...
+// String renders an age comparator enum as a string
 func (e AgeComparatorEnum) String() string {
+	switch e {
+	case AgeComparatorEnumLessThan:
+		return "<"
+	case AgeComparatorEnumLessThanOrEqualTo:
+		return "<="
+	case AgeComparatorEnumGreaterThanOrEqualTo:
+		return ">="
+	case AgeComparatorEnumGreaterThan:
+		return ">"
+	}
 	return string(e)
 }
 
@@ -1327,6 +1337,16 @@ func (e DurationComparatorEnum) IsValid() bool {
 
 // String ...
 func (e DurationComparatorEnum) String() string {
+	switch e {
+	case DurationComparatorEnumLessThan:
+		return "<"
+	case DurationComparatorEnumLessThanOrEqualTo:
+		return "<="
+	case DurationComparatorEnumGreaterThan:
+		return ">"
+	case DurationComparatorEnumGreaterThanOrEqualTo:
+		return ">="
+	}
 	return string(e)
 }
 
@@ -1953,6 +1973,10 @@ func (e AllergyIntoleranceCriticalityEnum) IsValid() bool {
 
 // String ...
 func (e AllergyIntoleranceCriticalityEnum) String() string {
+	switch e {
+	case AllergyIntoleranceCriticalityEnumUnableToAssess:
+		return "unable-to-assess"
+	}
 	return string(e)
 }
 
@@ -2118,6 +2142,10 @@ func (e CompositionStatusEnum) IsValid() bool {
 
 // String ...
 func (e CompositionStatusEnum) String() string {
+	switch e {
+	case CompositionStatusEnumEnteredInError:
+		return "entered-in-error"
+	}
 	return string(e)
 }
 
@@ -2249,6 +2277,12 @@ func (e EncounterStatusEnum) IsValid() bool {
 
 // String ...
 func (e EncounterStatusEnum) String() string {
+	switch e {
+	case EncounterStatusEnumInProgress:
+		return "in-progress"
+	case EncounterStatusEnumEnteredInError:
+		return "entered-in-error"
+	}
 	return string(e)
 }
 
@@ -2380,6 +2414,12 @@ func (e EncounterStatusHistoryStatusEnum) IsValid() bool {
 
 // String ...
 func (e EncounterStatusHistoryStatusEnum) String() string {
+	switch e {
+	case EncounterStatusHistoryStatusEnumInProgress:
+		return "in-progress"
+	case EncounterStatusHistoryStatusEnumEnteredInError:
+		return "entered-in-error"
+	}
 	return string(e)
 }
 
@@ -2447,6 +2487,10 @@ func (e EpisodeOfCareStatusEnum) IsValid() bool {
 
 // String ...
 func (e EpisodeOfCareStatusEnum) String() string {
+	switch e {
+	case EpisodeOfCareStatusEnumEnteredInError:
+		return "entered-in-error"
+	}
 	return string(e)
 }
 
@@ -2514,6 +2558,10 @@ func (e EpisodeOfCareStatusHistoryStatusEnum) IsValid() bool {
 
 // String ...
 func (e EpisodeOfCareStatusHistoryStatusEnum) String() string {
+	switch e {
+	case EpisodeOfCareStatusHistoryStatusEnumEnteredInError:
+		return "entered-in-error"
+	}
 	return string(e)
 }
 
@@ -2584,6 +2632,10 @@ func (e ObservationStatusEnum) IsValid() bool {
 
 // String ...
 func (e ObservationStatusEnum) String() string {
+	switch e {
+	case ObservationStatusEnumEnteredInError:
+		return "entered-in-error"
+	}
 	return string(e)
 }
 
@@ -2758,6 +2810,10 @@ func (e PatientLinkTypeEnum) IsValid() bool {
 
 // String ...
 func (e PatientLinkTypeEnum) String() string {
+	switch e {
+	case PatientLinkTypeEnumReplacedBy:
+		return "replaced-by"
+	}
 	return string(e)
 }
 

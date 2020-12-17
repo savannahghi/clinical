@@ -2164,6 +2164,11 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 		return
 	}
 
+	// we have intermittent CI failures that could be related to replication
+	// lag or latency issues on the backing data store (unproven).
+	// If that is the case, then this sleep would reduce the failure rate.
+	time.Sleep(time.Second * 5)
+
 	type args struct {
 		query map[string]interface{}
 	}
@@ -2213,7 +2218,6 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 			wantErr:    true,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
@@ -2261,13 +2265,13 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 				return
 			}
 
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
 			if tt.wantErr {
+				data := map[string]interface{}{}
+				err = json.Unmarshal(dataResponse, &data)
+				if err != nil {
+					t.Errorf("unexpected data format: %s", string(dataResponse))
+					return
+				}
 				_, ok := data["errors"]
 				if !ok {
 					t.Errorf("expected an error")
@@ -2276,26 +2280,36 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 			}
 
 			if !tt.wantErr {
-				errorMessage, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected, got error: %s", errorMessage)
+				// example:
+				// {"data":{"searchFHIREncounter":{"edges":[{"node":{"ID":"49e2f11e-7e1f-4107-8a2e-9c25c309122a","Status":"in-progress"}}]}}}
+				data := map[string]map[string]map[string][]map[string]map[string]string{}
+				err = json.Unmarshal(dataResponse, &data)
+				if err != nil {
+					t.Errorf("unexpected data format: %s", string(dataResponse))
 					return
 				}
 
-				for key := range data {
-					nestedMap, ok := data[key].(map[string]interface{})
-					if !ok {
-						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
-						return
-					}
+				searchResult, present := data["data"]["searchFHIREncounter"]
+				if !present {
+					t.Errorf("key searchFHIREncounter not found in %v", data)
+					return
+				}
 
-					log.Printf("response: \n%s\n", nestedMap)
+				edges, present := searchResult["edges"]
+				if !present {
+					t.Errorf("key edges not found in %v", searchResult)
+					return
+				}
 
-					_, ok = nestedMap["searchFHIREncounter"].(map[string]interface{})
-					if !ok {
-						t.Errorf("cannot cast nested map key value of %v to type map[string]interface{}", key)
-						return
-					}
+				if len(edges) != 1 {
+					t.Errorf("expected exactly one result, got %d", len(edges))
+					return
+				}
+
+				result := edges[0]["node"]
+				if result["Status"] != "in-progress" {
+					t.Errorf("unexpected result status: %s", result["Status"])
+					return
 				}
 			}
 
@@ -2303,7 +2317,6 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 				t.Errorf("Bad status reponse returned")
 				return
 			}
-
 		})
 	}
 }
@@ -3958,6 +3971,11 @@ func TestGraphQLProblemSummary(t *testing.T) {
 		t.Errorf("error creating a test condition: %v", err)
 		return
 	}
+
+	// we have intermittent CI failures that could be related to replication
+	// lag or latency issues on the backing data store (unproven).
+	// If that is the case, then this sleep would reduce the failure rate.
+	time.Sleep(time.Second * 5)
 
 	type args struct {
 		query map[string]interface{}
