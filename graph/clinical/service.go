@@ -846,10 +846,10 @@ func (s Service) UpgradeEpisode(
 func (s Service) StartEpisodeByBreakGlass(
 	ctx context.Context, input BreakGlassEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	isVerified, normalized, err := VerifyOTP(input.Msisdn, input.Otp, s.otp)
+	isVerified, normalized, err := VerifyOTP(input.ProviderPhone, input.Otp, s.otp)
 	if err != nil {
 		log.Printf(
-			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
+			"invalid phone: \nPhone: %s\nOTP: %s\n", input.ProviderPhone, input.Otp)
 		return nil, fmt.Errorf("invalid phone number/OTP: %w", err)
 	}
 	if !isVerified {
@@ -861,8 +861,13 @@ func (s Service) StartEpisodeByBreakGlass(
 	if err != nil {
 		return nil, fmt.Errorf("unable to log break glass operation: %v", err)
 	}
+	// validatePhone patient phone number
+	validatePhone, err := base.NormalizeMSISDN(input.PatientPhone)
+	if err != nil {
+		return nil, fmt.Errorf("invalid patient phone number: %v", err)
+	}
 	// alert patient
-	err = s.sendAlertToPatient(ctx, normalized, input.PatientID)
+	err = s.sendAlertToPatient(ctx, validatePhone, input.PatientID)
 	if err != nil {
 		log.Printf("failed to send alert message during StartEpisodeByBreakGlass login: %s", err)
 	}

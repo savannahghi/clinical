@@ -69,9 +69,10 @@ input BreakGlassEpisodeCreationInput {
   patientID: String!
   providerCode: String!
   practitionerUID: String!
-  msisdn: String!
+  providerPhone: String!
   otp: String!
   fullAccess: Boolean!
+  patientPhone: String!
 }
 
 input PhysicalAddress {
@@ -172,7 +173,7 @@ extend type Query {
   findPatients(search: String!): PatientConnection!
 
   getPatient(id: ID!): PatientPayload!
-  
+
   openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
 
   openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
@@ -210,7 +211,7 @@ extend type Mutation {
   startEpisodeByBreakGlass(
     input: BreakGlassEpisodeCreationInput!
   ): EpisodeOfCarePayload!
-  
+
   upgradeEpisode(input: OTPEpisodeUpgradeInput!): EpisodeOfCarePayload!
 
   endEpisode(episodeID: String!): Boolean!

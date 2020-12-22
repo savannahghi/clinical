@@ -5797,9 +5797,10 @@ input BreakGlassEpisodeCreationInput {
   patientID: String!
   providerCode: String!
   practitionerUID: String!
-  msisdn: String!
+  providerPhone: String!
   otp: String!
   fullAccess: Boolean!
+  patientPhone: String!
 }
 
 input PhysicalAddress {
@@ -5900,7 +5901,7 @@ extend type Query {
   findPatients(search: String!): PatientConnection!
 
   getPatient(id: ID!): PatientPayload!
-  
+
   openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
 
   openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
@@ -5938,7 +5939,7 @@ extend type Mutation {
   startEpisodeByBreakGlass(
     input: BreakGlassEpisodeCreationInput!
   ): EpisodeOfCarePayload!
-  
+
   upgradeEpisode(input: OTPEpisodeUpgradeInput!): EpisodeOfCarePayload!
 
   endEpisode(episodeID: String!): Boolean!
@@ -34664,11 +34665,11 @@ func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx con
 			if err != nil {
 				return it, err
 			}
-		case "msisdn":
+		case "providerPhone":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msisdn"))
-			it.Msisdn, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("providerPhone"))
+			it.ProviderPhone, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -34685,6 +34686,14 @@ func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx con
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fullAccess"))
 			it.FullAccess, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "patientPhone":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientPhone"))
+			it.PatientPhone, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

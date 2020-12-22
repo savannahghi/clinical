@@ -101,9 +101,12 @@ type BreakGlassEpisodeCreationInput struct {
 	PatientID       string `json:"patientID" firestore:"patientID"`
 	ProviderCode    string `json:"providerCode" firestore:"providerCode"`
 	PractitionerUID string `json:"practitionerUID" firestore:"practitionerUID"`
-	Msisdn          string `json:"msisdn" firestore:"msisdn"`
-	Otp             string `json:"otp" firestore:"otp"`
-	FullAccess      bool   `json:"fullAccess" firestore:"fullAccess"`
+	// ProviderPhone is the provider phone number
+	ProviderPhone string `json:"providerPhone" firestore:"providerPhone"`
+	Otp           string `json:"otp" firestore:"otp"`
+	FullAccess    bool   `json:"fullAccess" firestore:"fullAccess"`
+	// PatientPhone is the patient phone number used to send alert to patient
+	PatientPhone string `json:"patient_phone" firestore:"patient_phone"`
 }
 
 // OTPEpisodeCreationInput is used to start patient visits via OTP
