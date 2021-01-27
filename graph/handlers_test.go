@@ -999,7 +999,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 
 	phoneNumber, otp, err := getTestVerifiedPhoneandOTP()
 	if err != nil {
-		t.Errorf("unable to get verified phone number and OTP")
+		log.Errorf("unable to get verified phone number and OTP")
 		return
 	}
 
@@ -1183,7 +1183,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 
 	validPhone, otp, err := getTestVerifiedPhoneandOTP()
 	if err != nil {
-		t.Errorf("unable to get verified phone number and OTP")
+		log.Errorf("unable to get verified phone number and OTP")
 		return
 	}
 
@@ -1377,7 +1377,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 
 	phoneNumber, otp, err := getTestVerifiedPhoneandOTP()
 	if err != nil {
-		t.Errorf("unable to get verified phone number and OTP")
+		log.Errorf("unable to get verified phone number and OTP")
 		return
 	}
 
@@ -2492,7 +2492,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 
 	phoneNumber, otp, err := getTestVerifiedPhoneandOTP()
 	if err != nil {
-		t.Errorf("unable to get verified phone number and OTP")
+		log.Errorf("unable to get verified phone number and OTP")
 		return
 	}
 
@@ -5841,7 +5841,7 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 								return
 							}
 							if edgesI == nil {
-								t.Errorf("no allergy intollerance request was found")
+								log.Errorf("no allergy intollerance request was found")
 								return
 							}
 

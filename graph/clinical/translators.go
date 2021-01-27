@@ -106,15 +106,15 @@ func IDToIdentifier(
 					{
 						System:       &identificationDocumentIdentifierSystem,
 						Version:      &version,
-						Code:         base.Code(normalized),
-						Display:      normalized,
+						Code:         base.Code(*normalized),
+						Display:      *normalized,
 						UserSelected: &userSelected,
 					},
 				},
-				Text: normalized,
+				Text: *normalized,
 			},
 			System: &msisdnIdentifierSystem,
-			Value:  normalized,
+			Value:  *normalized,
 			Period: DefaultPeriodInput(),
 		}
 		output = append(output, identifier)

@@ -30,6 +30,7 @@ var ClinicalAllowedOrigins = []string{
 	"https://clinical-prod.healthcloud.co.ke",
 	"https://clinical-staging.bewell.co.ke",
 	"https://clinical-testing.bewell.co.ke",
+	"https://clinical-demo.bewell.co.ke",
 	"https://clinical-prod.bewell.co.ke",
 }
 

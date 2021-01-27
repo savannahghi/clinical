@@ -867,7 +867,7 @@ func (s Service) StartEpisodeByBreakGlass(
 		return nil, fmt.Errorf("invalid patient phone number: %v", err)
 	}
 	// alert patient
-	err = s.sendAlertToPatient(ctx, validatePhone, input.PatientID)
+	err = s.sendAlertToPatient(ctx, *validatePhone, input.PatientID)
 	if err != nil {
 		log.Printf("failed to send alert message during StartEpisodeByBreakGlass login: %s", err)
 	}
@@ -1840,7 +1840,7 @@ func (s Service) FindPatientsByMSISDN(
 	if err != nil {
 		return nil, fmt.Errorf("can't normalize contact: %w", err)
 	}
-	return s.PatientSearch(ctx, search)
+	return s.PatientSearch(ctx, *search)
 }
 
 // RegisterPatient implements simple patient registration

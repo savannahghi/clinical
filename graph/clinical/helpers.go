@@ -136,7 +136,7 @@ func VerifyOTP(
 			"can't unmarshal OTP response data from JSON: %w", err)
 	}
 
-	return r.IsVerified, normalized, nil
+	return r.IsVerified, *normalized, nil
 }
 
 // RequestOTP sends an inter-service API call to the OTP service to request
@@ -158,7 +158,7 @@ func RequestOTP(
 		Msisdn string `json:"msisdn"`
 	}
 	requestPayload := Msisdn{
-		Msisdn: normalized,
+		Msisdn: *normalized,
 	}
 	resp, err := otpClient.MakeRequest(
 		http.MethodPost, sendOTPEndpoint, requestPayload)
@@ -177,16 +177,13 @@ func RequestOTP(
 			"OTP request got non OK status: %s", resp.Status)
 	}
 
-	type otpResponse struct {
-		OTP string `json:"otp"`
-	}
+	var r string
 
-	var r otpResponse
 	err = json.Unmarshal(data, &r)
 	if err != nil {
 		return "", fmt.Errorf(
 			"can't unmarshal OTP response data from JSON: %w", err)
 	}
 
-	return r.OTP, nil
+	return r, nil
 }

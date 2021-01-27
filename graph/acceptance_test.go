@@ -144,7 +144,7 @@ func getTestEpisodeOfCare(
 	}
 
 	ep := clinical.ComposeOneHealthEpisodeOfCare(
-		normalized,
+		*normalized,
 		fullAccess,
 		*orgID,
 		providerCode,
