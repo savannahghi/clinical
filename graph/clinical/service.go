@@ -56,7 +56,6 @@ const (
 
 // dependencies names. Should match the names in the yaml file
 const (
-	mailgunService    = "mailgun"
 	smsService        = "sms"
 	twilioService     = "twilio"
 	engagementService = "engagement"
@@ -65,7 +64,7 @@ const (
 
 // specific endpoint paths for ISC
 const (
-	// mailgun ISC paths
+	// engagement ISC paths
 	sendEmailEndpoint = "internal/send_email"
 
 	// twilio ISC paths
@@ -94,11 +93,6 @@ func NewService() *Service {
 	twilioClient, err := base.SetupISCclient(*config, twilioService)
 	if err != nil {
 		log.Panicf("unable to set up Twilio ISC client: %v", err)
-	}
-
-	mailgunClient, err := base.SetupISCclient(*config, mailgunService)
-	if err != nil {
-		log.Panicf("unable to set up Mailgun ISC client: %v", err)
 	}
 
 	smsClient, err := base.SetupISCclient(*config, smsService)
@@ -140,7 +134,6 @@ func NewService() *Service {
 	return &Service{
 		clinicalRepository: clinicalRepository,
 		firestoreClient:    firestoreClient,
-		mailgun:            mailgunClient,
 		twilio:             twilioISC,
 		sms:                smsISC,
 		engagement:         engagementClient,
@@ -151,7 +144,6 @@ func NewService() *Service {
 // Service is a clinical service
 type Service struct {
 	clinicalRepository *cloudhealth.Service
-	mailgun            *base.InterServiceClient
 	twilio             *base.SmsISC
 	sms                *base.SmsISC
 	firestoreClient    *firestore.Client
@@ -166,10 +158,6 @@ func (s Service) checkPreconditions() {
 
 	if s.firestoreClient == nil {
 		log.Panicf("nil firestore client in clinical service")
-	}
-
-	if s.mailgun == nil {
-		log.Panicf("nil mailgun ISC in clinical service")
 	}
 
 	if s.twilio == nil {
@@ -1926,7 +1914,7 @@ func (s Service) SendPatientWelcomeEmail(ctx context.Context, emailaddress strin
 		"subject": EmailWelcomeSubject,
 	}
 
-	resp, err := s.mailgun.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
+	resp, err := s.engagement.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send welcome email: %w", err)
 	}
@@ -1987,7 +1975,7 @@ func (s Service) sendAlertToAdmin(patientName string, patientContact string) err
 		"subject": subject,
 	}
 
-	resp, err := s.mailgun.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
+	resp, err := s.engagement.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send Alert to admin email: %w", err)
 	}
