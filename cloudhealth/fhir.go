@@ -320,3 +320,37 @@ func (s Service) GetFHIRStore() (*healthcare.FhirStore, error) {
 	}
 	return store, nil
 }
+
+// GetFHIRPatientEverything gets all resources associated with a particular
+// patient compartment.
+func (s Service) GetFHIRPatientEverything(fhirResourceID string) ([]byte, error) {
+	fhirService := s.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
+	name := fmt.Sprintf(
+		"projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/Patient/%s",
+		s.projectID,
+		s.location,
+		s.datasetID,
+		s.fhirStoreID,
+		fhirResourceID,
+	)
+
+	resp, err := fhirService.PatientEverything(name).Do()
+	if err != nil {
+		return nil, fmt.Errorf("PatientEverything: %v", err)
+	}
+
+	defer func() {
+		_ = resp.Body.Close()
+	}()
+
+	respBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("could not read response: %v", err)
+	}
+
+	if resp.StatusCode > 299 {
+		return nil, fmt.Errorf("PatientEverything: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
+	}
+
+	return respBytes, nil
+}

@@ -3217,15 +3217,142 @@ func (s Service) CreateUpdatePatientExtraInformation(
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
 func (s Service) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	resourceType := "Patient"
-	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
+	patientEverythingBs, err := s.clinicalRepository.GetFHIRPatientEverything(id)
 	if err != nil {
-		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
-		)
+		return false, fmt.Errorf("unable to get patient's compartment: %v", err)
 	}
+
+	var patientEverything map[string]interface{}
+	err = json.Unmarshal(patientEverythingBs, &patientEverything)
+	if err != nil {
+		return false, fmt.Errorf("unable to unmarshal patient everything")
+	}
+
+	respEntries := patientEverything["entry"]
+	if respEntries == nil {
+		return false, nil
+	}
+
+	entries, ok := respEntries.([]interface{})
+	if !ok {
+		return false, fmt.Errorf(
+			"server error: entries is not a list of maps, it is: %T", respEntries)
+	}
+
+	// This list stores assorted ResourceTypes and ResourceIDs found in an Encounter
+	// i.e Observations, Medication Request etc
+	assortedResourceTypes := []map[string]string{}
+
+	// This list stores all the encounters ResourceType and ResourceID in a patient's compartment
+	encounters := []map[string]string{}
+
+	// This list stores all the Episodesofcare ResourceType and ResourceIDs in a patient's compartment
+	episodesOfCare := []map[string]string{}
+
+	// This list stores the patient ResourceType and ResourceID
+	patient := []map[string]string{}
+
+	for _, en := range entries {
+		entry, ok := en.(map[string]interface{})
+		if !ok {
+			return false, fmt.Errorf(
+				"server error: expected each entry to be map, they are %T instead",
+				en,
+			)
+		}
+		resource, ok := entry["resource"]
+		if !ok {
+			{
+				return false, fmt.Errorf(
+					"server error: result entry %#v is not a map",
+					entry["resource"],
+				)
+			}
+		}
+		resourceMap, ok := resource.(map[string]interface{})
+		if !ok {
+			return false, fmt.Errorf(
+				"server error: expected each entry to be map, they are %T instead",
+				resource,
+			)
+		}
+
+		resourceType := resourceMap["resourceType"].(string)
+
+		resourceTypeIDMap := map[string]string{
+			"resourceType": resourceType,
+			"resourceID":   resourceMap["id"].(string),
+		}
+
+		switch resourceType {
+		case "Encounter":
+			encounters = append(
+				encounters,
+				resourceTypeIDMap,
+			)
+			continue
+
+		case "EpisodeOfCare":
+			episodesOfCare = append(
+				episodesOfCare,
+				resourceTypeIDMap,
+			)
+			continue
+		case "Patient":
+			patient = append(
+				patient,
+				resourceTypeIDMap,
+			)
+			continue
+		}
+
+		assortedResourceTypes = append(assortedResourceTypes, resourceTypeIDMap)
+	}
+
+	// Order of deletion matters to avoid conflicts
+	// First delete the ResourceTypes found in an encounter
+	if err = s.DeleteFHIRResourceType(assortedResourceTypes); err != nil {
+		return false, err
+	}
+
+	// Secondly, delete the encounters. This will bring no conflict
+	// as it ensures the any ResourceType that refers to the encounter is not found
+	if err = s.DeleteFHIRResourceType(encounters); err != nil {
+		return false, err
+	}
+
+	// Thirdly, delete the episodes of care. This will bring no conflict
+	// as it ensures the any Encounter that refers to the EpisodeOfCare is not found
+	if err = s.DeleteFHIRResourceType(episodesOfCare); err != nil {
+		return false, err
+	}
+
+	// Finally delete the patient ResourceType
+	if err = s.DeleteFHIRResourceType(patient); err != nil {
+		return false, err
+	}
+
 	return true, nil
+}
+
+// DeleteFHIRResourceType takes a ResourceType and ID and deletes them from FHIR
+func (s Service) DeleteFHIRResourceType(results []map[string]string) error {
+	for _, result := range results {
+		resourceType := result["resourceType"]
+		resourceID := result["resourceID"]
+
+		resp, err := s.clinicalRepository.DeleteFHIRResource(
+			resourceType,
+			resourceID,
+		)
+		if err != nil {
+			return fmt.Errorf(
+				"unable to delete %s, response %s, error: %v",
+				resourceType, string(resp), err,
+			)
+		}
+	}
+	return nil
 }
 
 // AllergySummary returns a short list of the patient's active and confirmed
@@ -3257,4 +3384,23 @@ func (s Service) AllergySummary(
 		output = append(output, allergy.Code.Text)
 	}
 	return output, nil
+}
+
+// DeleteFHIRPatientByPhone delete's a patient's FHIR compartment
+// given their phone number
+func (s Service) DeleteFHIRPatientByPhone(
+	ctx context.Context,
+	phoneNumber string,
+) (bool, error) {
+	patient, err := s.FindPatientsByMSISDN(ctx, phoneNumber)
+	if err != nil {
+		return false, fmt.Errorf("unable to find patient by phone number")
+	}
+	edges := patient.Edges
+	var patientID string
+	for _, edge := range edges {
+		patientID = *edge.Node.ID
+	}
+
+	return s.DeleteFHIRPatient(ctx, patientID)
 }

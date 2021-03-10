@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
+	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
 
@@ -57,7 +58,7 @@ func PrepareServer(
 	allowedOrigins []string,
 ) *http.Server {
 	// start up the router
-	r, err := Router()
+	r, err := Router(ctx)
 	if err != nil {
 		base.LogStartupError(ctx, err)
 	}
@@ -83,7 +84,7 @@ func PrepareServer(
 }
 
 // Router sets up the ginContext router
-func Router() (*mux.Router, error) {
+func Router(ctx context.Context) (*mux.Router, error) {
 	fc := &base.FirebaseClient{}
 	firebaseApp, err := fc.InitFirebase()
 	if err != nil {
@@ -103,6 +104,10 @@ func Router() (*mux.Router, error) {
 
 	// check server status.
 	r.Path("/health").HandlerFunc(base.HealthStatusCheck)
+
+	r.Path("/delete_patient").
+		Methods(http.MethodPost).
+		HandlerFunc(DeleteFHIRPatientByPhone(ctx))
 
 	// Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
@@ -124,5 +129,50 @@ func graphqlHandler() http.HandlerFunc {
 	)
 	return func(w http.ResponseWriter, r *http.Request) {
 		srv.ServeHTTP(w, r)
+	}
+}
+
+// DeleteFHIRPatientByPhone handler exposes an endpoint that takes a
+// patient's phone number and deletes the patient's FHIR compartment
+func DeleteFHIRPatientByPhone(ctx context.Context) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		s := clinical.NewService()
+
+		payload := &clinical.PhoneNumberPayload{}
+		type errResponse struct {
+			Err string `json:"error"`
+		}
+		base.DecodeJSONToTargetStruct(w, r, payload)
+		if payload.PhoneNumber == "" {
+			base.WriteJSONResponse(
+				w,
+				errResponse{
+					Err: "expected a phone number to be defined",
+				},
+				http.StatusBadRequest,
+			)
+			return
+		}
+		deleted, err := s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
+		if err != nil {
+			err := fmt.Sprintf("unable to delete patient: %v", err.Error())
+			base.WriteJSONResponse(
+				w,
+				errResponse{
+					Err: err,
+				},
+				http.StatusInternalServerError,
+			)
+			return
+		}
+
+		type response struct {
+			Deleted bool `json:"deleted"`
+		}
+		base.WriteJSONResponse(
+			w,
+			response{Deleted: deleted},
+			http.StatusOK,
+		)
 	}
 }

@@ -424,3 +424,8 @@ func (e *RelationshipType) UnmarshalGQL(v interface{}) error {
 func (e RelationshipType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
+// PhoneNumberPayload is a D.T.O that accepts a phone number
+type PhoneNumberPayload struct {
+	PhoneNumber string `json:"phoneNumber"`
+}
