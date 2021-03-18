@@ -93,6 +93,33 @@ deploy_to_testing:
   tags:
     - healthcloud-multi
 
+deploy_to_e2e:
+  before_script:
+    # Instead of writing our GCP service account private key into a file, supply it as env variable
+    - /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file $GCLOUD_PRODUCTION_SERVICE_ACCOUNT
+    - /google-cloud-sdk/bin/gcloud config set project bewell-app
+    - docker login -u _json_key --password-stdin https://eu.gcr.io < $GCLOUD_PRODUCTION_SERVICE_ACCOUNT
+    - export CLOUDSDK_CORE_PROJECT=bewell-app
+  image: eu.gcr.io/savannah-emr/gcloud-docker-in-docker:0.0.1
+  stage: deploy
+  only:
+    - develop
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    # GATEWAY_RELOAD_ENDPOINT: $TESTING_GATEWAY_RELOAD_ENDPOINT
+  resource_group: testing # control deploy concurrency
+  script:
+    - docker build -q --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f $CI_PROJECT_DIR/Dockerfile . -t eu.gcr.io/bewell-app/clinical-e2e:$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - /google-cloud-sdk/bin/gcloud auth configure-docker
+    - docker -- push eu.gcr.io/bewell-app/clinical-e2e:$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - /google-cloud-sdk/bin/gcloud run deploy clinical-e2e --image eu.gcr.io/bewell-app/clinical-e2e:$(echo $CI_COMMIT_SHA | cut -c1-8) --region europe-west1 --platform managed --allow-unauthenticated  --set-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$TESTING_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$TESTING_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$TESTING_CLOUD_HEALTH_FHIRSTORE_ID_PRO,ENVIRONMENT=$E2E_ENVIRONMENT,OPENCONCEPTLAB_TOKEN=$TESTING_OPENCONCEPTLAB_TOKEN,OPENCONCEPTLAB_API_URL=$TESTING_OPENCONCEPTLAB_API_URL,ROOT_COLLECTION_SUFFIX=$E2E_ROOT_COLLECTION_SUFFIX,JWT_KEY=$TESTING_JWT_KEY"
+    - /google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-e2e --quiet
+    - /google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-e2e --to-latest --region europe-west1 --platform managed --quiet
+    # - bash reload.sh
+  tags:
+    - healthcloud-multi
+
 
 deploy_to_demo:
   before_script:
