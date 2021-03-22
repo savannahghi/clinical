@@ -56,7 +56,6 @@ const (
 
 // dependencies names. Should match the names in the yaml file
 const (
-	smsService        = "sms"
 	twilioService     = "twilio"
 	engagementService = "engagement"
 	OtpService        = "otp"
@@ -66,12 +65,10 @@ const (
 const (
 	// engagement ISC paths
 	sendEmailEndpoint = "internal/send_email"
+	sendSMSEndpoint   = "internal/send_sms"
 
 	// twilio ISC paths
 	sendTwilioSMSEndpoint = "internal/send_sms"
-
-	// sms ISC paths
-	sendSMSEndpoint = "internal/send_sms"
 
 	// engagement ISC paths
 	uploadEndpoint    = "internal/upload/"
@@ -95,11 +92,6 @@ func NewService() *Service {
 		log.Panicf("unable to set up Twilio ISC client: %v", err)
 	}
 
-	smsClient, err := base.SetupISCclient(*config, smsService)
-	if err != nil {
-		log.Panicf("unable to set up SMS ISC client: %v", err)
-	}
-
 	engagementClient, err := base.SetupISCclient(*config, engagementService)
 	if err != nil {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
@@ -110,10 +102,11 @@ func NewService() *Service {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
 	}
 
-	smsISC := &base.SmsISC{
-		Isc:      smsClient,
+	engagementSms := &base.SmsISC{
+		Isc:      engagementClient,
 		EndPoint: sendSMSEndpoint,
 	}
+
 	twilioISC := &base.SmsISC{
 		Isc:      twilioClient,
 		EndPoint: sendTwilioSMSEndpoint,
@@ -135,9 +128,9 @@ func NewService() *Service {
 		clinicalRepository: clinicalRepository,
 		firestoreClient:    firestoreClient,
 		twilio:             twilioISC,
-		sms:                smsISC,
 		engagement:         engagementClient,
 		otp:                otpClient,
+		sms:                engagementSms,
 	}
 }
 
@@ -162,10 +155,6 @@ func (s Service) checkPreconditions() {
 
 	if s.twilio == nil {
 		log.Panicf("nil twilio ISC in clinical service")
-	}
-
-	if s.sms == nil {
-		log.Panicf("nil SMS service in clinical service")
 	}
 
 	if s.engagement == nil {

@@ -1,8 +1,6 @@
 staging:
   - depName: twilio
     depRootDomain: https://twilio-staging.healthcloud.co.ke
-  - depName: sms
-    depRootDomain: https://sms-staging.healthcloud.co.ke
   - depName: engagement
     depRootDomain: https://engagement-staging.healthcloud.co.ke
   - depName: otp
@@ -10,8 +8,6 @@ staging:
 testing:
   - depName: twilio
     depRootDomain: https://twilio-testing.healthcloud.co.ke
-  - depName: sms
-    depRootDomain: https://sms-testing.healthcloud.co.ke
   - depName: engagement
     depRootDomain: https://engagement-testing.healthcloud.co.ke
   - depName: otp
@@ -19,8 +15,6 @@ testing:
 demo:
   - depName: twilio
     depRootDomain: https://twilio-demo.healthcloud.co.ke
-  - depName: sms
-    depRootDomain: https://sms-demo.healthcloud.co.ke
   - depName: engagement
     depRootDomain: https://engagement-demo.healthcloud.co.ke
   - depName: otp
@@ -28,8 +22,6 @@ demo:
 production:
   - depName: twilio
     depRootDomain: https://twilio-prod.healthcloud.co.ke
-  - depName: sms
-    depRootDomain: https://sms-prod.healthcloud.co.ke
   - depName: engagement
     depRootDomain: https://engagement-prod.healthcloud.co.ke
   - depName: otp
