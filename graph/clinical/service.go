@@ -1950,11 +1950,11 @@ func (s Service) sendAlertToAdmin(patientName string, patientContact string) err
 	var writer bytes.Buffer
 	t := template.Must(template.New("profile").Parse(adminEmailMessage))
 	_ = t.Execute(&writer, struct {
-		name   string
-		number string
+		Name   string
+		Number string
 	}{
-		name:   patientName,
-		number: patientContact,
+		Name:   patientName,
+		Number: patientContact,
 	})
 	subject := "Breaking Glass Access notice"
 
