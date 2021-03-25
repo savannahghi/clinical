@@ -275,4 +275,6 @@ extend type Mutation {
   deleteFHIRComposition(id: ID!): Boolean!
 
   deleteFHIRPatient(id: ID!): Boolean!
+
+  deleteFHIRObservation(id: ID!): Boolean!
 }

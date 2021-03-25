@@ -160,6 +160,12 @@ func (r *mutationResolver) DeleteFHIRPatient(ctx context.Context, id string) (bo
 	return r.clinicalService.DeleteFHIRPatient(ctx, id)
 }
 
+func (r *mutationResolver) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.clinicalService.DeleteFHIRObservation(ctx, id)
+}
+
 func (r *queryResolver) FindPatientsByMsisdn(ctx context.Context, msisdn string) (*clinical.PatientConnection, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()

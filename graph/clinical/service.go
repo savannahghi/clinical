@@ -2796,6 +2796,19 @@ func (s Service) CreateFHIRObservation(ctx context.Context, input FHIRObservatio
 	return output, nil
 }
 
+// DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
+func (s Service) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
+	resourceType := "Observation"
+	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
+	if err != nil {
+		return false, fmt.Errorf(
+			"unable to delete %s, response %s, error: %v",
+			resourceType, string(resp), err,
+		)
+	}
+	return true, nil
+}
+
 // SearchFHIROrganization provides a search API for FHIROrganization
 func (s Service) SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*FHIROrganizationRelayConnection, error) {
 	s.checkPreconditions()

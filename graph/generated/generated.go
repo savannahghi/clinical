@@ -889,6 +889,7 @@ type ComplexityRoot struct {
 		CreateUpdatePatientExtraInformation func(childComplexity int, input clinical.PatientExtraInformationInput) int
 		DeleteFHIRComposition               func(childComplexity int, id string) int
 		DeleteFHIRMedicationRequest         func(childComplexity int, id string) int
+		DeleteFHIRObservation               func(childComplexity int, id string) int
 		DeleteFHIRPatient                   func(childComplexity int, id string) int
 		DeleteFHIRServiceRequest            func(childComplexity int, id string) int
 		EndEncounter                        func(childComplexity int, encounterID string) int
@@ -980,6 +981,7 @@ type MutationResolver interface {
 	UpdateFHIRComposition(ctx context.Context, input clinical.FHIRCompositionInput) (*clinical.FHIRCompositionRelayPayload, error)
 	DeleteFHIRComposition(ctx context.Context, id string) (bool, error)
 	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
+	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	FindPatientsByMsisdn(ctx context.Context, msisdn string) (*clinical.PatientConnection, error)
@@ -5152,6 +5154,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFHIRMedicationRequest(childComplexity, args["id"].(string)), true
 
+	case "Mutation.deleteFHIRObservation":
+		if e.complexity.Mutation.DeleteFHIRObservation == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteFHIRObservation_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteFHIRObservation(childComplexity, args["id"].(string)), true
+
 	case "Mutation.deleteFHIRPatient":
 		if e.complexity.Mutation.DeleteFHIRPatient == nil {
 			break
@@ -6003,6 +6017,8 @@ extend type Mutation {
   deleteFHIRComposition(id: ID!): Boolean!
 
   deleteFHIRPatient(id: ID!): Boolean!
+
+  deleteFHIRObservation(id: ID!): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/ocl.graphql", Input: `extend type Query {
@@ -12079,6 +12095,21 @@ func (ec *executionContext) field_Mutation_deleteFHIRComposition_args(ctx contex
 }
 
 func (ec *executionContext) field_Mutation_deleteFHIRMedicationRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteFHIRObservation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -32310,6 +32341,48 @@ func (ec *executionContext) _Mutation_deleteFHIRPatient(ctx context.Context, fie
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_deleteFHIRObservation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteFHIRObservation_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteFHIRObservation(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -43506,6 +43579,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteFHIRPatient":
 			out.Values[i] = ec._Mutation_deleteFHIRPatient(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteFHIRObservation":
+			out.Values[i] = ec._Mutation_deleteFHIRObservation(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
