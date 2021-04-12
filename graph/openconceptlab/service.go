@@ -79,7 +79,7 @@ func (s Service) GetConcept(
 	ctx context.Context, org string, source string, concept string,
 	includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error) {
 	s.enforcePreconditions()
-	path := fmt.Sprintf("/orgs/%s/sources/%s/concepts/%s", org, source, concept)
+	path := fmt.Sprintf("orgs/%s/sources/%s/concepts/%s", org, source, concept)
 	params := url.Values{}
 	params.Add("includeMappings", strconv.FormatBool(includeMappings))
 	params.Add("includeMappings", strconv.FormatBool(includeInverseMappings))
@@ -112,7 +112,7 @@ func (s Service) ListConcepts(
 	locale *string, includeRetired *bool,
 	includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error) {
 	s.enforcePreconditions()
-	path := fmt.Sprintf("/orgs/%s/sources/%s/concepts/", org, source)
+	path := fmt.Sprintf("orgs/%s/sources/%s/concepts", org, source)
 
 	params := url.Values{}
 	params.Add("verbose", strconv.FormatBool(verbose))

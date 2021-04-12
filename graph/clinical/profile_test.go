@@ -238,7 +238,7 @@ func TestFHIRPatient_RenderAge(t *testing.T) {
 			fields: fields{
 				BirthDate: &date,
 			},
-			want: base.Markdown("Age: 30 yrs"),
+			want: base.Markdown("Age: 31 yrs"),
 		},
 		{
 			name: "bad case: age isnt present",
