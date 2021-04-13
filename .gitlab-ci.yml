@@ -1,4 +1,4 @@
-image: eu.gcr.io/savannah-emr/golang-ci-image:0.0.4
+image: eu.gcr.io/savannah-emr/golang-ci-image:0.0.6
 
 stages:
   - test
@@ -6,6 +6,7 @@ stages:
 
 variables:
   GOOGLE_APPLICATION_CREDENTIALS: $CI_PROJECT_DIR/bewell-app-ci.json
+  BEWELL_CLI_VERSION: v0.0.6 #explicit version -> avoid breakages that might occur with different versions
 
 services:
   - name: docker:dind
@@ -17,7 +18,10 @@ lint_and_test:
   before_script:
     - bash decrypt_service_account.sh
     - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.slade360emr.com".insteadOf "https://gitlab.slade360emr.com"
+    - curl -L -o ./install-misspell.sh https://git.io/misspell && sh ./install-misspell.sh
+    - go install gitlab.slade360emr.com/go/admin/cmd/bewell@$BEWELL_CLI_VERSION
   script:
+    - bewell service validate-schema --name clinical --version $CI_COMMIT_SHA --url https://clinical-testing.healthcloud.co.ke/graphql --registry-url $TEST_SCHEMA_REGISTRY_URL
     - staticcheck ./...
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
@@ -73,6 +77,10 @@ deploy_to_testing:
     - /google-cloud-sdk/bin/gcloud config set project bewell-app
     - docker login -u _json_key --password-stdin https://eu.gcr.io < $GCLOUD_PRODUCTION_SERVICE_ACCOUNT
     - export CLOUDSDK_CORE_PROJECT=bewell-app
+    - apk add go git --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community # has latest version of go
+    - export PATH=$PATH:$(go env GOPATH)/bin
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.slade360emr.com".insteadOf "https://gitlab.slade360emr.com"
+    - go install gitlab.slade360emr.com/go/admin/cmd/bewell@$BEWELL_CLI_VERSION
   image: eu.gcr.io/savannah-emr/gcloud-docker-in-docker:0.0.1
   stage: deploy
   only:
@@ -89,6 +97,7 @@ deploy_to_testing:
     - /google-cloud-sdk/bin/gcloud run deploy clinical-testing --image eu.gcr.io/bewell-app/clinical-testing:$(echo $CI_COMMIT_SHA | cut -c1-8) --region europe-west1 --platform managed --allow-unauthenticated  --set-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$TESTING_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$TESTING_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$TESTING_CLOUD_HEALTH_FHIRSTORE_ID_PRO,ENVIRONMENT=$TESTING_ENVIRONMENT,OPENCONCEPTLAB_TOKEN=$TESTING_OPENCONCEPTLAB_TOKEN,OPENCONCEPTLAB_API_URL=$TESTING_OPENCONCEPTLAB_API_URL,ROOT_COLLECTION_SUFFIX=$TESTING_ROOT_COLLECTION_SUFFIX,JWT_KEY=$TESTING_JWT_KEY"
     - /google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-testing --quiet
     - /google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-testing --to-latest --region europe-west1 --platform managed --quiet
+    - bewell service push-schema --name clinical --version $CI_COMMIT_SHA --url https://clinical-testing.healthcloud.co.ke/graphql --registry-url $TEST_SCHEMA_REGISTRY_URL
     - bash reload.sh
   tags:
     - healthcloud-multi
@@ -128,6 +137,10 @@ deploy_to_demo:
     - /google-cloud-sdk/bin/gcloud config set project bewell-app
     - docker login -u _json_key --password-stdin https://eu.gcr.io < $GCLOUD_PRODUCTION_SERVICE_ACCOUNT
     - export CLOUDSDK_CORE_PROJECT=bewell-app
+    - apk add go git --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community # has latest version of go
+    - export PATH=$PATH:$(go env GOPATH)/bin
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.slade360emr.com".insteadOf "https://gitlab.slade360emr.com"
+    - go install gitlab.slade360emr.com/go/admin/cmd/bewell@$BEWELL_CLI_VERSION
   image: eu.gcr.io/savannah-emr/gcloud-docker-in-docker:0.0.1
   stage: deploy
   only:
@@ -144,6 +157,7 @@ deploy_to_demo:
     - /google-cloud-sdk/bin/gcloud run deploy clinical-demo --image eu.gcr.io/bewell-app/clinical-demo:$(echo $CI_COMMIT_SHA | cut -c1-8) --region europe-west1 --platform managed --allow-unauthenticated  --set-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$TESTING_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$TESTING_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$TESTING_CLOUD_HEALTH_FHIRSTORE_ID_PRO,ENVIRONMENT=$DEMO_ENVIRONMENT,OPENCONCEPTLAB_TOKEN=$TESTING_OPENCONCEPTLAB_TOKEN,OPENCONCEPTLAB_API_URL=$TESTING_OPENCONCEPTLAB_API_URL,ROOT_COLLECTION_SUFFIX=$DEMO_ROOT_COLLECTION_SUFFIX,JWT_KEY=$TESTING_JWT_KEY"
     - /google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-demo --quiet
     - /google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-demo --to-latest --region europe-west1 --platform managed --quiet
+    - bewell service push-schema --name clinical --version $CI_COMMIT_SHA --url https://clinical-demo.healthcloud.co.ke/graphql --registry-url $DEMO_SCHEMA_REGISTRY_URL
     - bash reload.sh
   tags:
     - healthcloud-multi
@@ -156,6 +170,10 @@ deploy_to_prod:
     - /google-cloud-sdk/bin/gcloud config set project bewell-app
     - docker login -u _json_key --password-stdin https://eu.gcr.io < $GCLOUD_PRODUCTION_SERVICE_ACCOUNT
     - export CLOUDSDK_CORE_PROJECT=bewell-app
+    - apk add go git --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community # has latest version of go
+    - export PATH=$PATH:$(go env GOPATH)/bin
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.slade360emr.com".insteadOf "https://gitlab.slade360emr.com"
+    - go install gitlab.slade360emr.com/go/admin/cmd/bewell@$BEWELL_CLI_VERSION
   image: eu.gcr.io/savannah-emr/gcloud-docker-in-docker:0.0.1
   stage: deploy
   only:
@@ -172,6 +190,7 @@ deploy_to_prod:
     - /google-cloud-sdk/bin/gcloud run deploy clinical-prod --image eu.gcr.io/bewell-app/clinical-prod:$(echo $CI_COMMIT_SHA | cut -c1-8) --region europe-west1 --platform managed --allow-unauthenticated  --update-env-vars "GOOGLE_CLOUD_PROJECT=$PROD_GOOGLE_CLOUD_PROJECT,FIREBASE_WEB_API_KEY=$PROD_FIREBASE_WEB_API_KEY,CLOUD_HEALTH_PUBSUB_TOPIC=$PROD_CLOUD_HEALTH_PUBSUB_TOPIC_PRO,CLOUD_HEALTH_DATASET_ID=$PROD_CLOUD_HEALTH_DATASET_ID_PRO,CLOUD_HEALTH_FHIRSTORE_ID=$PROD_CLOUD_HEALTH_FHIRSTORE_ID_PRO,ENVIRONMENT=$PROD_ENVIRONMENT,OPENCONCEPTLAB_TOKEN=$PROD_OPENCONCEPTLAB_TOKEN,OPENCONCEPTLAB_API_URL=$PROD_OPENCONCEPTLAB_API_URL,ROOT_COLLECTION_SUFFIX=$PROD_ROOT_COLLECTION_SUFFIX,JWT_KEY=$PROD_JWT_KEY"
     - /google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-prod --quiet
     - /google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-prod --to-latest --region europe-west1 --platform managed --quiet
+    - bewell service push-schema --name clinical --version $CI_COMMIT_SHA --url https://clinical-prod.healthcloud.co.ke/graphql --registry-url $PROD_SCHEMA_REGISTRY_URL
     - bash reload.sh
   tags:
     - healthcloud-multi
