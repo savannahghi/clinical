@@ -98,7 +98,7 @@ deploy_to_testing:
     - /google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-testing --quiet
     - /google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-testing --to-latest --region europe-west1 --platform managed --quiet
     - bewell service push-schema --name clinical --version $CI_COMMIT_SHA --url https://clinical-testing.healthcloud.co.ke/graphql --registry-url $TEST_SCHEMA_REGISTRY_URL
-    - bash reload.sh
+    # - bash reload.sh
   tags:
     - healthcloud-multi
 
@@ -158,7 +158,7 @@ deploy_to_demo:
     - /google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-demo --quiet
     - /google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-demo --to-latest --region europe-west1 --platform managed --quiet
     - bewell service push-schema --name clinical --version $CI_COMMIT_SHA --url https://clinical-demo.healthcloud.co.ke/graphql --registry-url $DEMO_SCHEMA_REGISTRY_URL
-    - bash reload.sh
+    # - bash reload.sh
   tags:
     - healthcloud-multi
 
@@ -191,6 +191,6 @@ deploy_to_prod:
     - /google-cloud-sdk/bin/gcloud run services add-iam-policy-binding --platform managed --region=europe-west1 --member=allUsers --role=roles/run.invoker clinical-prod --quiet
     - /google-cloud-sdk/bin/gcloud alpha run services update-traffic clinical-prod --to-latest --region europe-west1 --platform managed --quiet
     - bewell service push-schema --name clinical --version $CI_COMMIT_SHA --url https://clinical-prod.healthcloud.co.ke/graphql --registry-url $PROD_SCHEMA_REGISTRY_URL
-    - bash reload.sh
+    # - bash reload.sh
   tags:
     - healthcloud-multi
