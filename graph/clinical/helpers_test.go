@@ -61,14 +61,14 @@ func TestVerifyOTP(t *testing.T) {
 		return
 	}
 
-	otpClient, err := base.SetupISCclient(*config, OtpService)
+	engagementClient, err := base.SetupISCclient(*config, EngagementService)
 	if err != nil {
 		t.Errorf("unable to set up engagement ISC client: %v", err)
 		return
 	}
 
 	validPhone := "+254723002959"
-	validOTP, err := RequestOTP(validPhone, otpClient)
+	validOTP, err := RequestOTP(validPhone, engagementClient)
 	if err != nil {
 		t.Errorf("unable to generate OTP: %v", err)
 		return
@@ -105,7 +105,7 @@ func TestVerifyOTP(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			verified, _, err := VerifyOTP(tt.args.msisdn, tt.args.otp, otpClient)
+			verified, _, err := VerifyOTP(tt.args.msisdn, tt.args.otp, engagementClient)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyOTP() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -125,7 +125,7 @@ func TestRequestOTP(t *testing.T) {
 		return
 	}
 
-	otpClient, err := base.SetupISCclient(*config, OtpService)
+	engagementClient, err := base.SetupISCclient(*config, EngagementService)
 	if err != nil {
 		t.Errorf("unable to set up engagement ISC client: %v", err)
 		return
@@ -167,7 +167,7 @@ func TestRequestOTP(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			otp, err := RequestOTP(tt.args.msisdn, otpClient)
+			otp, err := RequestOTP(tt.args.msisdn, engagementClient)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RequestOTP() error = %v, wantErr %v", err, tt.wantErr)
 				return

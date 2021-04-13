@@ -87,10 +87,10 @@ func ComposeOneHealthEpisodeOfCare(
 func VerifyOTP(
 	msisdn string,
 	otp string,
-	otpClient *base.InterServiceClient,
+	engagementClient *base.InterServiceClient,
 ) (bool, string, error) {
-	if otpClient == nil {
-		return false, "", fmt.Errorf("nil OTP client")
+	if engagementClient == nil {
+		return false, "", fmt.Errorf("nil engagement client")
 	}
 
 	normalized, err := base.NormalizeMSISDN(msisdn)
@@ -108,7 +108,7 @@ func VerifyOTP(
 		VerificationCode: otp,
 	}
 
-	resp, err := otpClient.MakeRequest(
+	resp, err := engagementClient.MakeRequest(
 		http.MethodPost, verifyOTPEndpoint, verifyPayload)
 	if err != nil {
 		return false, "", fmt.Errorf(
@@ -143,10 +143,10 @@ func VerifyOTP(
 // a new OTP.
 func RequestOTP(
 	msisdn string,
-	otpClient *base.InterServiceClient,
+	engagementClient *base.InterServiceClient,
 ) (string, error) {
-	if otpClient == nil {
-		return "", fmt.Errorf("nil OTP client")
+	if engagementClient == nil {
+		return "", fmt.Errorf("nil engagement client")
 	}
 
 	normalized, err := base.NormalizeMSISDN(msisdn)
@@ -160,7 +160,7 @@ func RequestOTP(
 	requestPayload := Msisdn{
 		Msisdn: *normalized,
 	}
-	resp, err := otpClient.MakeRequest(
+	resp, err := engagementClient.MakeRequest(
 		http.MethodPost, sendOTPEndpoint, requestPayload)
 	if err != nil {
 		return "", fmt.Errorf("can't complete OTP request: %w", err)

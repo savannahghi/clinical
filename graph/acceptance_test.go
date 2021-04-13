@@ -92,13 +92,13 @@ func getTestVerifiedPhoneandOTP() (string, string, error) {
 		return "", "", fmt.Errorf("unable to load dependencies from YAML: %s", err)
 	}
 
-	otpClient, err := base.SetupISCclient(*config, clinical.OtpService)
+	engagementClient, err := base.SetupISCclient(*config, clinical.EngagementService)
 	if err != nil {
 		return "", "", fmt.Errorf("unable to set up engagement ISC client: %v", err)
 	}
 
 	validPhone := base.TestUserPhoneNumber
-	validOTP, err := clinical.RequestOTP(validPhone, otpClient)
+	validOTP, err := clinical.RequestOTP(validPhone, engagementClient)
 	if err != nil {
 		return "", "", fmt.Errorf("unable to generate OTP: %v", err)
 	}

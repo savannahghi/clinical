@@ -57,8 +57,7 @@ const (
 // dependencies names. Should match the names in the yaml file
 const (
 	twilioService     = "twilio"
-	engagementService = "engagement"
-	OtpService        = "otp"
+	EngagementService = "engagement"
 )
 
 // specific endpoint paths for ISC
@@ -66,6 +65,8 @@ const (
 	// engagement ISC paths
 	sendEmailEndpoint = "internal/send_email"
 	sendSMSEndpoint   = "internal/send_sms"
+	verifyOTPEndpoint = "internal/verify_otp/"
+	sendOTPEndpoint   = "internal/send_otp/"
 
 	// twilio ISC paths
 	sendTwilioSMSEndpoint = "internal/send_sms"
@@ -73,10 +74,6 @@ const (
 	// engagement ISC paths
 	uploadEndpoint    = "internal/upload/"
 	getUploadEndpoint = "internal/upload/%s/"
-
-	// OTP ISC paths
-	verifyOTPEndpoint = "internal/verify_otp/"
-	sendOTPEndpoint   = "internal/send_otp/"
 )
 
 // NewService initializes a new clinical service
@@ -92,12 +89,7 @@ func NewService() *Service {
 		log.Panicf("unable to set up Twilio ISC client: %v", err)
 	}
 
-	engagementClient, err := base.SetupISCclient(*config, engagementService)
-	if err != nil {
-		log.Panicf("unable to set up engagement ISC client: %v", err)
-	}
-
-	otpClient, err := base.SetupISCclient(*config, OtpService)
+	engagementClient, err := base.SetupISCclient(*config, EngagementService)
 	if err != nil {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
 	}
@@ -129,7 +121,6 @@ func NewService() *Service {
 		firestoreClient:    firestoreClient,
 		twilio:             twilioISC,
 		engagement:         engagementClient,
-		otp:                otpClient,
 		sms:                engagementSms,
 	}
 }
@@ -141,7 +132,6 @@ type Service struct {
 	sms                *base.SmsISC
 	firestoreClient    *firestore.Client
 	engagement         *base.InterServiceClient
-	otp                *base.InterServiceClient
 }
 
 func (s Service) checkPreconditions() {
@@ -159,10 +149,6 @@ func (s Service) checkPreconditions() {
 
 	if s.engagement == nil {
 		log.Panicf("nil uploads ISC in clinical service")
-	}
-
-	if s.otp == nil {
-		log.Panicf("nil OTP ISC in clinical service")
 	}
 }
 
@@ -719,8 +705,7 @@ func (s Service) Encounters(
 func (s Service) StartEpisodeByOtp(
 	ctx context.Context, input OTPEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-
-	isVerified, normalized, err := VerifyOTP(input.Msisdn, input.Otp, s.otp)
+	isVerified, normalized, err := VerifyOTP(input.Msisdn, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
@@ -787,7 +772,7 @@ func (s Service) UpgradeEpisode(
 	}
 
 	// validate the MSISDN and OTP
-	isVerified, _, err := VerifyOTP(input.Msisdn, input.Otp, s.otp)
+	isVerified, _, err := VerifyOTP(input.Msisdn, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
@@ -823,7 +808,7 @@ func (s Service) UpgradeEpisode(
 func (s Service) StartEpisodeByBreakGlass(
 	ctx context.Context, input BreakGlassEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	isVerified, normalized, err := VerifyOTP(input.ProviderPhone, input.Otp, s.otp)
+	isVerified, normalized, err := VerifyOTP(input.ProviderPhone, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.ProviderPhone, input.Otp)
@@ -1435,7 +1420,7 @@ func (s Service) AddNextOfKin(
 	}
 
 	contacts, err := ContactsToContactPointInput(
-		input.PhoneNumbers, input.Emails, s.firestoreClient, s.otp)
+		input.PhoneNumbers, input.Emails, s.firestoreClient, s.engagement)
 	if err != nil {
 		return nil, fmt.Errorf("invalid contacts: %v", err)
 	}
@@ -1871,7 +1856,7 @@ func (s Service) SimplePatientRegistrationInputToPatientInput(ctx context.Contex
 		return nil, fmt.Errorf("a patient registered with that phone number already exists")
 	}
 
-	contacts, err := ContactsToContactPointInput(input.PhoneNumbers, input.Emails, s.firestoreClient, s.otp)
+	contacts, err := ContactsToContactPointInput(input.PhoneNumbers, input.Emails, s.firestoreClient, s.engagement)
 	if err != nil {
 		return nil, fmt.Errorf("can't register patient with invalid contacts: %v", err)
 	}
@@ -3209,7 +3194,7 @@ func (s Service) CreateUpdatePatientExtraInformation(
 
 	if len(input.Emails) > 0 {
 		emailInput, err := ContactsToContactPoint(
-			nil, input.Emails, s.firestoreClient, s.otp)
+			nil, input.Emails, s.firestoreClient, s.engagement)
 		if err != nil {
 			return false, fmt.Errorf("unable to process email addresses")
 		}

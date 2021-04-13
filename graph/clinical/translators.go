@@ -126,9 +126,9 @@ func IDToIdentifier(
 // ContactsToContactPointInput translates phone and email contacts to
 // FHIR contact points
 func ContactsToContactPointInput(phones []*PhoneNumberInput, emails []*EmailInput, firestoreClient *firestore.Client,
-	otpClient *base.InterServiceClient) ([]*FHIRContactPointInput, error) {
-	if otpClient == nil {
-		return nil, fmt.Errorf("nil OTP client")
+	engagementClient *base.InterServiceClient) ([]*FHIRContactPointInput, error) {
+	if engagementClient == nil {
+		return nil, fmt.Errorf("nil engagement client")
 	}
 	if phones == nil && emails == nil {
 		return nil, nil
@@ -143,7 +143,7 @@ func ContactsToContactPointInput(phones []*PhoneNumberInput, emails []*EmailInpu
 			continue // don't verify USSD
 		}
 		isVerified, normalized, err := VerifyOTP(
-			phone.Msisdn, phone.VerificationCode, otpClient)
+			phone.Msisdn, phone.VerificationCode, engagementClient)
 		if err != nil {
 			return nil, fmt.Errorf("invalid phone: %w", err)
 		}
@@ -188,7 +188,7 @@ func ContactsToContactPoint(
 	phones []*PhoneNumberInput,
 	emails []*EmailInput,
 	firestoreClient *firestore.Client,
-	otpClient *base.InterServiceClient,
+	engagementClient *base.InterServiceClient,
 ) ([]*FHIRContactPoint, error) {
 	if phones == nil && emails == nil {
 		return nil, nil
@@ -201,7 +201,7 @@ func ContactsToContactPoint(
 
 	for _, phone := range phones {
 		isVerified, normalized, err := VerifyOTP(
-			phone.Msisdn, phone.VerificationCode, otpClient)
+			phone.Msisdn, phone.VerificationCode, engagementClient)
 		if err != nil {
 			return nil, fmt.Errorf("invalid phone: %w", err)
 		}
