@@ -111,8 +111,7 @@ func (s Service) POSTRequest(
 // CreateFHIRResource creates an FHIR resource.
 //
 // The payload should be the result of marshalling a resource to JSON
-func (s Service) CreateFHIRResource(
-	resourceType string, payload map[string]interface{}) ([]byte, error) {
+func (s Service) CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error) {
 	s.checkPreconditions()
 	payload["resourceType"] = resourceType
 	fhirService := s.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
@@ -298,8 +297,7 @@ func (s Service) CreateFHIRStore() (*healthcare.FhirStore, error) {
 		EnableUpdateCreate:          true,
 		Version:                     "R4",
 	}
-	parent := fmt.Sprintf(
-		"projects/%s/locations/%s/datasets/%s", s.projectID, s.location, s.datasetID)
+	parent := fmt.Sprintf("projects/%s/locations/%s/datasets/%s", s.projectID, s.location, s.datasetID)
 	resp, err := storesService.Create(parent, store).FhirStoreId(s.fhirStoreID).Do()
 	if err != nil {
 		return nil, fmt.Errorf("create FHIR Store: %v", err)

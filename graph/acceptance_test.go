@@ -110,14 +110,13 @@ func getTestPatient(ctx context.Context) (*clinical.FHIRPatient, string, error) 
 	srv := clinical.NewService()
 	simplePatientRegInput, msisdn, err := getTestSimplePatientRegistration()
 	if err != nil {
-		return nil, "", fmt.Errorf("can't genereate simple patient reg inpit: %v", err)
+		return nil, "", fmt.Errorf("can't genereate simple patient reg input: %v", err)
 	}
 
 	patientPayload, err := srv.RegisterPatient(ctx, *simplePatientRegInput)
 	if err != nil {
 		return nil, "", fmt.Errorf("can't register patient: %v", err)
 	}
-
 	return patientPayload.PatientRecord, msisdn, nil
 }
 

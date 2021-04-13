@@ -22,9 +22,7 @@ func (s Service) CreateDataset() (*healthcare.Operation, error) {
 func (s Service) GetDataset() (*healthcare.Dataset, error) {
 	s.checkPreconditions()
 	datasetsService := s.healthcareService.Projects.Locations.Datasets
-	name := fmt.Sprintf(
-		"projects/%s/locations/%s/datasets/%s",
-		s.projectID, s.location, s.datasetID)
+	name := fmt.Sprintf("projects/%s/locations/%s/datasets/%s", s.projectID, s.location, s.datasetID)
 	resp, err := datasetsService.Get(name).Do()
 	if err != nil {
 		return nil, fmt.Errorf("get Data Set: %v", err)

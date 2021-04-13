@@ -125,12 +125,8 @@ func IDToIdentifier(
 
 // ContactsToContactPointInput translates phone and email contacts to
 // FHIR contact points
-func ContactsToContactPointInput(
-	phones []*PhoneNumberInput,
-	emails []*EmailInput,
-	firestoreClient *firestore.Client,
-	otpClient *base.InterServiceClient,
-) ([]*FHIRContactPointInput, error) {
+func ContactsToContactPointInput(phones []*PhoneNumberInput, emails []*EmailInput, firestoreClient *firestore.Client,
+	otpClient *base.InterServiceClient) ([]*FHIRContactPointInput, error) {
 	if otpClient == nil {
 		return nil, fmt.Errorf("nil OTP client")
 	}

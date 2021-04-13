@@ -52,8 +52,7 @@ func (s Service) enforcePreconditions() {
 }
 
 // MakeRequest composes an authenticated OCL request that has the correct content type
-func (s Service) MakeRequest(
-	method string, path string, params url.Values, body io.Reader) (*http.Response, error) {
+func (s Service) MakeRequest(method string, path string, params url.Values, body io.Reader) (*http.Response, error) {
 
 	url := fmt.Sprintf("%s/%s/?%s", s.baseURL, path, params.Encode())
 	req, reqErr := http.NewRequest(method, url, body)

@@ -16,6 +16,7 @@ import (
 	"github.com/brianvoe/gofakeit/v5"
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
@@ -198,7 +199,7 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 
 	simplePatientRegInput, _, err := getTestSimplePatientRegistration()
 	if err != nil {
-		t.Errorf("can't genereate simple patient reg inpit: %v", err)
+		t.Errorf("can't genereate simple patient reg input: %v", err)
 		return
 	}
 
@@ -634,6 +635,9 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLFindPatients(t *testing.T) {
@@ -823,6 +827,9 @@ func TestGraphQLFindPatients(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQGetPatient(t *testing.T) {
@@ -981,6 +988,9 @@ func TestGraphQGetPatient(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLStartEpisodeByOTP(t *testing.T) {
@@ -1171,6 +1181,9 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
@@ -1358,6 +1371,9 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLUpgradeEpisode(t *testing.T) {
@@ -2673,6 +2689,9 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLUpdatePatient(t *testing.T) {
@@ -2968,6 +2987,9 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 			}
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLAddNHIF(t *testing.T) {
@@ -3111,6 +3133,9 @@ func TestGraphQLAddNHIF(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
@@ -3279,6 +3304,9 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLVisitSummary(t *testing.T) {
@@ -4115,6 +4143,9 @@ func TestGraphQLProblemSummary(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
@@ -6564,6 +6595,9 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 			}
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
@@ -8786,6 +8820,9 @@ func TestGraphQLAllergySummary(t *testing.T) {
 
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestGraphQLDeleteFHIRPatient(t *testing.T) {
@@ -8953,6 +8990,9 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 			}
 		})
 	}
+	s := clinical.NewService()
+	payload := &clinical.PhoneNumberPayload{}
+	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
 func TestRestDeleteFHIRPatientByPhone(t *testing.T) {
@@ -9085,6 +9125,44 @@ func TestRestDeleteFHIRPatientByPhone(t *testing.T) {
 					return
 				}
 			}
+		})
+	}
+}
+
+func TestCheckPatientExistenceUsingPhoneNumber(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	tests := []struct {
+		name    string
+		exists  bool
+		wantErr bool
+	}{
+		{
+			name:    "test patient existence",
+			exists:  false,
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := clinical.NewService()
+			patientReg, _, getPatientErr := getTestSimplePatientRegistration()
+			if !tt.wantErr && getPatientErr != nil {
+				t.Errorf("unable to get patient input: error = %v, wantErr %v", getPatientErr, tt.wantErr)
+				return
+			}
+			exists, checkPatientErr := s.CheckPatientExistenceUsingPhoneNumber(ctx, *patientReg)
+			if !tt.wantErr && checkPatientErr != nil {
+				t.Errorf("unable to check for patient's existence: error = %v, wantErr %v", checkPatientErr, tt.wantErr)
+				return
+			}
+			assert.False(t, exists)
 		})
 	}
 }

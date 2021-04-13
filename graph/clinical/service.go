@@ -1115,8 +1115,7 @@ func (s Service) EndEpisode(
 }
 
 // CreatePatient creates or updates a patient record on FHIR
-func (s Service) CreatePatient(
-	ctx context.Context, input FHIRPatientInput) (*PatientPayload, error) {
+func (s Service) CreatePatient(ctx context.Context, input FHIRPatientInput) (*PatientPayload, error) {
 	s.checkPreconditions()
 
 	// set the record ID if not set
@@ -1187,15 +1186,13 @@ func (s Service) FindPatientByID(
 }
 
 // PatientSearch searches for a patient by identifiers and names
-func (s Service) PatientSearch(
-	ctx context.Context, search string) (*PatientConnection, error) {
+func (s Service) PatientSearch(ctx context.Context, search string) (*PatientConnection, error) {
 	s.checkPreconditions()
 
 	params := url.Values{}
 	params.Add("_content", search) // entire doc
 
-	bs, err := s.clinicalRepository.POSTRequest(
-		"Patient", "_search", params, nil)
+	bs, err := s.clinicalRepository.POSTRequest("Patient", "_search", params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search: %v", err)
 	}
@@ -1809,8 +1806,7 @@ func (s Service) HasOpenEpisode(
 // Known limitations:
 //
 // 1. The normalization of phone number assumes Kenyan (+254) numbers only
-func (s Service) FindPatientsByMSISDN(
-	ctx context.Context, msisdn string) (*PatientConnection, error) {
+func (s Service) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*PatientConnection, error) {
 	s.checkPreconditions()
 
 	search, err := base.NormalizeMSISDN(msisdn)
@@ -1821,8 +1817,7 @@ func (s Service) FindPatientsByMSISDN(
 }
 
 // RegisterPatient implements simple patient registration
-func (s Service) RegisterPatient(
-	ctx context.Context, input SimplePatientRegistrationInput) (*PatientPayload, error) {
+func (s Service) RegisterPatient(ctx context.Context, input SimplePatientRegistrationInput) (*PatientPayload, error) {
 	s.checkPreconditions()
 	patientInput, err := s.SimplePatientRegistrationInputToPatientInput(ctx, input)
 	if err != nil {
@@ -1847,20 +1842,41 @@ func (s Service) getBreakGlassCollectionName() string {
 	return suffixed
 }
 
+// CheckPatientExistenceUsingPhoneNumber checks whether a patient with the phone number they're trying to register with exists
+func (s Service) CheckPatientExistenceUsingPhoneNumber(ctx context.Context, patientInput SimplePatientRegistrationInput) (bool, error) {
+	exists := false
+	for _, phone := range patientInput.PhoneNumbers {
+		phoneNumber := &phone.Msisdn
+		patient, err := s.FindPatientsByMSISDN(ctx, *phoneNumber)
+		if err != nil {
+			return false, fmt.Errorf("unable to find patient")
+		}
+		if len(patient.Edges) > 1 {
+			exists = true
+			break
+		}
+	}
+	return exists, nil
+}
+
 // SimplePatientRegistrationInputToPatientInput transforms a patient input into
 // a
-func (s Service) SimplePatientRegistrationInputToPatientInput(
-	ctx context.Context, input SimplePatientRegistrationInput) (*FHIRPatientInput, error) {
+func (s Service) SimplePatientRegistrationInputToPatientInput(ctx context.Context, input SimplePatientRegistrationInput) (*FHIRPatientInput, error) {
 	s.checkPreconditions()
+	exists, err := s.CheckPatientExistenceUsingPhoneNumber(ctx, input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to check patient existence")
+	}
+	if exists {
+		return nil, fmt.Errorf("a patient registered with that phone number already exists")
+	}
 
-	contacts, err := ContactsToContactPointInput(
-		input.PhoneNumbers, input.Emails, s.firestoreClient, s.otp)
+	contacts, err := ContactsToContactPointInput(input.PhoneNumbers, input.Emails, s.firestoreClient, s.otp)
 	if err != nil {
 		return nil, fmt.Errorf("can't register patient with invalid contacts: %v", err)
 	}
 
-	ids, err := IDToIdentifier(
-		input.IdentificationDocuments, input.PhoneNumbers)
+	ids, err := IDToIdentifier(input.IdentificationDocuments, input.PhoneNumbers)
 	if err != nil {
 		return nil, fmt.Errorf("can't register patient with invalid identifiers: %v", err)
 	}
@@ -3390,10 +3406,7 @@ func (s Service) AllergySummary(
 
 // DeleteFHIRPatientByPhone delete's a patient's FHIR compartment
 // given their phone number
-func (s Service) DeleteFHIRPatientByPhone(
-	ctx context.Context,
-	phoneNumber string,
-) (bool, error) {
+func (s Service) DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error) {
 	patient, err := s.FindPatientsByMSISDN(ctx, phoneNumber)
 	if err != nil {
 		return false, fmt.Errorf("unable to find patient by phone number")
