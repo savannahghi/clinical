@@ -18,6 +18,18 @@ func createAlertMessage(names string) string {
 	return text
 }
 
+// createNextOfKinAlertMessage creates a message to be sent to the next of kin
+func createNextOfKinAlertMessage(names, patientName string) string {
+	text := fmt.Sprintf(
+		"Dear %s. The health record for %s has been accessed for an emergency. "+
+			"If you are not aware of the circumstances of this, please call %s",
+		names,
+		patientName,
+		CallCenterNumber,
+	)
+	return text
+}
+
 // generatePatientWelcomeEmailTemplate generates a welcome email
 func generatePatientWelcomeEmailTemplate() string {
 	t := template.Must(template.New("welcomeEmail").Parse(patientWelcomeEmail))

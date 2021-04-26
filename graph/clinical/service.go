@@ -56,7 +56,6 @@ const (
 
 // dependencies names. Should match the names in the yaml file
 const (
-	twilioService     = "twilio"
 	EngagementService = "engagement"
 )
 
@@ -67,9 +66,6 @@ const (
 	sendSMSEndpoint   = "internal/send_sms"
 	verifyOTPEndpoint = "internal/verify_otp/"
 	sendOTPEndpoint   = "internal/send_otp/"
-
-	// twilio ISC paths
-	sendTwilioSMSEndpoint = "internal/send_sms"
 
 	// engagement ISC paths
 	uploadEndpoint    = "internal/upload/"
@@ -84,11 +80,6 @@ func NewService() *Service {
 		log.Panicf("unable to load dependencies from YAML: %s", err)
 	}
 
-	twilioClient, err := base.SetupISCclient(*config, twilioService)
-	if err != nil {
-		log.Panicf("unable to set up Twilio ISC client: %v", err)
-	}
-
 	engagementClient, err := base.SetupISCclient(*config, EngagementService)
 	if err != nil {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
@@ -97,11 +88,6 @@ func NewService() *Service {
 	engagementSms := &base.SmsISC{
 		Isc:      engagementClient,
 		EndPoint: sendSMSEndpoint,
-	}
-
-	twilioISC := &base.SmsISC{
-		Isc:      twilioClient,
-		EndPoint: sendTwilioSMSEndpoint,
 	}
 
 	fc := &base.FirebaseClient{}
@@ -119,7 +105,6 @@ func NewService() *Service {
 	return &Service{
 		clinicalRepository: clinicalRepository,
 		firestoreClient:    firestoreClient,
-		twilio:             twilioISC,
 		engagement:         engagementClient,
 		sms:                engagementSms,
 	}
@@ -128,7 +113,6 @@ func NewService() *Service {
 // Service is a clinical service
 type Service struct {
 	clinicalRepository *cloudhealth.Service
-	twilio             *base.SmsISC
 	sms                *base.SmsISC
 	firestoreClient    *firestore.Client
 	engagement         *base.InterServiceClient
@@ -141,10 +125,6 @@ func (s Service) checkPreconditions() {
 
 	if s.firestoreClient == nil {
 		log.Panicf("nil firestore client in clinical service")
-	}
-
-	if s.twilio == nil {
-		log.Panicf("nil twilio ISC in clinical service")
 	}
 
 	if s.engagement == nil {
@@ -1933,11 +1913,25 @@ func (s Service) sendAlertToPatient(ctx context.Context, phoneNumber string, pat
 	}
 	text := createAlertMessage(*name)
 
-	err = base.SendSMS(
-		[]string{phoneNumber}, text, *s.sms, *s.twilio)
-	if err != nil {
-		return err
+	type PayloadRequest struct {
+		To      []string `json:"to"`
+		Message string   `json:"message"`
 	}
+
+	requestPayload := PayloadRequest{
+		To:      []string{phoneNumber},
+		Message: text,
+	}
+
+	resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
+	if err != nil {
+		return fmt.Errorf("unable to send alert to patient: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("got error status %s ", resp.Status)
+	}
+
 	return nil
 }
 
@@ -2070,6 +2064,7 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 		return err
 	}
 	patientContacts := patientPayload.PatientRecord.Contact
+	patientName := patientPayload.PatientRecord.Name[0].Given[0]
 	phone := ContactPointSystemEnumPhone
 
 	for _, patientRelation := range patientContacts {
@@ -2091,13 +2086,29 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 						if number.Value == nil {
 							continue
 						}
-						if number.System == &phone {
-							text := createAlertMessage(*patientRelation.Name.Given[0])
-							err := base.SendSMS(
-								[]string{*number.Value}, text, *s.sms, *s.twilio)
 
+						numberSystem := *number.System
+
+						if &numberSystem == &phone {
+							text := createNextOfKinAlertMessage(*patientRelation.Name.Given[0], *patientName)
+
+							type PayloadRequest struct {
+								To      []string `json:"to"`
+								Message string   `json:"message"`
+							}
+
+							requestPayload := PayloadRequest{
+								To:      []string{*number.Value},
+								Message: text,
+							}
+
+							resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
 							if err != nil {
-								return err
+								return fmt.Errorf("unable to send alert to next of kin: %w", err)
+							}
+
+							if resp.StatusCode != http.StatusOK {
+								return fmt.Errorf("got error status %s from email service", resp.Status)
 							}
 							return nil
 						}

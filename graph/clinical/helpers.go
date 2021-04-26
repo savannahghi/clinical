@@ -97,7 +97,6 @@ func VerifyOTP(
 	if err != nil {
 		return false, "", fmt.Errorf("invalid phone format: %w", err)
 	}
-
 	type VerifyOTP struct {
 		Msisdn           string `json:"msisdn"`
 		VerificationCode string `json:"verificationCode"`
