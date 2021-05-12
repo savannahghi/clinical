@@ -248,6 +248,17 @@ func (s Service) searchFilterHelper(
 func (s Service) ProblemSummary(
 	ctx context.Context, patientID string) ([]string, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, ProblemSummaryView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	params := map[string]interface{}{
 		"clinical-status":     "active",
@@ -278,6 +289,18 @@ func (s Service) ProblemSummary(
 func (s Service) VisitSummary(
 	ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, VisitSummaryView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	encounterPayload, err := s.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
 		return nil, fmt.Errorf(
@@ -460,6 +483,18 @@ func (s Service) VisitSummary(
 // respecting the approval level AND limiting the number
 func (s Service) PatientTimelineWithCount(
 	ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, PatientTimelineWithCountView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	episode, _, err := s.getTimelineEpisode(ctx, episodeID)
 	if err != nil {
 		return nil, err
@@ -534,6 +569,18 @@ func (s Service) CreateEpisodeOfCare(
 	ep FHIREpisodeOfCare,
 ) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, EpisodeOfCareCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	payload, err := base.StructToMap(ep)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
@@ -603,6 +650,17 @@ func (s Service) Encounters(
 	status *EncounterStatusEnum,
 ) ([]*FHIREncounter, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, EncountersList)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	searchParams := url.Values{}
 	if status != nil {
@@ -685,6 +743,18 @@ func (s Service) Encounters(
 func (s Service) StartEpisodeByOtp(
 	ctx context.Context, input OTPEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, StartEpisodeByOtpCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	isVerified, normalized, err := VerifyOTP(input.Msisdn, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
@@ -715,6 +785,17 @@ func (s Service) StartEpisodeByOtp(
 func (s Service) UpgradeEpisode(
 	ctx context.Context, input OTPEpisodeUpgradeInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, UpgradeEpisodeUpdate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	// retrieve and validate the episode
 	episode, err := s.GetActiveEpisode(ctx, input.EpisodeID)
@@ -788,6 +869,18 @@ func (s Service) UpgradeEpisode(
 func (s Service) StartEpisodeByBreakGlass(
 	ctx context.Context, input BreakGlassEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, StartEpisodeByBreakGlassCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	isVerified, normalized, err := VerifyOTP(input.ProviderPhone, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
@@ -846,6 +939,18 @@ func (s Service) StartEpisodeByBreakGlass(
 // GetOrganization retrieves an organization given its code
 func (s Service) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, OrganizationView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	searchParam := map[string]interface{}{
 		"identifier": providerSladeCode,
 	}
@@ -863,6 +968,18 @@ func (s Service) GetOrganization(ctx context.Context, providerSladeCode string) 
 // CreateOrganization creates an organization given ist provider code
 func (s Service) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, OrganizationCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	identifier := []*FHIRIdentifierInput{
 		{
 			Use:   "official",
@@ -903,6 +1020,18 @@ func (s Service) GetORCreateOrganization(ctx context.Context, providerSladeCode 
 // OpenOrganizationEpisodes return all organization specific open episodes
 func (s Service) OpenOrganizationEpisodes(
 	ctx context.Context, providerSladeCode string) ([]*FHIREpisodeOfCare, error) {
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, OpenEpisodesView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	organizationID, err := s.GetORCreateOrganization(ctx, providerSladeCode)
 	if err != nil {
 		return nil, fmt.Errorf(
@@ -921,6 +1050,17 @@ func (s Service) SearchEpisodeEncounter(
 	episodeReference string,
 ) (*FHIREncounterRelayConnection, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, SearchEpisodesView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	episodeRef := fmt.Sprintf("Episode/%s", episodeReference)
 	encounterFilterParams := map[string]interface{}{
@@ -940,6 +1080,17 @@ func (s Service) SearchEpisodeEncounter(
 func (s Service) StartEncounter(
 	ctx context.Context, episodeID string) (string, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return "", fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, EncounterCreate)
+	if err != nil {
+		return "", err
+	}
+	if !isAuthorized {
+		return "", fmt.Errorf("user not authorized to access this resource")
+	}
 
 	episodePayload, err := s.GetFHIREpisodeOfCare(ctx, episodeID)
 	if err != nil {
@@ -999,6 +1150,17 @@ func (s Service) StartEncounter(
 func (s Service) EndEncounter(
 	ctx context.Context, encounterID string) (bool, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return false, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, EncounterUpdate)
+	if err != nil {
+		return false, err
+	}
+	if !isAuthorized {
+		return false, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	resourceType := "Encounter"
 	encounterPayload, err := s.GetFHIREncounter(ctx, encounterID)
@@ -1082,6 +1244,17 @@ func (s Service) EndEpisode(
 // CreatePatient creates or updates a patient record on FHIR
 func (s Service) CreatePatient(ctx context.Context, input FHIRPatientInput) (*PatientPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, PatientCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	// set the record ID if not set
 	if input.ID == nil {
@@ -1125,6 +1298,17 @@ func (s Service) CreatePatient(ctx context.Context, input FHIRPatientInput) (*Pa
 func (s Service) FindPatientByID(
 	ctx context.Context, id string) (*PatientPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, PatientGet)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	data, err := s.clinicalRepository.GetFHIRResource("Patient", id)
 	if err != nil {
@@ -1153,6 +1337,17 @@ func (s Service) FindPatientByID(
 // PatientSearch searches for a patient by identifiers and names
 func (s Service) PatientSearch(ctx context.Context, search string) (*PatientConnection, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, PatientGet)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	params := url.Values{}
 	params.Add("_content", search) // entire doc
@@ -2126,6 +2321,17 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
 func (s Service) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*FHIRAllergyIntoleranceRelayConnection, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, AllergyIntoleranceView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -2275,6 +2481,18 @@ func (s Service) SearchFHIRComposition(ctx context.Context, params map[string]in
 // CreateFHIRComposition creates a FHIRComposition instance
 func (s Service) CreateFHIRComposition(ctx context.Context, input FHIRCompositionInput) (*FHIRCompositionRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRCompositionCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Composition"
 	resource := FHIRComposition{}
 
@@ -2305,6 +2523,18 @@ func (s Service) CreateFHIRComposition(ctx context.Context, input FHIRCompositio
 // The resource must have it's ID set.
 func (s Service) UpdateFHIRComposition(ctx context.Context, input FHIRCompositionInput) (*FHIRCompositionRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRCompositionEdit)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Composition"
 	resource := FHIRComposition{}
 
@@ -2337,6 +2567,18 @@ func (s Service) UpdateFHIRComposition(ctx context.Context, input FHIRCompositio
 
 // DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
 func (s Service) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return false, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRCompositionDelete)
+	if err != nil {
+		return false, err
+	}
+	if !isAuthorized {
+		return false, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Composition"
 	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
 	if err != nil {
@@ -2351,6 +2593,17 @@ func (s Service) DeleteFHIRComposition(ctx context.Context, id string) (bool, er
 // SearchFHIRCondition provides a search API for FHIRCondition
 func (s Service) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*FHIRConditionRelayConnection, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRConditionView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -2394,6 +2647,18 @@ func (s Service) SearchFHIRCondition(ctx context.Context, params map[string]inte
 // CreateFHIRCondition creates a FHIRCondition instance
 func (s Service) CreateFHIRCondition(ctx context.Context, input FHIRConditionInput) (*FHIRConditionRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRConditionCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Condition"
 	resource := FHIRCondition{}
 
@@ -2424,6 +2689,18 @@ func (s Service) CreateFHIRCondition(ctx context.Context, input FHIRConditionInp
 // The resource must have it's ID set.
 func (s Service) UpdateFHIRCondition(ctx context.Context, input FHIRConditionInput) (*FHIRConditionRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRConditionEdit)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Condition"
 	resource := FHIRCondition{}
 
@@ -2457,6 +2734,17 @@ func (s Service) UpdateFHIRCondition(ctx context.Context, input FHIRConditionInp
 // GetFHIREncounter retrieves instances of FHIREncounter by ID
 func (s Service) GetFHIREncounter(ctx context.Context, id string) (*FHIREncounterRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIREncounterView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	resourceType := "Encounter"
 	var resource FHIREncounter
@@ -2481,6 +2769,17 @@ func (s Service) GetFHIREncounter(ctx context.Context, id string) (*FHIREncounte
 // SearchFHIREncounter provides a search API for FHIREncounter
 func (s Service) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*FHIREncounterRelayConnection, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIREncounterView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -2524,6 +2823,18 @@ func (s Service) SearchFHIREncounter(ctx context.Context, params map[string]inte
 // CreateFHIREncounter creates a FHIREncounter instance
 func (s Service) CreateFHIREncounter(ctx context.Context, input FHIREncounterInput) (*FHIREncounterRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIREncounterCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Encounter"
 	resource := FHIREncounter{}
 
@@ -2620,6 +2931,17 @@ func (s Service) SearchFHIREpisodeOfCare(ctx context.Context, params map[string]
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
 func (s Service) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*FHIRMedicationRequestRelayConnection, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRMedicationRequestView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -2663,6 +2985,17 @@ func (s Service) SearchFHIRMedicationRequest(ctx context.Context, params map[str
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
 func (s Service) CreateFHIRMedicationRequest(ctx context.Context, input FHIRMedicationRequestInput) (*FHIRMedicationRequestRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRMedicationRequestCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 	resourceType := "MedicationRequest"
 	resource := FHIRMedicationRequest{}
 
@@ -2693,6 +3026,18 @@ func (s Service) CreateFHIRMedicationRequest(ctx context.Context, input FHIRMedi
 // The resource must have it's ID set.
 func (s Service) UpdateFHIRMedicationRequest(ctx context.Context, input FHIRMedicationRequestInput) (*FHIRMedicationRequestRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRMedicationRequestEdit)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "MedicationRequest"
 	resource := FHIRMedicationRequest{}
 
@@ -2725,6 +3070,18 @@ func (s Service) UpdateFHIRMedicationRequest(ctx context.Context, input FHIRMedi
 
 // DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
 func (s Service) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return false, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRMedicationRequestDelete)
+	if err != nil {
+		return false, err
+	}
+	if !isAuthorized {
+		return false, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "MedicationRequest"
 	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
 	if err != nil {
@@ -2739,6 +3096,17 @@ func (s Service) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bo
 // SearchFHIRObservation provides a search API for FHIRObservation
 func (s Service) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*FHIRObservationRelayConnection, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRObservationView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -2782,6 +3150,18 @@ func (s Service) SearchFHIRObservation(ctx context.Context, params map[string]in
 // CreateFHIRObservation creates a FHIRObservation instance
 func (s Service) CreateFHIRObservation(ctx context.Context, input FHIRObservationInput) (*FHIRObservationRelayPayload, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRObservationCreate)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Observation"
 	resource := FHIRObservation{}
 
@@ -2810,6 +3190,18 @@ func (s Service) CreateFHIRObservation(ctx context.Context, input FHIRObservatio
 
 // DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
 func (s Service) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return false, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRObservationDelete)
+	if err != nil {
+		return false, err
+	}
+	if !isAuthorized {
+		return false, fmt.Errorf("user not authorized to access this resource")
+	}
+
 	resourceType := "Observation"
 	resp, err := s.clinicalRepository.DeleteFHIRResource(resourceType, id)
 	if err != nil {
@@ -3167,6 +3559,17 @@ func (s Service) contactMapper(resource map[string]interface{}) map[string]inter
 func (s Service) CreateUpdatePatientExtraInformation(
 	ctx context.Context, input PatientExtraInformationInput) (bool, error) {
 	s.checkPreconditions()
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return false, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, PatientExtraInformationEdit)
+	if err != nil {
+		return false, err
+	}
+	if !isAuthorized {
+		return false, fmt.Errorf("user not authorized to access this resource")
+	}
 
 	patientPayload, err := s.FindPatientByID(ctx, input.PatientID)
 	if err != nil {
@@ -3231,6 +3634,17 @@ func (s Service) CreateUpdatePatientExtraInformation(
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
 func (s Service) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
+	user, err := base.GetLoggedInUser(ctx)
+	if err != nil {
+		return false, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := IsAuthorized(user, FHIRPatientDelete)
+	if err != nil {
+		return false, err
+	}
+	if !isAuthorized {
+		return false, fmt.Errorf("user not authorized to access this resource")
+	}
 	patientEverythingBs, err := s.clinicalRepository.GetFHIRPatientEverything(id)
 	if err != nil {
 		return false, fmt.Errorf("unable to get patient's compartment: %v", err)
@@ -3407,6 +3821,7 @@ func (s Service) DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber strin
 	if err != nil {
 		return false, fmt.Errorf("unable to find patient by phone number")
 	}
+
 	edges := patient.Edges
 	var patientID string
 	for _, edge := range edges {
