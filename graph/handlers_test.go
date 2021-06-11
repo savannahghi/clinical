@@ -4649,202 +4649,202 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 }
 
 // TODO restore this
-// func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
-// 	ctx := base.GetAuthenticatedContext(t)
+func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
+	ctx := base.GetAuthenticatedContext(t)
 
-// 	if ctx == nil {
-// 		t.Errorf("nil context")
-// 		return
-// 	}
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
 
-// 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-// 	headers, err := base.GetGraphQLHeaders(ctx)
-// 	if err != nil {
-// 		t.Errorf("error in getting GraphQL headers: %w", err)
-// 		return
-// 	}
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := base.GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
 
-// 	_, _, encounterID, err := getTestEncounterID(
-// 		ctx, base.TestUserPhoneNumber, false, testProviderCode)
-// 	if err != nil {
-// 		t.Errorf("error creating test encounter ID: %w", err)
-// 		return
-// 	}
+	_, _, encounterID, err := getTestEncounterID(
+		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("error creating test encounter ID: %w", err)
+		return
+	}
 
-// 	medicationRequestID, err := getTestFHIRMedicationRequestID(ctx, encounterID)
-// 	if err != nil {
-// 		t.Errorf("error creating test medication request")
-// 		return
-// 	}
-// 	if medicationRequestID == "" {
-// 		t.Errorf("empty medication request ID")
-// 		return
-// 	}
+	medicationRequestID, err := getTestFHIRMedicationRequestID(ctx, encounterID)
+	if err != nil {
+		t.Errorf("error creating test medication request")
+		return
+	}
+	if medicationRequestID == "" {
+		t.Errorf("empty medication request ID")
+		return
+	}
 
-// 	type args struct {
-// 		query map[string]interface{}
-// 	}
+	type args struct {
+		query map[string]interface{}
+	}
 
-// 	tests := []struct {
-// 		name       string
-// 		args       args
-// 		wantStatus int
-// 		wantErr    bool
-// 	}{
-// 		{
-// 			name: "valid query",
-// 			args: args{
-// 				query: map[string]interface{}{
-// 					"query": `
-// 					mutation DeleteFHIRMedicationRequest($id: ID!) {
-// 						deleteFHIRMedicationRequest(id: $id)
-// 					  }`,
-// 					"variables": map[string]interface{}{
-// 						"id": medicationRequestID,
-// 					},
-// 				},
-// 			},
-// 			wantStatus: http.StatusOK,
-// 			wantErr:    false,
-// 		},
-// 		{
-// 			name: "invalid: pass unknown variables",
-// 			args: args{
-// 				query: map[string]interface{}{
-// 					"query": `
-// 					mutation DeleteFHIRMedicationRequest($id: ID!) {
-// 						deleteFHIRMedicationRequest(id: $id)
-// 					  }`,
-// 					"variables": map[string]interface{}{
-// 						"ID": "some_unknown_id",
-// 					},
-// 				},
-// 			},
-// 			wantStatus: http.StatusUnprocessableEntity,
-// 			wantErr:    true,
-// 		},
-// 		{
-// 			name: "invalid: wrong ID provided",
-// 			args: args{
-// 				query: map[string]interface{}{
-// 					"query": `
-// 					mutation DeleteFHIRMedicationRequest($id: ID!) {
-// 						deleteFHIRMedicationRequest(id: $id)
-// 					  }`,
-// 					"variables": map[string]interface{}{
-// 						"id": "some_unknown_id",
-// 					},
-// 				},
-// 			},
-// 			wantStatus: http.StatusOK,
-// 			wantErr:    false,
-// 		},
-// 	}
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					mutation DeleteFHIRMedicationRequest($id: ID!) {
+						deleteFHIRMedicationRequest(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"id": medicationRequestID,
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "invalid: pass unknown variables",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					mutation DeleteFHIRMedicationRequest($id: ID!) {
+						deleteFHIRMedicationRequest(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"ID": "some_unknown_id",
+					},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+		{
+			name: "invalid: wrong ID provided",
+			args: args{
+				query: map[string]interface{}{
+					"query": `
+					mutation DeleteFHIRMedicationRequest($id: ID!) {
+						deleteFHIRMedicationRequest(id: $id)
+					  }`,
+					"variables": map[string]interface{}{
+						"id": "some_unknown_id",
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    true,
+		},
+	}
 
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
 
-// 			body, err := mapToJSONReader(tt.args.query)
-// 			if err != nil {
-// 				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-// 				return
-// 			}
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
 
-// 			r, err := http.NewRequest(
-// 				http.MethodPost,
-// 				graphQLURL,
-// 				body,
-// 			)
-// 			if err != nil {
-// 				t.Errorf("unable to compose request: %s", err)
-// 				return
-// 			}
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
 
-// 			if r == nil {
-// 				t.Errorf("nil request")
-// 				return
-// 			}
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
 
-// 			for k, v := range headers {
-// 				r.Header.Add(k, v)
-// 			}
-// 			client := http.Client{
-// 				Timeout: time.Second * testHTTPClientTimeout,
-// 			}
-// 			resp, err := client.Do(r)
-// 			if err != nil {
-// 				t.Errorf("request error: %s", err)
-// 				return
-// 			}
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
 
-// 			dataResponse, err := ioutil.ReadAll(resp.Body)
-// 			if err != nil {
-// 				t.Errorf("can't read request body: %s", err)
-// 				return
-// 			}
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
 
-// 			if dataResponse == nil {
-// 				t.Errorf("nil response data")
-// 				return
-// 			}
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
 
-// 			data := map[string]interface{}{}
-// 			err = json.Unmarshal(dataResponse, &data)
-// 			if err != nil {
-// 				t.Errorf("bad data returned")
-// 				return
-// 			}
-// 			if tt.wantErr {
-// 				_, ok := data["errors"]
-// 				if !ok {
-// 					t.Errorf("expected an error")
-// 					return
-// 				}
-// 			}
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
 
-// 			if !tt.wantErr {
-// 				errMsg, ok := data["errors"]
-// 				if ok {
-// 					t.Errorf("error not expected got: %w", errMsg)
-// 					return
-// 				}
+			if !tt.wantErr {
+				errMsg, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got: %w", errMsg)
+					return
+				}
 
-// 				for key := range data {
-// 					nestedMap, ok := data[key].(map[string]interface{})
-// 					if !ok {
-// 						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
-// 						return
-// 					}
+				for key := range data {
+					nestedMap, ok := data[key].(map[string]interface{})
+					if !ok {
+						t.Errorf("cannot cast key value of %v to type map[string]interface{}", key)
+						return
+					}
 
-// 					for nestedKey := range nestedMap {
-// 						if nestedKey == "deleteFHIRMedicationRequest" {
-// 							result, resultFound := nestedMap[nestedKey]
-// 							if !resultFound {
-// 								t.Errorf("response[deleteFHIRMedicationRequest] = ' '")
-// 								return
-// 							}
-// 							resultBool, castOk := result.(bool)
-// 							if !castOk {
-// 								t.Errorf("failed to delete medicationRequest")
-// 								return
-// 							}
-// 							if !resultBool {
-// 								t.Errorf("failed to delete medicationRequest")
-// 								return
-// 							}
-// 						}
-// 					}
-// 				}
-// 			}
+					for nestedKey := range nestedMap {
+						if nestedKey == "deleteFHIRMedicationRequest" {
+							result, resultFound := nestedMap[nestedKey]
+							if !resultFound {
+								t.Errorf("response[deleteFHIRMedicationRequest] = ' '")
+								return
+							}
+							resultBool, castOk := result.(bool)
+							if !castOk {
+								t.Errorf("failed to delete medicationRequest")
+								return
+							}
+							if !resultBool {
+								t.Errorf("failed to delete medicationRequest")
+								return
+							}
+						}
+					}
+				}
+			}
 
-// 			if tt.wantStatus != resp.StatusCode {
-// 				t.Errorf("Bad status reponse returned")
-// 				return
-// 			}
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status reponse returned")
+				return
+			}
 
-// 		})
-// 	}
-// }
+		})
+	}
+}
 
 func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 	ctx := base.GetAuthenticatedContext(t)
