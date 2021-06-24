@@ -2109,13 +2109,15 @@ func (s Service) sendAlertToPatient(ctx context.Context, phoneNumber string, pat
 	text := createAlertMessage(*name)
 
 	type PayloadRequest struct {
-		To      []string `json:"to"`
-		Message string   `json:"message"`
+		To      []string      `json:"to"`
+		Message string        `json:"message"`
+		Sender  base.SenderID `json:"sender"`
 	}
 
 	requestPayload := PayloadRequest{
 		To:      []string{phoneNumber},
 		Message: text,
+		Sender:  base.SenderIDBewell,
 	}
 
 	resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
@@ -2288,13 +2290,15 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 							text := createNextOfKinAlertMessage(*patientRelation.Name.Given[0], *patientName)
 
 							type PayloadRequest struct {
-								To      []string `json:"to"`
-								Message string   `json:"message"`
+								To      []string      `json:"to"`
+								Message string        `json:"message"`
+								Sender  base.SenderID `json:"sender"`
 							}
 
 							requestPayload := PayloadRequest{
 								To:      []string{*number.Value},
 								Message: text,
+								Sender:  base.SenderIDBewell,
 							}
 
 							resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
