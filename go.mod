@@ -18,11 +18,12 @@ require (
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.2.1
+	github.com/savannahghi/serverutils v0.0.2
 	github.com/segmentio/ksuid v1.0.3
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/vektah/gqlparser/v2 v2.1.0
 	gitlab.slade360emr.com/go/base v0.0.154
-	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
-	google.golang.org/api v0.43.0
+	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
+	google.golang.org/api v0.48.0
 )

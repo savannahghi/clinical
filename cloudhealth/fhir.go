@@ -12,7 +12,7 @@ import (
 	"net/url"
 	"time"
 
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/serverutils"
 	"golang.org/x/oauth2/google"
 	healthcare "google.golang.org/api/healthcare/v1"
 )
@@ -215,7 +215,7 @@ func (s Service) PatchFHIRResource(
 	resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
 	s.checkPreconditions()
 	fhirService := s.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
-	if base.IsDebug() {
+	if serverutils.IsDebug() {
 		log.Printf("FHIR Payload: %#v", payload)
 	}
 	jsonPayload, err := json.Marshal(payload)
@@ -237,7 +237,7 @@ func (s Service) PatchFHIRResource(
 		_ = resp.Body.Close()
 	}()
 	respBytes, err := ioutil.ReadAll(resp.Body)
-	if base.IsDebug() {
+	if serverutils.IsDebug() {
 		log.Printf("Patch FHIR Resource %d Response: %s", resp.StatusCode, string(respBytes))
 	}
 	if err != nil {
@@ -260,7 +260,7 @@ func (s Service) UpdateFHIRResource(
 	if err != nil {
 		return nil, fmt.Errorf("json.Encode: %v", err)
 	}
-	if base.IsDebug() {
+	if serverutils.IsDebug() {
 		log.Printf("FHIR Update payload: %s", string(jsonPayload))
 	}
 	name := fmt.Sprintf(

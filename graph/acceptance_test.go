@@ -60,7 +60,7 @@ func getTestSimplePatientRegistration() (*clinical.SimplePatientRegistrationInpu
 		},
 		Emails: []*clinical.EmailInput{
 			{
-				Email:              gofakeit.Email(),
+				Email:              "test@bewell.co.ke",
 				CommunicationOptIn: true,
 			},
 		},

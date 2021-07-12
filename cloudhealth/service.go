@@ -6,7 +6,7 @@ import (
 	"context"
 	"log"
 
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/serverutils"
 	healthcare "google.golang.org/api/healthcare/v1"
 )
 
@@ -17,10 +17,10 @@ const (
 
 // NewService initializes a Google Cloud Healthcare API service
 func NewService() *Service {
-	projectID := base.MustGetEnvVar(base.GoogleCloudProjectIDEnvVarName)
-	_ = base.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
-	datasetID := base.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
-	fhirStoreID := base.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
+	projectID := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
+	_ = serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
+	datasetID := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
+	fhirStoreID := serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
 
 	ctx := context.Background()
 	hsv, err := healthcare.NewService(ctx)

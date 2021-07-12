@@ -18,6 +18,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/cloudhealth"
@@ -2083,7 +2084,7 @@ func (s Service) SendPatientWelcomeEmail(ctx context.Context, emailaddress strin
 	if err != nil {
 		return fmt.Errorf("unable to send welcome email: %w", err)
 	}
-	if base.IsDebug() {
+	if serverutils.IsDebug() {
 		b, _ := httputil.DumpResponse(resp, true)
 		log.Println(string(b))
 	}
@@ -2134,7 +2135,7 @@ func (s Service) sendAlertToPatient(ctx context.Context, phoneNumber string, pat
 
 // sendAlertToAdmin send email to admin notifying them of the access.
 func (s Service) sendAlertToAdmin(patientName string, patientContact string) error {
-	adminEmail, err := base.GetEnvVar(SavannahAdminEmail)
+	adminEmail, err := serverutils.GetEnvVar(SavannahAdminEmail)
 	if err != nil {
 		return err
 	}

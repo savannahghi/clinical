@@ -9,7 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/serverutils"
 	"gitlab.slade360emr.com/go/clinical/graph"
 )
 
@@ -18,26 +18,26 @@ const waitSeconds = 30
 func init() {
 	// check if must have env variables exist
 	// expects the server to die if this not explictly set
-	base.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
-	base.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
-	base.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
+	serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
+	serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
+	serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
 }
 
 func main() {
 	ctx := context.Background()
-	err := base.Sentry()
+	err := serverutils.Sentry()
 	if err != nil {
-		base.LogStartupError(ctx, err)
+		serverutils.LogStartupError(ctx, err)
 	}
 
-	port, err := strconv.Atoi(base.MustGetEnvVar(base.PortEnvVarName))
+	port, err := strconv.Atoi(serverutils.MustGetEnvVar(serverutils.PortEnvVarName))
 	if err != nil {
-		base.LogStartupError(ctx, err)
+		serverutils.LogStartupError(ctx, err)
 	}
 	srv := graph.PrepareServer(ctx, port, graph.ClinicalAllowedOrigins)
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
-			base.LogStartupError(ctx, err)
+			serverutils.LogStartupError(ctx, err)
 		}
 	}()
 

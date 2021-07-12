@@ -12,6 +12,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
@@ -60,7 +61,7 @@ func PrepareServer(
 	// start up the router
 	r, err := Router(ctx)
 	if err != nil {
-		base.LogStartupError(ctx, err)
+		serverutils.LogStartupError(ctx, err)
 	}
 
 	// start the server
@@ -97,13 +98,13 @@ func Router(ctx context.Context) (*mux.Router, error) {
 			handlers.RecoveryLogger(log.StandardLogger()),
 		),
 	) // recover from panics by writing a HTTP error
-	r.Use(base.RequestDebugMiddleware())
+	r.Use(serverutils.RequestDebugMiddleware())
 
 	// Unauthenticated routes
 	r.Path("/ide").HandlerFunc(playground.Handler("GraphQL IDE", "/graphql"))
 
 	// check server status.
-	r.Path("/health").HandlerFunc(base.HealthStatusCheck)
+	r.Path("/health").HandlerFunc(serverutils.HealthStatusCheck)
 
 	r.Path("/delete_patient").
 		Methods(http.MethodPost).
@@ -142,9 +143,9 @@ func DeleteFHIRPatientByPhone(ctx context.Context) http.HandlerFunc {
 		type errResponse struct {
 			Err string `json:"error"`
 		}
-		base.DecodeJSONToTargetStruct(w, r, payload)
+		serverutils.DecodeJSONToTargetStruct(w, r, payload)
 		if payload.PhoneNumber == "" {
-			base.WriteJSONResponse(
+			serverutils.WriteJSONResponse(
 				w,
 				errResponse{
 					Err: "expected a phone number to be defined",
@@ -156,7 +157,7 @@ func DeleteFHIRPatientByPhone(ctx context.Context) http.HandlerFunc {
 		deleted, err := s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 		if err != nil {
 			err := fmt.Sprintf("unable to delete patient: %v", err.Error())
-			base.WriteJSONResponse(
+			serverutils.WriteJSONResponse(
 				w,
 				errResponse{
 					Err: err,
@@ -169,7 +170,7 @@ func DeleteFHIRPatientByPhone(ctx context.Context) http.HandlerFunc {
 		type response struct {
 			Deleted bool `json:"deleted"`
 		}
-		base.WriteJSONResponse(
+		serverutils.WriteJSONResponse(
 			w,
 			response{Deleted: deleted},
 			http.StatusOK,

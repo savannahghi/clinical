@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/serverutils"
 )
 
 // constants used to configure the OCL service
@@ -26,8 +26,8 @@ const (
 
 // NewService initializes a new OpenConceptLab service
 func NewService() *Service {
-	baseURL := base.MustGetEnvVar(OCLAPIURLEnvVarName)
-	token := base.MustGetEnvVar(OCLTokenEnvVarName)
+	baseURL := serverutils.MustGetEnvVar(OCLAPIURLEnvVarName)
+	token := serverutils.MustGetEnvVar(OCLTokenEnvVarName)
 	header := fmt.Sprintf("Authorization: Token %s", token)
 	return &Service{
 		baseURL: baseURL,

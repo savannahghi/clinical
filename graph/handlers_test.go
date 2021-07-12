@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v5"
+	"github.com/savannahghi/serverutils"
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -56,7 +57,7 @@ func TestMain(m *testing.M) {
 	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-bewell-fhir-staging")
 
 	ctx := context.Background()
-	srv, baseURL, serverErr = base.StartTestServer(
+	srv, baseURL, serverErr = serverutils.StartTestServer(
 		ctx,
 		graph.PrepareServer,
 		graph.ClinicalAllowedOrigins,
