@@ -18,6 +18,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
@@ -1105,10 +1106,10 @@ func (s Service) StartEncounter(
 	episodeRef := fmt.Sprintf("EpisodeOfCare/%s", *episodePayload.Resource.ID)
 
 	now := time.Now()
-	startTime := base.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
+	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
 
-	encounterClassCode := base.Code("AMB")
-	encounterClassSystem := base.URI("http://terminology.hl7.org/CodeSystem/v3-ActCode")
+	encounterClassCode := scalarutils.Code("AMB")
+	encounterClassSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v3-ActCode")
 	encounterClassVersion := "2018-08-12"
 	encounterClassDisplay := "ambulatory"
 	encounterClassUserSelected := false
@@ -1177,7 +1178,7 @@ func (s Service) EndEncounter(
 	// 24 hours after the start of the visit. If the time now is more than 24 hours
 	// after the start, use the current time as the end of the visit
 	end := time.Now().Add(time.Hour * 24)
-	endTime := base.DateTime(end.Format(timeFormatStr))
+	endTime := scalarutils.DateTime(end.Format(timeFormatStr))
 	encounterPayload.Resource.Period.End = endTime
 
 	payload, err := base.StructToMap(encounterPayload.Resource)
@@ -1201,7 +1202,7 @@ func (s Service) EndEpisode(
 	if err != nil {
 		return false, fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
 	}
-	startTime := base.DateTime(time.Now().Format(timeFormatStr))
+	startTime := scalarutils.DateTime(time.Now().Format(timeFormatStr))
 	if episodePayload.Resource.Period != nil {
 		startTime = episodePayload.Resource.Period.Start
 	}
@@ -1224,7 +1225,7 @@ func (s Service) EndEpisode(
 	// 24 hours after the start of the visit. If the time now is more than 24 hours
 	// after the start, use the current time as the end of the visit
 	end := time.Now().Add(time.Hour * 24)
-	endTime := base.DateTime(end.Format(timeFormatStr))
+	endTime := scalarutils.DateTime(end.Format(timeFormatStr))
 
 	updatedStatus := EpisodeOfCareStatusEnumFinished
 	episodePayload.Resource.Status = &updatedStatus
@@ -1610,7 +1611,7 @@ func (s Service) AddNextOfKin(
 		input.PostalAddresses,
 	)
 	userSelected := true
-	relationshipSystem := base.URI(RelationshipSystem)
+	relationshipSystem := scalarutils.URI(RelationshipSystem)
 	relationshipVersion := RelationshipVersion
 	gender := PatientContactGenderEnum(input.Gender)
 	if !gender.IsValid() {
@@ -1628,7 +1629,7 @@ func (s Service) AddNextOfKin(
 						Display:      RelationshipTypeDisplay(input.Relationship),
 						System:       &relationshipSystem,
 						Version:      &relationshipVersion,
-						Code:         base.Code(input.Relationship.String()),
+						Code:         scalarutils.Code(input.Relationship.String()),
 						UserSelected: &userSelected,
 					},
 				},
@@ -1906,7 +1907,7 @@ func (s Service) SearchEpisodesByParam(ctx context.Context, searchParams url.Val
 		startDateAsMap["year"] = resStart.Year()
 		startDateAsMap["month"] = int(resStart.Month())
 		startDateAsMap["day"] = resStart.Day()
-		period["start"] = base.DateTime(resStart.Format(timeFormatStr))
+		period["start"] = scalarutils.DateTime(resStart.Format(timeFormatStr))
 
 		// parse period->end as map[string]interface{}
 		resEnd := ParseDate(period["end"].(string))
@@ -1914,7 +1915,7 @@ func (s Service) SearchEpisodesByParam(ctx context.Context, searchParams url.Val
 		endDateAsMap["year"] = resEnd.Year()
 		endDateAsMap["month"] = int(resEnd.Month())
 		endDateAsMap["day"] = resEnd.Day()
-		period["end"] = base.DateTime(resEnd.Format(timeFormatStr))
+		period["end"] = scalarutils.DateTime(resEnd.Format(timeFormatStr))
 
 		//update the original period resource
 		resource["period"] = period
@@ -3343,11 +3344,11 @@ func (s Service) periodMapper(period map[string]interface{}) map[string]interfac
 
 	parsedStartDate := ParseDate(periodCopy["start"].(string))
 
-	periodCopy["start"] = base.DateTime(parsedStartDate.Format(timeFormatStr))
+	periodCopy["start"] = scalarutils.DateTime(parsedStartDate.Format(timeFormatStr))
 
 	parsedEndDate := ParseDate(periodCopy["end"].(string))
 
-	periodCopy["end"] = base.DateTime(parsedEndDate.Format(timeFormatStr))
+	periodCopy["end"] = scalarutils.DateTime(parsedEndDate.Format(timeFormatStr))
 
 	return periodCopy
 }
@@ -3484,7 +3485,7 @@ func (s Service) photoMapper(resource map[string]interface{}) map[string]interfa
 
 			parsedDate := ParseDate(photo["creation"].(string))
 
-			photo["creation"] = base.DateTime(parsedDate.Format(timeFormatStr))
+			photo["creation"] = scalarutils.DateTime(parsedDate.Format(timeFormatStr))
 
 			newPhotos = append(newPhotos, photo)
 		}

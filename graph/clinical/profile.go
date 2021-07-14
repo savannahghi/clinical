@@ -7,33 +7,33 @@ import (
 	"strings"
 
 	"github.com/bearbin/go-age"
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/scalarutils"
 )
 
 // RenderOfficialName returns a patient's official name in Markdown format
-func (p FHIRPatient) RenderOfficialName() base.Markdown {
-	defaultName := base.Markdown("UNKNOWN NAME")
+func (p FHIRPatient) RenderOfficialName() scalarutils.Markdown {
+	defaultName := scalarutils.Markdown("UNKNOWN NAME")
 	if p.Name == nil {
 		return defaultName
 	}
 	// prefer official names
 	for _, name := range p.Name {
 		if name != nil && name.Use == HumanNameUseEnumOfficial {
-			return base.Markdown(name.Text)
+			return scalarutils.Markdown(name.Text)
 		}
 	}
 	// fall back to usual names
 	for _, name := range p.Name {
 		if name != nil && name.Use == HumanNameUseEnumUsual {
-			return base.Markdown(name.Text)
+			return scalarutils.Markdown(name.Text)
 		}
 	}
 	return defaultName
 }
 
 // RenderIDDocuments returns a patient's ID documents in Markdown format
-func (p FHIRPatient) RenderIDDocuments() base.Markdown {
-	defaultID := base.Markdown("No Identification documents found")
+func (p FHIRPatient) RenderIDDocuments() scalarutils.Markdown {
+	defaultID := scalarutils.Markdown("No Identification documents found")
 	identifiers := []string{}
 	if p.Identifier != nil {
 		for _, identifier := range p.Identifier {
@@ -46,33 +46,33 @@ func (p FHIRPatient) RenderIDDocuments() base.Markdown {
 	}
 	if len(identifiers) > 0 {
 		ids := strings.Join(identifiers, " , ")
-		return base.Markdown(ids)
+		return scalarutils.Markdown(ids)
 	}
 	return defaultID
 }
 
 // RenderAge returns the patient's age, rendered in a humanized way
-func (p FHIRPatient) RenderAge() base.Markdown {
+func (p FHIRPatient) RenderAge() scalarutils.Markdown {
 	ageStr := "UNKNOWN AGE"
 	if p.BirthDate != nil {
 		ageStr = strconv.Itoa(age.Age(p.BirthDate.AsTime())) + " yrs"
 	}
-	return base.Markdown(fmt.Sprintf("Age: %s", ageStr))
+	return scalarutils.Markdown(fmt.Sprintf("Age: %s", ageStr))
 }
 
 // RenderGender returns the patient's age and gender, rendered in a humanized way
-func (p FHIRPatient) RenderGender() base.Markdown {
+func (p FHIRPatient) RenderGender() scalarutils.Markdown {
 	gender := "UNKNOWN GENDER"
 	if p.Gender != nil {
 		gender = p.Gender.String()
 	}
 
-	return base.Markdown(fmt.Sprintf("Gender: %s", gender))
+	return scalarutils.Markdown(fmt.Sprintf("Gender: %s", gender))
 }
 
 // RenderProblems returns the patient's problems
-func (p FHIRPatient) RenderProblems() base.Markdown {
-	defaultProblem := base.Markdown("Problems: No known problems")
+func (p FHIRPatient) RenderProblems() scalarutils.Markdown {
+	defaultProblem := scalarutils.Markdown("Problems: No known problems")
 	if p.ID == nil {
 		return defaultProblem
 	}
@@ -90,10 +90,10 @@ func (p FHIRPatient) RenderProblems() base.Markdown {
 
 	if len(problems) > 0 {
 		patientProblems := fmt.Sprintf("Problems: %s", problems)
-		return base.Markdown(patientProblems)
+		return scalarutils.Markdown(patientProblems)
 	}
 
-	return base.Markdown(defaultProblem)
+	return scalarutils.Markdown(defaultProblem)
 }
 
 func trimString(inp string, maxLength int) string {

@@ -20,6 +20,7 @@ resolver:
   dir: graph
 
 autobind:
+  - "github.com/savannahghi/scalarutils"
   - "gitlab.slade360emr.com/go/base"
   - "gitlab.slade360emr.com/go/clinical/graph/model"
   - "gitlab.slade360emr.com/go/clinical/graph/clinical"

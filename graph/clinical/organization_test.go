@@ -4,14 +4,14 @@ import (
 	"context"
 	"testing"
 
+	"github.com/savannahghi/scalarutils"
 	"github.com/stretchr/testify/assert"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // organizationCodeableConcept - compose an organization codeable concept
 func organizationCodeableConcept() []*FHIRCodeableConceptInput {
 	display := "Healthcare Provider"
-	var code base.Code = "prov"
+	var code scalarutils.Code = "prov"
 	text := "An organization that provides healthcare services"
 
 	codeableConceptInput := SingleCodeableConceptPayload(code, display, text)

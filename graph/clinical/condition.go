@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -40,7 +41,7 @@ type FHIRCondition struct {
 	Encounter *FHIRReference `json:"encounter,omitempty"`
 
 	// Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
-	OnsetDateTime *base.Date `json:"onsetDateTime,omitempty"`
+	OnsetDateTime *scalarutils.Date `json:"onsetDateTime,omitempty"`
 
 	// Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
 	OnsetAge *FHIRAge `json:"onsetAge,omitempty"`
@@ -55,7 +56,7 @@ type FHIRCondition struct {
 	OnsetString *string `json:"onsetString,omitempty"`
 
 	// The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - Conditions are never really resolved, but they can abate.
-	AbatementDateTime *base.Date `json:"abatementDateTime,omitempty"`
+	AbatementDateTime *scalarutils.Date `json:"abatementDateTime,omitempty"`
 
 	// The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - Conditions are never really resolved, but they can abate.
 	AbatementAge *FHIRAge `json:"abatementAge,omitempty"`
@@ -70,7 +71,7 @@ type FHIRCondition struct {
 	AbatementString *string `json:"abatementString,omitempty"`
 
 	// The recordedDate represents when this particular Condition record was created in the system, which is often a system-generated date.
-	RecordedDate *base.Date `json:"recordedDate,omitempty"`
+	RecordedDate *scalarutils.Date `json:"recordedDate,omitempty"`
 
 	// Individual who recorded the record and takes responsibility for its content.
 	Recorder *FHIRReference `json:"recorder,omitempty"`
@@ -145,7 +146,7 @@ type FHIRConditionInput struct {
 	Encounter *FHIRReferenceInput `json:"encounter,omitempty"`
 
 	// Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
-	OnsetDateTime *base.Date `json:"onsetDateTime,omitempty"`
+	OnsetDateTime *scalarutils.Date `json:"onsetDateTime,omitempty"`
 
 	// Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
 	OnsetAge *FHIRAgeInput `json:"onsetAge,omitempty"`
@@ -160,7 +161,7 @@ type FHIRConditionInput struct {
 	OnsetString *string `json:"onsetString,omitempty"`
 
 	// The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - Conditions are never really resolved, but they can abate.
-	AbatementDateTime *base.Date `json:"abatementDateTime,omitempty"`
+	AbatementDateTime *scalarutils.Date `json:"abatementDateTime,omitempty"`
 
 	// The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - Conditions are never really resolved, but they can abate.
 	AbatementAge *FHIRAgeInput `json:"abatementAge,omitempty"`
@@ -175,7 +176,7 @@ type FHIRConditionInput struct {
 	AbatementString *string `json:"abatementString,omitempty"`
 
 	// The recordedDate represents when this particular Condition record was created in the system, which is often a system-generated date.
-	RecordedDate *base.Date `json:"recordedDate,omitempty"`
+	RecordedDate *scalarutils.Date `json:"recordedDate,omitempty"`
 
 	// Individual who recorded the record and takes responsibility for its content.
 	Recorder *FHIRReferenceInput `json:"recorder,omitempty"`

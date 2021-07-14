@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -16,19 +17,19 @@ type FHIRMedicationRequest struct {
 	Identifier []*FHIRIdentifier `json:"identifier,omitempty"`
 
 	// A code specifying the current state of the order.  Generally, this will be active or completed state.
-	Status *base.Code `json:"status,omitempty"`
+	Status *scalarutils.Code `json:"status,omitempty"`
 
 	// Captures the reason for the current state of the MedicationRequest.
 	StatusReason *FHIRCodeableConcept `json:"statusReason,omitempty"`
 
 	// Whether the request is a proposal, plan, or an original order.
-	Intent *base.Code `json:"intent,omitempty"`
+	Intent *scalarutils.Code `json:"intent,omitempty"`
 
 	// Indicates the type of medication request (for example, where the medication is expected to be consumed or administered (i.e. inpatient or outpatient)).
 	Category []*FHIRCodeableConcept `json:"category,omitempty"`
 
 	// Indicates how quickly the Medication Request should be addressed with respect to other requests.
-	Priority *base.Code `json:"priority,omitempty"`
+	Priority *scalarutils.Code `json:"priority,omitempty"`
 
 	// If true indicates that the provider is asking for the medication request not to occur.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
@@ -55,7 +56,7 @@ type FHIRMedicationRequest struct {
 	SupportingInformation []*FHIRReference `json:"supportingInformation,omitempty"`
 
 	// The date (and perhaps time) when the prescription was initially written or authored on.
-	AuthoredOn *base.DateTime `json:"authoredOn,omitempty"`
+	AuthoredOn *scalarutils.DateTime `json:"authoredOn,omitempty"`
 
 	// The individual, organization, or device that initiated the request and has responsibility for its activation.
 	Requester *FHIRReference `json:"requester,omitempty"`
@@ -70,16 +71,16 @@ type FHIRMedicationRequest struct {
 	Recorder *FHIRReference `json:"recorder,omitempty"`
 
 	// The reason or the indication for ordering or not ordering the medication.
-	ReasonCode *base.Code `json:"reasonCode,omitempty"`
+	ReasonCode *scalarutils.Code `json:"reasonCode,omitempty"`
 
 	// Condition or observation that supports why the medication was ordered.
 	ReasonReference []*FHIRReference `json:"reasonReference,omitempty"`
 
 	// The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.
-	InstantiatesCanonical *base.Canonical `json:"instantiatesCanonical,omitempty"`
+	InstantiatesCanonical *scalarutils.Canonical `json:"instantiatesCanonical,omitempty"`
 
 	// The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.
-	InstantiatesURI *base.Instant `json:"instantiatesURI,omitempty"`
+	InstantiatesURI *scalarutils.Instant `json:"instantiatesURI,omitempty"`
 
 	// A plan or request that is fulfilled in whole or in part by this medication request.
 	BasedOn []*FHIRReference `json:"basedOn,omitempty"`
@@ -124,19 +125,19 @@ type FHIRMedicationRequestInput struct {
 	Identifier []*FHIRIdentifierInput `json:"identifier,omitempty"`
 
 	// A code specifying the current state of the order.  Generally, this will be active or completed state.
-	Status *base.Code `json:"status,omitempty"`
+	Status *scalarutils.Code `json:"status,omitempty"`
 
 	// Captures the reason for the current state of the MedicationRequest.
 	StatusReason *FHIRCodeableConceptInput `json:"statusReason,omitempty"`
 
 	// Whether the request is a proposal, plan, or an original order.
-	Intent *base.Code `json:"intent,omitempty"`
+	Intent *scalarutils.Code `json:"intent,omitempty"`
 
 	// Indicates the type of medication request (for example, where the medication is expected to be consumed or administered (i.e. inpatient or outpatient)).
 	Category []*FHIRCodeableConceptInput `json:"category,omitempty"`
 
 	// Indicates how quickly the Medication Request should be addressed with respect to other requests.
-	Priority *base.Code `json:"priority,omitempty"`
+	Priority *scalarutils.Code `json:"priority,omitempty"`
 
 	// If true indicates that the provider is asking for the medication request not to occur.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
@@ -163,7 +164,7 @@ type FHIRMedicationRequestInput struct {
 	SupportingInformation []*FHIRReferenceInput `json:"supportingInformation,omitempty"`
 
 	// The date (and perhaps time) when the prescription was initially written or authored on.
-	AuthoredOn *base.DateTime `json:"authoredOn,omitempty"`
+	AuthoredOn *scalarutils.DateTime `json:"authoredOn,omitempty"`
 
 	// The individual, organization, or device that initiated the request and has responsibility for its activation.
 	Requester *FHIRReferenceInput `json:"requester,omitempty"`
@@ -178,16 +179,16 @@ type FHIRMedicationRequestInput struct {
 	Recorder *FHIRReferenceInput `json:"recorder,omitempty"`
 
 	// The reason or the indication for ordering or not ordering the medication.
-	ReasonCode *base.Code `json:"reasonCode,omitempty"`
+	ReasonCode *scalarutils.Code `json:"reasonCode,omitempty"`
 
 	// Condition or observation that supports why the medication was ordered.
 	ReasonReference []*FHIRReferenceInput `json:"reasonReference,omitempty"`
 
 	// The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.
-	InstantiatesCanonical *base.Canonical `json:"instantiatesCanonical,omitempty"`
+	InstantiatesCanonical *scalarutils.Canonical `json:"instantiatesCanonical,omitempty"`
 
 	// The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.
-	InstantiatesURI *base.Instant `json:"instantiatesURI,omitempty"`
+	InstantiatesURI *scalarutils.Instant `json:"instantiatesURI,omitempty"`
 
 	// A plan or request that is fulfilled in whole or in part by this medication request.
 	BasedOn []*FHIRReferenceInput `json:"basedOn,omitempty"`
@@ -310,7 +311,7 @@ type FHIRMedicationrequestSubstitution struct {
 	AllowedBoolean *bool `json:"allowedBoolean,omitempty"`
 
 	// True if the prescriber allows a different drug to be dispensed from what was prescribed.
-	AllowedCodeableConcept *base.Code `json:"allowedCodeableConcept,omitempty"`
+	AllowedCodeableConcept *scalarutils.Code `json:"allowedCodeableConcept,omitempty"`
 
 	// Indicates the reason for the substitution, or why substitution must or must not be performed.
 	Reason *FHIRCodeableConcept `json:"reason,omitempty"`
@@ -325,7 +326,7 @@ type FHIRMedicationrequestSubstitutionInput struct {
 	AllowedBoolean *bool `json:"allowedBoolean,omitempty"`
 
 	// True if the prescriber allows a different drug to be dispensed from what was prescribed.
-	AllowedCodeableConcept *base.Code `json:"allowedCodeableConcept,omitempty"`
+	AllowedCodeableConcept *scalarutils.Code `json:"allowedCodeableConcept,omitempty"`
 
 	// Indicates the reason for the substitution, or why substitution must or must not be performed.
 	Reason *FHIRCodeableConceptInput `json:"reason,omitempty"`

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -82,7 +83,7 @@ type SimplePatientRegistrationInput struct {
 	ID                      string                    `json:"id"`
 	Names                   []*NameInput              `json:"names"`
 	IdentificationDocuments []*IdentificationDocument `json:"identificationDocuments"`
-	BirthDate               base.Date                 `json:"birthDate"`
+	BirthDate               scalarutils.Date          `json:"birthDate"`
 	PhoneNumbers            []*PhoneNumberInput       `json:"phoneNumbers"`
 	Photos                  []*PhotoInput             `json:"photos"`
 	Emails                  []*EmailInput             `json:"emails"`
@@ -146,7 +147,7 @@ type SimpleNextOfKinInput struct {
 	Gender            string              `json:"gender"`
 	Relationship      RelationshipType    `json:"relationship"`
 	Active            bool                `json:"active"`
-	BirthDate         base.Date           `json:"birthDate"`
+	BirthDate         scalarutils.Date    `json:"birthDate"`
 }
 
 // USSDEpisodeCreationInput is used to start episodes via USSD

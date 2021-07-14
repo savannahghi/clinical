@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -58,7 +59,7 @@ type FHIREncounter struct {
 	Length *FHIRDuration `json:"length,omitempty"`
 
 	// Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
-	ReasonCode *base.Code `json:"reasonCode,omitempty"`
+	ReasonCode *scalarutils.Code `json:"reasonCode,omitempty"`
 
 	// Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
 	ReasonReference []*FHIRReference `json:"reasonReference,omitempty"`
@@ -253,7 +254,7 @@ type FHIREncounterInput struct {
 	Length *FHIRDurationInput `json:"length,omitempty"`
 
 	// Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
-	ReasonCode *base.Code `json:"reasonCode,omitempty"`
+	ReasonCode *scalarutils.Code `json:"reasonCode,omitempty"`
 
 	// Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
 	ReasonReference []*FHIRReferenceInput `json:"reasonReference,omitempty"`

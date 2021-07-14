@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/scalarutils"
 )
 
 const (
@@ -16,7 +16,7 @@ const (
 // medical record number.
 func DefaultIdentifier() *FHIRIdentifierInput {
 	xid := xid.New().String()
-	system := base.URI(healthCloudIdentifiers)
+	system := scalarutils.URI(healthCloudIdentifiers)
 	version := healthCloudIdentifiersVersion
 	userSelected := false
 	return &FHIRIdentifierInput{
@@ -28,7 +28,7 @@ func DefaultIdentifier() *FHIRIdentifierInput {
 				{
 					System:       &system,
 					Version:      &version,
-					Code:         base.Code(xid),
+					Code:         scalarutils.Code(xid),
 					Display:      xid,
 					UserSelected: &userSelected,
 				},
@@ -44,8 +44,8 @@ func DefaultPeriodInput() *FHIRPeriodInput {
 	now := time.Now()
 	farFuture := time.Now().Add(time.Hour * CenturyHours)
 	return &FHIRPeriodInput{
-		Start: base.DateTime(now.Format(timeFormatStr)),
-		End:   base.DateTime(farFuture.Format(timeFormatStr)),
+		Start: scalarutils.DateTime(now.Format(timeFormatStr)),
+		End:   scalarutils.DateTime(farFuture.Format(timeFormatStr)),
 	}
 }
 
@@ -54,7 +54,7 @@ func DefaultPeriod() *FHIRPeriod {
 	now := time.Now()
 	farFuture := time.Now().Add(time.Hour * CenturyHours)
 	return &FHIRPeriod{
-		Start: base.DateTime(now.Format(timeFormatStr)),
-		End:   base.DateTime(farFuture.Format(timeFormatStr)),
+		Start: scalarutils.DateTime(now.Format(timeFormatStr)),
+		End:   scalarutils.DateTime(farFuture.Format(timeFormatStr)),
 	}
 }

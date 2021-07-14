@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -40,7 +41,7 @@ type FHIRAllergyIntolerance struct {
 	Encounter *FHIRReference `json:"encounter,omitempty"`
 
 	// Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-	OnsetDateTime *base.Date `json:"onsetDateTime,omitempty"`
+	OnsetDateTime *scalarutils.Date `json:"onsetDateTime,omitempty"`
 
 	// Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
 	OnsetAge *FHIRAge `json:"onsetAge,omitempty"`
@@ -55,7 +56,7 @@ type FHIRAllergyIntolerance struct {
 	OnsetString *string `json:"onsetString,omitempty"`
 
 	// The recordedDate represents when this particular AllergyIntolerance record was created in the system, which is often a system-generated date.
-	RecordedDate *base.Date `json:"recordedDate,omitempty"`
+	RecordedDate *scalarutils.Date `json:"recordedDate,omitempty"`
 
 	// Individual who recorded the record and takes responsibility for its content.
 	Recorder *FHIRReference `json:"recorder,omitempty"`
@@ -64,7 +65,7 @@ type FHIRAllergyIntolerance struct {
 	Asserter *FHIRReference `json:"asserter,omitempty"`
 
 	// Represents the date and/or time of the last known occurrence of a reaction event.
-	LastOccurrence *base.DateTime `json:"lastOccurrence,omitempty"`
+	LastOccurrence *scalarutils.DateTime `json:"lastOccurrence,omitempty"`
 
 	// Additional narrative about the propensity for the Adverse Reaction, not captured in other fields.
 	Note []*FHIRAnnotation `json:"note,omitempty"`
@@ -106,7 +107,7 @@ type FHIRAllergyIntoleranceInput struct {
 	Encounter *FHIRReferenceInput `json:"encounter,omitempty"`
 
 	// Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-	OnsetDateTime *base.Date `json:"onsetDateTime,omitempty"`
+	OnsetDateTime *scalarutils.Date `json:"onsetDateTime,omitempty"`
 
 	// Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
 	OnsetAge *FHIRAgeInput `json:"onsetAge,omitempty"`
@@ -121,7 +122,7 @@ type FHIRAllergyIntoleranceInput struct {
 	OnsetString *string `json:"onsetString,omitempty"`
 
 	// The recordedDate represents when this particular AllergyIntolerance record was created in the system, which is often a system-generated date.
-	RecordedDate *base.Date `json:"recordedDate,omitempty"`
+	RecordedDate *scalarutils.Date `json:"recordedDate,omitempty"`
 
 	// Individual who recorded the record and takes responsibility for its content.
 	Recorder *FHIRReferenceInput `json:"recorder,omitempty"`
@@ -130,7 +131,7 @@ type FHIRAllergyIntoleranceInput struct {
 	Asserter *FHIRReferenceInput `json:"asserter,omitempty"`
 
 	// Represents the date and/or time of the last known occurrence of a reaction event.
-	LastOccurrence *base.DateTime `json:"lastOccurrence,omitempty"`
+	LastOccurrence *scalarutils.DateTime `json:"lastOccurrence,omitempty"`
 
 	// Additional narrative about the propensity for the Adverse Reaction, not captured in other fields.
 	Note []*FHIRAnnotationInput `json:"note,omitempty"`
@@ -154,7 +155,7 @@ type FHIRAllergyintoleranceReaction struct {
 	Description *string `json:"description,omitempty"`
 
 	// Record of the date and/or time of the onset of the Reaction.
-	Onset *base.DateTime `json:"onset,omitempty"`
+	Onset *scalarutils.DateTime `json:"onset,omitempty"`
 
 	// Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.
 	Severity *AllergyIntoleranceReactionSeverityEnum `json:"severity,omitempty"`
@@ -181,7 +182,7 @@ type FHIRAllergyintoleranceReactionInput struct {
 	Description *string `json:"description,omitempty"`
 
 	// Record of the date and/or time of the onset of the Reaction.
-	Onset *base.DateTime `json:"onset,omitempty"`
+	Onset *scalarutils.DateTime `json:"onset,omitempty"`
 
 	// Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.
 	Severity *AllergyIntoleranceReactionSeverityEnum `json:"severity,omitempty"`

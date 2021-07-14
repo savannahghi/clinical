@@ -15,6 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
+	"github.com/savannahghi/scalarutils"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 	"gitlab.slade360emr.com/go/base"
@@ -13153,9 +13154,9 @@ func (ec *executionContext) _FHIRAddress_PostalCode(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAddress_Country(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAddress) (ret graphql.Marshaler) {
@@ -13281,9 +13282,9 @@ func (ec *executionContext) _FHIRAge_Value(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAge_Comparator(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAge) (ret graphql.Marshaler) {
@@ -13377,9 +13378,9 @@ func (ec *executionContext) _FHIRAge_System(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAge_Code(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAge) (ret graphql.Marshaler) {
@@ -13409,9 +13410,9 @@ func (ec *executionContext) _FHIRAge_Code(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAllergyIntolerance_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
@@ -13805,9 +13806,9 @@ func (ec *executionContext) _FHIRAllergyIntolerance_OnsetDateTime(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAllergyIntolerance_OnsetAge(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
@@ -13965,9 +13966,9 @@ func (ec *executionContext) _FHIRAllergyIntolerance_RecordedDate(ctx context.Con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAllergyIntolerance_Recorder(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
@@ -14061,9 +14062,9 @@ func (ec *executionContext) _FHIRAllergyIntolerance_LastOccurrence(ctx context.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAllergyIntolerance_Note(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
@@ -14454,9 +14455,9 @@ func (ec *executionContext) _FHIRAllergyintoleranceReaction_Onset(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAllergyintoleranceReaction_Severity(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
@@ -14710,9 +14711,9 @@ func (ec *executionContext) _FHIRAnnotation_Text(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Markdown)
+	res := resTmp.(*scalarutils.Markdown)
 	fc.Result = res
-	return ec.marshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx, field.Selections, res)
+	return ec.marshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAttachment_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAttachment) (ret graphql.Marshaler) {
@@ -14774,9 +14775,9 @@ func (ec *executionContext) _FHIRAttachment_ContentType(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAttachment_Language(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAttachment) (ret graphql.Marshaler) {
@@ -14806,9 +14807,9 @@ func (ec *executionContext) _FHIRAttachment_Language(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAttachment_Data(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAttachment) (ret graphql.Marshaler) {
@@ -14838,9 +14839,9 @@ func (ec *executionContext) _FHIRAttachment_Data(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Base64Binary)
+	res := resTmp.(*scalarutils.Base64Binary)
 	fc.Result = res
-	return ec.marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, field.Selections, res)
+	return ec.marshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAttachment_URL(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAttachment) (ret graphql.Marshaler) {
@@ -14870,9 +14871,9 @@ func (ec *executionContext) _FHIRAttachment_URL(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.URL)
+	res := resTmp.(*scalarutils.URL)
 	fc.Result = res
-	return ec.marshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx, field.Selections, res)
+	return ec.marshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAttachment_Size(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAttachment) (ret graphql.Marshaler) {
@@ -14934,9 +14935,9 @@ func (ec *executionContext) _FHIRAttachment_Hash(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Base64Binary)
+	res := resTmp.(*scalarutils.Base64Binary)
 	fc.Result = res
-	return ec.marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, field.Selections, res)
+	return ec.marshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAttachment_Title(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAttachment) (ret graphql.Marshaler) {
@@ -14998,9 +14999,9 @@ func (ec *executionContext) _FHIRAttachment_Creation(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCodeableConcept_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCodeableConcept) (ret graphql.Marshaler) {
@@ -15164,9 +15165,9 @@ func (ec *executionContext) _FHIRCoding_System(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCoding_Version(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCoding) (ret graphql.Marshaler) {
@@ -15231,9 +15232,9 @@ func (ec *executionContext) _FHIRCoding_Code(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(base.Code)
+	res := resTmp.(scalarutils.Code)
 	fc.Result = res
-	return ec.marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCoding_Display(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCoding) (ret graphql.Marshaler) {
@@ -15589,9 +15590,9 @@ func (ec *executionContext) _FHIRComposition_Date(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRComposition_Author(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRComposition) (ret graphql.Marshaler) {
@@ -15688,9 +15689,9 @@ func (ec *executionContext) _FHIRComposition_Confidentiality(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRComposition_Attester(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRComposition) (ret graphql.Marshaler) {
@@ -16040,9 +16041,9 @@ func (ec *executionContext) _FHIRCompositionEvent_Code(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCompositionEvent_Period(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCompositionEvent) (ret graphql.Marshaler) {
@@ -16168,9 +16169,9 @@ func (ec *executionContext) _FHIRCompositionRelatesto_Code(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCompositionRelatesto_TargetIdentifier(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCompositionRelatesto) (ret graphql.Marshaler) {
@@ -16494,9 +16495,9 @@ func (ec *executionContext) _FHIRCompositionSection_Code(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCompositionSection_Author(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCompositionSection) (ret graphql.Marshaler) {
@@ -16622,9 +16623,9 @@ func (ec *executionContext) _FHIRCompositionSection_Mode(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCompositionSection_OrderedBy(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCompositionSection) (ret graphql.Marshaler) {
@@ -17137,9 +17138,9 @@ func (ec *executionContext) _FHIRCondition_OnsetDateTime(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCondition_OnsetAge(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCondition) (ret graphql.Marshaler) {
@@ -17297,9 +17298,9 @@ func (ec *executionContext) _FHIRCondition_AbatementDateTime(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCondition_AbatementAge(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCondition) (ret graphql.Marshaler) {
@@ -17457,9 +17458,9 @@ func (ec *executionContext) _FHIRCondition_RecordedDate(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCondition_Recorder(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCondition) (ret graphql.Marshaler) {
@@ -18455,9 +18456,9 @@ func (ec *executionContext) _FHIRDosage_AsNeededCodeableConcept(ctx context.Cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRDosage_Site(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDosage) (ret graphql.Marshaler) {
@@ -18967,9 +18968,9 @@ func (ec *executionContext) _FHIRDuration_Value(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRDuration_Comparator(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDuration) (ret graphql.Marshaler) {
@@ -19063,9 +19064,9 @@ func (ec *executionContext) _FHIRDuration_System(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRDuration_Code(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRDuration) (ret graphql.Marshaler) {
@@ -19095,9 +19096,9 @@ func (ec *executionContext) _FHIRDuration_Code(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIREncounter_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIREncounter) (ret graphql.Marshaler) {
@@ -19680,9 +19681,9 @@ func (ec *executionContext) _FHIREncounter_ReasonCode(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIREncounter_ReasonReference(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIREncounter) (ret graphql.Marshaler) {
@@ -22256,9 +22257,9 @@ func (ec *executionContext) _FHIRIdentifier_System(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRIdentifier_Value(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRIdentifier) (ret graphql.Marshaler) {
@@ -22483,9 +22484,9 @@ func (ec *executionContext) _FHIRMedicationRequest_Status(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequest_StatusReason(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequest) (ret graphql.Marshaler) {
@@ -22547,9 +22548,9 @@ func (ec *executionContext) _FHIRMedicationRequest_Intent(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequest_Category(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequest) (ret graphql.Marshaler) {
@@ -22611,9 +22612,9 @@ func (ec *executionContext) _FHIRMedicationRequest_Priority(ctx context.Context,
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequest_DoNotPerform(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequest) (ret graphql.Marshaler) {
@@ -22902,9 +22903,9 @@ func (ec *executionContext) _FHIRMedicationRequest_AuthoredOn(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequest_Requester(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequest) (ret graphql.Marshaler) {
@@ -23062,9 +23063,9 @@ func (ec *executionContext) _FHIRMedicationRequest_ReasonCode(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequest_ReasonReference(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequest) (ret graphql.Marshaler) {
@@ -23126,9 +23127,9 @@ func (ec *executionContext) _FHIRMedicationRequest_InstantiatesCanonical(ctx con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Canonical)
+	res := resTmp.(*scalarutils.Canonical)
 	fc.Result = res
-	return ec.marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, field.Selections, res)
+	return ec.marshalOCanonical2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCanonical(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequest_InstantiatesURI(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequest) (ret graphql.Marshaler) {
@@ -23158,9 +23159,9 @@ func (ec *executionContext) _FHIRMedicationRequest_InstantiatesURI(ctx context.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Instant)
+	res := resTmp.(*scalarutils.Instant)
 	fc.Result = res
-	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
+	return ec.marshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequest_BasedOn(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequest) (ret graphql.Marshaler) {
@@ -24124,9 +24125,9 @@ func (ec *executionContext) _FHIRMedicationrequestSubstitution_AllowedCodeableCo
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationrequestSubstitution_Reason(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationrequestSubstitution) (ret graphql.Marshaler) {
@@ -24255,9 +24256,9 @@ func (ec *executionContext) _FHIRNarrative_Div(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(base.XHTML)
+	res := resTmp.(scalarutils.XHTML)
 	fc.Result = res
-	return ec.marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx, field.Selections, res)
+	return ec.marshalNXHTML2githubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservation_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservation) (ret graphql.Marshaler) {
@@ -24642,9 +24643,9 @@ func (ec *executionContext) _FHIRObservation_EffectiveDateTime(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservation_EffectivePeriod(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservation) (ret graphql.Marshaler) {
@@ -24738,9 +24739,9 @@ func (ec *executionContext) _FHIRObservation_EffectiveInstant(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Instant)
+	res := resTmp.(*scalarutils.Instant)
 	fc.Result = res
-	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
+	return ec.marshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservation_Issued(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservation) (ret graphql.Marshaler) {
@@ -24770,9 +24771,9 @@ func (ec *executionContext) _FHIRObservation_Issued(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Instant)
+	res := resTmp.(*scalarutils.Instant)
 	fc.Result = res
-	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
+	return ec.marshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservation_Performer(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservation) (ret graphql.Marshaler) {
@@ -24866,9 +24867,9 @@ func (ec *executionContext) _FHIRObservation_ValueCodeableConcept(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservation_ValueString(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservation) (ret graphql.Marshaler) {
@@ -25122,9 +25123,9 @@ func (ec *executionContext) _FHIRObservation_ValueDateTime(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservation_ValuePeriod(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservation) (ret graphql.Marshaler) {
@@ -25637,9 +25638,9 @@ func (ec *executionContext) _FHIRObservationComponent_ValueCodeableConcept(ctx c
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservationComponent_ValueString(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservationComponent) (ret graphql.Marshaler) {
@@ -25893,9 +25894,9 @@ func (ec *executionContext) _FHIRObservationComponent_ValueDateTime(ctx context.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservationComponent_ValuePeriod(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservationComponent) (ret graphql.Marshaler) {
@@ -27089,9 +27090,9 @@ func (ec *executionContext) _FHIRPatient_BirthDate(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRPatient_DeceasedBoolean(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatient) (ret graphql.Marshaler) {
@@ -27153,9 +27154,9 @@ func (ec *executionContext) _FHIRPatient_DeceasedDateTime(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRPatient_Address(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatient) (ret graphql.Marshaler) {
@@ -28265,9 +28266,9 @@ func (ec *executionContext) _FHIRPeriod_Start(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(base.DateTime)
+	res := resTmp.(scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRPeriod_End(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPeriod) (ret graphql.Marshaler) {
@@ -28300,9 +28301,9 @@ func (ec *executionContext) _FHIRPeriod_End(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(base.DateTime)
+	res := resTmp.(scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRQuantity_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRQuantity) (ret graphql.Marshaler) {
@@ -28469,9 +28470,9 @@ func (ec *executionContext) _FHIRQuantity_System(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(base.URI)
+	res := resTmp.(scalarutils.URI)
 	fc.Result = res
-	return ec.marshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
+	return ec.marshalNURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRQuantity_Code(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRQuantity) (ret graphql.Marshaler) {
@@ -28504,9 +28505,9 @@ func (ec *executionContext) _FHIRQuantity_Code(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(base.Code)
+	res := resTmp.(scalarutils.Code)
 	fc.Result = res
-	return ec.marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRRange_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRRange) (ret graphql.Marshaler) {
@@ -28804,9 +28805,9 @@ func (ec *executionContext) _FHIRReference_Type(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRReference_Identifier(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRReference) (ret graphql.Marshaler) {
@@ -28970,9 +28971,9 @@ func (ec *executionContext) _FHIRSampledData_Period(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRSampledData_Factor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSampledData) (ret graphql.Marshaler) {
@@ -29002,9 +29003,9 @@ func (ec *executionContext) _FHIRSampledData_Factor(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRSampledData_LowerLimit(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSampledData) (ret graphql.Marshaler) {
@@ -29034,9 +29035,9 @@ func (ec *executionContext) _FHIRSampledData_LowerLimit(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRSampledData_UpperLimit(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSampledData) (ret graphql.Marshaler) {
@@ -29066,9 +29067,9 @@ func (ec *executionContext) _FHIRSampledData_UpperLimit(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRSampledData_Dimensions(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRSampledData) (ret graphql.Marshaler) {
@@ -29258,9 +29259,9 @@ func (ec *executionContext) _FHIRServiceRequest_InstantiatesCanonical(ctx contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Canonical)
+	res := resTmp.(*scalarutils.Canonical)
 	fc.Result = res
-	return ec.marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, field.Selections, res)
+	return ec.marshalOCanonical2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCanonical(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_InstantiatesURI(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -29290,9 +29291,9 @@ func (ec *executionContext) _FHIRServiceRequest_InstantiatesURI(ctx context.Cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Instant)
+	res := resTmp.(*scalarutils.Instant)
 	fc.Result = res
-	return ec.marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, field.Selections, res)
+	return ec.marshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_BasedOn(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -29418,9 +29419,9 @@ func (ec *executionContext) _FHIRServiceRequest_Status(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_Intent(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -29450,9 +29451,9 @@ func (ec *executionContext) _FHIRServiceRequest_Intent(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_Category(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -29514,9 +29515,9 @@ func (ec *executionContext) _FHIRServiceRequest_Priority(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_DoNotPerform(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -29805,9 +29806,9 @@ func (ec *executionContext) _FHIRServiceRequest_OccurrenceDateTime(ctx context.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_OccurrencePeriod(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -29933,9 +29934,9 @@ func (ec *executionContext) _FHIRServiceRequest_AsNeededCodeableConcept(ctx cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_AuthoredOn(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -29965,9 +29966,9 @@ func (ec *executionContext) _FHIRServiceRequest_AuthoredOn(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_Requester(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -30093,9 +30094,9 @@ func (ec *executionContext) _FHIRServiceRequest_LocationCode(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_LocationReference(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -30157,9 +30158,9 @@ func (ec *executionContext) _FHIRServiceRequest_ReasonCode(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequest_ReasonReference(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequest) (ret graphql.Marshaler) {
@@ -30643,9 +30644,9 @@ func (ec *executionContext) _FHIRTiming_Event(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*base.DateTime)
+	res := resTmp.([]*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚕᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRTiming_Repeat(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTiming) (ret graphql.Marshaler) {
@@ -30710,9 +30711,9 @@ func (ec *executionContext) _FHIRTiming_Code(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(base.Code)
+	res := resTmp.(scalarutils.Code)
 	fc.Result = res
-	return ec.marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRTimingRepeat_ID(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTimingRepeat) (ret graphql.Marshaler) {
@@ -30934,9 +30935,9 @@ func (ec *executionContext) _FHIRTimingRepeat_Duration(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRTimingRepeat_DurationMax(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTimingRepeat) (ret graphql.Marshaler) {
@@ -30966,9 +30967,9 @@ func (ec *executionContext) _FHIRTimingRepeat_DurationMax(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRTimingRepeat_DurationUnit(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTimingRepeat) (ret graphql.Marshaler) {
@@ -31094,9 +31095,9 @@ func (ec *executionContext) _FHIRTimingRepeat_Period(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRTimingRepeat_PeriodMax(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTimingRepeat) (ret graphql.Marshaler) {
@@ -31126,9 +31127,9 @@ func (ec *executionContext) _FHIRTimingRepeat_PeriodMax(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*base.Decimal)
+	res := resTmp.(*scalarutils.Decimal)
 	fc.Result = res
-	return ec.marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, field.Selections, res)
+	return ec.marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRTimingRepeat_PeriodUnit(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTimingRepeat) (ret graphql.Marshaler) {
@@ -31190,9 +31191,9 @@ func (ec *executionContext) _FHIRTimingRepeat_DayOfWeek(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*base.Code)
+	res := resTmp.([]*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚕᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRTimingRepeat_TimeOfDay(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRTimingRepeat) (ret graphql.Marshaler) {
@@ -34878,7 +34879,7 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PostalCode"))
-			it.PostalCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.PostalCode, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -34922,7 +34923,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
-			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.Value, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -34946,7 +34947,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
-			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
+			it.System, err = ec.unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -34954,7 +34955,7 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35054,7 +35055,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetDateTime"))
-			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35094,7 +35095,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RecordedDate"))
-			it.RecordedDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.RecordedDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35118,7 +35119,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LastOccurrence"))
-			it.LastOccurrence, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.LastOccurrence, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35186,7 +35187,7 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Onset"))
-			it.Onset, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.Onset, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35254,7 +35255,7 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Time"))
-			it.Time, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.Time, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35262,7 +35263,7 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
-			it.Text, err = ec.unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx, v)
+			it.Text, err = ec.unmarshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35290,7 +35291,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ContentType"))
-			it.ContentType, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.ContentType, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35298,7 +35299,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Language"))
-			it.Language, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Language, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35306,7 +35307,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Data"))
-			it.Data, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
+			it.Data, err = ec.unmarshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35314,7 +35315,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("URL"))
-			it.URL, err = ec.unmarshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx, v)
+			it.URL, err = ec.unmarshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35330,7 +35331,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Hash"))
-			it.Hash, err = ec.unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx, v)
+			it.Hash, err = ec.unmarshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35346,7 +35347,7 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Creation"))
-			it.Creation, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.Creation, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35410,7 +35411,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
-			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
+			it.System, err = ec.unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35426,7 +35427,7 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35478,7 +35479,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Time"))
-			it.Time, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.Time, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35514,7 +35515,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35606,7 +35607,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Date"))
-			it.Date, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.Date, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35630,7 +35631,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Confidentiality"))
-			it.Confidentiality, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Confidentiality, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35698,7 +35699,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35750,7 +35751,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35782,7 +35783,7 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Mode"))
-			it.Mode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Mode, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35950,7 +35951,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetDateTime"))
-			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35990,7 +35991,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AbatementDateTime"))
-			it.AbatementDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.AbatementDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -36030,7 +36031,7 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RecordedDate"))
-			it.RecordedDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.RecordedDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -36318,7 +36319,7 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AsNeededCodeableConcept"))
-			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -36402,7 +36403,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Value"))
-			it.Value, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.Value, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -36426,7 +36427,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
-			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
+			it.System, err = ec.unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -36434,7 +36435,7 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -36754,7 +36755,7 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
-			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.ReasonCode, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37258,7 +37259,7 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
-			it.System, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
+			it.System, err = ec.unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37318,7 +37319,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
-			it.Status, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Status, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37334,7 +37335,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Intent"))
-			it.Intent, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Intent, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37350,7 +37351,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Priority"))
-			it.Priority, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Priority, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37422,7 +37423,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthoredOn"))
-			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37462,7 +37463,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
-			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.ReasonCode, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37478,7 +37479,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesCanonical"))
-			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
+			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37486,7 +37487,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesURI"))
-			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
+			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37722,7 +37723,7 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AllowedCodeableConcept"))
-			it.AllowedCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.AllowedCodeableConcept, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37766,7 +37767,7 @@ func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Div"))
-			it.Div, err = ec.unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx, v)
+			it.Div, err = ec.unmarshalNXHTML2githubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37810,7 +37811,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueCodeableConcept"))
-			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -37874,7 +37875,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDateTime"))
-			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.ValueDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38006,7 +38007,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectiveDateTime"))
-			it.EffectiveDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.EffectiveDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38030,7 +38031,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectiveInstant"))
-			it.EffectiveInstant, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
+			it.EffectiveInstant, err = ec.unmarshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38038,7 +38039,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Issued"))
-			it.Issued, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
+			it.Issued, err = ec.unmarshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38062,7 +38063,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueCodeableConcept"))
-			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.ValueCodeableConcept, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38126,7 +38127,7 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ValueDateTime"))
-			it.ValueDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.ValueDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38546,7 +38547,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BirthDate"))
-			it.BirthDate, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.BirthDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38562,7 +38563,7 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DeceasedDateTime"))
-			it.DeceasedDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.DeceasedDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38706,7 +38707,7 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Start"))
-			it.Start, err = ec.unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.Start, err = ec.unmarshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38714,7 +38715,7 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("End"))
-			it.End, err = ec.unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.End, err = ec.unmarshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38766,7 +38767,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("System"))
-			it.System, err = ec.unmarshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
+			it.System, err = ec.unmarshalNURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38774,7 +38775,7 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38882,7 +38883,7 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx, v)
+			it.Type, err = ec.unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38934,7 +38935,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
-			it.Period, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.Period, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38942,7 +38943,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Factor"))
-			it.Factor, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.Factor, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38950,7 +38951,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LowerLimit"))
-			it.LowerLimit, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.LowerLimit, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38958,7 +38959,7 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpperLimit"))
-			it.UpperLimit, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.UpperLimit, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39010,7 +39011,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesCanonical"))
-			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx, v)
+			it.InstantiatesCanonical, err = ec.unmarshalOCanonical2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCanonical(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39018,7 +39019,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InstantiatesURI"))
-			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx, v)
+			it.InstantiatesURI, err = ec.unmarshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39050,7 +39051,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
-			it.Status, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Status, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39058,7 +39059,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Intent"))
-			it.Intent, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Intent, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39074,7 +39075,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Priority"))
-			it.Priority, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Priority, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39146,7 +39147,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OccurrenceDateTime"))
-			it.OccurrenceDateTime, err = ec.unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.OccurrenceDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39178,7 +39179,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AsNeededCodeableConcept"))
-			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.AsNeededCodeableConcept, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39186,7 +39187,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthoredOn"))
-			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.AuthoredOn, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39218,7 +39219,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LocationCode"))
-			it.LocationCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.LocationCode, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39234,7 +39235,7 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
-			it.ReasonCode, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.ReasonCode, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39326,7 +39327,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Event"))
-			it.Event, err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, v)
+			it.Event, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39342,7 +39343,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.Code, err = ec.unmarshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39410,7 +39411,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Duration"))
-			it.Duration, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.Duration, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39418,7 +39419,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DurationMax"))
-			it.DurationMax, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.DurationMax, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39450,7 +39451,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Period"))
-			it.Period, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.Period, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39458,7 +39459,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PeriodMax"))
-			it.PeriodMax, err = ec.unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx, v)
+			it.PeriodMax, err = ec.unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39474,7 +39475,7 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DayOfWeek"))
-			it.DayOfWeek, err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, v)
+			it.DayOfWeek, err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40010,7 +40011,7 @@ func (ec *executionContext) unmarshalInputSimpleNextOfKinInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthDate"))
-			it.BirthDate, err = ec.unmarshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.BirthDate, err = ec.unmarshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40078,7 +40079,7 @@ func (ec *executionContext) unmarshalInputSimplePatientRegistrationInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthDate"))
-			it.BirthDate, err = ec.unmarshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx, v)
+			it.BirthDate, err = ec.unmarshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -44325,13 +44326,13 @@ func (ec *executionContext) unmarshalNBreakGlassEpisodeCreationInput2gitlabᚗsl
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) (base.Code, error) {
-	var res base.Code
+func (ec *executionContext) unmarshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, v interface{}) (scalarutils.Code, error) {
+	var res scalarutils.Code
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNCode2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v base.Code) graphql.Marshaler {
+func (ec *executionContext) marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, sel ast.SelectionSet, v scalarutils.Code) graphql.Marshaler {
 	return v
 }
 
@@ -44345,23 +44346,23 @@ func (ec *executionContext) marshalNContentType2gitlabᚗslade360emrᚗcomᚋgo�
 	return v
 }
 
-func (ec *executionContext) unmarshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, v interface{}) (base.Date, error) {
-	var res base.Date
+func (ec *executionContext) unmarshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (scalarutils.Date, error) {
+	var res scalarutils.Date
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNDate2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, sel ast.SelectionSet, v base.Date) graphql.Marshaler {
+func (ec *executionContext) marshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v scalarutils.Date) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, v interface{}) (base.DateTime, error) {
-	var res base.DateTime
+func (ec *executionContext) unmarshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, v interface{}) (scalarutils.DateTime, error) {
+	var res scalarutils.DateTime
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNDateTime2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v base.DateTime) graphql.Marshaler {
+func (ec *executionContext) marshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, sel ast.SelectionSet, v scalarutils.DateTime) graphql.Marshaler {
 	return v
 }
 
@@ -45409,23 +45410,23 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) unmarshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, v interface{}) (base.URI, error) {
-	var res base.URI
+func (ec *executionContext) unmarshalNURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, v interface{}) (scalarutils.URI, error) {
+	var res scalarutils.URI
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNURI2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v base.URI) graphql.Marshaler {
+func (ec *executionContext) marshalNURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, sel ast.SelectionSet, v scalarutils.URI) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, v interface{}) (base.XHTML, error) {
-	var res base.XHTML
+func (ec *executionContext) unmarshalNXHTML2githubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx context.Context, v interface{}) (scalarutils.XHTML, error) {
+	var res scalarutils.XHTML
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNXHTML2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐXHTML(ctx context.Context, sel ast.SelectionSet, v base.XHTML) graphql.Marshaler {
+func (ec *executionContext) marshalNXHTML2githubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx context.Context, sel ast.SelectionSet, v scalarutils.XHTML) graphql.Marshaler {
 	return v
 }
 
@@ -45925,16 +45926,16 @@ func (ec *executionContext) marshalOAllergyIntoleranceTypeEnum2ᚖgitlabᚗslade
 	return v
 }
 
-func (ec *executionContext) unmarshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, v interface{}) (*base.Base64Binary, error) {
+func (ec *executionContext) unmarshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx context.Context, v interface{}) (*scalarutils.Base64Binary, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Base64Binary)
+	var res = new(scalarutils.Base64Binary)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOBase64Binary2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐBase64Binary(ctx context.Context, sel ast.SelectionSet, v *base.Base64Binary) graphql.Marshaler {
+func (ec *executionContext) marshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Base64Binary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -45965,23 +45966,23 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) unmarshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, v interface{}) (*base.Canonical, error) {
+func (ec *executionContext) unmarshalOCanonical2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCanonical(ctx context.Context, v interface{}) (*scalarutils.Canonical, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Canonical)
+	var res = new(scalarutils.Canonical)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOCanonical2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCanonical(ctx context.Context, sel ast.SelectionSet, v *base.Canonical) graphql.Marshaler {
+func (ec *executionContext) marshalOCanonical2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCanonical(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Canonical) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) ([]*base.Code, error) {
+func (ec *executionContext) unmarshalOCode2ᚕᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, v interface{}) ([]*scalarutils.Code, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -45994,10 +45995,10 @@ func (ec *executionContext) unmarshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgo
 		}
 	}
 	var err error
-	res := make([]*base.Code, len(vSlice))
+	res := make([]*scalarutils.Code, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -46005,28 +46006,28 @@ func (ec *executionContext) unmarshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgo
 	return res, nil
 }
 
-func (ec *executionContext) marshalOCode2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v []*base.Code) graphql.Marshaler {
+func (ec *executionContext) marshalOCode2ᚕᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, sel ast.SelectionSet, v []*scalarutils.Code) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx, sel, v[i])
+		ret[i] = ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, sel, v[i])
 	}
 
 	return ret
 }
 
-func (ec *executionContext) unmarshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, v interface{}) (*base.Code, error) {
+func (ec *executionContext) unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, v interface{}) (*scalarutils.Code, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Code)
+	var res = new(scalarutils.Code)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOCode2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐCode(ctx context.Context, sel ast.SelectionSet, v *base.Code) graphql.Marshaler {
+func (ec *executionContext) marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Code) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -46113,23 +46114,23 @@ func (ec *executionContext) marshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋ
 	return v
 }
 
-func (ec *executionContext) unmarshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, v interface{}) (*base.Date, error) {
+func (ec *executionContext) unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (*scalarutils.Date, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Date)
+	var res = new(scalarutils.Date)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalODate2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDate(ctx context.Context, sel ast.SelectionSet, v *base.Date) graphql.Marshaler {
+func (ec *executionContext) marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Date) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, v interface{}) ([]*base.DateTime, error) {
+func (ec *executionContext) unmarshalODateTime2ᚕᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, v interface{}) ([]*scalarutils.DateTime, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -46142,10 +46143,10 @@ func (ec *executionContext) unmarshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcom�
 		}
 	}
 	var err error
-	res := make([]*base.DateTime, len(vSlice))
+	res := make([]*scalarutils.DateTime, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, vSlice[i])
+		res[i], err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -46153,44 +46154,44 @@ func (ec *executionContext) unmarshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) marshalODateTime2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v []*base.DateTime) graphql.Marshaler {
+func (ec *executionContext) marshalODateTime2ᚕᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, sel ast.SelectionSet, v []*scalarutils.DateTime) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx, sel, v[i])
+		ret[i] = ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, sel, v[i])
 	}
 
 	return ret
 }
 
-func (ec *executionContext) unmarshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, v interface{}) (*base.DateTime, error) {
+func (ec *executionContext) unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, v interface{}) (*scalarutils.DateTime, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.DateTime)
+	var res = new(scalarutils.DateTime)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalODateTime2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDateTime(ctx context.Context, sel ast.SelectionSet, v *base.DateTime) graphql.Marshaler {
+func (ec *executionContext) marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, sel ast.SelectionSet, v *scalarutils.DateTime) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, v interface{}) (*base.Decimal, error) {
+func (ec *executionContext) unmarshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx context.Context, v interface{}) (*scalarutils.Decimal, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Decimal)
+	var res = new(scalarutils.Decimal)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalODecimal2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐDecimal(ctx context.Context, sel ast.SelectionSet, v *base.Decimal) graphql.Marshaler {
+func (ec *executionContext) marshalODecimal2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDecimal(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Decimal) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49419,16 +49420,16 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 	return graphql.MarshalID(*v)
 }
 
-func (ec *executionContext) unmarshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx context.Context, v interface{}) (*base.Instant, error) {
+func (ec *executionContext) unmarshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx context.Context, v interface{}) (*scalarutils.Instant, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Instant)
+	var res = new(scalarutils.Instant)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOInstant2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐInstant(ctx context.Context, sel ast.SelectionSet, v *base.Instant) graphql.Marshaler {
+func (ec *executionContext) marshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Instant) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49660,16 +49661,16 @@ func (ec *executionContext) marshalOMaritalStatus2ᚖgitlabᚗslade360emrᚗcom�
 	return v
 }
 
-func (ec *executionContext) unmarshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, v interface{}) (*base.Markdown, error) {
+func (ec *executionContext) unmarshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx context.Context, v interface{}) (*scalarutils.Markdown, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Markdown)
+	var res = new(scalarutils.Markdown)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMarkdown2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐMarkdown(ctx context.Context, sel ast.SelectionSet, v *base.Markdown) graphql.Marshaler {
+func (ec *executionContext) marshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Markdown) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -50097,32 +50098,32 @@ func (ec *executionContext) marshalOTimingRepeatWhenEnum2ᚖgitlabᚗslade360emr
 	return v
 }
 
-func (ec *executionContext) unmarshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, v interface{}) (*base.URI, error) {
+func (ec *executionContext) unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, v interface{}) (*scalarutils.URI, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.URI)
+	var res = new(scalarutils.URI)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOURI2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURI(ctx context.Context, sel ast.SelectionSet, v *base.URI) graphql.Marshaler {
+func (ec *executionContext) marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, sel ast.SelectionSet, v *scalarutils.URI) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx context.Context, v interface{}) (*base.URL, error) {
+func (ec *executionContext) unmarshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx context.Context, v interface{}) (*scalarutils.URL, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.URL)
+	var res = new(scalarutils.URL)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOURL2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐURL(ctx context.Context, sel ast.SelectionSet, v *base.URL) graphql.Marshaler {
+func (ec *executionContext) marshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx context.Context, sel ast.SelectionSet, v *scalarutils.URL) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/scalarutils"
 )
 
 // FHIRAddress definition: an address expressed using postal conventions (as opposed to gps or other location definition formats).  this data type may be used to convey addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery.  there are a variety of postal address formats defined around the world.
@@ -37,7 +37,7 @@ type FHIRAddress struct {
 	State *string `json:"state,omitempty"`
 
 	// A postal code designating a region defined by the postal service.
-	PostalCode *base.Code `json:"postalCode,omitempty"`
+	PostalCode *scalarutils.Code `json:"postalCode,omitempty"`
 
 	// Country - a nation as commonly understood or generally accepted.
 	Country *string `json:"country,omitempty"`
@@ -73,7 +73,7 @@ type FHIRAddressInput struct {
 	State *string `json:"state,omitempty"`
 
 	// A postal code designating a region defined by the postal service.
-	PostalCode *base.Code `json:"postalCode,omitempty"`
+	PostalCode *scalarutils.Code `json:"postalCode,omitempty"`
 
 	// Country - a nation as commonly understood or generally accepted.
 	Country *string `json:"country,omitempty"`
@@ -88,7 +88,7 @@ type FHIRAge struct {
 	ID *string `json:"id,omitempty"`
 
 	// The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *base.Decimal `json:"value,omitempty"`
+	Value *scalarutils.Decimal `json:"value,omitempty"`
 
 	// How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
 	Comparator *AgeComparatorEnum `json:"comparator,omitempty"`
@@ -97,10 +97,10 @@ type FHIRAge struct {
 	Unit *string `json:"unit,omitempty"`
 
 	// The identification of the system that provides the coded form of the unit.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// A computer processable form of the unit in some unit representation system.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 }
 
 // FHIRAgeInput is the input type for Age
@@ -109,7 +109,7 @@ type FHIRAgeInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *base.Decimal `json:"value,omitempty"`
+	Value *scalarutils.Decimal `json:"value,omitempty"`
 
 	// How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
 	Comparator *AgeComparatorEnum `json:"comparator,omitempty"`
@@ -118,10 +118,10 @@ type FHIRAgeInput struct {
 	Unit *string `json:"unit,omitempty"`
 
 	// The identification of the system that provides the coded form of the unit.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// A computer processable form of the unit in some unit representation system.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 }
 
 // FHIRAnnotation definition: a  text note which also  contains information about who made the statement and when.
@@ -139,7 +139,7 @@ type FHIRAnnotation struct {
 	Time *time.Time `json:"time,omitempty"`
 
 	// The text of the annotation in markdown format.
-	Text *base.Markdown `json:"text,omitempty"`
+	Text *scalarutils.Markdown `json:"text,omitempty"`
 }
 
 // FHIRAnnotationInput is the input type for Annotation
@@ -154,10 +154,10 @@ type FHIRAnnotationInput struct {
 	AuthorString *string `json:"authorString,omitempty"`
 
 	// Indicates when this particular annotation was made.
-	Time *base.DateTime `json:"time,omitempty"`
+	Time *scalarutils.DateTime `json:"time,omitempty"`
 
 	// The text of the annotation in markdown format.
-	Text *base.Markdown `json:"text,omitempty"`
+	Text *scalarutils.Markdown `json:"text,omitempty"`
 }
 
 // FHIRAttachment definition: for referring to data content defined in other formats.
@@ -166,28 +166,28 @@ type FHIRAttachment struct {
 	ID *string `json:"id,omitempty"`
 
 	// Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.
-	ContentType *base.Code `json:"contentType,omitempty"`
+	ContentType *scalarutils.Code `json:"contentType,omitempty"`
 
 	// The human language of the content. The value can be any valid value according to BCP 47.
-	Language *base.Code `json:"language,omitempty"`
+	Language *scalarutils.Code `json:"language,omitempty"`
 
 	// The actual data of the attachment - a sequence of bytes, base64 encoded.
-	Data *base.Base64Binary `json:"data,omitempty"`
+	Data *scalarutils.Base64Binary `json:"data,omitempty"`
 
 	// A location where the data can be accessed.
-	URL *base.URL `json:"url,omitempty"`
+	URL *scalarutils.URL `json:"url,omitempty"`
 
 	// The number of bytes of data that make up this attachment (before base64 encoding, if that is done).
 	Size *int `json:"size,omitempty"`
 
 	// The calculated hash of the data using SHA-1. Represented using base64.
-	Hash *base.Base64Binary `json:"hash,omitempty"`
+	Hash *scalarutils.Base64Binary `json:"hash,omitempty"`
 
 	// A label or set of text to display in place of the data.
 	Title *string `json:"title,omitempty"`
 
 	// The date that the attachment was first created.
-	Creation *base.DateTime `json:"creation,omitempty"`
+	Creation *scalarutils.DateTime `json:"creation,omitempty"`
 }
 
 // FHIRAttachmentInput is the input type for Attachment
@@ -196,28 +196,28 @@ type FHIRAttachmentInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.
-	ContentType *base.Code `json:"contentType,omitempty"`
+	ContentType *scalarutils.Code `json:"contentType,omitempty"`
 
 	// The human language of the content. The value can be any valid value according to BCP 47.
-	Language *base.Code `json:"language,omitempty"`
+	Language *scalarutils.Code `json:"language,omitempty"`
 
 	// The actual data of the attachment - a sequence of bytes, base64 encoded.
-	Data *base.Base64Binary `json:"data,omitempty"`
+	Data *scalarutils.Base64Binary `json:"data,omitempty"`
 
 	// A location where the data can be accessed.
-	URL *base.URL `json:"url,omitempty"`
+	URL *scalarutils.URL `json:"url,omitempty"`
 
 	// The number of bytes of data that make up this attachment (before base64 encoding, if that is done).
 	Size *int `json:"size,omitempty"`
 
 	// The calculated hash of the data using SHA-1. Represented using base64.
-	Hash *base.Base64Binary `json:"hash,omitempty"`
+	Hash *scalarutils.Base64Binary `json:"hash,omitempty"`
 
 	// A label or set of text to display in place of the data.
 	Title *string `json:"title,omitempty"`
 
 	// The date that the attachment was first created.
-	Creation *base.DateTime `json:"creation,omitempty"`
+	Creation *scalarutils.DateTime `json:"creation,omitempty"`
 }
 
 // FHIRCodeableConcept definition: a concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.
@@ -250,13 +250,13 @@ type FHIRCoding struct {
 	ID *string `json:"id,omitempty"`
 
 	// The identification of the code system that defines the meaning of the symbol in the code.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// The version of the code system which was used when choosing this code. Note that a well-maintained code system does not need the version reported, because the meaning of codes is consistent across versions. However this cannot consistently be assured, and when the meaning is not guaranteed to be consistent, the version SHOULD be exchanged.
 	Version *string `json:"version,omitempty"`
 
 	// A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
-	Code base.Code `json:"code,omitempty"`
+	Code scalarutils.Code `json:"code,omitempty"`
 
 	// A representation of the meaning of the code in the system, following the rules of the system.
 	Display string `json:"display,omitempty"`
@@ -271,13 +271,13 @@ type FHIRCodingInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// The identification of the code system that defines the meaning of the symbol in the code.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// The version of the code system which was used when choosing this code. Note that a well-maintained code system does not need the version reported, because the meaning of codes is consistent across versions. However this cannot consistently be assured, and when the meaning is not guaranteed to be consistent, the version SHOULD be exchanged.
 	Version *string `json:"version,omitempty"`
 
 	// A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
-	Code base.Code `json:"code,omitempty"`
+	Code scalarutils.Code `json:"code,omitempty"`
 
 	// A representation of the meaning of the code in the system, following the rules of the system.
 	Display string `json:"display,omitempty"`
@@ -352,7 +352,7 @@ type FHIRDosage struct {
 	AsNeededBoolean *bool `json:"asNeededBoolean,omitempty"`
 
 	// Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
-	AsNeededCodeableConcept *base.Code `json:"asNeededCodeableConcept,omitempty"`
+	AsNeededCodeableConcept *scalarutils.Code `json:"asNeededCodeableConcept,omitempty"`
 
 	// Body site to administer to.
 	Site *FHIRCodeableConcept `json:"site,omitempty"`
@@ -448,7 +448,7 @@ type FHIRDosageInput struct {
 	AsNeededBoolean *bool `json:"asNeededBoolean,omitempty"`
 
 	// Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
-	AsNeededCodeableConcept *base.Code `json:"asNeededCodeableConcept,omitempty"`
+	AsNeededCodeableConcept *scalarutils.Code `json:"asNeededCodeableConcept,omitempty"`
 
 	// Body site to administer to.
 	Site *FHIRCodeableConceptInput `json:"site,omitempty"`
@@ -478,7 +478,7 @@ type FHIRDuration struct {
 	ID *string `json:"id,omitempty"`
 
 	// The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *base.Decimal `json:"value,omitempty"`
+	Value *scalarutils.Decimal `json:"value,omitempty"`
 
 	// How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
 	Comparator *DurationComparatorEnum `json:"comparator,omitempty"`
@@ -487,10 +487,10 @@ type FHIRDuration struct {
 	Unit *string `json:"unit,omitempty"`
 
 	// The identification of the system that provides the coded form of the unit.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// A computer processable form of the unit in some unit representation system.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 }
 
 // FHIRDurationInput is the input type for Duration
@@ -499,7 +499,7 @@ type FHIRDurationInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *base.Decimal `json:"value,omitempty"`
+	Value *scalarutils.Decimal `json:"value,omitempty"`
 
 	// How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value is < stated value.
 	Comparator *DurationComparatorEnum `json:"comparator,omitempty"`
@@ -508,10 +508,10 @@ type FHIRDurationInput struct {
 	Unit *string `json:"unit,omitempty"`
 
 	// The identification of the system that provides the coded form of the unit.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// A computer processable form of the unit in some unit representation system.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 }
 
 // FHIRHumanName definition: a human's name with the ability to identify parts and usage.
@@ -580,7 +580,7 @@ type FHIRIdentifier struct {
 	Type FHIRCodeableConcept `json:"type,omitempty"`
 
 	// Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// The portion of the identifier typically relevant to the user and which is unique within the context of the system.
 	Value string `json:"value,omitempty"`
@@ -604,7 +604,7 @@ type FHIRIdentifierInput struct {
 	Type FHIRCodeableConceptInput `json:"type,omitempty"`
 
 	// Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
-	System *base.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty"`
 
 	// The portion of the identifier typically relevant to the user and which is unique within the context of the system.
 	Value string `json:"value,omitempty"`
@@ -625,7 +625,7 @@ type FHIRNarrative struct {
 	Status *NarrativeStatusEnum `json:"status,omitempty"`
 
 	// The actual narrative content, a stripped down version of XHTML.
-	Div base.XHTML `json:"div,omitempty"`
+	Div scalarutils.XHTML `json:"div,omitempty"`
 }
 
 // FHIRNarrativeInput is the input type for Narrative
@@ -637,7 +637,7 @@ type FHIRNarrativeInput struct {
 	Status *NarrativeStatusEnum `json:"status,omitempty"`
 
 	// The actual narrative content, a stripped down version of XHTML.
-	Div base.XHTML `json:"div,omitempty"`
+	Div scalarutils.XHTML `json:"div,omitempty"`
 }
 
 // FHIRPeriod definition: a time period defined by a start and end date and optionally time.
@@ -646,10 +646,10 @@ type FHIRPeriod struct {
 	ID *string `json:"id,omitempty"`
 
 	// The start of the period. The boundary is inclusive.
-	Start base.DateTime `json:"start,omitempty"`
+	Start scalarutils.DateTime `json:"start,omitempty"`
 
 	// The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.
-	End base.DateTime `json:"end,omitempty"`
+	End scalarutils.DateTime `json:"end,omitempty"`
 }
 
 // FHIRPeriodInput is the input type for Period
@@ -658,10 +658,10 @@ type FHIRPeriodInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// The start of the period. The boundary is inclusive.
-	Start base.DateTime `json:"start,omitempty"`
+	Start scalarutils.DateTime `json:"start,omitempty"`
 
 	// The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, which means that period is expected/planned to end at that time.
-	End base.DateTime `json:"end,omitempty"`
+	End scalarutils.DateTime `json:"end,omitempty"`
 }
 
 // FHIRQuantity definition: a measured amount (or an amount that can potentially be measured). note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.
@@ -679,10 +679,10 @@ type FHIRQuantity struct {
 	Unit string `json:"unit"`
 
 	// The identification of the system that provides the coded form of the unit.
-	System base.URI `json:"system"`
+	System scalarutils.URI `json:"system"`
 
 	// A computer processable form of the unit in some unit representation system.
-	Code base.Code `json:"code"`
+	Code scalarutils.Code `json:"code"`
 }
 
 // FHIRQuantityInput is the input type for Quantity
@@ -700,10 +700,10 @@ type FHIRQuantityInput struct {
 	Unit string `json:"unit"`
 
 	// The identification of the system that provides the coded form of the unit.
-	System base.URI `json:"system"`
+	System scalarutils.URI `json:"system"`
 
 	// A computer processable form of the unit in some unit representation system.
-	Code base.Code `json:"code"`
+	Code scalarutils.Code `json:"code"`
 }
 
 // FHIRRange definition: a set of ordered quantities defined by a low and high limit.
@@ -765,7 +765,7 @@ type FHIRReference struct {
 	//     The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
 	//
 	// The type is the Canonical URL of Resource Definition that is the type this reference refers to. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition/ e.g. "Patient" is a reference to http://hl7.org/fhir/StructureDefinition/Patient. Absolute URLs are only allowed for logical models (and can only be used in references in logical models, not resources).
-	Type *base.URI `json:"type,omitempty"`
+	Type *scalarutils.URI `json:"type,omitempty"`
 
 	// An identifier for the target resource. This is used when there is no way to reference the other resource directly, either because the entity it represents is not available through a FHIR server, or because there is no way for the author of the resource to convert a known identifier to an actual location. There is no requirement that a Reference.identifier point to something that is actually exposed as a FHIR instance, but it SHALL point to a business concept that would be expected to be exposed as a FHIR instance, and that instance would need to be of a FHIR resource type allowed by the reference.
 	Identifier *FHIRIdentifier `json:"identifier,omitempty"`
@@ -785,7 +785,7 @@ type FHIRReferenceInput struct {
 	//     The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
 	//
 	// The type is the Canonical URL of Resource Definition that is the type this reference refers to. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition/ e.g. "Patient" is a reference to http://hl7.org/fhir/StructureDefinition/Patient. Absolute URLs are only allowed for logical models (and can only be used in references in logical models, not resources).
-	Type *base.URI `json:"type,omitempty"`
+	Type *scalarutils.URI `json:"type,omitempty"`
 
 	// An identifier for the target resource. This is used when there is no way to reference the other resource directly, either because the entity it represents is not available through a FHIR server, or because there is no way for the author of the resource to convert a known identifier to an actual location. There is no requirement that a Reference.identifier point to something that is actually exposed as a FHIR instance, but it SHALL point to a business concept that would be expected to be exposed as a FHIR instance, and that instance would need to be of a FHIR resource type allowed by the reference.
 	Identifier *FHIRIdentifierInput `json:"identifier,omitempty"`
@@ -803,16 +803,16 @@ type FHIRSampledData struct {
 	Origin *FHIRQuantity `json:"origin,omitempty"`
 
 	// The length of time between sampling times, measured in milliseconds.
-	Period *base.Decimal `json:"period,omitempty"`
+	Period *scalarutils.Decimal `json:"period,omitempty"`
 
 	// A correction factor that is applied to the sampled data points before they are added to the origin.
-	Factor *base.Decimal `json:"factor,omitempty"`
+	Factor *scalarutils.Decimal `json:"factor,omitempty"`
 
 	// The lower limit of detection of the measured points. This is needed if any of the data points have the value "L" (lower than detection limit).
-	LowerLimit *base.Decimal `json:"lowerLimit,omitempty"`
+	LowerLimit *scalarutils.Decimal `json:"lowerLimit,omitempty"`
 
 	// The upper limit of detection of the measured points. This is needed if any of the data points have the value "U" (higher than detection limit).
-	UpperLimit *base.Decimal `json:"upperLimit,omitempty"`
+	UpperLimit *scalarutils.Decimal `json:"upperLimit,omitempty"`
 
 	// The number of sample points at each time point. If this value is greater than one, then the dimensions will be interlaced - all the sample points for a point in time will be recorded at once.
 	Dimensions *string `json:"dimensions,omitempty"`
@@ -830,16 +830,16 @@ type FHIRSampledDataInput struct {
 	Origin *FHIRQuantityInput `json:"origin,omitempty"`
 
 	// The length of time between sampling times, measured in milliseconds.
-	Period *base.Decimal `json:"period,omitempty"`
+	Period *scalarutils.Decimal `json:"period,omitempty"`
 
 	// A correction factor that is applied to the sampled data points before they are added to the origin.
-	Factor *base.Decimal `json:"factor,omitempty"`
+	Factor *scalarutils.Decimal `json:"factor,omitempty"`
 
 	// The lower limit of detection of the measured points. This is needed if any of the data points have the value "L" (lower than detection limit).
-	LowerLimit *base.Decimal `json:"lowerLimit,omitempty"`
+	LowerLimit *scalarutils.Decimal `json:"lowerLimit,omitempty"`
 
 	// The upper limit of detection of the measured points. This is needed if any of the data points have the value "U" (higher than detection limit).
-	UpperLimit *base.Decimal `json:"upperLimit,omitempty"`
+	UpperLimit *scalarutils.Decimal `json:"upperLimit,omitempty"`
 
 	// The number of sample points at each time point. If this value is greater than one, then the dimensions will be interlaced - all the sample points for a point in time will be recorded at once.
 	Dimensions *string `json:"dimensions,omitempty"`
@@ -854,13 +854,13 @@ type FHIRTiming struct {
 	ID *string `json:"id,omitempty"`
 
 	// Identifies specific times when the event occurs.
-	Event []*base.DateTime `json:"event,omitempty"`
+	Event []*scalarutils.DateTime `json:"event,omitempty"`
 
 	// A set of rules that describe when the event is scheduled.
 	Repeat *FHIRTimingRepeat `json:"repeat,omitempty"`
 
 	// A code for the timing schedule (or just text in code.text). Some codes such as BID are ubiquitous, but many institutions define their own additional codes. If a code is provided, the code is understood to be a complete statement of whatever is specified in the structured timing data, and either the code or the data may be used to interpret the Timing, with the exception that .repeat.bounds still applies over the code (and is not contained in the code).
-	Code base.Code `json:"code,omitempty"`
+	Code scalarutils.Code `json:"code,omitempty"`
 }
 
 // FHIRTimingInput is the input type for Timing
@@ -869,13 +869,13 @@ type FHIRTimingInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// Identifies specific times when the event occurs.
-	Event *base.DateTime `json:"event,omitempty"`
+	Event *scalarutils.DateTime `json:"event,omitempty"`
 
 	// A set of rules that describe when the event is scheduled.
 	Repeat *FHIRTimingRepeatInput `json:"repeat,omitempty"`
 
 	// A code for the timing schedule (or just text in code.text). Some codes such as BID are ubiquitous, but many institutions define their own additional codes. If a code is provided, the code is understood to be a complete statement of whatever is specified in the structured timing data, and either the code or the data may be used to interpret the Timing, with the exception that .repeat.bounds still applies over the code (and is not contained in the code).
-	Code base.Code `json:"code,omitempty"`
+	Code scalarutils.Code `json:"code,omitempty"`
 }
 
 // FHIRTimingRepeat definition: specifies an event that may occur multiple times. timing schedules are used to record when things are planned, expected or requested to occur. the most common usage is in dosage instructions for medications. they are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.
@@ -899,10 +899,10 @@ type FHIRTimingRepeat struct {
 	CountMax *string `json:"countMax,omitempty"`
 
 	// How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.
-	Duration *base.Decimal `json:"duration,omitempty"`
+	Duration *scalarutils.Decimal `json:"duration,omitempty"`
 
 	// If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.
-	DurationMax *base.Decimal `json:"durationMax,omitempty"`
+	DurationMax *scalarutils.Decimal `json:"durationMax,omitempty"`
 
 	// The units of time for the duration, in UCUM units.
 	DurationUnit *TimingRepeatDurationUnitEnum `json:"durationUnit,omitempty"`
@@ -914,16 +914,16 @@ type FHIRTimingRepeat struct {
 	FrequencyMax *string `json:"frequencyMax,omitempty"`
 
 	// Indicates the duration of time over which repetitions are to occur; e.g. to express "3 times per day", 3 would be the frequency and "1 day" would be the period. If periodMax is present, this element indicates the lower bound of the allowed range of the period length.
-	Period *base.Decimal `json:"period,omitempty"`
+	Period *scalarutils.Decimal `json:"period,omitempty"`
 
 	// If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as "do this once every 3-5 days.
-	PeriodMax *base.Decimal `json:"periodMax,omitempty"`
+	PeriodMax *scalarutils.Decimal `json:"periodMax,omitempty"`
 
 	// The units of time for the period in UCUM units.
 	PeriodUnit *TimingRepeatPeriodUnitEnum `json:"periodUnit,omitempty"`
 
 	// If one or more days of week is provided, then the action happens only on the specified day(s).
-	DayOfWeek []*base.Code `json:"dayOfWeek,omitempty"`
+	DayOfWeek []*scalarutils.Code `json:"dayOfWeek,omitempty"`
 
 	// Specified time of day for action to take place.
 	TimeOfDay *time.Time `json:"timeOfDay,omitempty"`
@@ -956,10 +956,10 @@ type FHIRTimingRepeatInput struct {
 	CountMax *string `json:"countMax,omitempty"`
 
 	// How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.
-	Duration *base.Decimal `json:"duration,omitempty"`
+	Duration *scalarutils.Decimal `json:"duration,omitempty"`
 
 	// If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.
-	DurationMax *base.Decimal `json:"durationMax,omitempty"`
+	DurationMax *scalarutils.Decimal `json:"durationMax,omitempty"`
 
 	// The units of time for the duration, in UCUM units.
 	DurationUnit *TimingRepeatDurationUnitEnum `json:"durationUnit,omitempty"`
@@ -971,16 +971,16 @@ type FHIRTimingRepeatInput struct {
 	FrequencyMax *string `json:"frequencyMax,omitempty"`
 
 	// Indicates the duration of time over which repetitions are to occur; e.g. to express "3 times per day", 3 would be the frequency and "1 day" would be the period. If periodMax is present, this element indicates the lower bound of the allowed range of the period length.
-	Period *base.Decimal `json:"period,omitempty"`
+	Period *scalarutils.Decimal `json:"period,omitempty"`
 
 	// If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as "do this once every 3-5 days.
-	PeriodMax *base.Decimal `json:"periodMax,omitempty"`
+	PeriodMax *scalarutils.Decimal `json:"periodMax,omitempty"`
 
 	// The units of time for the period in UCUM units.
 	PeriodUnit *TimingRepeatPeriodUnitEnum `json:"periodUnit,omitempty"`
 
 	// If one or more days of week is provided, then the action happens only on the specified day(s).
-	DayOfWeek *base.Code `json:"dayOfWeek,omitempty"`
+	DayOfWeek *scalarutils.Code `json:"dayOfWeek,omitempty"`
 
 	// Specified time of day for action to take place.
 	TimeOfDay *time.Time `json:"timeOfDay,omitempty"`

@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -33,13 +34,13 @@ type FHIRPatient struct {
 	Gender *PatientGenderEnum `json:"gender,omitempty"`
 
 	// The date of birth for the individual.
-	BirthDate *base.Date `json:"birthDate,omitempty"`
+	BirthDate *scalarutils.Date `json:"birthDate,omitempty"`
 
 	// Indicates if the individual is deceased or not.
 	DeceasedBoolean *bool `json:"deceasedBoolean,omitempty"`
 
 	// Indicates if the individual is deceased or not.
-	DeceasedDateTime *base.Date `json:"deceasedDateTime,omitempty"`
+	DeceasedDateTime *scalarutils.Date `json:"deceasedDateTime,omitempty"`
 
 	// An address for the individual.
 	Address []*FHIRAddress `json:"address,omitempty"`
@@ -176,13 +177,13 @@ type FHIRPatientInput struct {
 	Gender *PatientGenderEnum `json:"gender,omitempty"`
 
 	// The date of birth for the individual.
-	BirthDate *base.Date `json:"birthDate,omitempty"`
+	BirthDate *scalarutils.Date `json:"birthDate,omitempty"`
 
 	// Indicates if the individual is deceased or not.
 	DeceasedBoolean *bool `json:"deceasedBoolean,omitempty"`
 
 	// Indicates if the individual is deceased or not.
-	DeceasedDateTime *base.Date `json:"deceasedDateTime,omitempty"`
+	DeceasedDateTime *scalarutils.Date `json:"deceasedDateTime,omitempty"`
 
 	// An address for the individual.
 	Address []*FHIRAddressInput `json:"address,omitempty"`

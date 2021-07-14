@@ -3,6 +3,7 @@ package clinical
 import (
 	"time"
 
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -33,7 +34,7 @@ type FHIRComposition struct {
 	Encounter *FHIRReference `json:"encounter,omitempty"`
 
 	// The composition editing time, when the composition was last logically changed by the author.
-	Date *base.Date `json:"date,omitempty"`
+	Date *scalarutils.Date `json:"date,omitempty"`
 
 	// Identifies who is responsible for the information in the composition, not necessarily who typed it in.
 	Author []*FHIRReference `json:"author,omitempty"`
@@ -42,7 +43,7 @@ type FHIRComposition struct {
 	Title *string `json:"title,omitempty"`
 
 	// The code specifying the level of confidentiality of the Composition.
-	Confidentiality *base.Code `json:"confidentiality,omitempty"`
+	Confidentiality *scalarutils.Code `json:"confidentiality,omitempty"`
 
 	// A participant who has attested to the accuracy of the composition/document.
 	Attester []*FHIRCompositionAttester `json:"attester,omitempty"`
@@ -84,7 +85,7 @@ type FHIRCompositionAttesterInput struct {
 	Mode *CompositionAttesterModeEnum `json:"mode,omitempty"`
 
 	// When the composition was attested by the party.
-	Time *base.DateTime `json:"time,omitempty"`
+	Time *scalarutils.DateTime `json:"time,omitempty"`
 
 	// Who attested the composition in the specified way.
 	Party *FHIRReferenceInput `json:"party,omitempty"`
@@ -96,7 +97,7 @@ type FHIRCompositionEvent struct {
 	ID *string `json:"id,omitempty"`
 
 	// This list of codes represents the main clinical acts, such as a colonoscopy or an appendectomy, being documented. In some cases, the event is inherent in the typeCode, such as a "History and Physical Report" in which the procedure being documented is necessarily a "History and Physical" act.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 
 	// The period of time covered by the documentation. There is no assertion that the documentation is a complete representation for this period, only that it documents events during this time.
 	Period *FHIRPeriod `json:"period,omitempty"`
@@ -111,7 +112,7 @@ type FHIRCompositionEventInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// This list of codes represents the main clinical acts, such as a colonoscopy or an appendectomy, being documented. In some cases, the event is inherent in the typeCode, such as a "History and Physical Report" in which the procedure being documented is necessarily a "History and Physical" act.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 
 	// The period of time covered by the documentation. There is no assertion that the documentation is a complete representation for this period, only that it documents events during this time.
 	Period *FHIRPeriodInput `json:"period,omitempty"`
@@ -144,7 +145,7 @@ type FHIRCompositionInput struct {
 	Encounter *FHIRReferenceInput `json:"encounter,omitempty"`
 
 	// The composition editing time, when the composition was last logically changed by the author.
-	Date *base.Date `json:"date,omitempty"`
+	Date *scalarutils.Date `json:"date,omitempty"`
 
 	// Identifies who is responsible for the information in the composition, not necessarily who typed it in.
 	Author []*FHIRReferenceInput `json:"author,omitempty"`
@@ -153,7 +154,7 @@ type FHIRCompositionInput struct {
 	Title *string `json:"title,omitempty"`
 
 	// The code specifying the level of confidentiality of the Composition.
-	Confidentiality *base.Code `json:"confidentiality,omitempty"`
+	Confidentiality *scalarutils.Code `json:"confidentiality,omitempty"`
 
 	// A participant who has attested to the accuracy of the composition/document.
 	Attester []*FHIRCompositionAttesterInput `json:"attester,omitempty"`
@@ -177,7 +178,7 @@ type FHIRCompositionRelatesto struct {
 	ID *string `json:"id,omitempty"`
 
 	// The type of relationship that this composition has with anther composition or document.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 
 	// The target composition/document of this relationship.
 	TargetIdentifier *FHIRIdentifier `json:"targetIdentifier,omitempty"`
@@ -192,7 +193,7 @@ type FHIRCompositionRelatestoInput struct {
 	ID *string `json:"id,omitempty"`
 
 	// The type of relationship that this composition has with anther composition or document.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 
 	// The target composition/document of this relationship.
 	TargetIdentifier *FHIRIdentifierInput `json:"targetIdentifier,omitempty"`
@@ -210,7 +211,7 @@ type FHIRCompositionSection struct {
 	Title *string `json:"title,omitempty"`
 
 	// A code identifying the kind of content contained within the section. This must be consistent with the section title.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 
 	// Identifies who is responsible for the information in this section, not necessarily who typed it in.
 	Author []*FHIRReference `json:"author,omitempty"`
@@ -222,7 +223,7 @@ type FHIRCompositionSection struct {
 	Text *FHIRNarrative `json:"text,omitempty"`
 
 	// How the entry list was prepared - whether it is a working list that is suitable for being maintained on an ongoing basis, or if it represents a snapshot of a list of items from another source, or whether it is a prepared list where items may be marked as added, modified or deleted.
-	Mode *base.Code `json:"mode,omitempty"`
+	Mode *scalarutils.Code `json:"mode,omitempty"`
 
 	// Specifies the order applied to the items in the section entries.
 	OrderedBy *FHIRCodeableConcept `json:"orderedBy,omitempty"`
@@ -246,7 +247,7 @@ type FHIRCompositionSectionInput struct {
 	Title *string `json:"title,omitempty"`
 
 	// A code identifying the kind of content contained within the section. This must be consistent with the section title.
-	Code *base.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 
 	// Identifies who is responsible for the information in this section, not necessarily who typed it in.
 	Author []*FHIRReferenceInput `json:"author,omitempty"`
@@ -258,7 +259,7 @@ type FHIRCompositionSectionInput struct {
 	Text *FHIRNarrativeInput `json:"text,omitempty"`
 
 	// How the entry list was prepared - whether it is a working list that is suitable for being maintained on an ongoing basis, or if it represents a snapshot of a list of items from another source, or whether it is a prepared list where items may be marked as added, modified or deleted.
-	Mode *base.Code `json:"mode,omitempty"`
+	Mode *scalarutils.Code `json:"mode,omitempty"`
 
 	// Specifies the order applied to the items in the section entries.
 	OrderedBy *FHIRCodeableConceptInput `json:"orderedBy,omitempty"`

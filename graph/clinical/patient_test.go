@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -73,7 +74,7 @@ func SingleAddressPayload() *FHIRAddressInput {
 	city := "Nairobi"
 	district := "Langata"
 	state := "Nairobi"
-	postalCode := base.Code("00200")
+	postalCode := scalarutils.Code("00200")
 	countryKe := "KE"
 
 	return &FHIRAddressInput{
@@ -96,13 +97,13 @@ func AddressPayload() []*FHIRAddressInput {
 }
 
 // FHIRCodingPayload - compose a list of FHIRCodingInput
-func FHIRCodingPayload(code base.Code, display string) []*FHIRCodingInput {
+func FHIRCodingPayload(code scalarutils.Code, display string) []*FHIRCodingInput {
 	codingInput := SingleFHIRCodingPayload(code, display)
 	return []*FHIRCodingInput{codingInput}
 }
 
 // SingleCodeableConceptPayload - compose a single FHIRCodeableConceptInput
-func SingleCodeableConceptPayload(code base.Code, display, text string) *FHIRCodeableConceptInput {
+func SingleCodeableConceptPayload(code scalarutils.Code, display, text string) *FHIRCodeableConceptInput {
 	return &FHIRCodeableConceptInput{
 		Text:   text,
 		Coding: FHIRCodingPayload(code, display),

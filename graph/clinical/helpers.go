@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
 )
@@ -55,13 +56,13 @@ func ComposeOneHealthEpisodeOfCare(
 	active := EpisodeOfCareStatusEnumActive
 	orgRef := fmt.Sprintf("Organization/%s", organizationID)
 	patientRef := fmt.Sprintf("Patient/%s", patientID)
-	orgType := base.URI("Organization")
-	patientType := base.URI("Patient")
+	orgType := scalarutils.URI("Organization")
+	patientType := scalarutils.URI("Patient")
 	return FHIREpisodeOfCare{
 		Status: &active,
 		Period: &FHIRPeriod{
-			Start: base.DateTime(now.Format(timeFormatStr)),
-			End:   base.DateTime(farFuture.Format(timeFormatStr)),
+			Start: scalarutils.DateTime(now.Format(timeFormatStr)),
+			End:   scalarutils.DateTime(farFuture.Format(timeFormatStr)),
 		},
 		ManagingOrganization: &FHIRReference{
 			Reference:  &orgRef,

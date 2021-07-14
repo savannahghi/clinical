@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/scalarutils"
 )
 
 func Test_trimString(t *testing.T) {
@@ -52,9 +52,9 @@ func TestFHIRPatient_RenderOfficialName(t *testing.T) {
 		Name                 []*FHIRHumanName
 		Telecom              []*FHIRContactPoint
 		Gender               *PatientGenderEnum
-		BirthDate            *base.Date
+		BirthDate            *scalarutils.Date
 		DeceasedBoolean      *bool
-		DeceasedDateTime     *base.Date
+		DeceasedDateTime     *scalarutils.Date
 		Address              []*FHIRAddress
 		MaritalStatus        *FHIRCodeableConcept
 		MultipleBirthBoolean *bool
@@ -74,14 +74,14 @@ func TestFHIRPatient_RenderOfficialName(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   base.Markdown
+		want   scalarutils.Markdown
 	}{
 		{
 			name: "good case: valid name",
 			fields: fields{
 				Name: name2,
 			},
-			want: base.Markdown("John Doe"),
+			want: scalarutils.Markdown("John Doe"),
 		},
 
 		{
@@ -89,7 +89,7 @@ func TestFHIRPatient_RenderOfficialName(t *testing.T) {
 			fields: fields{
 				Name: []*FHIRHumanName{},
 			},
-			want: base.Markdown("UNKNOWN NAME"),
+			want: scalarutils.Markdown("UNKNOWN NAME"),
 		},
 	}
 	for _, tt := range tests {
@@ -132,9 +132,9 @@ func TestFHIRPatient_RenderIDDocuments(t *testing.T) {
 		Name                 []*FHIRHumanName
 		Telecom              []*FHIRContactPoint
 		Gender               *PatientGenderEnum
-		BirthDate            *base.Date
+		BirthDate            *scalarutils.Date
 		DeceasedBoolean      *bool
-		DeceasedDateTime     *base.Date
+		DeceasedDateTime     *scalarutils.Date
 		Address              []*FHIRAddress
 		MaritalStatus        *FHIRCodeableConcept
 		MultipleBirthBoolean *bool
@@ -155,21 +155,21 @@ func TestFHIRPatient_RenderIDDocuments(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   base.Markdown
+		want   scalarutils.Markdown
 	}{
 		{
 			name: "good case: valid ids",
 			fields: fields{
 				Identifier: identifier2,
 			},
-			want: base.Markdown("test (official)"),
+			want: scalarutils.Markdown("test (official)"),
 		},
 		{
 			name: "bad case: no ids",
 			fields: fields{
 				Identifier: []*FHIRIdentifier{},
 			},
-			want: base.Markdown("No Identification documents found"),
+			want: scalarutils.Markdown("No Identification documents found"),
 		},
 	}
 	for _, tt := range tests {
@@ -212,9 +212,9 @@ func TestFHIRPatient_RenderAge(t *testing.T) {
 		Name                 []*FHIRHumanName
 		Telecom              []*FHIRContactPoint
 		Gender               *PatientGenderEnum
-		BirthDate            *base.Date
+		BirthDate            *scalarutils.Date
 		DeceasedBoolean      *bool
-		DeceasedDateTime     *base.Date
+		DeceasedDateTime     *scalarutils.Date
 		Address              []*FHIRAddress
 		MaritalStatus        *FHIRCodeableConcept
 		MultipleBirthBoolean *bool
@@ -226,11 +226,11 @@ func TestFHIRPatient_RenderAge(t *testing.T) {
 		ManagingOrganization *FHIRReference
 		Link                 []*FHIRPatientLink
 	}
-	date := base.Date{Year: 1990, Month: 4, Day: 12}
+	date := scalarutils.Date{Year: 1990, Month: 4, Day: 12}
 	tests := []struct {
 		name   string
 		fields fields
-		want   base.Markdown
+		want   scalarutils.Markdown
 	}{
 
 		{
@@ -238,14 +238,14 @@ func TestFHIRPatient_RenderAge(t *testing.T) {
 			fields: fields{
 				BirthDate: &date,
 			},
-			want: base.Markdown("Age: 31 yrs"),
+			want: scalarutils.Markdown("Age: 31 yrs"),
 		},
 		{
 			name: "bad case: age isnt present",
 			fields: fields{
 				BirthDate: nil,
 			},
-			want: base.Markdown("Age: UNKNOWN AGE"),
+			want: scalarutils.Markdown("Age: UNKNOWN AGE"),
 		},
 	}
 	for _, tt := range tests {
@@ -288,9 +288,9 @@ func TestFHIRPatient_RenderGender(t *testing.T) {
 		Name                 []*FHIRHumanName
 		Telecom              []*FHIRContactPoint
 		Gender               *PatientGenderEnum
-		BirthDate            *base.Date
+		BirthDate            *scalarutils.Date
 		DeceasedBoolean      *bool
-		DeceasedDateTime     *base.Date
+		DeceasedDateTime     *scalarutils.Date
 		Address              []*FHIRAddress
 		MaritalStatus        *FHIRCodeableConcept
 		MultipleBirthBoolean *bool
@@ -307,21 +307,21 @@ func TestFHIRPatient_RenderGender(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   base.Markdown
+		want   scalarutils.Markdown
 	}{
 		{
 			name: "good case: gender specified",
 			fields: fields{
 				Gender: &genderEnum,
 			},
-			want: base.Markdown("Gender: male"),
+			want: scalarutils.Markdown("Gender: male"),
 		},
 		{
 			name: "bad case: no gender specified",
 			fields: fields{
 				Gender: nil,
 			},
-			want: base.Markdown("Gender: UNKNOWN GENDER"),
+			want: scalarutils.Markdown("Gender: UNKNOWN GENDER"),
 		},
 	}
 	for _, tt := range tests {
@@ -364,9 +364,9 @@ func TestFHIRPatient_RenderProblems(t *testing.T) {
 		Name                 []*FHIRHumanName
 		Telecom              []*FHIRContactPoint
 		Gender               *PatientGenderEnum
-		BirthDate            *base.Date
+		BirthDate            *scalarutils.Date
 		DeceasedBoolean      *bool
-		DeceasedDateTime     *base.Date
+		DeceasedDateTime     *scalarutils.Date
 		Address              []*FHIRAddress
 		MaritalStatus        *FHIRCodeableConcept
 		MultipleBirthBoolean *bool
@@ -382,21 +382,21 @@ func TestFHIRPatient_RenderProblems(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   base.Markdown
+		want   scalarutils.Markdown
 	}{
 		{
 			name: "Case 1: invalid id",
 			fields: fields{
 				ID: nil,
 			},
-			want: base.Markdown("Problems: No known problems"),
+			want: scalarutils.Markdown("Problems: No known problems"),
 		},
 		{
 			name: "Case 2: valid id",
 			fields: fields{
 				ID: &id,
 			},
-			want: base.Markdown("Problems: No known problems"),
+			want: scalarutils.Markdown("Problems: No known problems"),
 		},
 	}
 	for _, tt := range tests {

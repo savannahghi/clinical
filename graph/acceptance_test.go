@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v5"
+	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
@@ -23,7 +24,7 @@ func getTestSimplePatientRegistration() (*clinical.SimplePatientRegistrationInpu
 	otherNames := gofakeit.Name()
 	dob := gofakeit.Date()
 	msisdn := gofakeit.Phone()
-	birthDate, err := base.NewDate(dob.Day(), int(dob.Month()), dob.Year())
+	birthDate, err := scalarutils.NewDate(dob.Day(), int(dob.Month()), dob.Year())
 	if err != nil {
 		return nil, "", fmt.Errorf("can't create valid birth date: %w", err)
 	}
@@ -337,22 +338,22 @@ func createFHIRTestObservation(ctx context.Context, encounterID string) (
 	*clinical.ObservationStatusEnum,
 	error,
 ) {
-	instantRecorded := base.Instant(time.Now().Format(instantFormat))
+	instantRecorded := scalarutils.Instant(time.Now().Format(instantFormat))
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("can't create test patient: %w", err)
 	}
 	srv := clinical.NewService()
 	status := clinical.ObservationStatusEnumPreliminary
-	categorySystem := base.URI("http://terminology.hl7.org/CodeSystem/observation-category")
-	loincSystem := base.URI("http://loinc.org")
+	categorySystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/observation-category")
+	loincSystem := scalarutils.URI("http://loinc.org")
 	notSelected := false
 	selected := true
 	refrangeText := "0kg to 300kg"
-	refrangeSystem := base.URI("http://terminology.hl7.org/CodeSystem/referencerange-meaning")
-	interpretationSystem := base.URI("http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation")
-	patientType := base.URI("Patient")
-	encounterType := base.URI("Encounter")
+	refrangeSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/referencerange-meaning")
+	interpretationSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation")
+	patientType := scalarutils.URI("Patient")
+	encounterType := scalarutils.URI("Encounter")
 	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
 	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
 
@@ -385,21 +386,21 @@ func createFHIRTestObservation(ctx context.Context, encounterID string) (
 		ValueQuantity: &clinical.FHIRQuantityInput{
 			Value:  72,
 			Unit:   "kg",
-			System: base.URI("http://unitsofmeasure.org"),
-			Code:   base.Code("kg"),
+			System: scalarutils.URI("http://unitsofmeasure.org"),
+			Code:   scalarutils.Code("kg"),
 		},
 		ReferenceRange: []*clinical.FHIRObservationReferencerangeInput{
 			{
 				Low: &clinical.FHIRQuantityInput{
 					Value:  0,
 					Unit:   "kg",
-					System: base.URI("http://unitsofmeasure.org"),
+					System: scalarutils.URI("http://unitsofmeasure.org"),
 					Code:   "kg",
 				},
 				High: &clinical.FHIRQuantityInput{
 					Value:  300,
 					Unit:   "kg",
-					System: base.URI("http://unitsofmeasure.org"),
+					System: scalarutils.URI("http://unitsofmeasure.org"),
 					Code:   "kg",
 				},
 				Text: &refrangeText,
@@ -461,14 +462,14 @@ func getTestSimpleServiceRequest(ctx context.Context, encounterID string) (
 	patientName := patient.Names()
 	requester := gofakeit.Name()
 	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
-	patientType := base.URI("Patient")
+	patientType := scalarutils.URI("Patient")
 	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
-	encounterType := base.URI("Encounter")
-	active := base.Code(clinical.EpisodeOfCareStatusEnumActive)
-	system := base.URI("OCL:/orgs/CIEL/sources/CIEL/")
+	encounterType := scalarutils.URI("Encounter")
+	active := scalarutils.Code(clinical.EpisodeOfCareStatusEnumActive)
+	system := scalarutils.URI("OCL:/orgs/CIEL/sources/CIEL/")
 	userSelected := true
-	intent := base.Code("proposal")
-	priority := base.Code("routine")
+	intent := scalarutils.Code("proposal")
+	priority := scalarutils.Code("routine")
 
 	return &clinical.FHIRServiceRequestInput{
 		Status:   &active,
@@ -551,7 +552,7 @@ func createTestFHIRComposition(
 	now := time.Now()
 	title := gofakeit.HipsterSentence(10)
 	author := gofakeit.Name()
-	system := base.URI("http://loinc.org")
+	system := scalarutils.URI("http://loinc.org")
 	historyTitle := "Patient History"
 	notSelected := false
 	generatedStatus := clinical.NarrativeStatusEnumGenerated
@@ -561,11 +562,11 @@ func createTestFHIRComposition(
 		return nil, nil, fmt.Errorf("can't create patient: %w", err)
 	}
 	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
-	patientType := base.URI("Patient")
+	patientType := scalarutils.URI("Patient")
 	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
-	encounterType := base.URI("Encounter")
+	encounterType := scalarutils.URI("Encounter")
 
-	recorded, err := base.NewDate(now.Day(), int(now.Month()), now.Year())
+	recorded, err := scalarutils.NewDate(now.Day(), int(now.Month()), now.Year())
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't initialize recorded date: %w", err)
 	}
@@ -583,7 +584,7 @@ func createTestFHIRComposition(
 			Coding: []*clinical.FHIRCodingInput{
 				{
 					System:       &system,
-					Code:         base.Code("11488-4"),
+					Code:         scalarutils.Code("11488-4"),
 					Display:      "Consult Note",
 					UserSelected: &notSelected,
 				},
@@ -595,7 +596,7 @@ func createTestFHIRComposition(
 				Coding: []*clinical.FHIRCodingInput{
 					{
 						System:       &system,
-						Code:         base.Code("11488-4"),
+						Code:         scalarutils.Code("11488-4"),
 						Display:      "Consult Note",
 						UserSelected: &notSelected,
 					},
@@ -607,7 +608,7 @@ func createTestFHIRComposition(
 				Title: &historyTitle,
 				Text: &clinical.FHIRNarrativeInput{
 					Status: &generatedStatus,
-					Div:    base.XHTML(gofakeit.HipsterSentence(10)),
+					Div:    scalarutils.XHTML(gofakeit.HipsterSentence(10)),
 				},
 			},
 		},
@@ -633,19 +634,19 @@ func createTestConditionInput(
 	encounterID string,
 	patientID string,
 ) (*clinical.FHIRConditionInput, error) {
-	system := base.URI("OCL:/orgs/CIEL/sources/CIEL/")
+	system := scalarutils.URI("OCL:/orgs/CIEL/sources/CIEL/")
 	userSelected := true
 	falseUserSelected := false
-	clinicalSystem := base.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
-	verificationStatusSystem := base.URI("http://terminology.hl7.org/CodeSystem/condition-ver-status")
-	categorySystem := base.URI("http://terminology.hl7.org/CodeSystem/condition-category")
+	clinicalSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+	verificationStatusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-ver-status")
+	categorySystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-category")
 	name := gofakeit.Name()
-	text := base.Markdown(gofakeit.HipsterSentence(20))
-	encounterType := base.URI("Encounter")
+	text := scalarutils.Markdown(gofakeit.HipsterSentence(20))
+	encounterType := scalarutils.URI("Encounter")
 	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
-	subjectType := base.URI("Patient")
+	subjectType := scalarutils.URI("Patient")
 	patRef := fmt.Sprintf("Patient/%s", patientID)
-	dateRecorded := base.Date{
+	dateRecorded := scalarutils.Date{
 		Year:  gofakeit.Year(),
 		Month: 12,
 		Day:   gofakeit.Day(),
@@ -656,7 +657,7 @@ func createTestConditionInput(
 			Coding: []*clinical.FHIRCodingInput{
 				{
 					System:       &system,
-					Code:         base.Code("113488"),
+					Code:         scalarutils.Code("113488"),
 					Display:      "Pulmonary Tuberculosis",
 					UserSelected: &userSelected,
 				},
@@ -667,7 +668,7 @@ func createTestConditionInput(
 			Coding: []*clinical.FHIRCodingInput{
 				{
 					System:       &clinicalSystem,
-					Code:         base.Code("active"),
+					Code:         scalarutils.Code("active"),
 					Display:      "Active",
 					UserSelected: &falseUserSelected,
 				},
@@ -678,7 +679,7 @@ func createTestConditionInput(
 			Coding: []*clinical.FHIRCodingInput{
 				{
 					System:       &verificationStatusSystem,
-					Code:         base.Code("confirmed"),
+					Code:         scalarutils.Code("confirmed"),
 					Display:      "Confirmed",
 					UserSelected: &falseUserSelected,
 				},
@@ -691,7 +692,7 @@ func createTestConditionInput(
 				Coding: []*clinical.FHIRCodingInput{
 					{
 						System:       &categorySystem,
-						Code:         base.Code("problem-list-item"),
+						Code:         scalarutils.Code("problem-list-item"),
 						Display:      "problem-list-item",
 						UserSelected: &falseUserSelected,
 					},
@@ -790,7 +791,7 @@ func createTestAllergy(
 	srv := clinical.NewService()
 	patientName := patient.Names()
 	now := time.Now()
-	dateRecorded, err := base.NewDate(now.Day(), int(now.Month()), now.Year())
+	dateRecorded, err := scalarutils.NewDate(now.Day(), int(now.Month()), now.Year())
 	if err != nil {
 		return "", fmt.Errorf("can't initialize date recorded")
 	}
@@ -798,19 +799,19 @@ func createTestAllergy(
 	substanceID := "1234"
 	substanceDisplayName := gofakeit.Name()
 	allergyType := clinical.AllergyIntoleranceTypeEnumAllergy
-	allergySystem := base.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
-	clinicalStatusSystem := base.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical")
-	verificationSystem := base.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
+	allergySystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
+	clinicalStatusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical")
+	verificationSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
 	notSelected := false
 	selected := true
 	encounterReference := fmt.Sprintf("Encounter/%s", encounterID)
-	encounterType := base.URI("Encounter")
+	encounterType := scalarutils.URI("Encounter")
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	patientType := base.URI("Patient")
-	annotationText := base.Markdown(gofakeit.HipsterSentence(10))
+	patientType := scalarutils.URI("Patient")
+	annotationText := scalarutils.Markdown(gofakeit.HipsterSentence(10))
 	reactionDescription := "some reaction"
 	reactionSeverity := clinical.AllergyIntoleranceReactionSeverityEnumMild
-	oclSystem := base.URI("OCL:/orgs/CIEL/sources/CIEL/")
+	oclSystem := scalarutils.URI("OCL:/orgs/CIEL/sources/CIEL/")
 
 	inp := clinical.FHIRAllergyIntoleranceInput{
 		Type:         &allergyType,
@@ -821,7 +822,7 @@ func createTestAllergy(
 			Coding: []*clinical.FHIRCodingInput{
 				{
 					System:       &allergySystem,
-					Code:         base.Code(substanceID),
+					Code:         scalarutils.Code(substanceID),
 					Display:      substanceDisplayName,
 					UserSelected: &notSelected,
 				},
@@ -832,7 +833,7 @@ func createTestAllergy(
 			Coding: []*clinical.FHIRCodingInput{
 				{
 					System:       &clinicalStatusSystem,
-					Code:         base.Code("active"),
+					Code:         scalarutils.Code("active"),
 					Display:      "Active",
 					UserSelected: &notSelected,
 				},
@@ -880,7 +881,7 @@ func createTestAllergy(
 					Coding: []*clinical.FHIRCodingInput{
 						{
 							System:       &oclSystem,
-							Code:         base.Code(substanceID),
+							Code:         scalarutils.Code(substanceID),
 							Display:      substanceDisplayName,
 							UserSelected: &selected,
 						},
@@ -892,7 +893,7 @@ func createTestAllergy(
 						Coding: []*clinical.FHIRCodingInput{
 							{
 								System:       &oclSystem,
-								Code:         base.Code("a code"),
+								Code:         scalarutils.Code("a code"),
 								Display:      "Rashes",
 								UserSelected: &selected,
 							},

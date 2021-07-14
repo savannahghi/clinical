@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -16,10 +17,10 @@ type FHIRServiceRequest struct {
 	Identifier []*FHIRIdentifier `json:"identifier,omitempty"`
 
 	// The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
-	InstantiatesCanonical *base.Canonical `json:"instantiatesCanonical,omitempty"`
+	InstantiatesCanonical *scalarutils.Canonical `json:"instantiatesCanonical,omitempty"`
 
 	// The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
-	InstantiatesURI *base.Instant `json:"instantiatesURI,omitempty"`
+	InstantiatesURI *scalarutils.Instant `json:"instantiatesURI,omitempty"`
 
 	// Plan/proposal/order fulfilled by this request.
 	BasedOn []*FHIRReference `json:"basedOn,omitempty"`
@@ -31,16 +32,16 @@ type FHIRServiceRequest struct {
 	Requisition *FHIRIdentifier `json:"requisition,omitempty"`
 
 	// The status of the order.
-	Status *base.Code `json:"status,omitempty"`
+	Status *scalarutils.Code `json:"status,omitempty"`
 
 	// Whether the request is a proposal, plan, an original order or a reflex order.
-	Intent *base.Code `json:"intent,omitempty"`
+	Intent *scalarutils.Code `json:"intent,omitempty"`
 
 	// A code that classifies the service for searching, sorting and display purposes (e.g. "Surgical Procedure").
 	Category []*FHIRCodeableConcept `json:"category,omitempty"`
 
 	// Indicates how quickly the ServiceRequest should be addressed with respect to other requests.
-	Priority *base.Code `json:"priority,omitempty"`
+	Priority *scalarutils.Code `json:"priority,omitempty"`
 
 	// Set this to true if the record is saying that the service/procedure should NOT be performed.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
@@ -67,7 +68,7 @@ type FHIRServiceRequest struct {
 	Encounter *FHIRReference `json:"encounter,omitempty"`
 
 	// The date/time at which the requested service should occur.
-	OccurrenceDateTime *base.Date `json:"occurrenceDateTime,omitempty"`
+	OccurrenceDateTime *scalarutils.Date `json:"occurrenceDateTime,omitempty"`
 
 	// The date/time at which the requested service should occur.
 	OccurrencePeriod *FHIRPeriod `json:"occurrencePeriod,omitempty"`
@@ -79,10 +80,10 @@ type FHIRServiceRequest struct {
 	AsNeededBoolean *bool `json:"asNeededBoolean,omitempty"`
 
 	// If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
-	AsNeededCodeableConcept *base.Code `json:"asNeededCodeableConcept,omitempty"`
+	AsNeededCodeableConcept *scalarutils.Code `json:"asNeededCodeableConcept,omitempty"`
 
 	// When the request transitioned to being actionable.
-	AuthoredOn *base.DateTime `json:"authoredOn,omitempty"`
+	AuthoredOn *scalarutils.DateTime `json:"authoredOn,omitempty"`
 
 	// The individual who initiated the request and has responsibility for its activation.
 	Requester *FHIRReference `json:"requester,omitempty"`
@@ -94,13 +95,13 @@ type FHIRServiceRequest struct {
 	Performer []*FHIRReference `json:"performer,omitempty"`
 
 	// The preferred location(s) where the procedure should actually happen in coded or free text form. E.g. at home or nursing day care center.
-	LocationCode *base.Code `json:"locationCode,omitempty"`
+	LocationCode *scalarutils.Code `json:"locationCode,omitempty"`
 
 	// A reference to the the preferred location(s) where the procedure should actually happen. E.g. at home or nursing day care center.
 	LocationReference []*FHIRReference `json:"locationReference,omitempty"`
 
 	// An explanation or justification for why this service is being requested in coded or textual form.   This is often for billing purposes.  May relate to the resources referred to in `supportingInfo`.
-	ReasonCode *base.Code `json:"reasonCode,omitempty"`
+	ReasonCode *scalarutils.Code `json:"reasonCode,omitempty"`
 
 	// Indicates another resource that provides a justification for why this service is being requested.   May relate to the resources referred to in `supportingInfo`.
 	ReasonReference []*FHIRReference `json:"reasonReference,omitempty"`
@@ -136,10 +137,10 @@ type FHIRServiceRequestInput struct {
 	Identifier []*FHIRIdentifierInput `json:"identifier,omitempty"`
 
 	// The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
-	InstantiatesCanonical *base.Canonical `json:"instantiatesCanonical,omitempty"`
+	InstantiatesCanonical *scalarutils.Canonical `json:"instantiatesCanonical,omitempty"`
 
 	// The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
-	InstantiatesURI *base.Instant `json:"instantiatesURI,omitempty"`
+	InstantiatesURI *scalarutils.Instant `json:"instantiatesURI,omitempty"`
 
 	// Plan/proposal/order fulfilled by this request.
 	BasedOn []*FHIRReferenceInput `json:"basedOn,omitempty"`
@@ -151,16 +152,16 @@ type FHIRServiceRequestInput struct {
 	Requisition *FHIRIdentifierInput `json:"requisition,omitempty"`
 
 	// The status of the order.
-	Status *base.Code `json:"status,omitempty"`
+	Status *scalarutils.Code `json:"status,omitempty"`
 
 	// Whether the request is a proposal, plan, an original order or a reflex order.
-	Intent *base.Code `json:"intent,omitempty"`
+	Intent *scalarutils.Code `json:"intent,omitempty"`
 
 	// A code that classifies the service for searching, sorting and display purposes (e.g. "Surgical Procedure").
 	Category []*FHIRCodeableConceptInput `json:"category,omitempty"`
 
 	// Indicates how quickly the ServiceRequest should be addressed with respect to other requests.
-	Priority *base.Code `json:"priority,omitempty"`
+	Priority *scalarutils.Code `json:"priority,omitempty"`
 
 	// Set this to true if the record is saying that the service/procedure should NOT be performed.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
@@ -187,7 +188,7 @@ type FHIRServiceRequestInput struct {
 	Encounter *FHIRReferenceInput `json:"encounter,omitempty"`
 
 	// The date/time at which the requested service should occur.
-	OccurrenceDateTime *base.Date `json:"occurrenceDateTime,omitempty"`
+	OccurrenceDateTime *scalarutils.Date `json:"occurrenceDateTime,omitempty"`
 
 	// The date/time at which the requested service should occur.
 	OccurrencePeriod *FHIRPeriodInput `json:"occurrencePeriod,omitempty"`
@@ -199,10 +200,10 @@ type FHIRServiceRequestInput struct {
 	AsNeededBoolean *bool `json:"asNeededBoolean,omitempty"`
 
 	// If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
-	AsNeededCodeableConcept *base.Code `json:"asNeededCodeableConcept,omitempty"`
+	AsNeededCodeableConcept *scalarutils.Code `json:"asNeededCodeableConcept,omitempty"`
 
 	// When the request transitioned to being actionable.
-	AuthoredOn *base.DateTime `json:"authoredOn,omitempty"`
+	AuthoredOn *scalarutils.DateTime `json:"authoredOn,omitempty"`
 
 	// The individual who initiated the request and has responsibility for its activation.
 	Requester *FHIRReferenceInput `json:"requester,omitempty"`
@@ -214,13 +215,13 @@ type FHIRServiceRequestInput struct {
 	Performer []*FHIRReferenceInput `json:"performer,omitempty"`
 
 	// The preferred location(s) where the procedure should actually happen in coded or free text form. E.g. at home or nursing day care center.
-	LocationCode *base.Code `json:"locationCode,omitempty"`
+	LocationCode *scalarutils.Code `json:"locationCode,omitempty"`
 
 	// A reference to the the preferred location(s) where the procedure should actually happen. E.g. at home or nursing day care center.
 	LocationReference []*FHIRReferenceInput `json:"locationReference,omitempty"`
 
 	// An explanation or justification for why this service is being requested in coded or textual form.   This is often for billing purposes.  May relate to the resources referred to in `supportingInfo`.
-	ReasonCode *base.Code `json:"reasonCode,omitempty"`
+	ReasonCode *scalarutils.Code `json:"reasonCode,omitempty"`
 
 	// Indicates another resource that provides a justification for why this service is being requested.   May relate to the resources referred to in `supportingInfo`.
 	ReasonReference []*FHIRReferenceInput `json:"reasonReference,omitempty"`

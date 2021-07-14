@@ -1,30 +1,32 @@
 // Package clinical -  common helper functions and test fixtures
 package clinical
 
-import "gitlab.slade360emr.com/go/base"
+import (
+	"github.com/savannahghi/scalarutils"
+)
 
 // SingleIdentifierInput - single indentifier input
 type SingleIdentifierInput struct {
 	IdentifierUse IdentifierUseEnum
 	Value         string
-	System        base.URI
+	System        scalarutils.URI
 	UserSelected  bool
 	Version       string
-	Code          base.Code
+	Code          scalarutils.Code
 }
 
 // ReferenceInput - FHIR reference input
 type ReferenceInput struct {
 	Reference  string
-	URL        base.URI
+	URL        scalarutils.URI
 	Display    string
 	Identifier *SingleIdentifierInput
 }
 
 // SingleFHIRCodingPayload - compose an FHIRCodingInput
-func SingleFHIRCodingPayload(code base.Code, display string) *FHIRCodingInput {
+func SingleFHIRCodingPayload(code scalarutils.Code, display string) *FHIRCodingInput {
 	userSelected := true
-	var system base.URI = "http://terminology.hl7.org/CodeSystem/v2-0131"
+	var system scalarutils.URI = "http://terminology.hl7.org/CodeSystem/v2-0131"
 	version := "2.0"
 
 	return &FHIRCodingInput{

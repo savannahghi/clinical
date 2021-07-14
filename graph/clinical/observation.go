@@ -3,6 +3,7 @@ package clinical
 import (
 	"time"
 
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -43,7 +44,7 @@ type FHIRObservation struct {
 	Encounter *FHIRReference `json:"encounter,omitempty"`
 
 	// The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
-	EffectiveDateTime *base.Date `json:"effectiveDateTime,omitempty"`
+	EffectiveDateTime *scalarutils.Date `json:"effectiveDateTime,omitempty"`
 
 	// The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
 	EffectivePeriod *FHIRPeriod `json:"effectivePeriod,omitempty"`
@@ -52,10 +53,10 @@ type FHIRObservation struct {
 	EffectiveTiming *FHIRTiming `json:"effectiveTiming,omitempty"`
 
 	// The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
-	EffectiveInstant *base.Instant `json:"effectiveInstant,omitempty"`
+	EffectiveInstant *scalarutils.Instant `json:"effectiveInstant,omitempty"`
 
 	// The date and time this version of the observation was made available to providers, typically after the results have been reviewed and verified.
-	Issued *base.Instant `json:"issued,omitempty"`
+	Issued *scalarutils.Instant `json:"issued,omitempty"`
 
 	// Who was responsible for asserting the observed value as "true".
 	Performer []*FHIRReference `json:"performer,omitempty"`
@@ -64,7 +65,7 @@ type FHIRObservation struct {
 	ValueQuantity *FHIRQuantity `json:"valueQuantity,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueCodeableConcept *base.Code `json:"valueCodeableConcept,omitempty"`
+	ValueCodeableConcept *scalarutils.Code `json:"valueCodeableConcept,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValueString *string `json:"valueString,omitempty"`
@@ -88,7 +89,7 @@ type FHIRObservation struct {
 	ValueTime *time.Time `json:"valueTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueDateTime *base.Date `json:"valueDateTime,omitempty"`
+	ValueDateTime *scalarutils.Date `json:"valueDateTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValuePeriod *FHIRPeriod `json:"valuePeriod,omitempty"`
@@ -139,7 +140,7 @@ type FHIRObservationComponent struct {
 	ValueQuantity *FHIRQuantity `json:"valueQuantity,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueCodeableConcept *base.Code `json:"valueCodeableConcept,omitempty"`
+	ValueCodeableConcept *scalarutils.Code `json:"valueCodeableConcept,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValueString *string `json:"valueString,omitempty"`
@@ -163,7 +164,7 @@ type FHIRObservationComponent struct {
 	ValueTime *time.Time `json:"valueTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueDateTime *base.Date `json:"valueDateTime,omitempty"`
+	ValueDateTime *scalarutils.Date `json:"valueDateTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValuePeriod *FHIRPeriod `json:"valuePeriod,omitempty"`
@@ -190,7 +191,7 @@ type FHIRObservationComponentInput struct {
 	ValueQuantity *FHIRQuantityInput `json:"valueQuantity,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueCodeableConcept *base.Code `json:"valueCodeableConcept,omitempty"`
+	ValueCodeableConcept *scalarutils.Code `json:"valueCodeableConcept,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValueString *string `json:"valueString,omitempty"`
@@ -214,7 +215,7 @@ type FHIRObservationComponentInput struct {
 	ValueTime *time.Time `json:"valueTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueDateTime *base.Date `json:"valueDateTime,omitempty"`
+	ValueDateTime *scalarutils.Date `json:"valueDateTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValuePeriod *FHIRPeriodInput `json:"valuePeriod,omitempty"`
@@ -262,7 +263,7 @@ type FHIRObservationInput struct {
 	Encounter *FHIRReferenceInput `json:"encounter,omitempty"`
 
 	// The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
-	EffectiveDateTime *base.Date `json:"effectiveDateTime,omitempty"`
+	EffectiveDateTime *scalarutils.Date `json:"effectiveDateTime,omitempty"`
 
 	// The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
 	EffectivePeriod *FHIRPeriodInput `json:"effectivePeriod,omitempty"`
@@ -271,10 +272,10 @@ type FHIRObservationInput struct {
 	EffectiveTiming *FHIRTimingInput `json:"effectiveTiming,omitempty"`
 
 	// The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
-	EffectiveInstant *base.Instant `json:"effectiveInstant,omitempty"`
+	EffectiveInstant *scalarutils.Instant `json:"effectiveInstant,omitempty"`
 
 	// The date and time this version of the observation was made available to providers, typically after the results have been reviewed and verified.
-	Issued *base.Instant `json:"issued,omitempty"`
+	Issued *scalarutils.Instant `json:"issued,omitempty"`
 
 	// Who was responsible for asserting the observed value as "true".
 	Performer []*FHIRReferenceInput `json:"performer,omitempty"`
@@ -283,7 +284,7 @@ type FHIRObservationInput struct {
 	ValueQuantity *FHIRQuantityInput `json:"valueQuantity,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueCodeableConcept *base.Code `json:"valueCodeableConcept,omitempty"`
+	ValueCodeableConcept *scalarutils.Code `json:"valueCodeableConcept,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValueString *string `json:"valueString,omitempty"`
@@ -307,7 +308,7 @@ type FHIRObservationInput struct {
 	ValueTime *time.Time `json:"valueTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
-	ValueDateTime *base.Date `json:"valueDateTime,omitempty"`
+	ValueDateTime *scalarutils.Date `json:"valueDateTime,omitempty"`
 
 	// The information determined as a result of making the observation, if the information has a simple value.
 	ValuePeriod *FHIRPeriodInput `json:"valuePeriod,omitempty"`

@@ -12,6 +12,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/pkg/errors"
+	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
 
@@ -64,10 +65,10 @@ func IDToIdentifier(
 		return nil, nil
 	}
 	output := []*FHIRIdentifierInput{}
-	identificationDocumentIdentifierSystem := base.URI(IDIdentifierSystem)
-	msisdnIdentifierSystem := base.URI(MSISDNIdentifierSystem)
+	identificationDocumentIdentifierSystem := scalarutils.URI(IDIdentifierSystem)
+	msisdnIdentifierSystem := scalarutils.URI(MSISDNIdentifierSystem)
 	userSelected := true
-	idSystem := base.URI(identificationDocumentIdentifierSystem)
+	idSystem := scalarutils.URI(identificationDocumentIdentifierSystem)
 	version := DefaultVersion
 
 	for _, id := range ids {
@@ -78,7 +79,7 @@ func IDToIdentifier(
 					{
 						System:       &identificationDocumentIdentifierSystem,
 						Version:      &version,
-						Code:         base.Code(id.DocumentNumber),
+						Code:         scalarutils.Code(id.DocumentNumber),
 						Display:      id.DocumentNumber,
 						UserSelected: &userSelected,
 					},
@@ -106,7 +107,7 @@ func IDToIdentifier(
 					{
 						System:       &identificationDocumentIdentifierSystem,
 						Version:      &version,
-						Code:         base.Code(*normalized),
+						Code:         scalarutils.Code(*normalized),
 						Display:      *normalized,
 						UserSelected: &userSelected,
 					},
@@ -284,13 +285,13 @@ func PhotosToAttachments(
 			return nil, errors.Wrap(err, "upload base64 decode error")
 		}
 
-		hash := base.Base64Binary(upload.Hash)
+		hash := scalarutils.Base64Binary(upload.Hash)
 		size := len(data)
-		url := base.URL(upload.URL)
-		now := base.DateTime(time.Now().Format(timeFormatStr))
-		contentType := base.Code(photo.PhotoContentType.String())
-		language := base.Code(DefaultLanguage)
-		photoData := base.Base64Binary(photo.PhotoBase64data)
+		url := scalarutils.URL(upload.URL)
+		now := scalarutils.DateTime(time.Now().Format(timeFormatStr))
+		contentType := scalarutils.Code(photo.PhotoContentType.String())
+		language := scalarutils.Code(DefaultLanguage)
+		photoData := scalarutils.Base64Binary(photo.PhotoBase64data)
 		attachment := &FHIRAttachmentInput{
 			ContentType: &contentType,
 			Language:    &language,
@@ -319,7 +320,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 
 	for _, postal := range postal {
 		text := fmt.Sprintf("%s\n%s", postal.PostalAddress, postal.PostalCode)
-		postalCode := base.Code(postal.PostalCode)
+		postalCode := scalarutils.Code(postal.PostalCode)
 		postalAddr := &FHIRAddressInput{
 			Use:        &addrUse,
 			Type:       &postalAddrType,
@@ -335,7 +336,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 	for _, physical := range physical {
 		text := fmt.Sprintf(
 			"%s\n%s", physical.MapsCode, physical.PhysicalAddress)
-		mapsCode := base.Code(physical.MapsCode)
+		mapsCode := scalarutils.Code(physical.MapsCode)
 		physicalAddr := &FHIRAddressInput{
 			Use:        &addrUse,
 			Type:       &physicalAddrType,
@@ -413,7 +414,7 @@ func MaritalStatusEnumToCodeableConceptInput(val MaritalStatus) *FHIRCodeableCon
 	output := &FHIRCodeableConceptInput{
 		Coding: []*FHIRCodingInput{
 			{
-				Code:         base.Code(val.String()),
+				Code:         scalarutils.Code(val.String()),
 				Display:      MaritalStatusDisplay(val),
 				UserSelected: &userSelected,
 			},
@@ -429,14 +430,14 @@ func LanguagesToCommunicationInputs(languages []base.Language) []*FHIRPatientCom
 	output := []*FHIRPatientCommunicationInput{}
 	preferred := false
 	userSelected := true
-	system := base.URI(base.LanguageCodingSystem)
+	system := scalarutils.URI(base.LanguageCodingSystem)
 	version := base.LanguageCodingVersion
 	for _, language := range languages {
 		comm := &FHIRPatientCommunicationInput{
 			Language: &FHIRCodeableConceptInput{
 				Coding: []*FHIRCodingInput{
 					{
-						Code:         base.Code(language.String()),
+						Code:         scalarutils.Code(language.String()),
 						Display:      base.LanguageNames[language],
 						UserSelected: &userSelected,
 						System:       &system,
@@ -471,7 +472,7 @@ func MaritalStatusEnumToCodeableConcept(val MaritalStatus) *FHIRCodeableConcept 
 	output := &FHIRCodeableConcept{
 		Coding: []*FHIRCoding{
 			{
-				Code:         base.Code(val.String()),
+				Code:         scalarutils.Code(val.String()),
 				Display:      disp,
 				UserSelected: &sel,
 			},
@@ -511,7 +512,7 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 		postalAddressLines = append(postalAddressLines, postal.PostalAddress)
 		postalAddressLines = append(postalAddressLines, postal.PostalCode)
 		if addr.PostalCode == nil {
-			postalCode := base.Code(postal.PostalCode)
+			postalCode := scalarutils.Code(postal.PostalCode)
 			addr.PostalCode = &postalCode
 		}
 	}
