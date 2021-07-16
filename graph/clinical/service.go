@@ -18,6 +18,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
@@ -2111,15 +2112,15 @@ func (s Service) sendAlertToPatient(ctx context.Context, phoneNumber string, pat
 	text := createAlertMessage(*name)
 
 	type PayloadRequest struct {
-		To      []string      `json:"to"`
-		Message string        `json:"message"`
-		Sender  base.SenderID `json:"sender"`
+		To      []string           `json:"to"`
+		Message string             `json:"message"`
+		Sender  enumutils.SenderID `json:"sender"`
 	}
 
 	requestPayload := PayloadRequest{
 		To:      []string{phoneNumber},
 		Message: text,
-		Sender:  base.SenderIDBewell,
+		Sender:  enumutils.SenderIDBewell,
 	}
 
 	resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
@@ -2292,15 +2293,15 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 							text := createNextOfKinAlertMessage(*patientRelation.Name.Given[0], *patientName)
 
 							type PayloadRequest struct {
-								To      []string      `json:"to"`
-								Message string        `json:"message"`
-								Sender  base.SenderID `json:"sender"`
+								To      []string           `json:"to"`
+								Message string             `json:"message"`
+								Sender  enumutils.SenderID `json:"sender"`
 							}
 
 							requestPayload := PayloadRequest{
 								To:      []string{*number.Value},
 								Message: text,
-								Sender:  base.SenderIDBewell,
+								Sender:  enumutils.SenderIDBewell,
 							}
 
 							resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
@@ -3598,7 +3599,7 @@ func (s Service) CreateUpdatePatientExtraInformation(
 	}
 
 	if input.Languages != nil {
-		langs := []base.Language{}
+		langs := []enumutils.Language{}
 		for _, l := range input.Languages {
 			langs = append(langs, *l)
 		}

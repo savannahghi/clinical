@@ -6,7 +6,8 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/firebasetools"
 )
 
 const (
@@ -28,8 +29,8 @@ type PatientLink struct {
 
 // PatientLinkConnection is used to serialize GraphQL Relay connections for patient links
 type PatientLinkConnection struct {
-	Edges    []*PatientLinkEdge `json:"edges"`
-	PageInfo *base.PageInfo     `json:"pageInfo"`
+	Edges    []*PatientLinkEdge      `json:"edges"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo"`
 }
 
 // PatientLinkEdge is used to serialize GraphQL relay edges for patient links
@@ -42,8 +43,8 @@ type PatientLinkEdge struct {
 func (pl *PatientLink) IsNode() {}
 
 // GetID returns the patient links primary key
-func (pl *PatientLink) GetID() base.ID {
-	return base.IDValue(pl.ID)
+func (pl *PatientLink) GetID() firebasetools.ID {
+	return firebasetools.IDValue(pl.ID)
 }
 
 // SetID sets the patient links' id
@@ -61,7 +62,7 @@ func GeneratePatientLink(patientID string) (*PatientLink, error) {
 		OpaqueID:  xid.String(),
 		Expires:   ts,
 	}
-	_, _, err := base.CreateNode(ctx, link)
+	_, _, err := firebasetools.CreateNode(ctx, link)
 	if err != nil {
 		return nil, fmt.Errorf("unable to save patient link: %w", err)
 	}
@@ -70,27 +71,27 @@ func GeneratePatientLink(patientID string) (*PatientLink, error) {
 
 // GetPatientID returns the actual patient ID
 func GetPatientID(ctx context.Context, opaqueID string) (string, error) {
-	filterParam := base.FilterParam{
+	filterParam := firebasetools.FilterParam{
 		FieldName:           "opaqueID",
-		FieldType:           base.FieldTypeString,
-		ComparisonOperation: base.OperationEqual,
+		FieldType:           enumutils.FieldTypeString,
+		ComparisonOperation: enumutils.OperationEqual,
 		FieldValue:          opaqueID,
 	}
 
-	filterParamExpires := base.FilterParam{
+	filterParamExpires := firebasetools.FilterParam{
 		FieldName:           "expires",
-		FieldType:           base.FieldTypeTimestamp,
-		ComparisonOperation: base.OperationGreaterThanOrEqualTo,
+		FieldType:           enumutils.FieldTypeTimestamp,
+		ComparisonOperation: enumutils.OperationGreaterThanOrEqualTo,
 		FieldValue:          time.Now(),
 	}
 
-	filter := base.FilterInput{
-		FilterBy: []*base.FilterParam{
+	filter := firebasetools.FilterInput{
+		FilterBy: []*firebasetools.FilterParam{
 			&filterParam,
 			&filterParamExpires,
 		},
 	}
-	docs, _, err := base.QueryNodes(ctx, nil, &filter, nil, &PatientLink{})
+	docs, _, err := firebasetools.QueryNodes(ctx, nil, &filter, nil, &PatientLink{})
 	if err != nil {
 		return "", err
 	}

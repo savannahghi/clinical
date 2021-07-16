@@ -21,6 +21,7 @@ resolver:
 
 autobind:
   - "github.com/savannahghi/scalarutils"
+  - "github.com/savannahghi/enumutils"
   - "gitlab.slade360emr.com/go/base"
   - "gitlab.slade360emr.com/go/clinical/graph/model"
   - "gitlab.slade360emr.com/go/clinical/graph/clinical"

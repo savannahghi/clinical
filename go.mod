@@ -18,6 +18,8 @@ require (
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.2.1
+	github.com/savannahghi/enumutils v0.0.0-20210629053908-b2082a4ab6b3
+	github.com/savannahghi/firebasetools v0.0.6 // indirect
 	github.com/savannahghi/scalarutils v0.0.0-20210622091443-bad5089abdad
 	github.com/savannahghi/serverutils v0.0.2
 	github.com/segmentio/ksuid v1.0.3

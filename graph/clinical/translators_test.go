@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v5"
+	"github.com/savannahghi/enumutils"
 	"github.com/segmentio/ksuid"
 	"gitlab.slade360emr.com/go/base"
 )
@@ -36,7 +37,7 @@ func TestPhotosToAttachments(t *testing.T) {
 				ctx: context.Background(),
 				photos: []*PhotoInput{
 					{
-						PhotoContentType: base.ContentTypePng,
+						PhotoContentType: enumutils.ContentTypePng,
 						PhotoFilename:    ksuid.New().String(),
 						PhotoBase64data:  photoBase64,
 					},

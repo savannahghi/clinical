@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v5"
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 	"gitlab.slade360emr.com/go/base"
@@ -54,7 +55,7 @@ func getTestSimplePatientRegistration() (*clinical.SimplePatientRegistrationInpu
 		},
 		Photos: []*clinical.PhotoInput{
 			{
-				PhotoContentType: base.ContentTypeJpg,
+				PhotoContentType: enumutils.ContentTypeJpg,
 				PhotoBase64data:  testPhotoBase64,
 				PhotoFilename:    fmt.Sprintf("%s.jpg", gofakeit.Name()),
 			},
@@ -77,12 +78,12 @@ func getTestSimplePatientRegistration() (*clinical.SimplePatientRegistrationInpu
 				PostalCode:    gofakeit.Address().City,
 			},
 		},
-		Gender:        base.GenderFemale.String(),
+		Gender:        enumutils.GenderFemale.String(),
 		Active:        true,
 		MaritalStatus: clinical.MaritalStatusS,
-		Languages: []base.Language{
-			base.LanguageEn,
-			base.LanguageSw,
+		Languages: []enumutils.Language{
+			enumutils.LanguageEn,
+			enumutils.LanguageSw,
 		},
 	}, msisdn, nil
 }

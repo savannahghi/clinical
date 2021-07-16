@@ -15,6 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -39543,7 +39544,7 @@ func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("imageContentType"))
-			it.ImageContentType, err = ec.unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			it.ImageContentType, err = ec.unmarshalOContentType2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39711,7 +39712,7 @@ func (ec *executionContext) unmarshalInputPatientExtraInformationInput(ctx conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("languages"))
-			it.Languages, err = ec.unmarshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, v)
+			it.Languages, err = ec.unmarshalOLanguage2ᚕᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39783,7 +39784,7 @@ func (ec *executionContext) unmarshalInputPhotoInput(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("photoContentType"))
-			it.PhotoContentType, err = ec.unmarshalNContentType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			it.PhotoContentType, err = ec.unmarshalNContentType2githubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39919,7 +39920,7 @@ func (ec *executionContext) unmarshalInputSimpleNHIFInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("frontImageContentType"))
-			it.FrontImageContentType, err = ec.unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			it.FrontImageContentType, err = ec.unmarshalOContentType2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39935,7 +39936,7 @@ func (ec *executionContext) unmarshalInputSimpleNHIFInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rearImageContentType"))
-			it.RearImageContentType, err = ec.unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx, v)
+			it.RearImageContentType, err = ec.unmarshalOContentType2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40135,7 +40136,7 @@ func (ec *executionContext) unmarshalInputSimplePatientRegistrationInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("languages"))
-			it.Languages, err = ec.unmarshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, v)
+			it.Languages, err = ec.unmarshalOLanguage2ᚕgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -44336,13 +44337,13 @@ func (ec *executionContext) marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutil
 	return v
 }
 
-func (ec *executionContext) unmarshalNContentType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, v interface{}) (base.ContentType, error) {
-	var res base.ContentType
+func (ec *executionContext) unmarshalNContentType2githubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx context.Context, v interface{}) (enumutils.ContentType, error) {
+	var res enumutils.ContentType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNContentType2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, sel ast.SelectionSet, v base.ContentType) graphql.Marshaler {
+func (ec *executionContext) marshalNContentType2githubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx context.Context, sel ast.SelectionSet, v enumutils.ContentType) graphql.Marshaler {
 	return v
 }
 
@@ -46098,16 +46099,16 @@ func (ec *executionContext) marshalOContactPointUseEnum2ᚖgitlabᚗslade360emr�
 	return v
 }
 
-func (ec *executionContext) unmarshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, v interface{}) (*base.ContentType, error) {
+func (ec *executionContext) unmarshalOContentType2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx context.Context, v interface{}) (*enumutils.ContentType, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.ContentType)
+	var res = new(enumutils.ContentType)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOContentType2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐContentType(ctx context.Context, sel ast.SelectionSet, v *base.ContentType) graphql.Marshaler {
+func (ec *executionContext) marshalOContentType2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐContentType(ctx context.Context, sel ast.SelectionSet, v *enumutils.ContentType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49481,17 +49482,17 @@ func (ec *executionContext) marshalOInteger2ᚖstring(ctx context.Context, sel a
 	return graphql.MarshalString(*v)
 }
 
-func (ec *executionContext) unmarshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) (base.Language, error) {
-	var res base.Language
+func (ec *executionContext) unmarshalOLanguage2githubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, v interface{}) (enumutils.Language, error) {
+	var res enumutils.Language
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v base.Language) graphql.Marshaler {
+func (ec *executionContext) marshalOLanguage2githubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, sel ast.SelectionSet, v enumutils.Language) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) ([]base.Language, error) {
+func (ec *executionContext) unmarshalOLanguage2ᚕgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, v interface{}) ([]enumutils.Language, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -49504,10 +49505,10 @@ func (ec *executionContext) unmarshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋg
 		}
 	}
 	var err error
-	res := make([]base.Language, len(vSlice))
+	res := make([]enumutils.Language, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOLanguage2githubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -49515,7 +49516,7 @@ func (ec *executionContext) unmarshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋg
 	return res, nil
 }
 
-func (ec *executionContext) marshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v []base.Language) graphql.Marshaler {
+func (ec *executionContext) marshalOLanguage2ᚕgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, sel ast.SelectionSet, v []enumutils.Language) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49542,7 +49543,7 @@ func (ec *executionContext) marshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgo�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOLanguage2gitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, sel, v[i])
+			ret[i] = ec.marshalOLanguage2githubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49555,7 +49556,7 @@ func (ec *executionContext) marshalOLanguage2ᚕgitlabᚗslade360emrᚗcomᚋgo�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) ([]*base.Language, error) {
+func (ec *executionContext) unmarshalOLanguage2ᚕᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, v interface{}) ([]*enumutils.Language, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -49568,10 +49569,10 @@ func (ec *executionContext) unmarshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcom�
 		}
 	}
 	var err error
-	res := make([]*base.Language, len(vSlice))
+	res := make([]*enumutils.Language, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOLanguage2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -49579,7 +49580,7 @@ func (ec *executionContext) unmarshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) marshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v []*base.Language) graphql.Marshaler {
+func (ec *executionContext) marshalOLanguage2ᚕᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, sel ast.SelectionSet, v []*enumutils.Language) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49606,7 +49607,7 @@ func (ec *executionContext) marshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx, sel, v[i])
+			ret[i] = ec.marshalOLanguage2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49619,16 +49620,16 @@ func (ec *executionContext) marshalOLanguage2ᚕᚖgitlabᚗslade360emrᚗcomᚋ
 	return ret
 }
 
-func (ec *executionContext) unmarshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, v interface{}) (*base.Language, error) {
+func (ec *executionContext) unmarshalOLanguage2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, v interface{}) (*enumutils.Language, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(base.Language)
+	var res = new(enumutils.Language)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOLanguage2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐLanguage(ctx context.Context, sel ast.SelectionSet, v *base.Language) graphql.Marshaler {
+func (ec *executionContext) marshalOLanguage2ᚖgithubᚗcomᚋsavannahghiᚋenumutilsᚐLanguage(ctx context.Context, sel ast.SelectionSet, v *enumutils.Language) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

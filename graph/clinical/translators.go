@@ -12,6 +12,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/pkg/errors"
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
 )
@@ -255,7 +256,7 @@ func PhotosToAttachments(
 		uploadInput := base.UploadInput{
 			Title:       "Patient Photo",
 			ContentType: photo.PhotoContentType.String(),
-			Language:    base.LanguageEn.String(),
+			Language:    enumutils.LanguageEn.String(),
 			Base64data:  photo.PhotoBase64data,
 			Filename:    photo.PhotoFilename,
 		}
@@ -426,25 +427,25 @@ func MaritalStatusEnumToCodeableConceptInput(val MaritalStatus) *FHIRCodeableCon
 
 // LanguagesToCommunicationInputs translates the supplied languages to FHIR
 // communication preferences
-func LanguagesToCommunicationInputs(languages []base.Language) []*FHIRPatientCommunicationInput {
+func LanguagesToCommunicationInputs(languages []enumutils.Language) []*FHIRPatientCommunicationInput {
 	output := []*FHIRPatientCommunicationInput{}
 	preferred := false
 	userSelected := true
-	system := scalarutils.URI(base.LanguageCodingSystem)
-	version := base.LanguageCodingVersion
+	system := scalarutils.URI(enumutils.LanguageCodingSystem)
+	version := enumutils.LanguageCodingVersion
 	for _, language := range languages {
 		comm := &FHIRPatientCommunicationInput{
 			Language: &FHIRCodeableConceptInput{
 				Coding: []*FHIRCodingInput{
 					{
 						Code:         scalarutils.Code(language.String()),
-						Display:      base.LanguageNames[language],
+						Display:      enumutils.LanguageNames[language],
 						UserSelected: &userSelected,
 						System:       &system,
 						Version:      &version,
 					},
 				},
-				Text: base.LanguageNames[language],
+				Text: enumutils.LanguageNames[language],
 			},
 			Preferred: &preferred,
 		}

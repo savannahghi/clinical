@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // Dummy ..
@@ -37,11 +37,11 @@ type NameInput struct {
 // IdentificationDocument is used to input e.g National ID or passport document
 // numbers at patient registration.
 type IdentificationDocument struct {
-	DocumentType     IDDocumentType    `json:"documentType"`
-	DocumentNumber   string            `json:"documentNumber"`
-	Title            *string           `json:"title,omitempty"`
-	ImageContentType *base.ContentType `json:"imageContentType,omitempty"`
-	ImageBase64      *string           `json:"imageBase64,omitempty"`
+	DocumentType     IDDocumentType         `json:"documentType"`
+	DocumentNumber   string                 `json:"documentNumber"`
+	Title            *string                `json:"title,omitempty"`
+	ImageContentType *enumutils.ContentType `json:"imageContentType,omitempty"`
+	ImageBase64      *string                `json:"imageBase64,omitempty"`
 }
 
 // PhoneNumberInput is used to input phone numbers.
@@ -54,9 +54,9 @@ type PhoneNumberInput struct {
 
 // PhotoInput is used to upload patient photos.
 type PhotoInput struct {
-	PhotoContentType base.ContentType `json:"photoContentType"`
-	PhotoBase64data  string           `json:"photoBase64data"`
-	PhotoFilename    string           `json:"photoFilename"`
+	PhotoContentType enumutils.ContentType `json:"photoContentType"`
+	PhotoBase64data  string                `json:"photoBase64data"`
+	PhotoFilename    string                `json:"photoFilename"`
 }
 
 // EmailInput is used to register patient emails.
@@ -92,7 +92,7 @@ type SimplePatientRegistrationInput struct {
 	Gender                  string                    `json:"gender"`
 	Active                  bool                      `json:"active"`
 	MaritalStatus           MaritalStatus             `json:"maritalStatus"`
-	Languages               []base.Language           `json:"languages"`
+	Languages               []enumutils.Language      `json:"languages"`
 	ReplicateUSSD           bool                      `json:"replicate_ussd,omitempty"`
 }
 
@@ -128,12 +128,12 @@ type OTPEpisodeUpgradeInput struct {
 
 // SimpleNHIFInput adds NHIF membership details as an extra identifier.
 type SimpleNHIFInput struct {
-	PatientID             string            `json:"patientID"`
-	MembershipNumber      string            `json:"membershipNumber"`
-	FrontImageBase64      *string           `json:"frontImageBase64"`
-	FrontImageContentType *base.ContentType `json:"frontImageContentType"`
-	RearImageBase64       *string           `json:"rearImageBase64"`
-	RearImageContentType  *base.ContentType `json:"rearImageContentType"`
+	PatientID             string                 `json:"patientID"`
+	MembershipNumber      string                 `json:"membershipNumber"`
+	FrontImageBase64      *string                `json:"frontImageBase64"`
+	FrontImageContentType *enumutils.ContentType `json:"frontImageContentType"`
+	RearImageBase64       *string                `json:"rearImageBase64"`
+	RearImageContentType  *enumutils.ContentType `json:"rearImageContentType"`
 }
 
 // SimpleNextOfKinInput is used to add next of kin to a patient.
@@ -206,10 +206,10 @@ type RetirePatientInput struct {
 
 // PatientExtraInformationInput is used to update patient records metadata.
 type PatientExtraInformationInput struct {
-	PatientID     string           `json:"patientID"`
-	MaritalStatus *MaritalStatus   `json:"maritalStatus"`
-	Languages     []*base.Language `json:"languages"`
-	Emails        []*EmailInput    `json:"emails"`
+	PatientID     string                `json:"patientID"`
+	MaritalStatus *MaritalStatus        `json:"maritalStatus"`
+	Languages     []*enumutils.Language `json:"languages"`
+	Emails        []*EmailInput         `json:"emails"`
 }
 
 // USSDNextOfKinCreationInput is used to register next of kin via USSD.
