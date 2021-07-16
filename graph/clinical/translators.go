@@ -12,6 +12,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/pkg/errors"
+	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 	"gitlab.slade360emr.com/go/base"
@@ -96,7 +97,7 @@ func IDToIdentifier(
 
 	for _, phone := range phones {
 		// assume already verified by the contact input transform step
-		normalized, err := base.NormalizeMSISDN(phone.Msisdn)
+		normalized, err := converterandformatter.NormalizeMSISDN(phone.Msisdn)
 		if err != nil {
 			return nil, fmt.Errorf("invalid phone number: %v", err)
 		}

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 	"gitlab.slade360emr.com/go/base"
@@ -94,7 +95,7 @@ func VerifyOTP(
 		return false, "", fmt.Errorf("nil engagement client")
 	}
 
-	normalized, err := base.NormalizeMSISDN(msisdn)
+	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return false, "", fmt.Errorf("invalid phone format: %w", err)
 	}
@@ -149,7 +150,7 @@ func RequestOTP(
 		return "", fmt.Errorf("nil engagement client")
 	}
 
-	normalized, err := base.NormalizeMSISDN(msisdn)
+	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return "", fmt.Errorf("invalid phone format: %w", err)
 	}

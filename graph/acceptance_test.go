@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v5"
+	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
@@ -129,7 +130,7 @@ func getTestEpisodeOfCare(
 	providerCode string,
 ) (*clinical.FHIREpisodeOfCare, *clinical.FHIRPatient, error) {
 	srv := clinical.NewService()
-	normalized, err := base.NormalizeMSISDN(msisdn)
+	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't normalize phone number: %w", err)
 	}

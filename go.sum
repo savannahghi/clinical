@@ -343,9 +343,12 @@ github.com/russross/blackfriday v1.5.2/go.mod h1:JO/DiYxRf+HjHt06OyowR9PTA263kcR
 github.com/russross/blackfriday/v2 v2.0.1 h1:lPqVAte+HuHNfhJ/0LC98ESWRz8afy9tM/0RK8m9o+Q=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/ryanuber/columnize v2.1.0+incompatible/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
+github.com/savannahghi/converterandformatter v0.0.3 h1:wRUC/Mv1tLfVbbMlatZj9/5du2C51b816NVJhtY8KW4=
+github.com/savannahghi/converterandformatter v0.0.3/go.mod h1:0o7yieYU10WabPqKuqj+5QL52eTL1eGElxjb+A68bbA=
 github.com/savannahghi/enumutils v0.0.0-20210622094023-d347744e1825/go.mod h1:DDdjQBO1qyf5BxLzhTs1uN91drCIHH2Lvr8aLdJwu/o=
 github.com/savannahghi/enumutils v0.0.0-20210629053908-b2082a4ab6b3 h1:ixFY9SGrk/SPGNGGw8kI0iYGPrWpS3YtyD7ht5UV5BM=
 github.com/savannahghi/enumutils v0.0.0-20210629053908-b2082a4ab6b3/go.mod h1:DDdjQBO1qyf5BxLzhTs1uN91drCIHH2Lvr8aLdJwu/o=
+github.com/savannahghi/firebasetools v0.0.5/go.mod h1:obAxyBfPaGTx/g86LF19gSmmEh5x+Tbnziatk514mUQ=
 github.com/savannahghi/firebasetools v0.0.6 h1:QTpqDBZGYi0xXFshB3Yp0+MGMjYoZLRoCFbJcWUdPB4=
 github.com/savannahghi/firebasetools v0.0.6/go.mod h1:obAxyBfPaGTx/g86LF19gSmmEh5x+Tbnziatk514mUQ=
 github.com/savannahghi/scalarutils v0.0.0-20210622091443-bad5089abdad h1:v3QPK6KIGkOozqZ/DqMwbmF1LcqJO6k25arenLls9SY=

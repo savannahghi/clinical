@@ -18,6 +18,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
@@ -900,7 +901,7 @@ func (s Service) StartEpisodeByBreakGlass(
 		return nil, fmt.Errorf("unable to log break glass operation: %v", err)
 	}
 	// validatePhone patient phone number
-	validatePhone, err := base.NormalizeMSISDN(input.PatientPhone)
+	validatePhone, err := converterandformatter.NormalizeMSISDN(input.PatientPhone)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient phone number: %v", err)
 	}
@@ -1972,7 +1973,7 @@ func (s Service) HasOpenEpisode(
 func (s Service) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*PatientConnection, error) {
 	s.checkPreconditions()
 
-	search, err := base.NormalizeMSISDN(msisdn)
+	search, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return nil, fmt.Errorf("can't normalize contact: %w", err)
 	}
