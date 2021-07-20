@@ -1,6 +1,7 @@
 package clinical
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,9 +9,9 @@ import (
 	"time"
 
 	"github.com/savannahghi/converterandformatter"
+	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // ParseDate parses a formatted string and returns the time value it represents
@@ -87,9 +88,10 @@ func ComposeOneHealthEpisodeOfCare(
 // VerifyOTP sends an inter-service API call to the OTP service and checks if
 // the supplied verification code is valid.
 func VerifyOTP(
+	ctx context.Context,
 	msisdn string,
 	otp string,
-	engagementClient *base.InterServiceClient,
+	engagementClient *interserviceclient.InterServiceClient,
 ) (bool, string, error) {
 	if engagementClient == nil {
 		return false, "", fmt.Errorf("nil engagement client")
@@ -110,7 +112,7 @@ func VerifyOTP(
 	}
 
 	resp, err := engagementClient.MakeRequest(
-		http.MethodPost, verifyOTPEndpoint, verifyPayload)
+		ctx, http.MethodPost, verifyOTPEndpoint, verifyPayload)
 	if err != nil {
 		return false, "", fmt.Errorf(
 			"can't complete OTP verification request: %w", err)
@@ -143,8 +145,9 @@ func VerifyOTP(
 // RequestOTP sends an inter-service API call to the OTP service to request
 // a new OTP.
 func RequestOTP(
+	ctx context.Context,
 	msisdn string,
-	engagementClient *base.InterServiceClient,
+	engagementClient *interserviceclient.InterServiceClient,
 ) (string, error) {
 	if engagementClient == nil {
 		return "", fmt.Errorf("nil engagement client")
@@ -162,7 +165,7 @@ func RequestOTP(
 		Msisdn: *normalized,
 	}
 	resp, err := engagementClient.MakeRequest(
-		http.MethodPost, sendOTPEndpoint, requestPayload)
+		ctx, http.MethodPost, sendOTPEndpoint, requestPayload)
 	if err != nil {
 		return "", fmt.Errorf("can't complete OTP request: %w", err)
 	}

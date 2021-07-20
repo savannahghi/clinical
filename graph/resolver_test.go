@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/savannahghi/firebasetools"
 	"github.com/stretchr/testify/assert"
-	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 	"gitlab.slade360emr.com/go/clinical/graph/openconceptlab"
 )
@@ -81,7 +81,7 @@ func TestResolver_CheckUserTokenInContext(t *testing.T) {
 		{
 			name: "should not panic, auth in context",
 			args: args{
-				ctx: base.GetAuthenticatedContext(t),
+				ctx: firebasetools.GetAuthenticatedContext(t),
 			},
 			wantPanic: false,
 		},

@@ -12,9 +12,9 @@ import (
 	"github.com/brianvoe/gofakeit/v5"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
-	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
@@ -90,18 +90,19 @@ func getTestSimplePatientRegistration() (*clinical.SimplePatientRegistrationInpu
 }
 
 func getTestVerifiedPhoneandOTP() (string, string, error) {
-	config, err := base.LoadDepsFromYAML()
+	ctx := context.Background()
+	config, err := interserviceclient.LoadDepsFromYAML()
 	if err != nil {
 		return "", "", fmt.Errorf("unable to load dependencies from YAML: %s", err)
 	}
 
-	engagementClient, err := base.SetupISCclient(*config, clinical.EngagementService)
+	engagementClient, err := interserviceclient.SetupISCclient(*config, clinical.EngagementService)
 	if err != nil {
 		return "", "", fmt.Errorf("unable to set up engagement ISC client: %v", err)
 	}
 
-	validPhone := base.TestUserPhoneNumber
-	validOTP, err := clinical.RequestOTP(validPhone, engagementClient)
+	validPhone := interserviceclient.TestUserPhoneNumber
+	validOTP, err := clinical.RequestOTP(ctx, validPhone, engagementClient)
 	if err != nil {
 		return "", "", fmt.Errorf("unable to generate OTP: %v", err)
 	}
@@ -182,7 +183,7 @@ func getTestEncounterID(
 
 func getTestFHIRMedicationRequestID(ctx context.Context, encounterID string) (string, error) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := base.GetGraphQLHeaders(ctx)
+	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
 		return "", fmt.Errorf("error in getting GraphQL headers: %w", err)
 	}
@@ -746,7 +747,7 @@ func createTestCondition(
 
 func patientVisitSummary(ctx context.Context) (string, string, error) {
 	episode, patient, encounterID, err := getTestEncounterID(
-		ctx, base.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
 		return "", "", fmt.Errorf("error creating test encounter ID: %w", err)
 	}

@@ -1,8 +1,8 @@
 package clinical
 
 import (
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIREncounter definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
@@ -372,7 +372,7 @@ type FHIREncounterStatushistoryInput struct {
 type FHIREncounterRelayConnection struct {
 	Edges []*FHIREncounterRelayEdge `json:"edges,omitempty"`
 
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIREncounterRelayEdge is a Relay edge for Encounter

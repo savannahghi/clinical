@@ -15,19 +15,22 @@ require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/imroc/req v0.3.0
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.2.1
-	github.com/savannahghi/converterandformatter v0.0.3 // indirect
+	github.com/savannahghi/converterandformatter v0.0.4
 	github.com/savannahghi/enumutils v0.0.0-20210629053908-b2082a4ab6b3
-	github.com/savannahghi/firebasetools v0.0.6 // indirect
+	github.com/savannahghi/firebasetools v0.0.12
+	github.com/savannahghi/interserviceclient v0.0.12
+	github.com/savannahghi/profileutils v0.0.7
 	github.com/savannahghi/scalarutils v0.0.0-20210622091443-bad5089abdad
 	github.com/savannahghi/serverutils v0.0.2
 	github.com/segmentio/ksuid v1.0.3
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/vektah/gqlparser/v2 v2.1.0
-	gitlab.slade360emr.com/go/base v0.0.154
-	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
-	google.golang.org/api v0.48.0
+	gitlab.slade360emr.com/go/apiclient v0.0.9
+	golang.org/x/oauth2 v0.0.0-20210622215436-a8dc77f794b6
+	google.golang.org/api v0.49.0
 )

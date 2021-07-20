@@ -1,7 +1,7 @@
 package clinical
 
 import (
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/firebasetools"
 )
 
 // FHIREpisodeOfCare definition: an association between a patient and an organization / healthcare provider(s) during which time encounters may occur. the managing organization assumes a level of responsibility for the patient during this time.
@@ -95,7 +95,7 @@ type FHIREpisodeOfCareInput struct {
 type FHIREpisodeOfCareRelayConnection struct {
 	Edges []*FHIREpisodeOfCareRelayEdge `json:"edges,omitempty"`
 
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIREpisodeOfCareRelayEdge is a Relay edge for EpisodeOfCare

@@ -1,8 +1,8 @@
 package clinical
 
 import (
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIRMedicationRequest definition: an order or request for both supply of the medication and the instructions for administration of the medication to a patient. the resource is called "medicationrequest" rather than "medicationprescription" or "medicationorder" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.
@@ -336,7 +336,7 @@ type FHIRMedicationrequestSubstitutionInput struct {
 type FHIRMedicationRequestRelayConnection struct {
 	Edges []*FHIRMedicationRequestRelayEdge `json:"edges,omitempty"`
 
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIRMedicationRequestRelayEdge is a Relay edge for MedicationRequest

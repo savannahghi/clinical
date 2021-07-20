@@ -1,7 +1,7 @@
 package clinical
 
 import (
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/firebasetools"
 )
 
 // FHIROrganization definition: The organization (facility) responsible for this organization
@@ -56,7 +56,7 @@ type FHIROrganizationRelayPayload struct {
 // FHIROrganizationRelayConnection is a Relay connection for Organization
 type FHIROrganizationRelayConnection struct {
 	Edges    []*FHIROrganizationRelayEdge `json:"edges,omitempty"`
-	PageInfo *base.PageInfo               `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo      `json:"pageInfo,omitempty"`
 }
 
 // FHIROrganizationRelayEdge is a Relay edge for Organization

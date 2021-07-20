@@ -3,8 +3,8 @@ package clinical
 import (
 	"time"
 
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIRObservation definition: measurements and simple assertions made about a patient, device or other subject.
@@ -399,7 +399,7 @@ type FHIRObservationReferencerangeInput struct {
 type FHIRObservationRelayConnection struct {
 	Edges []*FHIRObservationRelayEdge `json:"edges,omitempty"`
 
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIRObservationRelayEdge is a Relay edge for Observation

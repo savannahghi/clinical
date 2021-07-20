@@ -1,8 +1,8 @@
 package clinical
 
 import (
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIRAllergyIntolerance definition: risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.
@@ -197,7 +197,7 @@ type FHIRAllergyintoleranceReactionInput struct {
 // FHIRAllergyIntoleranceRelayConnection is a Relay connection for AllergyIntolerance
 type FHIRAllergyIntoleranceRelayConnection struct {
 	Edges    []*FHIRAllergyIntoleranceRelayEdge `json:"edges,omitempty"`
-	PageInfo *base.PageInfo                     `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo            `json:"pageInfo,omitempty"`
 }
 
 // FHIRAllergyIntoleranceRelayEdge is a Relay edge for AllergyIntolerance

@@ -6,10 +6,13 @@ import (
 	"io/ioutil"
 	"testing"
 
+	"cloud.google.com/go/firestore"
 	"github.com/brianvoe/gofakeit/v5"
 	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/interserviceclient"
 	"github.com/segmentio/ksuid"
-	"gitlab.slade360emr.com/go/base"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPhotosToAttachments(t *testing.T) {
@@ -23,7 +26,7 @@ func TestPhotosToAttachments(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		photos     []*PhotoInput
-		engagement *base.InterServiceClient
+		engagement *interserviceclient.InterServiceClient
 	}
 	tests := []struct {
 		name    string
@@ -317,6 +320,71 @@ func TestPhysicalPostalAddressesToCombinedFHIRAddress(t *testing.T) {
 			if !tt.wantNil && got == nil {
 				t.Errorf("unexpected nil result")
 				return
+			}
+		})
+	}
+}
+
+func TestValidateEmail(t *testing.T) {
+	fc := &firebasetools.FirebaseClient{}
+	firebaseApp, err := fc.InitFirebase()
+	assert.Nil(t, err)
+
+	ctx := firebasetools.GetAuthenticatedContext(t)
+	firestoreClient, err := firebaseApp.Firestore(ctx)
+	assert.Nil(t, err)
+
+	type args struct {
+		email           string
+		optIn           bool
+		firestoreClient *firestore.Client
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "first valid email, opted in",
+			args: args{
+				email:           "ngure.nyaga@savannahinformatics.com",
+				optIn:           true,
+				firestoreClient: firestoreClient,
+			},
+			wantErr: false,
+		},
+		{
+			name: "second valid email, opted in",
+			args: args{
+				email:           "ngure.nyaga@healthcloud.com",
+				optIn:           true,
+				firestoreClient: firestoreClient,
+			},
+			wantErr: false,
+		},
+		{
+			name: "third valid email,  notopted in",
+			args: args{
+				email:           "ngurenyaga@gmail.com",
+				optIn:           true,
+				firestoreClient: firestoreClient,
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid email",
+			args: args{
+				email:           "not a valid email",
+				optIn:           true,
+				firestoreClient: firestoreClient,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := ValidateEmail(tt.args.email, tt.args.optIn, tt.args.firestoreClient); (err != nil) != tt.wantErr {
+				t.Errorf("ValidateEmail() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

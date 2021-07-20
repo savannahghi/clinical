@@ -1,8 +1,8 @@
 package clinical
 
 import (
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIRPatient definition: demographics and other administrative information about an individual or animal receiving care or other health-related services.
@@ -244,7 +244,7 @@ type FHIRPatientLinkInput struct {
 type FHIRPatientRelayConnection struct {
 	Edges           []*FHIRPatientRelayEdge `json:"edges,omitempty"`
 	HasOpenEpisodes bool                    `json:"hasOpenEpisodes,omitempty"`
-	PageInfo        *base.PageInfo          `json:"pageInfo,omitempty"`
+	PageInfo        *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIRPatientRelayEdge is a Relay edge for Patient
@@ -270,6 +270,6 @@ type PatientEdge struct {
 // PatientConnection is a Relay style connection for use in listings of FHIR
 // patient records.
 type PatientConnection struct {
-	Edges    []*PatientEdge `json:"edges"`
-	PageInfo *base.PageInfo `json:"pageInfo"`
+	Edges    []*PatientEdge          `json:"edges"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo"`
 }

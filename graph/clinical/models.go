@@ -430,3 +430,12 @@ func (e RelationshipType) MarshalGQL(w io.Writer) {
 type PhoneNumberPayload struct {
 	PhoneNumber string `json:"phoneNumber"`
 }
+
+// EmailOptIn is used to persist and manage email communication whitelists
+type EmailOptIn struct {
+	Email   string `json:"email" firestore:"optedIn"`
+	OptedIn bool   `json:"optedIn" firestore:"optedIn"`
+}
+
+//IsEntity ...
+func (e EmailOptIn) IsEntity() {}

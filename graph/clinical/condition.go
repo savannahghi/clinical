@@ -1,8 +1,8 @@
 package clinical
 
 import (
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIRCondition definition: a clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.
@@ -228,7 +228,7 @@ type FHIRConditionStageInput struct {
 type FHIRConditionRelayConnection struct {
 	Edges []*FHIRConditionRelayEdge `json:"edges,omitempty"`
 
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIRConditionRelayEdge is a Relay edge for Condition

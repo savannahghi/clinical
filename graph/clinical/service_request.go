@@ -1,8 +1,8 @@
 package clinical
 
 import (
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIRServiceRequest definition: a record of a request for service such as diagnostic investigations, treatments, or operations to be performed.
@@ -252,7 +252,7 @@ type FHIRServiceRequestInput struct {
 type FHIRServiceRequestRelayConnection struct {
 	Edges []*FHIRServiceRequestRelayEdge `json:"edges,omitempty"`
 
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIRServiceRequestRelayEdge is a Relay edge for ServiceRequest

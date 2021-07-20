@@ -12,9 +12,10 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
-	"gitlab.slade360emr.com/go/base"
+	"gitlab.slade360emr.com/go/apiclient"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
@@ -86,7 +87,7 @@ func PrepareServer(
 
 // Router sets up the ginContext router
 func Router(ctx context.Context) (*mux.Router, error) {
-	fc := &base.FirebaseClient{}
+	fc := &firebasetools.FirebaseClient{}
 	firebaseApp, err := fc.InitFirebase()
 	if err != nil {
 		return nil, err
@@ -112,7 +113,7 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	// Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
-	gqlR.Use(base.AuthenticationMiddleware(firebaseApp))
+	gqlR.Use(apiclient.AuthenticationMiddleware(firebaseApp))
 	gqlR.Methods(
 		http.MethodPost, http.MethodGet, http.MethodOptions,
 	).HandlerFunc(graphqlHandler())

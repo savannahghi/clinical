@@ -20,10 +20,12 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/interserviceclient"
+	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
-	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/cloudhealth"
 )
 
@@ -78,23 +80,23 @@ const (
 
 // NewService initializes a new clinical service
 func NewService() *Service {
-	var config *base.DepsConfig
-	config, err := base.LoadDepsFromYAML()
+	var config *interserviceclient.DepsConfig
+	config, err := interserviceclient.LoadDepsFromYAML()
 	if err != nil {
 		log.Panicf("unable to load dependencies from YAML: %s", err)
 	}
 
-	engagementClient, err := base.SetupISCclient(*config, EngagementService)
+	engagementClient, err := interserviceclient.SetupISCclient(*config, EngagementService)
 	if err != nil {
 		log.Panicf("unable to set up engagement ISC client: %v", err)
 	}
 
-	engagementSms := &base.SmsISC{
+	engagementSms := &interserviceclient.SmsISC{
 		Isc:      engagementClient,
 		EndPoint: sendSMSEndpoint,
 	}
 
-	fc := &base.FirebaseClient{}
+	fc := &firebasetools.FirebaseClient{}
 	firebaseApp, err := fc.InitFirebase()
 	if err != nil {
 		log.Panicf("unable to initialize Firebase app: %s", err)
@@ -117,9 +119,9 @@ func NewService() *Service {
 // Service is a clinical service
 type Service struct {
 	clinicalRepository *cloudhealth.Service
-	sms                *base.SmsISC
+	sms                *interserviceclient.SmsISC
 	firestoreClient    *firestore.Client
-	engagement         *base.InterServiceClient
+	engagement         *interserviceclient.InterServiceClient
 }
 
 func (s Service) checkPreconditions() {
@@ -252,7 +254,7 @@ func (s Service) searchFilterHelper(
 func (s Service) ProblemSummary(
 	ctx context.Context, patientID string) ([]string, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -293,7 +295,7 @@ func (s Service) ProblemSummary(
 func (s Service) VisitSummary(
 	ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -350,7 +352,7 @@ func (s Service) VisitSummary(
 				if edge.Node == nil {
 					continue
 				}
-				rMap, err := base.StructToMap(edge.Node)
+				rMap, err := converterandformatter.StructToMap(edge.Node)
 				if err != nil {
 					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
 				}
@@ -368,7 +370,7 @@ func (s Service) VisitSummary(
 				if edge.Node == nil {
 					continue
 				}
-				rMap, err := base.StructToMap(edge.Node)
+				rMap, err := converterandformatter.StructToMap(edge.Node)
 				if err != nil {
 					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
 				}
@@ -386,7 +388,7 @@ func (s Service) VisitSummary(
 				if edge.Node == nil {
 					continue
 				}
-				rMap, err := base.StructToMap(edge.Node)
+				rMap, err := converterandformatter.StructToMap(edge.Node)
 				if err != nil {
 					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
 				}
@@ -404,7 +406,7 @@ func (s Service) VisitSummary(
 				if edge.Node == nil {
 					continue
 				}
-				rMap, err := base.StructToMap(edge.Node)
+				rMap, err := converterandformatter.StructToMap(edge.Node)
 				if err != nil {
 					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
 				}
@@ -422,7 +424,7 @@ func (s Service) VisitSummary(
 				if edge.Node == nil {
 					continue
 				}
-				rMap, err := base.StructToMap(edge.Node)
+				rMap, err := converterandformatter.StructToMap(edge.Node)
 				if err != nil {
 					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
 				}
@@ -440,7 +442,7 @@ func (s Service) VisitSummary(
 				if edge.Node == nil {
 					continue
 				}
-				rMap, err := base.StructToMap(edge.Node)
+				rMap, err := converterandformatter.StructToMap(edge.Node)
 				if err != nil {
 					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
 				}
@@ -458,7 +460,7 @@ func (s Service) VisitSummary(
 				if edge.Node == nil {
 					continue
 				}
-				rMap, err := base.StructToMap(edge.Node)
+				rMap, err := converterandformatter.StructToMap(edge.Node)
 				if err != nil {
 					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
 				}
@@ -487,7 +489,7 @@ func (s Service) VisitSummary(
 // respecting the approval level AND limiting the number
 func (s Service) PatientTimelineWithCount(
 	ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -573,7 +575,7 @@ func (s Service) CreateEpisodeOfCare(
 	ep FHIREpisodeOfCare,
 ) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -585,7 +587,7 @@ func (s Service) CreateEpisodeOfCare(
 		return nil, fmt.Errorf("user not authorized to access this resource")
 	}
 
-	payload, err := base.StructToMap(ep)
+	payload, err := converterandformatter.StructToMap(ep)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
@@ -654,7 +656,7 @@ func (s Service) Encounters(
 	status *EncounterStatusEnum,
 ) ([]*FHIREncounter, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -747,7 +749,7 @@ func (s Service) Encounters(
 func (s Service) StartEpisodeByOtp(
 	ctx context.Context, input OTPEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -759,7 +761,7 @@ func (s Service) StartEpisodeByOtp(
 		return nil, fmt.Errorf("user not authorized to access this resource")
 	}
 
-	isVerified, normalized, err := VerifyOTP(input.Msisdn, input.Otp, s.engagement)
+	isVerified, normalized, err := VerifyOTP(ctx, input.Msisdn, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
@@ -789,7 +791,7 @@ func (s Service) StartEpisodeByOtp(
 func (s Service) UpgradeEpisode(
 	ctx context.Context, input OTPEpisodeUpgradeInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -837,7 +839,7 @@ func (s Service) UpgradeEpisode(
 	}
 
 	// validate the MSISDN and OTP
-	isVerified, _, err := VerifyOTP(input.Msisdn, input.Otp, s.engagement)
+	isVerified, _, err := VerifyOTP(ctx, input.Msisdn, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
@@ -852,7 +854,7 @@ func (s Service) UpgradeEpisode(
 	episode.Type = []*FHIRCodeableConcept{
 		{Text: fullAccessLevel},
 	}
-	payload, err := base.StructToMap(episode)
+	payload, err := converterandformatter.StructToMap(episode)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
@@ -873,7 +875,7 @@ func (s Service) UpgradeEpisode(
 func (s Service) StartEpisodeByBreakGlass(
 	ctx context.Context, input BreakGlassEpisodeCreationInput) (*EpisodeOfCarePayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -885,7 +887,7 @@ func (s Service) StartEpisodeByBreakGlass(
 		return nil, fmt.Errorf("user not authorized to access this resource")
 	}
 
-	isVerified, normalized, err := VerifyOTP(input.ProviderPhone, input.Otp, s.engagement)
+	isVerified, normalized, err := VerifyOTP(ctx, input.ProviderPhone, input.Otp, s.engagement)
 	if err != nil {
 		log.Printf(
 			"invalid phone: \nPhone: %s\nOTP: %s\n", input.ProviderPhone, input.Otp)
@@ -895,7 +897,7 @@ func (s Service) StartEpisodeByBreakGlass(
 		return nil, fmt.Errorf("invalid OTP")
 	}
 
-	_, err = base.SaveDataToFirestore(
+	_, err = firebasetools.SaveDataToFirestore(
 		s.firestoreClient, s.getBreakGlassCollectionName(), input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to log break glass operation: %v", err)
@@ -920,7 +922,7 @@ func (s Service) StartEpisodeByBreakGlass(
 	pp, err := s.FindPatientByID(ctx, input.PatientID)
 	if err == nil {
 		patientName := pp.PatientRecord.Name[0].Text
-		err = s.sendAlertToAdmin(patientName, normalized)
+		err = s.sendAlertToAdmin(ctx, patientName, normalized)
 		if err != nil {
 			log.Printf("failed to send alert message to admin during StartEpisodeByBreakGlass login: %s", err)
 		}
@@ -943,7 +945,7 @@ func (s Service) StartEpisodeByBreakGlass(
 // GetOrganization retrieves an organization given its code
 func (s Service) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -972,7 +974,7 @@ func (s Service) GetOrganization(ctx context.Context, providerSladeCode string) 
 // CreateOrganization creates an organization given ist provider code
 func (s Service) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1024,7 +1026,7 @@ func (s Service) GetORCreateOrganization(ctx context.Context, providerSladeCode 
 // OpenOrganizationEpisodes return all organization specific open episodes
 func (s Service) OpenOrganizationEpisodes(
 	ctx context.Context, providerSladeCode string) ([]*FHIREpisodeOfCare, error) {
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1054,7 +1056,7 @@ func (s Service) SearchEpisodeEncounter(
 	episodeReference string,
 ) (*FHIREncounterRelayConnection, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1084,7 +1086,7 @@ func (s Service) SearchEpisodeEncounter(
 func (s Service) StartEncounter(
 	ctx context.Context, episodeID string) (string, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return "", fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1154,7 +1156,7 @@ func (s Service) StartEncounter(
 func (s Service) EndEncounter(
 	ctx context.Context, encounterID string) (bool, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1183,7 +1185,7 @@ func (s Service) EndEncounter(
 	endTime := scalarutils.DateTime(end.Format(timeFormatStr))
 	encounterPayload.Resource.Period.End = endTime
 
-	payload, err := base.StructToMap(encounterPayload.Resource)
+	payload, err := converterandformatter.StructToMap(encounterPayload.Resource)
 	if err != nil {
 		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %v", err)
 	}
@@ -1233,7 +1235,7 @@ func (s Service) EndEpisode(
 	episodePayload.Resource.Status = &updatedStatus
 	episodePayload.Resource.Period.Start = startTime
 	episodePayload.Resource.Period.End = endTime
-	payload, err := base.StructToMap(episodePayload.Resource)
+	payload, err := converterandformatter.StructToMap(episodePayload.Resource)
 	if err != nil {
 		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %v", err)
 	}
@@ -1248,7 +1250,7 @@ func (s Service) EndEpisode(
 // CreatePatient creates or updates a patient record on FHIR
 func (s Service) CreatePatient(ctx context.Context, input FHIRPatientInput) (*PatientPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1274,7 +1276,7 @@ func (s Service) CreatePatient(ctx context.Context, input FHIRPatientInput) (*Pa
 		input.Identifier = append(input.Identifier, DefaultIdentifier())
 	}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn patient input into a map: %v", err)
 	}
@@ -1302,7 +1304,7 @@ func (s Service) CreatePatient(ctx context.Context, input FHIRPatientInput) (*Pa
 func (s Service) FindPatientByID(
 	ctx context.Context, id string) (*PatientPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1341,7 +1343,7 @@ func (s Service) FindPatientByID(
 // PatientSearch searches for a patient by identifiers and names
 func (s Service) PatientSearch(ctx context.Context, search string) (*PatientConnection, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1397,7 +1399,7 @@ func (s Service) PatientSearch(ctx context.Context, search string) (*PatientConn
 	if respEntries == nil {
 		return &PatientConnection{
 			Edges:    []*PatientEdge{},
-			PageInfo: &base.PageInfo{},
+			PageInfo: &firebasetools.PageInfo{},
 		}, nil
 	}
 	entries, ok := respEntries.([]interface{})
@@ -1599,7 +1601,7 @@ func (s Service) AddNextOfKin(
 	}
 
 	contacts, err := ContactsToContactPointInput(
-		input.PhoneNumbers, input.Emails, s.firestoreClient, s.engagement)
+		ctx, input.PhoneNumbers, input.Emails, s.firestoreClient, s.engagement)
 	if err != nil {
 		return nil, fmt.Errorf("invalid contacts: %v", err)
 	}
@@ -2002,7 +2004,7 @@ func (s Service) RegisterPatient(ctx context.Context, input SimplePatientRegistr
 }
 
 func (s Service) getBreakGlassCollectionName() string {
-	suffixed := base.SuffixCollection(BreakGlassCollectionName)
+	suffixed := firebasetools.SuffixCollection(BreakGlassCollectionName)
 	return suffixed
 }
 
@@ -2035,7 +2037,7 @@ func (s Service) SimplePatientRegistrationInputToPatientInput(ctx context.Contex
 		return nil, fmt.Errorf("a patient registered with that phone number already exists")
 	}
 
-	contacts, err := ContactsToContactPointInput(input.PhoneNumbers, input.Emails, s.firestoreClient, s.engagement)
+	contacts, err := ContactsToContactPointInput(ctx, input.PhoneNumbers, input.Emails, s.firestoreClient, s.engagement)
 	if err != nil {
 		return nil, fmt.Errorf("can't register patient with invalid contacts: %v", err)
 	}
@@ -2083,7 +2085,7 @@ func (s Service) SendPatientWelcomeEmail(ctx context.Context, emailaddress strin
 		"subject": EmailWelcomeSubject,
 	}
 
-	resp, err := s.engagement.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
+	resp, err := s.engagement.MakeRequest(ctx, http.MethodPost, sendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send welcome email: %w", err)
 	}
@@ -2124,7 +2126,7 @@ func (s Service) sendAlertToPatient(ctx context.Context, phoneNumber string, pat
 		Sender:  enumutils.SenderIDBewell,
 	}
 
-	resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
+	resp, err := s.engagement.MakeRequest(ctx, http.MethodPost, sendSMSEndpoint, requestPayload)
 	if err != nil {
 		return fmt.Errorf("unable to send alert to patient: %w", err)
 	}
@@ -2137,7 +2139,7 @@ func (s Service) sendAlertToPatient(ctx context.Context, phoneNumber string, pat
 }
 
 // sendAlertToAdmin send email to admin notifying them of the access.
-func (s Service) sendAlertToAdmin(patientName string, patientContact string) error {
+func (s Service) sendAlertToAdmin(ctx context.Context, patientName string, patientContact string) error {
 	adminEmail, err := serverutils.GetEnvVar(SavannahAdminEmail)
 	if err != nil {
 		return err
@@ -2160,7 +2162,7 @@ func (s Service) sendAlertToAdmin(patientName string, patientContact string) err
 		"subject": subject,
 	}
 
-	resp, err := s.engagement.MakeRequest(http.MethodPost, sendEmailEndpoint, body)
+	resp, err := s.engagement.MakeRequest(ctx, http.MethodPost, sendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send Alert to admin email: %w", err)
 	}
@@ -2222,7 +2224,7 @@ func (s Service) CreateFHIRServiceRequest(ctx context.Context, input FHIRService
 	resourceType := "ServiceRequest"
 	resource := FHIRServiceRequest{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2305,7 +2307,7 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 								Sender:  enumutils.SenderIDBewell,
 							}
 
-							resp, err := s.engagement.MakeRequest(http.MethodPost, sendSMSEndpoint, requestPayload)
+							resp, err := s.engagement.MakeRequest(ctx, http.MethodPost, sendSMSEndpoint, requestPayload)
 							if err != nil {
 								return fmt.Errorf("unable to send alert to next of kin: %w", err)
 							}
@@ -2329,7 +2331,7 @@ func (s Service) sendAlertToNextOfKin(ctx context.Context, patientID string) err
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
 func (s Service) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*FHIRAllergyIntoleranceRelayConnection, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2386,7 +2388,7 @@ func (s Service) CreateFHIRAllergyIntolerance(ctx context.Context, input FHIRAll
 	resourceType := "AllergyIntolerance"
 	resource := FHIRAllergyIntolerance{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2420,7 +2422,7 @@ func (s Service) UpdateFHIRAllergyIntolerance(ctx context.Context, input FHIRAll
 		return nil, fmt.Errorf("can't update with a nil ID")
 	}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2489,7 +2491,7 @@ func (s Service) SearchFHIRComposition(ctx context.Context, params map[string]in
 // CreateFHIRComposition creates a FHIRComposition instance
 func (s Service) CreateFHIRComposition(ctx context.Context, input FHIRCompositionInput) (*FHIRCompositionRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2504,7 +2506,7 @@ func (s Service) CreateFHIRComposition(ctx context.Context, input FHIRCompositio
 	resourceType := "Composition"
 	resource := FHIRComposition{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2531,7 +2533,7 @@ func (s Service) CreateFHIRComposition(ctx context.Context, input FHIRCompositio
 // The resource must have it's ID set.
 func (s Service) UpdateFHIRComposition(ctx context.Context, input FHIRCompositionInput) (*FHIRCompositionRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2550,7 +2552,7 @@ func (s Service) UpdateFHIRComposition(ctx context.Context, input FHIRCompositio
 		return nil, fmt.Errorf("can't update with a nil ID")
 	}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2575,7 +2577,7 @@ func (s Service) UpdateFHIRComposition(ctx context.Context, input FHIRCompositio
 
 // DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
 func (s Service) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2601,7 +2603,7 @@ func (s Service) DeleteFHIRComposition(ctx context.Context, id string) (bool, er
 // SearchFHIRCondition provides a search API for FHIRCondition
 func (s Service) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*FHIRConditionRelayConnection, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2655,7 +2657,7 @@ func (s Service) SearchFHIRCondition(ctx context.Context, params map[string]inte
 // CreateFHIRCondition creates a FHIRCondition instance
 func (s Service) CreateFHIRCondition(ctx context.Context, input FHIRConditionInput) (*FHIRConditionRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2670,7 +2672,7 @@ func (s Service) CreateFHIRCondition(ctx context.Context, input FHIRConditionInp
 	resourceType := "Condition"
 	resource := FHIRCondition{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2697,7 +2699,7 @@ func (s Service) CreateFHIRCondition(ctx context.Context, input FHIRConditionInp
 // The resource must have it's ID set.
 func (s Service) UpdateFHIRCondition(ctx context.Context, input FHIRConditionInput) (*FHIRConditionRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2716,7 +2718,7 @@ func (s Service) UpdateFHIRCondition(ctx context.Context, input FHIRConditionInp
 		return nil, fmt.Errorf("can't update with a nil ID")
 	}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2742,7 +2744,7 @@ func (s Service) UpdateFHIRCondition(ctx context.Context, input FHIRConditionInp
 // GetFHIREncounter retrieves instances of FHIREncounter by ID
 func (s Service) GetFHIREncounter(ctx context.Context, id string) (*FHIREncounterRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2777,7 +2779,7 @@ func (s Service) GetFHIREncounter(ctx context.Context, id string) (*FHIREncounte
 // SearchFHIREncounter provides a search API for FHIREncounter
 func (s Service) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*FHIREncounterRelayConnection, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2831,7 +2833,7 @@ func (s Service) SearchFHIREncounter(ctx context.Context, params map[string]inte
 // CreateFHIREncounter creates a FHIREncounter instance
 func (s Service) CreateFHIREncounter(ctx context.Context, input FHIREncounterInput) (*FHIREncounterRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2846,7 +2848,7 @@ func (s Service) CreateFHIREncounter(ctx context.Context, input FHIREncounterInp
 	resourceType := "Encounter"
 	resource := FHIREncounter{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -2939,7 +2941,7 @@ func (s Service) SearchFHIREpisodeOfCare(ctx context.Context, params map[string]
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
 func (s Service) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*FHIRMedicationRequestRelayConnection, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2993,7 +2995,7 @@ func (s Service) SearchFHIRMedicationRequest(ctx context.Context, params map[str
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
 func (s Service) CreateFHIRMedicationRequest(ctx context.Context, input FHIRMedicationRequestInput) (*FHIRMedicationRequestRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -3007,7 +3009,7 @@ func (s Service) CreateFHIRMedicationRequest(ctx context.Context, input FHIRMedi
 	resourceType := "MedicationRequest"
 	resource := FHIRMedicationRequest{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -3034,7 +3036,7 @@ func (s Service) CreateFHIRMedicationRequest(ctx context.Context, input FHIRMedi
 // The resource must have it's ID set.
 func (s Service) UpdateFHIRMedicationRequest(ctx context.Context, input FHIRMedicationRequestInput) (*FHIRMedicationRequestRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -3053,7 +3055,7 @@ func (s Service) UpdateFHIRMedicationRequest(ctx context.Context, input FHIRMedi
 		return nil, fmt.Errorf("can't update with a nil ID")
 	}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -3078,7 +3080,7 @@ func (s Service) UpdateFHIRMedicationRequest(ctx context.Context, input FHIRMedi
 
 // DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
 func (s Service) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -3104,7 +3106,7 @@ func (s Service) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bo
 // SearchFHIRObservation provides a search API for FHIRObservation
 func (s Service) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*FHIRObservationRelayConnection, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -3158,7 +3160,7 @@ func (s Service) SearchFHIRObservation(ctx context.Context, params map[string]in
 // CreateFHIRObservation creates a FHIRObservation instance
 func (s Service) CreateFHIRObservation(ctx context.Context, input FHIRObservationInput) (*FHIRObservationRelayPayload, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -3173,7 +3175,7 @@ func (s Service) CreateFHIRObservation(ctx context.Context, input FHIRObservatio
 	resourceType := "Observation"
 	resource := FHIRObservation{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -3198,7 +3200,7 @@ func (s Service) CreateFHIRObservation(ctx context.Context, input FHIRObservatio
 
 // DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
 func (s Service) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -3270,7 +3272,7 @@ func (s Service) CreateFHIROrganization(ctx context.Context, input FHIROrganizat
 	resourceType := "Organization"
 	resource := FHIROrganization{}
 
-	payload, err := base.StructToMap(input)
+	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
@@ -3567,7 +3569,7 @@ func (s Service) contactMapper(resource map[string]interface{}) map[string]inter
 func (s Service) CreateUpdatePatientExtraInformation(
 	ctx context.Context, input PatientExtraInformationInput) (bool, error) {
 	s.checkPreconditions()
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -3616,7 +3618,7 @@ func (s Service) CreateUpdatePatientExtraInformation(
 
 	if len(input.Emails) > 0 {
 		emailInput, err := ContactsToContactPoint(
-			nil, input.Emails, s.firestoreClient, s.engagement)
+			ctx, nil, input.Emails, s.firestoreClient, s.engagement)
 		if err != nil {
 			return false, fmt.Errorf("unable to process email addresses")
 		}
@@ -3642,7 +3644,7 @@ func (s Service) CreateUpdatePatientExtraInformation(
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
 func (s Service) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	user, err := base.GetLoggedInUser(ctx)
+	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}

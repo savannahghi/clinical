@@ -3,8 +3,8 @@ package clinical
 import (
 	"time"
 
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // FHIRComposition definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).
@@ -278,7 +278,7 @@ type FHIRCompositionSectionInput struct {
 type FHIRCompositionRelayConnection struct {
 	Edges []*FHIRCompositionRelayEdge `json:"edges,omitempty"`
 
-	PageInfo *base.PageInfo `json:"pageInfo,omitempty"`
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
 }
 
 // FHIRCompositionRelayEdge is a Relay edge for Composition

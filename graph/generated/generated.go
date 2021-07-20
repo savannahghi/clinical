@@ -16,10 +16,10 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
-	"gitlab.slade360emr.com/go/base"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
@@ -14194,9 +14194,9 @@ func (ec *executionContext) _FHIRAllergyIntoleranceRelayConnection_pageInfo(ctx 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRAllergyIntoleranceRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRAllergyIntoleranceRelayEdge) (ret graphql.Marshaler) {
@@ -16301,9 +16301,9 @@ func (ec *executionContext) _FHIRCompositionRelayConnection_pageInfo(ctx context
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRCompositionRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRCompositionRelayEdge) (ret graphql.Marshaler) {
@@ -17782,9 +17782,9 @@ func (ec *executionContext) _FHIRConditionRelayConnection_pageInfo(ctx context.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRConditionRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRConditionRelayEdge) (ret graphql.Marshaler) {
@@ -20817,9 +20817,9 @@ func (ec *executionContext) _FHIREncounterRelayConnection_pageInfo(ctx context.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIREncounterRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIREncounterRelayEdge) (ret graphql.Marshaler) {
@@ -21533,9 +21533,9 @@ func (ec *executionContext) _FHIREpisodeOfCareRelayConnection_pageInfo(ctx conte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIREpisodeOfCareRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIREpisodeOfCareRelayEdge) (ret graphql.Marshaler) {
@@ -23579,9 +23579,9 @@ func (ec *executionContext) _FHIRMedicationRequestRelayConnection_pageInfo(ctx c
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationRequestRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRMedicationRequestRelayEdge) (ret graphql.Marshaler) {
@@ -26314,9 +26314,9 @@ func (ec *executionContext) _FHIRObservationRelayConnection_pageInfo(ctx context
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRObservationRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRObservationRelayEdge) (ret graphql.Marshaler) {
@@ -26736,9 +26736,9 @@ func (ec *executionContext) _FHIROrganizationRelayConnection_pageInfo(ctx contex
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIROrganizationRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIROrganizationRelayEdge) (ret graphql.Marshaler) {
@@ -28031,9 +28031,9 @@ func (ec *executionContext) _FHIRPatientRelayConnection_pageInfo(ctx context.Con
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRPatientRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRPatientRelayEdge) (ret graphql.Marshaler) {
@@ -30482,9 +30482,9 @@ func (ec *executionContext) _FHIRServiceRequestRelayConnection_pageInfo(ctx cont
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRServiceRequestRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.FHIRServiceRequestRelayEdge) (ret graphql.Marshaler) {
@@ -32385,7 +32385,7 @@ func (ec *executionContext) _Mutation_deleteFHIRObservation(ctx context.Context,
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
+func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *firebasetools.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -32420,7 +32420,7 @@ func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field gra
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field graphql.CollectedField, obj *base.PageInfo) (ret graphql.Marshaler) {
+func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field graphql.CollectedField, obj *firebasetools.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -32517,9 +32517,9 @@ func (ec *executionContext) _PatientConnection_pageInfo(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*base.PageInfo)
+	res := resTmp.(*firebasetools.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _PatientEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *clinical.PatientEdge) (ret graphql.Marshaler) {
@@ -43602,7 +43602,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 var pageInfoImplementors = []string{"PageInfo"}
 
-func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *base.PageInfo) graphql.Marshaler {
+func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *firebasetools.PageInfo) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, pageInfoImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -45277,7 +45277,7 @@ func (ec *executionContext) unmarshalNOTPEpisodeUpgradeInput2gitlabᚗslade360em
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPageInfo2ᚖgitlabᚗslade360emrᚗcomᚋgoᚋbaseᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *base.PageInfo) graphql.Marshaler {
+func (ec *executionContext) marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *firebasetools.PageInfo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

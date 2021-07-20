@@ -1,8 +1,8 @@
 package clinical
 
 import (
+	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // SingleIdentifierPayload - compose a single FHIRIdentifierInput
@@ -47,7 +47,7 @@ func ContactPointPayload() []*FHIRContactPointInput {
 	var rank int64 = 1
 	var ContactPointSystemEmail ContactPointSystemEnum = "email"
 	var ContactPointUseHome ContactPointUseEnum = "home"
-	email := base.GenerateRandomEmail()
+	email := converterandformatter.GenerateRandomEmail()
 	var rank2 int64 = 2
 	return []*FHIRContactPointInput{
 		{

@@ -1,11 +1,12 @@
 package clinical
 
 import (
+	"context"
 	"reflect"
 	"testing"
 	"time"
 
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/interserviceclient"
 )
 
 func TestParseDate(t *testing.T) {
@@ -55,26 +56,28 @@ func TestParseDate(t *testing.T) {
 }
 
 func TestVerifyOTP(t *testing.T) {
-	config, err := base.LoadDepsFromYAML()
+	ctx := context.Background()
+	config, err := interserviceclient.LoadDepsFromYAML()
 	if err != nil {
 		t.Errorf("unable to load dependencies from YAML: %s", err)
 		return
 	}
 
-	engagementClient, err := base.SetupISCclient(*config, EngagementService)
+	engagementClient, err := interserviceclient.SetupISCclient(*config, EngagementService)
 	if err != nil {
 		t.Errorf("unable to set up engagement ISC client: %v", err)
 		return
 	}
 
 	validPhone := "+254723002959"
-	validOTP, err := RequestOTP(validPhone, engagementClient)
+	validOTP, err := RequestOTP(ctx, validPhone, engagementClient)
 	if err != nil {
 		t.Errorf("unable to generate OTP: %v", err)
 		return
 	}
 
 	type args struct {
+		ctx    context.Context
 		msisdn string
 		otp    string
 	}
@@ -87,6 +90,7 @@ func TestVerifyOTP(t *testing.T) {
 		{
 			name: "valid case",
 			args: args{
+				ctx:    ctx,
 				msisdn: validPhone,
 				otp:    validOTP,
 			},
@@ -96,6 +100,7 @@ func TestVerifyOTP(t *testing.T) {
 		{
 			name: "invalid case",
 			args: args{
+				ctx:    ctx,
 				msisdn: validPhone,
 				otp:    "not a valid OTP",
 			},
@@ -105,7 +110,7 @@ func TestVerifyOTP(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			verified, _, err := VerifyOTP(tt.args.msisdn, tt.args.otp, engagementClient)
+			verified, _, err := VerifyOTP(tt.args.ctx, tt.args.msisdn, tt.args.otp, engagementClient)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyOTP() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -119,19 +124,21 @@ func TestVerifyOTP(t *testing.T) {
 }
 
 func TestRequestOTP(t *testing.T) {
-	config, err := base.LoadDepsFromYAML()
+	ctx := context.Background()
+	config, err := interserviceclient.LoadDepsFromYAML()
 	if err != nil {
 		t.Errorf("unable to load dependencies from YAML: %s", err)
 		return
 	}
 
-	engagementClient, err := base.SetupISCclient(*config, EngagementService)
+	engagementClient, err := interserviceclient.SetupISCclient(*config, EngagementService)
 	if err != nil {
 		t.Errorf("unable to set up engagement ISC client: %v", err)
 		return
 	}
 
 	type args struct {
+		ctx    context.Context
 		msisdn string
 	}
 	tests := []struct {
@@ -143,6 +150,7 @@ func TestRequestOTP(t *testing.T) {
 		{
 			name: "valid phone number - international format",
 			args: args{
+				ctx:    ctx,
 				msisdn: "+254723002959",
 			},
 			wantBlank: false,
@@ -151,6 +159,7 @@ func TestRequestOTP(t *testing.T) {
 		{
 			name: "valid phone number - local format",
 			args: args{
+				ctx:    ctx,
 				msisdn: "0723002959",
 			},
 			wantBlank: false,
@@ -159,6 +168,7 @@ func TestRequestOTP(t *testing.T) {
 		{
 			name: "invalid phone number",
 			args: args{
+				ctx:    ctx,
 				msisdn: "not a real number",
 			},
 			wantBlank: true,
@@ -167,7 +177,7 @@ func TestRequestOTP(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			otp, err := RequestOTP(tt.args.msisdn, engagementClient)
+			otp, err := RequestOTP(tt.args.ctx, tt.args.msisdn, engagementClient)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RequestOTP() error = %v, wantErr %v", err, tt.wantErr)
 				return

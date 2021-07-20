@@ -22,7 +22,7 @@ resolver:
 autobind:
   - "github.com/savannahghi/scalarutils"
   - "github.com/savannahghi/enumutils"
-  - "gitlab.slade360emr.com/go/base"
+  - "github.com/savannahghi/firebasetools"
   - "gitlab.slade360emr.com/go/clinical/graph/model"
   - "gitlab.slade360emr.com/go/clinical/graph/clinical"
   - "gitlab.slade360emr.com/go/clinical/graph/openconceptlab"

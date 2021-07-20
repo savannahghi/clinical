@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"gitlab.slade360emr.com/go/base"
+	"github.com/savannahghi/firebasetools"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
 func TestService_DeleteFHIRObservation(t *testing.T) {
-	ctx := base.GetAuthenticatedContext(t)
+	ctx := firebasetools.GetAuthenticatedContext(t)
 
 	service := clinical.NewService()
 	id := uuid.New().String()

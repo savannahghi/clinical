@@ -11,11 +11,14 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"github.com/asaskevich/govalidator"
 	"github.com/pkg/errors"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/interserviceclient"
+	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/scalarutils"
-	"gitlab.slade360emr.com/go/base"
 )
 
 // simple patient registration defaults
@@ -25,12 +28,35 @@ const (
 	DefaultAddressUse = AddressUseEnumHome
 	DefaultContactUse = ContactPointUseEnumHome
 
-	IDIdentifierSystem     = "healthcloud.iddocument"
-	MSISDNIdentifierSystem = "healthcloud.msisdn"
-	DefaultVersion         = "0.0.1"
-	DefaultPhotoTitle      = "Patient Photo"
-	DefaultPhotoFilename   = "photo.jpg"
+	IDIdentifierSystem       = "healthcloud.iddocument"
+	MSISDNIdentifierSystem   = "healthcloud.msisdn"
+	DefaultVersion           = "0.0.1"
+	DefaultPhotoTitle        = "Patient Photo"
+	DefaultPhotoFilename     = "photo.jpg"
+	EmailOptInCollectionName = "email_opt_ins"
 )
+
+// ValidateEmail returns an error if the supplied string does not have a
+// valid format or resolvable host
+func ValidateEmail(
+	email string, optIn bool, firestoreClient *firestore.Client) error {
+	if !govalidator.IsEmail(email) {
+		return fmt.Errorf("invalid email format")
+	}
+
+	if optIn {
+		data := EmailOptIn{
+			Email:   email,
+			OptedIn: optIn,
+		}
+		_, err := firebasetools.SaveDataToFirestore(
+			firestoreClient, EmailOptInCollectionName, data)
+		if err != nil {
+			return fmt.Errorf("unable to save email opt in: %v", err)
+		}
+	}
+	return nil
+}
 
 // NameToHumanName translates the simple name input of simple
 // patient registration to FHIR human names
@@ -128,8 +154,8 @@ func IDToIdentifier(
 
 // ContactsToContactPointInput translates phone and email contacts to
 // FHIR contact points
-func ContactsToContactPointInput(phones []*PhoneNumberInput, emails []*EmailInput, firestoreClient *firestore.Client,
-	engagementClient *base.InterServiceClient) ([]*FHIRContactPointInput, error) {
+func ContactsToContactPointInput(ctx context.Context, phones []*PhoneNumberInput, emails []*EmailInput, firestoreClient *firestore.Client,
+	engagementClient *interserviceclient.InterServiceClient) ([]*FHIRContactPointInput, error) {
 	if engagementClient == nil {
 		return nil, fmt.Errorf("nil engagement client")
 	}
@@ -146,7 +172,7 @@ func ContactsToContactPointInput(phones []*PhoneNumberInput, emails []*EmailInpu
 			continue // don't verify USSD
 		}
 		isVerified, normalized, err := VerifyOTP(
-			phone.Msisdn, phone.VerificationCode, engagementClient)
+			ctx, phone.Msisdn, phone.VerificationCode, engagementClient)
 		if err != nil {
 			return nil, fmt.Errorf("invalid phone: %w", err)
 		}
@@ -166,7 +192,7 @@ func ContactsToContactPointInput(phones []*PhoneNumberInput, emails []*EmailInpu
 
 	emailSystem := ContactPointSystemEnumEmail
 	for _, email := range emails {
-		err := base.ValidateEmail(
+		err := ValidateEmail(
 			email.Email, email.CommunicationOptIn, firestoreClient)
 		if err != nil {
 			return nil, fmt.Errorf("invalid email: %v", err)
@@ -188,10 +214,11 @@ func ContactsToContactPointInput(phones []*PhoneNumberInput, emails []*EmailInpu
 // ContactsToContactPoint translates phone and email contacts to
 // FHIR contact points
 func ContactsToContactPoint(
+	ctx context.Context,
 	phones []*PhoneNumberInput,
 	emails []*EmailInput,
 	firestoreClient *firestore.Client,
-	engagementClient *base.InterServiceClient,
+	engagementClient *interserviceclient.InterServiceClient,
 ) ([]*FHIRContactPoint, error) {
 	if phones == nil && emails == nil {
 		return nil, nil
@@ -204,7 +231,7 @@ func ContactsToContactPoint(
 
 	for _, phone := range phones {
 		isVerified, normalized, err := VerifyOTP(
-			phone.Msisdn, phone.VerificationCode, engagementClient)
+			ctx, phone.Msisdn, phone.VerificationCode, engagementClient)
 		if err != nil {
 			return nil, fmt.Errorf("invalid phone: %w", err)
 		}
@@ -223,7 +250,7 @@ func ContactsToContactPoint(
 	}
 
 	for _, email := range emails {
-		err := base.ValidateEmail(
+		err := ValidateEmail(
 			email.Email, email.CommunicationOptIn, firestoreClient)
 		if err != nil {
 			return nil, fmt.Errorf("invalid email: %v", err)
@@ -246,7 +273,7 @@ func ContactsToContactPoint(
 func PhotosToAttachments(
 	ctx context.Context,
 	photos []*PhotoInput,
-	engagement *base.InterServiceClient,
+	engagement *interserviceclient.InterServiceClient,
 ) ([]*FHIRAttachmentInput, error) {
 	if photos == nil {
 		return []*FHIRAttachmentInput{}, nil
@@ -254,7 +281,7 @@ func PhotosToAttachments(
 
 	output := []*FHIRAttachmentInput{}
 	for _, photo := range photos {
-		uploadInput := base.UploadInput{
+		uploadInput := profileutils.UploadInput{
 			Title:       "Patient Photo",
 			ContentType: photo.PhotoContentType.String(),
 			Language:    enumutils.LanguageEn.String(),
@@ -263,6 +290,7 @@ func PhotosToAttachments(
 		}
 
 		resp, err := engagement.MakeRequest(
+			ctx,
 			http.MethodPost,
 			uploadEndpoint,
 			uploadInput,
@@ -276,7 +304,7 @@ func PhotosToAttachments(
 			return nil, fmt.Errorf("error reading upload response: %w", err)
 		}
 
-		upload := base.Upload{}
+		upload := profileutils.Upload{}
 		err = json.Unmarshal(respData, &upload)
 		if err != nil {
 			return nil, fmt.Errorf("can't unmarshal upload response: %w", err)
