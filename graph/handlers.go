@@ -15,7 +15,6 @@ import (
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
-	"gitlab.slade360emr.com/go/apiclient"
 	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 	"gitlab.slade360emr.com/go/clinical/graph/generated"
 )
@@ -113,7 +112,7 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	// Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
-	gqlR.Use(apiclient.AuthenticationMiddleware(firebaseApp))
+	gqlR.Use(firebasetools.AuthenticationMiddleware(firebaseApp))
 	gqlR.Methods(
 		http.MethodPost, http.MethodGet, http.MethodOptions,
 	).HandlerFunc(graphqlHandler())
