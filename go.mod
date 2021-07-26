@@ -25,13 +25,13 @@ require (
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.2.1
-	github.com/savannahghi/converterandformatter v0.0.4
-	github.com/savannahghi/enumutils v0.0.0-20210629053908-b2082a4ab6b3
+	github.com/savannahghi/converterandformatter v0.0.9
+	github.com/savannahghi/enumutils v0.0.2
 	github.com/savannahghi/firebasetools v0.0.13
-	github.com/savannahghi/interserviceclient v0.0.12
+	github.com/savannahghi/interserviceclient v0.0.13
 	github.com/savannahghi/profileutils v0.0.7
-	github.com/savannahghi/scalarutils v0.0.0-20210622091443-bad5089abdad
-	github.com/savannahghi/serverutils v0.0.2
+	github.com/savannahghi/scalarutils v0.0.2
+	github.com/savannahghi/serverutils v0.0.3
 	github.com/segmentio/ksuid v1.0.3
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
@@ -43,5 +43,4 @@ require (
 	google.golang.org/api v0.49.0
 	google.golang.org/genproto v0.0.0-20210624195500-8bfb893ecb84 // indirect
 	google.golang.org/protobuf v1.27.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
