@@ -9,8 +9,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/savannahghi/clinical/graph"
 	"github.com/savannahghi/serverutils"
-	"gitlab.slade360emr.com/go/clinical/graph"
 )
 
 const waitSeconds = 30

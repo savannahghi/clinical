@@ -15,6 +15,8 @@ import (
 
 	"github.com/brianvoe/gofakeit/v5"
 	"github.com/imroc/req"
+	"github.com/savannahghi/clinical/graph"
+	"github.com/savannahghi/clinical/graph/clinical"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
@@ -22,8 +24,6 @@ import (
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"gitlab.slade360emr.com/go/clinical/graph"
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
 const (

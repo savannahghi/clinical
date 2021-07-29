@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/savannahghi/clinical/graph/clinical"
 	"github.com/segmentio/ksuid"
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
 func Test_dummyResolver_ID(t *testing.T) {

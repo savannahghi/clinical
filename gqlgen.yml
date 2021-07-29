@@ -23,9 +23,9 @@ autobind:
   - "github.com/savannahghi/scalarutils"
   - "github.com/savannahghi/enumutils"
   - "github.com/savannahghi/firebasetools"
-  - "gitlab.slade360emr.com/go/clinical/graph/model"
-  - "gitlab.slade360emr.com/go/clinical/graph/clinical"
-  - "gitlab.slade360emr.com/go/clinical/graph/openconceptlab"
+  - "github.com/savannahghi/clinical/graph/model"
+  - "github.com/savannahghi/clinical/graph/clinical"
+  - "github.com/savannahghi/clinical/graph/openconceptlab"
 
 models:
   ID:

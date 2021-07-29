@@ -10,12 +10,12 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v5"
+	"github.com/savannahghi/clinical/graph/clinical"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
 const (

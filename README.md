@@ -1,7 +1,7 @@
 # clinical
 
-[![pipeline status](https://gitlab.slade360emr.com/go/clinical/badges/develop/pipeline.svg)](https://gitlab.slade360emr.com/go/clinical/-/commits/develop)
-[![coverage report](https://gitlab.slade360emr.com/go/clinical/badges/develop/coverage.svg)](https://gitlab.slade360emr.com/go/clinical/-/commits/develop)
+[![pipeline status](https://github.com/savannahghi/clinical/badges/develop/pipeline.svg)](https://github.com/savannahghi/clinical/-/commits/develop)
+[![coverage report](https://github.com/savannahghi/clinical/badges/develop/coverage.svg)](https://github.com/savannahghi/clinical/-/commits/develop)
 
 APIs to bridge to a FHIR clinical repository
 

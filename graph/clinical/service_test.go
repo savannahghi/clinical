@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/savannahghi/clinical/graph/clinical"
 	"github.com/savannahghi/firebasetools"
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
 func TestService_DeleteFHIRObservation(t *testing.T) {

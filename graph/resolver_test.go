@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/savannahghi/clinical/graph/clinical"
+	"github.com/savannahghi/clinical/graph/openconceptlab"
 	"github.com/savannahghi/firebasetools"
 	"github.com/stretchr/testify/assert"
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
-	"gitlab.slade360emr.com/go/clinical/graph/openconceptlab"
 )
 
 func TestResolver_CheckDependencies(t *testing.T) {

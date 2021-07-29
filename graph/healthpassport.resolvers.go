@@ -6,8 +6,8 @@ package graph
 import (
 	"context"
 
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
-	"gitlab.slade360emr.com/go/clinical/graph/generated"
+	"github.com/savannahghi/clinical/graph/clinical"
+	"github.com/savannahghi/clinical/graph/generated"
 )
 
 func (r *mutationResolver) StartEpisodeByOtp(ctx context.Context, input clinical.OTPEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error) {

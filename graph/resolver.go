@@ -7,8 +7,8 @@ import (
 	"firebase.google.com/go/auth"
 	"github.com/savannahghi/firebasetools"
 
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
-	"gitlab.slade360emr.com/go/clinical/graph/openconceptlab"
+	"github.com/savannahghi/clinical/graph/clinical"
+	"github.com/savannahghi/clinical/graph/openconceptlab"
 )
 
 //go:generate go run github.com/99designs/gqlgen

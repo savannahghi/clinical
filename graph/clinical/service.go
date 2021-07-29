@@ -18,6 +18,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/cloudhealth"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
@@ -26,7 +27,6 @@ import (
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
-	"gitlab.slade360emr.com/go/clinical/cloudhealth"
 )
 
 // constants and defaults

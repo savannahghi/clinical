@@ -1,4 +1,4 @@
-module gitlab.slade360emr.com/go/clinical
+module github.com/savannahghi/clinical
 
 go 1.16
 

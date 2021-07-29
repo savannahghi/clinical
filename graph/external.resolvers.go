@@ -6,8 +6,8 @@ package graph
 import (
 	"context"
 
+	"github.com/savannahghi/clinical/graph/clinical"
 	"github.com/segmentio/ksuid"
-	"gitlab.slade360emr.com/go/clinical/graph/clinical"
 )
 
 func (r *dummyResolver) ID(ctx context.Context, obj *clinical.Dummy) (*string, error) {
