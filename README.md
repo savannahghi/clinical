@@ -1,7 +1,7 @@
 # clinical
 
-[![pipeline status](https://github.com/savannahghi/clinical/badges/develop/pipeline.svg)](https://github.com/savannahghi/clinical/-/commits/develop)
-[![coverage report](https://github.com/savannahghi/clinical/badges/develop/coverage.svg)](https://github.com/savannahghi/clinical/-/commits/develop)
+![Linting and Tests](https://github.com/savannahghi/clinical/actions/workflows/ci.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/savannahghi/clinical/badge.svg)](https://coveralls.io/github/savannahghi/clinical)
 
 APIs to bridge to a FHIR clinical repository
 
