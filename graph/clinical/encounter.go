@@ -76,7 +76,7 @@ type FHIREncounter struct {
 	// List of locations where  the patient has been during this encounter.
 	Location []*FHIREncounterLocation `json:"location,omitempty"`
 
-	// The organization that is primarily responsible for this Encounter's services. This MAY be the same as the organization on the Patient record, however it could be different, such as if the actor performing the services was from an external organization (which may be billed seperately) for an external consultation.  Refer to the example bundle showing an abbreviated set of Encounters for a colonoscopy.
+	// The organization that is primarily responsible for this Encounter's services. This MAY be the same as the organization on the Patient record, however it could be different, such as if the actor performing the services was from an external organization (which may be billed separately) for an external consultation.  Refer to the example bundle showing an abbreviated set of Encounters for a colonoscopy.
 	ServiceProvider *FHIRReference `json:"serviceProvider,omitempty"`
 
 	// Another Encounter of which this encounter is a part of (administratively or in time).
@@ -271,7 +271,7 @@ type FHIREncounterInput struct {
 	// List of locations where  the patient has been during this encounter.
 	Location []*FHIREncounterLocationInput `json:"location,omitempty"`
 
-	// The organization that is primarily responsible for this Encounter's services. This MAY be the same as the organization on the Patient record, however it could be different, such as if the actor performing the services was from an external organization (which may be billed seperately) for an external consultation.  Refer to the example bundle showing an abbreviated set of Encounters for a colonoscopy.
+	// The organization that is primarily responsible for this Encounter's services. This MAY be the same as the organization on the Patient record, however it could be different, such as if the actor performing the services was from an external organization (which may be billed separately) for an external consultation.  Refer to the example bundle showing an abbreviated set of Encounters for a colonoscopy.
 	ServiceProvider *FHIRReferenceInput `json:"serviceProvider,omitempty"`
 
 	// Another Encounter of which this encounter is a part of (administratively or in time).

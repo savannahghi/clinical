@@ -54,7 +54,7 @@ const (
 	TwilioSMSNumberEnvVarName        = "TWILIO_SMS_NUMBER"
 
 	notFoundWithSearchParams = "could not find a patient with the provided parameters"
-	internalError            = "an error occured on our end. Please try again later"
+	internalError            = "an error occurred on our end. Please try again later"
 	fullAccessLevel          = "FULL_ACCESS"
 	partialAccessLevel       = "PROFILE_AND_RECENT_VISITS_ACCESS"
 	timeFormatStr            = "2006-01-02T15:04:05+03:00"

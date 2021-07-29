@@ -506,7 +506,7 @@ mutation SimplePatientRegistration($input: SimplePatientRegistrationInput!) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -678,7 +678,7 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -870,7 +870,7 @@ func TestGraphQLFindPatients(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -1031,7 +1031,7 @@ func TestGraphQGetPatient(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -1224,7 +1224,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -1414,7 +1414,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 				}
 			}
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -1588,7 +1588,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})
@@ -1740,7 +1740,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})
@@ -1892,7 +1892,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -2030,7 +2030,7 @@ func TestGraphQLEndEncounter(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -2200,7 +2200,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -2380,7 +2380,7 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})
@@ -2532,7 +2532,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -2732,7 +2732,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -3031,7 +3031,7 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})
@@ -3176,7 +3176,7 @@ func TestGraphQLAddNHIF(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -3347,7 +3347,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -3672,7 +3672,7 @@ func TestGraphQLVisitSummary(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -4001,7 +4001,7 @@ func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -4186,7 +4186,7 @@ func TestGraphQLProblemSummary(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -4425,7 +4425,7 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -4689,7 +4689,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -4887,7 +4887,7 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -5169,7 +5169,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -5444,7 +5444,7 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -5675,7 +5675,7 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -5932,7 +5932,7 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -6145,7 +6145,7 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})
@@ -6395,7 +6395,7 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -6640,7 +6640,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})
@@ -6868,7 +6868,7 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -7029,7 +7029,7 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -7236,7 +7236,7 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -7462,7 +7462,7 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -7682,7 +7682,7 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})
@@ -7901,7 +7901,7 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -8127,7 +8127,7 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -8318,7 +8318,7 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -8521,7 +8521,7 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -8679,7 +8679,7 @@ func TestGraphQLListConcepts(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -8864,7 +8864,7 @@ func TestGraphQLAllergySummary(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 
@@ -9035,7 +9035,7 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status reponse returned")
+				t.Errorf("Bad status response returned")
 				return
 			}
 		})

@@ -32,7 +32,7 @@ func (s Service) FHIRRestURL() string {
 
 // GetBearerToken logs in and gets a Google bearer auth token.
 // The user referred to by `cloudhealthEmail` needs to have IAM permissions
-// that allow them to read and write from teh project's Cloud Healthcare base.
+// that allow them to read and write from the project's Cloud Healthcare base.
 func (s Service) GetBearerToken() (string, error) {
 	ctx := context.Background()
 	scopes := []string{
