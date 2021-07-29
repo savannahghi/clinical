@@ -131,7 +131,7 @@ func TestService_SearchFHIROrganization(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Succesfully search an existing organization",
+			name:    "Successfully search an existing organization",
 			args:    args{ctx: ctx, params: validSearchParams},
 			wantErr: false,
 		},

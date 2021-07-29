@@ -17,7 +17,7 @@ const waitSeconds = 30
 
 func init() {
 	// check if must have env variables exist
-	// expects the server to die if this not explictly set
+	// expects the server to die if this not explicitly set
 	serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
 	serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
 	serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
