@@ -6,7 +6,6 @@ env:
   DOCKER_BUILDKIT: 1 # Enable Buildkit and let compose use it to speed up image building
   COMPOSE_DOCKER_CLI_BUILD: 1
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
   FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
   ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
@@ -28,7 +27,6 @@ jobs:
     timeout-minutes: 80
     steps:
       - uses: actions/checkout@v2
-      - run: git config --global url."https://${user}:${ACCESS_TOKEN}@gitlab.slade360emr.com".insteadOf "https://gitlab.slade360emr.com"
       - uses: google-github-actions/setup-gcloud@master
         with:
             project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
