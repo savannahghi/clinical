@@ -14,9 +14,6 @@ For local development, you need to *export* the following env vars:
 export GOOGLE_APPLICATION_CREDENTIALS="<a path to a Google service account JSON file>"
 export GOOGLE_CLOUD_PROJECT="<the name of the project that the service account above belongs to>"
 export FIREBASE_WEB_API_KEY="<an API key from the Firebase console for the project mentioned above>"
-
-# Go private modules
-export GOPRIVATE="gitlab.slade360emr.com/go/*,gitlab.slade360emr.com/optimalhealth/*"
 ```
 
 The server deploys to Google Cloud Run. For Cloud Run, the necessary environment
@@ -24,3 +21,6 @@ variables are:
 
 - `GOOGLE_CLOUD_PROJECT`
 - `FIREBASE_WEB_API_KEY`
+
+## Deployment
+This application is deployed via Google Cloud Build ( https://cloud.google.com/build ) to Google Cloud Run ( https://cloud.google.com/run ). There's a cloudbuild.yaml file in the home folder. Secrets (e.g production settings) are managed with Google Secret Manager ( https://cloud.google.com/secret-manager ).
