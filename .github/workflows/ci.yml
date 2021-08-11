@@ -16,6 +16,7 @@ env:
   OPENCONCEPTLAB_API_URL: ${{ secrets.OPENCONCEPTLAB_API_URL }}
   JWT_KEY: ${{ secrets.JWT_KEY }}
   CLOUD_HEALTH_FHIRSTORE_ID: ${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}
+  BEWELL_CLI_VERSION: v0.0.1 #explicit version -> avoid breakages that might occur with different versions
 
 jobs:
   lint_and_test:
@@ -25,6 +26,8 @@ jobs:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 80
+    env:
+      REGISTRY_URL: ${{ secrets.TEST_SCHEMA_REGISTRY_URL }} 
     steps:
       - uses: actions/checkout@v2
       - uses: google-github-actions/setup-gcloud@master
@@ -51,10 +54,12 @@ jobs:
           go get github.com/fzipp/gocyclo
           go get github.com/stretchr/testify/assert@v1.7.0
           go get github.com/ory/go-acc
+          go install github.com/savannahghi/bewellcli@$BEWELL_CLI_VERSION
 
       - name: Run lint and test
         run: |
           staticcheck ./...
+           bewellcli service validate-schema --name clinical --version $CI_COMMIT_SHA --url $REGISTRY_URL
           go fmt $(go list ./... | grep -v /vendor/)
           go vet $(go list ./... | grep -v /vendor/)
           golint -set_exit_status $(go list ./... | grep -v /vendor/)
