@@ -18,7 +18,7 @@ jobs:
     environment:
       name: test, staging, production # run only in these three environment
     # TODO: add develop
-    if: contains(github.head_ref, 'opensource') || contains(github.head_ref, 'main')
+    if: github.ref == 'refs/heads/opensource' || github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
 
@@ -48,7 +48,7 @@ jobs:
     environment:
       name: test
     # TODO: add develop
-    if: contains(github.head_ref, 'opensource')
+    if: github.ref == 'refs/heads/opensource'
     needs: [build_and_push_image]
     steps:
       - name: Checkout working branches
@@ -91,7 +91,7 @@ jobs:
     environment:
       name: production
     needs: [build_and_push_image]
-    if: contains(github.head_ref, 'main')
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout working branches
         uses: actions/checkout@v2
@@ -133,7 +133,7 @@ jobs:
     environment:
       name: staging
     needs: [build_and_push_image]
-    if: contains(github.head_ref, 'opensource')
+    if: github.ref == 'refs/heads/opensource'
     steps:
       - name: Checkout working branches
         uses: actions/checkout@v2
