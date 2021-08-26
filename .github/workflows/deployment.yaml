@@ -125,7 +125,7 @@ jobs:
           --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
           --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
 
-  push_schema:
+  push_schema_test_registry:
     name: Publish schema to schema registry
     strategy:
       matrix:
@@ -149,3 +149,4 @@ jobs:
           go install github.com/savannahghi/bewellcli@$CLI_VERSION
           bewellcli service validate-schema --name clinical --version $GITHUB_SHA --url ${{ secrets.SERVICE_GRAPHQL_URL }}
           bewellcli service push-schema --name clinical --version $GITHUB_SHA --url ${{ secrets.SERVICE_GRAPHQL_URL }}
+
