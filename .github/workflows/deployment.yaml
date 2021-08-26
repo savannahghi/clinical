@@ -1,9 +1,6 @@
 name: Deployment
 
-on:
-  push:
-    # TODO: Change this to develop
-    branches: [opensource]
+on: [push]
 
 env:
   DOCKER_BUILDKIT: 1 # Enable Buildkit and let compose use it to speed up image building
@@ -19,7 +16,9 @@ jobs:
   build_and_push_image:
     runs-on: ubuntu-latest
     environment:
-      name: test # run this only in test environment for now
+      name: test, staging, production # run only in these three environment
+    # TODO: add develop
+    if: contains(github.head_ref, 'opensource') || contains(github.head_ref, 'main')
     steps:
       - uses: actions/checkout@v2
 
@@ -48,6 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: test
+    # TODO: add develop
+    if: contains(github.head_ref, 'opensource')
     needs: [build_and_push_image]
     steps:
       - name: Checkout working branches
@@ -85,11 +86,54 @@ jobs:
           --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
 
   deploy_to_prod:
-    name: Deploy Test Server to Google Cloud Run
+    name: Deploy Prod Server to Google Cloud Run
     runs-on: ubuntu-latest
     environment:
       name: production
     needs: [build_and_push_image]
+    if: contains(github.head_ref, 'main')
+    steps:
+      - name: Checkout working branches
+        uses: actions/checkout@v2
+
+      # Deploy to Google Cloud Run Serverless
+      - name: Get GCP project credential
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+          export_default_credentials: true
+
+      # Deploy to Google Cloud Run Serverless
+      - name: Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy ${{ secrets.SERVICE_NAME }} --image eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:$GITHUB_SHA \
+          --region europe-west1 \
+          --platform managed \
+          --allow-unauthenticated \
+          --min-instances=${{ secrets.MIN_INST }} \
+          --max-instances=${{ secrets.MAX_INST }} \
+          --memory=${{ secrets.MEMORY_LIMIT}} \
+          --cpu=${{ secrets.CPU }} \
+          --set-env-vars "GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}" \
+          --set-env-vars "FIREBASE_WEB_API_KEY=${{ secrets.FIREBASE_WEB_API_KEY }}" \
+          --set-env-vars "JWT_KEY=${{ secrets.JWT_KEY }}" \
+          --set-env-vars "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" \
+          --set-env-vars "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
+          --set-env-vars "ROOT_COLLECTION_SUFFIX=${{ secrets.ROOT_COLLECTION_SUFFIX }}" \
+          --set-env-vars "CLOUD_HEALTH_PUBSUB_TOPIC=${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}" \
+          --set-env-vars "CLOUD_HEALTH_DATASET_ID=${{ secrets.CLOUD_HEALTH_DATASET_ID }}" \
+          --set-env-vars "CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}" \
+          --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
+          --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
+
+  deploy_to_staging:
+    name: Deploy Staging Server to Google Cloud Run
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    needs: [build_and_push_image]
+    if: contains(github.head_ref, 'opensource')
     steps:
       - name: Checkout working branches
         uses: actions/checkout@v2
