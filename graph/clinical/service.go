@@ -18,7 +18,9 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/application/dto"
 	"github.com/savannahghi/clinical/cloudhealth"
+	"github.com/savannahghi/clinical/services/onboarding"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
@@ -63,6 +65,7 @@ const (
 // dependencies names. Should match the names in the yaml file
 const (
 	EngagementService = "engagement"
+	OnboardingService = "onboarding"
 )
 
 // specific endpoint paths for ISC
@@ -77,6 +80,17 @@ const (
 	uploadEndpoint    = "internal/upload/"
 	getUploadEndpoint = "internal/upload/%s/"
 )
+
+// Service is a clinical service
+type Service struct {
+	clinicalRepository *cloudhealth.Service
+	sms                *interserviceclient.SmsISC
+	firestoreClient    *firestore.Client
+	engagement         *interserviceclient.InterServiceClient
+
+	//Onboarding ...
+	Onboarding *onboarding.ServiceImpl
+}
 
 // NewService initializes a new clinical service
 func NewService() *Service {
@@ -96,6 +110,13 @@ func NewService() *Service {
 		EndPoint: sendSMSEndpoint,
 	}
 
+	onboardingClient, err := interserviceclient.SetupISCclient(*config, OnboardingService)
+	if err != nil {
+		log.Panicf("unable to set up onboarding ISC client: %v", err)
+	}
+
+	onboardingService := onboarding.NewService(onboardingClient)
+
 	fc := &firebasetools.FirebaseClient{}
 	firebaseApp, err := fc.InitFirebase()
 	if err != nil {
@@ -113,15 +134,8 @@ func NewService() *Service {
 		firestoreClient:    firestoreClient,
 		engagement:         engagementClient,
 		sms:                engagementSms,
+		Onboarding:         onboardingService,
 	}
-}
-
-// Service is a clinical service
-type Service struct {
-	clinicalRepository *cloudhealth.Service
-	sms                *interserviceclient.SmsISC
-	firestoreClient    *firestore.Client
-	engagement         *interserviceclient.InterServiceClient
 }
 
 func (s Service) checkPreconditions() {
@@ -1989,7 +2003,6 @@ func (s Service) RegisterPatient(ctx context.Context, input SimplePatientRegistr
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("patient registration input: %#v", patientInput)
 	output, err := s.CreatePatient(ctx, *patientInput)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create patient: %v", err)
@@ -2000,7 +2013,47 @@ func (s Service) RegisterPatient(ctx context.Context, input SimplePatientRegistr
 			return nil, fmt.Errorf("unable to send welcome email: %w", err)
 		}
 	}
+
 	return output, nil
+}
+
+// RegisterUser implements creates a user profile and simple patient registration
+func (s Service) RegisterUser(ctx context.Context, input SimplePatientRegistrationInput) (*PatientPayload, error) {
+
+	user, err := profileutils.GetLoggedInUser(ctx)
+
+	if err != nil {
+		return nil, fmt.Errorf("error, failed to get logged in user: %v", err)
+	}
+
+	log.Printf("loggedin user UID: %v", user.UID)
+
+	var primaryEmail string
+	if len(input.Emails) > 0 {
+		primaryEmail = input.Emails[0].Email
+	}
+
+	payload := dto.RegisterUserPayload{
+		UID:         user.UID,
+		FirstName:   input.Names[0].FirstName,
+		LastName:    input.Names[0].LastName,
+		PhoneNumber: input.PhoneNumbers[0].Msisdn,
+		Gender:      enumutils.Gender(input.Gender),
+		Email:       primaryEmail,
+		DateOfBirth: input.BirthDate,
+	}
+
+	err = s.Onboarding.CreateUserProfile(ctx, payload)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create a user profile: %v", err)
+	}
+
+	patient, err := s.RegisterPatient(ctx, input)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create a patient profile: %v", err)
+	}
+
+	return patient, nil
 }
 
 func (s Service) getBreakGlassCollectionName() string {

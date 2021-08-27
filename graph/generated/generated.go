@@ -897,6 +897,7 @@ type ComplexityRoot struct {
 		EndEncounter                        func(childComplexity int, encounterID string) int
 		EndEpisode                          func(childComplexity int, episodeID string) int
 		RegisterPatient                     func(childComplexity int, input clinical.SimplePatientRegistrationInput) int
+		RegisterUser                        func(childComplexity int, input clinical.SimplePatientRegistrationInput) int
 		StartEncounter                      func(childComplexity int, episodeID string) int
 		StartEpisodeByBreakGlass            func(childComplexity int, input clinical.BreakGlassEpisodeCreationInput) int
 		StartEpisodeByOtp                   func(childComplexity int, input clinical.OTPEpisodeCreationInput) int
@@ -965,6 +966,7 @@ type MutationResolver interface {
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 	RegisterPatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error)
+	RegisterUser(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error)
 	UpdatePatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error)
 	AddNextOfKin(ctx context.Context, input clinical.SimpleNextOfKinInput) (*clinical.PatientPayload, error)
 	AddNhif(ctx context.Context, input *clinical.SimpleNHIFInput) (*clinical.PatientPayload, error)
@@ -5228,6 +5230,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RegisterPatient(childComplexity, args["input"].(clinical.SimplePatientRegistrationInput)), true
 
+	case "Mutation.registerUser":
+		if e.complexity.Mutation.RegisterUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_registerUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RegisterUser(childComplexity, args["input"].(clinical.SimplePatientRegistrationInput)), true
+
 	case "Mutation.startEncounter":
 		if e.complexity.Mutation.StartEncounter == nil {
 			break
@@ -5965,6 +5979,8 @@ extend type Mutation {
   endEncounter(encounterID: String!): Boolean!
 
   registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  registerUser(input: SimplePatientRegistrationInput!): PatientPayload!
 
   updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
 
@@ -12187,6 +12203,21 @@ func (ec *executionContext) field_Mutation_endEpisode_args(ctx context.Context, 
 }
 
 func (ec *executionContext) field_Mutation_registerPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 clinical.SimplePatientRegistrationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNSimplePatientRegistrationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋgraphᚋclinicalᚐSimplePatientRegistrationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_registerUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 clinical.SimplePatientRegistrationInput
@@ -31587,6 +31618,48 @@ func (ec *executionContext) _Mutation_registerPatient(ctx context.Context, field
 	return ec.marshalNPatientPayload2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_registerUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_registerUser_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RegisterUser(rctx, args["input"].(clinical.SimplePatientRegistrationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.PatientPayload)
+	fc.Result = res
+	return ec.marshalNPatientPayload2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋgraphᚋclinicalᚐPatientPayload(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_updatePatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -43491,6 +43564,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "registerPatient":
 			out.Values[i] = ec._Mutation_registerPatient(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "registerUser":
+			out.Values[i] = ec._Mutation_registerUser(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
