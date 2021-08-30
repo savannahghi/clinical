@@ -5,14 +5,13 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/savannahghi/clinical/graph/clinical"
 	"github.com/savannahghi/clinical/graph/generated"
 )
 
 func (r *entityResolver) FindDummyByID(ctx context.Context, id string) (*clinical.Dummy, error) {
-	panic(fmt.Errorf("not implemented"))
+	return nil, nil
 }
 
 // Entity returns generated.EntityResolver implementation.
