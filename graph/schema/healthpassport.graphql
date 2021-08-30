@@ -222,6 +222,8 @@ extend type Mutation {
 
   registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
 
+  registerUser(input: SimplePatientRegistrationInput!): PatientPayload!
+
   updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
 
   addNextOfKin(input: SimpleNextOfKinInput!): PatientPayload!

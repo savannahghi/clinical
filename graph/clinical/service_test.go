@@ -1,6 +1,5 @@
 package clinical_test
 
-// TODO uncomment me
 import (
 	"context"
 	"testing"

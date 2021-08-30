@@ -52,6 +52,12 @@ func (r *mutationResolver) RegisterPatient(ctx context.Context, input clinical.S
 	return r.clinicalService.RegisterPatient(ctx, input)
 }
 
+func (r *mutationResolver) RegisterUser(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error) {
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.clinicalService.RegisterUser(ctx, input)
+}
+
 func (r *mutationResolver) UpdatePatient(ctx context.Context, input clinical.SimplePatientRegistrationInput) (*clinical.PatientPayload, error) {
 	r.CheckUserTokenInContext(ctx)
 	r.CheckDependencies()
