@@ -19,8 +19,8 @@ scalar URI
 scalar UUID
 scalar XHTML
 
-extend type Dummy @key(fields: "id") {
-  id: ID @external
+type Dummy @key(fields: "id") {
+  id: ID!
 }
 
 extend type PageInfo {

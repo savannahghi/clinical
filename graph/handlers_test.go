@@ -73,12 +73,6 @@ func remmoveUserRegistrationTests(ctx context.Context, t *testing.T, isc interse
 	}
 	s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 
-	//delete test log in user
-	err = interserviceclient.RemoveTestPhoneNumberUser(t, &isc)
-	if err != nil {
-		return fmt.Errorf("unable to delete test user: %v", err)
-	}
-
 	return nil
 }
 
@@ -558,18 +552,11 @@ func TestGraphQLRegisterUser(t *testing.T) {
 		log.Panicf("unable initialize intersevice client: %s", err)
 	}
 
-	user, err := interserviceclient.CreateOrLoginTestPhoneNumberUser(t, isc)
+	//remove possible existing test data
+	err = remmoveUserRegistrationTests(ctx, t, *isc)
 	if err != nil {
-		log.Panicf("unable to create user: %s", err)
+		t.Errorf("error: %v", err)
 	}
-
-	headers := req.Header{
-		"Accept":        "application/json",
-		"Content-Type":  "application/json",
-		"Authorization": fmt.Sprintf("Bearer %s", *user.Auth.IDToken),
-	}
-
-	log.Printf("UID::: %v", user.Auth.UID)
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -577,6 +564,12 @@ func TestGraphQLRegisterUser(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+
+	headers, err := GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
 
 	simplePatientRegInput, _, err := getTestSimpleUserRegistration()
 	if err != nil {
@@ -821,6 +814,7 @@ mutation SimplePatientRegistration($input: SimplePatientRegistrationInput!) {
 				t.Errorf("bad data returned")
 				return
 			}
+
 			if tt.wantErr {
 				_, ok := data["errors"]
 				if !ok {
