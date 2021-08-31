@@ -5,6 +5,7 @@ package generated
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
@@ -37,6 +38,20 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 			return nil, errors.New("__typename must be an existing string")
 		}
 		switch typeName {
+
+		case "Dummy":
+			id0, err := ec.unmarshalNID2string(ctx, rep["id"])
+			if err != nil {
+				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "id"))
+			}
+
+			entity, err := ec.resolvers.Entity().FindDummyByID(ctx,
+				id0)
+			if err != nil {
+				return nil, err
+			}
+
+			list = append(list, entity)
 
 		default:
 			return nil, errors.New("unknown type: " + typeName)

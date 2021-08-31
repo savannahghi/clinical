@@ -41,6 +41,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Entity() EntityResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -51,6 +52,10 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Dummy struct {
 		ID func(childComplexity int) int
+	}
+
+	Entity struct {
+		FindDummyByID func(childComplexity int, id string) int
 	}
 
 	EpisodeOfCarePayload struct {
@@ -958,6 +963,9 @@ type ComplexityRoot struct {
 	}
 }
 
+type EntityResolver interface {
+	FindDummyByID(ctx context.Context, id string) (*clinical.Dummy, error)
+}
 type MutationResolver interface {
 	StartEpisodeByOtp(ctx context.Context, input clinical.OTPEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error)
 	StartEpisodeByBreakGlass(ctx context.Context, input clinical.BreakGlassEpisodeCreationInput) (*clinical.EpisodeOfCarePayload, error)
@@ -1028,6 +1036,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Dummy.ID(childComplexity), true
+
+	case "Entity.findDummyByID":
+		if e.complexity.Entity.FindDummyByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findDummyByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindDummyByID(childComplexity, args["id"].(string)), true
 
 	case "EpisodeOfCarePayload.episodeOfCare":
 		if e.complexity.EpisodeOfCarePayload.EpisodeOfCare == nil {
@@ -5735,8 +5755,8 @@ scalar URI
 scalar UUID
 scalar XHTML
 
-extend type Dummy @key(fields: "id") {
-  id: ID @external
+type Dummy @key(fields: "id") {
+  id: ID!
 }
 
 extend type PageInfo {
@@ -11946,6 +11966,12 @@ directive @extends on OBJECT
 # a union of all types that use the @key directive
 union _Entity = Dummy
 
+# fake type to build resolver interfaces for users to implement
+type Entity {
+		findDummyByID(id: ID!,): Dummy!
+
+}
+
 type _Service {
   sdl: String
 }
@@ -11961,6 +11987,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Entity_findDummyByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_addNHIF_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -12823,11 +12864,56 @@ func (ec *executionContext) _Dummy_id(ctx context.Context, field graphql.Collect
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOID2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Entity_findDummyByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Entity_findDummyByID_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindDummyByID(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*clinical.Dummy)
+	fc.Result = res
+	return ec.marshalNDummy2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋgraphᚋclinicalᚐDummy(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _EpisodeOfCarePayload_episodeOfCare(ctx context.Context, field graphql.CollectedField, obj *clinical.EpisodeOfCarePayload) (ret graphql.Marshaler) {
@@ -40272,6 +40358,49 @@ func (ec *executionContext) _Dummy(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = graphql.MarshalString("Dummy")
 		case "id":
 			out.Values[i] = ec._Dummy_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var entityImplementors = []string{"Entity"}
+
+func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, entityImplementors)
+
+	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
+		Object: "Entity",
+	})
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Entity")
+		case "findDummyByID":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findDummyByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -44443,6 +44572,20 @@ func (ec *executionContext) unmarshalNDateTime2githubᚗcomᚋsavannahghiᚋscal
 
 func (ec *executionContext) marshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, sel ast.SelectionSet, v scalarutils.DateTime) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) marshalNDummy2githubᚗcomᚋsavannahghiᚋclinicalᚋgraphᚋclinicalᚐDummy(ctx context.Context, sel ast.SelectionSet, v clinical.Dummy) graphql.Marshaler {
+	return ec._Dummy(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNDummy2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋgraphᚋclinicalᚐDummy(ctx context.Context, sel ast.SelectionSet, v *clinical.Dummy) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Dummy(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋgraphᚋclinicalᚐEncounterStatusEnum(ctx context.Context, v interface{}) (clinical.EncounterStatusEnum, error) {
