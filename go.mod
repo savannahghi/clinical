@@ -43,5 +43,4 @@ require (
 	google.golang.org/api v0.49.0
 	google.golang.org/genproto v0.0.0-20210624195500-8bfb893ecb84 // indirect
 	google.golang.org/protobuf v1.27.0 // indirect
-	moul.io/http2curl v1.0.0 // indirect
 )
