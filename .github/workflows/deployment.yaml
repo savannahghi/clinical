@@ -16,9 +16,9 @@ jobs:
   build_and_push_image:
     runs-on: ubuntu-latest
     environment:
-      name: test, staging, production # run only in these three environment
+      name: test # staging, production run only in these three environment
     # TODO: add develop
-    if: contains(github.head_ref, 'opensource') || contains(github.head_ref, 'main')
+    # if: contains(github.head_ref, 'opensource') || contains(github.head_ref, 'main')
     steps:
       - uses: actions/checkout@v2
 
@@ -48,7 +48,7 @@ jobs:
     environment:
       name: test
     # TODO: add develop
-    if: contains(github.head_ref, 'opensource')
+    # if: contains(github.head_ref, 'opensource')
     needs: [build_and_push_image]
     steps:
       - name: Checkout working branches
@@ -133,7 +133,7 @@ jobs:
     environment:
       name: staging
     needs: [build_and_push_image]
-    if: contains(github.head_ref, 'opensource')
+    # if: contains(github.head_ref, 'opensource')
     steps:
       - name: Checkout working branches
         uses: actions/checkout@v2
