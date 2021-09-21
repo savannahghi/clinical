@@ -1,31 +1,30 @@
 schema:
-  - graph/schema/*.graphql
-  - graph/schema/**/*.graphql
-  - graph/*.graphql
+  - pkg/clinical/presentation/graph/*.graphql
+  - pkg/clinical/presentation/graph/**/*.graphql
+  - pkg/clinical/presentation/graph/*.graphql
 exec:
-  filename: graph/generated/generated.go
+  filename: pkg/clinical/presentation/graph/generated/generated.go
   package: generated
 
 federation:
-  filename: graph/generated/federation.go
+  filename: pkg/clinical/presentation/graph/generated/federation.go
   package: generated
-
 model:
-  filename: graph/model/models_gen.go
+  filename: pkg/clinical/domain/model/models_gen.go
   package: model
 
 resolver:
   layout: follow-schema
   package: graph
-  dir: graph
+  dir: pkg/clinical/presentation/graph
 
 autobind:
   - "github.com/savannahghi/scalarutils"
   - "github.com/savannahghi/enumutils"
   - "github.com/savannahghi/firebasetools"
-  - "github.com/savannahghi/clinical/graph/model"
-  - "github.com/savannahghi/clinical/graph/clinical"
-  - "github.com/savannahghi/clinical/graph/openconceptlab"
+  - "github.com/savannahghi/clinical/pkg/clinical/domain/model"
+  - "github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
+  - "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 
 models:
   ID:
