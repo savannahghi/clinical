@@ -59,9 +59,10 @@ jobs:
           go install github.com/savannahghi/bewellcli@$CLI_VERSION
 
       - name: Run lint and test
+        # TODO: add `bewellcli service validate-schema --name clinical --version $GITHUB_SHA --url ${{ secrets.SERVICE_GRAPHQL_URL }}` 
+        # after staticcheck
         run: |
           staticcheck ./...
-          bewellcli service validate-schema --name clinical --version $GITHUB_SHA --url ${{ secrets.SERVICE_GRAPHQL_URL }}
           go fmt $(go list ./... | grep -v /vendor/)
           go vet $(go list ./... | grep -v /vendor/)
           golint -set_exit_status $(go list ./... | grep -v /vendor/)
@@ -82,4 +83,5 @@ jobs:
       - name: Send coverage
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: goveralls -coverprofile=coverage.out  -service=github
+        # TODO: Restore after adding tests
+        # run: goveralls -coverprofile=coverage.out  -service=github
