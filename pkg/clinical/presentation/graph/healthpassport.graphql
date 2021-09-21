@@ -1,0 +1,282 @@
+enum MaritalStatus {
+  A
+  D
+  I
+  L
+  M
+  P
+  S
+  T
+  U
+  W
+  UNK
+}
+
+enum RelationshipType {
+  C
+  E
+  F
+  I
+  N
+  O
+  S
+  U
+}
+
+enum IDDocumentType {
+  national_id
+  passport
+  alien_id
+}
+
+type PatientEdge {
+  cursor: String!
+  node: FHIRPatient!
+  hasOpenEpisodes: Boolean!
+}
+
+type PatientConnection {
+  edges: [PatientEdge]
+  pageInfo: PageInfo!
+}
+
+type PatientPayload {
+  patientRecord: FHIRPatient!
+  hasOpenEpisodes: Boolean!
+  openEpisodes: [FHIREpisodeOfCare]
+}
+
+type EpisodeOfCarePayload {
+  episodeOfCare: FHIREpisodeOfCare!
+  totalVisits: Int!
+}
+
+input OTPEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  msisdn: String!
+  otp: String!
+  fullAccess: Boolean!
+}
+
+input OTPEpisodeUpgradeInput {
+  episodeID: String!
+  msisdn: String!
+  otp: String!
+}
+
+input BreakGlassEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  practitionerUID: String!
+  providerPhone: String!
+  otp: String!
+  fullAccess: Boolean!
+  patientPhone: String!
+}
+
+input PhysicalAddress {
+  mapsCode: String! # can be a Plus Code or Google Maps co-ordinates
+  physicalAddress: String!
+}
+
+input PostalAddress {
+  postalAddress: String!
+  postalCode: String!
+}
+
+input SimplePatientRegistrationInput {
+  id: ID
+  names: [NameInput!]!
+  gender: String!
+  identificationDocuments: [IdentificationDocument!]!
+  birthDate: Date!
+  phoneNumbers: [PhoneNumberInput!]!
+  photos: [PhotoInput]
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  active: Boolean!
+  replicateUSSD: Boolean
+}
+
+input SimpleNextOfKinInput {
+  patientID: String!
+  names: [NameInput!]!
+  phoneNumbers: [PhoneNumberInput!]!
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  gender: String!
+  birthDate: Date!
+  relationship: RelationshipType!
+  active: Boolean!
+}
+
+input SimpleNHIFInput {
+  patientID: String!
+  membershipNumber: String!
+  frontImageBase64: String
+  frontImageContentType: ContentType
+  rearImageBase64: String
+  rearImageContentType: ContentType
+}
+
+input PatientExtraInformationInput {
+  patientID: String!
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  emails: [EmailInput]
+}
+
+input RetirePatientInput {
+  id: ID! # ID of patient to be retired
+}
+
+input EmailInput {
+  email: String!
+  communicationOptIn: Boolean!
+}
+
+input NameInput {
+  firstName: String!
+  lastName: String!
+  otherNames: String
+}
+
+input IdentificationDocument {
+  documentType: IDDocumentType!
+  documentNumber: String!
+  title: String
+  imageContentType: ContentType
+  imageBase64: String
+}
+
+input PhoneNumberInput {
+  msisdn: String!
+  verificationCode: String!
+  isUSSD: Boolean!
+  communicationOptIn: Boolean!
+}
+
+input PhotoInput {
+  photoContentType: ContentType!
+  photoBase64data: String!
+  photoFilename: String!
+}
+
+extend type Query {
+  findPatientsByMSISDN(msisdn: String!): PatientConnection!
+
+  findPatients(search: String!): PatientConnection!
+
+  getPatient(id: ID!): PatientPayload!
+
+  openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
+
+  openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
+
+  problemSummary(patientID: String!): [String!]!
+
+  visitSummary(encounterID: String!): Map!
+
+  patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
+
+  searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
+
+  searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!
+
+  searchFHIRAllergyIntolerance(
+    params: Map!
+  ): FHIRAllergyIntoleranceRelayConnection!
+
+  searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
+
+  searchFHIRMedicationRequest(
+    params: Map!
+  ): FHIRMedicationRequestRelayConnection!
+
+  searchFHIRServiceRequest(params: Map!): FHIRServiceRequestRelayConnection!
+
+  searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
+
+  allergySummary(patientID: String!): [String!]!
+}
+
+extend type Mutation {
+  startEpisodeByOTP(input: OTPEpisodeCreationInput!): EpisodeOfCarePayload!
+
+  startEpisodeByBreakGlass(
+    input: BreakGlassEpisodeCreationInput!
+  ): EpisodeOfCarePayload!
+
+  upgradeEpisode(input: OTPEpisodeUpgradeInput!): EpisodeOfCarePayload!
+
+  endEpisode(episodeID: String!): Boolean!
+
+  startEncounter(episodeID: String!): String!
+
+  endEncounter(encounterID: String!): Boolean!
+
+  registerPatient(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  registerUser(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  updatePatient(input: SimplePatientRegistrationInput!): PatientPayload!
+
+  addNextOfKin(input: SimpleNextOfKinInput!): PatientPayload!
+
+  addNHIF(input: SimpleNHIFInput): PatientPayload!
+
+  createUpdatePatientExtraInformation(
+    input: PatientExtraInformationInput!
+  ): Boolean!
+
+  createFHIRMedicationRequest(
+    input: FHIRMedicationRequestInput!
+  ): FHIRMedicationRequestRelayPayload!
+
+  updateFHIRMedicationRequest(
+    input: FHIRMedicationRequestInput!
+  ): FHIRMedicationRequestRelayPayload!
+
+  deleteFHIRMedicationRequest(id: ID!): Boolean!
+
+  createFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+
+  updateFHIRAllergyIntolerance(
+    input: FHIRAllergyIntoleranceInput!
+  ): FHIRAllergyIntoleranceRelayPayload!
+
+  createFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
+
+  updateFHIRCondition(input: FHIRConditionInput!): FHIRConditionRelayPayload!
+
+  createFHIRServiceRequest(
+    input: FHIRServiceRequestInput!
+  ): FHIRServiceRequestRelayPayload!
+
+  deleteFHIRServiceRequest(id: ID!): Boolean!
+
+  createFHIRObservation(
+    input: FHIRObservationInput!
+  ): FHIRObservationRelayPayload!
+
+  createFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+
+  updateFHIRComposition(
+    input: FHIRCompositionInput!
+  ): FHIRCompositionRelayPayload!
+
+  deleteFHIRComposition(id: ID!): Boolean!
+
+  deleteFHIRPatient(id: ID!): Boolean!
+
+  deleteFHIRObservation(id: ID!): Boolean!
+}
