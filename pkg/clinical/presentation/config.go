@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
-	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -86,11 +86,11 @@ func PrepareServer(
 
 // Router sets up the ginContext router
 func Router(ctx context.Context) (*mux.Router, error) {
-	fc := &firebasetools.FirebaseClient{}
-	firebaseApp, err := fc.InitFirebase()
-	if err != nil {
-		return nil, err
-	}
+	// fc := &firebasetools.FirebaseClient{}
+	// // firebaseApp, err := fc.InitFirebase()
+	// if err != nil {
+	// 	return nil, err
+	// }
 	r := mux.NewRouter() // gorilla mux
 	r.Use(
 		handlers.RecoveryHandler(
@@ -112,25 +112,32 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	// 	HandlerFunc(DeleteFHIRPatientByPhone(ctx))
 
 	// Authenticated routes
-	gqlR := r.Path("/graphql").Subrouter()
-	gqlR.Use(firebasetools.AuthenticationMiddleware(firebaseApp))
-	gqlR.Methods(
-		http.MethodPost, http.MethodGet, http.MethodOptions,
-	).HandlerFunc(graphqlHandler())
+	// gqlR := r.Path("/graphql").Subrouter()
+	// gqlR.Use(firebasetools.AuthenticationMiddleware(firebaseApp))
+	// gqlR.Methods(
+	// 	http.MethodPost, http.MethodGet, http.MethodOptions,
+	// ).HandlerFunc(GQLHandler())
 	return r, nil
 
 }
 
-func graphqlHandler() http.HandlerFunc {
-	srv := handler.NewDefaultServer(
+// GQLHandler sets up a GraphQL resolver
+func GQLHandler(ctx context.Context,
+	service usecases.Interactor,
+) http.HandlerFunc {
+	resolver, err := graph.NewResolver(ctx, service)
+	if err != nil {
+		serverutils.LogStartupError(ctx, err)
+	}
+	server := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
-				Resolvers: graph.NewResolver(),
+				Resolvers: resolver,
 			},
 		),
 	)
 	return func(w http.ResponseWriter, r *http.Request) {
-		srv.ServeHTTP(w, r)
+		server.ServeHTTP(w, r)
 	}
 }
 

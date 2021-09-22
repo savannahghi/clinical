@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"firebase.google.com/go/auth"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
 )
 
@@ -13,16 +13,18 @@ import (
 
 // Resolver wires up the resolvers needed for the clinical services
 type Resolver struct {
-	oclService *openconceptlab.Service
+	usecases usecases.Interactor
 }
 
 // NewResolver initializes a working top leve Resolver that has been initialized
 // with all necessary dependencies
-func NewResolver() *Resolver {
-	oclService := openconceptlab.NewService()
+func NewResolver(
+	ctx context.Context,
+	usecases usecases.Interactor,
+) (*Resolver, error) {
 	return &Resolver{
-		oclService: oclService,
-	}
+		usecases: usecases,
+	}, nil
 }
 
 // CheckUserTokenInContext ensures that the context has a valid Firebase auth token
@@ -36,11 +38,5 @@ func (r *Resolver) CheckUserTokenInContext(ctx context.Context) *auth.Token {
 
 // CheckDependencies ensures that the resolver has what it needs in order to work
 func (r *Resolver) CheckDependencies() {
-	// if r.clinicalService == nil {
-	// 	log.Panicf("nil clinicalService in resolver")
-	// }
 
-	if r.oclService == nil {
-		log.Panicf("nil oclService in resolver")
-	}
 }
