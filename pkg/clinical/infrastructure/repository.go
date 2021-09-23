@@ -2,6 +2,7 @@ package infrastructure
 
 import "google.golang.org/api/healthcare/v1"
 
+// FHIRRepository ...
 type FHIRRepository interface {
 	CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error)
 	DeleteFHIRResource(resourceType, fhirResourceID string) ([]byte, error)

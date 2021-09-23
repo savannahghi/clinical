@@ -2,12 +2,12 @@ package infrastructure
 
 import "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
 
-// Service is a clinical service
+// Infrastructure ...
 type Infrastructure struct {
 	fhirDatastore *fhir.Service
 }
 
-// NewService initializes a new clinical service
+// NewInfrastructureInteractor initializes a new Infrastructure
 func NewInfrastructureInteractor() *Infrastructure {
 
 	clinicalRepository := fhir.NewService()
