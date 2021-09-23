@@ -1,0 +1,391 @@
+"""
+FHIRServiceRequestInput: input for ServiceRequest
+"""
+input FHIRServiceRequestInput {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  Identifiers assigned to this order instance by the orderer and/or the receiver and/or order fulfiller.
+  """
+  Identifier: [FHIRIdentifierInput]
+  """
+  The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
+  """
+  InstantiatesCanonical: Canonical
+  """
+  The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
+  """
+  InstantiatesURI: Instant
+  """
+  Plan/proposal/order fulfilled by this request.
+  """
+  BasedOn: [FHIRReferenceInput]
+  """
+  The request takes the place of the referenced completed or terminated request(s).
+  """
+  Replaces: [FHIRReferenceInput]
+  """
+  A shared identifier common to all service requests that were authorized more or less simultaneously by a single author, representing the composite or group identifier.
+  """
+  Requisition: FHIRIdentifierInput
+  """
+  The status of the order.
+  """
+  Status: Code
+  """
+  Whether the request is a proposal, plan, an original order or a reflex order.
+  """
+  Intent: Code
+  """
+  A code that classifies the service for searching, sorting and display purposes (e.g. "Surgical Procedure").
+  """
+  Category: [FHIRCodeableConceptInput]
+  """
+  Indicates how quickly the ServiceRequest should be addressed with respect to other requests.
+  """
+  Priority: Code
+  """
+  Set this to true if the record is saying that the service/procedure should NOT be performed.
+  """
+  DoNotPerform: Boolean
+  """
+  A code that identifies a particular service (i.e., procedure, diagnostic investigation, or panel of investigations) that have been requested.
+  """
+  Code: FHIRCodeableConceptInput
+  """
+  Additional details and instructions about the how the services are to be delivered.   For example, and order for a urinary catheter may have an order detail for an external or indwelling catheter, or an order for a bandage may require additional instructions specifying how the bandage should be applied.
+  """
+  OrderDetail: [FHIRCodeableConceptInput]
+  """
+  An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
+  """
+  QuantityQuantity: FHIRQuantityInput
+  """
+  An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
+  """
+  QuantityRatio: FHIRRatioInput
+  """
+  An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
+  """
+  QuantityRange: FHIRRangeInput
+  """
+  On whom or what the service is to be performed. This is usually a human patient, but can also be requested on animals, groups of humans or animals, devices such as dialysis machines, or even locations (typically for environmental scans).
+  """
+  Subject: FHIRReferenceInput!
+  """
+  An encounter that provides additional information about the healthcare context in which this request is made.
+  """
+  Encounter: FHIRReferenceInput
+  """
+  The date/time at which the requested service should occur.
+  """
+  OccurrenceDateTime: Date
+  """
+  The date/time at which the requested service should occur.
+  """
+  OccurrencePeriod: FHIRPeriodInput
+  """
+  The date/time at which the requested service should occur.
+  """
+  OccurrenceTiming: FHIRTimingInput
+  """
+  If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+  """
+  AsNeededBoolean: Boolean
+  """
+  If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+  """
+  AsNeededCodeableConcept: Code
+  """
+  When the request transitioned to being actionable.
+  """
+  AuthoredOn: DateTime
+  """
+  The individual who initiated the request and has responsibility for its activation.
+  """
+  Requester: FHIRReferenceInput
+  """
+  Desired type of performer for doing the requested service.
+  """
+  PerformerType: FHIRCodeableConceptInput
+  """
+  The desired performer for doing the requested service.  For example, the surgeon, dermatopathologist, endoscopist, etc.
+  """
+  Performer: [FHIRReferenceInput]
+  """
+  The preferred location(s) where the procedure should actually happen in coded or free text form. E.g. at home or nursing day care center.
+  """
+  LocationCode: Code
+  """
+  A reference to the the preferred location(s) where the procedure should actually happen. E.g. at home or nursing day care center.
+  """
+  LocationReference: [FHIRReferenceInput]
+  """
+  An explanation or justification for why this service is being requested in coded or textual form.   This is often for billing purposes.  May relate to the resources referred to in `supportingInfo`.
+  """
+  ReasonCode: Code
+  """
+  Indicates another resource that provides a justification for why this service is being requested.   May relate to the resources referred to in `supportingInfo`.
+  """
+  ReasonReference: [FHIRReferenceInput]
+  """
+  Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be needed for delivering the requested service.
+  """
+  Insurance: [FHIRReferenceInput]
+  """
+  Additional clinical information about the patient or specimen that may influence the services or their interpretations.     This information includes diagnosis, clinical findings and other observations.  In laboratory ordering these are typically referred to as "ask at order entry questions (AOEs)".  This includes observations explicitly requested by the producer (filler) to provide context or supporting information needed to complete the order. For example,  reporting the amount of inspired oxygen for blood gas measurements.
+  """
+  SupportingInfo: [FHIRReferenceInput]
+  """
+  One or more specimens that the laboratory procedure will use.
+  """
+  Specimen: [FHIRReferenceInput]
+  """
+  Anatomic location where the procedure should be performed. This is the target site.
+  """
+  BodySite: [FHIRCodeableConceptInput]
+  """
+  Any other notes and comments made about the service request. For example, internal billing notes.
+  """
+  Note: [FHIRAnnotationInput]
+  """
+  Instructions in terms that are understood by the patient or consumer.
+  """
+  PatientInstruction: String
+  """
+  Key events in the history of the request.
+  """
+  RelevantHistory: [FHIRReferenceInput]
+}
+
+"""
+FHIRServiceRequest definition: a record of a request for service such as diagnostic investigations, treatments, or operations to be performed.
+"""
+type FHIRServiceRequest {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.
+  """
+  Text: FHIRNarrative
+
+  """
+  Identifiers assigned to this order instance by the orderer and/or the receiver and/or order fulfiller.
+  """
+  Identifier: [FHIRIdentifier]
+
+  """
+  The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
+  """
+  InstantiatesCanonical: Canonical
+
+  """
+  The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
+  """
+  InstantiatesURI: Instant
+
+  """
+  Plan/proposal/order fulfilled by this request.
+  """
+  BasedOn: [FHIRReference]
+
+  """
+  The request takes the place of the referenced completed or terminated request(s).
+  """
+  Replaces: [FHIRReference]
+
+  """
+  A shared identifier common to all service requests that were authorized more or less simultaneously by a single author, representing the composite or group identifier.
+  """
+  Requisition: FHIRIdentifier
+
+  """
+  The status of the order.
+  """
+  Status: Code
+
+  """
+  Whether the request is a proposal, plan, an original order or a reflex order.
+  """
+  Intent: Code
+
+  """
+  A code that classifies the service for searching, sorting and display purposes (e.g. "Surgical Procedure").
+  """
+  Category: [FHIRCodeableConcept]
+
+  """
+  Indicates how quickly the ServiceRequest should be addressed with respect to other requests.
+  """
+  Priority: Code
+
+  """
+  Set this to true if the record is saying that the service/procedure should NOT be performed.
+  """
+  DoNotPerform: Boolean
+
+  """
+  A code that identifies a particular service (i.e., procedure, diagnostic investigation, or panel of investigations) that have been requested.
+  """
+  Code: FHIRCodeableConcept
+
+  """
+  Additional details and instructions about the how the services are to be delivered.   For example, and order for a urinary catheter may have an order detail for an external or indwelling catheter, or an order for a bandage may require additional instructions specifying how the bandage should be applied.
+  """
+  OrderDetail: [FHIRCodeableConcept]
+
+  """
+  An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
+  """
+  QuantityQuantity: FHIRQuantity
+
+  """
+  An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
+  """
+  QuantityRatio: FHIRRatio
+
+  """
+  An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
+  """
+  QuantityRange: FHIRRange
+
+  """
+  On whom or what the service is to be performed. This is usually a human patient, but can also be requested on animals, groups of humans or animals, devices such as dialysis machines, or even locations (typically for environmental scans).
+  """
+  Subject: FHIRReference!
+
+  """
+  An encounter that provides additional information about the healthcare context in which this request is made.
+  """
+  Encounter: FHIRReference
+
+  """
+  The date/time at which the requested service should occur.
+  """
+  OccurrenceDateTime: Date
+
+  """
+  The date/time at which the requested service should occur.
+  """
+  OccurrencePeriod: FHIRPeriod
+
+  """
+  The date/time at which the requested service should occur.
+  """
+  OccurrenceTiming: FHIRTiming
+
+  """
+  If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+  """
+  AsNeededBoolean: Boolean
+
+  """
+  If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+  """
+  AsNeededCodeableConcept: Code
+
+  """
+  When the request transitioned to being actionable.
+  """
+  AuthoredOn: DateTime
+
+  """
+  The individual who initiated the request and has responsibility for its activation.
+  """
+  Requester: FHIRReference
+
+  """
+  Desired type of performer for doing the requested service.
+  """
+  PerformerType: FHIRCodeableConcept
+
+  """
+  The desired performer for doing the requested service.  For example, the surgeon, dermatopathologist, endoscopist, etc.
+  """
+  Performer: [FHIRReference]
+
+  """
+  The preferred location(s) where the procedure should actually happen in coded or free text form. E.g. at home or nursing day care center.
+  """
+  LocationCode: Code
+
+  """
+  A reference to the the preferred location(s) where the procedure should actually happen. E.g. at home or nursing day care center.
+  """
+  LocationReference: [FHIRReference]
+
+  """
+  An explanation or justification for why this service is being requested in coded or textual form.   This is often for billing purposes.  May relate to the resources referred to in `supportingInfo`.
+  """
+  ReasonCode: Code
+
+  """
+  Indicates another resource that provides a justification for why this service is being requested.   May relate to the resources referred to in `supportingInfo`.
+  """
+  ReasonReference: [FHIRReference]
+
+  """
+  Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be needed for delivering the requested service.
+  """
+  Insurance: [FHIRReference]
+
+  """
+  Additional clinical information about the patient or specimen that may influence the services or their interpretations.     This information includes diagnosis, clinical findings and other observations.  In laboratory ordering these are typically referred to as "ask at order entry questions (AOEs)".  This includes observations explicitly requested by the producer (filler) to provide context or supporting information needed to complete the order. For example,  reporting the amount of inspired oxygen for blood gas measurements.
+  """
+  SupportingInfo: [FHIRReference]
+
+  """
+  One or more specimens that the laboratory procedure will use.
+  """
+  Specimen: [FHIRReference]
+
+  """
+  Anatomic location where the procedure should be performed. This is the target site.
+  """
+  BodySite: [FHIRCodeableConcept]
+
+  """
+  Any other notes and comments made about the service request. For example, internal billing notes.
+  """
+  Note: [FHIRAnnotation]
+
+  """
+  Instructions in terms that are understood by the patient or consumer.
+  """
+  PatientInstruction: String
+
+  """
+  Key events in the history of the request.
+  """
+  RelevantHistory: [FHIRReference]
+}
+
+"""
+FHIRServiceRequestRelayPayload is used to return single instances of ServiceRequest
+"""
+type FHIRServiceRequestRelayPayload {
+  resource: FHIRServiceRequest!
+}
+
+"""
+FHIRServiceRequestRelayEdge is a Relay edge for ServiceRequest
+"""
+type FHIRServiceRequestRelayEdge {
+  cursor: String
+  node: FHIRServiceRequest
+}
+
+"""
+FHIRServiceRequestRelayConnection is a Relay connection for ServiceRequest
+"""
+type FHIRServiceRequestRelayConnection {
+  edges: [FHIRServiceRequestRelayEdge]
+  pageInfo: PageInfo!
+}
+

@@ -1,0 +1,623 @@
+"""
+EncounterStatusEnum is a FHIR enum
+"""
+enum EncounterStatusEnum {
+  planned
+  arrived
+  triaged
+  in_progress # `original: in-progress`
+  onleave
+  finished
+  cancelled
+  entered_in_error # `original: entered-in-error`
+  unknown
+}
+
+"""
+EncounterStatusHistoryStatusEnum is a FHIR enum
+"""
+enum EncounterStatusHistoryStatusEnum {
+  planned
+  arrived
+  triaged
+  in_progress # `original: in-progress`
+  onleave
+  finished
+  cancelled
+  entered_in_error # `original: entered-in-error`
+  unknown
+}
+
+"""
+EncounterLocationStatusEnum is a FHIR enum
+"""
+enum EncounterLocationStatusEnum {
+  planned
+  active
+  reserved
+  completed
+}
+
+"""
+FHIREncounterInput: input for Encounter
+"""
+input FHIREncounterInput {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  Identifier(s) by which this encounter is known.
+  """
+  Identifier: [FHIRIdentifierInput!]!
+  """
+  planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
+  """
+  Status: EncounterStatusEnum!
+  """
+  The status history permits the encounter resource to contain the status history without needing to read through the historical versions of the resource, or even have the server store them.
+  """
+  StatusHistory: [FHIREncounterStatushistoryInput]
+  """
+  Concepts representing classification of patient encounter such as ambulatory (outpatient), inpatient, emergency, home health or others due to local variations.
+  """
+  Class: FHIRCodingInput!
+  """
+  The class history permits the tracking of the encounters transitions without needing to go  through the resource history.  This would be used for a case where an admission starts of as an emergency encounter, then transitions into an inpatient scenario. Doing this and not restarting a new encounter ensures that any lab/diagnostic results can more easily follow the patient and not require re-processing and not get lost or cancelled during a kind of discharge from emergency to inpatient.
+  """
+  ClassHistory: [FHIREncounterClasshistoryInput]
+  """
+  Specific type of encounter (e.g. e-mail consultation, surgical day-care, skilled nursing, rehabilitation).
+  """
+  Type: [FHIRCodeableConceptInput]
+  """
+  Broad categorization of the service that is to be provided (e.g. cardiology).
+  """
+  ServiceType: FHIRCodeableConceptInput
+  """
+  Indicates the urgency of the encounter.
+  """
+  Priority: FHIRCodeableConceptInput
+  """
+  The patient or group present at the encounter.
+  """
+  Subject: FHIRReferenceInput
+  """
+  Where a specific encounter should be classified as a part of a specific episode(s) of care this field should be used. This association can facilitate grouping of related encounters together for a specific purpose, such as government reporting, issue tracking, association via a common problem.  The association is recorded on the encounter as these are typically created after the episode of care and grouped on entry rather than editing the episode of care to append another encounter to it (the episode of care could span years).
+  """
+  EpisodeOfCare: [FHIRReferenceInput]
+  """
+  The request this encounter satisfies (e.g. incoming referral or procedure request).
+  """
+  BasedOn: [FHIRReferenceInput]
+  """
+  The list of people responsible for providing the service.
+  """
+  Participant: [FHIREncounterParticipantInput]
+  """
+  The appointment that scheduled this encounter.
+  """
+  Appointment: [FHIRReferenceInput]
+  """
+  The start and end time of the encounter.
+  """
+  Period: FHIRPeriodInput
+  """
+  Quantity of time the encounter lasted. This excludes the time during leaves of absence.
+  """
+  Length: FHIRDurationInput
+  """
+  Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
+  """
+  ReasonCode: Code
+  """
+  Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
+  """
+  ReasonReference: [FHIRReferenceInput]
+  """
+  The list of diagnosis relevant to this encounter.
+  """
+  Diagnosis: [FHIREncounterDiagnosisInput]
+  """
+  The set of accounts that may be used for billing for this Encounter.
+  """
+  Account: [FHIRReferenceInput]
+  """
+  Details about the admission to a healthcare service.
+  """
+  Hospitalization: FHIREncounterHospitalizationInput
+  """
+  List of locations where  the patient has been during this encounter.
+  """
+  Location: [FHIREncounterLocationInput]
+  """
+  The organization that is primarily responsible for this Encounter's services. This MAY be the same as the organization on the Patient record, however it could be different, such as if the actor performing the services was from an external organization (which may be billed separately) for an external consultation.  Refer to the example bundle showing an abbreviated set of Encounters for a colonoscopy.
+  """
+  ServiceProvider: FHIRReferenceInput
+  """
+  Another Encounter of which this encounter is a part of (administratively or in time).
+  """
+  PartOf: FHIRReferenceInput
+}
+"""
+FHIREncounterStatushistoryInput: input for EncounterStatushistory
+"""
+input FHIREncounterStatushistoryInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
+  """
+  Status: EncounterStatusHistoryStatusEnum
+  """
+  The time that the episode was in the specified status.
+  """
+  Period: FHIRPeriodInput!
+}
+"""
+FHIREncounterParticipantInput: input for EncounterParticipant
+"""
+input FHIREncounterParticipantInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Role of participant in encounter.
+  """
+  Type: [FHIRCodeableConceptInput]
+  """
+  The period of time that the specified participant participated in the encounter. These can overlap or be sub-sets of the overall encounter's period.
+  """
+  Period: FHIRPeriodInput
+  """
+  Persons involved in the encounter other than the patient.
+  """
+  Individual: FHIRReferenceInput
+}
+"""
+FHIREncounterLocationInput: input for EncounterLocation
+"""
+input FHIREncounterLocationInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  The location where the encounter takes place.
+  """
+  Location: FHIRReferenceInput!
+  """
+  The status of the participants' presence at the specified location during the period specified. If the participant is no longer at the location, then the period will have an end date/time.
+  """
+  Status: EncounterLocationStatusEnum
+  """
+  This will be used to specify the required levels (bed/ward/room/etc.) desired to be recorded to simplify either messaging or query.
+  """
+  PhysicalType: FHIRCodeableConceptInput
+  """
+  Time period during which the patient was present at the location.
+  """
+  Period: FHIRPeriodInput
+}
+"""
+FHIREncounterHospitalizationInput: input for EncounterHospitalization
+"""
+input FHIREncounterHospitalizationInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Pre-admission identifier.
+  """
+  PreAdmissionIdentifier: FHIRIdentifierInput
+  """
+  The location/organization from which the patient came before admission.
+  """
+  Origin: FHIRReferenceInput
+  """
+  From where patient was admitted (physician referral, transfer).
+  """
+  AdmitSource: FHIRCodeableConceptInput
+  """
+  Whether this hospitalization is a readmission and why if known.
+  """
+  ReAdmission: FHIRCodeableConceptInput
+  """
+  Diet preferences reported by the patient.
+  """
+  DietPreference: [FHIRCodeableConceptInput]
+  """
+  Special courtesies (VIP, board member).
+  """
+  SpecialCourtesy: [FHIRCodeableConceptInput]
+  """
+  Any special requests that have been made for this hospitalization encounter, such as the provision of specific equipment or other things.
+  """
+  SpecialArrangement: [FHIRCodeableConceptInput]
+  """
+  Location/organization to which the patient is discharged.
+  """
+  Destination: FHIRReferenceInput
+  """
+  Category or kind of location after discharge.
+  """
+  DischargeDisposition: FHIRCodeableConceptInput
+}
+"""
+FHIREncounterDiagnosisInput: input for EncounterDiagnosis
+"""
+input FHIREncounterDiagnosisInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  Reason the encounter takes place, as specified using information from another resource. For admissions, this is the admission diagnosis. The indication will typically be a Condition (with other resources referenced in the evidence.detail), or a Procedure.
+  """
+  Condition: FHIRReferenceInput!
+  """
+  Role that this diagnosis has within the encounter (e.g. admission, billing, discharge …).
+  """
+  Use: FHIRCodeableConceptInput
+  """
+  Ranking of the diagnosis (for each role type).
+  """
+  Rank: PositiveInt
+}
+"""
+FHIREncounterClasshistoryInput: input for EncounterClasshistory
+"""
+input FHIREncounterClasshistoryInput {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: String
+
+  """
+  inpatient | outpatient | ambulatory | emergency +.
+  """
+  Class: FHIRCodingInput!
+  """
+  The time that the episode was in the specified class.
+  """
+  Period: FHIRPeriodInput!
+}
+
+"""
+FHIREncounterStatushistory definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+"""
+type FHIREncounterStatushistory {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
+  """
+  Status: EncounterStatusHistoryStatusEnum
+
+  """
+  The time that the episode was in the specified status.
+  """
+  Period: FHIRPeriod!
+}
+
+"""
+FHIREncounterParticipant definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+"""
+type FHIREncounterParticipant {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Role of participant in encounter.
+  """
+  Type: [FHIRCodeableConcept]
+
+  """
+  The period of time that the specified participant participated in the encounter. These can overlap or be sub-sets of the overall encounter's period.
+  """
+  Period: FHIRPeriod
+
+  """
+  Persons involved in the encounter other than the patient.
+  """
+  Individual: FHIRReference
+}
+
+"""
+FHIREncounterLocation definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+"""
+type FHIREncounterLocation {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  The location where the encounter takes place.
+  """
+  Location: FHIRReference!
+
+  """
+  The status of the participants' presence at the specified location during the period specified. If the participant is no longer at the location, then the period will have an end date/time.
+  """
+  Status: EncounterLocationStatusEnum
+
+  """
+  This will be used to specify the required levels (bed/ward/room/etc.) desired to be recorded to simplify either messaging or query.
+  """
+  PhysicalType: FHIRCodeableConcept
+
+  """
+  Time period during which the patient was present at the location.
+  """
+  Period: FHIRPeriod
+}
+
+"""
+FHIREncounterHospitalization definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+"""
+type FHIREncounterHospitalization {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Pre-admission identifier.
+  """
+  PreAdmissionIdentifier: FHIRIdentifier
+
+  """
+  The location/organization from which the patient came before admission.
+  """
+  Origin: FHIRReference
+
+  """
+  From where patient was admitted (physician referral, transfer).
+  """
+  AdmitSource: FHIRCodeableConcept
+
+  """
+  Whether this hospitalization is a readmission and why if known.
+  """
+  ReAdmission: FHIRCodeableConcept
+
+  """
+  Diet preferences reported by the patient.
+  """
+  DietPreference: [FHIRCodeableConcept]
+
+  """
+  Special courtesies (VIP, board member).
+  """
+  SpecialCourtesy: [FHIRCodeableConcept]
+
+  """
+  Any special requests that have been made for this hospitalization encounter, such as the provision of specific equipment or other things.
+  """
+  SpecialArrangement: [FHIRCodeableConcept]
+
+  """
+  Location/organization to which the patient is discharged.
+  """
+  Destination: FHIRReference
+
+  """
+  Category or kind of location after discharge.
+  """
+  DischargeDisposition: FHIRCodeableConcept
+}
+
+"""
+FHIREncounterDiagnosis definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+"""
+type FHIREncounterDiagnosis {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  Reason the encounter takes place, as specified using information from another resource. For admissions, this is the admission diagnosis. The indication will typically be a Condition (with other resources referenced in the evidence.detail), or a Procedure.
+  """
+  Condition: FHIRReference!
+
+  """
+  Role that this diagnosis has within the encounter (e.g. admission, billing, discharge …).
+  """
+  Use: FHIRCodeableConcept
+
+  """
+  Ranking of the diagnosis (for each role type).
+  """
+  Rank: PositiveInt
+}
+
+"""
+FHIREncounterClasshistory definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+"""
+type FHIREncounterClasshistory {
+  """
+  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+  """
+  ID: ID
+
+  """
+  inpatient | outpatient | ambulatory | emergency +.
+  """
+  Class: FHIRCoding!
+
+  """
+  The time that the episode was in the specified class.
+  """
+  Period: FHIRPeriod!
+}
+
+"""
+FHIREncounter definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+"""
+type FHIREncounter {
+  """
+  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
+  """
+  ID: ID
+
+  """
+  A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.
+  """
+  Text: FHIRNarrative
+
+  """
+  Identifier(s) by which this encounter is known.
+  """
+  Identifier: [FHIRIdentifier!]!
+
+  """
+  planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
+  """
+  Status: EncounterStatusEnum!
+
+  """
+  The status history permits the encounter resource to contain the status history without needing to read through the historical versions of the resource, or even have the server store them.
+  """
+  StatusHistory: [FHIREncounterStatushistory]
+
+  """
+  Concepts representing classification of patient encounter such as ambulatory (outpatient), inpatient, emergency, home health or others due to local variations.
+  """
+  Class: FHIRCoding!
+
+  """
+  The class history permits the tracking of the encounters transitions without needing to go  through the resource history.  This would be used for a case where an admission starts of as an emergency encounter, then transitions into an inpatient scenario. Doing this and not restarting a new encounter ensures that any lab/diagnostic results can more easily follow the patient and not require re-processing and not get lost or cancelled during a kind of discharge from emergency to inpatient.
+  """
+  ClassHistory: [FHIREncounterClasshistory]
+
+  """
+  Specific type of encounter (e.g. e-mail consultation, surgical day-care, skilled nursing, rehabilitation).
+  """
+  Type: [FHIRCodeableConcept]
+
+  """
+  Broad categorization of the service that is to be provided (e.g. cardiology).
+  """
+  ServiceType: FHIRCodeableConcept
+
+  """
+  Indicates the urgency of the encounter.
+  """
+  Priority: FHIRCodeableConcept
+
+  """
+  The patient or group present at the encounter.
+  """
+  Subject: FHIRReference
+
+  """
+  Where a specific encounter should be classified as a part of a specific episode(s) of care this field should be used. This association can facilitate grouping of related encounters together for a specific purpose, such as government reporting, issue tracking, association via a common problem.  The association is recorded on the encounter as these are typically created after the episode of care and grouped on entry rather than editing the episode of care to append another encounter to it (the episode of care could span years).
+  """
+  EpisodeOfCare: [FHIRReference]
+
+  """
+  The request this encounter satisfies (e.g. incoming referral or procedure request).
+  """
+  BasedOn: [FHIRReference]
+
+  """
+  The list of people responsible for providing the service.
+  """
+  Participant: [FHIREncounterParticipant]
+
+  """
+  The appointment that scheduled this encounter.
+  """
+  Appointment: [FHIRReference]
+
+  """
+  The start and end time of the encounter.
+  """
+  Period: FHIRPeriod
+
+  """
+  Quantity of time the encounter lasted. This excludes the time during leaves of absence.
+  """
+  Length: FHIRDuration
+
+  """
+  Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
+  """
+  ReasonCode: Code
+
+  """
+  Reason the encounter takes place, expressed as a code. For admissions, this can be used for a coded admission diagnosis.
+  """
+  ReasonReference: [FHIRReference]
+
+  """
+  The list of diagnosis relevant to this encounter.
+  """
+  Diagnosis: [FHIREncounterDiagnosis]
+
+  """
+  The set of accounts that may be used for billing for this Encounter.
+  """
+  Account: [FHIRReference]
+
+  """
+  Details about the admission to a healthcare service.
+  """
+  Hospitalization: FHIREncounterHospitalization
+
+  """
+  List of locations where  the patient has been during this encounter.
+  """
+  Location: [FHIREncounterLocation]
+
+  """
+  The organization that is primarily responsible for this Encounter's services. This MAY be the same as the organization on the Patient record, however it could be different, such as if the actor performing the services was from an external organization (which may be billed separately) for an external consultation.  Refer to the example bundle showing an abbreviated set of Encounters for a colonoscopy.
+  """
+  ServiceProvider: FHIRReference
+
+  """
+  Another Encounter of which this encounter is a part of (administratively or in time).
+  """
+  PartOf: FHIRReference
+}
+
+"""
+FHIREncounterRelayPayload is used to return single instances of Encounter
+"""
+type FHIREncounterRelayPayload {
+  resource: FHIREncounter!
+}
+
+"""
+FHIREncounterRelayEdge is a Relay edge for Encounter
+"""
+type FHIREncounterRelayEdge {
+  cursor: String
+  node: FHIREncounter
+}
+
+"""
+FHIREncounterRelayConnection is a Relay connection for Encounter
+"""
+type FHIREncounterRelayConnection {
+  edges: [FHIREncounterRelayEdge]
+  pageInfo: PageInfo!
+}
+
