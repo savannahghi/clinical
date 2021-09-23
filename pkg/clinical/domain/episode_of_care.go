@@ -1,6 +1,8 @@
 package domain
 
-import "github.com/savannahghi/firebasetools"
+import (
+	"github.com/savannahghi/firebasetools"
+)
 
 // FHIREpisodeOfCare definition: an association between a patient and an organization / healthcare provider(s) during which time encounters may occur. the managing organization assumes a level of responsibility for the patient during this time.
 type FHIREpisodeOfCare struct {

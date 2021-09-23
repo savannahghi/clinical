@@ -14,9 +14,7 @@ require (
 	github.com/google/pprof v0.0.0-20210609004039-a478d1d731e9 // indirect
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
-	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/savannahghi/enumutils v0.0.3
 	github.com/savannahghi/firebasetools v0.0.15
 	github.com/savannahghi/scalarutils v0.0.2
