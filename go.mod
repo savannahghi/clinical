@@ -15,6 +15,7 @@ require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/kr/pretty v0.2.0 // indirect
+	github.com/savannahghi/converterandformatter v0.0.11
 	github.com/savannahghi/enumutils v0.0.3
 	github.com/savannahghi/firebasetools v0.0.15
 	github.com/savannahghi/scalarutils v0.0.2
@@ -22,7 +23,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/vektah/gqlparser/v2 v2.1.0
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
-	golang.org/x/oauth2 v0.0.0-20210622215436-a8dc77f794b6
+	golang.org/x/oauth2 v0.0.0-20210622215436-a8dc77f794b6 // indirect
 	golang.org/x/tools v0.1.4 // indirect
 	google.golang.org/api v0.49.0
 	google.golang.org/genproto v0.0.0-20210624195500-8bfb893ecb84 // indirect
