@@ -1,7 +1,12 @@
 package infrastructure
 
 import (
+	"context"
+	"log"
+
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
+	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
+	"github.com/savannahghi/firebasetools"
 )
 
 // FHIRRepository ...
@@ -11,6 +16,8 @@ type FHIRRepository interface {
 	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
 	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
 	GetFHIRPatientEverything(fhirResourceID string) ([]byte, error)
+	FHIRRestURL() string
+	GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
 }
 
 // FHIRService is an implementation of the database repository
@@ -22,8 +29,7 @@ type FHIRService struct {
 
 // NewFHIRService creates a new database service
 func NewFHIRService() FHIRService {
-	datasetExtension := fhir.NewDatasetExtension()
-	repo := fhir.NewFHIRRepository(datasetExtension)
+	repo := fhir.NewFHIRRepository()
 
 	return FHIRService{
 		repo,
@@ -67,4 +73,58 @@ func (d FHIRService) UpdateFHIRResource(resourceType, fhirResourceID string, pay
 // patient compartment.
 func (d FHIRService) GetFHIRPatientEverything(fhirResourceID string) ([]byte, error) {
 	return d.FHIR.GetFHIRPatientEverything(fhir.DatasetLocation)
+}
+
+// FHIRRestURL composes a FHIR REST URL for manual calls to the FHIR REST API
+func (d FHIRService) FHIRRestURL() string {
+	return d.FHIR.FHIRRestURL()
+}
+
+// GetFHIRResource gets an FHIR resource.
+func (d FHIRService) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
+	return d.FHIR.GetFHIRResource(resourceType, fhirResourceID)
+}
+
+// Repository ...
+type Repository interface {
+	ValidateEmail(ctx context.Context, email string, optIn bool) error
+}
+
+// DBService is an implementation of the database repository
+// It is implementation agnostic i.e logic should be handled using
+// the preferred database
+type DBService struct {
+	firestore *fb.Repository
+}
+
+// NewDBService creates a new database service
+func NewDBService() *DBService {
+	ctx := context.Background()
+	fc := &firebasetools.FirebaseClient{}
+	firebaseApp, err := fc.InitFirebase()
+	if err != nil {
+		return nil
+	}
+	fbc, err := firebaseApp.Auth(ctx)
+	if err != nil {
+		log.Panicf("can't initialize Firebase auth when setting up profile service: %s", err)
+	}
+	fsc, err := firebaseApp.Firestore(ctx)
+	if err != nil {
+		log.Fatalf("unable to initialize Firestore: %s", err)
+	}
+	firestoreExtension := fb.NewFirestoreClientExtension(fsc)
+
+	firestore := fb.NewFirebaseRepository(firestoreExtension, fbc)
+	return &DBService{
+		firestore: firestore,
+	}
+}
+
+// ValidateEmail returns an error if the supplied string does not have a
+// valid format or resolvable host
+func (db DBService) ValidateEmail(
+	ctx context.Context,
+	email string, optIn bool) error {
+	return db.firestore.ValidateEmail(ctx, email, optIn)
 }

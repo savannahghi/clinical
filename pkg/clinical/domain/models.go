@@ -439,3 +439,58 @@ type EmailOptIn struct {
 
 //IsEntity ...
 func (e EmailOptIn) IsEntity() {}
+
+// RelationshipTypeDisplay computes friendly string for relationship types
+func RelationshipTypeDisplay(val RelationshipType) string {
+	switch val {
+	case RelationshipTypeC:
+		return "Emergency Contact"
+	case RelationshipTypeE:
+		return "Employer"
+	case RelationshipTypeF:
+		return "Federal Agency"
+	case RelationshipTypeI:
+		return "Insurance Company"
+	case RelationshipTypeN:
+		return "Next-of-Kin"
+	case RelationshipTypeO:
+		return "Other"
+	case RelationshipTypeS:
+		return "State Agency"
+	case RelationshipTypeU:
+		return "Unknown"
+	default:
+		return "Unknown"
+	}
+}
+
+// MaritalStatusDisplay calculates the text display for a marital status
+// See: https://www.hl7.org/fhir/valueset-marital-status.html
+func MaritalStatusDisplay(val MaritalStatus) string {
+	switch val {
+	case MaritalStatusA:
+		return "Annulled"
+	case MaritalStatusD:
+		return "Divorced"
+	case MaritalStatusI:
+		return "Interlocutory"
+	case MaritalStatusL:
+		return "Legally Separated"
+	case MaritalStatusM:
+		return "Married"
+	case MaritalStatusP:
+		return "Polygamous"
+	case MaritalStatusS:
+		return "Never Married"
+	case MaritalStatusT:
+		return "Domestic Partner"
+	case MaritalStatusU:
+		return "unmarried"
+	case MaritalStatusW:
+		return "Widowed"
+	case MaritalStatusUnk:
+		return "unknown"
+	default:
+		return "unknown"
+	}
+}
