@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
@@ -27,7 +26,15 @@ type ClinicalUseCase interface {
 	ContactsToContactPointInput(ctx context.Context, phones []*domain.PhoneNumberInput, emails []*domain.EmailInput) ([]*domain.FHIRContactPointInput, error)
 	RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
 	CreatePatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
-	StartEncounter(ctx context.Context, episodeID string) (string, error)
+	FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error)
+	PatientSearch(ctx context.Context, search string) (*domain.PatientConnection, error)
+	UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
+	AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error)
+	AddNhif(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error)
+	RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
+	CreateUpdatePatientExtraInformation(ctx context.Context, input domain.PatientExtraInformationInput) (bool, error)
+	AllergySummary(ctx context.Context, patientID string) ([]string, error)
+	DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error)
 }
 
 // ClinicalUseCaseImpl ...
@@ -599,59 +606,47 @@ func (c *ClinicalUseCaseImpl) CreatePatient(ctx context.Context, input domain.FH
 	return output, nil
 }
 
-// StartEncounter starts an encounter within an episode of care
-func (c *ClinicalUseCaseImpl) StartEncounter(
-	ctx context.Context, episodeID string) (string, error) {
-	episodePayload, err := c.fhir.GetFHIREpisodeOfCare(ctx, episodeID)
-	if err != nil {
-		return "", fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
-	}
-	activeEpisodeStatus := domain.EpisodeOfCareStatusEnumActive
-	activeEncounterStatus := domain.EncounterStatusEnumInProgress
-	if episodePayload.Resource.Status.String() != activeEpisodeStatus.String() {
-		return "", fmt.Errorf("an encounter can only be started for an active episode")
-	}
-	episodeRef := fmt.Sprintf("EpisodeOfCare/%s", *episodePayload.Resource.ID)
+// FindPatientByID retrieves a single patient by their ID
+func (c *ClinicalUseCaseImpl) FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error) {
+	return nil, nil
+}
 
-	now := time.Now()
-	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
+// UpdatePatient patches a patient record with fresh data.
+// It updates elements that are set and ignores the ones that are nil.
+func (c *ClinicalUseCaseImpl) UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
+	return nil, nil
+}
 
-	encounterClassCode := scalarutils.Code("AMB")
-	encounterClassSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v3-ActCode")
-	encounterClassVersion := "2018-08-12"
-	encounterClassDisplay := "ambulatory"
-	encounterClassUserSelected := false
+// AddNextOfKin patches a patient with next of kin
+func (c *ClinicalUseCaseImpl) AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error) {
+	return nil, nil
+}
 
-	encounterInput := domain.FHIREncounterInput{
-		Status: activeEncounterStatus,
-		Class: domain.FHIRCodingInput{
-			System:       &encounterClassSystem,
-			Version:      &encounterClassVersion,
-			Code:         encounterClassCode,
-			Display:      encounterClassDisplay,
-			UserSelected: &encounterClassUserSelected,
-		},
-		Subject: &domain.FHIRReferenceInput{
-			Reference: episodePayload.Resource.Patient.Reference,
-			Display:   episodePayload.Resource.Patient.Display,
-			Type:      episodePayload.Resource.Patient.Type,
-		},
-		EpisodeOfCare: []*domain.FHIRReferenceInput{
-			{
-				Reference: &episodeRef,
-			},
-		},
-		ServiceProvider: &domain.FHIRReferenceInput{
-			Display: episodePayload.Resource.ManagingOrganization.Display,
-			Type:    episodePayload.Resource.ManagingOrganization.Type,
-		},
-		Period: &domain.FHIRPeriodInput{
-			Start: startTime,
-		},
-	}
-	encPl, err := c.fhir.CreateFHIREncounter(ctx, encounterInput)
-	if err != nil {
-		return "", fmt.Errorf("unable to start encounter: %w", err)
-	}
-	return *encPl.Resource.ID, nil
+// AddNhif patches a patient with NHIF details
+func (c *ClinicalUseCaseImpl) AddNhif(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
+	return nil, nil
+}
+
+// RegisterUser implements creates a user profile and simple patient registration
+func (c *ClinicalUseCaseImpl) RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
+	return nil, nil
+}
+
+// CreateUpdatePatientExtraInformation updates a patient's extra info
+func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
+	ctx context.Context, input domain.PatientExtraInformationInput) (bool, error) {
+	return false, nil
+}
+
+// AllergySummary returns a short list of the patient's active and confirmed
+// allergies (by name)
+func (c *ClinicalUseCaseImpl) AllergySummary(
+	ctx context.Context, patientID string) ([]string, error) {
+	return nil, nil
+}
+
+// DeleteFHIRPatientByPhone delete's a patient's FHIR compartment
+// given their phone number
+func (c *ClinicalUseCaseImpl) DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error) {
+	return false, nil
 }

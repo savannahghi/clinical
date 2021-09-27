@@ -78,6 +78,39 @@ type FHIRUseCase interface {
 	GetFHIREpisodeOfCare(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error)
 	Encounters(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum) ([]*domain.FHIREncounter, error)
 	SearchFHIREpisodeOfCare(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error)
+	StartEncounter(ctx context.Context, episodeID string) (string, error)
+	StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
+	UpgradeEpisode(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error)
+	SearchEpisodeEncounter(
+		ctx context.Context,
+		episodeReference string,
+	) (*domain.FHIREncounterRelayConnection, error)
+	EndEncounter(ctx context.Context, encounterID string) (bool, error)
+	EndEpisode(ctx context.Context, episodeID string) (bool, error)
+	GetActiveEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error)
+	SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error)
+	CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
+	SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error)
+	CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
+	UpdateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
+	SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error)
+	CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
+	UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
+	DeleteFHIRComposition(ctx context.Context, id string) (bool, error)
+	SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error)
+	UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
+	GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
+	SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error)
+	SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error)
+	CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
+	UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
+	DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error)
+	SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error)
+	CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
+	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
+	GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
+	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
+	DeleteFHIRResourceType(results []map[string]string) error
 }
 
 // FHIRUseCaseImpl ...
@@ -800,4 +833,272 @@ func (fh FHIRUseCaseImpl) GetFHIREpisodeOfCare(ctx context.Context, id string) (
 		Resource: &resource,
 	}
 	return payload, nil
+}
+
+// StartEncounter starts an encounter within an episode of care
+func (c *ClinicalUseCaseImpl) StartEncounter(
+	ctx context.Context, episodeID string) (string, error) {
+	episodePayload, err := c.fhir.GetFHIREpisodeOfCare(ctx, episodeID)
+	if err != nil {
+		return "", fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
+	}
+	activeEpisodeStatus := domain.EpisodeOfCareStatusEnumActive
+	activeEncounterStatus := domain.EncounterStatusEnumInProgress
+	if episodePayload.Resource.Status.String() != activeEpisodeStatus.String() {
+		return "", fmt.Errorf("an encounter can only be started for an active episode")
+	}
+	episodeRef := fmt.Sprintf("EpisodeOfCare/%s", *episodePayload.Resource.ID)
+
+	now := time.Now()
+	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
+
+	encounterClassCode := scalarutils.Code("AMB")
+	encounterClassSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v3-ActCode")
+	encounterClassVersion := "2018-08-12"
+	encounterClassDisplay := "ambulatory"
+	encounterClassUserSelected := false
+
+	encounterInput := domain.FHIREncounterInput{
+		Status: activeEncounterStatus,
+		Class: domain.FHIRCodingInput{
+			System:       &encounterClassSystem,
+			Version:      &encounterClassVersion,
+			Code:         encounterClassCode,
+			Display:      encounterClassDisplay,
+			UserSelected: &encounterClassUserSelected,
+		},
+		Subject: &domain.FHIRReferenceInput{
+			Reference: episodePayload.Resource.Patient.Reference,
+			Display:   episodePayload.Resource.Patient.Display,
+			Type:      episodePayload.Resource.Patient.Type,
+		},
+		EpisodeOfCare: []*domain.FHIRReferenceInput{
+			{
+				Reference: &episodeRef,
+			},
+		},
+		ServiceProvider: &domain.FHIRReferenceInput{
+			Display: episodePayload.Resource.ManagingOrganization.Display,
+			Type:    episodePayload.Resource.ManagingOrganization.Type,
+		},
+		Period: &domain.FHIRPeriodInput{
+			Start: startTime,
+		},
+	}
+	encPl, err := c.fhir.CreateFHIREncounter(ctx, encounterInput)
+	if err != nil {
+		return "", fmt.Errorf("unable to start encounter: %w", err)
+	}
+	return *encPl.Resource.ID, nil
+}
+
+// StartEncounter starts an encounter within an episode of care
+func (fh *FHIRUseCaseImpl) StartEncounter(
+	ctx context.Context, episodeID string) (string, error) {
+	episodePayload, err := fh.GetFHIREpisodeOfCare(ctx, episodeID)
+	if err != nil {
+		return "", fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
+	}
+	activeEpisodeStatus := domain.EpisodeOfCareStatusEnumActive
+	activeEncounterStatus := domain.EncounterStatusEnumInProgress
+	if episodePayload.Resource.Status.String() != activeEpisodeStatus.String() {
+		return "", fmt.Errorf("an encounter can only be started for an active episode")
+	}
+	episodeRef := fmt.Sprintf("EpisodeOfCare/%s", *episodePayload.Resource.ID)
+
+	now := time.Now()
+	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
+
+	encounterClassCode := scalarutils.Code("AMB")
+	encounterClassSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v3-ActCode")
+	encounterClassVersion := "2018-08-12"
+	encounterClassDisplay := "ambulatory"
+	encounterClassUserSelected := false
+
+	encounterInput := domain.FHIREncounterInput{
+		Status: activeEncounterStatus,
+		Class: domain.FHIRCodingInput{
+			System:       &encounterClassSystem,
+			Version:      &encounterClassVersion,
+			Code:         encounterClassCode,
+			Display:      encounterClassDisplay,
+			UserSelected: &encounterClassUserSelected,
+		},
+		Subject: &domain.FHIRReferenceInput{
+			Reference: episodePayload.Resource.Patient.Reference,
+			Display:   episodePayload.Resource.Patient.Display,
+			Type:      episodePayload.Resource.Patient.Type,
+		},
+		EpisodeOfCare: []*domain.FHIRReferenceInput{
+			{
+				Reference: &episodeRef,
+			},
+		},
+		ServiceProvider: &domain.FHIRReferenceInput{
+			Display: episodePayload.Resource.ManagingOrganization.Display,
+			Type:    episodePayload.Resource.ManagingOrganization.Type,
+		},
+		Period: &domain.FHIRPeriodInput{
+			Start: startTime,
+		},
+	}
+	encPl, err := fh.CreateFHIREncounter(ctx, encounterInput)
+	if err != nil {
+		return "", fmt.Errorf("unable to start encounter: %w", err)
+	}
+	return *encPl.Resource.ID, nil
+}
+
+// StartEpisodeByOtp starts a patient OTP verified episode
+func (fh *FHIRUseCaseImpl) StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
+	return nil, nil
+}
+
+// UpgradeEpisode starts a patient OTP verified episode
+func (fh *FHIRUseCaseImpl) UpgradeEpisode(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
+	return nil, nil
+}
+
+// SearchEpisodeEncounter returns all encounters in a visit
+func (fh *FHIRUseCaseImpl) SearchEpisodeEncounter(
+	ctx context.Context,
+	episodeReference string,
+) (*domain.FHIREncounterRelayConnection, error) {
+	return nil, nil
+}
+
+// EndEncounter ends an encounter
+func (fh *FHIRUseCaseImpl) EndEncounter(
+	ctx context.Context, encounterID string) (bool, error) {
+	return false, nil
+}
+
+// EndEpisode ends an episode of care by patching it's status to "finished"
+func (fh *FHIRUseCaseImpl) EndEpisode(
+	ctx context.Context, episodeID string) (bool, error) {
+	return false, nil
+}
+
+// GetActiveEpisode returns any ACTIVE episode that has to the indicated ID
+func (fh *FHIRUseCaseImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error) {
+	return nil, nil
+}
+
+// SearchFHIRServiceRequest provides a search API for FHIRServiceRequest
+func (fh *FHIRUseCaseImpl) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error) {
+	return nil, nil
+}
+
+// CreateFHIRServiceRequest creates a FHIRServiceRequest instance
+func (fh *FHIRUseCaseImpl) CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
+	return nil, nil
+}
+
+// SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
+func (fh *FHIRUseCaseImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+	return nil, nil
+}
+
+// CreateFHIRAllergyIntolerance creates a FHIRAllergyIntolerance instance
+func (fh *FHIRUseCaseImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+	return nil, nil
+}
+
+// UpdateFHIRAllergyIntolerance updates a FHIRAllergyIntolerance instance
+// The resource must have it's ID set.
+func (fh *FHIRUseCaseImpl) UpdateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+	return nil, nil
+}
+
+// SearchFHIRComposition provides a search API for FHIRComposition
+func (fh *FHIRUseCaseImpl) SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error) {
+	return nil, nil
+}
+
+// CreateFHIRComposition creates a FHIRComposition instance
+func (fh *FHIRUseCaseImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+	return nil, nil
+}
+
+// UpdateFHIRComposition updates a FHIRComposition instance
+// The resource must have it's ID set.
+func (fh *FHIRUseCaseImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+	return nil, nil
+}
+
+// DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
+func (fh *FHIRUseCaseImpl) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
+	return false, nil
+}
+
+// SearchFHIRCondition provides a search API for FHIRCondition
+func (fh *FHIRUseCaseImpl) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
+	return nil, nil
+}
+
+// UpdateFHIRCondition updates a FHIRCondition instance
+// The resource must have it's ID set.
+func (fh *FHIRUseCaseImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+	return nil, nil
+}
+
+// GetFHIREncounter retrieves instances of FHIREncounter by ID
+func (fh *FHIRUseCaseImpl) GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+	return nil, nil
+}
+
+// SearchFHIREncounter provides a search API for FHIREncounter
+func (fh *FHIRUseCaseImpl) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
+	return nil, nil
+}
+
+// SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
+func (fh *FHIRUseCaseImpl) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
+	return nil, nil
+}
+
+// CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
+func (fh *FHIRUseCaseImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
+	return nil, nil
+}
+
+// UpdateFHIRMedicationRequest updates a FHIRMedicationRequest instance
+// The resource must have it's ID set.
+func (fh *FHIRUseCaseImpl) UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
+	return nil, nil
+}
+
+// DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
+func (fh *FHIRUseCaseImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
+	return false, nil
+}
+
+// SearchFHIRObservation provides a search API for FHIRObservation
+func (fh *FHIRUseCaseImpl) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+	return nil, nil
+}
+
+// CreateFHIRObservation creates a FHIRObservation instance
+func (fh *FHIRUseCaseImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+	return nil, nil
+}
+
+// DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
+func (fh *FHIRUseCaseImpl) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
+	return false, nil
+}
+
+// GetFHIRPatient retrieves instances of FHIRPatient by ID
+func (fh *FHIRUseCaseImpl) GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+	return nil, nil
+}
+
+// DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
+func (fh *FHIRUseCaseImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
+	return false, nil
+}
+
+// DeleteFHIRResourceType takes a ResourceType and ID and deletes them from FHIR
+func (fh *FHIRUseCaseImpl) DeleteFHIRResourceType(results []map[string]string) error {
+	return nil
 }
