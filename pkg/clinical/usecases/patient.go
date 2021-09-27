@@ -4,10 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"time"
 
+	"github.com/google/uuid"
+	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
+	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/scalarutils"
+	log "github.com/sirupsen/logrus"
 )
 
 // ClinicalUseCase ...
@@ -15,67 +24,634 @@ type ClinicalUseCase interface {
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
 	VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error)
 	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
-	CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
-	CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
+	ContactsToContactPointInput(ctx context.Context, phones []*domain.PhoneNumberInput, emails []*domain.EmailInput) ([]*domain.FHIRContactPointInput, error)
+	RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
+	CreatePatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
+	StartEncounter(ctx context.Context, episodeID string) (string, error)
 }
 
 // ClinicalUseCaseImpl ...
 type ClinicalUseCaseImpl struct {
 	infrastructure infrastructure.Infrastructure
+	fhir           FHIRUseCase
 }
 
 // NewClinicalUseCaseImpl ...
-func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure) ClinicalUseCase {
+func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCase) ClinicalUseCase {
 	return &ClinicalUseCaseImpl{
 		infrastructure: infra,
+		fhir:           fhir,
 	}
 }
 
 // ProblemSummary ...
-func (c ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
+func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
 	return nil, nil
 }
 
 // VisitSummary ...
-func (c ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
+func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
 	return nil, nil
 }
 
 // PatientTimelineWithCount ...
-func (c ClinicalUseCaseImpl) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
+func (c *ClinicalUseCaseImpl) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
 	return nil, nil
 }
 
-// CreateEpisodeOfCare ...
-func (c ClinicalUseCaseImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
-	return nil, nil
+func (c *ClinicalUseCaseImpl) birthdateMapper(resource map[string]interface{}) map[string]interface{} {
+
+	resourceCopy := resource
+
+	parsedDate := helpers.ParseDate(resourceCopy["birthDate"].(string))
+
+	dateMap := make(map[string]interface{})
+
+	dateMap["year"] = parsedDate.Year()
+	dateMap["month"] = parsedDate.Month()
+	dateMap["day"] = parsedDate.Day()
+
+	resourceCopy["birthDate"] = dateMap
+
+	return resourceCopy
+
 }
 
-// CreateFHIRCondition creates a FHIRCondition instance
-func (c ClinicalUseCaseImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	// TODO: return casbin and check precondition
-	resourceType := "Condition"
-	resource := domain.FHIRCondition{}
+func (c *ClinicalUseCaseImpl) periodMapper(period map[string]interface{}) map[string]interface{} {
+
+	periodCopy := period
+
+	parsedStartDate := helpers.ParseDate(periodCopy["start"].(string))
+
+	periodCopy["start"] = scalarutils.DateTime(parsedStartDate.Format(timeFormatStr))
+
+	parsedEndDate := helpers.ParseDate(periodCopy["end"].(string))
+
+	periodCopy["end"] = scalarutils.DateTime(parsedEndDate.Format(timeFormatStr))
+
+	return periodCopy
+}
+
+func (c *ClinicalUseCaseImpl) identifierMapper(resource map[string]interface{}) map[string]interface{} {
+
+	resourceCopy := resource
+
+	if _, ok := resource["identifier"]; ok {
+
+		newIdentifiers := []map[string]interface{}{}
+
+		for _, identifier := range resource["identifier"].([]interface{}) {
+
+			identifier := identifier.(map[string]interface{})
+
+			if _, ok := identifier["period"]; ok {
+
+				period := identifier["period"].(map[string]interface{})
+				newPeriod := c.periodMapper(period)
+
+				identifier["period"] = newPeriod
+			}
+
+			newIdentifiers = append(newIdentifiers, identifier)
+		}
+
+		resourceCopy["identifier"] = newIdentifiers
+	}
+
+	return resourceCopy
+}
+
+func (c *ClinicalUseCaseImpl) nameMapper(resource map[string]interface{}) map[string]interface{} {
+
+	resourceCopy := resource
+
+	newNames := []map[string]interface{}{}
+
+	if _, ok := resource["name"]; ok {
+
+		for _, name := range resource["name"].([]interface{}) {
+
+			name := name.(map[string]interface{})
+
+			if _, ok := name["period"]; ok {
+
+				period := name["period"].(map[string]interface{})
+				newPeriod := c.periodMapper(period)
+
+				name["period"] = newPeriod
+			}
+
+			newNames = append(newNames, name)
+		}
+
+	}
+
+	resourceCopy["name"] = newNames
+
+	return resourceCopy
+}
+
+func (c *ClinicalUseCaseImpl) telecomMapper(resource map[string]interface{}) map[string]interface{} {
+
+	resourceCopy := resource
+
+	newTelecoms := []map[string]interface{}{}
+
+	if _, ok := resource["telecom"]; ok {
+
+		for _, telecom := range resource["telecom"].([]interface{}) {
+
+			telecom := telecom.(map[string]interface{})
+
+			if _, ok := telecom["period"]; ok {
+
+				period := telecom["period"].(map[string]interface{})
+				newPeriod := c.periodMapper(period)
+
+				telecom["period"] = newPeriod
+			}
+
+			newTelecoms = append(newTelecoms, telecom)
+		}
+
+	}
+
+	resourceCopy["telecom"] = newTelecoms
+
+	return resourceCopy
+}
+
+func (c *ClinicalUseCaseImpl) addressMapper(resource map[string]interface{}) map[string]interface{} {
+
+	resourceCopy := resource
+
+	newAddresses := []map[string]interface{}{}
+
+	if _, ok := resource["address"]; ok {
+
+		for _, address := range resource["address"].([]interface{}) {
+
+			address := address.(map[string]interface{})
+
+			if _, ok := address["period"]; ok {
+
+				period := address["period"].(map[string]interface{})
+				newPeriod := c.periodMapper(period)
+
+				address["period"] = newPeriod
+			}
+
+			newAddresses = append(newAddresses, address)
+		}
+	}
+
+	resourceCopy["address"] = newAddresses
+
+	return resourceCopy
+}
+
+func (c *ClinicalUseCaseImpl) photoMapper(resource map[string]interface{}) map[string]interface{} {
+
+	resourceCopy := resource
+
+	newPhotos := []map[string]interface{}{}
+
+	if _, ok := resource["photo"]; ok {
+
+		for _, photo := range resource["photo"].([]interface{}) {
+
+			photo := photo.(map[string]interface{})
+
+			parsedDate := helpers.ParseDate(photo["creation"].(string))
+
+			photo["creation"] = scalarutils.DateTime(parsedDate.Format(timeFormatStr))
+
+			newPhotos = append(newPhotos, photo)
+		}
+	}
+
+	resourceCopy["photo"] = newPhotos
+
+	return resourceCopy
+}
+
+func (c *ClinicalUseCaseImpl) contactMapper(resource map[string]interface{}) map[string]interface{} {
+
+	resourceCopy := resource
+
+	newContacts := []map[string]interface{}{}
+
+	if _, ok := resource["contact"]; ok {
+
+		for _, contact := range resource["contact"].([]interface{}) {
+
+			contact := contact.(map[string]interface{})
+
+			if _, ok := contact["name"]; ok {
+
+				name := contact["name"].(map[string]interface{})
+				if _, ok := name["period"]; ok {
+
+					period := name["period"].(map[string]interface{})
+					newPeriod := c.periodMapper(period)
+
+					name["period"] = newPeriod
+				}
+
+				contact["name"] = name
+			}
+
+			if _, ok := contact["telecom"]; ok {
+
+				newTelecoms := []map[string]interface{}{}
+
+				for _, telecom := range contact["telecom"].([]interface{}) {
+
+					telecom := telecom.(map[string]interface{})
+
+					if _, ok := telecom["period"]; ok {
+
+						period := telecom["period"].(map[string]interface{})
+						newPeriod := c.periodMapper(period)
+
+						telecom["period"] = newPeriod
+					}
+
+					newTelecoms = append(newTelecoms, telecom)
+				}
+
+				contact["telecom"] = newTelecoms
+			}
+
+			if _, ok := contact["period"]; ok {
+
+				period := contact["period"].(map[string]interface{})
+				newPeriod := c.periodMapper(period)
+
+				contact["period"] = newPeriod
+			}
+
+			newContacts = append(newContacts, contact)
+		}
+	}
+
+	resourceCopy["contact"] = newContacts
+
+	return resourceCopy
+}
+
+// PatientSearch searches for a patient by identifiers and names
+func (c *ClinicalUseCaseImpl) PatientSearch(ctx context.Context, search string) (*domain.PatientConnection, error) {
+
+	params := url.Values{}
+	params.Add("_content", search) // entire doc
+
+	bs, err := c.fhir.POSTRequest("Patient", "_search", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("unable to search: %v", err)
+	}
+	respMap := make(map[string]interface{})
+	err = json.Unmarshal(bs, &respMap)
+	if err != nil {
+		log.Errorf("unable to unmarshal FHIR search response: %v", err)
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
+	for _, k := range mandatoryKeys {
+		_, found := respMap[k]
+		if !found {
+			log.Errorf("search response does not have key '%s'", k)
+			return nil, fmt.Errorf(notFoundWithSearchParams)
+		}
+	}
+	resourceType, ok := respMap["resourceType"].(string)
+	if !ok {
+		return nil, fmt.Errorf("search: the resourceType is not a string")
+	}
+	if resourceType != "Bundle" {
+		log.Errorf("Search: the resourceType value is not 'Bundle' as expected")
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	resultType, ok := respMap["type"].(string)
+	if !ok {
+		return nil, fmt.Errorf("search: the type is not a string")
+	}
+	if resultType != "searchset" {
+		log.Errorf("Search: the type value is not 'searchset' as expected")
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	respEntries := respMap["entry"]
+	if respEntries == nil {
+		return &domain.PatientConnection{
+			Edges:    []*domain.PatientEdge{},
+			PageInfo: &firebasetools.PageInfo{},
+		}, nil
+	}
+	entries, ok := respEntries.([]interface{})
+	if !ok {
+		log.Errorf("Search: entries is not a list of maps, it is: %T", respEntries)
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	output := domain.PatientConnection{}
+	for _, en := range entries {
+		entry, ok := en.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("expected each entry to be map, they are %T instead", en)
+		}
+		expectedKeys := []string{"fullUrl", "resource", "search"}
+		for _, k := range expectedKeys {
+			_, found := entry[k]
+			if !found {
+				log.Errorf("search entry does not have key '%s'", k)
+				return nil, fmt.Errorf(notFoundWithSearchParams)
+			}
+		}
+
+		resource := entry["resource"].(map[string]interface{})
+
+		resource = c.birthdateMapper(resource)
+		resource = c.identifierMapper(resource)
+		resource = c.nameMapper(resource)
+		resource = c.telecomMapper(resource)
+		resource = c.addressMapper(resource)
+		resource = c.photoMapper(resource)
+		resource = c.contactMapper(resource)
+
+		var patient domain.FHIRPatient
+
+		err := mapstructure.Decode(resource, &patient)
+		if err != nil {
+			log.Errorf("unable to map decode resource: %v", err)
+			return nil, fmt.Errorf(internalError)
+		}
+
+		hasOpenEpisodes, err := c.fhir.HasOpenEpisode(ctx, patient)
+		if err != nil {
+			log.Errorf("error while checking if hasOpenEpisodes: %v", err)
+			return nil, fmt.Errorf(internalError)
+		}
+		output.Edges = append(output.Edges, &domain.PatientEdge{
+			Node:            &patient,
+			HasOpenEpisodes: hasOpenEpisodes,
+		})
+	}
+	return &output, nil
+}
+
+// FindPatientsByMSISDN finds a patient's record(s), given a search term
+// e.g their phone number.
+//
+// It intentionally does NOT have the following:
+//
+// 1. Pagination - if we need to paginate this data, something has gone seriously wrong
+// 2. Filtering - the MSISDN is enough of a filter
+// 3. Sorting - the API will take sensible choices by default
+//
+// Known limitations:
+//
+// 1. The normalization of phone number assumes Kenyan (+254) numbers only
+func (c *ClinicalUseCaseImpl) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
+
+	search, err := converterandformatter.NormalizeMSISDN(msisdn)
+	if err != nil {
+		return nil, fmt.Errorf("can't normalize contact: %w", err)
+	}
+	return c.PatientSearch(ctx, *search)
+}
+
+// CheckPatientExistenceUsingPhoneNumber checks whether a patient with the phone number they're trying to register with exists
+func (c *ClinicalUseCaseImpl) CheckPatientExistenceUsingPhoneNumber(ctx context.Context, patientInput domain.SimplePatientRegistrationInput) (bool, error) {
+	exists := false
+	for _, phone := range patientInput.PhoneNumbers {
+		phoneNumber := &phone.Msisdn
+		patient, err := c.FindPatientsByMSISDN(ctx, *phoneNumber)
+		if err != nil {
+			return false, fmt.Errorf("unable to find patient")
+		}
+		if len(patient.Edges) > 1 {
+			exists = true
+			break
+		}
+	}
+	return exists, nil
+}
+
+// ContactsToContactPointInput translates phone and email contacts to
+// FHIR contact points
+func (c *ClinicalUseCaseImpl) ContactsToContactPointInput(ctx context.Context, phones []*domain.PhoneNumberInput, emails []*domain.EmailInput) ([]*domain.FHIRContactPointInput, error) {
+	if phones == nil && emails == nil {
+		return nil, nil
+	}
+	output := []*domain.FHIRContactPointInput{}
+	rank := int64(1)
+	phoneSystem := domain.ContactPointSystemEnumPhone
+	use := domain.ContactPointUseEnumHome
+
+	for _, phone := range phones {
+		if phone.IsUssd {
+			continue // don't verify USSD
+		}
+		isVerified, normalized, err := c.infrastructure.Engagement.VerifyOTP(
+			ctx, phone.Msisdn, phone.VerificationCode)
+		if err != nil {
+			return nil, fmt.Errorf("invalid phone: %w", err)
+		}
+		if !isVerified {
+			return nil, fmt.Errorf("invalid OTP")
+		}
+		phoneContact := &domain.FHIRContactPointInput{
+			System: &phoneSystem,
+			Use:    &use,
+			Rank:   &rank,
+			Period: common.DefaultPeriodInput(),
+			Value:  &normalized,
+		}
+		output = append(output, phoneContact)
+		rank++
+	}
+
+	emailSystem := domain.ContactPointSystemEnumEmail
+	for _, email := range emails {
+		err := c.infrastructure.FirestoreRepo.ValidateEmail(ctx, email.Email, email.CommunicationOptIn)
+		if err != nil {
+			return nil, fmt.Errorf("invalid email: %v", err)
+		}
+		emailContact := &domain.FHIRContactPointInput{
+			System: &emailSystem,
+			Use:    &use,
+			Rank:   &rank,
+			Period: common.DefaultPeriodInput(),
+			Value:  &email.Email,
+		}
+		output = append(output, emailContact)
+		rank++
+	}
+
+	return output, nil
+}
+
+// SimplePatientRegistrationInputToPatientInput transforms a patient input into
+// a
+func (c *ClinicalUseCaseImpl) SimplePatientRegistrationInputToPatientInput(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.FHIRPatientInput, error) {
+	exists, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to check patient existence")
+	}
+	if exists {
+		return nil, fmt.Errorf("a patient registered with that phone number already exists")
+	}
+
+	contacts, err := c.ContactsToContactPointInput(ctx, input.PhoneNumbers, input.Emails)
+	if err != nil {
+		return nil, fmt.Errorf("can't register patient with invalid contacts: %v", err)
+	}
+
+	ids, err := helpers.IDToIdentifier(input.IdentificationDocuments, input.PhoneNumbers)
+	if err != nil {
+		return nil, fmt.Errorf("can't register patient with invalid identifiers: %v", err)
+	}
+
+	photos, err := c.infrastructure.Engagement.PhotosToAttachments(ctx, input.Photos)
+	if err != nil {
+		return nil, fmt.Errorf("can't process patient photos: %v", err)
+	}
+
+	// fullPatientInput is to be filled up by processing the simple patient input
+	gender := domain.PatientGenderEnum(input.Gender)
+	patientInput := domain.FHIRPatientInput{
+		BirthDate: &input.BirthDate,
+		Gender:    &gender,
+		Active:    &input.Active,
+	}
+	patientInput.Identifier = ids
+	patientInput.Telecom = contacts
+	patientInput.Name = helpers.NameToHumanName(input.Names)
+	patientInput.Photo = photos
+	patientInput.Address = helpers.PhysicalPostalAddressesToFHIRAddresses(
+		input.PhysicalAddresses, input.PostalAddresses)
+	patientInput.MaritalStatus = helpers.MaritalStatusEnumToCodeableConceptInput(
+		input.MaritalStatus)
+	patientInput.Communication = helpers.LanguagesToCommunicationInputs(input.Languages)
+	return &patientInput, nil
+}
+
+// RegisterPatient implements simple patient registration
+func (c *ClinicalUseCaseImpl) RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
+	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	output, err := c.CreatePatient(ctx, *patientInput)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create patient: %v", err)
+	}
+	for _, patientEmail := range input.Emails {
+		err = c.infrastructure.Engagement.SendPatientWelcomeEmail(ctx, patientEmail.Email)
+		if err != nil {
+			return nil, fmt.Errorf("unable to send welcome email: %w", err)
+		}
+	}
+
+	return output, nil
+}
+
+// CreatePatient creates or updates a patient record on FHIR
+func (c *ClinicalUseCaseImpl) CreatePatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
+	// set the record ID if not set
+	if input.ID == nil {
+		newID := uuid.New().String()
+		input.ID = &newID
+	}
+
+	// set or add the default record identifier
+	if input.Identifier == nil {
+		input.Identifier = []*domain.FHIRIdentifierInput{common.DefaultIdentifier()}
+	}
+	if input.Identifier != nil {
+		input.Identifier = append(input.Identifier, common.DefaultIdentifier())
+	}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn patient input into a map: %v", err)
 	}
 
-	data, err := c.infrastructure.FHIRRepo.CreateFHIRResource(resourceType, payload)
+	data, err := c.infrastructure.FHIRRepo.CreateFHIRResource("Patient", payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update patient resource: %v", err)
 	}
-
-	err = json.Unmarshal(data, &resource)
+	patient := &domain.FHIRPatient{}
+	err = json.Unmarshal(data, patient)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal patient response JSON: data: %v\n, error: %v",
+			string(data), err)
 	}
-
-	output := &domain.FHIRConditionRelayPayload{
-		Resource: &resource,
+	output := &domain.PatientPayload{
+		PatientRecord:   patient,
+		HasOpenEpisodes: false, // the patient is newly created so we can safely assume this
+		OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
 	}
 	return output, nil
+}
+
+// StartEncounter starts an encounter within an episode of care
+func (c *ClinicalUseCaseImpl) StartEncounter(
+	ctx context.Context, episodeID string) (string, error) {
+	episodePayload, err := c.fhir.GetFHIREpisodeOfCare(ctx, episodeID)
+	if err != nil {
+		return "", fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
+	}
+	activeEpisodeStatus := domain.EpisodeOfCareStatusEnumActive
+	activeEncounterStatus := domain.EncounterStatusEnumInProgress
+	if episodePayload.Resource.Status.String() != activeEpisodeStatus.String() {
+		return "", fmt.Errorf("an encounter can only be started for an active episode")
+	}
+	episodeRef := fmt.Sprintf("EpisodeOfCare/%s", *episodePayload.Resource.ID)
+
+	now := time.Now()
+	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
+
+	encounterClassCode := scalarutils.Code("AMB")
+	encounterClassSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v3-ActCode")
+	encounterClassVersion := "2018-08-12"
+	encounterClassDisplay := "ambulatory"
+	encounterClassUserSelected := false
+
+	encounterInput := domain.FHIREncounterInput{
+		Status: activeEncounterStatus,
+		Class: domain.FHIRCodingInput{
+			System:       &encounterClassSystem,
+			Version:      &encounterClassVersion,
+			Code:         encounterClassCode,
+			Display:      encounterClassDisplay,
+			UserSelected: &encounterClassUserSelected,
+		},
+		Subject: &domain.FHIRReferenceInput{
+			Reference: episodePayload.Resource.Patient.Reference,
+			Display:   episodePayload.Resource.Patient.Display,
+			Type:      episodePayload.Resource.Patient.Type,
+		},
+		EpisodeOfCare: []*domain.FHIRReferenceInput{
+			{
+				Reference: &episodeRef,
+			},
+		},
+		ServiceProvider: &domain.FHIRReferenceInput{
+			Display: episodePayload.Resource.ManagingOrganization.Display,
+			Type:    episodePayload.Resource.ManagingOrganization.Type,
+		},
+		Period: &domain.FHIRPeriodInput{
+			Start: startTime,
+		},
+	}
+	encPl, err := c.fhir.CreateFHIREncounter(ctx, encounterInput)
+	if err != nil {
+		return "", fmt.Errorf("unable to start encounter: %w", err)
+	}
+	return *encPl.Resource.ID, nil
 }

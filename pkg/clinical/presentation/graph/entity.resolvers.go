@@ -7,11 +7,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/savannahghi/clinical/pkg/clinical/domain/model"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 )
 
-func (r *entityResolver) FindDummyByID(ctx context.Context, id string) (*model.Dummy, error) {
+func (r *entityResolver) FindDummyByID(ctx context.Context, id string) (*domain.Dummy, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

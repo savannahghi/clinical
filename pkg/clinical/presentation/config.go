@@ -12,9 +12,11 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -86,11 +88,13 @@ func PrepareServer(
 
 // Router sets up the ginContext router
 func Router(ctx context.Context) (*mux.Router, error) {
-	// fc := &firebasetools.FirebaseClient{}
-	// // firebaseApp, err := fc.InitFirebase()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	fc := &firebasetools.FirebaseClient{}
+	firebaseApp, err := fc.InitFirebase()
+	if err != nil {
+		return nil, err
+	}
+	infrastructure := infrastructure.NewInfrastructureInteractor()
+	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	r := mux.NewRouter() // gorilla mux
 	r.Use(
 		handlers.RecoveryHandler(
@@ -111,12 +115,12 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	// 	Methods(http.MethodPost).
 	// 	HandlerFunc(DeleteFHIRPatientByPhone(ctx))
 
-	// Authenticated routes
-	// gqlR := r.Path("/graphql").Subrouter()
-	// gqlR.Use(firebasetools.AuthenticationMiddleware(firebaseApp))
-	// gqlR.Methods(
-	// 	http.MethodPost, http.MethodGet, http.MethodOptions,
-	// ).HandlerFunc(GQLHandler())
+	//Authenticated routes
+	gqlR := r.Path("/graphql").Subrouter()
+	gqlR.Use(firebasetools.AuthenticationMiddleware(firebaseApp))
+	gqlR.Methods(
+		http.MethodPost, http.MethodGet, http.MethodOptions,
+	).HandlerFunc(GQLHandler(ctx, usecases))
 	return r, nil
 
 }
