@@ -15,7 +15,7 @@ type FHIRRepository interface {
 	DeleteFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
 	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
 	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
-	GetFHIRPatientEverything(fhirResourceID string) ([]byte, error)
+	GetFHIRPatientAllData(fhirResourceID string) ([]byte, error)
 	FHIRRestURL() string
 	GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
 }
@@ -69,10 +69,10 @@ func (d FHIRService) UpdateFHIRResource(resourceType, fhirResourceID string, pay
 	return d.FHIR.UpdateFHIRResource(resourceType, fhirResourceID, payload)
 }
 
-// GetFHIRPatientEverything gets all resources associated with a particular
+// GetFHIRPatientAllData gets all resources associated with a particular
 // patient compartment.
-func (d FHIRService) GetFHIRPatientEverything(fhirResourceID string) ([]byte, error) {
-	return d.FHIR.GetFHIRPatientEverything(fhir.DatasetLocation)
+func (d FHIRService) GetFHIRPatientAllData(fhirResourceID string) ([]byte, error) {
+	return d.FHIR.GetFHIRPatientAllData(fhir.DatasetLocation)
 }
 
 // FHIRRestURL composes a FHIR REST URL for manual calls to the FHIR REST API
