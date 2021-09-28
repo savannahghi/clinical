@@ -35,6 +35,7 @@ type ClinicalUseCase interface {
 	CreateUpdatePatientExtraInformation(ctx context.Context, input domain.PatientExtraInformationInput) (bool, error)
 	AllergySummary(ctx context.Context, patientID string) ([]string, error)
 	DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error)
+	StartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
 }
 
 // ClinicalUseCaseImpl ...
@@ -649,4 +650,10 @@ func (c *ClinicalUseCaseImpl) AllergySummary(
 // given their phone number
 func (c *ClinicalUseCaseImpl) DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error) {
 	return false, nil
+}
+
+//StartEpisodeByBreakGlass starts an emergency episode
+func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
+	ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
+	return nil, nil
 }

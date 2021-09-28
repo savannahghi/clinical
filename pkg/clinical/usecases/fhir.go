@@ -111,6 +111,7 @@ type FHIRUseCase interface {
 	GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
 	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
 	DeleteFHIRResourceType(results []map[string]string) error
+	DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error)
 }
 
 // FHIRUseCaseImpl ...
@@ -1101,4 +1102,9 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRPatient(ctx context.Context, id string) (bo
 // DeleteFHIRResourceType takes a ResourceType and ID and deletes them from FHIR
 func (fh *FHIRUseCaseImpl) DeleteFHIRResourceType(results []map[string]string) error {
 	return nil
+}
+
+// DeleteFHIRServiceRequest deletes the FHIRServiceRequest identified by the supplied ID
+func (fh *FHIRUseCaseImpl) DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error) {
+	return false, nil
 }
