@@ -33,6 +33,7 @@ func NewFirebaseRepository(
 
 // GetEmailOptInCollectionName ...
 func (fr Repository) GetEmailOptInCollectionName() string {
+
 	suffixed := firebasetools.SuffixCollection(EmailOptInCollectionName)
 	return suffixed
 }
@@ -42,6 +43,7 @@ func (fr Repository) GetEmailOptInCollectionName() string {
 func (fr Repository) ValidateEmail(
 	ctx context.Context,
 	email string, optIn bool) error {
+
 	if !govalidator.IsEmail(email) {
 		return fmt.Errorf("invalid email format")
 	}

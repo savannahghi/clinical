@@ -8,12 +8,14 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
+	auth "github.com/savannahghi/clinical/pkg/clinical/application/authorization"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -54,7 +56,40 @@ func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCas
 
 // ProblemSummary ...
 func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
-	return nil, nil
+	user, err := profileutils.GetLoggedInUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get user: %w", err)
+	}
+	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthorized {
+		return nil, fmt.Errorf("user not authorized to access this resource")
+	}
+
+	params := map[string]interface{}{
+		"clinical-status":     "active",
+		"verification-status": "confirmed",
+		"category":            "problem-list-item",
+		"subject":             fmt.Sprintf("Patient/%s", patientID),
+	}
+	results, err := c.fhir.SearchFHIRCondition(ctx, params)
+	if err != nil {
+		return nil, fmt.Errorf("error when searching for patient conditions: %w", err)
+	}
+	output := []string{}
+	for _, conditionEdge := range results.Edges {
+		condition := conditionEdge.Node
+		if condition.Code == nil {
+			return nil, fmt.Errorf("server error: every condition must have a code")
+		}
+		if condition.Code.Text == "" {
+			return nil, fmt.Errorf("server error: every condition code must have it's text set")
+		}
+		output = append(output, condition.Code.Text)
+	}
+	return output, nil
 }
 
 // VisitSummary ...
