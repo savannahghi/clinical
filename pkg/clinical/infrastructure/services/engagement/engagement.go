@@ -87,6 +87,8 @@ func (en *ServiceEngagementImpl) VerifyOTP(
 	msisdn string,
 	otp string,
 ) (bool, string, error) {
+	en.checkPreconditions()
+
 	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return false, "", fmt.Errorf("invalid phone format: %w", err)
@@ -138,6 +140,8 @@ func (en *ServiceEngagementImpl) RequestOTP(
 	ctx context.Context,
 	msisdn string,
 ) (string, error) {
+	en.checkPreconditions()
+
 	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return "", fmt.Errorf("invalid phone format: %w", err)
@@ -245,6 +249,8 @@ func (en *ServiceEngagementImpl) PhotosToAttachments(
 
 // SendPatientWelcomeEmail will send a welcome email to the practitioner
 func (en ServiceEngagementImpl) SendPatientWelcomeEmail(ctx context.Context, emailaddress string) error {
+	en.checkPreconditions()
+
 	text := common.GeneratePatientWelcomeEmailTemplate()
 	if !govalidator.IsEmail(emailaddress) {
 		return nil
@@ -269,4 +275,10 @@ func (en ServiceEngagementImpl) SendPatientWelcomeEmail(ctx context.Context, ema
 	}
 
 	return nil
+}
+
+func (en ServiceEngagementImpl) checkPreconditions() {
+	if en.Engage == nil {
+		log.Panicf("engagement ISC call is nil")
+	}
 }

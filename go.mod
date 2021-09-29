@@ -12,6 +12,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.38.68 // indirect
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
+	github.com/casbin/casbin/v2 v2.37.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/pprof v0.0.0-20210609004039-a478d1d731e9 // indirect
 	github.com/google/uuid v1.2.0
