@@ -1,13 +1,21 @@
 package helpers
 
 import (
+	"context"
 	"fmt"
+	"strings"
 	"time"
 
+	"cloud.google.com/go/firestore"
+	"github.com/asaskevich/govalidator"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
+
+	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -246,16 +254,17 @@ func PhysicalPostalAddressesToFHIRAddresses(
 	return output
 }
 
-// MaritalStatusEnumToCodeableConceptInput turns the simple enum selected in the
+// MaritalStatusEnumToCodeableConcept turns the simple enum selected in the
 // user interface to a FHIR codeable concept
-func MaritalStatusEnumToCodeableConceptInput(val domain.MaritalStatus) *domain.FHIRCodeableConceptInput {
-	userSelected := true
-	output := &domain.FHIRCodeableConceptInput{
-		Coding: []*domain.FHIRCodingInput{
+func MaritalStatusEnumToCodeableConcept(val domain.MaritalStatus) *domain.FHIRCodeableConcept {
+	sel := true
+	disp := domain.MaritalStatusDisplay(val)
+	output := &domain.FHIRCodeableConcept{
+		Coding: []*domain.FHIRCoding{
 			{
 				Code:         scalarutils.Code(val.String()),
-				Display:      domain.MaritalStatusDisplay(val),
-				UserSelected: &userSelected,
+				Display:      disp,
+				UserSelected: &sel,
 			},
 		},
 		Text: domain.MaritalStatusDisplay(val),
@@ -288,6 +297,152 @@ func LanguagesToCommunicationInputs(languages []enumutils.Language) []*domain.FH
 			Preferred: &preferred,
 		}
 		output = append(output, comm)
+	}
+	return output
+}
+
+// PhysicalPostalAddressesToCombinedFHIRAddress translates address inputs to
+// a single FHIR address.
+//
+// It is used for patient contacts (e.g next of kin) where the spec has only
+// one address per next of kin.
+func PhysicalPostalAddressesToCombinedFHIRAddress(
+	physical []*domain.PhysicalAddress,
+	postal []*domain.PostalAddress,
+) *domain.FHIRAddressInput {
+	if physical == nil && postal == nil {
+		return nil
+	}
+	addressUse := domain.AddressUseEnumHome
+	postalAddrType := domain.AddressTypeEnumPostal
+	country := DefaultCountry
+
+	addr := &domain.FHIRAddressInput{
+		Use:     &addressUse,
+		Type:    &postalAddrType,
+		Country: &country,
+		Period:  common.DefaultPeriodInput(),
+		Line:    nil, // will be replaced below
+		Text:    "",  // will be replaced below
+	}
+
+	postalAddressLines := []string{}
+	for _, postal := range postal {
+		postalAddressLines = append(postalAddressLines, postal.PostalAddress)
+		postalAddressLines = append(postalAddressLines, postal.PostalCode)
+		if addr.PostalCode == nil {
+			postalCode := scalarutils.Code(postal.PostalCode)
+			addr.PostalCode = &postalCode
+		}
+	}
+	combinedPostalAddress := strings.Join(postalAddressLines, "\n")
+	addr.Line = []*string{&combinedPostalAddress}
+
+	physicalAddressLines := []string{}
+	for _, physical := range physical {
+		physicalAddressLines = append(physicalAddressLines, physical.PhysicalAddress)
+		physicalAddressLines = append(physicalAddressLines, physical.MapsCode)
+	}
+	combinedPhysicalAddress := strings.Join(physicalAddressLines, "\n")
+	addr.Text = combinedPhysicalAddress
+
+	return addr
+}
+
+// ContactsToContactPoint translates phone and email contacts to
+// FHIR contact points
+func ContactsToContactPoint(
+	ctx context.Context,
+	phones []*domain.PhoneNumberInput,
+	emails []*domain.EmailInput,
+	firestoreClient *firestore.Client,
+) ([]*domain.FHIRContactPoint, error) {
+	if phones == nil && emails == nil {
+		return nil, nil
+	}
+	output := []*domain.FHIRContactPoint{}
+	rank := int64(1)
+	contactUse := domain.ContactPointUseEnumHome
+	emailSystem := domain.ContactPointSystemEnumEmail
+	phoneSystem := domain.ContactPointSystemEnumPhone
+	engagement := infrastructure.NewInfrastructureInteractor()
+
+	for _, phone := range phones {
+
+		isVerified, normalized, err := engagement.Engagement.VerifyOTP(
+			ctx, phone.Msisdn, phone.VerificationCode)
+		if err != nil {
+			return nil, fmt.Errorf("invalid phone: %w", err)
+		}
+		if !isVerified {
+			return nil, fmt.Errorf("invalid OTP")
+		}
+		phoneContact := &domain.FHIRContactPoint{
+			System: &phoneSystem,
+			Use:    &contactUse,
+			Rank:   &rank,
+			Period: common.DefaultPeriod(),
+			Value:  &normalized,
+		}
+		output = append(output, phoneContact)
+		rank++
+	}
+
+	for _, email := range emails {
+		err := ValidateEmail(
+			email.Email, email.CommunicationOptIn, firestoreClient)
+		if err != nil {
+			return nil, fmt.Errorf("invalid email: %v", err)
+		}
+		emailContact := &domain.FHIRContactPoint{
+			System: &emailSystem,
+			Use:    &contactUse,
+			Rank:   &rank,
+			Period: common.DefaultPeriod(),
+			Value:  &email.Email,
+		}
+		output = append(output, emailContact)
+		rank++
+	}
+
+	return output, nil
+}
+
+// ValidateEmail returns an error if the supplied string does not have a
+// valid format or resolvable host
+func ValidateEmail(
+	email string, optIn bool, firestoreClient *firestore.Client) error {
+	if !govalidator.IsEmail(email) {
+		return fmt.Errorf("invalid email format")
+	}
+
+	if optIn {
+		data := domain.EmailOptIn{
+			Email:   email,
+			OptedIn: optIn,
+		}
+		_, err := firebasetools.SaveDataToFirestore(
+			firestoreClient, fb.EmailOptInCollectionName, data)
+		if err != nil {
+			return fmt.Errorf("unable to save email opt in: %v", err)
+		}
+	}
+	return nil
+}
+
+// MaritalStatusEnumToCodeableConceptInput turns the simple enum selected in the
+// user interface to a FHIR codeable concept
+func MaritalStatusEnumToCodeableConceptInput(val domain.MaritalStatus) *domain.FHIRCodeableConceptInput {
+	userSelected := true
+	output := &domain.FHIRCodeableConceptInput{
+		Coding: []*domain.FHIRCodingInput{
+			{
+				Code:         scalarutils.Code(val.String()),
+				Display:      domain.MaritalStatusDisplay(val),
+				UserSelected: &userSelected,
+			},
+		},
+		Text: domain.MaritalStatusDisplay(val),
 	}
 	return output
 }
