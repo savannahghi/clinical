@@ -18,6 +18,7 @@ type FHIRRepository interface {
 	GetFHIRPatientAllData(fhirResourceID string) ([]byte, error)
 	FHIRRestURL() string
 	GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
+	GetFHIRPatientEverything(fhirResourceID string) ([]byte, error)
 }
 
 // FHIRService is an implementation of the database repository
@@ -83,6 +84,11 @@ func (d FHIRService) FHIRRestURL() string {
 // GetFHIRResource gets an FHIR resource.
 func (d FHIRService) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
 	return d.FHIR.GetFHIRResource(resourceType, fhirResourceID)
+}
+
+// GetFHIRPatientEverything gets all fhir patient resource information.
+func (d FHIRService) GetFHIRPatientEverything(fhirResourceID string) ([]byte, error) {
+	return d.FHIR.GetFHIRPatientEverything(fhirResourceID)
 }
 
 // Repository ...
