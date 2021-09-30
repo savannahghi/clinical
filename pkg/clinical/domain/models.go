@@ -433,7 +433,7 @@ type PhoneNumberPayload struct {
 
 // EmailOptIn is used to persist and manage email communication whitelists
 type EmailOptIn struct {
-	Email   string `json:"email" firestore:"optedIn"`
+	Email   string `json:"email" firestore:"email"`
 	OptedIn bool   `json:"optedIn" firestore:"optedIn"`
 }
 
