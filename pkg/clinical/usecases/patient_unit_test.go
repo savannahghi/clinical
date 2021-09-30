@@ -253,7 +253,7 @@ func TestClinicalUseCaseImpl_PatientSearch_Unittest(t *testing.T) {
 	}
 }
 
-func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
+func TestClinicalUseCaseImpl_ContactsToContactPointInput_Unittest(t *testing.T) {
 	ctx := context.Background()
 	i := fakeUsecaseIntr
 
