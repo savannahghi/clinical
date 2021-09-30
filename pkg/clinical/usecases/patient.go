@@ -12,6 +12,7 @@ import (
 	auth "github.com/savannahghi/clinical/pkg/clinical/application/authorization"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
@@ -495,9 +496,13 @@ func (c *ClinicalUseCaseImpl) ContactsToContactPointInput(ctx context.Context, p
 
 	emailSystem := domain.ContactPointSystemEnumEmail
 	for _, email := range emails {
-		err := c.infrastructure.FirestoreRepo.ValidateEmail(ctx, email.Email, email.CommunicationOptIn)
+		emailErr := utils.ValidateEmail(email.Email)
+		if emailErr != nil {
+			return nil, fmt.Errorf("invalid email: %v", emailErr)
+		}
+		err := c.infrastructure.FirestoreRepo.SaveEmailOTP(ctx, email.Email, email.CommunicationOptIn)
 		if err != nil {
-			return nil, fmt.Errorf("invalid email: %v", err)
+			return nil, fmt.Errorf("unable to save email otp: %v", err)
 		}
 		emailContact := &domain.FHIRContactPointInput{
 			System: &emailSystem,

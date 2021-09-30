@@ -93,7 +93,7 @@ func (d FHIRService) GetFHIRPatientEverything(fhirResourceID string) ([]byte, er
 
 // Repository ...
 type Repository interface {
-	ValidateEmail(ctx context.Context, email string, optIn bool) error
+	SaveEmailOTP(ctx context.Context, email string, optIn bool) error
 }
 
 // DBService is an implementation of the database repository
@@ -127,10 +127,9 @@ func NewDBService() *DBService {
 	}
 }
 
-// ValidateEmail returns an error if the supplied string does not have a
-// valid format or resolvable host
-func (db DBService) ValidateEmail(
+// SaveEmailOTP  persist the data of the newly created OTP to a datastore
+func (db DBService) SaveEmailOTP(
 	ctx context.Context,
 	email string, optIn bool) error {
-	return db.firestore.ValidateEmail(ctx, email, optIn)
+	return db.firestore.SaveEmailOTP(ctx, email, optIn)
 }

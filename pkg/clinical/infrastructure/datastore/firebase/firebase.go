@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/firebasetools"
 )
@@ -38,16 +37,13 @@ func (fr Repository) GetEmailOptInCollectionName() string {
 	return suffixed
 }
 
-// ValidateEmail returns an error if the supplied string does not have a
-// valid format or resolvable host
-func (fr Repository) ValidateEmail(
+// SaveEmailOTP  persist the data of the newly created OTP to a datastore
+func (fr Repository) SaveEmailOTP(
 	ctx context.Context,
 	email string, optIn bool) error {
-
-	if !govalidator.IsEmail(email) {
-		return fmt.Errorf("invalid email format")
+	if email == "" {
+		return fmt.Errorf("the email cannot be nil")
 	}
-
 	if optIn {
 		data := domain.EmailOptIn{
 			Email:   email,
