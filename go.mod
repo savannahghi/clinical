@@ -34,6 +34,7 @@ require (
 	github.com/savannahghi/serverutils v0.0.4
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.8.1
+	github.com/stretchr/testify v1.7.0
 	github.com/vektah/gqlparser/v2 v2.1.0
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
