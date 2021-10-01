@@ -49,6 +49,7 @@ type ClinicalUseCase interface {
 	AllergySummary(ctx context.Context, patientID string) ([]string, error)
 	DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error)
 	StartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
+	FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
 }
 
 // ClinicalUseCaseImpl ...
