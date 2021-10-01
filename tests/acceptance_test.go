@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"testing"
@@ -837,6 +838,289 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 				t.Errorf("Bad status response returned")
 				return
 			}
+		})
+	}
+}
+
+func TestGraphQLRegisterPatient(t *testing.T) {
+	ctx := firebasetools.GetAuthenticatedContext(t)
+
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %w", err)
+		return
+	}
+
+	simplePatientRegInput, _, err := getTestSimplePatientRegistration()
+	if err != nil {
+		t.Errorf("can't genereate simple patient reg input: %v", err)
+		return
+	}
+
+	patientRegInput, err := converterandformatter.StructToMap(simplePatientRegInput)
+	if err != nil {
+		t.Errorf("can't convert simple patient reg input to map: %v", err)
+		return
+	}
+	validInput := map[string]interface{}{
+		"input": patientRegInput,
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `mutation SimplePatientRegistration($input: SimplePatientRegistrationInput!) {
+	registerPatient(input: $input) {
+		patientRecord {
+			ID
+			Identifier {
+				ID
+				Use
+				Type {
+					ID
+					Text
+					Coding {
+						System
+						Version
+						Display
+						Code
+						UserSelected
+					}
+				}
+				System
+				Value
+				Period {
+					ID
+					Start
+					End
+				}
+			}
+			Active
+			Name {
+				ID
+				Use
+				Text
+				Family
+				Given
+				Prefix
+				Suffix
+				Period {
+					ID
+					Start
+					End
+				}
+			}
+			Telecom {
+				ID
+				System
+				Value
+				Use
+				Rank
+				Period {
+					ID
+					Start
+					End
+				}
+			}
+			Gender
+			BirthDate
+			Address {
+				ID
+				Use
+				Type
+				Text
+				Line
+				City
+				District
+				State
+				PostalCode
+				Country
+				Period {
+					ID
+					Start
+					End
+				}
+			}     
+			Photo {
+				Data
+			}
+			Contact {
+				ID
+				Relationship {
+					ID
+					Text
+					Coding {
+						System
+						Version
+						Display
+						Code
+						UserSelected
+					}
+				}
+				Name {
+					ID
+					Use
+					Text
+					Family
+					Given
+					Prefix
+					Suffix
+					Period {
+						ID
+						Start
+						End
+					}
+				}
+				Gender
+				Period {
+					ID
+					Start
+					End
+				}
+				Address {
+					ID
+					Use
+					Type
+					Text
+					Line
+					City
+					District
+					State
+					PostalCode
+					Country
+					Period {
+						ID
+						Start
+						End
+					}
+				}
+				Telecom {
+					ID
+					System
+					Value
+					Use
+					Rank
+					Period {
+						ID
+						Start
+						End
+					}
+				}
+			}
+		}
+	}
+	}
+					`,
+					"variables": validInput,
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				errors, ok := data["errors"]
+				log.Printf("The data returned...%v\n\n\n\n", data)
+				if ok {
+					t.Errorf("error not expected got error: %s", errors)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status response returned")
+				return
+			}
+
 		})
 	}
 }

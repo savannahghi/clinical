@@ -8,6 +8,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/engagement"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding"
 	"github.com/savannahghi/firebasetools"
 )
 
@@ -17,6 +18,7 @@ type Infrastructure struct {
 	FirestoreRepo   Repository
 	Engagement      engagement.ServiceEngagement
 	FirestoreClient *firestore.Client
+	Onboarding      onboarding.ServiceOnboarding
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
@@ -26,6 +28,8 @@ func NewInfrastructureInteractor() Infrastructure {
 	engagementClient := common.NewInterServiceClient("engagement", baseExtension)
 	engagement := engagement.NewServiceEngagementImpl(engagementClient, baseExtension)
 	firestoreDB := NewDBService()
+	onboardingClient := common.NewInterServiceClient("onboarding", baseExtension)
+	onboarding := onboarding.NewServiceOnboardingImpl(onboardingClient, baseExtension)
 
 	fc := firebasetools.FirebaseClient{}
 	fa, err := fc.InitFirebase()
@@ -43,5 +47,6 @@ func NewInfrastructureInteractor() Infrastructure {
 		firestoreDB,
 		engagement,
 		fsc,
+		onboarding,
 	}
 }

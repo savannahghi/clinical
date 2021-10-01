@@ -83,6 +83,7 @@ func PrepareServer(
 		WriteTimeout: serverTimeoutSeconds * time.Second,
 		ReadTimeout:  serverTimeoutSeconds * time.Second,
 	}
+	log.Infof("Server running at port %v", addr)
 	return srv
 }
 
