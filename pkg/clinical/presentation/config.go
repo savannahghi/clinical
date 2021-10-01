@@ -15,6 +15,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
+	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
@@ -96,6 +97,7 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	}
 	infrastructure := infrastructure.NewInfrastructureInteractor()
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
+	h := rest.NewPresentationHandlers(infrastructure, usecases)
 	r := mux.NewRouter() // gorilla mux
 	r.Use(
 		handlers.RecoveryHandler(
@@ -111,10 +113,9 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	// check server status.
 	r.Path("/health").HandlerFunc(serverutils.HealthStatusCheck)
 
-	// TODO: restore after implementing clinical service
-	// r.Path("/delete_patient").
-	// 	Methods(http.MethodPost).
-	// 	HandlerFunc(DeleteFHIRPatientByPhone(ctx))
+	r.Path("/delete_patient").
+		Methods(http.MethodPost).
+		HandlerFunc(h.DeleteFHIRPatientByPhone())
 
 	//Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
@@ -145,49 +146,3 @@ func GQLHandler(ctx context.Context,
 		server.ServeHTTP(w, r)
 	}
 }
-
-// TODO: restore after implementing clinical service
-// DeleteFHIRPatientByPhone handler exposes an endpoint that takes a
-// patient's phone number and deletes the patient's FHIR compartment
-// func DeleteFHIRPatientByPhone(ctx context.Context) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		s := clinical.NewService()
-
-// 		payload := &clinical.PhoneNumberPayload{}
-// 		type errResponse struct {
-// 			Err string `json:"error"`
-// 		}
-// 		serverutils.DecodeJSONToTargetStruct(w, r, payload)
-// 		if payload.PhoneNumber == "" {
-// 			serverutils.WriteJSONResponse(
-// 				w,
-// 				errResponse{
-// 					Err: "expected a phone number to be defined",
-// 				},
-// 				http.StatusBadRequest,
-// 			)
-// 			return
-// 		}
-// 		deleted, err := s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
-// 		if err != nil {
-// 			err := fmt.Sprintf("unable to delete patient: %v", err.Error())
-// 			serverutils.WriteJSONResponse(
-// 				w,
-// 				errResponse{
-// 					Err: err,
-// 				},
-// 				http.StatusInternalServerError,
-// 			)
-// 			return
-// 		}
-
-// 		type response struct {
-// 			Deleted bool `json:"deleted"`
-// 		}
-// 		serverutils.WriteJSONResponse(
-// 			w,
-// 			response{Deleted: deleted},
-// 			http.StatusOK,
-// 		)
-// 	}
-// }
