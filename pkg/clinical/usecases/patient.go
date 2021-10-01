@@ -12,6 +12,7 @@ import (
 	auth "github.com/savannahghi/clinical/pkg/clinical/application/authorization"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -964,7 +965,40 @@ func (c *ClinicalUseCaseImpl) AddNHIF(ctx context.Context, input *domain.SimpleN
 
 // RegisterUser implements creates a user profile and simple patient registration
 func (c *ClinicalUseCaseImpl) RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
-	return nil, nil
+	user, err := profileutils.GetLoggedInUser(ctx)
+
+	if err != nil {
+		return nil, fmt.Errorf("error, failed to get logged in user: %v", err)
+	}
+
+	log.Printf("loggedin user UID: %v", user.UID)
+
+	var primaryEmail string
+	if len(input.Emails) > 0 {
+		primaryEmail = input.Emails[0].Email
+	}
+
+	payload := dto.RegisterUserPayload{
+		UID:         user.UID,
+		FirstName:   input.Names[0].FirstName,
+		LastName:    input.Names[0].LastName,
+		PhoneNumber: input.PhoneNumbers[0].Msisdn,
+		Gender:      enumutils.Gender(input.Gender),
+		Email:       primaryEmail,
+		DateOfBirth: input.BirthDate,
+	}
+
+	err = c.infrastructure.Onboarding.CreateUserProfile(ctx, payload)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create a user profile: %v", err)
+	}
+
+	patient, err := c.RegisterPatient(ctx, input)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create a patient profile: %v", err)
+	}
+
+	return patient, nil
 }
 
 // CreateUpdatePatientExtraInformation updates a patient's extra info
