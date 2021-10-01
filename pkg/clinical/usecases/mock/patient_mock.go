@@ -26,9 +26,10 @@ type ClinicalMock struct {
 	AllergySummaryFn                      func(ctx context.Context, patientID string) ([]string, error)
 	DeleteFHIRPatientByPhoneFn            func(ctx context.Context, phoneNumber string) (bool, error)
 	StartEpisodeByBreakGlassFn            func(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
+	FindPatientsByMSISDNFn                func(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
 }
 
-// NewClinicalMock is a new instance of NewClinicalMock
+// NewClinicalMock is a new instance of ClinicalMock
 func NewClinicalMock() *ClinicalMock {
 	return &ClinicalMock{
 		ProblemSummaryFn: func(ctx context.Context, patientID string) ([]string, error) {
@@ -143,6 +144,15 @@ func NewClinicalMock() *ClinicalMock {
 				TotalVisits: 5,
 			}, nil
 		},
+		FindPatientsByMSISDNFn: func(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
+			return &domain.PatientConnection{
+				Edges: []*domain.PatientEdge{},
+				PageInfo: &firebasetools.PageInfo{
+					HasNextPage:     true,
+					HasPreviousPage: true,
+				},
+			}, nil
+		},
 	}
 }
 
@@ -224,4 +234,9 @@ func (p *ClinicalMock) DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber
 // StartEpisodeByBreakGlass initializes StartEpisodeByBreakGlass mock
 func (p *ClinicalMock) StartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
 	return p.StartEpisodeByBreakGlassFn(ctx, input)
+}
+
+// FindPatientsByMSISDN initializes finds a patient's record(s), given a search term FindPatientsByMSISDN mock
+func (p *ClinicalMock) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
+	return p.FindPatientsByMSISDNFn(ctx, msisdn)
 }

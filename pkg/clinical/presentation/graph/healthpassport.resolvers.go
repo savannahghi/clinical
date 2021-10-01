@@ -5,26 +5,34 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 )
 
 func (r *mutationResolver) StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.StartEpisodeByOtp(ctx, input)
 }
 
 func (r *mutationResolver) StartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.StartEpisodeByBreakGlass(ctx, input)
 }
 
 func (r *mutationResolver) UpgradeEpisode(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.UpgradeEpisode(ctx, input)
 }
 
 func (r *mutationResolver) EndEpisode(ctx context.Context, episodeID string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.EndEpisode(ctx, episodeID)
 }
 
 func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string) (string, error) {
@@ -34,7 +42,9 @@ func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string)
 }
 
 func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.EndEncounter(ctx, encounterID)
 }
 
 func (r *mutationResolver) RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
@@ -44,43 +54,63 @@ func (r *mutationResolver) RegisterPatient(ctx context.Context, input domain.Sim
 }
 
 func (r *mutationResolver) RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.RegisterUser(ctx, input)
 }
 
 func (r *mutationResolver) UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.UpdatePatient(ctx, input)
 }
 
 func (r *mutationResolver) AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.AddNextOfKin(ctx, input)
 }
 
 func (r *mutationResolver) AddNhif(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.AddNHIF(ctx, input)
 }
 
 func (r *mutationResolver) CreateUpdatePatientExtraInformation(ctx context.Context, input domain.PatientExtraInformationInput) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateUpdatePatientExtraInformation(ctx, input)
 }
 
 func (r *mutationResolver) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateFHIRMedicationRequest(ctx, input)
 }
 
 func (r *mutationResolver) UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.UpdateFHIRMedicationRequest(ctx, input)
 }
 
 func (r *mutationResolver) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.DeleteFHIRMedicationRequest(ctx, id)
 }
 
 func (r *mutationResolver) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateFHIRAllergyIntolerance(ctx, input)
 }
 
 func (r *mutationResolver) UpdateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.UpdateFHIRAllergyIntolerance(ctx, input)
 }
 
 func (r *mutationResolver) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
@@ -90,103 +120,153 @@ func (r *mutationResolver) CreateFHIRCondition(ctx context.Context, input domain
 }
 
 func (r *mutationResolver) UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateFHIRCondition(ctx, input)
 }
 
 func (r *mutationResolver) CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateFHIRServiceRequest(ctx, input)
 }
 
 func (r *mutationResolver) DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.DeleteFHIRServiceRequest(ctx, id)
 }
 
 func (r *mutationResolver) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateFHIRObservation(ctx, input)
 }
 
 func (r *mutationResolver) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateFHIRComposition(ctx, input)
 }
 
 func (r *mutationResolver) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.UpdateFHIRComposition(ctx, input)
 }
 
 func (r *mutationResolver) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.DeleteFHIRComposition(ctx, id)
 }
 
 func (r *mutationResolver) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.DeleteFHIRPatient(ctx, id)
 }
 
 func (r *mutationResolver) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.DeleteFHIRObservation(ctx, id)
 }
 
 func (r *queryResolver) FindPatientsByMsisdn(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.FindPatientsByMSISDN(ctx, msisdn)
 }
 
 func (r *queryResolver) FindPatients(ctx context.Context, search string) (*domain.PatientConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.PatientSearch(ctx, search)
 }
 
 func (r *queryResolver) GetPatient(ctx context.Context, id string) (*domain.PatientPayload, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.FindPatientByID(ctx, id)
 }
 
 func (r *queryResolver) OpenEpisodes(ctx context.Context, patientReference string) ([]*domain.FHIREpisodeOfCare, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.OpenEpisodes(ctx, patientReference)
 }
 
 func (r *queryResolver) OpenOrganizationEpisodes(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.OpenOrganizationEpisodes(ctx, providerSladeCode)
 }
 
 func (r *queryResolver) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.ProblemSummary(ctx, patientID)
 }
 
 func (r *queryResolver) VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.VisitSummary(ctx, encounterID, usecases.MaxClinicalRecordPageSize)
 }
 
 func (r *queryResolver) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.PatientTimelineWithCount(ctx, episodeID, count)
 }
 
 func (r *queryResolver) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIREncounter(ctx, params)
 }
 
 func (r *queryResolver) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIRCondition(ctx, params)
 }
 
 func (r *queryResolver) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIRAllergyIntolerance(ctx, params)
 }
 
 func (r *queryResolver) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIRObservation(ctx, params)
 }
 
 func (r *queryResolver) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIRMedicationRequest(ctx, params)
 }
 
 func (r *queryResolver) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIRServiceRequest(ctx, params)
 }
 
 func (r *queryResolver) SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIRComposition(ctx, params)
 }
 
 func (r *queryResolver) AllergySummary(ctx context.Context, patientID string) ([]string, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.AllergySummary(ctx, patientID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
