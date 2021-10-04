@@ -15,6 +15,7 @@ require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/imroc/req v0.3.0
+	github.com/labstack/gommon v0.3.0
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.3.0
@@ -33,5 +34,5 @@ require (
 	github.com/vektah/gqlparser/v2 v2.1.0
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
 	google.golang.org/api v0.50.0
-	google.golang.org/genproto v0.0.0-20210714021259-044028024a4f // indirect
+	gopkg.in/yaml.v2 v2.4.0
 )

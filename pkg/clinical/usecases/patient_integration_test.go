@@ -10,26 +10,16 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/converterandformatter"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 )
 
-const testProviderCode = "1234"
-
 func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -80,16 +70,9 @@ func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -255,16 +238,9 @@ func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 	u := testUsecaseInteractor
@@ -422,16 +398,9 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -497,16 +466,9 @@ func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -582,16 +544,9 @@ func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -688,16 +643,9 @@ func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_FindPatientByID(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -762,16 +710,9 @@ func TestClinicalUseCaseImpl_FindPatientByID(t *testing.T) {
 func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
 	TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t)
 
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -861,16 +802,9 @@ func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -957,16 +891,9 @@ func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_AddNHIF(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -1035,16 +962,9 @@ func TestClinicalUseCaseImpl_AddNHIF(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -1122,16 +1042,9 @@ func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
 
 func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
 
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -1203,16 +1116,9 @@ func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
@@ -1283,16 +1189,9 @@ func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_StartEpisodeByBreakGlass(t *testing.T) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
+	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {
 		t.Errorf("cant get phone number authenticated context token: %v", err)
-		return
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
 	}
 
