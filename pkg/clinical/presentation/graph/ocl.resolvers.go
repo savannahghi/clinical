@@ -5,9 +5,12 @@ package graph
 
 import (
 	"context"
-	"fmt"
 )
 
 func (r *queryResolver) ListConcepts(ctx context.Context, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error) {
-	panic(fmt.Errorf("not implemented"))
+	r.CheckUserTokenInContext(ctx)
+	r.CheckDependencies()
+	return r.usecases.ListConcepts(
+		ctx, org, source, verbose, q, sortAsc, sortDesc, conceptClass, dataType,
+		locale, includeRetired, includeMappings, includeInverseMappings)
 }

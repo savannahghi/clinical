@@ -56,7 +56,7 @@ const (
 	defaultTimeoutSeconds    = 10
 )
 
-// FHIRUseCase ...
+// FHIRUseCase represents all the FHIR business logic
 type FHIRUseCase interface {
 	CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
 	CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
@@ -116,12 +116,12 @@ type FHIRUseCase interface {
 	DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error)
 }
 
-// FHIRUseCaseImpl ...
+// FHIRUseCaseImpl represents the FHIR usecase implementation
 type FHIRUseCaseImpl struct {
 	infrastructure infrastructure.Infrastructure
 }
 
-// NewFHIRUseCaseImpl ...
+// NewFHIRUseCaseImpl initializes the new FHIR implementation
 func NewFHIRUseCaseImpl(infra infrastructure.Infrastructure) FHIRUseCase {
 	return &FHIRUseCaseImpl{
 		infrastructure: infra,
