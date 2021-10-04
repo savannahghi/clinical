@@ -15,6 +15,9 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
+	fhirMockRepo "github.com/savannahghi/clinical/pkg/clinical/infrastructure/mock"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding"
+	OnboardingMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
@@ -27,6 +30,8 @@ import (
 	"github.com/savannahghi/serverutils"
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
+
+	profileUtilsMock "github.com/savannahghi/clinical/pkg/clinical/application/common/library/profileUtils/mock"
 )
 
 const ( // Repo the env to identify which repo to use
@@ -42,6 +47,16 @@ var (
 	fakeFhir        usecaseMock.FHIRMock
 	fakePatient     usecaseMock.ClinicalMock
 	fakeUsecaseIntr usecases.Interactor
+	fakeFhirRepo    fhirMockRepo.FakeFHIRRepository
+	// fakeFirebaseRepo firebaseMockRepo.FirebaseClientExtension
+	// fakeFirestoreRepo firebaseMockRepo.FirestoreClientExtension
+	// fakeonboardingExt onboardingExtMock.FakeBaseExtensionImpl
+
+	fhirrepoMock fhirMockRepo.FakeFHIRRepository
+	fakeRepo     fhirMockRepo.FakeRepository
+
+	fakeOnboarding   OnboardingMock.FakeServiceOnboarding
+	fakeProfileUtils profileUtilsMock.FakeUserProfileRepository
 
 	testUsecaseInteractor interactor.Usecases
 	testInfrastructure    infrastructure.Infrastructure
@@ -119,6 +134,29 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
 	return infrastructure.NewInfrastructureInteractor(), nil
+}
+
+// // InitializeFakeOnboaridingInteractor represents a fakeonboarding interactor
+
+func InitializeFakeClinicalInteractor(ctx context.Context) (usecases.Interactor, error) {
+
+	var fhirRepo infrastructure.FHIRRepository = &fhirrepoMock
+	var repo infrastructure.Repository = &fakeRepo
+	var profile onboarding.ServiceOnboarding = &fakeOnboarding
+	infra := func() infrastructure.Infrastructure {
+		return infrastructure.Infrastructure{
+			FHIRRepo:        fhirRepo,
+			FirestoreRepo:   repo,
+			Engagement:      nil,
+			FirestoreClient: &firestore.Client{},
+			Onboarding:      profile,
+			OpenConceptLab:  nil,
+		}
+	}()
+
+	i := usecases.NewUsecasesInteractor(infra)
+
+	return i, nil
 }
 
 func getTestAuthenticatedContext(t *testing.T) (context.Context, error) {
