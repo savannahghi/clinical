@@ -32,7 +32,7 @@ const (
 	sendSMSEndpoint   = "internal/send_sms"
 )
 
-// ClinicalUseCase ...
+// ClinicalUseCase represents all the patient business logic
 type ClinicalUseCase interface {
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
 	VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error)
@@ -53,13 +53,13 @@ type ClinicalUseCase interface {
 	FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
 }
 
-// ClinicalUseCaseImpl ...
+// ClinicalUseCaseImpl represents the patient usecase implementation
 type ClinicalUseCaseImpl struct {
 	infrastructure infrastructure.Infrastructure
 	fhir           FHIRUseCase
 }
 
-// NewClinicalUseCaseImpl ...
+// NewClinicalUseCaseImpl initializes new Clinical/Patient implementation
 func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCase) ClinicalUseCase {
 	return &ClinicalUseCaseImpl{
 		infrastructure: infra,

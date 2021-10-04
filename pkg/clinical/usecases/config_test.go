@@ -17,6 +17,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
@@ -41,6 +42,7 @@ var (
 
 	testUsecaseInteractor interactor.Usecases
 	testInfrastructure    infrastructure.Infrastructure
+	fakeOCL               usecaseMock.OCLMock
 )
 
 func TestMain(m *testing.M) {
@@ -76,7 +78,7 @@ func TestMain(m *testing.M) {
 
 	testUsecaseInteractor = svc
 
-	fakeUsecaseIntr, err = InitializeFakeTestService(&fakePatient, &fakeFhir)
+	fakeUsecaseIntr, err = InitializeFakeTestService(&fakePatient, &fakeFhir, &fakeOCL)
 	if err != nil {
 		log.Printf("failed to initialize fake test service: %v", err)
 	}
@@ -143,13 +145,18 @@ func InitializeTestFirebaseClient(
 	return fsc, fbc
 }
 
-func InitializeFakeTestService(patient usecases.ClinicalUseCase, fhir usecases.FHIRUseCase) (
+func InitializeFakeTestService(
+	patient usecases.ClinicalUseCase,
+	fhir usecases.FHIRUseCase,
+	ocl ocl.UseCases,
+) (
 	usecases.Interactor,
 	error,
 ) {
 	itr := usecases.Interactor{
 		patient,
 		fhir,
+		ocl,
 	}
 	return itr, nil
 }

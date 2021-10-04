@@ -9,6 +9,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/engagement"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/firebasetools"
 )
 
@@ -19,6 +20,7 @@ type Infrastructure struct {
 	Engagement      engagement.ServiceEngagement
 	FirestoreClient *firestore.Client
 	Onboarding      onboarding.ServiceOnboarding
+	OpenConceptLab  openconceptlab.ServiceOCL
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
@@ -30,6 +32,7 @@ func NewInfrastructureInteractor() Infrastructure {
 	firestoreDB := NewDBService()
 	onboardingClient := common.NewInterServiceClient("onboarding", baseExtension)
 	onboarding := onboarding.NewServiceOnboardingImpl(onboardingClient, baseExtension)
+	openconceptlab := openconceptlab.NewServiceOCL()
 
 	fc := firebasetools.FirebaseClient{}
 	fa, err := fc.InitFirebase()
@@ -48,5 +51,6 @@ func NewInfrastructureInteractor() Infrastructure {
 		engagement,
 		fsc,
 		onboarding,
+		openconceptlab,
 	}
 }

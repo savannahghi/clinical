@@ -24,15 +24,31 @@ const (
 	OCLAPITimeoutSeconds = 30
 )
 
-// NewService initializes a new OpenConceptLab service
-func NewService() *Service {
+// ServiceOCL ...
+type ServiceOCL interface {
+	MakeRequest(method string, path string, params url.Values, body io.Reader) (*http.Response, error)
+	ListConcepts(
+		ctx context.Context, org string, source string, verbose bool, q *string,
+		sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
+		locale *string, includeRetired *bool,
+		includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error)
+	GetConcept(
+		ctx context.Context, org string, source string, concept string,
+		includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error)
+}
+
+// NewServiceOCL creates a new open conceptlab Service
+func NewServiceOCL() *Service {
 	baseURL := serverutils.MustGetEnvVar(OCLAPIURLEnvVarName)
 	token := serverutils.MustGetEnvVar(OCLTokenEnvVarName)
 	header := fmt.Sprintf("Authorization: Token %s", token)
-	return &Service{
+
+	srv := &Service{
 		baseURL: baseURL,
 		header:  header,
 	}
+	srv.enforcePreconditions()
+	return srv
 }
 
 // Service is an OpenConceptLab service
