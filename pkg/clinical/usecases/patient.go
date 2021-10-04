@@ -12,7 +12,6 @@ import (
 	auth "github.com/savannahghi/clinical/pkg/clinical/application/authorization"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
-	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -20,6 +19,7 @@ import (
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
+	"github.com/savannahghi/onboarding/pkg/onboarding/application/dto"
 	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
@@ -593,6 +593,10 @@ func (c *ClinicalUseCaseImpl) CreatePatient(ctx context.Context, input domain.FH
 		input.ID = &newID
 	}
 
+	if input.Gender == nil {
+		return nil, fmt.Errorf("please provide the patients gender")
+	}
+
 	// set or add the default record identifier
 	if input.Identifier == nil {
 		input.Identifier = []*domain.FHIRIdentifierInput{common.DefaultIdentifier()}
@@ -627,6 +631,9 @@ func (c *ClinicalUseCaseImpl) CreatePatient(ctx context.Context, input domain.FH
 
 // FindPatientByID retrieves a single patient by their ID
 func (c *ClinicalUseCaseImpl) FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error) {
+	if id == "" {
+		return nil, fmt.Errorf("patient ID cannot be empty")
+	}
 	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
@@ -965,6 +972,10 @@ func (c *ClinicalUseCaseImpl) AddNHIF(ctx context.Context, input *domain.SimpleN
 
 // RegisterUser implements creates a user profile and simple patient registration
 func (c *ClinicalUseCaseImpl) RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
+	if input.ID == "" {
+		return nil, fmt.Errorf("unable to register patient")
+	}
+
 	user, err := profileutils.GetLoggedInUser(ctx)
 
 	if err != nil {
@@ -978,17 +989,18 @@ func (c *ClinicalUseCaseImpl) RegisterUser(ctx context.Context, input domain.Sim
 		primaryEmail = input.Emails[0].Email
 	}
 
-	payload := dto.RegisterUserPayload{
-		UID:         user.UID,
-		FirstName:   input.Names[0].FirstName,
-		LastName:    input.Names[0].LastName,
-		PhoneNumber: input.PhoneNumbers[0].Msisdn,
-		Gender:      enumutils.Gender(input.Gender),
-		Email:       primaryEmail,
-		DateOfBirth: input.BirthDate,
+	gender := input.Gender
+	payload := dto.RegisterUserInput{
+		UID:         &user.UID,
+		FirstName:   &input.Names[0].FirstName,
+		LastName:    &input.Names[0].LastName,
+		PhoneNumber: &input.PhoneNumbers[0].Msisdn,
+		Gender:      (*enumutils.Gender)(&gender),
+		Email:       &primaryEmail,
+		DateOfBirth: &input.BirthDate,
 	}
 
-	err = c.infrastructure.Onboarding.CreateUserProfile(ctx, payload)
+	err = c.infrastructure.Onboarding.CreateUserProfile(ctx, &payload)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a user profile: %v", err)
 	}
@@ -1004,6 +1016,9 @@ func (c *ClinicalUseCaseImpl) RegisterUser(ctx context.Context, input domain.Sim
 // CreateUpdatePatientExtraInformation updates a patient's extra info
 func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
 	ctx context.Context, input domain.PatientExtraInformationInput) (bool, error) {
+	if input.PatientID == "" {
+		return false, fmt.Errorf("patient ID cannot empty: %v", input.PatientID)
+	}
 	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
@@ -1080,6 +1095,9 @@ func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
 // AllergySummary returns a short list of the patient's active and confirmed
 // allergies (by name)
 func (c *ClinicalUseCaseImpl) AllergySummary(ctx context.Context, patientID string) ([]string, error) {
+	if patientID == "" {
+		return nil, fmt.Errorf("patient ID cannot be empty")
+	}
 	params := map[string]interface{}{
 		"clinical-status":     "active",
 		"verification-status": "confirmed",

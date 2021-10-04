@@ -38,7 +38,7 @@ const (
 func mapToJSONReader(m map[string]interface{}) (io.Reader, error) {
 	bs, err := json.Marshal(m)
 	if err != nil {
-		return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
+		return nil, fmt.Errorf("unable to marshal map to JSON: %v", err)
 	}
 
 	buf := bytes.NewBuffer(bs)
@@ -100,7 +100,7 @@ const (
 // 	msisdn := interserviceclient.TestUserPhoneNumberWithPin
 // 	birthDate, err := scalarutils.NewDate(dob.Day(), int(dob.Month()), dob.Year())
 // 	if err != nil {
-// 		return nil, "", fmt.Errorf("can't create valid birth date: %w", err)
+// 		return nil, "", fmt.Errorf("can't create valid birth date: %v", err)
 // 	}
 // 	return &domain.SimplePatientRegistrationInput{
 // 		ID: ksuid.New().String(),
@@ -167,7 +167,7 @@ func getTestSimplePatientRegistration() (*domain.SimplePatientRegistrationInput,
 	msisdn := gofakeit.Phone()
 	birthDate, err := scalarutils.NewDate(dob.Day(), int(dob.Month()), dob.Year())
 	if err != nil {
-		return nil, "", fmt.Errorf("can't create valid birth date: %w", err)
+		return nil, "", fmt.Errorf("can't create valid birth date: %v", err)
 	}
 	return &domain.SimplePatientRegistrationInput{
 		ID: ksuid.New().String(),
@@ -251,7 +251,7 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -534,13 +534,13 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, msisdn, err := getTestPatient(ctx)
 	if err != nil {
-		t.Errorf("error in getting test patient: %w", err)
+		t.Errorf("error in getting test patient: %v", err)
 		return
 	}
 
@@ -681,7 +681,7 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -709,7 +709,7 @@ func TestGraphQLFindPatients(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -836,7 +836,7 @@ func TestGraphQLFindPatients(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -901,13 +901,13 @@ func TestGraphQGetPatient(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		t.Errorf("can't get test patient: %w", err)
+		t.Errorf("can't get test patient: %v", err)
 		return
 	}
 
@@ -1034,7 +1034,7 @@ func TestGraphQGetPatient(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -1061,7 +1061,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1213,7 +1213,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -1274,7 +1274,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -1404,7 +1404,7 @@ func TestGraphQLStartEpisodeByBreakGlass(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -1445,7 +1445,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1462,7 +1462,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 		false, testProviderCode,
 	)
 	if err != nil {
-		t.Errorf("can't create test episode: %w", err)
+		t.Errorf("can't create test episode: %v", err)
 		return
 	}
 
@@ -1578,7 +1578,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -1616,7 +1616,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -1626,7 +1626,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 		false, testProviderCode,
 	)
 	if err != nil {
-		t.Errorf("can't create test episode: %w", err)
+		t.Errorf("can't create test episode: %v", err)
 		return
 	}
 
@@ -1732,7 +1732,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -1768,13 +1768,13 @@ func TestGraphQLStartEncounter(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 	episode, _, _, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -1881,7 +1881,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -1921,14 +1921,14 @@ func TestGraphQLEndEncounter(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -2034,7 +2034,7 @@ func TestGraphQLEndEncounter(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -2061,7 +2061,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 		false, testProviderCode,
 	)
 	if err != nil {
-		t.Errorf("can't create test episode: %w", err)
+		t.Errorf("can't create test episode: %v", err)
 		return
 	}
 	if patient.ID == nil {
@@ -2073,7 +2073,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 	patientRef := fmt.Sprintf("Patient/%s", patientID)
@@ -2191,7 +2191,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -2229,14 +2229,14 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	episode, _, _, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -2408,7 +2408,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -2418,7 +2418,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 		false, testProviderCode,
 	)
 	if err != nil {
-		t.Errorf("can't create test episode: %w", err)
+		t.Errorf("can't create test episode: %v", err)
 		return
 	}
 
@@ -2536,7 +2536,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -2561,7 +2561,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2709,7 +2709,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -2764,13 +2764,13 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		t.Errorf("can't get test patient: %w", err)
+		t.Errorf("can't get test patient: %v", err)
 		return
 	}
 
@@ -3035,7 +3035,7 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -3062,13 +3062,13 @@ func TestGraphQLAddNHIF(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		t.Errorf("error in getting test patient: %w", err)
+		t.Errorf("error in getting test patient: %v", err)
 		return
 	}
 
@@ -3180,7 +3180,7 @@ func TestGraphQLAddNHIF(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -3208,7 +3208,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -3337,7 +3337,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -3379,7 +3379,7 @@ func TestGraphQLVisitSummary(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -3491,7 +3491,7 @@ func TestGraphQLVisitSummary(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -3701,7 +3701,7 @@ func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -3814,7 +3814,7 @@ func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -4030,14 +4030,14 @@ func TestGraphQLProblemSummary(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -4218,14 +4218,14 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -4387,7 +4387,7 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -4454,7 +4454,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -4465,7 +4465,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 		return
 	}
 	if medicationRequestID == "" {
-		t.Errorf("failed to create medication request: %w", err)
+		t.Errorf("failed to create medication request: %v", err)
 		return
 	}
 
@@ -4476,7 +4476,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -4652,7 +4652,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -4719,14 +4719,14 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -4864,7 +4864,7 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -4916,7 +4916,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -4924,7 +4924,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -5138,7 +5138,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -5198,14 +5198,14 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -5412,7 +5412,7 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -5473,14 +5473,14 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -5634,7 +5634,7 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -5704,14 +5704,14 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 	allergyID, err := createTestAllergy(ctx, patient, encounterID)
@@ -5902,7 +5902,7 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -5961,14 +5961,14 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -6149,7 +6149,7 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -6173,14 +6173,14 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -6366,7 +6366,7 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -6424,7 +6424,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -6616,7 +6616,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -6671,14 +6671,14 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 
@@ -6838,7 +6838,7 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -6897,19 +6897,19 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 	serviceRequest, _, err := getTestServiceRequest(ctx, encounterID)
 	if err != nil {
-		t.Errorf("error creating test service request: %w", err)
+		t.Errorf("error creating test service request: %v", err)
 		return
 	}
 
@@ -7020,7 +7020,7 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 				for key := range data {
@@ -7058,19 +7058,19 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("error creating test encounter ID: %w", err)
+		t.Errorf("error creating test encounter ID: %v", err)
 		return
 	}
 	serviceRequest, patientID, err := getTestServiceRequest(ctx, encounterID)
 	if err != nil {
-		t.Errorf("error creating test service request: %w", err)
+		t.Errorf("error creating test service request: %v", err)
 		return
 	}
 
@@ -7226,7 +7226,7 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -7264,7 +7264,7 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -7272,7 +7272,7 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("can't create test encounter: %w", err)
+		t.Errorf("can't create test encounter: %v", err)
 		return
 	}
 
@@ -7466,7 +7466,7 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -7490,19 +7490,19 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("can't create test encounter: %w", err)
+		t.Errorf("can't create test encounter: %v", err)
 		return
 	}
 	_, patient, status, err := createFHIRTestObservation(ctx, encounterID)
 	if err != nil {
-		t.Errorf("can't create FHIR test observation: %w", err)
+		t.Errorf("can't create FHIR test observation: %v", err)
 		return
 	}
 
@@ -7686,7 +7686,7 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -7710,14 +7710,14 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -7929,20 +7929,20 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
 	if err != nil {
-		t.Errorf("can't create test encounter: %w", err)
+		t.Errorf("can't create test encounter: %v", err)
 		return
 	}
 
 	composition, _, err := createTestFHIRComposition(ctx, encounterID)
 	if err != nil {
-		t.Errorf("can't create test composition: %w", err)
+		t.Errorf("can't create test composition: %v", err)
 		return
 	}
 	recorded := time.Now().Format(dateFormat)
@@ -8105,7 +8105,7 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -8156,19 +8156,19 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 	composition, _, err := createTestFHIRComposition(ctx, encounterID)
 	if err != nil {
-		t.Errorf("can't create test composition: %w", err)
+		t.Errorf("can't create test composition: %v", err)
 		return
 	}
 
@@ -8295,7 +8295,7 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -8347,19 +8347,19 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 	_, patient, err := createTestFHIRComposition(ctx, encounterID)
 	if err != nil {
-		t.Errorf("can't create test composition: %w", err)
+		t.Errorf("can't create test composition: %v", err)
 		return
 	}
 
@@ -8504,7 +8504,7 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 
@@ -8550,14 +8550,14 @@ func TestGraphQLAllergySummary(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -8738,13 +8738,13 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
-		t.Errorf("unable to generate test encounter ID: %w", err)
+		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
 	}
 
@@ -8854,7 +8854,7 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 

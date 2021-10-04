@@ -12,6 +12,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
@@ -144,5 +145,51 @@ func GQLHandler(ctx context.Context,
 	)
 	return func(w http.ResponseWriter, r *http.Request) {
 		server.ServeHTTP(w, r)
+	}
+}
+
+// DeleteFHIRPatientByPhone handler exposes an endpoint that takes a
+// patient's phone number and deletes the patient's FHIR compartment
+func DeleteFHIRPatientByPhone(ctx context.Context) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		infra := infrastructure.NewInfrastructureInteractor()
+		s := usecases.NewUsecasesInteractor(infra)
+
+		payload := &domain.PhoneNumberPayload{}
+		type errResponse struct {
+			Err string `json:"error"`
+		}
+		serverutils.DecodeJSONToTargetStruct(w, r, payload)
+		if payload.PhoneNumber == "" {
+			serverutils.WriteJSONResponse(
+				w,
+				errResponse{
+					Err: "expected a phone number to be defined",
+				},
+				http.StatusBadRequest,
+			)
+			return
+		}
+		deleted, err := s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
+		if err != nil {
+			err := fmt.Sprintf("unable to delete patient: %v", err.Error())
+			serverutils.WriteJSONResponse(
+				w,
+				errResponse{
+					Err: err,
+				},
+				http.StatusInternalServerError,
+			)
+			return
+		}
+
+		type response struct {
+			Deleted bool `json:"deleted"`
+		}
+		serverutils.WriteJSONResponse(
+			w,
+			response{Deleted: deleted},
+			http.StatusOK,
+		)
 	}
 }
