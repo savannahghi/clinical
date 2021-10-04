@@ -67,7 +67,7 @@ func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCas
 	}
 }
 
-// ProblemSummary ...
+// ProblemSummary returns a short list of the patient's active and confirmed problems (by name).
 func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
 	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
@@ -105,7 +105,7 @@ func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID stri
 	return output, nil
 }
 
-// VisitSummary ...
+// VisitSummary returns a narrative friendly display of the data that has been associated with a single visit
 func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
 	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
@@ -296,7 +296,9 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 	return output, nil
 }
 
-// PatientTimelineWithCount ...
+// PatientTimelineWithCount returns the patient's visit note timeline (a list of
+// narratives that are sorted with the most recent one first), while
+// respecting the approval level AND limiting the number
 func (c *ClinicalUseCaseImpl) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
 	user, err := profileutils.GetLoggedInUser(ctx)
 	if err != nil {
