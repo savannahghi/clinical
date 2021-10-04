@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
-	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/interserviceclient"
@@ -61,7 +60,7 @@ func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 
 		})
 	}
-
+	// teardown
 	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
 	if err != nil {
 		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
@@ -80,23 +79,7 @@ func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 
 	msisdn := interserviceclient.TestUserPhoneNumber
 
-	patientInput, err := simplePatientRegistration()
-	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
-		return
-	}
-
-	_, err = u.RegisterPatient(ctx, *patientInput)
-	if err != nil {
-		fmt.Printf("unable to create patient: %v", err)
-		return
-	}
-
-	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
-	if err != nil {
-		fmt.Printf("can't normalize phone number: %v \n", err)
-	}
-	_, patient, _, err := getTestEncounterID(
+	episode, _, err := createTestEpisodeOfCare(
 		ctx,
 		msisdn,
 		false,
@@ -106,28 +89,10 @@ func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 		log.Printf("cant get test encounter id: %v\n", err)
 		return
 	}
-	orgID, err := u.GetORCreateOrganization(ctx, testProviderCode)
-	if err != nil {
-		log.Printf("can't get or create test organization : %v\n", err)
-	}
 
-	episode := helpers.ComposeOneHealthEpisodeOfCare(
-		*normalized,
-		false,
-		*orgID,
-		testProviderCode,
-		*patient.ID,
-	)
-
-	ep, err := u.CreateEpisodeOfCare(ctx, episode)
+	episodePayload, err := u.GetFHIREpisodeOfCare(ctx, *episode.ID)
 	if err != nil {
-		t.Errorf("unable to get episode with ID %s: %v", *ep.EpisodeOfCare.ID, err)
-		return
-	}
-
-	episodePayload, err := u.GetFHIREpisodeOfCare(ctx, *ep.EpisodeOfCare.ID)
-	if err != nil {
-		t.Errorf("unable to get episode with ID %s: %v", *ep.EpisodeOfCare.ID, err)
+		t.Errorf("unable to get episode with ID %s: %v", *episode.ID, err)
 		return
 	}
 
@@ -251,7 +216,7 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 	if err != nil {
 		fmt.Printf("can't normalize phone number: %v \n", err)
 	}
-	_, patient, _, err := getTestEncounterID(
+	episode, _, err := createTestEpisodeOfCare(
 		ctx,
 		*normalized,
 		false,
@@ -261,28 +226,10 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 		log.Printf("cant get test encounter id: %v\n", err)
 		return
 	}
-	orgID, err := u.GetORCreateOrganization(ctx, testProviderCode)
-	if err != nil {
-		log.Printf("can't get or create test organization : %v\n", err)
-	}
 
-	episode := helpers.ComposeOneHealthEpisodeOfCare(
-		*normalized,
-		false,
-		*orgID,
-		testProviderCode,
-		*patient.ID,
-	)
-
-	ep, err := u.CreateEpisodeOfCare(ctx, episode)
+	episodePayload, err := u.GetFHIREpisodeOfCare(ctx, *episode.ID)
 	if err != nil {
-		t.Errorf("unable to get episode with ID %s: %v", *ep.EpisodeOfCare.ID, err)
-		return
-	}
-
-	episodePayload, err := u.GetFHIREpisodeOfCare(ctx, *ep.EpisodeOfCare.ID)
-	if err != nil {
-		t.Errorf("unable to get episode with ID %s: %v", *ep.EpisodeOfCare.ID, err)
+		t.Errorf("unable to get episode with ID %s: %v", *episode.ID, err)
 		return
 	}
 
@@ -355,7 +302,7 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 			name: "Happy case",
 			args: args{
 				ctx:       ctx,
-				episodeID: *ep.EpisodeOfCare.ID,
+				episodeID: *episode.ID,
 				count:     0,
 			},
 			wantErr: false,
