@@ -25,10 +25,6 @@ import (
 
 const (
 	timeFormatStr = "2006-01-02T15:04:05+03:00"
-	// DefaultLanguage ...
-	DefaultLanguage = "English"
-	// EmailWelcomeSubject ...
-	EmailWelcomeSubject = "Welcome to Be.Well"
 )
 
 // engagement ISC paths
@@ -36,9 +32,6 @@ const (
 	// verifyOTPEndpoint ISC endpoint to verify OTP
 	VerifyOTPEndpoint = "internal/verify_otp/"
 	SendOtp           = "internal/send_otp/"
-
-	// sendEmailEndpoint ISC endpoint to send email
-	sendEmailEndpoint = "internal/send_email"
 
 	// engagement ISC uploads paths
 	uploadEndpoint    = "internal/upload/"
@@ -231,7 +224,7 @@ func (en *ServiceEngagementImpl) PhotosToAttachments(
 		url := scalarutils.URL(upload.URL)
 		now := scalarutils.DateTime(time.Now().Format(timeFormatStr))
 		contentType := scalarutils.Code(photo.PhotoContentType.String())
-		language := scalarutils.Code(DefaultLanguage)
+		language := scalarutils.Code(common.DefaultLanguage)
 		photoData := scalarutils.Base64Binary(photo.PhotoBase64data)
 		attachment := &domain.FHIRAttachmentInput{
 			ContentType: &contentType,
@@ -258,10 +251,10 @@ func (en ServiceEngagementImpl) SendPatientWelcomeEmail(ctx context.Context, ema
 	body := map[string]interface{}{
 		"to":      []string{emailaddress},
 		"text":    text,
-		"subject": EmailWelcomeSubject,
+		"subject": common.EmailWelcomeSubject,
 	}
 
-	resp, err := en.Engage.MakeRequest(ctx, http.MethodPost, sendEmailEndpoint, body)
+	resp, err := en.Engage.MakeRequest(ctx, http.MethodPost, common.SendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send welcome email: %w", err)
 	}

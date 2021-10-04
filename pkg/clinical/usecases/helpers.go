@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"text/template"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -446,7 +447,7 @@ func (c *ClinicalUseCaseImpl) sendAlertToPatient(ctx context.Context, phoneNumbe
 		Sender:  enumutils.SenderIDBewell,
 	}
 
-	resp, err := isc.MakeRequest(ctx, http.MethodPost, sendSMSEndpoint, requestPayload)
+	resp, err := isc.MakeRequest(ctx, http.MethodPost, common.SendSMSEndpoint, requestPayload)
 	if err != nil {
 		return fmt.Errorf("unable to send alert to patient: %w", err)
 	}
@@ -505,7 +506,7 @@ func (c *ClinicalUseCaseImpl) sendAlertToNextOfKin(ctx context.Context, patientI
 								Sender:  enumutils.SenderIDBewell,
 							}
 
-							resp, err := isc.MakeRequest(ctx, http.MethodPost, sendSMSEndpoint, requestPayload)
+							resp, err := isc.MakeRequest(ctx, http.MethodPost, common.SendSMSEndpoint, requestPayload)
 							if err != nil {
 								return fmt.Errorf("unable to send alert to next of kin: %w", err)
 							}
@@ -550,7 +551,7 @@ func (c *ClinicalUseCaseImpl) sendAlertToAdmin(ctx context.Context, patientName 
 		"subject": subject,
 	}
 
-	resp, err := isc.MakeRequest(ctx, http.MethodPost, sendEmailEndpoint, body)
+	resp, err := isc.MakeRequest(ctx, http.MethodPost, common.SendEmailEndpoint, body)
 	if err != nil {
 		return fmt.Errorf("unable to send Alert to admin email: %w", err)
 	}
@@ -569,7 +570,7 @@ func createAlertMessage(names string) string {
 		"Dear %s. Your health record has been accessed for an emergency. "+
 			"If you are not aware of the circumstances of this, please call %s",
 		names,
-		CallCenterNumber,
+		common.CallCenterNumber,
 	)
 	return text
 }
@@ -581,7 +582,7 @@ func createNextOfKinAlertMessage(names, patientName string) string {
 			"If you are not aware of the circumstances of this, please call %s",
 		names,
 		patientName,
-		CallCenterNumber,
+		common.CallCenterNumber,
 	)
 	return text
 }
