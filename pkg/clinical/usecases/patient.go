@@ -27,11 +27,6 @@ import (
 
 var isc interserviceclient.InterServiceClient
 
-const (
-	sendEmailEndpoint = "internal/send_email"
-	sendSMSEndpoint   = "internal/send_sms"
-)
-
 // ClinicalUseCase represents all the patient business logic
 type ClinicalUseCase interface {
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)

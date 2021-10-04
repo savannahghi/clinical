@@ -31,19 +31,14 @@ const (
 	// MaxClinicalRecordPageSize is the maximum number of encounters we can show on a timeline
 	MaxClinicalRecordPageSize = 50
 
-	// CenturyHours is the number of hours in a (fictional) century of leap years
-	CenturyHours                     = 878400
 	BreakGlassCollectionName         = "break_glass"
-	DefaultLanguage                  = "English"
 	NHIFImageFrontPicName            = "nhif_front_photo"
 	NHIFImageRearPicName             = "nhif_rear_photo"
 	RelationshipSystem               = "http://terminology.hl7.org/CodeSystem/v2-0131"
 	RelationshipVersion              = "2.9"
-	CallCenterNumber                 = "0790 360 360"
 	StringTimeParseMonthNameLayout   = "2006-Jan-02"
 	StringTimeParseMonthNumberLayout = "2006-01-02"
 	SavannahAdminEmail               = "SAVANNAH_ADMIN_EMAIL"
-	EmailWelcomeSubject              = "Welcome to Be.Well"
 	TwilioSMSNumberEnvVarName        = "TWILIO_SMS_NUMBER"
 
 	notFoundWithSearchParams = "could not find a patient with the provided parameters"

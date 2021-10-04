@@ -16,6 +16,16 @@ const (
 	timeFormatStr                 = "2006-01-02T15:04:05+03:00"
 	healthCloudIdentifiers        = "healthcloud.identifiers"
 	healthCloudIdentifiersVersion = "0.0.1"
+	// SendEmailEndpoint is the endpoint used to send an email
+	SendEmailEndpoint = "internal/send_email"
+	// SendSMSEndpoint is the endpoint used to send sms
+	SendSMSEndpoint = "internal/send_sms"
+	// EmailWelcomeSubject is the subject of the welcome email
+	EmailWelcomeSubject = "Welcome to Be.Well"
+	// DefaultLanguage ...
+	DefaultLanguage = "English"
+	// CallCenterNumber is Savannah's call center number
+	CallCenterNumber = "0790 360 360"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their
