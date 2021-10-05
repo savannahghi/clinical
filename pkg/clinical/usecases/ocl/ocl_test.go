@@ -2,8 +2,12 @@ package ocl_test
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"log"
+	"net/url"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -165,6 +169,53 @@ func TestUseCasesImpl_GetConcept(t *testing.T) {
 			if !tt.wantErr {
 				assert.NotNil(t, got)
 				assert.Contains(t, got, "display_name")
+			}
+		})
+	}
+}
+
+func TestUseCasesImpl_MakeRequest(t *testing.T) {
+	svc := testUsecaseInteractor
+
+	org := "CIEL"
+	source := "CIEL"
+	concept := "106"
+	includeMappings := true
+	includeInverseMappings := false
+
+	path := fmt.Sprintf("orgs/%s/sources/%s/concepts/%s", org, source, concept)
+	params := url.Values{}
+	params.Add("includeMappings", strconv.FormatBool(includeMappings))
+	params.Add("includeMappings", strconv.FormatBool(includeInverseMappings))
+
+	type args struct {
+		method string
+		path   string
+		params url.Values
+		body   io.Reader
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Default case",
+			args: args{
+				method: "GET",
+				path:   path,
+				params: params,
+				body:   nil,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := svc.MakeRequest(tt.args.method, tt.args.path, tt.args.params, tt.args.body)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesImpl.MakeRequest() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
 		})
 	}
