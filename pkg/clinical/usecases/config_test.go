@@ -265,23 +265,25 @@ func simplePatientRegistration() (*domain.SimplePatientRegistrationInput, error)
 	return patientInput, nil
 }
 
-func getTestEpisodeOfCare(
+func createTestEpisodeOfCare(
 	ctx context.Context,
 	msisdn string,
 	fullAccess bool,
 	providerCode string,
 ) (*domain.FHIREpisodeOfCare, *domain.FHIRPatient, error) {
+	fh := testUsecaseInteractor
+
 	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't normalize phone number: %w", err)
 	}
 
-	patient, _, err := getTestPatient(ctx)
+	patient, _, err := createTestPatient(ctx)
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't create test patient: %w", err)
 	}
 
-	orgID, err := testUsecaseInteractor.GetORCreateOrganization(ctx, providerCode)
+	orgID, err := fh.GetORCreateOrganization(ctx, providerCode)
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't get or create test organization : %v", err)
 	}
@@ -293,31 +295,45 @@ func getTestEpisodeOfCare(
 		providerCode,
 		*patient.ID,
 	)
-	epPayload, err := testUsecaseInteractor.CreateEpisodeOfCare(ctx, ep)
+	epPayload, err := fh.CreateEpisodeOfCare(ctx, ep)
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't create episode of care: %w", err)
 	}
 	return epPayload.EpisodeOfCare, patient, nil
 }
 
-func getTestEncounterID(
+func getTestEpisodeOfCare(
 	ctx context.Context,
 	msisdn string,
 	fullAccess bool,
 	providerCode string,
-) (*domain.FHIREpisodeOfCare, *domain.FHIRPatient, string, error) {
-	episode, patient, err := getTestEpisodeOfCare(
-		ctx, msisdn, fullAccess, providerCode)
+) (*domain.FHIREpisodeOfCare, *domain.FHIRPatient, error) {
+	fh := testUsecaseInteractor
+
+	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("can't create episode of care: %w", err)
+		return nil, nil, fmt.Errorf("can't normalize phone number: %w", err)
 	}
 
-	encounterID, err := testUsecaseInteractor.StartEncounter(ctx, *episode.ID)
+	patient, _, err := createTestPatient(ctx)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("unable to start encounter: %w", err)
+		return nil, nil, fmt.Errorf("can't create test patient: %w", err)
 	}
 
-	return episode, patient, encounterID, nil
+	orgID, err := fh.GetORCreateOrganization(ctx, providerCode)
+	if err != nil {
+		return nil, nil, fmt.Errorf("can't get or create test organization : %v", err)
+	}
+
+	ep := helpers.ComposeOneHealthEpisodeOfCare(
+		*normalized,
+		fullAccess,
+		*orgID,
+		providerCode,
+		*patient.ID,
+	)
+
+	return &ep, patient, nil
 }
 
 func getTestSimplePatientRegistration() (*domain.SimplePatientRegistrationInput, string, error) {
@@ -387,12 +403,22 @@ func getTestSimplePatientRegistration() (*domain.SimplePatientRegistrationInput,
 	}, msisdn, nil
 }
 
-func getTestPatient(ctx context.Context) (*domain.FHIRPatient, string, error) {
+func createTestPatient(ctx context.Context) (*domain.FHIRPatient, string, error) {
+	fh := testUsecaseInteractor
+
 	simplePatientRegInput, msisdn, err := getTestSimplePatientRegistration()
 	if err != nil {
 		return nil, "", fmt.Errorf("can't genereate simple patient reg input: %v", err)
 	}
-	patientPayload, err := testUsecaseInteractor.RegisterPatient(ctx, *simplePatientRegInput)
+
+	// Try cleanup before adding a patient
+	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
+	if err != nil {
+		fmt.Println("Error deleting patient", err)
+	}
+
+	// Register Patient
+	patientPayload, err := fh.RegisterPatient(ctx, *simplePatientRegInput)
 	if err != nil {
 		return nil, "", fmt.Errorf("can't register patient: %v", err)
 	}
@@ -863,77 +889,7 @@ func getTestSimpleServiceRequest(
 	}, *patient.ID, nil
 }
 
-func getTestRegisterUser(
-	msisdn string,
-) (*domain.SimplePatientRegistrationInput, error) {
-	otherNames := gofakeit.Name()
-	dob := gofakeit.Date()
-	birthDate, err := scalarutils.NewDate(dob.Day(), int(dob.Month()), dob.Year())
-	if err != nil {
-		return nil, fmt.Errorf("can't create valid birth date: %v", err)
-	}
-	patientInput := &domain.SimplePatientRegistrationInput{
-		ID: ksuid.New().String(),
-		Names: []*domain.NameInput{
-			{
-				FirstName:  gofakeit.FirstName(),
-				LastName:   gofakeit.LastName(),
-				OtherNames: &otherNames,
-			},
-		},
-		IdentificationDocuments: []*domain.IdentificationDocument{
-			{
-				DocumentType:   domain.IDDocumentTypeNationalID,
-				DocumentNumber: strconv.Itoa(gofakeit.Number(11111111, 111111111)),
-			},
-		},
-		BirthDate: *birthDate,
-		PhoneNumbers: []*domain.PhoneNumberInput{
-			{
-				Msisdn:             msisdn,
-				VerificationCode:   ksuid.New().String(),
-				IsUssd:             true, // this will turn off OTP verification
-				CommunicationOptIn: true,
-			},
-		},
-		Photos: []*domain.PhotoInput{
-			{
-				PhotoContentType: enumutils.ContentTypeJpg,
-				PhotoBase64data:  testPhotoBase64,
-				PhotoFilename:    fmt.Sprintf("%s.jpg", gofakeit.Name()),
-			},
-		},
-		Emails: []*domain.EmailInput{
-			{
-				Email:              "test@bewell.co.ke",
-				CommunicationOptIn: true,
-			},
-		},
-		PhysicalAddresses: []*domain.PhysicalAddress{
-			{
-				PhysicalAddress: gofakeit.Address().Address,
-				MapsCode:        gofakeit.Address().Zip,
-			},
-		},
-		PostalAddresses: []*domain.PostalAddress{
-			{
-				PostalAddress: gofakeit.Address().Address,
-				PostalCode:    gofakeit.Address().City,
-			},
-		},
-		Gender:        enumutils.GenderFemale.String(),
-		Active:        true,
-		MaritalStatus: domain.MaritalStatusS,
-		Languages: []enumutils.Language{
-			enumutils.LanguageEn,
-			enumutils.LanguageSw,
-		},
-	}
-	return patientInput, nil
-
-}
-
-func getTestEncounter(
+func getTestEncounterInput(
 	t *testing.T,
 	episodePayload *domain.FHIREpisodeOfCareRelayPayload,
 ) (domain.FHIREncounterInput, error) {
@@ -1046,161 +1002,185 @@ func getFhirServiceRequest(patient domain.FHIRPatient, encounterID string) (*dom
 	}, nil
 }
 
-func getFHIRMedicationRequestInput(patient domain.FHIRPatient, encounterID string) (*domain.FHIRMedicationRequestInput, error) {
-	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	annotationText := scalarutils.Markdown(gofakeit.HipsterSentence(10))
-	instantRecorded := scalarutils.Instant(time.Now().Format(instantFormat))
-	patientName := patient.Names()
-	verificationSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
-	recordingDoctor := gofakeit.Name()
-	requester := gofakeit.Name()
-	performer := gofakeit.Name()
-	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
-	patientType := scalarutils.URI("Patient")
-	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
-	encounterType := scalarutils.URI("Encounter")
-	active := scalarutils.Code(domain.EpisodeOfCareStatusEnumActive)
-	system := scalarutils.URI("OCL:/orgs/CIEL/sources/CIEL/")
-	userSelected := true
-	notSelected := false
-	intent := scalarutils.Code("proposal")
-	canonical := scalarutils.Canonical("")
-	priority := scalarutils.Code("routine")
-	reason := scalarutils.Code("reason")
-	now := time.Now()
-	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
+// func getFHIRMedicationRequestInput(patient domain.FHIRPatient, encounterID string) (*domain.FHIRMedicationRequestInput, error) {
+// 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
+// 	annotationText := scalarutils.Markdown(gofakeit.HipsterSentence(10))
+// 	instantRecorded := scalarutils.Instant(time.Now().Format(instantFormat))
+// 	patientName := patient.Names()
+// 	verificationSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
+// 	recordingDoctor := gofakeit.Name()
+// 	requester := gofakeit.Name()
+// 	performer := gofakeit.Name()
+// 	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
+// 	patientType := scalarutils.URI("Patient")
+// 	encounterRef := fmt.Sprintf("Encounter/%s", encounterID)
+// 	encounterType := scalarutils.URI("Encounter")
+// 	active := scalarutils.Code(domain.EpisodeOfCareStatusEnumActive)
+// 	system := scalarutils.URI("OCL:/orgs/CIEL/sources/CIEL/")
+// 	userSelected := true
+// 	notSelected := false
+// 	intent := scalarutils.Code("proposal")
+// 	canonical := scalarutils.Canonical("")
+// 	priority := scalarutils.Code("routine")
+// 	reason := scalarutils.Code("reason")
+// 	now := time.Now()
+// 	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
+// 	testID := ksuid.New().String()
 
-	input := domain.FHIRMedicationRequestInput{
-		Identifier: []*domain.FHIRIdentifierInput{{}},
-		Status:     &active,
-		StatusReason: &domain.FHIRCodeableConceptInput{
-			Text: "Laboratory procedure",
-			Coding: []*domain.FHIRCodingInput{
-				{
-					System:       &system,
-					Code:         "108252007",
-					Display:      "Laboratory procedure",
-					UserSelected: &userSelected,
-				},
-			},
-		},
-		Intent: &intent,
-		Category: []*domain.FHIRCodeableConceptInput{
-			{
-				Text: "Laboratory procedure",
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:       &system,
-						Code:         "108252007",
-						Display:      "Laboratory procedure",
-						UserSelected: &userSelected,
-					},
-				},
-			},
-		},
-		Priority:        &priority,
-		DoNotPerform:    &userSelected,
-		ReportedBoolean: &userSelected,
-		ReportedReference: &domain.FHIRReferenceInput{
-			Display: requester,
-		},
-		MedicationCodeableConcept: &domain.FHIRCodeableConceptInput{
-			Text: "Laboratory procedure",
-			Coding: []*domain.FHIRCodingInput{
-				{
-					System:       &system,
-					Code:         "108252007",
-					Display:      "Laboratory procedure",
-					UserSelected: &userSelected,
-				},
-			},
-		},
-		Subject: &domain.FHIRReferenceInput{
-			Reference: &patientRef,
-			Type:      &patientType,
-			Display:   patientRef,
-		},
-		Encounter: &domain.FHIRReferenceInput{
-			Reference: &encounterRef,
-			Type:      &encounterType,
-			Display:   encounterRef,
-		},
-		SupportingInformation: []*domain.FHIRReferenceInput{
-			{
-				Reference: &encounterRef,
-				Display:   "Pulmonary Tuberculosis",
-			},
-		},
-		AuthoredOn: &startTime,
-		Requester: &domain.FHIRReferenceInput{
-			Display: requester,
-		},
-		Performer: &domain.FHIRReferenceInput{
-			Display: performer,
-		},
-		PerformerType: &domain.FHIRCodeableConceptInput{
-			Text: "Laboratory procedure",
-			Coding: []*domain.FHIRCodingInput{
-				{
-					System:       &system,
-					Code:         "108252007",
-					Display:      "Laboratory procedure",
-					UserSelected: &userSelected,
-				},
-			},
-		},
-		Recorder: &domain.FHIRReferenceInput{
-			Display: recordingDoctor,
-		},
-		ReasonCode: &reason,
-		ReasonReference: []*domain.FHIRReferenceInput{
-			{
-				Reference: &encounterRef,
-				Type:      &encounterType,
-				Display:   encounterRef},
-		},
-		InstantiatesCanonical: &canonical,
-		InstantiatesURI:       &instantRecorded,
-		BasedOn: []*domain.FHIRReferenceInput{
-			{
-				Reference: &encounterRef,
-				Type:      &encounterType,
-				Display:   encounterRef,
-			},
-		},
-		GroupIdentifier: &domain.FHIRIdentifierInput{},
-		CourseOfTherapyType: &domain.FHIRCodeableConceptInput{
-			Text: "Panadol Extra",
-			Coding: []*domain.FHIRCodingInput{
-				{
-					System:       &verificationSystem,
-					Code:         "confirmed",
-					Display:      "Confirmed",
-					UserSelected: &notSelected,
-				},
-			},
-		},
-		Insurance: []*domain.FHIRReferenceInput{
-			{
-				Reference: &patientReference,
-				Type:      &patientType,
-				Display:   patientName,
-			},
-		},
-		Note: []*domain.FHIRAnnotationInput{
-			{
-				AuthorString: &recordingDoctor,
-				Text:         &annotationText,
-			},
-		},
-		DosageInstruction: []*domain.FHIRDosageInput{
-			{},
-		},
-		DispenseRequest:   &domain.FHIRMedicationrequestDispenserequestInput{},
-		Substitution:      &domain.FHIRMedicationrequestSubstitutionInput{},
-		PriorPrescription: &domain.FHIRReferenceInput{},
-		DetectedIssue:     []*domain.FHIRReferenceInput{{}},
-		EventHistory:      []*domain.FHIRReferenceInput{{}},
+// 	input := domain.FHIRMedicationRequestInput{
+// 		Identifier: []*domain.FHIRIdentifierInput{{ID: &testID}},
+// 		Status:     &active,
+// 		StatusReason: &domain.FHIRCodeableConceptInput{
+// 			Text: "Laboratory procedure",
+// 			Coding: []*domain.FHIRCodingInput{
+// 				{
+// 					System:       &system,
+// 					Code:         "108252007",
+// 					Display:      "Laboratory procedure",
+// 					UserSelected: &userSelected,
+// 				},
+// 			},
+// 		},
+// 		Intent: &intent,
+// 		Category: []*domain.FHIRCodeableConceptInput{
+// 			{
+// 				Text: "Laboratory procedure",
+// 				Coding: []*domain.FHIRCodingInput{
+// 					{
+// 						System:       &system,
+// 						Code:         "108252007",
+// 						Display:      "Laboratory procedure",
+// 						UserSelected: &userSelected,
+// 					},
+// 				},
+// 			},
+// 		},
+// 		Priority:        &priority,
+// 		DoNotPerform:    &userSelected,
+// 		ReportedBoolean: &userSelected,
+// 		ReportedReference: &domain.FHIRReferenceInput{
+// 			Display: requester,
+// 		},
+// 		MedicationCodeableConcept: &domain.FHIRCodeableConceptInput{
+// 			Text: "Laboratory procedure",
+// 			Coding: []*domain.FHIRCodingInput{
+// 				{
+// 					System:       &system,
+// 					Code:         "108252007",
+// 					Display:      "Laboratory procedure",
+// 					UserSelected: &userSelected,
+// 				},
+// 			},
+// 		},
+// 		Subject: &domain.FHIRReferenceInput{
+// 			Reference: &patientRef,
+// 			Type:      &patientType,
+// 			Display:   patientRef,
+// 		},
+// 		Encounter: &domain.FHIRReferenceInput{
+// 			Reference: &encounterRef,
+// 			Type:      &encounterType,
+// 			Display:   encounterRef,
+// 		},
+// 		SupportingInformation: []*domain.FHIRReferenceInput{
+// 			{
+// 				Reference: &encounterRef,
+// 				Display:   "Pulmonary Tuberculosis",
+// 			},
+// 		},
+// 		AuthoredOn: &startTime,
+// 		Requester: &domain.FHIRReferenceInput{
+// 			Display: requester,
+// 		},
+// 		Performer: &domain.FHIRReferenceInput{
+// 			Display: performer,
+// 		},
+// 		PerformerType: &domain.FHIRCodeableConceptInput{
+// 			Text: "Laboratory procedure",
+// 			Coding: []*domain.FHIRCodingInput{
+// 				{
+// 					System:       &system,
+// 					Code:         "108252007",
+// 					Display:      "Laboratory procedure",
+// 					UserSelected: &userSelected,
+// 				},
+// 			},
+// 		},
+// 		Recorder: &domain.FHIRReferenceInput{
+// 			Display: recordingDoctor,
+// 		},
+// 		ReasonCode: &reason,
+// 		ReasonReference: []*domain.FHIRReferenceInput{
+// 			{
+// 				Reference: &encounterRef,
+// 				Type:      &encounterType,
+// 				Display:   encounterRef},
+// 		},
+// 		InstantiatesCanonical: &canonical,
+// 		InstantiatesURI:       &instantRecorded,
+// 		BasedOn: []*domain.FHIRReferenceInput{
+// 			{
+// 				Reference: &encounterRef,
+// 				Type:      &encounterType,
+// 				Display:   encounterRef,
+// 			},
+// 		},
+// 		GroupIdentifier: &domain.FHIRIdentifierInput{},
+// 		CourseOfTherapyType: &domain.FHIRCodeableConceptInput{
+// 			Text: "Panadol Extra",
+// 			Coding: []*domain.FHIRCodingInput{
+// 				{
+// 					System:       &verificationSystem,
+// 					Code:         "confirmed",
+// 					Display:      "Confirmed",
+// 					UserSelected: &notSelected,
+// 				},
+// 			},
+// 		},
+// 		Insurance: []*domain.FHIRReferenceInput{
+// 			{
+// 				Reference: &patientReference,
+// 				Type:      &patientType,
+// 				Display:   patientName,
+// 			},
+// 		},
+// 		Note: []*domain.FHIRAnnotationInput{
+// 			{
+// 				AuthorString: &recordingDoctor,
+// 				Text:         &annotationText,
+// 			},
+// 		},
+// 		DosageInstruction: []*domain.FHIRDosageInput{
+// 			{},
+// 		},
+// 		DispenseRequest:   &domain.FHIRMedicationrequestDispenserequestInput{},
+// 		Substitution:      &domain.FHIRMedicationrequestSubstitutionInput{},
+// 		PriorPrescription: &domain.FHIRReferenceInput{},
+// 		DetectedIssue:     []*domain.FHIRReferenceInput{{}},
+// 		EventHistory:      []*domain.FHIRReferenceInput{{}},
+// 	}
+// 	return &input, nil
+// }
+
+func getTestFHIRPatientInput() domain.FHIRPatientInput {
+	testID := ksuid.New().String()
+	isSelected := true
+	gender := domain.PatientGenderEnumFemale
+	input := domain.FHIRPatientInput{
+		ID: &testID,
+		Identifier: []*domain.FHIRIdentifierInput{{
+			ID: &testID,
+		}},
+		Active: &isSelected,
+		Name: []*domain.FHIRHumanNameInput{{
+			ID:   &testID,
+			Use:  domain.HumanNameUseEnumNickname,
+			Text: "300300",
+		}},
+		Telecom: []*domain.FHIRContactPointInput{{
+			ID: &testID,
+		}},
+		Gender: &gender,
 	}
-	return &input, nil
+	return input
 }
