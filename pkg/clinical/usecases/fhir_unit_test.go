@@ -10,6 +10,7 @@ import (
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 )
@@ -1213,6 +1214,7 @@ func TestUnit_DeleteFHIRComposition(t *testing.T) {
 	}
 }
 
+//// /////////////////////////////////////////////////////////////////////////
 func TestFHIRUseCaseImpl_StartEpisodeByOtp_Unittest(t *testing.T) {
 	ctx := context.Background()
 	fh := fakeUsecaseIntr
@@ -1272,7 +1274,11 @@ func TestFHIRUseCaseImpl_StartEpisodeByOtp_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.StartEpisodeByOtpFn = usecaseMock.NewFHIRMock().StartEpisodeByOtpFn
+				fakeFhir.StartEpisodeByOtpFn = func(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
+					return &domain.EpisodeOfCarePayload{
+						TotalVisits: 1,
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1345,7 +1351,11 @@ func TestFHIRUseCaseImpl_UpgradeEpisode_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.UpgradeEpisodeFn = usecaseMock.NewFHIRMock().UpgradeEpisodeFn
+				fakeFhir.UpgradeEpisodeFn = func(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
+					return &domain.EpisodeOfCarePayload{
+						TotalVisits: 1,
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1408,7 +1418,13 @@ func TestFHIRUseCaseImpl_SearchEpisodeEncounter_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.SearchEpisodeEncounterFn = usecaseMock.NewFHIRMock().SearchEpisodeEncounterFn
+				fakeFhir.SearchEpisodeEncounterFn = func(ctx context.Context, episodeReference string) (*domain.FHIREncounterRelayConnection, error) {
+					return &domain.FHIREncounterRelayConnection{
+						PageInfo: &firebasetools.PageInfo{
+							HasNextPage: true,
+						},
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1474,7 +1490,9 @@ func TestFHIRUseCaseImpl_EndEncounter_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.EndEncounterFn = usecaseMock.NewFHIRMock().EndEncounterFn
+				fakeFhir.EndEncounterFn = func(ctx context.Context, encounterID string) (bool, error) {
+					return true, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1539,7 +1557,9 @@ func TestFHIRUseCaseImpl_EndEpisode_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.EndEpisodeFn = usecaseMock.NewFHIRMock().EndEpisodeFn
+				fakeFhir.EndEpisodeFn = func(ctx context.Context, episodeID string) (bool, error) {
+					return true, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1594,8 +1614,7 @@ func TestFHIRUseCaseImpl_GetActiveEpisode_Unittest(t *testing.T) {
 		{
 			name: "Sad case#1",
 			args: args{
-				ctx:       ctx,
-				episodeID: "",
+				ctx: ctx,
 			},
 			wantErr: true,
 		},
@@ -1603,7 +1622,12 @@ func TestFHIRUseCaseImpl_GetActiveEpisode_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.GetActiveEpisodeFn = usecaseMock.NewFHIRMock().GetActiveEpisodeFn
+				fakeFhir.GetActiveEpisodeFn = func(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error) {
+					id := ksuid.New().String()
+					return &domain.FHIREpisodeOfCare{
+						ID: &id,
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1673,7 +1697,13 @@ func TestFHIRUseCaseImpl_SearchFHIRServiceRequest_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.SearchFHIRServiceRequestFn = usecaseMock.NewFHIRMock().SearchFHIRServiceRequestFn
+				fakeFhir.SearchFHIRServiceRequestFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error) {
+					return &domain.FHIRServiceRequestRelayConnection{
+						PageInfo: &firebasetools.PageInfo{
+							HasNextPage: true,
+						},
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1750,7 +1780,14 @@ func TestFHIRUseCaseImpl_CreateFHIRServiceRequest_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.CreateFHIRServiceRequestFn = usecaseMock.NewFHIRMock().CreateFHIRServiceRequestFn
+				fakeFhir.CreateFHIRServiceRequestFn = func(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
+					id := ksuid.New().String()
+					return &domain.FHIRServiceRequestRelayPayload{
+						Resource: &domain.FHIRServiceRequest{
+							ID: &id,
+						},
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1818,7 +1855,13 @@ func TestFHIRUseCaseImpl_SearchFHIRAllergyIntolerance_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.SearchFHIRAllergyIntoleranceFn = usecaseMock.NewFHIRMock().SearchFHIRAllergyIntoleranceFn
+				fakeFhir.SearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+					return &domain.FHIRAllergyIntoleranceRelayConnection{
+						PageInfo: &firebasetools.PageInfo{
+							HasNextPage: true,
+						},
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1891,7 +1934,14 @@ func TestFHIRUseCaseImpl_CreateFHIRAllergyIntolerance_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.CreateFHIRAllergyIntoleranceFn = usecaseMock.NewFHIRMock().CreateFHIRAllergyIntoleranceFn
+				fakeFhir.CreateFHIRAllergyIntoleranceFn = func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+					id := ksuid.New().String()
+					return &domain.FHIRAllergyIntoleranceRelayPayload{
+						Resource: &domain.FHIRAllergyIntolerance{
+							ID: &id,
+						},
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -1914,3 +1964,468 @@ func TestFHIRUseCaseImpl_CreateFHIRAllergyIntolerance_Unittest(t *testing.T) {
 		})
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////
+// func TestFHIRUseCaseImpl_SearchFHIRCondition_Unittest(t *testing.T) {
+// 	ctx := context.Background()
+// 	fh := fakeUsecaseIntr
+
+// 	type args struct {
+// 		ctx    context.Context
+// 		params map[string]interface{}
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		wantErr bool
+// 	}{
+// 		{
+// 			name: "Happy case",
+// 			args: args{
+// 				ctx: ctx,
+// 				params: map[string]interface{}{
+// 					"test": "test",
+// 				},
+// 			},
+// 			wantErr: false,
+// 		},
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 				params: map[string]interface{}{
+// 					"test": "",
+// 				},
+// 			},
+// 			wantErr: true,
+// 		},
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 			},
+// 			wantErr: true,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if tt.name == "Happy case" {
+// 				fakeFhir.SearchFHIRConditionFn = usecaseMock.NewFHIRMock().SearchFHIRConditionFn
+// 			}
+
+// 			if tt.name == "Sad case" {
+// 				fakeFhir.SearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+// 			if tt.name == "Sad case#1" {
+// 				fakeFhir.SearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+
+// 			_, err := fh.SearchFHIRCondition(tt.args.ctx, tt.args.params)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("FHIRUseCaseImpl.SearchFHIRCondition() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 		})
+// 	}
+// }
+
+// func TestFHIRUseCaseImpl_UpdateFHIRCondition_Unittest(t *testing.T) {
+// 	ctx := context.Background()
+// 	fh := fakeUsecaseIntr
+
+// 	id := ksuid.New().String()
+
+// 	type args struct {
+// 		ctx   context.Context
+// 		input domain.FHIRConditionInput
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		wantErr bool
+// 	}{
+// 		{
+// 			name: "Happy case",
+// 			args: args{
+// 				ctx: ctx,
+// 				input: domain.FHIRConditionInput{
+// 					ID:                 &id,
+// 					Identifier:         []*domain.FHIRIdentifierInput{},
+// 					ClinicalStatus:     &domain.FHIRCodeableConceptInput{},
+// 					VerificationStatus: &domain.FHIRCodeableConceptInput{},
+// 					Category:           []*domain.FHIRCodeableConceptInput{},
+// 					Severity:           &domain.FHIRCodeableConceptInput{},
+// 					Code:               &domain.FHIRCodeableConceptInput{},
+// 					BodySite:           []*domain.FHIRCodeableConceptInput{},
+// 				},
+// 			},
+// 			wantErr: false,
+// 		},
+
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 				input: domain.FHIRConditionInput{
+// 					ID:                 &id,
+// 					Identifier:         []*domain.FHIRIdentifierInput{},
+// 					ClinicalStatus:     &domain.FHIRCodeableConceptInput{},
+// 					VerificationStatus: &domain.FHIRCodeableConceptInput{},
+// 					Category:           []*domain.FHIRCodeableConceptInput{},
+// 					Severity:           &domain.FHIRCodeableConceptInput{},
+// 					Code:               &domain.FHIRCodeableConceptInput{},
+// 					BodySite:           []*domain.FHIRCodeableConceptInput{},
+// 				},
+// 			},
+// 			wantErr: true,
+// 		},
+// 		{
+// 			name: "Sad case#1",
+// 			args: args{
+// 				ctx: ctx,
+// 			},
+// 			wantErr: true,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if tt.name == "Happy case" {
+// 				fakeFhir.UpdateFHIRConditionFn = usecaseMock.NewFHIRMock().UpdateFHIRConditionFn
+// 			}
+
+// 			if tt.name == "Sad case" {
+// 				fakeFhir.UpdateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+// 			if tt.name == "Sad case#1" {
+// 				fakeFhir.UpdateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+// 			_, err := fh.UpdateFHIRCondition(tt.args.ctx, tt.args.input)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("FHIRUseCaseImpl.UpdateFHIRCondition() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 		})
+// 	}
+// }
+
+// func TestFHIRUseCaseImpl_GetFHIREncounter_Unittest(t *testing.T) {
+// 	ctx := context.Background()
+// 	fh := fakeUsecaseIntr
+
+// 	id := ksuid.New().String()
+
+// 	type args struct {
+// 		ctx context.Context
+// 		id  string
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		wantErr bool
+// 	}{
+// 		{
+// 			name: "Happy case",
+// 			args: args{
+// 				ctx: ctx,
+// 				id:  id,
+// 			},
+// 			wantErr: false,
+// 		},
+
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 				id:  "",
+// 			},
+// 			wantErr: true,
+// 		},
+
+// 		{
+// 			name: "Sad case#1",
+// 			args: args{
+// 				ctx: ctx,
+// 			},
+// 			wantErr: true,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if tt.name == "Happy case" {
+// 				fakeFhir.GetFHIREncounterFn = usecaseMock.NewFHIRMock().GetFHIREncounterFn
+// 			}
+
+// 			if tt.name == "Sad case" {
+// 				fakeFhir.GetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+
+// 			if tt.name == "Sad case#1" {
+// 				fakeFhir.GetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+
+// 			_, err := fh.GetFHIREncounter(tt.args.ctx, tt.args.id)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("FHIRUseCaseImpl.GetFHIREncounter() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+
+// 		})
+// 	}
+// }
+
+// func TestFHIRUseCaseImpl_SearchFHIREncounter_Unittest(t *testing.T) {
+// 	ctx := context.Background()
+// 	fh := fakeUsecaseIntr
+
+// 	type args struct {
+// 		ctx    context.Context
+// 		params map[string]interface{}
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		wantErr bool
+// 	}{
+// 		{
+// 			name: "Happy case",
+// 			args: args{
+// 				ctx: ctx,
+// 				params: map[string]interface{}{
+// 					"test": "test",
+// 				},
+// 			},
+// 			wantErr: false,
+// 		},
+
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 				params: map[string]interface{}{
+// 					"test": "",
+// 				},
+// 			},
+// 			wantErr: true,
+// 		},
+// 		{
+// 			name: "Sad case#1",
+// 			args: args{
+// 				ctx: ctx,
+// 			},
+// 			wantErr: true,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if tt.name == "Happy case" {
+// 				fakeFhir.SearchFHIREncounterFn = usecaseMock.NewFHIRMock().SearchFHIREncounterFn
+// 			}
+
+// 			if tt.name == "Sad case" {
+// 				fakeFhir.SearchFHIREncounterFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+
+// 			if tt.name == "Sad case#1" {
+// 				fakeFhir.SearchFHIREncounterFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+
+// 			_, err := fh.SearchFHIREncounter(tt.args.ctx, tt.args.params)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("FHIRUseCaseImpl.SearchFHIREncounter() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 		})
+// 	}
+// }
+
+// func TestFHIRUseCaseImpl_SearchFHIRMedicationRequest_Unittest(t *testing.T) {
+// 	ctx := context.Background()
+// 	fh := fakeUsecaseIntr
+
+// 	type args struct {
+// 		ctx    context.Context
+// 		params map[string]interface{}
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		wantErr bool
+// 	}{
+// 		{
+// 			name: "Happy case",
+// 			args: args{
+// 				ctx: ctx,
+// 				params: map[string]interface{}{
+// 					"test": "test",
+// 				},
+// 			},
+// 			wantErr: false,
+// 		},
+
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 				params: map[string]interface{}{
+// 					"test": "",
+// 				},
+// 			},
+// 			wantErr: true,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if tt.name == "Happy case" {
+// 				fakeFhir.SearchFHIRMedicationRequestFn = usecaseMock.NewFHIRMock().SearchFHIRMedicationRequestFn
+// 			}
+
+// 			if tt.name == "Sad case" {
+// 				fakeFhir.SearchFHIRMedicationRequestFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+
+// 			_, err := fh.SearchFHIRMedicationRequest(tt.args.ctx, tt.args.params)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("FHIRUseCaseImpl.SearchFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 		})
+// 	}
+// }
+
+// func TestFHIRUseCaseImpl_CreateFHIRMedicationRequest_Unittest(t *testing.T) {
+// 	ctx := context.Background()
+// 	fh := fakeUsecaseIntr
+
+// 	id := ksuid.New().String()
+
+// 	type args struct {
+// 		ctx   context.Context
+// 		input domain.FHIRMedicationRequestInput
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		wantErr bool
+// 	}{
+// 		{
+// 			name: "Happy case",
+// 			args: args{
+// 				ctx: ctx,
+// 				input: domain.FHIRMedicationRequestInput{
+// 					ID:           &id,
+// 					Identifier:   []*domain.FHIRIdentifierInput{},
+// 					StatusReason: &domain.FHIRCodeableConceptInput{},
+// 				},
+// 			},
+// 			wantErr: false,
+// 		},
+
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 				input: domain.FHIRMedicationRequestInput{
+// 					ID:           &id,
+// 					Identifier:   []*domain.FHIRIdentifierInput{},
+// 					StatusReason: &domain.FHIRCodeableConceptInput{},
+// 				},
+// 			},
+// 			wantErr: true,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if tt.name == "Happy case" {
+// 				fakeFhir.CreateFHIRMedicationRequestFn = usecaseMock.NewFHIRMock().CreateFHIRMedicationRequestFn
+// 			}
+
+// 			if tt.name == "Sad case" {
+// 				fakeFhir.CreateFHIRMedicationRequestFn = func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+// 			_, err := fh.CreateFHIRMedicationRequest(tt.args.ctx, tt.args.input)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("FHIRUseCaseImpl.CreateFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 		})
+// 	}
+// }
+
+// func TestFHIRUseCaseImpl_UpdateFHIRMedicationRequest_Unittest(t *testing.T) {
+// 	ctx := context.Background()
+// 	fh := fakeUsecaseIntr
+
+// 	type args struct {
+// 		ctx   context.Context
+// 		input domain.FHIRMedicationRequestInput
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		wantErr bool
+// 	}{
+// 		{
+// 			name: "Happy case",
+// 			args: args{
+// 				ctx: ctx,
+// 				input: domain.FHIRMedicationRequestInput{
+// 					ID:           new(string),
+// 					Identifier:   []*domain.FHIRIdentifierInput{},
+// 					StatusReason: &domain.FHIRCodeableConceptInput{},
+// 				},
+// 			},
+// 			wantErr: false,
+// 		},
+
+// 		{
+// 			name: "Sad case",
+// 			args: args{
+// 				ctx: ctx,
+// 				input: domain.FHIRMedicationRequestInput{
+// 					ID:           new(string),
+// 					Identifier:   []*domain.FHIRIdentifierInput{},
+// 					StatusReason: &domain.FHIRCodeableConceptInput{},
+// 				},
+// 			},
+// 			wantErr: true,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if tt.name == "Happy case" {
+// 				fakeFhir.UpdateFHIRMedicationRequestFn = usecaseMock.NewFHIRMock().UpdateFHIRMedicationRequestFn
+// 			}
+
+// 			if tt.name == "Sad case" {
+// 				fakeFhir.UpdateFHIRMedicationRequestFn = func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
+// 					return nil, fmt.Errorf("an error occurred")
+// 				}
+// 			}
+// 			_, err := fh.UpdateFHIRMedicationRequest(tt.args.ctx, tt.args.input)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("FHIRUseCaseImpl.UpdateFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 		})
+// 	}
+// }
