@@ -86,10 +86,7 @@ func TestFHIRUseCaseImpl_Encounters(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_SearchFHIREpisodeOfCare(t *testing.T) {
@@ -150,7 +147,7 @@ func TestFHIRUseCaseImpl_CreateEpisodeOfCare(t *testing.T) {
 
 	msisdn := interserviceclient.TestUserPhoneNumber
 
-	episode, patient, err := getTestEpisodeOfCare(
+	episode, _, err := getTestEpisodeOfCare(
 		ctx,
 		msisdn,
 		false,
@@ -219,10 +216,7 @@ func TestFHIRUseCaseImpl_CreateEpisodeOfCare(t *testing.T) {
 		}
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_CreateFHIRCondition(t *testing.T) {
@@ -312,10 +306,7 @@ func TestFHIRUseCaseImpl_CreateFHIRCondition(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_CreateFHIROrganization(t *testing.T) {
@@ -457,10 +448,7 @@ func TestFHIRUseCaseImpl_OpenOrganizationEpisodes(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_GetORCreateOrganization(t *testing.T) {
@@ -737,10 +725,7 @@ func TestFHIRUseCaseImpl_SearchEpisodesByParam(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 // func TestFHIRUseCaseImpl_POSTRequest(t *testing.T) {
@@ -849,10 +834,7 @@ func TestFHIRUseCaseImpl_OpenEpisodes(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_HasOpenEpisode(t *testing.T) {
@@ -918,10 +900,7 @@ func TestFHIRUseCaseImpl_HasOpenEpisode(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_CreateFHIREncounter(t *testing.T) {
@@ -999,10 +978,7 @@ func TestFHIRUseCaseImpl_CreateFHIREncounter(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_GetFHIREpisodeOfCare(t *testing.T) {
@@ -1065,10 +1041,7 @@ func TestFHIRUseCaseImpl_GetFHIREpisodeOfCare(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_StartEncounter(t *testing.T) {
@@ -1139,173 +1112,174 @@ func TestFHIRUseCaseImpl_StartEncounter(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
-// TODO: implement otp
-// func TestFHIRUseCaseImpl_StartEpisodeByOtp(t *testing.T) {
-// 	ctx, err := getTestAuthenticatedContext(t)
-// 	if err != nil {
-// 		t.Errorf("cant get phone number authenticated context token: %v", err)
-// 		return
-// 	}
+func TestFHIRUseCaseImpl_StartEpisodeByOtp(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
 
-// 	fh := testUsecaseInteractor
+	fh := testUsecaseInteractor
 
-// 	msisdn := interserviceclient.TestUserPhoneNumber
+	msisdn := interserviceclient.TestUserPhoneNumber
 
-// 	_, patient, err := createTestEpisodeOfCare(
-// 		ctx,
-// 		msisdn,
-// 		false,
-// 		testProviderCode,
-// 	)
-// 	if err != nil {
-// 		log.Printf("cant get test encounter id: %v\n", err)
-// 		return
-// 	}
+	_, patient, err := createTestEpisodeOfCare(
+		ctx,
+		msisdn,
+		false,
+		testProviderCode,
+	)
+	if err != nil {
+		log.Printf("cant get test encounter id: %v\n", err)
+		return
+	}
 
-// 	input := domain.OTPEpisodeCreationInput{
-// 		PatientID:    *patient.ID,
-// 		ProviderCode: testProviderCode,
-// 		Msisdn:       msisdn,
-// 		Otp:          testOtp,
-// 		FullAccess:   false,
-// 	}
+	testOtp, err := generateTestOTP(t, msisdn)
+	if err != nil {
+		log.Errorf("unable to get verified phone number and OTP")
+		return
+	}
 
-// 	type args struct {
-// 		ctx   context.Context
-// 		input domain.OTPEpisodeCreationInput
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		want    *domain.EpisodeOfCarePayload
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "valid: correct params passed",
-// 			args: args{
-// 				ctx:   ctx,
-// 				input: input,
-// 			},
-// 			wantErr: false,
-// 		},
-// 		{
-// 			name: "invalid: unauthenticated context",
-// 			args: args{
-// 				ctx:   context.Background(),
-// 				input: input,
-// 			},
-// 			wantErr: true,
-// 		},
-// 		{
-// 			name: "invalid: missing parameters",
-// 			args: args{
-// 				ctx: ctx,
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			_, err := fh.StartEpisodeByOtp(tt.args.ctx, tt.args.input)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("FHIRUseCaseImpl.StartEpisodeByOtp() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-// 	if err != nil {
-// 		t.Errorf("failed to delete patient: %v", err)
-// 	}
-// }
+	input := domain.OTPEpisodeCreationInput{
+		PatientID:    *patient.ID,
+		ProviderCode: testProviderCode,
+		Msisdn:       msisdn,
+		Otp:          testOtp,
+		FullAccess:   false,
+	}
 
-// TODO: implement otp
-// func TestFHIRUseCaseImpl_UpgradeEpisode(t *testing.T) {
-// 	ctx, err := getTestAuthenticatedContext(t)
-// 	if err != nil {
-// 		t.Errorf("cant get phone number authenticated context token: %v", err)
-// 		return
-// 	}
+	type args struct {
+		ctx   context.Context
+		input domain.OTPEpisodeCreationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.EpisodeOfCarePayload
+		wantErr bool
+	}{
+		{
+			name: "valid: correct params passed",
+			args: args{
+				ctx:   ctx,
+				input: input,
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid: unauthenticated context",
+			args: args{
+				ctx:   context.Background(),
+				input: input,
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid: missing parameters",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := fh.StartEpisodeByOtp(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.StartEpisodeByOtp() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+	// teardown
+	deleteTestPatient(ctx, msisdn)
+}
 
-// 	fh := testUsecaseInteractor
+func TestFHIRUseCaseImpl_UpgradeEpisode(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
 
-// 	msisdn := interserviceclient.TestUserPhoneNumber
+	fh := testUsecaseInteractor
 
-// 	episode, _, err := createTestEpisodeOfCare(
-// 		ctx,
-// 		msisdn,
-// 		false,
-// 		testProviderCode,
-// 	)
-// 	if err != nil {
-// 		log.Printf("cant get test encounter id: %v\n", err)
-// 		return
-// 	}
+	msisdn := interserviceclient.TestUserPhoneNumber
 
-// 	episodeID := episode.ID
+	episode, _, err := createTestEpisodeOfCare(
+		ctx,
+		msisdn,
+		false,
+		testProviderCode,
+	)
+	if err != nil {
+		log.Printf("cant get test encounter id: %v\n", err)
+		return
+	}
 
-// 	input := domain.OTPEpisodeUpgradeInput{
-// 		EpisodeID: *episodeID,
-// 		Msisdn:    msisdn,
-// 		Otp:       testOtp,
-// 	}
+	episodeID := episode.ID
 
-// 	type args struct {
-// 		ctx   context.Context
-// 		input domain.OTPEpisodeUpgradeInput
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		want    *domain.EpisodeOfCarePayload
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "valid: correct params passed",
-// 			args: args{
-// 				ctx:   ctx,
-// 				input: input,
-// 			},
-// 			wantErr: false,
-// 		},
-// 		{
-// 			name: "invalid: unauthenticated context",
-// 			args: args{
-// 				ctx:   context.Background(),
-// 				input: input,
-// 			},
-// 			wantErr: true,
-// 		},
-// 		{
-// 			name: "invalid: missing parameters",
-// 			args: args{
-// 				ctx: ctx,
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			_, err := fh.UpgradeEpisode(tt.args.ctx, tt.args.input)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("FHIRUseCaseImpl.UpgradeEpisode() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-// 	if err != nil {
-// 		t.Errorf("failed to delete patient: %v", err)
-// 	}
-// }
+	testOtp, err := generateTestOTP(t, msisdn)
+	if err != nil {
+		log.Errorf("unable to get verified phone number and OTP")
+		return
+	}
+
+	input := domain.OTPEpisodeUpgradeInput{
+		EpisodeID: *episodeID,
+		Msisdn:    msisdn,
+		Otp:       testOtp,
+	}
+
+	type args struct {
+		ctx   context.Context
+		input domain.OTPEpisodeUpgradeInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.EpisodeOfCarePayload
+		wantErr bool
+	}{
+		{
+			name: "valid: correct params passed",
+			args: args{
+				ctx:   ctx,
+				input: input,
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid: unauthenticated context",
+			args: args{
+				ctx:   context.Background(),
+				input: input,
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid: missing parameters",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := fh.UpgradeEpisode(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.UpgradeEpisode() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+	// teardown
+	deleteTestPatient(ctx, msisdn)
+}
 
 func TestFHIRUseCaseImpl_SearchEpisodeEncounter(t *testing.T) {
 	ctx, err := getTestAuthenticatedContext(t)
@@ -1368,10 +1342,7 @@ func TestFHIRUseCaseImpl_SearchEpisodeEncounter(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_EndEncounter(t *testing.T) {
@@ -1444,10 +1415,7 @@ func TestFHIRUseCaseImpl_EndEncounter(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_EndEpisode(t *testing.T) {
@@ -1517,10 +1485,7 @@ func TestFHIRUseCaseImpl_EndEpisode(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_GetActiveEpisode(t *testing.T) {
@@ -1587,10 +1552,7 @@ func TestFHIRUseCaseImpl_GetActiveEpisode(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_SearchFHIRServiceRequest(t *testing.T) {
@@ -1708,10 +1670,7 @@ func TestFHIRUseCaseImpl_CreateFHIRServiceRequest(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
@@ -1829,10 +1788,7 @@ func TestFHIRUseCaseImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
@@ -1909,10 +1865,7 @@ func TestFHIRUseCaseImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_SearchFHIRComposition(t *testing.T) {
@@ -2038,10 +1991,7 @@ func TestFHIRUseCaseImpl_CreateFHIRComposition(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_UpdateFHIRComposition(t *testing.T) {
@@ -2127,10 +2077,7 @@ func TestFHIRUseCaseImpl_UpdateFHIRComposition(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_DeleteFHIRComposition(t *testing.T) {
@@ -2215,10 +2162,7 @@ func TestFHIRUseCaseImpl_DeleteFHIRComposition(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatientByPhone(ctx, msisdn)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_SearchFHIRCondition(t *testing.T) {
@@ -2362,10 +2306,7 @@ func TestFHIRUseCaseImpl_UpdateFHIRCondition(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_GetFHIREncounter(t *testing.T) {
@@ -2379,7 +2320,7 @@ func TestFHIRUseCaseImpl_GetFHIREncounter(t *testing.T) {
 
 	msisdn := interserviceclient.TestUserPhoneNumber
 
-	episode, patient, err := createTestEpisodeOfCare(
+	episode, _, err := createTestEpisodeOfCare(
 		ctx,
 		msisdn,
 		false,
@@ -2451,10 +2392,7 @@ func TestFHIRUseCaseImpl_GetFHIREncounter(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_SearchFHIREncounter(t *testing.T) {
@@ -2551,263 +2489,286 @@ func TestFHIRUseCaseImpl_SearchFHIRMedicationRequest(t *testing.T) {
 	}
 }
 
-// TODO: add more data in medication request input
-// func TestFHIRUseCaseImpl_CreateFHIRMedicationRequest(t *testing.T) {
-// 	ctx, err := getTestAuthenticatedContext(t)
-// 	if err != nil {
-// 		t.Errorf("cant get phone number authenticated context token: %v", err)
-// 		return
-// 	}
+func TestFHIRUseCaseImpl_CreateFHIRMedicationRequest(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
 
-// 	fh := testUsecaseInteractor
+	fh := testUsecaseInteractor
 
-// 	msisdn := interserviceclient.TestUserPhoneNumber
+	msisdn := interserviceclient.TestUserPhoneNumber
 
-// 	episode, patient, err := createTestEpisodeOfCare(
-// 		ctx,
-// 		msisdn,
-// 		false,
-// 		testProviderCode,
-// 	)
-// 	if err != nil {
-// 		log.Printf("cant get test encounter id: %v\n", err)
-// 		return
-// 	}
+	episode, patient, err := createTestEpisodeOfCare(
+		ctx,
+		msisdn,
+		false,
+		testProviderCode,
+	)
+	if err != nil {
+		log.Printf("cant get test encounter id: %v\n", err)
+		return
+	}
 
-// 	encounterID, err := fh.StartEncounter(ctx, *episode.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to start encounter: %v\n", err)
-// 	}
+	encounterID, err := fh.StartEncounter(ctx, *episode.ID)
+	if err != nil {
+		t.Errorf("failed to start encounter: %v\n", err)
+	}
 
-// 	input, err := getFHIRMedicationRequestInput(*patient, encounterID)
-// 	if err != nil {
-// 		t.Errorf("failed to get fhir medication request: %v", err)
-// 	}
+	conditionInput, err := createTestConditionInput(encounterID, *patient.ID)
+	if err != nil {
+		fmt.Printf("cant create condition: %v\n", err)
+		return
+	}
 
-// 	type args struct {
-// 		ctx   context.Context
-// 		input domain.FHIRMedicationRequestInput
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		want    *domain.FHIRMedicationRequestRelayPayload
-// 		wantErr bool
-// 	}{
-// 		// {
-// 		// 	name: "valid: correct params passed",
-// 		// 	args: args{
-// 		// 		ctx:   ctx,
-// 		// 		input: *input,
-// 		// 	},
-// 		// },
-// 		{
-// 			name: "invalid: unauthenticated context",
-// 			args: args{
-// 				ctx:   context.Background(),
-// 				input: *input,
-// 			},
-// 			wantErr: true,
-// 		},
-// 		{
-// 			name: "invalid: missing parameters",
-// 			args: args{
-// 				ctx: ctx,
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			_, err := fh.CreateFHIRMedicationRequest(tt.args.ctx, tt.args.input)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("FHIRUseCaseImpl.CreateFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to delete patient: %v", err)
-// 	}
-// }
+	condition, err := fh.CreateFHIRCondition(ctx, *conditionInput)
+	if err != nil {
+		t.Errorf("failed to create fhir condition: %v", err)
+	}
 
-// func TestFHIRUseCaseImpl_UpdateFHIRMedicationRequest(t *testing.T) {
-// 	ctx, err := getTestAuthenticatedContext(t)
-// 	if err != nil {
-// 		t.Errorf("cant get phone number authenticated context token: %v", err)
-// 		return
-// 	}
+	input, err := getFHIRMedicationRequestInput(*patient, encounterID, *condition.Resource.ID)
+	if err != nil {
+		t.Errorf("failed to get fhir medication request: %v", err)
+	}
 
-// 	fh := testUsecaseInteractor
+	type args struct {
+		ctx   context.Context
+		input domain.FHIRMedicationRequestInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRMedicationRequestRelayPayload
+		wantErr bool
+	}{
+		{
+			name: "valid: correct params passed",
+			args: args{
+				ctx:   ctx,
+				input: *input,
+			},
+		},
+		{
+			name: "invalid: unauthenticated context",
+			args: args{
+				ctx:   context.Background(),
+				input: *input,
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid: missing parameters",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := fh.CreateFHIRMedicationRequest(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.CreateFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+	// teardown
+	deleteTestPatient(ctx, msisdn)
+}
 
-// 	msisdn := interserviceclient.TestUserPhoneNumber
+func TestFHIRUseCaseImpl_UpdateFHIRMedicationRequest(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
 
-// 	episode, patient, err := createTestEpisodeOfCare(
-// 		ctx,
-// 		msisdn,
-// 		false,
-// 		testProviderCode,
-// 	)
-// 	if err != nil {
-// 		log.Printf("cant get test encounter id: %v\n", err)
-// 		return
-// 	}
+	fh := testUsecaseInteractor
 
-// 	encounterID, err := fh.StartEncounter(ctx, *episode.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to start encounter: %v\n", err)
-// 	}
+	msisdn := interserviceclient.TestUserPhoneNumber
 
-// 	input, err := getFHIRMedicationRequestInput(*patient, encounterID)
-// 	if err != nil {
-// 		t.Errorf("failed to get fhir medication request: %v", err)
-// 	}
+	episode, patient, err := createTestEpisodeOfCare(
+		ctx,
+		msisdn,
+		false,
+		testProviderCode,
+	)
+	if err != nil {
+		log.Printf("cant get test encounter id: %v\n", err)
+		return
+	}
 
-// 	_, err = fh.CreateFHIRMedicationRequest(ctx, *input)
-// 	if err != nil {
-// 		t.Errorf("failed to create fhir medications request: %v", err)
-// 	}
+	encounterID, err := fh.StartEncounter(ctx, *episode.ID)
+	if err != nil {
+		t.Errorf("failed to start encounter: %v\n", err)
+	}
 
-// 	// input.ID = medication.Resource.ID
+	conditionInput, err := createTestConditionInput(encounterID, *patient.ID)
+	if err != nil {
+		fmt.Printf("cant create condition: %v\n", err)
+		return
+	}
 
-// 	type args struct {
-// 		ctx   context.Context
-// 		input domain.FHIRMedicationRequestInput
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		want    *domain.FHIRMedicationRequestRelayPayload
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "valid: correct params passed",
-// 			args: args{
-// 				ctx:   ctx,
-// 				input: *input,
-// 			},
-// 		},
-// 		{
-// 			name: "invalid: unauthenticated context",
-// 			args: args{
-// 				ctx:   context.Background(),
-// 				input: *input,
-// 			},
-// 			wantErr: true,
-// 		},
-// 		{
-// 			name: "invalid: missing parameters",
-// 			args: args{
-// 				ctx: ctx,
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			_, err := fh.UpdateFHIRMedicationRequest(tt.args.ctx, tt.args.input)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("FHIRUseCaseImpl.UpdateFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to delete patient: %v", err)
-// 	}
-// }
+	condition, err := fh.CreateFHIRCondition(ctx, *conditionInput)
+	if err != nil {
+		t.Errorf("failed to create fhir condition: %v", err)
+	}
 
-// func TestFHIRUseCaseImpl_DeleteFHIRMedicationRequest(t *testing.T) {
-// 	ctx, err := getTestAuthenticatedContext(t)
-// 	if err != nil {
-// 		t.Errorf("cant get phone number authenticated context token: %v", err)
-// 		return
-// 	}
+	input, err := getFHIRMedicationRequestInput(*patient, encounterID, *condition.Resource.ID)
+	if err != nil {
+		t.Errorf("failed to get fhir medication request: %v", err)
+	}
 
-// 	fh := testUsecaseInteractor
+	medication, err := fh.CreateFHIRMedicationRequest(ctx, *input)
+	if err != nil {
+		t.Errorf("failed to create fhir medications request: %v", err)
+	}
 
-// 	msisdn := interserviceclient.TestUserPhoneNumber
+	input.ID = medication.Resource.ID
 
-// 	episode, patient, err := createTestEpisodeOfCare(
-// 		ctx,
-// 		msisdn,
-// 		false,
-// 		testProviderCode,
-// 	)
-// 	if err != nil {
-// 		log.Printf("cant get test encounter id: %v\n", err)
-// 		return
-// 	}
+	type args struct {
+		ctx   context.Context
+		input domain.FHIRMedicationRequestInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRMedicationRequestRelayPayload
+		wantErr bool
+	}{
+		{
+			name: "valid: correct params passed",
+			args: args{
+				ctx:   ctx,
+				input: *input,
+			},
+		},
+		{
+			name: "invalid: unauthenticated context",
+			args: args{
+				ctx:   context.Background(),
+				input: *input,
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid: missing parameters",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := fh.UpdateFHIRMedicationRequest(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.UpdateFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+	// teardown
+	deleteTestPatient(ctx, msisdn)
+}
 
-// 	encounterID, err := fh.StartEncounter(ctx, *episode.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to start encounter: %v\n", err)
-// 	}
+func TestFHIRUseCaseImpl_DeleteFHIRMedicationRequest(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
 
-// 	input, err := getFHIRMedicationRequestInput(*patient, encounterID)
-// 	if err != nil {
-// 		t.Errorf("failed to get fhir medication request: %v", err)
-// 	}
+	fh := testUsecaseInteractor
 
-// 	medication, err := fh.CreateFHIRMedicationRequest(ctx, *input)
-// 	if err != nil {
-// 		t.Errorf("failed to create fhir medications request: %v", err)
-// 	}
+	msisdn := interserviceclient.TestUserPhoneNumber
 
-// 	id := medication.Resource.ID
+	episode, patient, err := createTestEpisodeOfCare(
+		ctx,
+		msisdn,
+		false,
+		testProviderCode,
+	)
+	if err != nil {
+		log.Printf("cant get test encounter id: %v\n", err)
+		return
+	}
 
-// 	type args struct {
-// 		ctx context.Context
-// 		id  string
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		want    bool
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "valid: correct params passed",
-// 			args: args{
-// 				ctx: ctx,
-// 				id:  *id,
-// 			},
-// 		},
-// 		{
-// 			name: "invalid: unauthenticated context",
-// 			args: args{
-// 				ctx: context.Background(),
-// 				id:  *id,
-// 			},
-// 			wantErr: true,
-// 		},
-// 		{
-// 			name: "invalid: missing parameters",
-// 			args: args{
-// 				ctx: ctx,
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			_, err := fh.DeleteFHIRMedicationRequest(tt.args.ctx, tt.args.id)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("FHIRUseCaseImpl.DeleteFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to delete patient: %v", err)
-// 	}
-// }
+	encounterID, err := fh.StartEncounter(ctx, *episode.ID)
+	if err != nil {
+		t.Errorf("failed to start encounter: %v\n", err)
+	}
+
+	conditionInput, err := createTestConditionInput(encounterID, *patient.ID)
+	if err != nil {
+		fmt.Printf("cant create condition: %v\n", err)
+		return
+	}
+
+	condition, err := fh.CreateFHIRCondition(ctx, *conditionInput)
+	if err != nil {
+		t.Errorf("failed to create fhir condition: %v", err)
+	}
+
+	input, err := getFHIRMedicationRequestInput(*patient, encounterID, *condition.Resource.ID)
+	if err != nil {
+		t.Errorf("failed to get fhir medication request: %v", err)
+	}
+
+	medication, err := fh.CreateFHIRMedicationRequest(ctx, *input)
+	if err != nil {
+		t.Errorf("failed to create fhir medications request: %v", err)
+	}
+
+	id := medication.Resource.ID
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "valid: correct params passed",
+			args: args{
+				ctx: ctx,
+				id:  *id,
+			},
+		},
+		{
+			name: "invalid: unauthenticated context",
+			args: args{
+				ctx: context.Background(),
+				id:  *id,
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid: missing parameters",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := fh.DeleteFHIRMedicationRequest(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.DeleteFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+	// teardown
+	deleteTestPatient(ctx, msisdn)
+}
 
 func TestFHIRUseCaseImpl_SearchFHIRObservation(t *testing.T) {
 	ctx, err := getTestAuthenticatedContext(t)
@@ -2878,10 +2839,7 @@ func TestFHIRUseCaseImpl_SearchFHIRObservation(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_CreateFHIRObservation(t *testing.T) {
@@ -2959,10 +2917,7 @@ func TestFHIRUseCaseImpl_CreateFHIRObservation(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_DeleteFHIRObservation(t *testing.T) {
@@ -3047,10 +3002,7 @@ func TestFHIRUseCaseImpl_DeleteFHIRObservation(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
 func TestFHIRUseCaseImpl_GetFHIRPatient(t *testing.T) {
@@ -3064,7 +3016,7 @@ func TestFHIRUseCaseImpl_GetFHIRPatient(t *testing.T) {
 
 	msisdn := interserviceclient.TestUserPhoneNumber
 
-	_, patient, err := createTestEpisodeOfCare(
+	_, _, err = createTestEpisodeOfCare(
 		ctx,
 		msisdn,
 		false,
@@ -3129,165 +3081,62 @@ func TestFHIRUseCaseImpl_GetFHIRPatient(t *testing.T) {
 		}
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }
 
-// TODO: add more struct data in patient fhir input
-// func TestFHIRUseCaseImpl_DeleteFHIRPatient(t *testing.T) {
-// 	ctx, err := getTestAuthenticatedContext(t)
-// 	if err != nil {
-// 		t.Errorf("cant get phone number authenticated context token: %v", err)
-// 		return
-// 	}
+func TestFHIRUseCaseImpl_DeleteFHIRPatient(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
 
-// 	fh := testUsecaseInteractor
+	fh := testUsecaseInteractor
+	patientFhirInput := getTestFHIRPatientInput()
 
-// 	msisdn := interserviceclient.TestUserPhoneNumber
+	fhirPatient, err := fh.CreatePatient(ctx, patientFhirInput)
+	if err != nil {
+		t.Fatalf("Failed to create patient %v: %v", patientFhirInput, err)
+	}
 
-// 	_, patient, err := createTestEpisodeOfCare(
-// 		ctx,
-// 		msisdn,
-// 		false,
-// 		testProviderCode,
-// 	)
-// 	if err != nil {
-// 		log.Printf("cant get test encounter id: %v\n", err)
-// 		return
-// 	}
-// 	// _, err = fh.GetORCreateOrganization(ctx, testProviderCode)
-// 	// if err != nil {
-// 	// 	log.Printf("can't get or create test organization : %v\n", err)
-// 	// }
-// 	// patientFhirInput := getTestFHIRPatientInput()
+	id := fhirPatient.PatientRecord.ID
 
-// 	// fhirPatient, err := fh.CreatePatient(ctx, patientFhirInput)
-// 	// if err != nil {
-// 	// 	t.Fatalf("Failed to create patient %v: %v", patientFhirInput, err)
-// 	// }
-
-// 	// id := fhirPatient.PatientRecord.ID
-
-// 	type args struct {
-// 		ctx context.Context
-// 		id  string
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		want    bool
-// 		wantErr bool
-// 	}{
-// 		// {
-// 		// 	name: "valid: correct params passed",
-// 		// 	args: args{
-// 		// 		ctx: ctx,
-// 		// 		id:  *id,
-// 		// 	},
-// 		// },
-// 		// {
-// 		// 	name: "invalid: unauthenticated context",
-// 		// 	args: args{
-// 		// 		ctx: context.Background(),
-// 		// 		id:  *id,
-// 		// 	},
-// 		// 	wantErr: true,
-// 		// },
-// 		{
-// 			name: "invalid: missing parameters",
-// 			args: args{
-// 				ctx: ctx,
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			_, err := fh.DeleteFHIRPatient(tt.args.ctx, tt.args.id)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("FHIRUseCaseImpl.DeleteFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to delete patient: %v", err)
-// 	}
-// }
-
-// TODO: fix
-// func TestFHIRUseCaseImpl_DeleteFHIRResourceType(t *testing.T) {
-// 	ctx, err := getTestAuthenticatedContext(t)
-// 	if err != nil {
-// 		t.Errorf("cant get phone number authenticated context token: %v", err)
-// 		return
-// 	}
-
-// 	fh := testUsecaseInteractor
-
-// 	msisdn := interserviceclient.TestUserPhoneNumber
-
-// 	episode, patient, err := createTestEpisodeOfCare(
-// 		ctx,
-// 		msisdn,
-// 		false,
-// 		testProviderCode,
-// 	)
-// 	if err != nil {
-// 		log.Printf("cant get test encounter id: %v\n", err)
-// 		return
-// 	}
-
-// 	encounterID, err := fh.StartEncounter(ctx, *episode.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to start encounter: %v\n", err)
-// 	}
-
-// 	serviceRequest, err := getFhirServiceRequest(*patient, encounterID)
-// 	if err != nil {
-// 		t.Errorf("failed to get service request: %v", err)
-// 	}
-// 	request, err := fh.CreateFHIRServiceRequest(ctx, *serviceRequest)
-// 	if err != nil {
-// 		t.Errorf("failed to create service request: %v", err)
-// 	}
-
-// 	id := request.Resource.ID
-
-// 	results := []map[string]string{{"service-request": *id}}
-
-// 	type args struct {
-// 		results []map[string]string
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "valid: correct params passed",
-// 			args: args{
-// 				results: results,
-// 			},
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			if err := fh.DeleteFHIRResourceType(tt.args.results); (err != nil) != tt.wantErr {
-// 				t.Errorf("FHIRUseCaseImpl.DeleteFHIRResourceType() error = %v, wantErr %v", err, tt.wantErr)
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-// 	if err != nil {
-// 		t.Errorf("failed to delete patient: %v", err)
-// 	}
-// }
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "valid: correct params passed",
+			args: args{
+				ctx: ctx,
+				id:  *id,
+			},
+		},
+		{
+			name: "invalid: unauthenticated context",
+			args: args{
+				ctx: context.Background(),
+				id:  *id,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := fh.DeleteFHIRPatient(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.DeleteFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
 
 func TestFHIRUseCaseImpl_DeleteFHIRServiceRequest(t *testing.T) {
 	ctx, err := getTestAuthenticatedContext(t)
@@ -3361,8 +3210,5 @@ func TestFHIRUseCaseImpl_DeleteFHIRServiceRequest(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = fh.DeleteFHIRPatient(ctx, *patient.ID)
-	if err != nil {
-		t.Errorf("failed to delete patient: %v", err)
-	}
+	deleteTestPatient(ctx, msisdn)
 }

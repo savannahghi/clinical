@@ -11,19 +11,12 @@ require (
 	github.com/aws/aws-sdk-go v1.40.0 // indirect
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/casbin/casbin/v2 v2.37.2
-	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/dgraph-io/ristretto v0.1.0 // indirect
-	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/golang/glog v1.0.0 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/imroc/req v0.3.0
 	github.com/labstack/gommon v0.3.0
 	github.com/mitchellh/mapstructure v1.4.2
-	github.com/ory/go-acc v0.2.6 // indirect
-	github.com/pborman/uuid v1.2.1 // indirect
-	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.3.0
 	github.com/savannahghi/converterandformatter v0.0.11
@@ -37,14 +30,11 @@ require (
 	github.com/savannahghi/serverutils v0.0.4
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/cast v1.4.1 // indirect
-	github.com/spf13/cobra v1.2.1 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/vektah/gqlparser/v2 v2.1.0
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
 	golang.org/x/sys v0.0.0-20211004093028-2c5d950f24ef // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.50.0
-	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
