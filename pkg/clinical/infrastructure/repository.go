@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/firebasetools"
@@ -94,6 +95,7 @@ func (d FHIRService) GetFHIRPatientEverything(fhirResourceID string) ([]byte, er
 // Repository ...
 type Repository interface {
 	SaveEmailOTP(ctx context.Context, email string, optIn bool) error
+	StageStartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) error
 }
 
 // DBService is an implementation of the database repository
@@ -132,4 +134,9 @@ func (db DBService) SaveEmailOTP(
 	ctx context.Context,
 	email string, optIn bool) error {
 	return db.firestore.SaveEmailOTP(ctx, email, optIn)
+}
+
+// StageStartEpisodeByBreakGlass persists starts an emergency episode data
+func (db DBService) StageStartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) error {
+	return db.firestore.StageStartEpisodeByBreakGlass(ctx, input)
 }
