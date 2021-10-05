@@ -1214,7 +1214,6 @@ func TestUnit_DeleteFHIRComposition(t *testing.T) {
 	}
 }
 
-//// /////////////////////////////////////////////////////////////////////////
 func TestFHIRUseCaseImpl_StartEpisodeByOtp_Unittest(t *testing.T) {
 	ctx := context.Background()
 	fh := fakeUsecaseIntr
@@ -1965,7 +1964,6 @@ func TestFHIRUseCaseImpl_CreateFHIRAllergyIntolerance_Unittest(t *testing.T) {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////
 func TestFHIRUseCaseImpl_SearchFHIRCondition_Unittest(t *testing.T) {
 	ctx := context.Background()
 	fh := fakeUsecaseIntr
