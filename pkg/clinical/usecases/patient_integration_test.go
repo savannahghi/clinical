@@ -61,11 +61,7 @@ func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 		})
 	}
 	// teardown
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
@@ -194,12 +190,8 @@ func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
@@ -336,12 +328,8 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
@@ -404,12 +392,8 @@ func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
 
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
@@ -482,12 +466,8 @@ func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
 
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
@@ -581,12 +561,8 @@ func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_FindPatientByID(t *testing.T) {
@@ -646,12 +622,8 @@ func TestClinicalUseCaseImpl_FindPatientByID(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
@@ -740,12 +712,8 @@ func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
@@ -829,12 +797,8 @@ func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_AddNHIF(t *testing.T) {
@@ -900,12 +864,8 @@ func TestClinicalUseCaseImpl_AddNHIF(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
@@ -979,12 +939,8 @@ func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
@@ -1054,12 +1010,8 @@ func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
@@ -1127,12 +1079,8 @@ func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_StartEpisodeByBreakGlass(t *testing.T) {
@@ -1223,10 +1171,6 @@ func TestClinicalUseCaseImpl_StartEpisodeByBreakGlass(t *testing.T) {
 			}
 		})
 	}
-
-	_, err = u.DeleteFHIRPatientByPhone(ctx, interserviceclient.TestUserPhoneNumber)
-	if err != nil {
-		fmt.Printf("unable to delete FHIR patient by phone: %v", err)
-		return
-	}
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
