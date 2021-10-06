@@ -1,6 +1,10 @@
 package mock
 
-import "context"
+import (
+	"context"
+
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
+)
 
 // FakeFHIRRepository is a mock FHIR repository
 type FakeFHIRRepository struct {
@@ -56,10 +60,16 @@ func (f *FakeFHIRRepository) GetFHIRPatientEverything(fhirResourceID string) ([]
 
 // FakeRepository is a mock firebase repository
 type FakeRepository struct {
-	SaveEmailOTPFn func(ctx context.Context, email string, optIn bool) error
+	SaveEmailOTPFn                  func(ctx context.Context, email string, optIn bool) error
+	StageStartEpisodeByBreakGlassFn func(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) error
 }
 
 // SaveEmailOTP ...
 func (fb *FakeRepository) SaveEmailOTP(ctx context.Context, email string, optIn bool) error {
 	return fb.SaveEmailOTPFn(ctx, email, optIn)
+}
+
+// StartEpisodeByBreakGlass persists starts an emergency episode data
+func (fb *FakeRepository) StageStartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) error {
+	return fb.StageStartEpisodeByBreakGlassFn(ctx, input)
 }

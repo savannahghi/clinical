@@ -3,18 +3,37 @@ package usecases_test
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/url"
 	"testing"
 
+	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	profileUtilsMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/profileutils/mock"
 	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
 	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/interserviceclient"
+	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 )
 
-func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
+const (
+	baseFHIRURL = "https://healthcare.googleapis.com/v1"
+)
 
-	i := fakeUsecaseIntr
+var fakeProfileUtils profileUtilsMock.FakeUserProfileRepository
+
+func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
+	ctx := context.Background()
+	i, err := InitializeFakeClinicalInteractor(ctx)
+	if err != nil {
+		t.Errorf("failed to fake initialize fake clinical interactor: %v", err)
+		return
+	}
+
+	patientId := "test1234"
 
 	type args struct {
 		ctx       context.Context
@@ -28,8 +47,8 @@ func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:       context.Background(),
-				patientID: ksuid.New().String(),
+				ctx:       ctx,
+				patientID: patientId,
 			},
 			wantErr: false,
 		},
@@ -37,7 +56,7 @@ func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: context.Background(),
+				ctx: ctx,
 			},
 			wantErr: true,
 		},
@@ -45,7 +64,46 @@ func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakePatient.ProblemSummaryFn = usecaseMock.NewClinicalMock().ProblemSummary
+
+				fakeProfileUtils.GetLoggedInUserFn = func(ctx context.Context) (*profileutils.UserInfo, error) {
+					return &profileutils.UserInfo{
+						DisplayName: "test user",
+						Email:       firebasetools.TestUserEmail,
+						PhoneNumber: interserviceclient.TestUserPhoneNumber,
+						PhotoURL:    gofakeit.ImageURL(50, 50),
+					}, nil
+				}
+
+				fakeFHIR.CreateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+					return &domain.FHIRConditionRelayPayload{
+						Resource: &domain.FHIRCondition{
+							ID: &patientId,
+						},
+					}, nil
+				}
+
+				fakeFHIR.SearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
+					cursor := "Composition"
+					return &domain.FHIRConditionRelayConnection{
+						Edges: []*domain.FHIRConditionRelayEdge{
+							{
+								Cursor: &cursor,
+								Node:   &domain.FHIRCondition{},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{
+							HasNextPage: true,
+						},
+					}, nil
+				}
+
+				fakeFHIR.POSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
+					return []byte("some-byte"), nil
+				}
+
+				FHIRRepoMock.FHIRRestURLFn = func() string {
+					return "https://healthcare.googleapis.com/v1/projects/bewell-app-ci/locations/europe-west4/datasets/healthcloud-bewell-staging/fhirStores/healthcloud-bewell-fhir-staging/fhir/EpisodeOfCare/_search?patient=Patient%2F1e216562-3f8a-4ec9-977b-2e12b9fdeb39"
+				}
 			}
 
 			if tt.name == "Sad case" {
@@ -53,7 +111,7 @@ func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
-			_, err := i.ProblemSummary(tt.args.ctx, tt.args.patientID)
+			_, err := i.ClinicalUseCase.ProblemSummary(tt.args.ctx, tt.args.patientID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ClinicalUseCaseImpl.ProblemSummary() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -66,6 +124,8 @@ func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
 func TestClinicalUseCaseImpl_VisitSummary_Unittest(t *testing.T) {
 	ctx := context.Background()
 	i := fakeUsecaseIntr
+
+	Id := "test1234ID"
 
 	type args struct {
 		ctx         context.Context
@@ -81,7 +141,7 @@ func TestClinicalUseCaseImpl_VisitSummary_Unittest(t *testing.T) {
 			name: "Happy case",
 			args: args{
 				ctx:         ctx,
-				encounterID: ksuid.New().String(),
+				encounterID: Id,
 				count:       0,
 			},
 			wantErr: false,
@@ -100,7 +160,7 @@ func TestClinicalUseCaseImpl_VisitSummary_Unittest(t *testing.T) {
 			name: "Sad case: no count",
 			args: args{
 				ctx:         ctx,
-				encounterID: ksuid.New().String(),
+				encounterID: Id,
 			},
 			wantErr: true,
 		},
@@ -108,7 +168,45 @@ func TestClinicalUseCaseImpl_VisitSummary_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakePatient.VisitSummaryFn = usecaseMock.NewClinicalMock().VisitSummary
+				fakeFHIR.CreateFHIREncounterFn = func(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							ID: &Id,
+						},
+					}, nil
+				}
+
+				fakeFHIR.GetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							ID: &Id,
+						},
+					}, nil
+				}
+
+				fakeFHIR.CreateFHIRAllergyIntoleranceFn = func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+					return &domain.FHIRAllergyIntoleranceRelayPayload{
+						Resource: &domain.FHIRAllergyIntolerance{
+							ID: &Id,
+						},
+					}, nil
+				}
+
+				fakeFHIR.SearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+					return &domain.FHIRAllergyIntoleranceRelayConnection{
+						PageInfo: &firebasetools.PageInfo{
+							HasNextPage: true,
+						},
+					}, nil
+				}
+
+				fakeFHIR.SearchFHIREncounterFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
+					return &domain.FHIREncounterRelayConnection{
+						PageInfo: &firebasetools.PageInfo{
+							HasNextPage: true,
+						},
+					}, nil
+				}
 			}
 
 			if tt.name == "Sad case: nil encounter ID" {

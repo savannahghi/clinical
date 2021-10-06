@@ -11,6 +11,8 @@ import (
 const (
 	// EmailOptInCollectionName ...
 	EmailOptInCollectionName = "email_opt_ins"
+	// BreakGlassCollectionName ...
+	BreakGlassCollectionName = "break_glass"
 )
 
 // Repository accesses and updates an item that is stored on Firebase
@@ -35,6 +37,25 @@ func (fr Repository) GetEmailOptInCollectionName() string {
 
 	suffixed := firebasetools.SuffixCollection(EmailOptInCollectionName)
 	return suffixed
+}
+
+func (fr Repository) getBreakGlassCollectionName() string {
+	suffixed := firebasetools.SuffixCollection(BreakGlassCollectionName)
+	return suffixed
+}
+
+// StartEpisodeByBreakGlass persists starts an emergency episode data
+func (fr Repository) StageStartEpisodeByBreakGlass(
+	ctx context.Context, input domain.BreakGlassEpisodeCreationInput) error {
+	command := &CreateCommand{
+		CollectionName: fr.getBreakGlassCollectionName(),
+		Data:           input,
+	}
+	_, err := fr.FirestoreClient.Create(ctx, command)
+	if err != nil {
+		return fmt.Errorf("unable to stage start episode by break glass data: %w", err)
+	}
+	return nil
 }
 
 // SaveEmailOTP  persist the data of the newly created OTP to a datastore

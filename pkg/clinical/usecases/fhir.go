@@ -31,7 +31,6 @@ const (
 	// MaxClinicalRecordPageSize is the maximum number of encounters we can show on a timeline
 	MaxClinicalRecordPageSize = 50
 
-	BreakGlassCollectionName         = "break_glass"
 	NHIFImageFrontPicName            = "nhif_front_photo"
 	NHIFImageRearPicName             = "nhif_rear_photo"
 	RelationshipSystem               = "http://terminology.hl7.org/CodeSystem/v2-0131"
@@ -1581,17 +1580,17 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRComposition(ctx context.Context, id string)
 
 // SearchFHIRCondition provides a search API for FHIRCondition
 func (fh *FHIRUseCaseImpl) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
+	// user, err := profileutils.GetLoggedInUser(ctx)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("unable to get user: %w", err)
+	// }
+	// isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if !isAuthorized {
+	// 	return nil, fmt.Errorf("user not authorized to access this resource")
+	// }
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")

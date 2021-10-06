@@ -1,10 +1,6 @@
 package infrastructure
 
 import (
-	"context"
-	"log"
-
-	"cloud.google.com/go/firestore"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/engagement"
@@ -15,12 +11,11 @@ import (
 
 // Infrastructure ...
 type Infrastructure struct {
-	FHIRRepo        FHIRRepository
-	FirestoreRepo   Repository
-	Engagement      engagement.ServiceEngagement
-	FirestoreClient *firestore.Client
-	Onboarding      onboarding.ServiceOnboarding
-	OpenConceptLab  openconceptlab.ServiceOCL
+	FHIRRepo       FHIRRepository
+	FirestoreRepo  Repository
+	Engagement     engagement.ServiceEngagement
+	Onboarding     onboarding.ServiceOnboarding
+	OpenConceptLab openconceptlab.ServiceOCL
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
@@ -34,22 +29,10 @@ func NewInfrastructureInteractor() Infrastructure {
 	onboarding := onboarding.NewServiceOnboardingImpl(onboardingClient, baseExtension)
 	openconceptlab := openconceptlab.NewServiceOCL()
 
-	fc := firebasetools.FirebaseClient{}
-	fa, err := fc.InitFirebase()
-	if err != nil {
-		log.Panicf("unable to initialize Firestore for the Feed: %s", err)
-	}
-	ctx := context.Background()
-	fsc, err := fa.Firestore(ctx)
-	if err != nil {
-		log.Panicf("unable to initialize Firestore: %s", err)
-	}
-
 	return Infrastructure{
 		fhirRepository,
 		firestoreDB,
 		engagement,
-		fsc,
 		onboarding,
 		openconceptlab,
 	}

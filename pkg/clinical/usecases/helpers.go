@@ -14,7 +14,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/enumutils"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
@@ -415,11 +414,6 @@ func (c *ClinicalUseCaseImpl) contactMapper(resource map[string]interface{}) map
 	resourceCopy["contact"] = newContacts
 
 	return resourceCopy
-}
-
-func (c *ClinicalUseCaseImpl) getBreakGlassCollectionName() string {
-	suffixed := firebasetools.SuffixCollection(BreakGlassCollectionName)
-	return suffixed
 }
 
 // sendAlertToPatient to send notification to patient when break glass request is made

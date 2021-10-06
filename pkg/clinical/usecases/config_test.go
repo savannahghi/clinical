@@ -15,6 +15,11 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
+	fakeRepoMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/mock"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/engagement"
+	svcEngagement "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/engagement/mock"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding"
+	svcOnboarding "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
@@ -39,13 +44,17 @@ const ( // Repo the env to identify which repo to use
 )
 
 var (
-	fakeFhir        usecaseMock.FHIRMock
+	fakeFHIR        usecaseMock.FHIRMock
 	fakePatient     usecaseMock.ClinicalMock
 	fakeUsecaseIntr usecases.Interactor
 
 	testUsecaseInteractor interactor.Usecases
 	testInfrastructure    infrastructure.Infrastructure
+	FHIRRepoMock          fakeRepoMock.FakeFHIRRepository
+	fakeRepo              fakeRepoMock.FakeRepository
 	fakeOCL               usecaseMock.OCLMock
+	fakeEngagement        svcEngagement.FakeServiceEngagement
+	fakeOnboarding        svcOnboarding.FakeOnboarding
 )
 
 func TestMain(m *testing.M) {
@@ -81,11 +90,6 @@ func TestMain(m *testing.M) {
 
 	testUsecaseInteractor = svc
 
-	fakeUsecaseIntr, err = InitializeFakeTestService(&fakePatient, &fakeFhir, &fakeOCL)
-	if err != nil {
-		log.Printf("failed to initialize fake test service: %v", err)
-	}
-
 	purgeRecords := func() {
 		if serverutils.MustGetEnvVar(Repo) == FirebaseRepository {
 			r := fb.Repository{}
@@ -119,6 +123,28 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
 	return infrastructure.NewInfrastructureInteractor(), nil
+}
+
+func InitializeFakeClinicalInteractor(ctx context.Context) (usecases.Interactor, error) {
+
+	var fhirRepo infrastructure.FHIRRepository = &FHIRRepoMock
+	var repo infrastructure.Repository = &fakeRepo
+	var ocl ocl.UseCases = &fakeOCL
+	var en engagement.ServiceEngagement = &fakeEngagement
+	var onboarding onboarding.ServiceOnboarding = &fakeOnboarding
+	infra := func() infrastructure.Infrastructure {
+		return infrastructure.Infrastructure{
+			FHIRRepo:       fhirRepo,
+			FirestoreRepo:  repo,
+			Engagement:     en,
+			Onboarding:     onboarding,
+			OpenConceptLab: ocl,
+		}
+	}()
+
+	i := usecases.NewUsecasesInteractor(infra)
+
+	return i, nil
 }
 
 func getTestAuthenticatedContext(t *testing.T) (context.Context, error) {
@@ -163,21 +189,22 @@ func InitializeTestFirebaseClient(
 	return fsc, fbc
 }
 
-func InitializeFakeTestService(
-	patient usecases.ClinicalUseCase,
-	fhir usecases.FHIRUseCase,
-	ocl ocl.UseCases,
-) (
-	usecases.Interactor,
-	error,
-) {
-	itr := usecases.Interactor{
-		patient,
-		fhir,
-		ocl,
-	}
-	return itr, nil
-}
+// func InitializeFakeTestService(
+// 	infrastructure.Infrastructure,
+// 	patient usecases.ClinicalUseCase,
+// 	fhir usecases.FHIRUseCase,
+// 	ocl ocl.UseCases,
+// ) (
+// 	usecases.Interactor,
+// 	error,
+// ) {
+// 	itr := usecases.Interactor{
+// 		patient,
+// 		fhir,
+// 		ocl,
+// 	}
+// 	return itr, nil
+// }
 
 // makes an ISC call to the onboarding service
 func onboardingISCClient(t *testing.T) *interserviceclient.InterServiceClient {

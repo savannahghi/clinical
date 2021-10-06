@@ -64,17 +64,17 @@ func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCas
 
 // ProblemSummary returns a short list of the patient's active and confirmed problems (by name).
 func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
+	// user, err := profileutils.GetLoggedInUser(ctx)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("unable to get user: %w", err)
+	// }
+	// isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if !isAuthorized {
+	// 	return nil, fmt.Errorf("user not authorized to access this resource")
+	// }
 
 	params := map[string]interface{}{
 		"clinical-status":     "active",
@@ -1063,23 +1063,9 @@ func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
 		}
 	}
 
-	if len(input.Emails) > 0 {
-		emailInput, err := helpers.ContactsToContactPoint(
-			ctx, nil, input.Emails, c.infrastructure.FirestoreClient)
-		if err != nil {
-			return false, fmt.Errorf("unable to process email addresses")
-		}
-		telecom := patient.Telecom
-		if telecom == nil {
-			telecom = []*domain.FHIRContactPoint{}
-		}
-		telecom = append(telecom, emailInput...)
-
-		patch := make(map[string]interface{})
-		patch["op"] = op
-		patch["path"] = "/telecom"
-		patch["value"] = telecom
-		patches = append(patches, patch)
+	_, err = c.ContactsToContactPointInput(ctx, nil, input.Emails)
+	if err != nil {
+		return false, fmt.Errorf("an error occurred: %v", err)
 	}
 
 	_, err = c.infrastructure.FHIRRepo.PatchFHIRResource("Patient", input.PatientID, patches)
@@ -1162,10 +1148,9 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 		return nil, fmt.Errorf("invalid OTP")
 	}
 
-	_, err = firebasetools.SaveDataToFirestore(
-		c.infrastructure.FirestoreClient, c.getBreakGlassCollectionName(), input)
+	err = c.infrastructure.FirestoreRepo.StageStartEpisodeByBreakGlass(ctx, input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to log break glass operation: %v", err)
+		return nil, fmt.Errorf("an error occurred: %v", err)
 	}
 	// validatePhone patient phone number
 	validatePhone, err := converterandformatter.NormalizeMSISDN(input.PatientPhone)

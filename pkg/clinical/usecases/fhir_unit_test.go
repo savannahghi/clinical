@@ -81,11 +81,11 @@ func TestFHIRUseCaseImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.CreateEpisodeOfCareFn = usecaseMock.NewFHIRMock().CreateEpisodeOfCare
+				fakeFHIR.CreateEpisodeOfCareFn = usecaseMock.NewFHIRMock().CreateEpisodeOfCare
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.CreateEpisodeOfCareFn = func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
+				fakeFHIR.CreateEpisodeOfCareFn = func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -174,11 +174,11 @@ func TestFHIRUseCaseImpl_CreateFHIRCondition_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.CreateFHIRConditionFn = usecaseMock.NewFHIRMock().CreateFHIRCondition
+				fakeFHIR.CreateFHIRConditionFn = usecaseMock.NewFHIRMock().CreateFHIRCondition
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.CreateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+				fakeFHIR.CreateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -226,11 +226,11 @@ func TestFHIRUseCaseImpl_OpenOrganizationEpisodes_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.OpenOrganizationEpisodesFn = usecaseMock.NewFHIRMock().OpenOrganizationEpisodes
+				fakeFHIR.OpenOrganizationEpisodesFn = usecaseMock.NewFHIRMock().OpenOrganizationEpisodes
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.OpenOrganizationEpisodesFn = func(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
+				fakeFHIR.OpenOrganizationEpisodesFn = func(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -278,11 +278,11 @@ func TestFHIRUseCaseImpl_GetORCreateOrganization_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.GetORCreateOrganizationFn = usecaseMock.NewFHIRMock().CreateOrganization
+				fakeFHIR.GetORCreateOrganizationFn = usecaseMock.NewFHIRMock().CreateOrganization
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.GetORCreateOrganizationFn = func(ctx context.Context, providerSladeCode string) (*string, error) {
+				fakeFHIR.GetORCreateOrganizationFn = func(ctx context.Context, providerSladeCode string) (*string, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -356,11 +356,11 @@ func TestFHIRUseCaseImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.CreateFHIROrganizationFn = usecaseMock.NewFHIRMock().CreateFHIROrganization
+				fakeFHIR.CreateFHIROrganizationFn = usecaseMock.NewFHIRMock().CreateFHIROrganization
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.CreateFHIROrganizationFn = func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+				fakeFHIR.CreateFHIROrganizationFn = func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -408,11 +408,11 @@ func TestFHIRUseCaseImpl_CreateOrganization_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.CreateOrganizationFn = usecaseMock.NewFHIRMock().CreateOrganization
+				fakeFHIR.CreateOrganizationFn = usecaseMock.NewFHIRMock().CreateOrganization
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.CreateOrganizationFn = func(ctx context.Context, providerSladeCode string) (*string, error) {
+				fakeFHIR.CreateOrganizationFn = func(ctx context.Context, providerSladeCode string) (*string, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -462,11 +462,11 @@ func TestFHIRUseCaseImpl_SearchFHIROrganization_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.SearchFHIROrganizationFn = usecaseMock.NewFHIRMock().SearchFHIROrganization
+				fakeFHIR.SearchFHIROrganizationFn = usecaseMock.NewFHIRMock().SearchFHIROrganization
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.SearchFHIROrganizationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
+				fakeFHIR.SearchFHIROrganizationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -514,11 +514,11 @@ func TestFHIRUseCaseImpl_GetOrganization_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.GetOrganizationFn = usecaseMock.NewFHIRMock().GetOrganization
+				fakeFHIR.GetOrganizationFn = usecaseMock.NewFHIRMock().GetOrganization
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.GetOrganizationFn = func(ctx context.Context, providerSladeCode string) (*string, error) {
+				fakeFHIR.GetOrganizationFn = func(ctx context.Context, providerSladeCode string) (*string, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -567,11 +567,11 @@ func TestFHIRUseCaseImpl_SearchEpisodesByParam_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.SearchEpisodesByParamFn = usecaseMock.NewFHIRMock().SearchEpisodesByParam
+				fakeFHIR.SearchEpisodesByParamFn = usecaseMock.NewFHIRMock().SearchEpisodesByParam
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.SearchEpisodesByParamFn = func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
+				fakeFHIR.SearchEpisodesByParamFn = func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -624,11 +624,11 @@ func TestFHIRUseCaseImpl_POSTRequest_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.POSTRequestFn = usecaseMock.NewFHIRMock().POSTRequest
+				fakeFHIR.POSTRequestFn = usecaseMock.NewFHIRMock().POSTRequest
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.POSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
+				fakeFHIR.POSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -675,11 +675,11 @@ func TestUnit_OpenEpisodes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.OpenEpisodesFn = usecaseMock.NewFHIRMock().OpenEpisodesFn
+				fakeFHIR.OpenEpisodesFn = usecaseMock.NewFHIRMock().OpenEpisodesFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.OpenEpisodesFn = func(
+				fakeFHIR.OpenEpisodesFn = func(
 					ctx context.Context,
 					patientReference string,
 				) ([]*domain.FHIREpisodeOfCare, error) {
@@ -734,11 +734,11 @@ func TestUnit_HasOpenEpisode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.HasOpenEpisodeFn = usecaseMock.NewFHIRMock().HasOpenEpisodeFn
+				fakeFHIR.HasOpenEpisodeFn = usecaseMock.NewFHIRMock().HasOpenEpisodeFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.HasOpenEpisodeFn = func(ctx context.Context, patient domain.FHIRPatient) (bool, error) {
+				fakeFHIR.HasOpenEpisodeFn = func(ctx context.Context, patient domain.FHIRPatient) (bool, error) {
 					return false, fmt.Errorf("an error occurred")
 				}
 			}
@@ -790,11 +790,11 @@ func TestUnit_CreateFHIREncounter(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.CreateFHIREncounterFn = usecaseMock.NewFHIRMock().CreateFHIREncounterFn
+				fakeFHIR.CreateFHIREncounterFn = usecaseMock.NewFHIRMock().CreateFHIREncounterFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.CreateFHIREncounterFn = func(
+				fakeFHIR.CreateFHIREncounterFn = func(
 					ctx context.Context,
 					input domain.FHIREncounterInput,
 				) (*domain.FHIREncounterRelayPayload, error) {
@@ -847,11 +847,11 @@ func TestUnit_GetFHIREpisodeOfCare(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.GetFHIREpisodeOfCareFn = usecaseMock.NewFHIRMock().GetFHIREpisodeOfCareFn
+				fakeFHIR.GetFHIREpisodeOfCareFn = usecaseMock.NewFHIRMock().GetFHIREpisodeOfCareFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.GetFHIREpisodeOfCareFn = func(
+				fakeFHIR.GetFHIREpisodeOfCareFn = func(
 					ctx context.Context,
 					id string,
 				) (*domain.FHIREpisodeOfCareRelayPayload, error) {
@@ -905,11 +905,11 @@ func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			if tt.name == "Happy case" {
-				fakeFhir.StartEncounterFn = usecaseMock.NewFHIRMock().StartEncounterFn
+				fakeFHIR.StartEncounterFn = usecaseMock.NewFHIRMock().StartEncounterFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.StartEncounterFn = func(ctx context.Context, episodeID string) (string, error) {
+				fakeFHIR.StartEncounterFn = func(ctx context.Context, episodeID string) (string, error) {
 					return "", fmt.Errorf("an error occurred")
 				}
 			}
@@ -959,11 +959,11 @@ func TestUnit_UpdateFHIRAllergyIntolerance(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			if tt.name == "Happy case" {
-				fakeFhir.UpdateFHIRAllergyIntoleranceFn = usecaseMock.NewFHIRMock().UpdateFHIRAllergyIntoleranceFn
+				fakeFHIR.UpdateFHIRAllergyIntoleranceFn = usecaseMock.NewFHIRMock().UpdateFHIRAllergyIntoleranceFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.UpdateFHIRAllergyIntoleranceFn = func(
+				fakeFHIR.UpdateFHIRAllergyIntoleranceFn = func(
 					ctx context.Context,
 					input domain.FHIRAllergyIntoleranceInput,
 				) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
@@ -1016,11 +1016,11 @@ func TestUnit_SearchFHIRComposition(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.SearchFHIRCompositionFn = usecaseMock.NewFHIRMock().SearchFHIRCompositionFn
+				fakeFHIR.SearchFHIRCompositionFn = usecaseMock.NewFHIRMock().SearchFHIRCompositionFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.SearchFHIRCompositionFn = func(
+				fakeFHIR.SearchFHIRCompositionFn = func(
 					ctx context.Context,
 					params map[string]interface{},
 				) (*domain.FHIRCompositionRelayConnection, error) {
@@ -1075,11 +1075,11 @@ func TestUnit_CreateFHIRComposition(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			if tt.name == "Happy case" {
-				fakeFhir.CreateFHIRCompositionFn = usecaseMock.NewFHIRMock().CreateFHIRCompositionFn
+				fakeFHIR.CreateFHIRCompositionFn = usecaseMock.NewFHIRMock().CreateFHIRCompositionFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.CreateFHIRCompositionFn = func(
+				fakeFHIR.CreateFHIRCompositionFn = func(
 					ctx context.Context,
 					input domain.FHIRCompositionInput,
 				) (*domain.FHIRCompositionRelayPayload, error) {
@@ -1133,11 +1133,11 @@ func TestUnit_UpdateFHIRComposition(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.UpdateFHIRCompositionFn = usecaseMock.NewFHIRMock().UpdateFHIRCompositionFn
+				fakeFHIR.UpdateFHIRCompositionFn = usecaseMock.NewFHIRMock().UpdateFHIRCompositionFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.UpdateFHIRCompositionFn = func(
+				fakeFHIR.UpdateFHIRCompositionFn = func(
 					ctx context.Context,
 					input domain.FHIRCompositionInput,
 				) (*domain.FHIRCompositionRelayPayload, error) {
@@ -1192,11 +1192,11 @@ func TestUnit_DeleteFHIRComposition(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Happy case" {
-				fakeFhir.DeleteFHIRCompositionFn = usecaseMock.NewFHIRMock().DeleteFHIRCompositionFn
+				fakeFHIR.DeleteFHIRCompositionFn = usecaseMock.NewFHIRMock().DeleteFHIRCompositionFn
 			}
 
 			if tt.name == "Sad case" {
-				fakeFhir.DeleteFHIRCompositionFn = func(ctx context.Context, id string) (bool, error) {
+				fakeFHIR.DeleteFHIRCompositionFn = func(ctx context.Context, id string) (bool, error) {
 					return false, fmt.Errorf("an error occurred")
 				}
 			}
