@@ -1,65 +1,94 @@
 package usecases_test
 
-// import (
-// 	"context"
-// 	"fmt"
-// 	"testing"
+import (
+	"context"
+	"fmt"
+	"testing"
 
-// 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-// 	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
-// 	"github.com/segmentio/ksuid"
-// )
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/profileutils"
+	"github.com/segmentio/ksuid"
+)
 
-// func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
+func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
+	ctx := context.Background()
 
-// 	i := fakeUsecaseIntr
+	p := testFakeInfra
 
-// 	type args struct {
-// 		ctx       context.Context
-// 		patientID string
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "Happy case",
-// 			args: args{
-// 				ctx:       context.Background(),
-// 				patientID: ksuid.New().String(),
-// 			},
-// 			wantErr: false,
-// 		},
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case",
+			args: args{
+				ctx:       ctx,
+				patientID: ksuid.New().String(),
+			},
+			wantErr: false,
+		},
 
-// 		{
-// 			name: "Sad case",
-// 			args: args{
-// 				ctx: context.Background(),
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			if tt.name == "Happy case" {
-// 				fakePatient.ProblemSummaryFn = usecaseMock.NewClinicalMock().ProblemSummary
-// 			}
+		{
+			name: "Sad case",
+			args: args{
+				ctx:       ctx,
+				patientID: "",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.name == "Happy case" {
+				fakeBaseExtension.GetLoggedInUserFn = func(ctx context.Context) (*profileutils.UserInfo, error) {
+					return &profileutils.UserInfo{
+						UID:         "12233",
+						Email:       "test@example.com",
+						PhoneNumber: "0721568526",
+					}, nil
+				}
 
-// 			if tt.name == "Sad case" {
-// 				fakePatient.ProblemSummaryFn = func(ctx context.Context, patientID string) ([]string, error) {
-// 					return nil, fmt.Errorf("an error occurred")
-// 				}
-// 			}
-// 			_, err := i.ProblemSummary(tt.args.ctx, tt.args.patientID)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("ClinicalUseCaseImpl.ProblemSummary() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
+				fakeFHIR.SearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
+					return &domain.FHIRConditionRelayConnection{
+						PageInfo: &firebasetools.PageInfo{
+							HasNextPage: true,
+						},
+					}, nil
+				}
 
-// 		})
-// 	}
-// }
+				FHIRRepoMock.FHIRRestURLFn = func() string {
+					return "https://healthcare.googleapis.com/v1/projects/bewell-app-ci/locations/europe-west4/datasets/healthcloud-bewell-staging/fhirStores/healthcloud-bewell-fhir-staging/fhir/EpisodeOfCare/_search?patient=Patient%2F1e216562-3f8a-4ec9-977b-2e12b9fdeb39"
+				}
+			}
+
+			if tt.name == "Sad case" {
+				fakeBaseExtension.GetLoggedInUserFn = func(ctx context.Context) (*profileutils.UserInfo, error) {
+					return &profileutils.UserInfo{
+						UID:         "12233",
+						Email:       "test@example.com",
+						PhoneNumber: "0721568526",
+					}, nil
+				}
+
+				fakeFHIR.SearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			_, err := p.ProblemSummary(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ClinicalUseCaseImpl.ProblemSummary() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+		})
+	}
+}
 
 // func TestClinicalUseCaseImpl_VisitSummary_Unittest(t *testing.T) {
 // 	ctx := context.Background()

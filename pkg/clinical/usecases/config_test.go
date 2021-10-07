@@ -46,8 +46,8 @@ const ( // Repo the env to identify which repo to use
 )
 
 var (
-	// fakePatient     usecaseMock.ClinicalMock
-	// fakeUsecaseIntr usecases.Interactor
+	//fakePatient usecaseMock.ClinicalMock
+	fakeFHIR usecaseMock.FHIRMock
 
 	testUsecaseInteractor interactor.Usecases
 	testInfrastructure    infrastructure.Infrastructure

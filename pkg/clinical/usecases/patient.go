@@ -64,6 +64,9 @@ func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCas
 
 // ProblemSummary returns a short list of the patient's active and confirmed problems (by name).
 func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
+	if patientID == "" {
+		return nil, fmt.Errorf("patient ID cannot be empty")
+	}
 	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
