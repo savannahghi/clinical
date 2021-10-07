@@ -12,10 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-// testOtp = "0000"
-)
-
 var (
 	testName = "test"
 )

@@ -64,7 +64,7 @@ func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCas
 
 // ProblemSummary returns a short list of the patient's active and confirmed problems (by name).
 func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -102,7 +102,7 @@ func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID stri
 
 // VisitSummary returns a narrative friendly display of the data that has been associated with a single visit
 func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -295,7 +295,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 // narratives that are sorted with the most recent one first), while
 // respecting the approval level AND limiting the number
 func (c *ClinicalUseCaseImpl) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -631,7 +631,7 @@ func (c *ClinicalUseCaseImpl) FindPatientByID(ctx context.Context, id string) (*
 	if id == "" {
 		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1016,7 +1016,7 @@ func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
 	if input.PatientID == "" {
 		return false, fmt.Errorf("patient ID cannot empty: %v", input.PatientID)
 	}
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1063,23 +1063,9 @@ func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
 		}
 	}
 
-	if len(input.Emails) > 0 {
-		emailInput, err := helpers.ContactsToContactPoint(
-			ctx, nil, input.Emails, c.infrastructure.FirestoreClient)
-		if err != nil {
-			return false, fmt.Errorf("unable to process email addresses")
-		}
-		telecom := patient.Telecom
-		if telecom == nil {
-			telecom = []*domain.FHIRContactPoint{}
-		}
-		telecom = append(telecom, emailInput...)
-
-		patch := make(map[string]interface{})
-		patch["op"] = op
-		patch["path"] = "/telecom"
-		patch["value"] = telecom
-		patches = append(patches, patch)
+	_, err = c.ContactsToContactPointInput(ctx, nil, input.Emails)
+	if err != nil {
+		return false, fmt.Errorf("an error occurred: %v", err)
 	}
 
 	_, err = c.infrastructure.FHIRRepo.PatchFHIRResource("Patient", input.PatientID, patches)
@@ -1140,7 +1126,7 @@ func (c *ClinicalUseCaseImpl) DeleteFHIRPatientByPhone(ctx context.Context, phon
 //StartEpisodeByBreakGlass starts an emergency episode
 func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 	ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1162,10 +1148,9 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 		return nil, fmt.Errorf("invalid OTP")
 	}
 
-	_, err = firebasetools.SaveDataToFirestore(
-		c.infrastructure.FirestoreClient, c.getBreakGlassCollectionName(), input)
+	err = c.infrastructure.FirestoreRepo.StageStartEpisodeByBreakGlass(ctx, input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to log break glass operation: %v", err)
+		return nil, fmt.Errorf("an error occurred: %v", err)
 	}
 	// validatePhone patient phone number
 	validatePhone, err := converterandformatter.NormalizeMSISDN(input.PatientPhone)

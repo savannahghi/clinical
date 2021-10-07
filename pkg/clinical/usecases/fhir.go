@@ -16,7 +16,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
-	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
@@ -31,7 +30,6 @@ const (
 	// MaxClinicalRecordPageSize is the maximum number of encounters we can show on a timeline
 	MaxClinicalRecordPageSize = 50
 
-	BreakGlassCollectionName         = "break_glass"
 	NHIFImageFrontPicName            = "nhif_front_photo"
 	NHIFImageRearPicName             = "nhif_rear_photo"
 	RelationshipSystem               = "http://terminology.hl7.org/CodeSystem/v2-0131"
@@ -107,8 +105,8 @@ type FHIRUseCase interface {
 	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
 	GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
 	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
-	DeleteFHIRResourceType(results []map[string]string) error
 	DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error)
+	DeleteFHIRResourceType(results []map[string]string) error
 }
 
 // FHIRUseCaseImpl represents the FHIR usecase implementation
@@ -131,7 +129,7 @@ func (fh FHIRUseCaseImpl) Encounters(
 	patientReference string,
 	status *domain.EncounterStatusEnum,
 ) ([]*domain.FHIREncounter, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -264,7 +262,7 @@ func (fh FHIRUseCaseImpl) SearchFHIREpisodeOfCare(ctx context.Context, params ma
 // CreateEpisodeOfCare is the final common pathway for creation of episodes of
 // care.
 func (fh FHIRUseCaseImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -338,7 +336,7 @@ func (fh FHIRUseCaseImpl) CreateEpisodeOfCare(ctx context.Context, episode domai
 
 // CreateFHIRCondition creates a FHIRCondition instance
 func (fh FHIRUseCaseImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -407,7 +405,7 @@ func (fh FHIRUseCaseImpl) CreateFHIROrganization(ctx context.Context, input doma
 // OpenOrganizationEpisodes return all organization specific open episodes
 func (fh FHIRUseCaseImpl) OpenOrganizationEpisodes(
 	ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -451,10 +449,11 @@ func (fh FHIRUseCaseImpl) GetORCreateOrganization(ctx context.Context, providerS
 
 // CreateOrganization creates an organization given ist provider code
 func (fh FHIRUseCaseImpl) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
+
 	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
 	if err != nil {
 		return nil, err
@@ -524,7 +523,7 @@ func (fh FHIRUseCaseImpl) SearchFHIROrganization(ctx context.Context, params map
 
 // GetOrganization retrieves an organization given its code
 func (fh FHIRUseCaseImpl) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -748,7 +747,7 @@ func (fh FHIRUseCaseImpl) FHIRHeaders() (http.Header, error) {
 
 // CreateFHIREncounter creates a FHIREncounter instance
 func (fh FHIRUseCaseImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -925,7 +924,7 @@ func (fh *FHIRUseCaseImpl) StartEncounter(
 
 // StartEpisodeByOtp starts a patient OTP verified episode
 func (fh *FHIRUseCaseImpl) StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -965,7 +964,7 @@ func (fh *FHIRUseCaseImpl) StartEpisodeByOtp(ctx context.Context, input domain.O
 
 // UpgradeEpisode starts a patient OTP verified episode
 func (fh *FHIRUseCaseImpl) UpgradeEpisode(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1049,7 +1048,7 @@ func (fh *FHIRUseCaseImpl) SearchEpisodeEncounter(
 	ctx context.Context,
 	episodeReference string,
 ) (*domain.FHIREncounterRelayConnection, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1077,7 +1076,7 @@ func (fh *FHIRUseCaseImpl) SearchEpisodeEncounter(
 // EndEncounter ends an encounter
 func (fh *FHIRUseCaseImpl) EndEncounter(
 	ctx context.Context, encounterID string) (bool, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1317,7 +1316,7 @@ func (fh *FHIRUseCaseImpl) CreateFHIRServiceRequest(ctx context.Context, input d
 
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
 func (fh *FHIRUseCaseImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1471,7 +1470,7 @@ func (fh *FHIRUseCaseImpl) SearchFHIRComposition(ctx context.Context, params map
 
 // CreateFHIRComposition creates a FHIRComposition instance
 func (fh *FHIRUseCaseImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1512,7 +1511,7 @@ func (fh *FHIRUseCaseImpl) CreateFHIRComposition(ctx context.Context, input doma
 // UpdateFHIRComposition updates a FHIRComposition instance
 // The resource must have it's ID set.
 func (fh *FHIRUseCaseImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1556,7 +1555,7 @@ func (fh *FHIRUseCaseImpl) UpdateFHIRComposition(ctx context.Context, input doma
 
 // DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1581,7 +1580,7 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRComposition(ctx context.Context, id string)
 
 // SearchFHIRCondition provides a search API for FHIRCondition
 func (fh *FHIRUseCaseImpl) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1634,7 +1633,7 @@ func (fh *FHIRUseCaseImpl) SearchFHIRCondition(ctx context.Context, params map[s
 // UpdateFHIRCondition updates a FHIRCondition instance
 // The resource must have it's ID set.
 func (fh *FHIRUseCaseImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1678,7 +1677,7 @@ func (fh *FHIRUseCaseImpl) UpdateFHIRCondition(ctx context.Context, input domain
 
 // GetFHIREncounter retrieves instances of FHIREncounter by ID
 func (fh *FHIRUseCaseImpl) GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1712,7 +1711,7 @@ func (fh *FHIRUseCaseImpl) GetFHIREncounter(ctx context.Context, id string) (*do
 
 // SearchFHIREncounter provides a search API for FHIREncounter
 func (fh *FHIRUseCaseImpl) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1764,7 +1763,7 @@ func (fh *FHIRUseCaseImpl) SearchFHIREncounter(ctx context.Context, params map[s
 
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
 func (fh *FHIRUseCaseImpl) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1816,7 +1815,7 @@ func (fh *FHIRUseCaseImpl) SearchFHIRMedicationRequest(ctx context.Context, para
 
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
 func (fh *FHIRUseCaseImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1857,7 +1856,7 @@ func (fh *FHIRUseCaseImpl) CreateFHIRMedicationRequest(ctx context.Context, inpu
 // UpdateFHIRMedicationRequest updates a FHIRMedicationRequest instance
 // The resource must have it's ID set.
 func (fh *FHIRUseCaseImpl) UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1901,7 +1900,7 @@ func (fh *FHIRUseCaseImpl) UpdateFHIRMedicationRequest(ctx context.Context, inpu
 
 // DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1925,7 +1924,7 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRMedicationRequest(ctx context.Context, id s
 
 // SearchFHIRObservation provides a search API for FHIRObservation
 func (fh *FHIRUseCaseImpl) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -1977,7 +1976,7 @@ func (fh *FHIRUseCaseImpl) SearchFHIRObservation(ctx context.Context, params map
 
 // CreateFHIRObservation creates a FHIRObservation instance
 func (fh *FHIRUseCaseImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2017,7 +2016,7 @@ func (fh *FHIRUseCaseImpl) CreateFHIRObservation(ctx context.Context, input doma
 
 // DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}
@@ -2070,7 +2069,7 @@ func (fh *FHIRUseCaseImpl) GetFHIRPatient(ctx context.Context, id string) (*doma
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	user, err := profileutils.GetLoggedInUser(ctx)
+	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
 	if err != nil {
 		return false, fmt.Errorf("unable to get user: %w", err)
 	}

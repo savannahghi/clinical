@@ -14,12 +14,12 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/enumutils"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 )
 
+// TODO: remove receiver
 func (fh FHIRUseCaseImpl) validateSearchParams(params map[string]interface{}) (url.Values, error) {
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -43,6 +43,7 @@ func (fh FHIRUseCaseImpl) validateSearchParams(params map[string]interface{}) (u
 //
 //    params := url.Values{}
 //    params.Add("_content", search)
+// TODO: remove receiver
 func (fh FHIRUseCaseImpl) searchFilterHelper(
 	ctx context.Context,
 	resourceName string,
@@ -122,6 +123,7 @@ func (fh FHIRUseCaseImpl) searchFilterHelper(
 	return results, nil
 }
 
+// TODO: remove receiver
 func (c *ClinicalUseCaseImpl) getTimelineEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, string, error) {
 	episodePayload, err := c.fhir.GetFHIREpisodeOfCare(ctx, episodeID)
 	if err != nil {
@@ -148,6 +150,7 @@ func (c *ClinicalUseCaseImpl) getTimelineEpisode(ctx context.Context, episodeID 
 	return episode, accessLevel, nil
 }
 
+// TODO: remove receiver
 func (c *ClinicalUseCaseImpl) getTimelineVisitSummaries(
 	ctx context.Context,
 	encounterSearchParams map[string]interface{},
@@ -176,6 +179,7 @@ func (c *ClinicalUseCaseImpl) getTimelineVisitSummaries(
 	return visitSummaries, nil
 }
 
+// TODO: remove receiver
 func (c *ClinicalUseCaseImpl) birthdateMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
@@ -194,6 +198,7 @@ func (c *ClinicalUseCaseImpl) birthdateMapper(resource map[string]interface{}) m
 
 }
 
+// TODO: remove receiver
 func (c *ClinicalUseCaseImpl) periodMapper(period map[string]interface{}) map[string]interface{} {
 
 	periodCopy := period
@@ -209,6 +214,7 @@ func (c *ClinicalUseCaseImpl) periodMapper(period map[string]interface{}) map[st
 	return periodCopy
 }
 
+// TODO: remove receiver
 func (c *ClinicalUseCaseImpl) identifierMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
@@ -238,6 +244,7 @@ func (c *ClinicalUseCaseImpl) identifierMapper(resource map[string]interface{}) 
 	return resourceCopy
 }
 
+// TODO: remove receiver
 func (c *ClinicalUseCaseImpl) nameMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
@@ -268,6 +275,7 @@ func (c *ClinicalUseCaseImpl) nameMapper(resource map[string]interface{}) map[st
 	return resourceCopy
 }
 
+// TODO: remove receiver
 func (c *ClinicalUseCaseImpl) telecomMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
@@ -298,6 +306,7 @@ func (c *ClinicalUseCaseImpl) telecomMapper(resource map[string]interface{}) map
 	return resourceCopy
 }
 
+// TODO: move to engagement
 func (c *ClinicalUseCaseImpl) addressMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
@@ -327,6 +336,7 @@ func (c *ClinicalUseCaseImpl) addressMapper(resource map[string]interface{}) map
 	return resourceCopy
 }
 
+// TODO: move to engagement
 func (c *ClinicalUseCaseImpl) photoMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
@@ -417,12 +427,8 @@ func (c *ClinicalUseCaseImpl) contactMapper(resource map[string]interface{}) map
 	return resourceCopy
 }
 
-func (c *ClinicalUseCaseImpl) getBreakGlassCollectionName() string {
-	suffixed := firebasetools.SuffixCollection(BreakGlassCollectionName)
-	return suffixed
-}
-
 // sendAlertToPatient to send notification to patient when break glass request is made
+// TODO: move to engagement
 func (c *ClinicalUseCaseImpl) sendAlertToPatient(ctx context.Context, phoneNumber string, patientID string) error {
 	patientPayload, err := c.FindPatientByID(ctx, patientID)
 	if err != nil {
@@ -460,6 +466,7 @@ func (c *ClinicalUseCaseImpl) sendAlertToPatient(ctx context.Context, phoneNumbe
 }
 
 //sendAlertToNextOfKin send an alert message to the patient's next of kin.
+// TODO: move to engagement
 func (c *ClinicalUseCaseImpl) sendAlertToNextOfKin(ctx context.Context, patientID string) error {
 	patientPayload, err := c.FindPatientByID(ctx, patientID)
 	if err != nil {
@@ -528,6 +535,7 @@ func (c *ClinicalUseCaseImpl) sendAlertToNextOfKin(ctx context.Context, patientI
 }
 
 // sendAlertToAdmin send email to admin notifying them of the access.
+// TODO: move to engagement
 func (c *ClinicalUseCaseImpl) sendAlertToAdmin(ctx context.Context, patientName string, patientContact string) error {
 	adminEmail, err := serverutils.GetEnvVar(SavannahAdminEmail)
 	if err != nil {
