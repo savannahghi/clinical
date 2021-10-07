@@ -7,6 +7,7 @@ import (
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
+	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/serverutils"
 )
 
@@ -34,6 +35,7 @@ func (i *ISCExtensionImpl) MakeRequest(ctx context.Context, method string, path 
 // Our first step to making some functions are testable is to remove the base dependency.
 // This can be achieved with the below interface.
 type BaseExtension interface {
+	GetLoggedInUser(ctx context.Context) (*profileutils.UserInfo, error)
 	GetLoggedInUserUID(ctx context.Context) (string, error)
 	NormalizeMSISDN(msisdn string) (*string, error)
 	LoadDepsFromYAML() (*interserviceclient.DepsConfig, error)
@@ -57,6 +59,11 @@ func NewBaseExtensionImpl(fc firebasetools.IFirebaseClient) BaseExtension {
 	return &BaseExtensionImpl{
 		fc: fc,
 	}
+}
+
+// GetLoggedInUser retrieves logged in user information
+func (b *BaseExtensionImpl) GetLoggedInUser(ctx context.Context) (*profileutils.UserInfo, error) {
+	return profileutils.GetLoggedInUser(ctx)
 }
 
 // GetLoggedInUserUID get the logged in user uid
