@@ -1,20 +1,15 @@
 staging:
   - depName: onboarding
-    depRootDomain: https://profile-staging.healthcloud.co.ke
+    depRootDomain: https://onboarding-testing.savannahghi.org
   - depName: engagement
-    depRootDomain: https://engagement-staging.healthcloud.co.ke
+    depRootDomain: https://engagement-testing.savannahghi.org
 testing:
   - depName: onboarding
-    depRootDomain: https://profile-testing.healthcloud.co.ke
+    depRootDomain: https://onboarding-testing.savannahghi.org
   - depName: engagement
-    depRootDomain: https://engagement-testing.healthcloud.co.ke
-demo:
-  - depName: onboarding
-    depRootDomain: https://profile-demo.healthcloud.co.ke
-  - depName: engagement
-    depRootDomain: https://engagement-demo.healthcloud.co.ke
+    depRootDomain: https://engagement-testing.savannahghi.org
 production:
   - depName: onboarding
-    depRootDomain: https://profile-prod.healthcloud.co.ke
+    depRootDomain: https://onboarding-prod.savannahghi.org
   - depName: engagement
-    depRootDomain: https://engagement-prod.healthcloud.co.ke
+    depRootDomain: https://engagement-prod.savannahghi.org
