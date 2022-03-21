@@ -95,6 +95,7 @@ jobs:
           --set-env-vars "CLOUD_HEALTH_DATASET_ID=${{ secrets.CLOUD_HEALTH_DATASET_ID }}" \
           --set-env-vars "CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}" \
           --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
+          --set-env-vars "SERVICE_HOST=${{ secrets.SERVICE_HOST }}" \
           --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
 
 
@@ -139,6 +140,7 @@ jobs:
           --set-env-vars "CLOUD_HEALTH_DATASET_ID=${{ secrets.CLOUD_HEALTH_DATASET_ID }}" \
           --set-env-vars "CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}" \
           --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
+          --set-env-vars "SERVICE_HOST=${{ secrets.SERVICE_HOST }}" \
           --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
 
   deploy_to_prod:
@@ -194,6 +196,7 @@ jobs:
           --set-env-vars "CLOUD_HEALTH_DATASET_ID=${{ secrets.CLOUD_HEALTH_DATASET_ID }}" \
           --set-env-vars "CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}" \
           --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
+          --set-env-vars "SERVICE_HOST=${{ secrets.SERVICE_HOST }}" \
           --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
 
 
