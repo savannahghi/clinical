@@ -8,17 +8,19 @@ import (
 	"os"
 	"time"
 
+	"cloud.google.com/go/pubsub"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
+	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/onboarding/pkg/onboarding/application/extension"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -96,6 +98,19 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	baseExtension := extension.NewBaseExtensionImpl(fc)
+	projectID := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
+	pubSubClient, err := pubsub.NewClient(ctx, projectID)
+	if err != nil {
+		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
+	}
+
+	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %v", err)
+	}
+
 	infrastructure := infrastructure.NewInfrastructureInteractor()
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	h := rest.NewPresentationHandlers(infrastructure, usecases)
@@ -110,6 +125,10 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	// Unauthenticated routes
 	r.Path("/ide").HandlerFunc(playground.Handler("GraphQL IDE", "/graphql"))
+
+	r.Path("/pubsub").Methods(
+		http.MethodPost,
+	).HandlerFunc(pubSub.ReceivePubSubPushMessages)
 
 	// check server status.
 	r.Path("/health").HandlerFunc(serverutils.HealthStatusCheck)
@@ -145,51 +164,5 @@ func GQLHandler(ctx context.Context,
 	)
 	return func(w http.ResponseWriter, r *http.Request) {
 		server.ServeHTTP(w, r)
-	}
-}
-
-// DeleteFHIRPatientByPhone handler exposes an endpoint that takes a
-// patient's phone number and deletes the patient's FHIR compartment
-func DeleteFHIRPatientByPhone(ctx context.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		infra := infrastructure.NewInfrastructureInteractor()
-		s := usecases.NewUsecasesInteractor(infra)
-
-		payload := &domain.PhoneNumberPayload{}
-		type errResponse struct {
-			Err string `json:"error"`
-		}
-		serverutils.DecodeJSONToTargetStruct(w, r, payload)
-		if payload.PhoneNumber == "" {
-			serverutils.WriteJSONResponse(
-				w,
-				errResponse{
-					Err: "expected a phone number to be defined",
-				},
-				http.StatusBadRequest,
-			)
-			return
-		}
-		deleted, err := s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
-		if err != nil {
-			err := fmt.Sprintf("unable to delete patient: %v", err.Error())
-			serverutils.WriteJSONResponse(
-				w,
-				errResponse{
-					Err: err,
-				},
-				http.StatusInternalServerError,
-			)
-			return
-		}
-
-		type response struct {
-			Deleted bool `json:"deleted"`
-		}
-		serverutils.WriteJSONResponse(
-			w,
-			response{Deleted: deleted},
-			http.StatusOK,
-		)
 	}
 }
