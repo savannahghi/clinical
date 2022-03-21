@@ -16,7 +16,7 @@ import (
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/firebasetools"
-	"github.com/stretchr/testify/assert"
+	"github.com/tj/assert"
 )
 
 var testUsecase interactor.Usecases
@@ -110,6 +110,7 @@ func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
 	usecases := interactor.NewUsecasesInteractor(infrastructure)
 	return usecases, nil
 }
+
 func TestRepository_CreateDataset(t *testing.T) {
 	fhirRepo := fhir.NewFHIRRepository()
 	tests := []struct {
