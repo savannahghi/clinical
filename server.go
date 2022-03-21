@@ -9,7 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/savannahghi/clinical/graph"
+	"github.com/savannahghi/clinical/pkg/clinical/presentation"
 	"github.com/savannahghi/serverutils"
 )
 
@@ -34,7 +34,7 @@ func main() {
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
 	}
-	srv := graph.PrepareServer(ctx, port, graph.ClinicalAllowedOrigins)
+	srv := presentation.PrepareServer(ctx, port, presentation.ClinicalAllowedOrigins)
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
 			serverutils.LogStartupError(ctx, err)
