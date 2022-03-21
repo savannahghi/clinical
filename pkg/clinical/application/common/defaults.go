@@ -26,6 +26,9 @@ const (
 	DefaultLanguage = "English"
 	// CallCenterNumber is Savannah's call center number
 	CallCenterNumber = "0790 360 360"
+
+	// CreatePatientTopic is the topic ID where patient data is published to
+	CreatePatientTopic = "patient.create"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

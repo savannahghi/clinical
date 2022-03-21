@@ -7,9 +7,12 @@ import (
 	"testing"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
-	"github.com/savannahghi/onboarding/pkg/onboarding/application/extension"
 	"github.com/savannahghi/serverutils"
 	"github.com/sirupsen/logrus"
 )
@@ -32,11 +35,17 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 	}
 
 	// Initialize base (common) extension
-	baseExt := extension.NewBaseExtensionImpl(fc)
+	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	iscExtension := extensions.NewISCExtension()
 
+	myCareHub := mycarehub.NewServiceMyCareHub(iscExtension, baseExtension)
+	infrastructure := infrastructure.NewInfrastructureInteractor()
+	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		pubSubClient,
-		baseExt,
+		baseExtension,
+		myCareHub,
+		usecases,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
@@ -55,7 +64,8 @@ func TestServicePubSubMessaging_AddPubSubNamespace(t *testing.T) {
 	environment := serverutils.GetRunningEnvironment()
 
 	type args struct {
-		topicName string
+		topicName   string
+		serviceName string
 	}
 	tests := []struct {
 		name    string
@@ -66,10 +76,11 @@ func TestServicePubSubMessaging_AddPubSubNamespace(t *testing.T) {
 		{
 			name: "Happy Case -> Correct pubsub namespace",
 			args: args{
-				topicName: topicName,
+				topicName:   topicName,
+				serviceName: pubsubmessaging.ClinicalServiceName,
 			},
 			want: fmt.Sprintf("%s-%s-%s-%s",
-				pubsubmessaging.ServiceName,
+				pubsubmessaging.ClinicalServiceName,
 				topicName,
 				environment,
 				pubsubmessaging.TopicVersion,
@@ -79,7 +90,7 @@ func TestServicePubSubMessaging_AddPubSubNamespace(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := ps.AddPubSubNamespace(tt.args.topicName)
+			got := ps.AddPubSubNamespace(tt.args.topicName, tt.args.serviceName)
 			logrus.Printf("we got %v", got)
 			if got != tt.want {
 				t.Errorf("ServicePubSubMessaging.AddPubSubNamespace() = %v, want %v", got, tt.want)
@@ -96,7 +107,7 @@ func TestServicePubSubMessaging_PublishToPubsub(t *testing.T) {
 		return
 	}
 
-	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName)
+	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName, pubsubmessaging.ClinicalServiceName)
 	// Create the test topic
 	topics := ps.TopicIDs()
 	topics = append(topics, topic)
@@ -207,7 +218,7 @@ func TestServicePubSubMessaging_SubscriptionIDs(t *testing.T) {
 		t.Errorf("failed to initialize test pubsub: %v", err)
 		return
 	}
-	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName)
+	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName, pubsubmessaging.ClinicalServiceName)
 	// Create the test topic
 	topics := ps.TopicIDs()
 	topics = append(topics, topic)
