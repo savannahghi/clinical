@@ -1,8 +1,6 @@
 name: Deployment
 
-on:
-  push:
-    branches: [develop]
+on: push
 
 env:
   DOCKER_BUILDKIT: 1 # Enable Buildkit and let compose use it to speed up image building
