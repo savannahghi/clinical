@@ -9,7 +9,6 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
@@ -36,15 +35,13 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 
 	// Initialize base (common) extension
 	baseExtension := extensions.NewBaseExtensionImpl(fc)
-	iscExtension := extensions.NewISCExtension()
 
-	myCareHub := mycarehub.NewServiceMyCareHub(iscExtension, baseExtension)
 	infrastructure := infrastructure.NewInfrastructureInteractor()
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		pubSubClient,
 		baseExtension,
-		myCareHub,
+		infrastructure,
 		usecases,
 	)
 	if err != nil {

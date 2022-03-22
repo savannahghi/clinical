@@ -48,7 +48,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		profile, err := ps.myCareHub.UserProfile(ctx, data.UserID)
+		profile, err := ps.infra.MyCareHub.UserProfile(ctx, data.UserID)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -81,7 +81,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		err = ps.myCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, *profile.ID)
+		err = ps.infra.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, *profile.ID)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
