@@ -6,13 +6,19 @@ import (
 	"net/http"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/savannahghi/onboarding/pkg/onboarding/application/extension"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
 )
 
 const (
-	// ServiceName defines the service where the topic is created
-	ServiceName = "clinical"
+	// ClinicalServiceName defines the service where the topic is created
+	ClinicalServiceName = "clinical"
+
+	// MyCareHubServiceName defines the service where some of the topics have been created
+	MyCareHubServiceName = "mycarehub"
 
 	// TopicVersion defines the topic version. That standard one is `v1`
 	TopicVersion = "v1"
@@ -49,18 +55,24 @@ type ServicePubsub interface {
 
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
-	client  *pubsub.Client
-	baseExt extension.BaseExtension
+	client    *pubsub.Client
+	baseExt   extensions.BaseExtension
+	myCareHub mycarehub.IServiceMyCareHub
+	usecases  usecases.ClinicalUseCase
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
 func NewServicePubSubMessaging(
 	client *pubsub.Client,
-	baseExt extension.BaseExtension,
+	baseExt extensions.BaseExtension,
+	myCareHub mycarehub.IServiceMyCareHub,
+	usecases usecases.ClinicalUseCase,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
-		client:  client,
-		baseExt: baseExt,
+		client:    client,
+		baseExt:   baseExt,
+		myCareHub: myCareHub,
+		usecases:  usecases,
 	}
 
 	ctx := context.Background()
@@ -78,8 +90,8 @@ func NewServicePubSubMessaging(
 }
 
 // AddPubSubNamespace creates unique topics. The topics will be in the form
-// clinical-<topicName>-<environment>-v1
-func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName string) string {
+// <service name>-<topicName>-<environment>-v1
+func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName, ServiceName string) string {
 	environment := serverutils.GetRunningEnvironment()
 	return ps.baseExt.NamespacePubsubIdentifier(
 		ServiceName,
@@ -91,7 +103,10 @@ func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName string) string {
 
 // TopicIDs returns the known (registered) topic IDs
 func (ps ServicePubSubMessaging) TopicIDs() []string {
-	return []string{}
+	return []string{
+		ps.AddPubSubNamespace(TestTopicName, ClinicalServiceName),
+		ps.AddPubSubNamespace(common.CreatePatientTopic, ClinicalServiceName),
+	}
 }
 
 // PublishToPubsub publishes a message to a specified topic
@@ -109,7 +124,7 @@ func (ps ServicePubSubMessaging) PublishToPubsub(
 		ps.client,
 		topicID,
 		environment,
-		ServiceName,
+		ClinicalServiceName,
 		TopicVersion,
 		payload,
 	)

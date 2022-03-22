@@ -89,6 +89,7 @@ jobs:
           --set-env-vars "FIREBASE_WEB_API_KEY=${{ secrets.FIREBASE_WEB_API_KEY }}" \
           --set-env-vars "JWT_KEY=${{ secrets.JWT_KEY }}" \
           --set-env-vars "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" \
+          --set-env-vars "GOOGLE_PROJECT_NUMBER=${{ secrets.GOOGLE_PROJECT_NUMBER }}" \
           --set-env-vars "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
           --set-env-vars "ROOT_COLLECTION_SUFFIX=${{ secrets.ROOT_COLLECTION_SUFFIX }}" \
           --set-env-vars "CLOUD_HEALTH_PUBSUB_TOPIC=${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}" \
@@ -133,6 +134,7 @@ jobs:
           --set-env-vars "GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}" \
           --set-env-vars "FIREBASE_WEB_API_KEY=${{ secrets.FIREBASE_WEB_API_KEY }}" \
           --set-env-vars "JWT_KEY=${{ secrets.JWT_KEY }}" \
+          --set-env-vars "GOOGLE_PROJECT_NUMBER=${{ secrets.GOOGLE_PROJECT_NUMBER }}" \
           --set-env-vars "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" \
           --set-env-vars "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
           --set-env-vars "ROOT_COLLECTION_SUFFIX=${{ secrets.ROOT_COLLECTION_SUFFIX }}" \
@@ -189,6 +191,7 @@ jobs:
           --set-env-vars "GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}" \
           --set-env-vars "FIREBASE_WEB_API_KEY=${{ secrets.FIREBASE_WEB_API_KEY }}" \
           --set-env-vars "JWT_KEY=${{ secrets.JWT_KEY }}" \
+          --set-env-vars "GOOGLE_PROJECT_NUMBER=${{ secrets.GOOGLE_PROJECT_NUMBER }}" \
           --set-env-vars "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" \
           --set-env-vars "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
           --set-env-vars "ROOT_COLLECTION_SUFFIX=${{ secrets.ROOT_COLLECTION_SUFFIX }}" \

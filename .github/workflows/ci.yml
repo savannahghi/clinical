@@ -10,6 +10,7 @@ env:
   FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
   ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
   SERVICE_HOST: ${{ secrets.SERVICE_HOST }}
+  GOOGLE_PROJECT_NUMBER: ${{ secrets.GOOGLE_PROJECT_NUMBER }}
   ROOT_COLLECTION_SUFFIX: ${{ secrets.ROOT_COLLECTION_SUFFIX }}
   CLOUD_HEALTH_PUBSUB_TOPIC: ${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}
   CLOUD_HEALTH_DATASET_ID: ${{ secrets.CLOUD_HEALTH_DATASET_ID }}
@@ -33,7 +34,7 @@ jobs:
     timeout-minutes: 80
     steps:
       - uses: actions/checkout@v2
-      - uses: google-github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
           service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
