@@ -18,7 +18,7 @@ jobs:
     environment:
       name: test # run this only in test environment for now
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@v0
@@ -49,7 +49,7 @@ jobs:
     needs: [build_and_push_image]
     steps:
       - name: Checkout working branches
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Deploy to Google Cloud Run Serverless
       - name: Get GCP project credential 
@@ -108,7 +108,7 @@ jobs:
     needs: [build_and_push_image]
     steps:
       - name: Checkout working branches
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Deploy to Google Cloud Run Serverless
       - name: Get GCP project credential 
@@ -152,7 +152,7 @@ jobs:
     needs: [build_and_push_image]
     steps:
       - name: Checkout working branches
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Deploy to Google Cloud Run Serverless
       - name: Get GCP project credential 
@@ -210,7 +210,7 @@ jobs:
     needs: [deploy_to_test]
     steps:
       - name: Checkout working branches
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Install Go
       - name: Install Go
