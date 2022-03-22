@@ -8,7 +8,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
 )
@@ -55,24 +55,24 @@ type ServicePubsub interface {
 
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
-	client    *pubsub.Client
-	baseExt   extensions.BaseExtension
-	myCareHub mycarehub.IServiceMyCareHub
-	usecases  usecases.ClinicalUseCase
+	client   *pubsub.Client
+	baseExt  extensions.BaseExtension
+	infra    infrastructure.Infrastructure
+	usecases usecases.ClinicalUseCase
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
 func NewServicePubSubMessaging(
 	client *pubsub.Client,
 	baseExt extensions.BaseExtension,
-	myCareHub mycarehub.IServiceMyCareHub,
+	infra infrastructure.Infrastructure,
 	usecases usecases.ClinicalUseCase,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
-		client:    client,
-		baseExt:   baseExt,
-		myCareHub: myCareHub,
-		usecases:  usecases,
+		client:   client,
+		baseExt:  baseExt,
+		infra:    infra,
+		usecases: usecases,
 	}
 
 	ctx := context.Background()
