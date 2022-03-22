@@ -37,7 +37,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 	}
 
 	switch topicID {
-	case ps.AddPubSubNamespace(common.CreatePatientTopic, MyCareHubServiceName):
+	case ps.AddPubSubNamespace(common.CreatePatientTopic, ClinicalServiceName):
 		var data dto.CreatePatientPubSubMessage
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
