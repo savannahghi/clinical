@@ -146,11 +146,11 @@ jobs:
           --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
 
   deploy_to_prod:
-    name: Deploy Staging Server to Google Cloud Run
+    name: Deploy Prod Server to Google Cloud Run
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment:
-      name: staging
+      name: production
     needs: [build_and_push_image]
     steps:
       - name: Checkout working branches
