@@ -29,6 +29,21 @@ const (
 
 	// CreatePatientTopic is the topic ID where patient data is published to
 	CreatePatientTopic = "patient.create"
+
+	// VitalsTopicName is the topic for publishing a patient's vital signs
+	VitalsTopicName = "vitals.create"
+
+	// AllergyTopicName is the topic for publishing a patient's allergy
+	AllergyTopicName = "allergy.create"
+
+	// MedicationTopicName is the topic for publishing a patient's medication
+	MedicationTopicName = "medication.create"
+
+	// TestResultTopicName is the topic for publishing a patient's test results
+	TestResultTopicName = "test.result.create"
+
+	//TestOrderTopicName is the topic for publishing a patient's test order
+	TestOrderTopicName = "test.order.create"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

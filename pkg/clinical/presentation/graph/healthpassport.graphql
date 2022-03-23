@@ -89,7 +89,7 @@ input SimplePatientRegistrationInput {
   id: ID
   names: [NameInput!]!
   gender: String!
-  identificationDocuments: [IdentificationDocument!]!
+  identificationDocuments: [IdentificationDocument!]
   birthDate: Date!
   phoneNumbers: [PhoneNumberInput!]!
   photos: [PhotoInput]
@@ -156,8 +156,8 @@ input IdentificationDocument {
 
 input PhoneNumberInput {
   msisdn: String!
-  verificationCode: String!
-  isUSSD: Boolean!
+  verificationCode: String
+  isUSSD: Boolean
   communicationOptIn: Boolean!
 }
 
