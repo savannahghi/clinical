@@ -44,6 +44,9 @@ const (
 
 	//TestOrderTopicName is the topic for publishing a patient's test order
 	TestOrderTopicName = "test.order.create"
+
+	// OrganizationTopicName is the topic where organization(facility) details are published to
+	OrganizationTopicName = "organization.create"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their
