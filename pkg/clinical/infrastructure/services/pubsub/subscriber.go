@@ -3,6 +3,7 @@ package pubsubmessaging
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -58,16 +59,16 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		}
 
 		year, month, day := profile.DateOfBirth.Date()
+		patientName := strings.Split(profile.Name, " ")
 		payload := domain.SimplePatientRegistrationInput{
-			ID:                      *profile.ID,
-			Names:                   []*domain.NameInput{{FirstName: profile.Name, OtherNames: &profile.Username}},
-			IdentificationDocuments: []*domain.IdentificationDocument{},
+			ID:    *profile.ID,
+			Names: []*domain.NameInput{{FirstName: patientName[0], LastName: patientName[1]}},
 			BirthDate: scalarutils.Date{
 				Year:  year,
 				Month: int(month),
 				Day:   day,
 			},
-			PhoneNumbers: []*domain.PhoneNumberInput{{Msisdn: profile.Contacts.ContactValue}},
+			PhoneNumbers: []*domain.PhoneNumberInput{{Msisdn: profile.Contacts.ContactValue, CommunicationOptIn: true}},
 			Gender:       string(profile.Gender),
 			Active:       profile.Active,
 		}
@@ -81,7 +82,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		err = ps.infra.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, *profile.ID)
+		err = ps.infra.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, data.ID)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,

@@ -5867,7 +5867,7 @@ input SimplePatientRegistrationInput {
   id: ID
   names: [NameInput!]!
   gender: String!
-  identificationDocuments: [IdentificationDocument!]!
+  identificationDocuments: [IdentificationDocument!]
   birthDate: Date!
   phoneNumbers: [PhoneNumberInput!]!
   photos: [PhotoInput]
@@ -5934,8 +5934,8 @@ input IdentificationDocument {
 
 input PhoneNumberInput {
   msisdn: String!
-  verificationCode: String!
-  isUSSD: Boolean!
+  verificationCode: String
+  isUSSD: Boolean
   communicationOptIn: Boolean!
 }
 
@@ -39907,7 +39907,7 @@ func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verificationCode"))
-			it.VerificationCode, err = ec.unmarshalNString2string(ctx, v)
+			it.VerificationCode, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39915,7 +39915,7 @@ func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isUSSD"))
-			it.IsUssd, err = ec.unmarshalNBoolean2bool(ctx, v)
+			it.IsUssd, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40231,7 +40231,7 @@ func (ec *executionContext) unmarshalInputSimplePatientRegistrationInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identificationDocuments"))
-			it.IdentificationDocuments, err = ec.unmarshalNIdentificationDocument2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentificationDocumentᚄ(ctx, v)
+			it.IdentificationDocuments, err = ec.unmarshalOIdentificationDocument2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentificationDocumentᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -45360,27 +45360,6 @@ func (ec *executionContext) marshalNIDDocumentType2githubᚗcomᚋsavannahghiᚋ
 	return v
 }
 
-func (ec *executionContext) unmarshalNIdentificationDocument2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentificationDocumentᚄ(ctx context.Context, v interface{}) ([]*domain.IdentificationDocument, error) {
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*domain.IdentificationDocument, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNIdentificationDocument2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentificationDocument(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
 func (ec *executionContext) unmarshalNIdentificationDocument2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentificationDocument(ctx context.Context, v interface{}) (*domain.IdentificationDocument, error) {
 	res, err := ec.unmarshalInputIdentificationDocument(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -49640,6 +49619,30 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 		return graphql.Null
 	}
 	return graphql.MarshalID(*v)
+}
+
+func (ec *executionContext) unmarshalOIdentificationDocument2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentificationDocumentᚄ(ctx context.Context, v interface{}) ([]*domain.IdentificationDocument, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*domain.IdentificationDocument, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNIdentificationDocument2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentificationDocument(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
 func (ec *executionContext) unmarshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx context.Context, v interface{}) (*scalarutils.Instant, error) {

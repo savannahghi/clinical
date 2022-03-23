@@ -471,23 +471,17 @@ func (c *ClinicalUseCaseImpl) ContactsToContactPointInput(ctx context.Context, p
 	use := domain.ContactPointUseEnumHome
 
 	for _, phone := range phones {
-		if phone.IsUssd {
-			continue // don't verify USSD
-		}
-		isVerified, normalized, err := c.infrastructure.Engagement.VerifyOTP(
-			ctx, phone.Msisdn, phone.VerificationCode)
+		normalized, err := converterandformatter.NormalizeMSISDN(phone.Msisdn)
 		if err != nil {
-			return nil, fmt.Errorf("invalid phone: %w", err)
+			return nil, fmt.Errorf("failed to normalize phonenumber")
 		}
-		if !isVerified {
-			return nil, fmt.Errorf("invalid OTP")
-		}
+
 		phoneContact := &domain.FHIRContactPointInput{
 			System: &phoneSystem,
 			Use:    &use,
 			Rank:   &rank,
 			Period: common.DefaultPeriodInput(),
-			Value:  &normalized,
+			Value:  normalized,
 		}
 		output = append(output, phoneContact)
 		rank++

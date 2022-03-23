@@ -2069,17 +2069,6 @@ func (fh *FHIRUseCaseImpl) GetFHIRPatient(ctx context.Context, id string) (*doma
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return false, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return false, err
-	}
-	if !isAuthorized {
-		return false, fmt.Errorf("user not authorized to access this resource")
-	}
 	patientEverythingBs, err := fh.infrastructure.FHIRRepo.GetFHIRPatientEverything(id)
 	if err != nil {
 		return false, fmt.Errorf("unable to get patient's compartment: %v", err)

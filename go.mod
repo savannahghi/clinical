@@ -25,8 +25,8 @@ require (
 	github.com/rs/xid v1.3.0
 	github.com/savannahghi/converterandformatter v0.0.11
 	github.com/savannahghi/enumutils v0.0.3
-	github.com/savannahghi/errorcodeutil v0.0.5 // indirect
-	github.com/savannahghi/feedlib v0.0.6 // indirect
+	github.com/savannahghi/errorcodeutil v0.0.5
+	github.com/savannahghi/feedlib v0.0.6
 	github.com/savannahghi/firebasetools v0.0.15
 	github.com/savannahghi/interserviceclient v0.0.18
 	github.com/savannahghi/onboarding v0.0.22
