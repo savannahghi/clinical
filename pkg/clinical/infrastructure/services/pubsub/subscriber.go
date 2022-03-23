@@ -73,7 +73,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			Active:       profile.Active,
 		}
 
-		patient, err := ps.usecases.RegisterPatient(ctx, payload)
+		patient, err := ps.patient.RegisterPatient(ctx, payload)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -83,6 +83,44 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		}
 
 		err = ps.infra.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, data.ID)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+	case ps.AddPubSubNamespace(common.OrganizationTopicName, ClinicalServiceName):
+		var data dto.CreateFacilityPubSubMessage
+		err := json.Unmarshal(message.Message.Data, &data)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		use := domain.ContactPointUseEnumWork
+		rank := int64(1)
+		phoneSystem := domain.ContactPointSystemEnumPhone
+		input := domain.FHIROrganizationInput{
+			ID:     data.ID,
+			Active: &data.Active,
+			Name:   &data.Name,
+			Telecom: []*domain.FHIRContactPointInput{
+				{
+					System: &phoneSystem,
+					Value:  &data.Phone,
+					Use:    &use,
+					Rank:   &rank,
+					Period: common.DefaultPeriodInput(),
+				},
+			},
+		}
+
+		_, err = ps.fhir.CreateFHIROrganization(ctx, input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,

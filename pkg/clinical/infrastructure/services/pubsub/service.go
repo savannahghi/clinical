@@ -55,10 +55,11 @@ type ServicePubsub interface {
 
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
-	client   *pubsub.Client
-	baseExt  extensions.BaseExtension
-	infra    infrastructure.Infrastructure
-	usecases usecases.ClinicalUseCase
+	client  *pubsub.Client
+	baseExt extensions.BaseExtension
+	infra   infrastructure.Infrastructure
+	patient usecases.ClinicalUseCase
+	fhir    usecases.FHIRUseCase
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
@@ -66,13 +67,15 @@ func NewServicePubSubMessaging(
 	client *pubsub.Client,
 	baseExt extensions.BaseExtension,
 	infra infrastructure.Infrastructure,
-	usecases usecases.ClinicalUseCase,
+	patient usecases.ClinicalUseCase,
+	fhir usecases.FHIRUseCase,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
-		client:   client,
-		baseExt:  baseExt,
-		infra:    infra,
-		usecases: usecases,
+		client:  client,
+		baseExt: baseExt,
+		infra:   infra,
+		patient: patient,
+		fhir:    fhir,
 	}
 
 	ctx := context.Background()

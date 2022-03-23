@@ -43,6 +43,7 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 		baseExtension,
 		infrastructure,
 		usecases,
+		usecases,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)

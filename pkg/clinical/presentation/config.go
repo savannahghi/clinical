@@ -111,7 +111,7 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	h := rest.NewPresentationHandlers(infrastructure, usecases)
 
-	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases)
+	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases, usecases)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %v", err)
 	}

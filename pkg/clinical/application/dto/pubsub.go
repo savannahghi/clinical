@@ -22,3 +22,15 @@ type CreatePatientPubSubMessage struct {
 	CHV               string     `json:"chv"`
 	Caregiver         string     `json:"caregiver"`
 }
+
+// CreateFacilityPubSubMessage models the details of healthcare facilities that are on myCareHub platform.
+// This will be used to create a FHIR organization
+type CreateFacilityPubSubMessage struct {
+	ID          *string `json:"id"`
+	Name        string  `json:"name"`
+	Code        int     `json:"code"`
+	Phone       string  `json:"phone"`
+	Active      bool    `json:"active"`
+	County      string  `json:"county"`
+	Description string  `json:"description"`
+}
