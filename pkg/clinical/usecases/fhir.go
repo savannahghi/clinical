@@ -1976,18 +1976,6 @@ func (fh *FHIRUseCaseImpl) SearchFHIRObservation(ctx context.Context, params map
 
 // CreateFHIRObservation creates a FHIRObservation instance
 func (fh *FHIRUseCaseImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
-
 	resourceType := "Observation"
 	resource := domain.FHIRObservation{}
 

@@ -20,6 +20,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
@@ -109,9 +110,10 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	infrastructure := infrastructure.NewInfrastructureInteractor()
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
+	oclUseCase := ocl.NewUseCasesImpl(infrastructure)
 	h := rest.NewPresentationHandlers(infrastructure, usecases)
 
-	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases, usecases)
+	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases, usecases, oclUseCase)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %v", err)
 	}

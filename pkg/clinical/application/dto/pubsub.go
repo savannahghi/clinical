@@ -34,3 +34,13 @@ type CreateFacilityPubSubMessage struct {
 	County      string  `json:"county"`
 	Description string  `json:"description"`
 }
+
+// CreateVitalSignPubSubMessage models the details that will be posted to the vitals pub/sub topic
+type CreateVitalSignPubSubMessage struct {
+	PatientID      string    `json:"patientID"`
+	OrganizationID string    `json:"organizationID"`
+	Name           string    `json:"name"`
+	ConceptID      *string   `json:"conceptId"`
+	Value          string    `json:"value"`
+	Date           time.Time `json:"date"`
+}

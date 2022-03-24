@@ -10,6 +10,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/serverutils"
 )
 
@@ -60,6 +61,7 @@ type ServicePubSubMessaging struct {
 	infra   infrastructure.Infrastructure
 	patient usecases.ClinicalUseCase
 	fhir    usecases.FHIRUseCase
+	ocl     ocl.UseCases
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
@@ -69,6 +71,7 @@ func NewServicePubSubMessaging(
 	infra infrastructure.Infrastructure,
 	patient usecases.ClinicalUseCase,
 	fhir usecases.FHIRUseCase,
+	ocl ocl.UseCases,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
 		client:  client,
@@ -76,6 +79,7 @@ func NewServicePubSubMessaging(
 		infra:   infra,
 		patient: patient,
 		fhir:    fhir,
+		ocl:     ocl,
 	}
 
 	ctx := context.Background()
