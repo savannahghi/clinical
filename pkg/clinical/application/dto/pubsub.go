@@ -67,3 +67,20 @@ type AllergySeverity struct {
 	Name      string  `json:"name"`
 	ConceptID *string `json:"conceptID"`
 }
+
+// CreateMedicationPubSubMessage contains details for medication that a patient/client is prescribed or using
+type CreateMedicationPubSubMessage struct {
+	PatientID      string `json:"patientID"`
+	OrganizationID string `json:"organizationID"`
+
+	Name      string          `json:"medication"`
+	ConceptID *string         `json:"conceptId"`
+	Date      time.Time       `json:"date"`
+	Value     string          `json:"value"`
+	Drug      *MedicationDrug `json:"drug"`
+}
+
+// MedicationDrug ...
+type MedicationDrug struct {
+	ConceptID *string `json:"conceptId"`
+}

@@ -326,6 +326,108 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
+	case ps.AddPubSubNamespace(common.MedicationTopicName, ClinicalServiceName):
+		var data dto.CreateMedicationPubSubMessage
+		err := json.Unmarshal(message.Message.Data, &data)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		resp, err := ps.ocl.GetConcept(
+			ctx,
+			"CIEL",
+			"CIEL",
+			*data.ConceptID,
+			false,
+			false,
+		)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		response, err := ps.ocl.GetConcept(
+			ctx,
+			"CIEL",
+			"CIEL",
+			*data.Drug.ConceptID,
+			false,
+			false,
+		)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		var StatementConceptPayload domain.Concept
+		err = mapstructure.Decode(resp, &StatementConceptPayload)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		var DrugConceptPayload domain.Concept
+		err = mapstructure.Decode(response, &DrugConceptPayload)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
+		status := domain.MedicationStatementStatusEnumUnknown
+		msInput := domain.FHIRMedicationStatementInput{
+			Status: &status,
+			Category: &domain.FHIRCodeableConceptInput{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&StatementConceptPayload.URL),
+						Code:    scalarutils.Code(StatementConceptPayload.ID),
+						Display: StatementConceptPayload.DisplayName,
+					},
+				},
+				Text: StatementConceptPayload.DisplayName,
+			},
+			MedicationCodeableConcept: &domain.FHIRCodeableConceptInput{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&DrugConceptPayload.URL),
+						Code:    scalarutils.Code(DrugConceptPayload.ID),
+						Display: DrugConceptPayload.DisplayName,
+					},
+				},
+				Text: DrugConceptPayload.DisplayName,
+			},
+			Subject: &domain.FHIRReferenceInput{
+				Reference: &subjectReference,
+				Display:   data.PatientID,
+			},
+		}
+
+		_, err = ps.fhir.CreateFHIRMedicationStatement(ctx, msInput)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
 	}
 
 	resp := map[string]string{"Status": "Success"}
