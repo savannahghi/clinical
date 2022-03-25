@@ -44,3 +44,26 @@ type CreateVitalSignPubSubMessage struct {
 	Value          string    `json:"value"`
 	Date           time.Time `json:"date"`
 }
+
+// CreatePatientAllergyPubSubMessage contains allergy details for a patient
+type CreatePatientAllergyPubSubMessage struct {
+	PatientID      string          `json:"patientID"`
+	OrganizationID string          `json:"organizationID"`
+	Name           string          `json:"name"`
+	ConceptID      *string         `json:"conceptID"`
+	Date           time.Time       `json:"date"`
+	Reaction       AllergyReaction `json:"reaction"`
+	Severity       AllergySeverity `json:"severity"`
+}
+
+// AllergyReaction ...
+type AllergyReaction struct {
+	Name      string  `json:"name"`
+	ConceptID *string `json:"conceptID"`
+}
+
+// AllergySeverity ...
+type AllergySeverity struct {
+	Name      string  `json:"name"`
+	ConceptID *string `json:"conceptID"`
+}
