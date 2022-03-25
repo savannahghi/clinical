@@ -2838,3 +2838,87 @@ func (e PatientLinkTypeEnum) MarshalGQL(w io.Writer) {
 		log.Printf("%v\n", err)
 	}
 }
+
+// MedicationStatementStatusEnum indicates the status of a medication statement
+type MedicationStatementStatusEnum string
+
+const (
+	// MedicationStatementStatusEnumActive is The medication is still being taken.
+	MedicationStatementStatusEnumActive MedicationStatementStatusEnum = "active"
+
+	// MedicationStatementStatusEnumInActive is The medication is no longer being taken.
+	MedicationStatementStatusEnumInActive MedicationStatementStatusEnum = "inactive"
+
+	// MedicationStatementStatusEnumEnteredInError is Some of the actions that are implied by the medication statement may have occurred.
+	MedicationStatementStatusEnumEnteredInError MedicationStatementStatusEnum = "entered-in-error"
+
+	// MedicationStatementStatusEnumIntended is The medication may be taken at some time in the future.
+	MedicationStatementStatusEnumIntended MedicationStatementStatusEnum = "intended"
+
+	// MedicationStatementStatusEnumStopped is Actions implied by the statement have been permanently halted, before all of them occurred
+	MedicationStatementStatusEnumStopped MedicationStatementStatusEnum = "stopped"
+
+	// MedicationStatementStatusEnumOnHold is Actions implied by the statement have been temporarily halted, but are expected to continue later.
+	MedicationStatementStatusEnumOnHold MedicationStatementStatusEnum = "on-hold"
+
+	// MedicationStatementStatusEnumUnknown is The state of the medication use is not currently known.
+	MedicationStatementStatusEnumUnknown MedicationStatementStatusEnum = "unknown"
+
+	// MedicationStatementStatusEnumNotTaken is The medication was not consumed by the patient
+	MedicationStatementStatusEnumNotTaken MedicationStatementStatusEnum = "not-taken"
+)
+
+// AllMedicationStatementStatusEnum is a list of all possible medication statements status
+var AllMedicationStatementStatusEnum = []MedicationStatementStatusEnum{
+	MedicationStatementStatusEnumActive,
+	MedicationStatementStatusEnumInActive,
+	MedicationStatementStatusEnumEnteredInError,
+	MedicationStatementStatusEnumIntended,
+	MedicationStatementStatusEnumStopped,
+	MedicationStatementStatusEnumOnHold,
+	MedicationStatementStatusEnumUnknown,
+	MedicationStatementStatusEnumNotTaken,
+}
+
+// IsValid ...
+func (e MedicationStatementStatusEnum) IsValid() bool {
+	switch e {
+	case MedicationStatementStatusEnumActive,
+		MedicationStatementStatusEnumInActive,
+		MedicationStatementStatusEnumEnteredInError,
+		MedicationStatementStatusEnumIntended,
+		MedicationStatementStatusEnumStopped,
+		MedicationStatementStatusEnumOnHold,
+		MedicationStatementStatusEnumUnknown,
+		MedicationStatementStatusEnumNotTaken:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e MedicationStatementStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *MedicationStatementStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = MedicationStatementStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Patient_LinkTypeEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the patient link type to the supplied writer as a quoted string
+func (e MedicationStatementStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
