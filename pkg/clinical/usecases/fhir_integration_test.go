@@ -2888,14 +2888,6 @@ func TestFHIRUseCaseImpl_CreateFHIRObservation(t *testing.T) {
 			},
 		},
 		{
-			name: "invalid: unauthenticated context",
-			args: args{
-				ctx:   context.Background(),
-				input: *input,
-			},
-			wantErr: true,
-		},
-		{
 			name: "invalid: missing parameters",
 			args: args{
 				ctx: ctx,

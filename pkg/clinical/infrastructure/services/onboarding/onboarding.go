@@ -7,7 +7,6 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/onboarding/pkg/onboarding/application/dto"
-	"github.com/sirupsen/logrus"
 )
 
 // internal apis definitions
@@ -44,8 +43,6 @@ func (on *ServiceOnboardingImpl) CreateUserProfile(ctx context.Context, payload 
 	if err != nil {
 		return fmt.Errorf("unable to send request, error: %v", err)
 	}
-	logrus.Printf("47: THE RESP IS: %v", res)
-	logrus.Printf("48: THE ERROR IS: %v", err)
 
 	if res.StatusCode != http.StatusOK {
 		return fmt.Errorf("register user failed with status code: %v", res.StatusCode)

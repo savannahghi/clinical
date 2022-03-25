@@ -18,11 +18,11 @@ type User struct {
 	UserType    string           `json:"userType"`
 	Name        string           `json:"name"`
 	Gender      enumutils.Gender `json:"gender"`
-	Active      bool
-	Contacts    *Contact        `json:"primaryContact"`
-	Flavour     feedlib.Flavour `json:"flavour"`
-	Avatar      string          `json:"avatar"`
-	DateOfBirth *time.Time      `json:"dateOfBirth"`
+	Active      bool             `json:"active"`
+	Contacts    *Contact         `json:"primaryContact"`
+	Flavour     feedlib.Flavour  `json:"flavour"`
+	Avatar      string           `json:"avatar"`
+	DateOfBirth *time.Time       `json:"dateOfBirth"`
 }
 
 // Contact hold contact information/details for users
@@ -31,7 +31,5 @@ type Contact struct {
 	ContactType  string  `json:"contactType"`
 	ContactValue string  `json:"contactValue"`
 	Active       bool    `json:"active"`
-	// a user may opt not to be contacted via this contact
-	// e.g if it's a shared phone owned by a teenager
-	OptedIn bool `json:"optedIn"`
+	OptedIn      bool    `json:"optedIn"`
 }

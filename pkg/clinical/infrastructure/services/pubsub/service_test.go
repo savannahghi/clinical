@@ -11,9 +11,9 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
-	"github.com/sirupsen/logrus"
 )
 
 func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging, error) {
@@ -38,12 +38,14 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 
 	infrastructure := infrastructure.NewInfrastructureInteractor()
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
+	oclUseCase := ocl.NewUseCasesImpl(infrastructure)
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		pubSubClient,
 		baseExtension,
 		infrastructure,
 		usecases,
 		usecases,
+		oclUseCase,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
@@ -89,7 +91,6 @@ func TestServicePubSubMessaging_AddPubSubNamespace(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := ps.AddPubSubNamespace(tt.args.topicName, tt.args.serviceName)
-			logrus.Printf("we got %v", got)
 			if got != tt.want {
 				t.Errorf("ServicePubSubMessaging.AddPubSubNamespace() = %v, want %v", got, tt.want)
 			}
