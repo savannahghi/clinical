@@ -428,6 +428,92 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
+	case ps.AddPubSubNamespace(common.TestResultTopicName, ClinicalServiceName):
+		var data dto.CreatePatientTestResultPubSubMessage
+		err := json.Unmarshal(message.Message.Data, &data)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		response, err := ps.ocl.GetConcept(
+			ctx,
+			"CIEL",
+			"CIEL",
+			*data.ConceptID,
+			false,
+			false,
+		)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		var ConceptPayload domain.Concept
+		err = mapstructure.Decode(response, &ConceptPayload)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		year, month, day := data.Date.Date()
+		system := "http://terminology.hl7.org/CodeSystem/observation-category"
+		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
+		status := domain.ObservationStatusEnumPreliminary
+		input := domain.FHIRObservationInput{
+			Status: &status,
+			Category: []*domain.FHIRCodeableConceptInput{
+				{
+					Coding: []*domain.FHIRCodingInput{
+						{
+							System:  (*scalarutils.URI)(&system),
+							Code:    "laboratory",
+							Display: "Laboratory",
+						},
+					},
+					Text: "Laboratory",
+				},
+			},
+
+			Code: domain.FHIRCodeableConceptInput{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&ConceptPayload.URL),
+						Code:    scalarutils.Code(ConceptPayload.ID),
+						Display: ConceptPayload.DisplayName,
+					},
+				},
+				Text: ConceptPayload.DisplayName,
+			},
+			ValueString: &data.Result.Name,
+			EffectiveDateTime: &scalarutils.Date{
+				Year:  year,
+				Month: int(month),
+				Day:   day,
+			},
+			Subject: &domain.FHIRReferenceInput{
+				Reference: &subjectReference,
+				Display:   data.PatientID,
+			},
+		}
+
+		_, err = ps.fhir.CreateFHIRObservation(ctx, input)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
 	}
 
 	resp := map[string]string{"Status": "Success"}

@@ -4,26 +4,26 @@ import "time"
 
 // Concept models a concept type from OpenConceptLab
 type Concept struct {
-	ConceptClass     string     `json:"concept_class"`
-	DataType         string     `json:"datatype"`
-	DisplayLocale    string     `json:"display_locale"`
-	DisplayName      string     `json:"display_name"`
-	ExternalID       string     `json:"external_id"`
-	ID               string     `json:"id"`
-	IsLatestVersion  bool       `json:"is_latest_version"`
-	Locale           *string    `json:"locale"`
-	Owner            string     `json:"owner"`
-	OwnerType        string     `json:"owner_type"`
-	OwnerURL         string     `json:"owner_url"`
-	Retired          bool       `json:"retired"`
-	Source           string     `json:"source"`
-	Type             string     `json:"type"`
-	UpdateComment    string     `json:"update_comment"`
-	URL              string     `json:"url"`
-	UUID             string     `json:"uuid"`
-	Version          string     `json:"version"`
-	VersionCreatedBy string     `json:"version_created_by"`
-	VersionCreatedOn *time.Time `json:"version_created_on"`
-	VersionURL       string     `json:"version_url"`
-	VersionsURL      string     `json:"versions_url"`
+	ConceptClass     string     `mapstructure:"concept_class" json:"concept_class"`
+	DataType         string     `mapstructure:"datatype" json:"datatype"`
+	DisplayLocale    string     `mapstructure:"display_locale" json:"display_locale"`
+	DisplayName      string     `mapstructure:"display_name" json:"display_name"`
+	ExternalID       string     `mapstructure:"external_id" json:"external_id"`
+	ID               string     `mapstructure:"id" json:"id"`
+	IsLatestVersion  bool       `mapstructure:"is_latest_version" json:"is_latest_version"`
+	Locale           *string    `mapstructure:"locale" json:"locale"`
+	Owner            string     `mapstructure:"owner" json:"owner"`
+	OwnerType        string     `mapstructure:"owner_type" json:"owner_type"`
+	OwnerURL         string     `mapstructure:"owner_url" json:"owner_url"`
+	Retired          bool       `mapstructure:"retired" json:"retired"`
+	Source           string     `mapstructure:"source" json:"source"`
+	Type             string     `mapstructure:"type" json:"type"`
+	UpdateComment    string     `mapstructure:"update_comment" json:"update_comment"`
+	URL              string     `mapstructure:"url" json:"url"`
+	UUID             string     `mapstructure:"uuid" json:"uuid"`
+	Version          string     `mapstructure:"version" json:"version"`
+	VersionCreatedBy string     `mapstructure:"version_created_by" json:"version_created_by"`
+	VersionCreatedOn *time.Time `mapstructure:"version_created_on" json:"version_created_on"`
+	VersionURL       string     `mapstructure:"version_url" json:"version_url"`
+	VersionsURL      string     `mapstructure:"versions_url" json:"versions_url"`
 }
