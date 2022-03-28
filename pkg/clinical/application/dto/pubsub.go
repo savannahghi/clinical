@@ -84,3 +84,19 @@ type CreateMedicationPubSubMessage struct {
 type MedicationDrug struct {
 	ConceptID *string `json:"conceptId"`
 }
+
+// CreatePatientTestResultPubSubMessage models details that are published to the test results topic
+type CreatePatientTestResultPubSubMessage struct {
+	PatientID      string     `json:"patientID"`
+	OrganizationID string     `json:"organizationID"`
+	Name           string     `json:"name"`
+	ConceptID      *string    `json:"conceptId"`
+	Date           time.Time  `json:"date"`
+	Result         TestResult `json:"result"`
+}
+
+// TestResult ...
+type TestResult struct {
+	Name      string  `json:"name"`
+	ConceptID *string `json:"conceptId"`
+}
