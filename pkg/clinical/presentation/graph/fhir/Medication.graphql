@@ -1,0 +1,125 @@
+"""
+MedicationStatusEnum
+"""
+enum MedicationStatusEnum {
+  active
+  inactive
+  entered_in_error # `original: entered-in-error`
+}
+
+"""
+FHIRMedicationInput
+"""
+input FHIRMedicationInput {
+  ID: ID
+
+  Text: FHIRNarrativeInput
+
+  Identifier: [FHIRIdentifierInput]
+
+  Code: FHIRCodeableConceptInput
+
+  Status: MedicationStatusEnum
+
+  Manufacturer: FHIROrganizationInput
+
+  Form: FHIRCodeableConceptInput
+
+  Amount: FHIRRatioInput
+
+  Ingredient: [MedicationIngredientInput]
+
+  Batch: MedicationBatchInput
+}
+
+"""
+MedicationBatchInput
+"""
+input MedicationBatchInput {
+  LotNumber: String
+
+  ExpirationDate: Date
+}
+
+"""
+MedicationIngredientInput
+"""
+input MedicationIngredientInput {
+  ItemCodelabConcept: FHIRCodeableConceptInput
+
+  ItemReference: FHIRReferenceInput
+
+  IsActive: Boolean
+
+  Strength: FHIRRatioInput
+}
+
+"""
+FHIRMedication
+"""
+type FHIRMedication {
+  ID: ID
+
+  Text: FHIRNarrative
+
+  Identifier: [FHIRIdentifier]
+
+  Code: FHIRCodeableConcept
+
+  Status: MedicationStatusEnum
+
+  Manufacturer: FHIROrganization
+
+  Form: FHIRCodeableConcept
+
+  Amount: FHIRRatio
+
+  Ingredient: [MedicationIngredient]
+
+  Batch: MedicationBatch
+}
+
+"""
+MedicationBatch
+"""
+type MedicationBatch {
+  LotNumber: String
+
+  ExpirationDate: Date
+}
+
+"""
+MedicationIngredient
+"""
+type MedicationIngredient {
+  ItemCodelabConcept: FHIRCodeableConcept
+
+  ItemReference: FHIRReference
+
+  IsActive: Boolean
+
+  Strength: FHIRRatio
+}
+
+"""
+FHIRMedicationRelayConnection is a Relay connection for MedicationStatement
+"""
+type FHIRMedicationRelayConnection {
+  edges: [FHIRMedicationRelayEdge]
+  pageInfo: PageInfo
+}
+
+"""
+FHIRMedicationRelayEdge is a Relay edge for Medication
+"""
+type FHIRMedicationRelayEdge {
+  cursor: String
+  node: FHIRMedication
+}
+
+"""
+FHIRMedicationRelayPayload is used to return single instances of Medication
+"""
+type FHIRMedicationRelayPayload {
+  resource: FHIRMedication
+}

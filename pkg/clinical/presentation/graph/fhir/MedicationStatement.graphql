@@ -1,0 +1,129 @@
+"""
+MedicationStatementStatusEnum is a FHIR enum
+"""
+enum MedicationStatementStatusEnum {
+  active
+  inactive
+  entered_in_error # `original: entered-in-error`
+  intended
+  stopped
+  on_hold # `original: on-hold`
+  unknown
+  not_taken # `original: not-taken`
+}
+
+"""
+FHIRMedicationStatementInput: input for medication statement
+"""
+input FHIRMedicationStatementInput {
+  ID: ID
+
+  Text: FHIRNarrativeInput
+
+  Identifier: [FHIRIdentifierInput]
+
+  BasedOn: [FHIRReferenceInput]
+
+  PartOf: [FHIRReferenceInput]
+
+  Status: MedicationStatementStatusEnum
+
+  StatusReason: [FHIRCodeableConceptInput]
+
+  Category: FHIRCodeableConceptInput
+
+  MedicationCodeableConcept: FHIRCodeableConceptInput
+
+  MedicationReference: FHIRMedicationInput
+
+  Subject: FHIRReferenceInput
+
+  Context: FHIRReferenceInput
+
+  EffectiveDateTime: Date
+
+  EffectivePeriod: FHIRPeriodInput
+
+  DateAsserted: Date
+
+  InformationSource: FHIRReferenceInput
+
+  DerivedFrom: [FHIRReferenceInput]
+
+  ReasonCode: [FHIRCodeableConceptInput]
+
+  ReasonReference: [FHIRReferenceInput]
+
+  Note: [FHIRAnnotationInput]
+
+  Dosage: [FHIRDosageInput]
+}
+
+"""
+FHIRMedicationStatement definition: A record of a medication that is being consumed by a patient. A MedicationStatement may indicate that the patient may be taking the medication now or in the past or in the future.
+"""
+type FHIRMedicationStatement {
+  ID: ID
+
+  Text: FHIRNarrative
+
+  Identifier: [FHIRIdentifier]
+
+  BasedOn: [FHIRReference]
+
+  PartOf: [FHIRReference]
+
+  Status: MedicationStatementStatusEnum
+
+  StatusReason: [FHIRCodeableConcept]
+
+  Category: FHIRCodeableConcept
+
+  MedicationCodeableConcept: FHIRCodeableConcept
+
+  MedicationReference: FHIRMedication
+
+  Subject: FHIRReference
+
+  Context: FHIRReference
+
+  EffectiveDateTime: Date
+
+  EffectivePeriod: FHIRPeriod
+
+  DateAsserted: Date
+
+  InformationSource: FHIRReference
+
+  DerivedFrom: [FHIRReference]
+
+  ReasonCode: [FHIRCodeableConcept]
+
+  ReasonReference: [FHIRReference]
+
+  Note: [FHIRAnnotation]
+
+  Dosage: [FHIRDosage]
+}
+"""
+FHIRMedicationStatementRelayConnection is a Relay connection for MedicationStatement
+"""
+type FHIRMedicationStatementRelayConnection {
+  edges: [FHIRMedicationStatementRelayEdge]
+  pageInfo: PageInfo!
+}
+
+"""
+FHIRMedicationStatementRelayEdge is a Relay edge for MedicationStatement
+"""
+type FHIRMedicationStatementRelayEdge {
+  cursor: String
+  node: FHIRMedicationStatement
+}
+
+"""
+FHIRMedicationStatementRelayPayload is used to return single instances of MedicationStatement
+"""
+type FHIRMedicationStatementRelayPayload {
+  resource: FHIRMedicationStatement
+}

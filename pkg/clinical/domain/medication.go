@@ -5,20 +5,6 @@ import (
 	"github.com/savannahghi/scalarutils"
 )
 
-// FHIRMedicationStatus indicates the medication status
-type FHIRMedicationStatus string
-
-const (
-	// FHIRMedicationStatusActive is The medication is available for use
-	FHIRMedicationStatusActive FHIRMedicationStatus = "active"
-
-	// FHIRMedicationStatusInActive is The medication is not available for use.
-	FHIRMedicationStatusInActive FHIRMedicationStatus = "inactive"
-
-	// FHIRMedicationStatusEnteredInError is The medication was entered in error.
-	FHIRMedicationStatusEnteredInError FHIRMedicationStatus = "entered-in-error"
-)
-
 // FHIRMedication definition:
 type FHIRMedication struct {
 	ID *string `json:"id,omitempty"`
@@ -29,7 +15,7 @@ type FHIRMedication struct {
 
 	Code *FHIRCodeableConcept `json:"code,omitempty"`
 
-	Status FHIRMedicationStatus `json:"status,omitempty"`
+	Status MedicationStatusEnum `json:"status,omitempty"`
 
 	Manufacturer *FHIROrganization `json:"manufacturer,omitempty"`
 
@@ -37,20 +23,20 @@ type FHIRMedication struct {
 
 	Amount *FHIRRatio `json:"amount,omitempty"`
 
-	Ingredient []*FHIRMedicationIngredient `json:"ingredient,omitempty"`
+	Ingredient []*MedicationIngredient `json:"ingredient,omitempty"`
 
-	Batch *FHIRMedicationBatch `json:"batch,omitempty"`
+	Batch *MedicationBatch `json:"batch,omitempty"`
 }
 
-// FHIRMedicationBatch definition:
-type FHIRMedicationBatch struct {
+// MedicationBatch definition:
+type MedicationBatch struct {
 	LotNumber string `json:"lotNumber,omitempty"`
 
 	ExpirationDate *scalarutils.Date `json:"expirationDate,omitempty"`
 }
 
-// FHIRMedicationIngredient definition:
-type FHIRMedicationIngredient struct {
+// MedicationIngredient definition:
+type MedicationIngredient struct {
 	ItemCodelabConcept *FHIRCodeableConcept `json:"itemCodelabConcept,omitempty"`
 
 	ItemReference *FHIRReference `json:"itemReference,omitempty"`
@@ -70,7 +56,7 @@ type FHIRMedicationInput struct {
 
 	Code *FHIRCodeableConceptInput `json:"code,omitempty"`
 
-	Status FHIRMedicationStatus `json:"status,omitempty"`
+	Status MedicationStatusEnum `json:"status,omitempty"`
 
 	Manufacturer *FHIROrganizationInput `json:"manufacturer,omitempty"`
 
@@ -78,20 +64,20 @@ type FHIRMedicationInput struct {
 
 	Amount *FHIRRatioInput `json:"amount,omitempty"`
 
-	Ingredient []*FHIRMedicationIngredientInput `json:"ingredient,omitempty"`
+	Ingredient []*MedicationIngredientInput `json:"ingredient,omitempty"`
 
-	Batch *FHIRMedicationBatchInput `json:"batch,omitempty"`
+	Batch *MedicationBatchInput `json:"batch,omitempty"`
 }
 
-// FHIRMedicationBatchInput ...
-type FHIRMedicationBatchInput struct {
+// MedicationBatchInput ...
+type MedicationBatchInput struct {
 	LotNumber string `json:"lotNumber,omitempty"`
 
 	ExpirationDate *scalarutils.Date `json:"expirationDate,omitempty"`
 }
 
-// FHIRMedicationIngredientInput definition:
-type FHIRMedicationIngredientInput struct {
+// MedicationIngredientInput definition:
+type MedicationIngredientInput struct {
 	ItemCodelabConcept *FHIRCodeableConceptInput `json:"itemCodelabConcept,omitempty"`
 
 	ItemReference *FHIRReferenceInput `json:"itemReference,omitempty"`
@@ -101,7 +87,7 @@ type FHIRMedicationIngredientInput struct {
 	Strength *FHIRRatioInput `json:"strength,omitempty"`
 }
 
-// FHIRMedicationRelayConnection is a Relay connection for MedicationStatement
+// FHIRMedicationRelayConnection is a Relay connection for Medication
 type FHIRMedicationRelayConnection struct {
 	Edges []*FHIRMedicationRelayEdge `json:"edges,omitempty"`
 
