@@ -184,6 +184,8 @@ extend type Query {
 
   patientTimelineWithCount(episodeID: String!, count: Int!): [Map!]!
 
+  patientTimeline(patientID: String!, count: Int!): [Map!]!
+
   searchFHIREncounter(params: Map!): FHIREncounterRelayConnection!
 
   searchFHIRCondition(params: Map!): FHIRConditionRelayConnection!

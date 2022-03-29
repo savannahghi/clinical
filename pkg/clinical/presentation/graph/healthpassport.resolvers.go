@@ -221,6 +221,12 @@ func (r *queryResolver) PatientTimelineWithCount(ctx context.Context, episodeID 
 	return r.usecases.PatientTimelineWithCount(ctx, episodeID, count)
 }
 
+func (r *queryResolver) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.PatientTimeline(ctx, patientID, count)
+}
+
 func (r *queryResolver) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)

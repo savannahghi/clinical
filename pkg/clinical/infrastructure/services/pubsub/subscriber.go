@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -172,6 +173,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		system := "http://terminology.hl7.org/CodeSystem/observation-category"
 		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
 		status := domain.ObservationStatusEnumPreliminary
+		instant := scalarutils.Instant(data.Date.Format(time.RFC3339))
 		input := domain.FHIRObservationInput{
 			Status: &status,
 			Category: []*domain.FHIRCodeableConceptInput{
@@ -193,6 +195,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 				Day:   day,
 			},
 
+			EffectiveInstant: &instant,
 			Code: domain.FHIRCodeableConceptInput{
 				Coding: []*domain.FHIRCodingInput{
 					{
@@ -389,6 +392,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
+		year, month, day := data.Date.Date()
 		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
 		status := domain.MedicationStatementStatusEnumUnknown
 		msInput := domain.FHIRMedicationStatementInput{
@@ -416,6 +420,11 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
 				Display:   data.PatientID,
+			},
+			EffectiveDateTime: &scalarutils.Date{
+				Year:  year,
+				Month: int(month),
+				Day:   day,
 			},
 		}
 
@@ -469,6 +478,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		system := "http://terminology.hl7.org/CodeSystem/observation-category"
 		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
 		status := domain.ObservationStatusEnumPreliminary
+		instant := scalarutils.Instant(data.Date.Format(time.RFC3339))
 		input := domain.FHIRObservationInput{
 			Status: &status,
 			Category: []*domain.FHIRCodeableConceptInput{
@@ -500,6 +510,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 				Month: int(month),
 				Day:   day,
 			},
+			EffectiveInstant: &instant,
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
 				Display:   data.PatientID,
