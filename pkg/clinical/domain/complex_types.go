@@ -2922,3 +2922,62 @@ func (e MedicationStatementStatusEnum) MarshalGQL(w io.Writer) {
 		log.Printf("%v\n", err)
 	}
 }
+
+// MedicationStatusEnum indicates the medication status
+type MedicationStatusEnum string
+
+const (
+	// MedicationStatusEnumActive is The medication is available for use
+	MedicationStatusEnumActive MedicationStatusEnum = "active"
+
+	// MedicationStatusEnumInActive is The medication is not available for use.
+	MedicationStatusEnumInActive MedicationStatusEnum = "inactive"
+
+	// MedicationStatusEnumEnteredInError is The medication was entered in error.
+	MedicationStatusEnumEnteredInError MedicationStatusEnum = "entered-in-error"
+)
+
+// AllMedicationStatusEnum is a list of all possible medication status
+var AllMedicationStatusEnum = []MedicationStatusEnum{
+	MedicationStatusEnumActive,
+	MedicationStatusEnumInActive,
+	MedicationStatusEnumEnteredInError,
+}
+
+// IsValid ...
+func (e MedicationStatusEnum) IsValid() bool {
+	switch e {
+	case MedicationStatusEnumActive,
+		MedicationStatusEnumInActive,
+		MedicationStatusEnumEnteredInError:
+		return true
+	}
+	return false
+}
+
+// String ...
+func (e MedicationStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *MedicationStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = MedicationStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Patient_LinkTypeEnum", str)
+	}
+	return nil
+}
+
+// MarshalGQL writes the patient link type to the supplied writer as a quoted string
+func (e MedicationStatusEnum) MarshalGQL(w io.Writer) {
+	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}

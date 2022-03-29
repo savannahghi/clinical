@@ -497,6 +497,33 @@ type ComplexityRoot struct {
 		Value    func(childComplexity int) int
 	}
 
+	FHIRMedication struct {
+		Amount       func(childComplexity int) int
+		Batch        func(childComplexity int) int
+		Code         func(childComplexity int) int
+		Form         func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Identifier   func(childComplexity int) int
+		Ingredient   func(childComplexity int) int
+		Manufacturer func(childComplexity int) int
+		Status       func(childComplexity int) int
+		Text         func(childComplexity int) int
+	}
+
+	FHIRMedicationRelayConnection struct {
+		Edges    func(childComplexity int) int
+		PageInfo func(childComplexity int) int
+	}
+
+	FHIRMedicationRelayEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	FHIRMedicationRelayPayload struct {
+		Resource func(childComplexity int) int
+	}
+
 	FHIRMedicationRequest struct {
 		AuthoredOn                func(childComplexity int) int
 		BasedOn                   func(childComplexity int) int
@@ -547,6 +574,44 @@ type ComplexityRoot struct {
 	}
 
 	FHIRMedicationRequestRelayPayload struct {
+		Resource func(childComplexity int) int
+	}
+
+	FHIRMedicationStatement struct {
+		BasedOn                   func(childComplexity int) int
+		Category                  func(childComplexity int) int
+		Context                   func(childComplexity int) int
+		DateAsserted              func(childComplexity int) int
+		DerivedFrom               func(childComplexity int) int
+		Dosage                    func(childComplexity int) int
+		EffectiveDateTime         func(childComplexity int) int
+		EffectivePeriod           func(childComplexity int) int
+		ID                        func(childComplexity int) int
+		Identifier                func(childComplexity int) int
+		InformationSource         func(childComplexity int) int
+		MedicationCodeableConcept func(childComplexity int) int
+		MedicationReference       func(childComplexity int) int
+		Note                      func(childComplexity int) int
+		PartOf                    func(childComplexity int) int
+		ReasonCode                func(childComplexity int) int
+		ReasonReference           func(childComplexity int) int
+		Status                    func(childComplexity int) int
+		StatusReason              func(childComplexity int) int
+		Subject                   func(childComplexity int) int
+		Text                      func(childComplexity int) int
+	}
+
+	FHIRMedicationStatementRelayConnection struct {
+		Edges    func(childComplexity int) int
+		PageInfo func(childComplexity int) int
+	}
+
+	FHIRMedicationStatementRelayEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	FHIRMedicationStatementRelayPayload struct {
 		Resource func(childComplexity int) int
 	}
 
@@ -882,6 +947,18 @@ type ComplexityRoot struct {
 		PeriodUnit     func(childComplexity int) int
 		TimeOfDay      func(childComplexity int) int
 		When           func(childComplexity int) int
+	}
+
+	MedicationBatch struct {
+		ExpirationDate func(childComplexity int) int
+		LotNumber      func(childComplexity int) int
+	}
+
+	MedicationIngredient struct {
+		IsActive           func(childComplexity int) int
+		ItemCodelabConcept func(childComplexity int) int
+		ItemReference      func(childComplexity int) int
+		Strength           func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -3114,6 +3191,111 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRIdentifier.Value(childComplexity), true
 
+	case "FHIRMedication.Amount":
+		if e.complexity.FHIRMedication.Amount == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Amount(childComplexity), true
+
+	case "FHIRMedication.Batch":
+		if e.complexity.FHIRMedication.Batch == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Batch(childComplexity), true
+
+	case "FHIRMedication.Code":
+		if e.complexity.FHIRMedication.Code == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Code(childComplexity), true
+
+	case "FHIRMedication.Form":
+		if e.complexity.FHIRMedication.Form == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Form(childComplexity), true
+
+	case "FHIRMedication.ID":
+		if e.complexity.FHIRMedication.ID == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.ID(childComplexity), true
+
+	case "FHIRMedication.Identifier":
+		if e.complexity.FHIRMedication.Identifier == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Identifier(childComplexity), true
+
+	case "FHIRMedication.Ingredient":
+		if e.complexity.FHIRMedication.Ingredient == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Ingredient(childComplexity), true
+
+	case "FHIRMedication.Manufacturer":
+		if e.complexity.FHIRMedication.Manufacturer == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Manufacturer(childComplexity), true
+
+	case "FHIRMedication.Status":
+		if e.complexity.FHIRMedication.Status == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Status(childComplexity), true
+
+	case "FHIRMedication.Text":
+		if e.complexity.FHIRMedication.Text == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedication.Text(childComplexity), true
+
+	case "FHIRMedicationRelayConnection.edges":
+		if e.complexity.FHIRMedicationRelayConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationRelayConnection.Edges(childComplexity), true
+
+	case "FHIRMedicationRelayConnection.pageInfo":
+		if e.complexity.FHIRMedicationRelayConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationRelayConnection.PageInfo(childComplexity), true
+
+	case "FHIRMedicationRelayEdge.cursor":
+		if e.complexity.FHIRMedicationRelayEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationRelayEdge.Cursor(childComplexity), true
+
+	case "FHIRMedicationRelayEdge.node":
+		if e.complexity.FHIRMedicationRelayEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationRelayEdge.Node(childComplexity), true
+
+	case "FHIRMedicationRelayPayload.resource":
+		if e.complexity.FHIRMedicationRelayPayload.Resource == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationRelayPayload.Resource(childComplexity), true
+
 	case "FHIRMedicationRequest.AuthoredOn":
 		if e.complexity.FHIRMedicationRequest.AuthoredOn == nil {
 			break
@@ -3400,6 +3582,188 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FHIRMedicationRequestRelayPayload.Resource(childComplexity), true
+
+	case "FHIRMedicationStatement.BasedOn":
+		if e.complexity.FHIRMedicationStatement.BasedOn == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.BasedOn(childComplexity), true
+
+	case "FHIRMedicationStatement.Category":
+		if e.complexity.FHIRMedicationStatement.Category == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Category(childComplexity), true
+
+	case "FHIRMedicationStatement.Context":
+		if e.complexity.FHIRMedicationStatement.Context == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Context(childComplexity), true
+
+	case "FHIRMedicationStatement.DateAsserted":
+		if e.complexity.FHIRMedicationStatement.DateAsserted == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.DateAsserted(childComplexity), true
+
+	case "FHIRMedicationStatement.DerivedFrom":
+		if e.complexity.FHIRMedicationStatement.DerivedFrom == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.DerivedFrom(childComplexity), true
+
+	case "FHIRMedicationStatement.Dosage":
+		if e.complexity.FHIRMedicationStatement.Dosage == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Dosage(childComplexity), true
+
+	case "FHIRMedicationStatement.EffectiveDateTime":
+		if e.complexity.FHIRMedicationStatement.EffectiveDateTime == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.EffectiveDateTime(childComplexity), true
+
+	case "FHIRMedicationStatement.EffectivePeriod":
+		if e.complexity.FHIRMedicationStatement.EffectivePeriod == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.EffectivePeriod(childComplexity), true
+
+	case "FHIRMedicationStatement.ID":
+		if e.complexity.FHIRMedicationStatement.ID == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.ID(childComplexity), true
+
+	case "FHIRMedicationStatement.Identifier":
+		if e.complexity.FHIRMedicationStatement.Identifier == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Identifier(childComplexity), true
+
+	case "FHIRMedicationStatement.InformationSource":
+		if e.complexity.FHIRMedicationStatement.InformationSource == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.InformationSource(childComplexity), true
+
+	case "FHIRMedicationStatement.MedicationCodeableConcept":
+		if e.complexity.FHIRMedicationStatement.MedicationCodeableConcept == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.MedicationCodeableConcept(childComplexity), true
+
+	case "FHIRMedicationStatement.MedicationReference":
+		if e.complexity.FHIRMedicationStatement.MedicationReference == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.MedicationReference(childComplexity), true
+
+	case "FHIRMedicationStatement.Note":
+		if e.complexity.FHIRMedicationStatement.Note == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Note(childComplexity), true
+
+	case "FHIRMedicationStatement.PartOf":
+		if e.complexity.FHIRMedicationStatement.PartOf == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.PartOf(childComplexity), true
+
+	case "FHIRMedicationStatement.ReasonCode":
+		if e.complexity.FHIRMedicationStatement.ReasonCode == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.ReasonCode(childComplexity), true
+
+	case "FHIRMedicationStatement.ReasonReference":
+		if e.complexity.FHIRMedicationStatement.ReasonReference == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.ReasonReference(childComplexity), true
+
+	case "FHIRMedicationStatement.Status":
+		if e.complexity.FHIRMedicationStatement.Status == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Status(childComplexity), true
+
+	case "FHIRMedicationStatement.StatusReason":
+		if e.complexity.FHIRMedicationStatement.StatusReason == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.StatusReason(childComplexity), true
+
+	case "FHIRMedicationStatement.Subject":
+		if e.complexity.FHIRMedicationStatement.Subject == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Subject(childComplexity), true
+
+	case "FHIRMedicationStatement.Text":
+		if e.complexity.FHIRMedicationStatement.Text == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatement.Text(childComplexity), true
+
+	case "FHIRMedicationStatementRelayConnection.edges":
+		if e.complexity.FHIRMedicationStatementRelayConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatementRelayConnection.Edges(childComplexity), true
+
+	case "FHIRMedicationStatementRelayConnection.pageInfo":
+		if e.complexity.FHIRMedicationStatementRelayConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatementRelayConnection.PageInfo(childComplexity), true
+
+	case "FHIRMedicationStatementRelayEdge.cursor":
+		if e.complexity.FHIRMedicationStatementRelayEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatementRelayEdge.Cursor(childComplexity), true
+
+	case "FHIRMedicationStatementRelayEdge.node":
+		if e.complexity.FHIRMedicationStatementRelayEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatementRelayEdge.Node(childComplexity), true
+
+	case "FHIRMedicationStatementRelayPayload.resource":
+		if e.complexity.FHIRMedicationStatementRelayPayload.Resource == nil {
+			break
+		}
+
+		return e.complexity.FHIRMedicationStatementRelayPayload.Resource(childComplexity), true
 
 	case "FHIRMedicationrequestDispenserequest.DispenseInterval":
 		if e.complexity.FHIRMedicationrequestDispenserequest.DispenseInterval == nil {
@@ -5045,6 +5409,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FHIRTimingRepeat.When(childComplexity), true
+
+	case "MedicationBatch.ExpirationDate":
+		if e.complexity.MedicationBatch.ExpirationDate == nil {
+			break
+		}
+
+		return e.complexity.MedicationBatch.ExpirationDate(childComplexity), true
+
+	case "MedicationBatch.LotNumber":
+		if e.complexity.MedicationBatch.LotNumber == nil {
+			break
+		}
+
+		return e.complexity.MedicationBatch.LotNumber(childComplexity), true
+
+	case "MedicationIngredient.IsActive":
+		if e.complexity.MedicationIngredient.IsActive == nil {
+			break
+		}
+
+		return e.complexity.MedicationIngredient.IsActive(childComplexity), true
+
+	case "MedicationIngredient.ItemCodelabConcept":
+		if e.complexity.MedicationIngredient.ItemCodelabConcept == nil {
+			break
+		}
+
+		return e.complexity.MedicationIngredient.ItemCodelabConcept(childComplexity), true
+
+	case "MedicationIngredient.ItemReference":
+		if e.complexity.MedicationIngredient.ItemReference == nil {
+			break
+		}
+
+		return e.complexity.MedicationIngredient.ItemReference(childComplexity), true
+
+	case "MedicationIngredient.Strength":
+		if e.complexity.MedicationIngredient.Strength == nil {
+			break
+		}
+
+		return e.complexity.MedicationIngredient.Strength(childComplexity), true
 
 	case "Mutation.addNextOfKin":
 		if e.complexity.Mutation.AddNextOfKin == nil {
@@ -8191,6 +8597,132 @@ type FHIREpisodeOfCareRelayConnection {
 }
 
 `, BuiltIn: false},
+	{Name: "pkg/clinical/presentation/graph/fhir/Medication.graphql", Input: `"""
+MedicationStatusEnum
+"""
+enum MedicationStatusEnum {
+  active
+  inactive
+  entered_in_error # ` + "`" + `original: entered-in-error` + "`" + `
+}
+
+"""
+FHIRMedicationInput
+"""
+input FHIRMedicationInput {
+  ID: ID
+
+  Text: FHIRNarrativeInput
+
+  Identifier: [FHIRIdentifierInput]
+
+  Code: FHIRCodeableConceptInput
+
+  Status: MedicationStatusEnum
+
+  Manufacturer: FHIROrganizationInput
+
+  Form: FHIRCodeableConceptInput
+
+  Amount: FHIRRatioInput
+
+  Ingredient: [MedicationIngredientInput]
+
+  Batch: MedicationBatchInput
+}
+
+"""
+MedicationBatchInput
+"""
+input MedicationBatchInput {
+  LotNumber: String
+
+  ExpirationDate: Date
+}
+
+"""
+MedicationIngredientInput
+"""
+input MedicationIngredientInput {
+  ItemCodelabConcept: FHIRCodeableConceptInput
+
+  ItemReference: FHIRReferenceInput
+
+  IsActive: Boolean
+
+  Strength: FHIRRatioInput
+}
+
+"""
+FHIRMedication
+"""
+type FHIRMedication {
+  ID: ID
+
+  Text: FHIRNarrative
+
+  Identifier: [FHIRIdentifier]
+
+  Code: FHIRCodeableConcept
+
+  Status: MedicationStatusEnum
+
+  Manufacturer: FHIROrganization
+
+  Form: FHIRCodeableConcept
+
+  Amount: FHIRRatio
+
+  Ingredient: [MedicationIngredient]
+
+  Batch: MedicationBatch
+}
+
+"""
+MedicationBatch
+"""
+type MedicationBatch {
+  LotNumber: String
+
+  ExpirationDate: Date
+}
+
+"""
+MedicationIngredient
+"""
+type MedicationIngredient {
+  ItemCodelabConcept: FHIRCodeableConcept
+
+  ItemReference: FHIRReference
+
+  IsActive: Boolean
+
+  Strength: FHIRRatio
+}
+
+"""
+FHIRMedicationRelayConnection is a Relay connection for MedicationStatement
+"""
+type FHIRMedicationRelayConnection {
+  edges: [FHIRMedicationRelayEdge]
+  pageInfo: PageInfo
+}
+
+"""
+FHIRMedicationRelayEdge is a Relay edge for Medication
+"""
+type FHIRMedicationRelayEdge {
+  cursor: String
+  node: FHIRMedication
+}
+
+"""
+FHIRMedicationRelayPayload is used to return single instances of Medication
+"""
+type FHIRMedicationRelayPayload {
+  resource: FHIRMedication
+}
+`, BuiltIn: false},
 	{Name: "pkg/clinical/presentation/graph/fhir/MedicationRequest.graphql", Input: `"""
 FHIRMedicationRequestInput: input for MedicationRequest
 """
@@ -8714,6 +9246,136 @@ type FHIRMedicationRequestRelayConnection {
   pageInfo: PageInfo!
 }
 
+`, BuiltIn: false},
+	{Name: "pkg/clinical/presentation/graph/fhir/MedicationStatement.graphql", Input: `"""
+MedicationStatementStatusEnum is a FHIR enum
+"""
+enum MedicationStatementStatusEnum {
+  active
+  inactive
+  entered_in_error # ` + "`" + `original: entered-in-error` + "`" + `
+  intended
+  stopped
+  on_hold # ` + "`" + `original: entered-in-error` + "`" + `
+  unknown
+  not_taken # ` + "`" + `original: entered-in-error` + "`" + `
+}
+
+"""
+FHIRMedicationStatementInput: input for medication statement
+"""
+input FHIRMedicationStatementInput {
+  ID: ID
+
+  Text: FHIRNarrativeInput
+
+  Identifier: [FHIRIdentifierInput]
+
+  BasedOn: [FHIRReferenceInput]
+
+  PartOf: [FHIRReferenceInput]
+
+  Status: MedicationStatementStatusEnum
+
+  StatusReason: [FHIRCodeableConceptInput]
+
+  Category: FHIRCodeableConceptInput
+
+  MedicationCodeableConcept: FHIRCodeableConceptInput
+
+  MedicationReference: FHIRMedicationInput
+
+  Subject: FHIRReferenceInput
+
+  Context: FHIRReferenceInput
+
+  EffectiveDateTime: Date
+
+  EffectivePeriod: FHIRPeriodInput
+
+  DateAsserted: Date
+
+  InformationSource: FHIRReferenceInput
+
+  DerivedFrom: [FHIRReferenceInput]
+
+  ReasonCode: [FHIRCodeableConceptInput]
+
+  ReasonReference: [FHIRReferenceInput]
+
+  Note: [FHIRAnnotationInput]
+
+  Dosage: [FHIRDosageInput]
+}
+
+"""
+FHIRMedicationStatement definition: A record of a medication that is being consumed by a patient. A MedicationStatement may indicate that the patient may be taking the medication now or in the past or in the future.
+"""
+type FHIRMedicationStatement {
+  ID: ID
+
+  Text: FHIRNarrative
+
+  Identifier: [FHIRIdentifier]
+
+  BasedOn: [FHIRReference]
+
+  PartOf: [FHIRReference]
+
+  Status: MedicationStatementStatusEnum
+
+  StatusReason: [FHIRCodeableConcept]
+
+  Category: FHIRCodeableConcept
+
+  MedicationCodeableConcept: FHIRCodeableConcept
+
+  MedicationReference: FHIRMedication
+
+  Subject: FHIRReference
+
+  Context: FHIRReference
+
+  EffectiveDateTime: Date
+
+  EffectivePeriod: FHIRPeriod
+
+  DateAsserted: Date
+
+  InformationSource: FHIRReference
+
+  DerivedFrom: [FHIRReference]
+
+  ReasonCode: [FHIRCodeableConcept]
+
+  ReasonReference: [FHIRReference]
+
+  Note: [FHIRAnnotation]
+
+  Dosage: [FHIRDosage]
+}
+"""
+FHIRMedicationStatementRelayConnection is a Relay connection for MedicationStatement
+"""
+type FHIRMedicationStatementRelayConnection {
+  edges: [FHIRMedicationStatementRelayEdge]
+  pageInfo: PageInfo!
+}
+
+"""
+FHIRMedicationStatementRelayEdge is a Relay edge for MedicationStatement
+"""
+type FHIRMedicationStatementRelayEdge {
+  cursor: String
+  node: FHIRMedicationStatement
+}
+
+"""
+FHIRMedicationStatementRelayPayload is used to return single instances of MedicationStatement
+"""
+type FHIRMedicationStatementRelayPayload {
+  resource: FHIRMedicationStatement
+}
 `, BuiltIn: false},
 	{Name: "pkg/clinical/presentation/graph/fhir/Observation.graphql", Input: `"""
 ObservationStatusEnum is a FHIR enum
@@ -22479,6 +23141,486 @@ func (ec *executionContext) _FHIRIdentifier_Assigner(ctx context.Context, field 
 	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _FHIRMedication_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Text(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRNarrative)
+	fc.Result = res
+	return ec.marshalOFHIRNarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrative(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Identifier(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Identifier, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRIdentifier)
+	fc.Result = res
+	return ec.marshalOFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Code(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Status(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(domain.MedicationStatusEnum)
+	fc.Result = res
+	return ec.marshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Manufacturer(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Manufacturer, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIROrganization)
+	fc.Result = res
+	return ec.marshalOFHIROrganization2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganization(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Form(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Form, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Amount(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Amount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRRatio)
+	fc.Result = res
+	return ec.marshalOFHIRRatio2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatio(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Ingredient(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Ingredient, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.MedicationIngredient)
+	fc.Result = res
+	return ec.marshalOMedicationIngredient2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedication_Batch(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedication",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Batch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.MedicationBatch)
+	fc.Result = res
+	return ec.marshalOMedicationBatch2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatch(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationRelayConnection_edges(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRMedicationRelayEdge)
+	fc.Result = res
+	return ec.marshalOFHIRMedicationRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*firebasetools.PageInfo)
+	fc.Result = res
+	return ec.marshalOPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRMedication)
+	fc.Result = res
+	return ec.marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationRelayPayload_resource(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Resource, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRMedication)
+	fc.Result = res
+	return ec.marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _FHIRMedicationRequest_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRequest) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -23798,6 +24940,841 @@ func (ec *executionContext) _FHIRMedicationRequestRelayPayload_resource(ctx cont
 	res := resTmp.(*domain.FHIRMedicationRequest)
 	fc.Result = res
 	return ec.marshalNFHIRMedicationRequest2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRequest(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Text(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRNarrative)
+	fc.Result = res
+	return ec.marshalOFHIRNarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrative(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Identifier(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Identifier, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRIdentifier)
+	fc.Result = res
+	return ec.marshalOFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_BasedOn(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BasedOn, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_PartOf(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PartOf, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Status(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.MedicationStatementStatusEnum)
+	fc.Result = res
+	return ec.marshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_StatusReason(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StatusReason, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Category(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Category, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_MedicationCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MedicationCodeableConcept, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_MedicationReference(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MedicationReference, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRMedication)
+	fc.Result = res
+	return ec.marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Subject(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Subject, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Context(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Context, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_EffectiveDateTime(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EffectiveDateTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_EffectivePeriod(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EffectivePeriod, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRPeriod)
+	fc.Result = res
+	return ec.marshalOFHIRPeriod2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRPeriod(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_DateAsserted(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DateAsserted, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_InformationSource(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.InformationSource, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_DerivedFrom(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DerivedFrom, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_ReasonCode(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ReasonCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_ReasonReference(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ReasonReference, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Note(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Note, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRAnnotation)
+	fc.Result = res
+	return ec.marshalOFHIRAnnotation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatement_Dosage(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatement",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Dosage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRDosage)
+	fc.Result = res
+	return ec.marshalOFHIRDosage2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayConnection_edges(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatementRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRMedicationStatementRelayEdge)
+	fc.Result = res
+	return ec.marshalOFHIRMedicationStatementRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatementRelayConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*firebasetools.PageInfo)
+	fc.Result = res
+	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatementRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatementRelayEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRMedicationStatement)
+	fc.Result = res
+	return ec.marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayPayload_resource(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "FHIRMedicationStatementRelayPayload",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Resource, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRMedicationStatement)
+	fc.Result = res
+	return ec.marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FHIRMedicationrequestDispenserequest_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationrequestDispenserequest) (ret graphql.Marshaler) {
@@ -31410,6 +33387,198 @@ func (ec *executionContext) _FHIRTimingRepeat_Offset(ctx context.Context, field 
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _MedicationBatch_LotNumber(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationBatch) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicationBatch",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LotNumber, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicationBatch_ExpirationDate(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationBatch) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicationBatch",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExpirationDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicationIngredient_ItemCodelabConcept(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicationIngredient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ItemCodelabConcept, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRCodeableConcept)
+	fc.Result = res
+	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicationIngredient_ItemReference(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicationIngredient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ItemReference, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRReference)
+	fc.Result = res
+	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicationIngredient_IsActive(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicationIngredient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicationIngredient_Strength(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicationIngredient",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Strength, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRRatio)
+	fc.Result = res
+	return ec.marshalOFHIRRatio2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatio(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_startEpisodeByOTP(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -33919,6 +36088,41 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) ___Directive_isRepeatable(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "__Directive",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsRepeatable, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -34871,7 +37075,10 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx context.Context, obj interface{}) (domain.BreakGlassEpisodeCreationInput, error) {
 	var it domain.BreakGlassEpisodeCreationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -34939,7 +37146,10 @@ func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx con
 
 func (ec *executionContext) unmarshalInputEmailInput(ctx context.Context, obj interface{}) (domain.EmailInput, error) {
 	var it domain.EmailInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -34967,7 +37177,10 @@ func (ec *executionContext) unmarshalInputEmailInput(ctx context.Context, obj in
 
 func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, obj interface{}) (domain.FHIRAddressInput, error) {
 	var it domain.FHIRAddressInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35067,7 +37280,10 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 
 func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj interface{}) (domain.FHIRAgeInput, error) {
 	var it domain.FHIRAgeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35127,7 +37343,10 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 
 func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx context.Context, obj interface{}) (domain.FHIRAllergyIntoleranceInput, error) {
 	var it domain.FHIRAllergyIntoleranceInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35307,7 +37526,10 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 
 func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ctx context.Context, obj interface{}) (domain.FHIRAllergyintoleranceReactionInput, error) {
 	var it domain.FHIRAllergyintoleranceReactionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35383,7 +37605,10 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 
 func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Context, obj interface{}) (domain.FHIRAnnotationInput, error) {
 	var it domain.FHIRAnnotationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35435,7 +37660,10 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 
 func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Context, obj interface{}) (domain.FHIRAttachmentInput, error) {
 	var it domain.FHIRAttachmentInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35519,7 +37747,10 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 
 func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.Context, obj interface{}) (domain.FHIRCodeableConceptInput, error) {
 	var it domain.FHIRCodeableConceptInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35555,7 +37786,10 @@ func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.C
 
 func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, obj interface{}) (domain.FHIRCodingInput, error) {
 	var it domain.FHIRCodingInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35615,7 +37849,10 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionAttesterInput, error) {
 	var it domain.FHIRCompositionAttesterInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35659,7 +37896,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 
 func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionEventInput, error) {
 	var it domain.FHIRCompositionEventInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35703,7 +37943,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 
 func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionInput, error) {
 	var it domain.FHIRCompositionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35843,7 +38086,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionRelatestoInput, error) {
 	var it domain.FHIRCompositionRelatestoInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35887,7 +38133,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionSectionInput, error) {
 	var it domain.FHIRCompositionSectionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -35987,7 +38236,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 
 func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context.Context, obj interface{}) (domain.FHIRConditionEvidenceInput, error) {
 	var it domain.FHIRConditionEvidenceInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36023,7 +38275,10 @@ func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context
 
 func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context, obj interface{}) (domain.FHIRConditionInput, error) {
 	var it domain.FHIRConditionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36243,7 +38498,10 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Context, obj interface{}) (domain.FHIRConditionStageInput, error) {
 	var it domain.FHIRConditionStageInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36287,7 +38545,10 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Context, obj interface{}) (domain.FHIRContactPointInput, error) {
 	var it domain.FHIRContactPointInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36347,7 +38608,10 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 
 func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context.Context, obj interface{}) (domain.FHIRDosageDoseandrateInput, error) {
 	var it domain.FHIRDosageDoseandrateInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36415,7 +38679,10 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 
 func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, obj interface{}) (domain.FHIRDosageInput, error) {
 	var it domain.FHIRDosageInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36547,7 +38814,10 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context, obj interface{}) (domain.FHIRDurationInput, error) {
 	var it domain.FHIRDurationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36607,7 +38877,10 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 
 func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx context.Context, obj interface{}) (domain.FHIREncounterClasshistoryInput, error) {
 	var it domain.FHIREncounterClasshistoryInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36643,7 +38916,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx con
 
 func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx context.Context, obj interface{}) (domain.FHIREncounterDiagnosisInput, error) {
 	var it domain.FHIREncounterDiagnosisInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36687,7 +38963,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx contex
 
 func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx context.Context, obj interface{}) (domain.FHIREncounterHospitalizationInput, error) {
 	var it domain.FHIREncounterHospitalizationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36779,7 +39058,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 
 func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context, obj interface{}) (domain.FHIREncounterInput, error) {
 	var it domain.FHIREncounterInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -36983,7 +39265,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context.Context, obj interface{}) (domain.FHIREncounterLocationInput, error) {
 	var it domain.FHIREncounterLocationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37035,7 +39320,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 
 func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx context.Context, obj interface{}) (domain.FHIREncounterParticipantInput, error) {
 	var it domain.FHIREncounterParticipantInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37079,7 +39367,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx context.Context, obj interface{}) (domain.FHIREncounterStatushistoryInput, error) {
 	var it domain.FHIREncounterStatushistoryInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37115,7 +39406,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx co
 
 func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Context, obj interface{}) (domain.FHIREpisodeOfCareInput, error) {
 	var it domain.FHIREpisodeOfCareInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37231,7 +39525,10 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 
 func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx context.Context, obj interface{}) (domain.FHIREpisodeofcareDiagnosisInput, error) {
 	var it domain.FHIREpisodeofcareDiagnosisInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37275,7 +39572,10 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx co
 
 func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ctx context.Context, obj interface{}) (domain.FHIREpisodeofcareStatushistoryInput, error) {
 	var it domain.FHIREpisodeofcareStatushistoryInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37311,7 +39611,10 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ct
 
 func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context, obj interface{}) (domain.FHIRHumanNameInput, error) {
 	var it domain.FHIRHumanNameInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37387,7 +39690,10 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Context, obj interface{}) (domain.FHIRIdentifierInput, error) {
 	var it domain.FHIRIdentifierInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37453,9 +39759,107 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputFHIRMedicationInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationInput, error) {
+	var it domain.FHIRMedicationInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "ID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Text":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
+			it.Text, err = ec.unmarshalOFHIRNarrativeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrativeInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Identifier":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
+			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifierInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Code":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
+			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
+			it.Status, err = ec.unmarshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Manufacturer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Manufacturer"))
+			it.Manufacturer, err = ec.unmarshalOFHIROrganizationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Form":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Form"))
+			it.Form, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Amount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Amount"))
+			it.Amount, err = ec.unmarshalOFHIRRatioInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatioInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Ingredient":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Ingredient"))
+			it.Ingredient, err = ec.unmarshalOMedicationIngredientInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Batch":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Batch"))
+			it.Batch, err = ec.unmarshalOMedicationBatchInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatchInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationRequestInput, error) {
 	var it domain.FHIRMedicationRequestInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37745,9 +40149,195 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputFHIRMedicationStatementInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationStatementInput, error) {
+	var it domain.FHIRMedicationStatementInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "ID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Text":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
+			it.Text, err = ec.unmarshalOFHIRNarrativeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrativeInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Identifier":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
+			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifierInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "BasedOn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
+			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "PartOf":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PartOf"))
+			it.PartOf, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
+			it.Status, err = ec.unmarshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "StatusReason":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("StatusReason"))
+			it.StatusReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Category":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
+			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "MedicationCodeableConcept":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MedicationCodeableConcept"))
+			it.MedicationCodeableConcept, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "MedicationReference":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MedicationReference"))
+			it.MedicationReference, err = ec.unmarshalOFHIRMedicationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Subject":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
+			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Context":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Context"))
+			it.Context, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "EffectiveDateTime":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectiveDateTime"))
+			it.EffectiveDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "EffectivePeriod":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectivePeriod"))
+			it.EffectivePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRPeriodInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "DateAsserted":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DateAsserted"))
+			it.DateAsserted, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "InformationSource":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InformationSource"))
+			it.InformationSource, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "DerivedFrom":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DerivedFrom"))
+			it.DerivedFrom, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ReasonCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
+			it.ReasonCode, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ReasonReference":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonReference"))
+			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Note":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
+			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotationInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Dosage":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Dosage"))
+			it.Dosage, err = ec.unmarshalOFHIRDosageInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosageInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationrequestDispenserequestInput, error) {
 	var it domain.FHIRMedicationrequestDispenserequestInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37823,7 +40413,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 
 func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationrequestInitialfillInput, error) {
 	var it domain.FHIRMedicationrequestInitialfillInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37859,7 +40452,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(
 
 func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationrequestSubstitutionInput, error) {
 	var it domain.FHIRMedicationrequestSubstitutionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37903,7 +40499,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 
 func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context, obj interface{}) (domain.FHIRNarrativeInput, error) {
 	var it domain.FHIRNarrativeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37939,7 +40538,10 @@ func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx context.Context, obj interface{}) (domain.FHIRObservationComponentInput, error) {
 	var it domain.FHIRObservationComponentInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38079,7 +40681,10 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Context, obj interface{}) (domain.FHIRObservationInput, error) {
 	var it domain.FHIRObservationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38395,7 +41000,10 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx context.Context, obj interface{}) (domain.FHIRObservationReferencerangeInput, error) {
 	var it domain.FHIRObservationReferencerangeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38463,7 +41071,10 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 
 func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Context, obj interface{}) (domain.FHIROrganizationInput, error) {
 	var it domain.FHIROrganizationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38539,7 +41150,10 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 
 func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx context.Context, obj interface{}) (domain.FHIRPatientCommunicationInput, error) {
 	var it domain.FHIRPatientCommunicationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38575,7 +41189,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Context, obj interface{}) (domain.FHIRPatientContactInput, error) {
 	var it domain.FHIRPatientContactInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38651,7 +41268,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, obj interface{}) (domain.FHIRPatientInput, error) {
 	var it domain.FHIRPatientInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38815,7 +41435,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 
 func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Context, obj interface{}) (domain.FHIRPatientLinkInput, error) {
 	var it domain.FHIRPatientLinkInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38851,7 +41474,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, obj interface{}) (domain.FHIRPeriodInput, error) {
 	var it domain.FHIRPeriodInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38887,7 +41513,10 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context, obj interface{}) (domain.FHIRQuantityInput, error) {
 	var it domain.FHIRQuantityInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38947,7 +41576,10 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 
 func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, obj interface{}) (domain.FHIRRangeInput, error) {
 	var it domain.FHIRRangeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38983,7 +41615,10 @@ func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, ob
 
 func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, obj interface{}) (domain.FHIRRatioInput, error) {
 	var it domain.FHIRRatioInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39019,7 +41654,10 @@ func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, ob
 
 func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context, obj interface{}) (domain.FHIRReferenceInput, error) {
 	var it domain.FHIRReferenceInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39071,7 +41709,10 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Context, obj interface{}) (domain.FHIRSampledDataInput, error) {
 	var it domain.FHIRSampledDataInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39147,7 +41788,10 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Context, obj interface{}) (domain.FHIRServiceRequestInput, error) {
 	var it domain.FHIRServiceRequestInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39471,7 +42115,10 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, obj interface{}) (domain.FHIRTimingInput, error) {
 	var it domain.FHIRTimingInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39515,7 +42162,10 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Context, obj interface{}) (domain.FHIRTimingRepeatInput, error) {
 	var it domain.FHIRTimingRepeatInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39671,7 +42321,10 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 
 func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Context, obj interface{}) (domain.IdentificationDocument, error) {
 	var it domain.IdentificationDocument
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39721,9 +42374,90 @@ func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Con
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputMedicationBatchInput(ctx context.Context, obj interface{}) (domain.MedicationBatchInput, error) {
+	var it domain.MedicationBatchInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "LotNumber":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LotNumber"))
+			it.LotNumber, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ExpirationDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExpirationDate"))
+			it.ExpirationDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputMedicationIngredientInput(ctx context.Context, obj interface{}) (domain.MedicationIngredientInput, error) {
+	var it domain.MedicationIngredientInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "ItemCodelabConcept":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ItemCodelabConcept"))
+			it.ItemCodelabConcept, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ItemReference":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ItemReference"))
+			it.ItemReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsActive"))
+			it.IsActive, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Strength":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Strength"))
+			it.Strength, err = ec.unmarshalOFHIRRatioInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatioInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNameInput(ctx context.Context, obj interface{}) (domain.NameInput, error) {
 	var it domain.NameInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39759,7 +42493,10 @@ func (ec *executionContext) unmarshalInputNameInput(ctx context.Context, obj int
 
 func (ec *executionContext) unmarshalInputOTPEpisodeCreationInput(ctx context.Context, obj interface{}) (domain.OTPEpisodeCreationInput, error) {
 	var it domain.OTPEpisodeCreationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39811,7 +42548,10 @@ func (ec *executionContext) unmarshalInputOTPEpisodeCreationInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputOTPEpisodeUpgradeInput(ctx context.Context, obj interface{}) (domain.OTPEpisodeUpgradeInput, error) {
 	var it domain.OTPEpisodeUpgradeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39847,7 +42587,10 @@ func (ec *executionContext) unmarshalInputOTPEpisodeUpgradeInput(ctx context.Con
 
 func (ec *executionContext) unmarshalInputPatientExtraInformationInput(ctx context.Context, obj interface{}) (domain.PatientExtraInformationInput, error) {
 	var it domain.PatientExtraInformationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39891,7 +42634,10 @@ func (ec *executionContext) unmarshalInputPatientExtraInformationInput(ctx conte
 
 func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, obj interface{}) (domain.PhoneNumberInput, error) {
 	var it domain.PhoneNumberInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39935,7 +42681,10 @@ func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, 
 
 func (ec *executionContext) unmarshalInputPhotoInput(ctx context.Context, obj interface{}) (domain.PhotoInput, error) {
 	var it domain.PhotoInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39971,7 +42720,10 @@ func (ec *executionContext) unmarshalInputPhotoInput(ctx context.Context, obj in
 
 func (ec *executionContext) unmarshalInputPhysicalAddress(ctx context.Context, obj interface{}) (domain.PhysicalAddress, error) {
 	var it domain.PhysicalAddress
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39999,7 +42751,10 @@ func (ec *executionContext) unmarshalInputPhysicalAddress(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputPostalAddress(ctx context.Context, obj interface{}) (domain.PostalAddress, error) {
 	var it domain.PostalAddress
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40027,7 +42782,10 @@ func (ec *executionContext) unmarshalInputPostalAddress(ctx context.Context, obj
 
 func (ec *executionContext) unmarshalInputRetirePatientInput(ctx context.Context, obj interface{}) (domain.RetirePatientInput, error) {
 	var it domain.RetirePatientInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40047,7 +42805,10 @@ func (ec *executionContext) unmarshalInputRetirePatientInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputSimpleNHIFInput(ctx context.Context, obj interface{}) (domain.SimpleNHIFInput, error) {
 	var it domain.SimpleNHIFInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40107,7 +42868,10 @@ func (ec *executionContext) unmarshalInputSimpleNHIFInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputSimpleNextOfKinInput(ctx context.Context, obj interface{}) (domain.SimpleNextOfKinInput, error) {
 	var it domain.SimpleNextOfKinInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40199,7 +42963,10 @@ func (ec *executionContext) unmarshalInputSimpleNextOfKinInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputSimplePatientRegistrationInput(ctx context.Context, obj interface{}) (domain.SimplePatientRegistrationInput, error) {
 	var it domain.SimplePatientRegistrationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42181,6 +44948,124 @@ func (ec *executionContext) _FHIRIdentifier(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var fHIRMedicationImplementors = []string{"FHIRMedication"}
+
+func (ec *executionContext) _FHIRMedication(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedication) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedication")
+		case "ID":
+			out.Values[i] = ec._FHIRMedication_ID(ctx, field, obj)
+		case "Text":
+			out.Values[i] = ec._FHIRMedication_Text(ctx, field, obj)
+		case "Identifier":
+			out.Values[i] = ec._FHIRMedication_Identifier(ctx, field, obj)
+		case "Code":
+			out.Values[i] = ec._FHIRMedication_Code(ctx, field, obj)
+		case "Status":
+			out.Values[i] = ec._FHIRMedication_Status(ctx, field, obj)
+		case "Manufacturer":
+			out.Values[i] = ec._FHIRMedication_Manufacturer(ctx, field, obj)
+		case "Form":
+			out.Values[i] = ec._FHIRMedication_Form(ctx, field, obj)
+		case "Amount":
+			out.Values[i] = ec._FHIRMedication_Amount(ctx, field, obj)
+		case "Ingredient":
+			out.Values[i] = ec._FHIRMedication_Ingredient(ctx, field, obj)
+		case "Batch":
+			out.Values[i] = ec._FHIRMedication_Batch(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIRMedicationRelayConnectionImplementors = []string{"FHIRMedicationRelayConnection"}
+
+func (ec *executionContext) _FHIRMedicationRelayConnection(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationRelayConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationRelayConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedicationRelayConnection")
+		case "edges":
+			out.Values[i] = ec._FHIRMedicationRelayConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._FHIRMedicationRelayConnection_pageInfo(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIRMedicationRelayEdgeImplementors = []string{"FHIRMedicationRelayEdge"}
+
+func (ec *executionContext) _FHIRMedicationRelayEdge(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationRelayEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationRelayEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedicationRelayEdge")
+		case "cursor":
+			out.Values[i] = ec._FHIRMedicationRelayEdge_cursor(ctx, field, obj)
+		case "node":
+			out.Values[i] = ec._FHIRMedicationRelayEdge_node(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIRMedicationRelayPayloadImplementors = []string{"FHIRMedicationRelayPayload"}
+
+func (ec *executionContext) _FHIRMedicationRelayPayload(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationRelayPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationRelayPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedicationRelayPayload")
+		case "resource":
+			out.Values[i] = ec._FHIRMedicationRelayPayload_resource(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var fHIRMedicationRequestImplementors = []string{"FHIRMedicationRequest"}
 
 func (ec *executionContext) _FHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationRequest) graphql.Marshaler {
@@ -42349,6 +45234,149 @@ func (ec *executionContext) _FHIRMedicationRequestRelayPayload(ctx context.Conte
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIRMedicationStatementImplementors = []string{"FHIRMedicationStatement"}
+
+func (ec *executionContext) _FHIRMedicationStatement(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatement) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedicationStatement")
+		case "ID":
+			out.Values[i] = ec._FHIRMedicationStatement_ID(ctx, field, obj)
+		case "Text":
+			out.Values[i] = ec._FHIRMedicationStatement_Text(ctx, field, obj)
+		case "Identifier":
+			out.Values[i] = ec._FHIRMedicationStatement_Identifier(ctx, field, obj)
+		case "BasedOn":
+			out.Values[i] = ec._FHIRMedicationStatement_BasedOn(ctx, field, obj)
+		case "PartOf":
+			out.Values[i] = ec._FHIRMedicationStatement_PartOf(ctx, field, obj)
+		case "Status":
+			out.Values[i] = ec._FHIRMedicationStatement_Status(ctx, field, obj)
+		case "StatusReason":
+			out.Values[i] = ec._FHIRMedicationStatement_StatusReason(ctx, field, obj)
+		case "Category":
+			out.Values[i] = ec._FHIRMedicationStatement_Category(ctx, field, obj)
+		case "MedicationCodeableConcept":
+			out.Values[i] = ec._FHIRMedicationStatement_MedicationCodeableConcept(ctx, field, obj)
+		case "MedicationReference":
+			out.Values[i] = ec._FHIRMedicationStatement_MedicationReference(ctx, field, obj)
+		case "Subject":
+			out.Values[i] = ec._FHIRMedicationStatement_Subject(ctx, field, obj)
+		case "Context":
+			out.Values[i] = ec._FHIRMedicationStatement_Context(ctx, field, obj)
+		case "EffectiveDateTime":
+			out.Values[i] = ec._FHIRMedicationStatement_EffectiveDateTime(ctx, field, obj)
+		case "EffectivePeriod":
+			out.Values[i] = ec._FHIRMedicationStatement_EffectivePeriod(ctx, field, obj)
+		case "DateAsserted":
+			out.Values[i] = ec._FHIRMedicationStatement_DateAsserted(ctx, field, obj)
+		case "InformationSource":
+			out.Values[i] = ec._FHIRMedicationStatement_InformationSource(ctx, field, obj)
+		case "DerivedFrom":
+			out.Values[i] = ec._FHIRMedicationStatement_DerivedFrom(ctx, field, obj)
+		case "ReasonCode":
+			out.Values[i] = ec._FHIRMedicationStatement_ReasonCode(ctx, field, obj)
+		case "ReasonReference":
+			out.Values[i] = ec._FHIRMedicationStatement_ReasonReference(ctx, field, obj)
+		case "Note":
+			out.Values[i] = ec._FHIRMedicationStatement_Note(ctx, field, obj)
+		case "Dosage":
+			out.Values[i] = ec._FHIRMedicationStatement_Dosage(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIRMedicationStatementRelayConnectionImplementors = []string{"FHIRMedicationStatementRelayConnection"}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayConnection(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatementRelayConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementRelayConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedicationStatementRelayConnection")
+		case "edges":
+			out.Values[i] = ec._FHIRMedicationStatementRelayConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._FHIRMedicationStatementRelayConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIRMedicationStatementRelayEdgeImplementors = []string{"FHIRMedicationStatementRelayEdge"}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayEdge(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatementRelayEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementRelayEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedicationStatementRelayEdge")
+		case "cursor":
+			out.Values[i] = ec._FHIRMedicationStatementRelayEdge_cursor(ctx, field, obj)
+		case "node":
+			out.Values[i] = ec._FHIRMedicationStatementRelayEdge_node(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fHIRMedicationStatementRelayPayloadImplementors = []string{"FHIRMedicationStatementRelayPayload"}
+
+func (ec *executionContext) _FHIRMedicationStatementRelayPayload(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatementRelayPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementRelayPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FHIRMedicationStatementRelayPayload")
+		case "resource":
+			out.Values[i] = ec._FHIRMedicationStatementRelayPayload_resource(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -43646,6 +46674,62 @@ func (ec *executionContext) _FHIRTimingRepeat(ctx context.Context, sel ast.Selec
 	return out
 }
 
+var medicationBatchImplementors = []string{"MedicationBatch"}
+
+func (ec *executionContext) _MedicationBatch(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicationBatch) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, medicationBatchImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MedicationBatch")
+		case "LotNumber":
+			out.Values[i] = ec._MedicationBatch_LotNumber(ctx, field, obj)
+		case "ExpirationDate":
+			out.Values[i] = ec._MedicationBatch_ExpirationDate(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var medicationIngredientImplementors = []string{"MedicationIngredient"}
+
+func (ec *executionContext) _MedicationIngredient(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicationIngredient) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, medicationIngredientImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MedicationIngredient")
+		case "ItemCodelabConcept":
+			out.Values[i] = ec._MedicationIngredient_ItemCodelabConcept(ctx, field, obj)
+		case "ItemReference":
+			out.Values[i] = ec._MedicationIngredient_ItemReference(ctx, field, obj)
+		case "IsActive":
+			out.Values[i] = ec._MedicationIngredient_IsActive(ctx, field, obj)
+		case "Strength":
+			out.Values[i] = ec._MedicationIngredient_Strength(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -44287,6 +47371,11 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "isRepeatable":
+			out.Values[i] = ec.___Directive_isRepeatable(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -44693,6 +47782,13 @@ func (ec *executionContext) marshalNFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsav
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -44775,6 +47871,13 @@ func (ec *executionContext) marshalNFHIRCoding2ᚕᚖgithubᚗcomᚋsavannahghi�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -44963,6 +48066,13 @@ func (ec *executionContext) marshalNFHIREpisodeOfCare2ᚕᚖgithubᚗcomᚋsavan
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45010,6 +48120,13 @@ func (ec *executionContext) marshalNFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45228,6 +48345,13 @@ func (ec *executionContext) marshalNFHIRReference2ᚕᚖgithubᚗcomᚋsavannahg
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45438,6 +48562,12 @@ func (ec *executionContext) marshalNMap2ᚕmapᚄ(ctx context.Context, sel ast.S
 		ret[i] = ec.marshalNMap2map(ctx, sel, v[i])
 	}
 
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45608,6 +48738,12 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
 	}
 
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45679,6 +48815,12 @@ func (ec *executionContext) marshalN_Any2ᚕmapᚄ(ctx context.Context, sel ast.
 		ret[i] = ec.marshalN_Any2map(ctx, sel, v[i])
 	}
 
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45716,6 +48858,7 @@ func (ec *executionContext) marshalN_Entity2ᚕgithubᚗcomᚋ99designsᚋgqlgen
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -45776,6 +48919,13 @@ func (ec *executionContext) marshalN__Directive2ᚕgithubᚗcomᚋ99designsᚋgq
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45849,6 +48999,13 @@ func (ec *executionContext) marshalN__DirectiveLocation2ᚕstringᚄ(ctx context
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45898,6 +49055,13 @@ func (ec *executionContext) marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋg
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -45939,6 +49103,13 @@ func (ec *executionContext) marshalN__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgen�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -46076,6 +49247,7 @@ func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -46548,6 +49720,7 @@ func (ec *executionContext) marshalOFHIRAddress2ᚕᚖgithubᚗcomᚋsavannahghi
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -46649,6 +49822,7 @@ func (ec *executionContext) marshalOFHIRAllergyIntoleranceRelayEdge2ᚕᚖgithub
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -46696,6 +49870,7 @@ func (ec *executionContext) marshalOFHIRAllergyintoleranceReaction2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -46775,6 +49950,7 @@ func (ec *executionContext) marshalOFHIRAnnotation2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -46854,6 +50030,7 @@ func (ec *executionContext) marshalOFHIRAttachment2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -46933,6 +50110,7 @@ func (ec *executionContext) marshalOFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsav
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47019,6 +50197,7 @@ func (ec *executionContext) marshalOFHIRCompositionAttester2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47098,6 +50277,7 @@ func (ec *executionContext) marshalOFHIRCompositionEvent2ᚕᚖgithubᚗcomᚋsa
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47177,6 +50357,7 @@ func (ec *executionContext) marshalOFHIRCompositionRelatesto2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47256,6 +50437,7 @@ func (ec *executionContext) marshalOFHIRCompositionRelayEdge2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47303,6 +50485,7 @@ func (ec *executionContext) marshalOFHIRCompositionSection2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47389,6 +50572,7 @@ func (ec *executionContext) marshalOFHIRConditionEvidence2ᚕᚖgithubᚗcomᚋs
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47468,6 +50652,7 @@ func (ec *executionContext) marshalOFHIRConditionRelayEdge2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47515,6 +50700,7 @@ func (ec *executionContext) marshalOFHIRConditionStage2ᚕᚖgithubᚗcomᚋsava
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47594,6 +50780,7 @@ func (ec *executionContext) marshalOFHIRContactPoint2ᚕᚖgithubᚗcomᚋsavann
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47673,6 +50860,7 @@ func (ec *executionContext) marshalOFHIRDosage2ᚕᚖgithubᚗcomᚋsavannahghi�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47720,6 +50908,7 @@ func (ec *executionContext) marshalOFHIRDosageDoseandrate2ᚕᚖgithubᚗcomᚋs
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47853,6 +51042,7 @@ func (ec *executionContext) marshalOFHIREncounterClasshistory2ᚕᚖgithubᚗcom
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -47932,6 +51122,7 @@ func (ec *executionContext) marshalOFHIREncounterDiagnosis2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48026,6 +51217,7 @@ func (ec *executionContext) marshalOFHIREncounterLocation2ᚕᚖgithubᚗcomᚋs
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48105,6 +51297,7 @@ func (ec *executionContext) marshalOFHIREncounterParticipant2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48184,6 +51377,7 @@ func (ec *executionContext) marshalOFHIREncounterRelayEdge2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48231,6 +51425,7 @@ func (ec *executionContext) marshalOFHIREncounterStatushistory2ᚕᚖgithubᚗco
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48310,6 +51505,7 @@ func (ec *executionContext) marshalOFHIREpisodeOfCare2ᚕᚖgithubᚗcomᚋsavan
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48357,6 +51553,7 @@ func (ec *executionContext) marshalOFHIREpisodeOfCareRelayEdge2ᚕᚖgithubᚗco
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48404,6 +51601,7 @@ func (ec *executionContext) marshalOFHIREpisodeofcareDiagnosis2ᚕᚖgithubᚗco
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48483,6 +51681,7 @@ func (ec *executionContext) marshalOFHIREpisodeofcareStatushistory2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48562,6 +51761,7 @@ func (ec *executionContext) marshalOFHIRHumanName2ᚕᚖgithubᚗcomᚋsavannahg
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48641,6 +51841,7 @@ func (ec *executionContext) marshalOFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48681,6 +51882,69 @@ func (ec *executionContext) unmarshalOFHIRIdentifierInput2ᚖgithubᚗcomᚋsava
 	}
 	res, err := ec.unmarshalInputFHIRIdentifierInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedication) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._FHIRMedication(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOFHIRMedicationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationInput(ctx context.Context, v interface{}) (*domain.FHIRMedicationInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputFHIRMedicationInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFHIRMedicationRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRMedicationRelayEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOFHIRMedicationRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOFHIRMedicationRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationRelayEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._FHIRMedicationRelayEdge(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationRequest2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRequest(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationRequest) graphql.Marshaler {
@@ -48727,6 +51991,7 @@ func (ec *executionContext) marshalOFHIRMedicationRequestRelayEdge2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48735,6 +52000,61 @@ func (ec *executionContext) marshalOFHIRMedicationRequestRelayEdge2ᚖgithubᚗc
 		return graphql.Null
 	}
 	return ec._FHIRMedicationRequestRelayEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationStatement) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._FHIRMedicationStatement(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOFHIRMedicationStatementRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRMedicationStatementRelayEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOFHIRMedicationStatementRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOFHIRMedicationStatementRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationStatementRelayEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._FHIRMedicationStatementRelayEdge(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOFHIRMedicationrequestDispenserequest2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationrequestDispenserequest(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationrequestDispenserequest) graphql.Marshaler {
@@ -48841,6 +52161,7 @@ func (ec *executionContext) marshalOFHIRObservationComponent2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48920,6 +52241,7 @@ func (ec *executionContext) marshalOFHIRObservationReferencerange2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -48999,6 +52321,7 @@ func (ec *executionContext) marshalOFHIRObservationRelayEdge2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49014,6 +52337,14 @@ func (ec *executionContext) marshalOFHIROrganization2ᚖgithubᚗcomᚋsavannahg
 		return graphql.Null
 	}
 	return ec._FHIROrganization(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOFHIROrganizationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx context.Context, v interface{}) (*domain.FHIROrganizationInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputFHIROrganizationInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIROrganizationRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIROrganizationRelayEdge) graphql.Marshaler {
@@ -49053,6 +52384,7 @@ func (ec *executionContext) marshalOFHIROrganizationRelayEdge2ᚕᚖgithubᚗcom
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49107,6 +52439,7 @@ func (ec *executionContext) marshalOFHIRPatientCommunication2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49186,6 +52519,7 @@ func (ec *executionContext) marshalOFHIRPatientContact2ᚕᚖgithubᚗcomᚋsava
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49265,6 +52599,7 @@ func (ec *executionContext) marshalOFHIRPatientLink2ᚕᚖgithubᚗcomᚋsavanna
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49344,6 +52679,7 @@ func (ec *executionContext) marshalOFHIRPatientRelayEdge2ᚕᚖgithubᚗcomᚋsa
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49456,6 +52792,7 @@ func (ec *executionContext) marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahg
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49557,6 +52894,7 @@ func (ec *executionContext) marshalOFHIRServiceRequestRelayEdge2ᚕᚖgithubᚗc
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49777,6 +53115,7 @@ func (ec *executionContext) marshalOLanguage2ᚕgithubᚗcomᚋsavannahghiᚋenu
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49841,6 +53180,7 @@ func (ec *executionContext) marshalOLanguage2ᚕᚖgithubᚗcomᚋsavannahghiᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49902,6 +53242,127 @@ func (ec *executionContext) marshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋsca
 	return v
 }
 
+func (ec *executionContext) marshalOMedicationBatch2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatch(ctx context.Context, sel ast.SelectionSet, v *domain.MedicationBatch) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MedicationBatch(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOMedicationBatchInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatchInput(ctx context.Context, v interface{}) (*domain.MedicationBatchInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputMedicationBatchInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMedicationIngredient2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx context.Context, sel ast.SelectionSet, v []*domain.MedicationIngredient) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOMedicationIngredient2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMedicationIngredient2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx context.Context, sel ast.SelectionSet, v *domain.MedicationIngredient) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MedicationIngredient(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOMedicationIngredientInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx context.Context, v interface{}) ([]*domain.MedicationIngredientInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*domain.MedicationIngredientInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOMedicationIngredientInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOMedicationIngredientInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx context.Context, v interface{}) (*domain.MedicationIngredientInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputMedicationIngredientInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx context.Context, v interface{}) (*domain.MedicationStatementStatusEnum, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(domain.MedicationStatementStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx context.Context, sel ast.SelectionSet, v *domain.MedicationStatementStatusEnum) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx context.Context, v interface{}) (domain.MedicationStatusEnum, error) {
+	var res domain.MedicationStatusEnum
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx context.Context, sel ast.SelectionSet, v domain.MedicationStatusEnum) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalONarrativeStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐNarrativeStatusEnum(ctx context.Context, v interface{}) (*domain.NarrativeStatusEnum, error) {
 	if v == nil {
 		return nil, nil
@@ -49932,6 +53393,13 @@ func (ec *executionContext) marshalOObservationStatusEnum2ᚖgithubᚗcomᚋsava
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalOPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *firebasetools.PageInfo) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PageInfo(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOPatientContactGenderEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐPatientContactGenderEnum(ctx context.Context, v interface{}) (*domain.PatientContactGenderEnum, error) {
@@ -49987,6 +53455,7 @@ func (ec *executionContext) marshalOPatientEdge2ᚕᚖgithubᚗcomᚋsavannahghi
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50414,6 +53883,13 @@ func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgq
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -50454,6 +53930,13 @@ func (ec *executionContext) marshalO__Field2ᚕgithubᚗcomᚋ99designsᚋgqlgen
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -50494,6 +53977,13 @@ func (ec *executionContext) marshalO__InputValue2ᚕgithubᚗcomᚋ99designsᚋg
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -50541,6 +54031,13 @@ func (ec *executionContext) marshalO__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgen�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
