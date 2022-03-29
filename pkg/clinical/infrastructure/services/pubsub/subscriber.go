@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
@@ -169,7 +168,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		value, _ := strconv.ParseFloat(data.Value, 64)
+		year, month, day := data.Date.Date()
 		system := "http://terminology.hl7.org/CodeSystem/observation-category"
 		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
 		status := domain.ObservationStatusEnumPreliminary
@@ -188,6 +187,12 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 				},
 			},
 
+			EffectiveDateTime: &scalarutils.Date{
+				Year:  year,
+				Month: int(month),
+				Day:   day,
+			},
+
 			Code: domain.FHIRCodeableConceptInput{
 				Coding: []*domain.FHIRCodingInput{
 					{
@@ -199,12 +204,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 				Text: ConceptPayload.DisplayName,
 			},
 
-			ValueQuantity: &domain.FHIRQuantityInput{
-				Value:  value,
-				Unit:   "°C",
-				System: "http://unitsofmeasure.org",
-				Code:   "(C)",
-			},
+			ValueString: &data.Value,
 
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
