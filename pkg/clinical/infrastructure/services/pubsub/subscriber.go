@@ -169,7 +169,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		year, month, day := data.Date.Date()
 		system := "http://terminology.hl7.org/CodeSystem/observation-category"
 		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
 		status := domain.ObservationStatusEnumPreliminary
@@ -188,13 +187,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 					Text: "Vital Signs",
 				},
 			},
-
-			EffectiveDateTime: &scalarutils.Date{
-				Year:  year,
-				Month: int(month),
-				Day:   day,
-			},
-
 			EffectiveInstant: &instant,
 			Code: domain.FHIRCodeableConceptInput{
 				Coding: []*domain.FHIRCodingInput{
@@ -206,9 +198,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 				},
 				Text: ConceptPayload.DisplayName,
 			},
-
 			ValueString: &data.Value,
-
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
 				Display:   data.PatientID,
@@ -474,7 +464,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		year, month, day := data.Date.Date()
 		system := "http://terminology.hl7.org/CodeSystem/observation-category"
 		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
 		status := domain.ObservationStatusEnumPreliminary
@@ -493,7 +482,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 					Text: "Laboratory",
 				},
 			},
-
 			Code: domain.FHIRCodeableConceptInput{
 				Coding: []*domain.FHIRCodingInput{
 					{
@@ -504,12 +492,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 				},
 				Text: ConceptPayload.DisplayName,
 			},
-			ValueString: &data.Result.Name,
-			EffectiveDateTime: &scalarutils.Date{
-				Year:  year,
-				Month: int(month),
-				Day:   day,
-			},
+			ValueString:      &data.Result.Name,
 			EffectiveInstant: &instant,
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
