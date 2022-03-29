@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"sort"
 	"strconv"
 
 	"github.com/google/uuid"
@@ -46,6 +47,7 @@ type ClinicalUseCase interface {
 	DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error)
 	StartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
 	FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
+	PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error)
 }
 
 // ClinicalUseCaseImpl represents the patient usecase implementation
@@ -1184,4 +1186,119 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 		input.PatientID,
 	)
 	return c.fhir.CreateEpisodeOfCare(ctx, ep)
+}
+
+// PatientTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
+// The timeline consists of Allergies, Observations, Medication statement and Test results
+func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
+	timeline := []map[string]interface{}{}
+
+	patientFilterParams := map[string]interface{}{
+		"patient": fmt.Sprintf("Patient/%v", patientID),
+	}
+
+	resources := []string{
+		"AllergyIntolerance",
+		"Observation",
+		"MedicationStatement",
+	}
+
+	for _, resourceName := range resources {
+		switch resourceName {
+		case "AllergyIntolerance":
+			conn, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
+			}
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+
+				rMap, err := converterandformatter.StructToMap(edge.Node)
+				if err != nil {
+					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
+				}
+				if rMap == nil {
+					continue
+				}
+
+				rMap["resourceType"] = "AllergyIntolerance"
+				rMap["timelineDate"] = rMap["recordedDate"]
+
+				timeline = append(timeline, rMap)
+			}
+
+		case "Observation":
+			conn, err := c.fhir.SearchFHIRObservation(ctx, patientFilterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
+			}
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+
+				rMap, err := converterandformatter.StructToMap(edge.Node)
+				if err != nil {
+					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
+				}
+				if rMap == nil {
+					continue
+				}
+
+				rMap["resourceType"] = "Observation"
+				rMap["timelineDate"] = rMap["effectiveDateTime"]
+
+				timeline = append(timeline, rMap)
+			}
+		case "MedicationStatement":
+			conn, err := c.fhir.SearchFHIRObservation(ctx, patientFilterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
+			}
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+
+				rMap, err := converterandformatter.StructToMap(edge.Node)
+				if err != nil {
+					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
+				}
+				if rMap == nil {
+					continue
+				}
+
+				rMap["resourceType"] = "MedicationStatement"
+				rMap["timelineDate"] = rMap["effectiveDateTime"]
+
+				timeline = append(timeline, rMap)
+			}
+		default:
+			return nil, fmt.Errorf("server error: unknown resource %s when composing visit summary", resourceName)
+		}
+	}
+
+	sort.Slice(timeline, func(i, j int) bool {
+		dateStringI, ok := timeline[i]["timelineDate"].(string)
+		if !ok {
+			return false
+		}
+		timeI := helpers.ParseDate(dateStringI)
+
+		dateStringJ, _ := timeline[j]["timelineDate"].(string)
+		if !ok {
+			return false
+		}
+		timeJ := helpers.ParseDate(dateStringJ)
+
+		return timeI.After(timeJ)
+	})
+
+	if len(timeline) > 0 {
+		return timeline[:count], nil
+	}
+
+	return timeline, nil
 }
