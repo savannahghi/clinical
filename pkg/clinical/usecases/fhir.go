@@ -109,6 +109,7 @@ type FHIRUseCase interface {
 	DeleteFHIRResourceType(results []map[string]string) error
 	CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error)
 	CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error)
+	SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 }
 
 // FHIRUseCaseImpl represents the FHIR usecase implementation
@@ -2268,4 +2269,47 @@ func (fh *FHIRUseCaseImpl) CreateFHIRMedication(ctx context.Context, input domai
 	}
 
 	return output, nil
+}
+
+// SearchFHIRMedicationStatement used to search for a fhir medication statement
+func (fh *FHIRUseCaseImpl) SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+	if params == nil {
+		return nil, fmt.Errorf("can't search with nil params")
+	}
+
+	urlParams, err := fh.validateSearchParams(params)
+	if err != nil {
+		return nil, err
+	}
+
+	resourceName := "MedicationStatement"
+	path := "_search"
+	output := domain.FHIRMedicationStatementRelayConnection{}
+
+	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, result := range resources {
+		var resource domain.FHIRMedicationStatement
+
+		resourceBs, err := json.Marshal(result)
+		if err != nil {
+			log.Errorf("unable to marshal map to JSON: %v", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+		}
+
+		err = json.Unmarshal(resourceBs, &resource)
+		if err != nil {
+			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
+			return nil, fmt.Errorf(
+				"server error: Unable to unmarshal %s: %s", resourceName, err)
+		}
+
+		output.Edges = append(output.Edges, &domain.FHIRMedicationStatementRelayEdge{
+			Node: &resource,
+		})
+	}
+	return &output, nil
 }

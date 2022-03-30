@@ -1014,25 +1014,26 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AllergySummary               func(childComplexity int, patientID string) int
-		FindPatients                 func(childComplexity int, search string) int
-		FindPatientsByMsisdn         func(childComplexity int, msisdn string) int
-		GetPatient                   func(childComplexity int, id string) int
-		ListConcepts                 func(childComplexity int, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) int
-		OpenEpisodes                 func(childComplexity int, patientReference string) int
-		OpenOrganizationEpisodes     func(childComplexity int, providerSladeCode string) int
-		PatientTimelineWithCount     func(childComplexity int, episodeID string, count int) int
-		ProblemSummary               func(childComplexity int, patientID string) int
-		SearchFHIRAllergyIntolerance func(childComplexity int, params map[string]interface{}) int
-		SearchFHIRComposition        func(childComplexity int, params map[string]interface{}) int
-		SearchFHIRCondition          func(childComplexity int, params map[string]interface{}) int
-		SearchFHIREncounter          func(childComplexity int, params map[string]interface{}) int
-		SearchFHIRMedicationRequest  func(childComplexity int, params map[string]interface{}) int
-		SearchFHIRObservation        func(childComplexity int, params map[string]interface{}) int
-		SearchFHIRServiceRequest     func(childComplexity int, params map[string]interface{}) int
-		VisitSummary                 func(childComplexity int, encounterID string) int
-		__resolve__service           func(childComplexity int) int
-		__resolve_entities           func(childComplexity int, representations []map[string]interface{}) int
+		AllergySummary                func(childComplexity int, patientID string) int
+		FindPatients                  func(childComplexity int, search string) int
+		FindPatientsByMsisdn          func(childComplexity int, msisdn string) int
+		GetPatient                    func(childComplexity int, id string) int
+		ListConcepts                  func(childComplexity int, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) int
+		OpenEpisodes                  func(childComplexity int, patientReference string) int
+		OpenOrganizationEpisodes      func(childComplexity int, providerSladeCode string) int
+		PatientTimelineWithCount      func(childComplexity int, episodeID string, count int) int
+		ProblemSummary                func(childComplexity int, patientID string) int
+		SearchFHIRAllergyIntolerance  func(childComplexity int, params map[string]interface{}) int
+		SearchFHIRComposition         func(childComplexity int, params map[string]interface{}) int
+		SearchFHIRCondition           func(childComplexity int, params map[string]interface{}) int
+		SearchFHIREncounter           func(childComplexity int, params map[string]interface{}) int
+		SearchFHIRMedicationRequest   func(childComplexity int, params map[string]interface{}) int
+		SearchFHIRMedicationStatement func(childComplexity int, params map[string]interface{}) int
+		SearchFHIRObservation         func(childComplexity int, params map[string]interface{}) int
+		SearchFHIRServiceRequest      func(childComplexity int, params map[string]interface{}) int
+		VisitSummary                  func(childComplexity int, encounterID string) int
+		__resolve__service            func(childComplexity int) int
+		__resolve_entities            func(childComplexity int, representations []map[string]interface{}) int
 	}
 
 	Service struct {
@@ -1085,6 +1086,7 @@ type QueryResolver interface {
 	SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error)
 	SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error)
 	SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error)
+	SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 	SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error)
 	SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error)
 	SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error)
@@ -6014,6 +6016,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.SearchFHIRMedicationRequest(childComplexity, args["params"].(map[string]interface{})), true
 
+	case "Query.searchFHIRMedicationStatement":
+		if e.complexity.Query.SearchFHIRMedicationStatement == nil {
+			break
+		}
+
+		args, err := ec.field_Query_searchFHIRMedicationStatement_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SearchFHIRMedicationStatement(childComplexity, args["params"].(map[string]interface{})), true
+
 	case "Query.searchFHIRObservation":
 		if e.complexity.Query.SearchFHIRObservation == nil {
 			break
@@ -6377,6 +6391,10 @@ extend type Query {
   ): FHIRAllergyIntoleranceRelayConnection!
 
   searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
+
+  searchFHIRMedicationStatement(
+    params: Map!
+  ): FHIRMedicationStatementRelayConnection!
 
   searchFHIRMedicationRequest(
     params: Map!
@@ -9256,9 +9274,9 @@ enum MedicationStatementStatusEnum {
   entered_in_error # ` + "`" + `original: entered-in-error` + "`" + `
   intended
   stopped
-  on_hold # ` + "`" + `original: entered-in-error` + "`" + `
+  on_hold # ` + "`" + `original: on-hold` + "`" + `
   unknown
-  not_taken # ` + "`" + `original: entered-in-error` + "`" + `
+  not_taken # ` + "`" + `original: not-taken` + "`" + `
 }
 
 """
@@ -13404,6 +13422,21 @@ func (ec *executionContext) field_Query_searchFHIREncounter_args(ctx context.Con
 }
 
 func (ec *executionContext) field_Query_searchFHIRMedicationRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 map[string]interface{}
+	if tmp, ok := rawArgs["params"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
+		arg0, err = ec.unmarshalNMap2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["params"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_searchFHIRMedicationStatement_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 map[string]interface{}
@@ -35561,6 +35594,48 @@ func (ec *executionContext) _Query_searchFHIRObservation(ctx context.Context, fi
 	return ec.marshalNFHIRObservationRelayConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservationRelayConnection(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_searchFHIRMedicationStatement(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_searchFHIRMedicationStatement_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().SearchFHIRMedicationStatement(rctx, args["params"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIRMedicationStatementRelayConnection)
+	fc.Result = res
+	return ec.marshalNFHIRMedicationStatementRelayConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayConnection(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_searchFHIRMedicationRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -47206,6 +47281,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "searchFHIRMedicationStatement":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_searchFHIRMedicationStatement(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "searchFHIRMedicationRequest":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -48207,6 +48296,20 @@ func (ec *executionContext) marshalNFHIRMedicationRequestRelayPayload2ᚖgithub�
 		return graphql.Null
 	}
 	return ec._FHIRMedicationRequestRelayPayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNFHIRMedicationStatementRelayConnection2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayConnection(ctx context.Context, sel ast.SelectionSet, v domain.FHIRMedicationStatementRelayConnection) graphql.Marshaler {
+	return ec._FHIRMedicationStatementRelayConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNFHIRMedicationStatementRelayConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayConnection(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationStatementRelayConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._FHIRMedicationStatementRelayConnection(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNFHIRObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRObservation) graphql.Marshaler {

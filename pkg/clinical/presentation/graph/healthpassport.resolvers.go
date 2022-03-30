@@ -245,6 +245,12 @@ func (r *queryResolver) SearchFHIRObservation(ctx context.Context, params map[st
 	return r.usecases.SearchFHIRObservation(ctx, params)
 }
 
+func (r *queryResolver) SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIRMedicationStatement(ctx, params)
+}
+
 func (r *queryResolver) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)

@@ -784,6 +784,57 @@ func getFhirObservationInput(patient domain.FHIRPatient, encounterID string) (*d
 	return &inp, nil
 }
 
+func getFhirMedicationStatementInput(patient domain.FHIRPatient) (*domain.FHIRMedicationStatementInput, error) {
+	status := domain.MedicationStatementStatusEnumActive
+	patientRef := fmt.Sprintf("Patient/%s", *patient.ID)
+	identifierSystem := scalarutils.URI("http://www.bmc.nl/portal/medstatements")
+	categorySystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/medication-statement-category")
+	medicationSystem := scalarutils.URI("http://hl7.org/fhir/sid/ndc")
+
+	inp := domain.FHIRMedicationStatementInput{
+		Identifier: []*domain.FHIRIdentifierInput{
+			{
+				Use:    "official",
+				System: &identifierSystem,
+				Value:  "12345689",
+			},
+		},
+		Status: &status,
+		Category: &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  &categorySystem,
+					Code:    "inpatient",
+					Display: "Inpatient",
+				},
+			},
+		},
+		MedicationCodeableConcept: &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  &medicationSystem,
+					Code:    "50580-506-02",
+					Display: "Tylenol PM",
+				},
+			},
+		},
+		Subject: &domain.FHIRReferenceInput{
+			Reference: &patientRef,
+		},
+		EffectiveDateTime: &scalarutils.Date{
+			Year:  2022,
+			Month: 1,
+			Day:   24,
+		},
+		DateAsserted: &scalarutils.Date{
+			Year:  2022,
+			Month: 1,
+			Day:   25,
+		},
+	}
+	return &inp, nil
+}
+
 func createTestConditionInput(
 	encounterID string,
 	patientID string,

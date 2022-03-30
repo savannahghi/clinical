@@ -194,6 +194,10 @@ extend type Query {
 
   searchFHIRObservation(params: Map!): FHIRObservationRelayConnection!
 
+  searchFHIRMedicationStatement(
+    params: Map!
+  ): FHIRMedicationStatementRelayConnection!
+
   searchFHIRMedicationRequest(
     params: Map!
   ): FHIRMedicationRequestRelayConnection!

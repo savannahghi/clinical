@@ -3200,3 +3200,65 @@ func TestFHIRUseCaseImpl_DeleteFHIRServiceRequest(t *testing.T) {
 	// teardown
 	deleteTestPatient(ctx, msisdn)
 }
+
+func TestFHIRUseCaseImpl_SearchFHIRMedicationStatement(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
+
+	fh := testUsecaseInteractor
+
+	msisdn := interserviceclient.TestUserPhoneNumber
+
+	patient, _, err := createTestPatient(ctx)
+	if err != nil {
+		log.Printf("cant create test patient: %v\n", err)
+		return
+	}
+
+	input, err := getFhirMedicationStatementInput(*patient)
+	if err != nil {
+		t.Errorf("failed to get fhir medication statement input: %v", err)
+	}
+
+	statement, err := fh.CreateFHIRMedicationStatement(ctx, *input)
+	if err != nil {
+		t.Errorf("failed to create fhir medication statement: %v", err)
+	}
+
+	id := statement.Resource.ID
+
+	params := map[string]interface{}{"id": *id}
+
+	type args struct {
+		ctx    context.Context
+		params map[string]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRMedicationStatementRelayConnection
+		wantErr bool
+	}{
+		{
+			name: "valid: correct params passed",
+			args: args{
+				ctx:    ctx,
+				params: params,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := fh.SearchFHIRMedicationStatement(tt.args.ctx, tt.args.params)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.SearchFHIRMedicationStatement() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+	// teardown
+	deleteTestPatient(ctx, msisdn)
+}

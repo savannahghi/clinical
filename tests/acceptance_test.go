@@ -8908,7 +8908,7 @@ func TestGraphQLListConcepts(t *testing.T) {
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 	headers, err := GetGraphQLHeaders(ctx)
 	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %w", err)
+		t.Errorf("error in getting GraphQL headers: %v", err)
 		return
 	}
 
@@ -9041,7 +9041,7 @@ func TestGraphQLListConcepts(t *testing.T) {
 			if !tt.wantErr {
 				errMsg, ok := data["errors"]
 				if ok {
-					t.Errorf("error not expected got: %w", errMsg)
+					t.Errorf("error not expected got: %v", errMsg)
 					return
 				}
 			}
@@ -9051,6 +9051,194 @@ func TestGraphQLListConcepts(t *testing.T) {
 				return
 			}
 
+		})
+	}
+}
+
+func TestGraphQSearchFHIRMedicationStatement(t *testing.T) {
+	ctx := firebasetools.GetAuthenticatedContext(t)
+	if ctx == nil {
+		t.Errorf("nil context")
+		return
+	}
+
+	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
+	headers, err := GetGraphQLHeaders(ctx)
+	if err != nil {
+		t.Errorf("error in getting GraphQL headers: %v", err)
+		return
+	}
+
+	_, patient, _, err := getTestEncounterID(
+		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+	if err != nil {
+		t.Errorf("can't create test encounter: %v", err)
+		return
+	}
+
+	type args struct {
+		query map[string]interface{}
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantStatus int
+		wantErr    bool
+	}{
+		{
+			name: "valid query",
+			args: args{
+				query: map[string]interface{}{
+					"query": `query SearchMedicationStatement($params: Map!) {
+						searchFHIRMedicationStatement(params: $params) {
+						  edges {
+							cursor
+							node {
+							  ID
+							  Identifier {
+								ID
+								Use
+								Type {
+								  ID
+								  Coding {
+									ID
+									System
+									Version
+								  }
+								  Text
+								}
+							  }
+							  Status
+							  Category {
+								ID
+								Coding {
+								  ID
+								  System
+								  Version
+								  Display
+								  UserSelected
+								  Code
+								}
+								Text
+							  }
+							  Subject {
+								ID
+								Reference
+								Type
+								Display
+							  }
+							  MedicationCodeableConcept {
+								ID
+								Text
+							  }
+							  MedicationReference {
+								ID
+								Code {
+								  ID
+								  Text
+								}
+							  }
+							  EffectiveDateTime
+							  DateAsserted
+							}
+						  }
+						}
+					  }`,
+					"variables": map[string]interface{}{
+						"params": map[string]interface{}{
+							"patient": fmt.Sprintf("Patient/%s", *patient.ID),
+						},
+					},
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "invalid query",
+			args: args{
+				query: map[string]interface{}{
+					"query":     `bad format query`,
+					"variables": map[string]interface{}{},
+				},
+			},
+			wantStatus: http.StatusUnprocessableEntity,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			body, err := mapToJSONReader(tt.args.query)
+			if err != nil {
+				t.Errorf("unable to get GQL JSON io Reader: %s", err)
+				return
+			}
+
+			r, err := http.NewRequest(
+				http.MethodPost,
+				graphQLURL,
+				body,
+			)
+			if err != nil {
+				t.Errorf("unable to compose request: %s", err)
+				return
+			}
+
+			if r == nil {
+				t.Errorf("nil request")
+				return
+			}
+
+			for k, v := range headers {
+				r.Header.Add(k, v)
+			}
+			client := http.Client{
+				Timeout: time.Second * testHTTPClientTimeout,
+			}
+			resp, err := client.Do(r)
+			if err != nil {
+				t.Errorf("request error: %s", err)
+				return
+			}
+
+			dataResponse, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("can't read request body: %s", err)
+				return
+			}
+
+			if dataResponse == nil {
+				t.Errorf("nil response data")
+				return
+			}
+
+			data := map[string]interface{}{}
+			err = json.Unmarshal(dataResponse, &data)
+			if err != nil {
+				t.Errorf("bad data returned")
+				return
+			}
+			if tt.wantErr {
+				_, ok := data["errors"]
+				if !ok {
+					t.Errorf("expected an error")
+					return
+				}
+			}
+
+			if !tt.wantErr {
+				errMsg, ok := data["errors"]
+				if ok {
+					t.Errorf("error not expected got: %v", errMsg)
+					return
+				}
+			}
+
+			if tt.wantStatus != resp.StatusCode {
+				t.Errorf("Bad status response returned")
+				return
+			}
 		})
 	}
 }
