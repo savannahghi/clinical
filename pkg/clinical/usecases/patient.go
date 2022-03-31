@@ -1248,7 +1248,7 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 				}
 
 				rMap["resourceType"] = "Observation"
-				rMap["timelineDate"] = rMap["effectiveDateTime"]
+				rMap["timelineDate"] = rMap["effectiveInstant"]
 
 				timeline = append(timeline, rMap)
 			}
@@ -1296,7 +1296,8 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 		return timeI.After(timeJ)
 	})
 
-	if len(timeline) > 0 {
+	total := len(timeline)
+	if total > 0 && count <= total {
 		return timeline[:count], nil
 	}
 
