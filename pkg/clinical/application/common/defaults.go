@@ -47,6 +47,21 @@ const (
 
 	// OrganizationTopicName is the topic where organization(facility) details are published to
 	OrganizationTopicName = "organization.create"
+
+	// MedicalDataCount is the count of medical records
+	MedicalDataCount = "3"
+
+	// WeightCIELTerminologyCode is the terminology code for weight
+	WeightCIELTerminologyCode = "5089"
+
+	// BMICIELTerminologyCode is the terminology code for Body Mass Index
+	BMICIELTerminologyCode = "1342"
+
+	// ViralLoadCIELTerminologyCode is the terminology code for Viral Load
+	ViralLoadCIELTerminologyCode = "856"
+
+	// CD4CountCIELTerminologyCode is the terminology code for CD$ Count
+	CD4CountCIELTerminologyCode = "5497"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

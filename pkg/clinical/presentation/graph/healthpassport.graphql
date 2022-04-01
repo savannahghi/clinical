@@ -46,6 +46,15 @@ type PatientPayload {
   openEpisodes: [FHIREpisodeOfCare]
 }
 
+type MedicalData {
+  regimen: [FHIRMedicationStatement]
+  allergies: [FHIRAllergyIntolerance]
+  weight: [FHIRObservation]
+  bmi: [FHIRObservation]
+  viralLoad: [FHIRObservation]
+  cd4Count: [FHIRObservation]
+}
+
 type EpisodeOfCarePayload {
   episodeOfCare: FHIREpisodeOfCare!
   totalVisits: Int!
@@ -209,6 +218,8 @@ extend type Query {
   searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
 
   allergySummary(patientID: String!): [String!]!
+
+  getMedicalData(patientID: String!): MedicalData
 }
 
 extend type Mutation {

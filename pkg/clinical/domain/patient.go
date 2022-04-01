@@ -306,3 +306,13 @@ func (pl *PatientLink) GetID() firebasetools.ID {
 func (pl *PatientLink) SetID(id string) {
 	pl.ID = id
 }
+
+//MedicalData is a collection of medical data of specific category
+type MedicalData struct {
+	Regimen   []*FHIRMedicationStatement
+	Allergies []*FHIRAllergyIntolerance
+	Weight    []*FHIRObservation
+	BMI       []*FHIRObservation
+	ViralLoad []*FHIRObservation
+	CD4Count  []*FHIRObservation
+}
