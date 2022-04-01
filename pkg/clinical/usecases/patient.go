@@ -1253,7 +1253,7 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 				timeline = append(timeline, rMap)
 			}
 		case "MedicationStatement":
-			conn, err := c.fhir.SearchFHIRObservation(ctx, patientFilterParams)
+			conn, err := c.fhir.SearchFHIRMedicationStatement(ctx, patientFilterParams)
 			if err != nil {
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
 			}
