@@ -281,6 +281,12 @@ func (r *queryResolver) AllergySummary(ctx context.Context, patientID string) ([
 	return r.usecases.AllergySummary(ctx, patientID)
 }
 
+func (r *queryResolver) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.GetMedicalData(ctx, patientID)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

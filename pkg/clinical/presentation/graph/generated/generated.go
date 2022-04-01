@@ -949,6 +949,15 @@ type ComplexityRoot struct {
 		When           func(childComplexity int) int
 	}
 
+	MedicalData struct {
+		Allergies func(childComplexity int) int
+		BMI       func(childComplexity int) int
+		CD4Count  func(childComplexity int) int
+		Regimen   func(childComplexity int) int
+		ViralLoad func(childComplexity int) int
+		Weight    func(childComplexity int) int
+	}
+
 	MedicationBatch struct {
 		ExpirationDate func(childComplexity int) int
 		LotNumber      func(childComplexity int) int
@@ -1017,6 +1026,7 @@ type ComplexityRoot struct {
 		AllergySummary                func(childComplexity int, patientID string) int
 		FindPatients                  func(childComplexity int, search string) int
 		FindPatientsByMsisdn          func(childComplexity int, msisdn string) int
+		GetMedicalData                func(childComplexity int, patientID string) int
 		GetPatient                    func(childComplexity int, id string) int
 		ListConcepts                  func(childComplexity int, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) int
 		OpenEpisodes                  func(childComplexity int, patientReference string) int
@@ -1093,6 +1103,7 @@ type QueryResolver interface {
 	SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error)
 	SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error)
 	AllergySummary(ctx context.Context, patientID string) ([]string, error)
+	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 	ListConcepts(ctx context.Context, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error)
 }
 
@@ -5414,6 +5425,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRTimingRepeat.When(childComplexity), true
 
+	case "MedicalData.allergies":
+		if e.complexity.MedicalData.Allergies == nil {
+			break
+		}
+
+		return e.complexity.MedicalData.Allergies(childComplexity), true
+
+	case "MedicalData.bmi":
+		if e.complexity.MedicalData.BMI == nil {
+			break
+		}
+
+		return e.complexity.MedicalData.BMI(childComplexity), true
+
+	case "MedicalData.cd4Count":
+		if e.complexity.MedicalData.CD4Count == nil {
+			break
+		}
+
+		return e.complexity.MedicalData.CD4Count(childComplexity), true
+
+	case "MedicalData.regimen":
+		if e.complexity.MedicalData.Regimen == nil {
+			break
+		}
+
+		return e.complexity.MedicalData.Regimen(childComplexity), true
+
+	case "MedicalData.viralLoad":
+		if e.complexity.MedicalData.ViralLoad == nil {
+			break
+		}
+
+		return e.complexity.MedicalData.ViralLoad(childComplexity), true
+
+	case "MedicalData.weight":
+		if e.complexity.MedicalData.Weight == nil {
+			break
+		}
+
+		return e.complexity.MedicalData.Weight(childComplexity), true
+
 	case "MedicationBatch.ExpirationDate":
 		if e.complexity.MedicationBatch.ExpirationDate == nil {
 			break
@@ -5886,6 +5939,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.FindPatientsByMsisdn(childComplexity, args["msisdn"].(string)), true
 
+	case "Query.getMedicalData":
+		if e.complexity.Query.GetMedicalData == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getMedicalData_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetMedicalData(childComplexity, args["patientID"].(string)), true
+
 	case "Query.getPatient":
 		if e.complexity.Query.GetPatient == nil {
 			break
@@ -6258,6 +6323,15 @@ type PatientPayload {
   openEpisodes: [FHIREpisodeOfCare]
 }
 
+type MedicalData {
+  regimen: [FHIRMedicationStatement]
+  allergies: [FHIRAllergyIntolerance]
+  weight: [FHIRObservation]
+  bmi: [FHIRObservation]
+  viralLoad: [FHIRObservation]
+  cd4Count: [FHIRObservation]
+}
+
 type EpisodeOfCarePayload {
   episodeOfCare: FHIREpisodeOfCare!
   totalVisits: Int!
@@ -6421,6 +6495,8 @@ extend type Query {
   searchFHIRComposition(params: Map!): FHIRCompositionRelayConnection!
 
   allergySummary(patientID: String!): [String!]!
+
+  getMedicalData(patientID: String!): MedicalData
 }
 
 extend type Mutation {
@@ -13176,6 +13252,21 @@ func (ec *executionContext) field_Query_findPatients_args(ctx context.Context, r
 		}
 	}
 	args["search"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getMedicalData_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
 	return args, nil
 }
 
@@ -33460,6 +33551,198 @@ func (ec *executionContext) _FHIRTimingRepeat_Offset(ctx context.Context, field 
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _MedicalData_regimen(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicalData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Regimen, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRMedicationStatement)
+	fc.Result = res
+	return ec.marshalOFHIRMedicationStatement2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicalData_allergies(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicalData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Allergies, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRAllergyIntolerance)
+	fc.Result = res
+	return ec.marshalOFHIRAllergyIntolerance2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicalData_weight(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicalData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Weight, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRObservation)
+	fc.Result = res
+	return ec.marshalOFHIRObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicalData_bmi(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicalData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BMI, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRObservation)
+	fc.Result = res
+	return ec.marshalOFHIRObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicalData_viralLoad(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicalData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ViralLoad, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRObservation)
+	fc.Result = res
+	return ec.marshalOFHIRObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MedicalData_cd4Count(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MedicalData",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CD4Count, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*domain.FHIRObservation)
+	fc.Result = res
+	return ec.marshalOFHIRObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _MedicationBatch_LotNumber(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationBatch) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -35884,6 +36167,45 @@ func (ec *executionContext) _Query_allergySummary(ctx context.Context, field gra
 	res := resTmp.([]string)
 	fc.Result = res
 	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_getMedicalData(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getMedicalData_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetMedicalData(rctx, args["patientID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*domain.MedicalData)
+	fc.Result = res
+	return ec.marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicalData(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_listConcepts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -46831,6 +47153,40 @@ func (ec *executionContext) _FHIRTimingRepeat(ctx context.Context, sel ast.Selec
 	return out
 }
 
+var medicalDataImplementors = []string{"MedicalData"}
+
+func (ec *executionContext) _MedicalData(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicalData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, medicalDataImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MedicalData")
+		case "regimen":
+			out.Values[i] = ec._MedicalData_regimen(ctx, field, obj)
+		case "allergies":
+			out.Values[i] = ec._MedicalData_allergies(ctx, field, obj)
+		case "weight":
+			out.Values[i] = ec._MedicalData_weight(ctx, field, obj)
+		case "bmi":
+			out.Values[i] = ec._MedicalData_bmi(ctx, field, obj)
+		case "viralLoad":
+			out.Values[i] = ec._MedicalData_viralLoad(ctx, field, obj)
+		case "cd4Count":
+			out.Values[i] = ec._MedicalData_cd4Count(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var medicationBatchImplementors = []string{"MedicationBatch"}
 
 func (ec *executionContext) _MedicationBatch(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicationBatch) graphql.Marshaler {
@@ -47445,6 +47801,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			})
+		case "getMedicalData":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getMedicalData(ctx, field)
 				return res
 			})
 		case "listConcepts":
@@ -49977,6 +50344,47 @@ func (ec *executionContext) unmarshalOFHIRAgeInput2ᚖgithubᚗcomᚋsavannahghi
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRAllergyIntolerance) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOFHIRAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRAllergyIntolerance) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -52201,6 +52609,47 @@ func (ec *executionContext) marshalOFHIRMedicationRequestRelayEdge2ᚖgithubᚗc
 	return ec._FHIRMedicationRequestRelayEdge(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOFHIRMedicationStatement2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRMedicationStatement) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationStatement) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -52314,6 +52763,47 @@ func (ec *executionContext) unmarshalOFHIRNarrativeInput2ᚖgithubᚗcomᚋsavan
 	}
 	res, err := ec.unmarshalInputFHIRNarrativeInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFHIRObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRObservation) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOFHIRObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalOFHIRObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservation(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRObservation) graphql.Marshaler {
@@ -53439,6 +53929,13 @@ func (ec *executionContext) marshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋsca
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicalData(ctx context.Context, sel ast.SelectionSet, v *domain.MedicalData) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MedicalData(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMedicationBatch2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatch(ctx context.Context, sel ast.SelectionSet, v *domain.MedicationBatch) graphql.Marshaler {

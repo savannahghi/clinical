@@ -48,6 +48,7 @@ type ClinicalUseCase interface {
 	StartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
 	FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
 	PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error)
+	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 }
 
 // ClinicalUseCaseImpl represents the patient usecase implementation
@@ -1302,4 +1303,115 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 	}
 
 	return timeline, nil
+}
+
+// GetMedicalData returns a limited subset of specific medical data that for a specific patient
+// These include: Allergies, Viral Load, Body Mass Index, Weight, CD4 Count using their respective OCL CIEL Terminology
+// For each category the latest three records are fetched
+func (c *ClinicalUseCaseImpl) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
+	data := &domain.MedicalData{}
+
+	filterParams := map[string]interface{}{
+		"patient": fmt.Sprintf("Patient/%v", patientID),
+		"_count":  common.MedicalDataCount,
+		"_sort":   "-date",
+	}
+
+	fields := []string{
+		"Regimen",
+		"AllergyIntolerance",
+		"Weight",
+		"BMI",
+		"ViralLoad",
+		"CD4Count",
+	}
+
+	for _, field := range fields {
+		switch field {
+		case "Regimen":
+			conn, err := c.fhir.SearchFHIRMedicationStatement(ctx, filterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.Regimen = append(data.Regimen, edge.Node)
+			}
+		case "AllergyIntolerance":
+			conn, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, filterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.Allergies = append(data.Allergies, edge.Node)
+			}
+
+		case "Weight":
+			filterParams["code"] = common.WeightCIELTerminologyCode
+			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.Weight = append(data.Weight, edge.Node)
+			}
+
+		case "BMI":
+			filterParams["code"] = common.BMICIELTerminologyCode
+			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.BMI = append(data.BMI, edge.Node)
+			}
+
+		case "ViralLoad":
+			filterParams["code"] = common.ViralLoadCIELTerminologyCode
+			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.ViralLoad = append(data.ViralLoad, edge.Node)
+			}
+
+		case "CD4Count":
+			filterParams["code"] = common.CD4CountCIELTerminologyCode
+			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.CD4Count = append(data.CD4Count, edge.Node)
+			}
+
+		}
+
+	}
+
+	return data, nil
 }

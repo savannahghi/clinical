@@ -1279,3 +1279,106 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 	// teardown
 	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
+
+func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
+
+	u := testUsecaseInteractor
+
+	patientInput, err := simplePatientRegistration()
+	if err != nil {
+		t.Errorf("an error occurred: %v\n", err)
+		return
+	}
+
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
+
+	patient, err := u.RegisterPatient(ctx, *patientInput)
+	if err != nil {
+		// TODO: investigate register patient
+		// t.Errorf("unable to create patient: %v", err)
+		return
+	}
+
+	episode, _, err := createTestEpisodeOfCare(
+		context.Background(),
+		interserviceclient.TestUserPhoneNumber,
+		false,
+		testProviderCode,
+	)
+	if err != nil {
+		t.Errorf("cant get test encounter id: %v\n", err)
+		return
+	}
+
+	encounterID, err := u.StartEncounter(ctx, *episode.ID)
+	if err != nil {
+		t.Errorf("failed to start encounter: %v\n", err)
+	}
+
+	oInput, err := getFhirObservationInput(*patient.PatientRecord, encounterID)
+	if err != nil {
+		t.Errorf("failed to get fhir observation input: %v", err)
+	}
+
+	_, err = u.CreateFHIRObservation(ctx, *oInput)
+	if err != nil {
+		t.Errorf("failed to create fhir observation: %v", err)
+	}
+
+	msInput, err := getFhirMedicationStatementInput(*patient.PatientRecord)
+	if err != nil {
+		t.Errorf("failed to get fhir medication statement input: %v", err)
+	}
+
+	_, err = u.CreateFHIRMedicationStatement(ctx, *msInput)
+	if err != nil {
+		t.Errorf("failed to create fhir medication statement: %v", err)
+	}
+
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.MedicalData
+		wantErr bool
+	}{
+		{
+			name: "Happy case: patient timeline",
+			args: args{
+				ctx:       context.Background(),
+				patientID: *patient.PatientRecord.ID,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := u.GetMedicalData(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ClinicalUseCaseImpl.GetMedicalData() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if tt.wantErr && got != nil {
+				t.Errorf("expected patient medical data to be nil for %v", tt.name)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected patient medical data not to be nil for %v", tt.name)
+				return
+			}
+		})
+	}
+
+	// teardown
+	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
+}
