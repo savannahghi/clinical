@@ -5,7 +5,7 @@ on: push
 env:
   DOCKER_BUILDKIT: 1 # Enable Buildkit and let compose use it to speed up image building
   # Schema Registry CLI command version
-  CLI_VERSION: v0.0.1
+  CLI_VERSION: v0.0.2
   # Schema Registry URL
   REGISTRY_URL: ${{ secrets.TEST_SCHEMA_REGISTRY_URL }}
 

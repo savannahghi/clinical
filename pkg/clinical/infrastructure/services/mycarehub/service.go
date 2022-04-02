@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	getUserProfile     = "internal/user-profile/%s"
-	addFHIRIDToProfile = "internal/add-fhir-id"
+	getUserProfile      = "internal/user-profile/%s"
+	addFHIRIDToProfile  = "internal/add-fhir-id"
+	addFHIRIDToFacility = "internal/facilities"
 )
 
 // IServiceMyCareHub represents mycarehub usecases
@@ -27,6 +28,11 @@ type IServiceMyCareHub interface {
 		ctx context.Context,
 		fhirID string,
 		clientID string,
+	) error
+	AddFHIRIDToFacility(
+		ctx context.Context,
+		fhirID string,
+		facilityID string,
 	) error
 }
 
@@ -122,6 +128,37 @@ func (s ServiceMyCareHubImpl) AddFHIRIDToPatientProfile(
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to update patient fhir ID : %w, with status code %v",
+			err,
+			resp.StatusCode,
+		)
+	}
+
+	return nil
+}
+
+// AddFHIRIDToFacility makes an interservice call to mycarehub service and updated the FHIR Organization ID of a given facility
+func (s ServiceMyCareHubImpl) AddFHIRIDToFacility(
+	ctx context.Context,
+	fhirID string,
+	facilityID string,
+) error {
+	type requestPayload struct {
+		FacilityID string `json:"facilityID"`
+		FhirID     string `json:"fhirOrganisationID"`
+	}
+
+	resp, err := s.MyCareHubClient.MakeRequest(
+		ctx,
+		http.MethodPost,
+		addFHIRIDToFacility,
+		&requestPayload{FhirID: fhirID, FacilityID: facilityID},
+	)
+	if err != nil {
+		return fmt.Errorf("failed to make a request to mycarehub service: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to update facility fhir ID : %w, with status code %v",
 			err,
 			resp.StatusCode,
 		)

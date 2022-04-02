@@ -123,7 +123,16 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			},
 		}
 
-		_, err = ps.fhir.CreateFHIROrganization(ctx, input)
+		response, err := ps.fhir.CreateFHIROrganization(ctx, input)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+
+		err = ps.infra.MyCareHub.AddFHIRIDToFacility(ctx, *response.Resource.ID, *data.ID)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
