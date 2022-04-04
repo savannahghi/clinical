@@ -72,6 +72,7 @@ jobs:
 
       - name: Run lint and test
         run: |
+          echo $REGISTRY_URL
           staticcheck ./...
           bewellcli service validate-schema --name clinical --version $GITHUB_SHA --url ${{ secrets.SERVICE_GRAPHQL_URL }}
           go fmt $(go list ./... | grep -v /vendor/)
