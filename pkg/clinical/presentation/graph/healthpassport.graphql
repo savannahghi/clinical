@@ -220,6 +220,10 @@ extend type Query {
   allergySummary(patientID: String!): [String!]!
 
   getMedicalData(patientID: String!): MedicalData
+
+  searchOrganization(params: Map!): FHIROrganizationRelayConnection!
+
+  findOrganizationByID(organizationID: String!): FHIROrganizationRelayPayload!
 }
 
 extend type Mutation {

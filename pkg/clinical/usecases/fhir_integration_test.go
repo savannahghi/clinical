@@ -615,6 +615,98 @@ func TestFHIRUseCaseImpl_SearchFHIROrganization(t *testing.T) {
 
 }
 
+func TestFHIRUseCaseImpl_FindOrganizationByID(t *testing.T) {
+	ctx, err := getTestAuthenticatedContext(t)
+	if err != nil {
+		t.Errorf("cant get phone number authenticated context token: %v", err)
+		return
+	}
+
+	fh := testUsecaseInteractor
+
+	organizationID := "a1bf993c-c2b6-44dd-8991-3a47b54a6789"
+
+	// Create FHIR organization
+	identifier := []*domain.FHIRIdentifierInput{
+		{
+			Use:   "official",
+			Value: testProviderCode,
+		},
+	}
+
+	input := domain.FHIROrganizationInput{
+		ID:         &organizationID,
+		Identifier: identifier,
+		Name:       &testName,
+	}
+
+	organization, err := fh.CreateFHIROrganization(ctx, input)
+	if err != nil {
+		t.Errorf("failed to create fhir organization: %v", err)
+	}
+
+	type args struct {
+		ctx            context.Context
+		organizationID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case",
+			args: args{
+				ctx:            ctx,
+				organizationID: *organization.Resource.ID,
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case",
+			args: args{
+				ctx:            ctx,
+				organizationID: "",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case - invalid ID",
+			args: args{
+				ctx:            ctx,
+				organizationID: "testID",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := fh.FindOrganizationByID(tt.args.ctx, tt.args.organizationID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.FindOrganizationByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && got != nil {
+				t.Errorf("expected response to be nil for %v", tt.name)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected response not to be nil for %v", tt.name)
+				return
+			}
+		})
+	}
+
+	//Clean up
+	resource := []map[string]string{
+		{"resourceType": "Organization", "resourceID": *organization.Resource.ID},
+	}
+	err = fh.DeleteFHIRResourceType(resource)
+	if err != nil {
+		t.Errorf("failed to delete fhir organization: %v", err)
+	}
+}
+
 func TestFHIRUseCaseImpl_GetOrganization(t *testing.T) {
 	ctx, err := getTestAuthenticatedContext(t)
 	if err != nil {

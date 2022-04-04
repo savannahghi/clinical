@@ -628,17 +628,6 @@ func (c *ClinicalUseCaseImpl) FindPatientByID(ctx context.Context, id string) (*
 	if id == "" {
 		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
-	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.PatientGet)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	data, err := c.infrastructure.FHIRRepo.GetFHIRResource("Patient", id)
 	if err != nil {
