@@ -53,12 +53,6 @@ func (r *mutationResolver) RegisterPatient(ctx context.Context, input domain.Sim
 	return r.usecases.RegisterPatient(ctx, input)
 }
 
-func (r *mutationResolver) RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
-	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
-	return r.usecases.RegisterUser(ctx, input)
-}
-
 func (r *mutationResolver) UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)

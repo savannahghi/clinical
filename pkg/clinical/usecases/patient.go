@@ -10,7 +10,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
-	auth "github.com/savannahghi/clinical/pkg/clinical/application/authorization"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
@@ -20,8 +19,6 @@ import (
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
-	"github.com/savannahghi/onboarding/pkg/onboarding/application/dto"
-	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -41,7 +38,6 @@ type ClinicalUseCase interface {
 	UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
 	AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error)
 	AddNHIF(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error)
-	RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
 	CreateUpdatePatientExtraInformation(ctx context.Context, input domain.PatientExtraInformationInput) (bool, error)
 	AllergySummary(ctx context.Context, patientID string) ([]string, error)
 	DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error)
@@ -67,16 +63,8 @@ func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCas
 
 // ProblemSummary returns a short list of the patient's active and confirmed problems (by name).
 func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
-	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
+	if patientID == "" {
+		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
 
 	params := map[string]interface{}{
@@ -105,18 +93,6 @@ func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID stri
 
 // VisitSummary returns a narrative friendly display of the data that has been associated with a single visit
 func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
-	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.VisitSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
-
 	encounterPayload, err := c.fhir.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
 		return nil, fmt.Errorf(
@@ -298,18 +274,6 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 // narratives that are sorted with the most recent one first), while
 // respecting the approval level AND limiting the number
 func (c *ClinicalUseCaseImpl) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
-	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.PatientTimelineWithCountView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
-
 	episode, _, err := c.getTimelineEpisode(ctx, episodeID)
 	if err != nil {
 		return nil, err
@@ -517,12 +481,9 @@ func (c *ClinicalUseCaseImpl) ContactsToContactPointInput(ctx context.Context, p
 // SimplePatientRegistrationInputToPatientInput transforms a patient input into
 // a
 func (c *ClinicalUseCaseImpl) SimplePatientRegistrationInputToPatientInput(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.FHIRPatientInput, error) {
-	exists, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, input)
+	_, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to check patient existence")
-	}
-	if exists {
-		return nil, fmt.Errorf("a patient registered with that phone number already exists")
 	}
 
 	contacts, err := c.ContactsToContactPointInput(ctx, input.PhoneNumbers, input.Emails)
@@ -535,10 +496,10 @@ func (c *ClinicalUseCaseImpl) SimplePatientRegistrationInputToPatientInput(ctx c
 		return nil, fmt.Errorf("can't register patient with invalid identifiers: %v", err)
 	}
 
-	photos, err := c.infrastructure.Engagement.PhotosToAttachments(ctx, input.Photos)
-	if err != nil {
-		return nil, fmt.Errorf("can't process patient photos: %v", err)
-	}
+	// photos, err := c.infrastructure.Engagement.PhotosToAttachments(ctx, input.Photos)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("can't process patient photos: %v", err)
+	// }
 
 	// fullPatientInput is to be filled up by processing the simple patient input
 	gender := domain.PatientGenderEnum(input.Gender)
@@ -550,7 +511,7 @@ func (c *ClinicalUseCaseImpl) SimplePatientRegistrationInputToPatientInput(ctx c
 	patientInput.Identifier = ids
 	patientInput.Telecom = contacts
 	patientInput.Name = helpers.NameToHumanName(input.Names)
-	patientInput.Photo = photos
+	// patientInput.Photo = photos
 	patientInput.Address = helpers.PhysicalPostalAddressesToFHIRAddresses(
 		input.PhysicalAddresses, input.PostalAddresses)
 	patientInput.MaritalStatus = helpers.MaritalStatusEnumToCodeableConceptInput(
@@ -565,15 +526,10 @@ func (c *ClinicalUseCaseImpl) RegisterPatient(ctx context.Context, input domain.
 	if err != nil {
 		return nil, err
 	}
+
 	output, err := c.CreatePatient(ctx, *patientInput)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create patient: %v", err)
-	}
-	for _, patientEmail := range input.Emails {
-		err = c.infrastructure.Engagement.SendPatientWelcomeEmail(ctx, patientEmail.Email)
-		if err != nil {
-			return nil, fmt.Errorf("unable to send welcome email: %w", err)
-		}
 	}
 
 	return output, nil
@@ -890,9 +846,9 @@ func (c *ClinicalUseCaseImpl) AddNHIF(ctx context.Context, input *domain.SimpleN
 			"can't get patient with ID %s: %v", input.PatientID, err)
 	}
 
-	existingIdentifers := patientPayload.PatientRecord.Identifier
+	existingIdentifiers := patientPayload.PatientRecord.Identifier
 	updatedIdentifierInputs := []*domain.FHIRIdentifierInput{}
-	for _, existing := range existingIdentifers {
+	for _, existing := range existingIdentifiers {
 		updatedTypeCoding := []*domain.FHIRCodingInput{}
 		for _, coding := range existing.Type.Coding {
 			updatedTypeCoding = append(updatedTypeCoding, &domain.FHIRCodingInput{
@@ -953,65 +909,11 @@ func (c *ClinicalUseCaseImpl) AddNHIF(ctx context.Context, input *domain.SimpleN
 	}, nil
 }
 
-// RegisterUser implements creates a user profile and simple patient registration
-func (c *ClinicalUseCaseImpl) RegisterUser(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
-	if input.ID == "" {
-		return nil, fmt.Errorf("unable to register patient")
-	}
-
-	user, err := profileutils.GetLoggedInUser(ctx)
-
-	if err != nil {
-		return nil, fmt.Errorf("error, failed to get logged in user: %v", err)
-	}
-
-	log.Printf("loggedin user UID: %v", user.UID)
-
-	var primaryEmail string
-	if len(input.Emails) > 0 {
-		primaryEmail = input.Emails[0].Email
-	}
-
-	gender := input.Gender
-	payload := dto.RegisterUserInput{
-		UID:         &user.UID,
-		FirstName:   &input.Names[0].FirstName,
-		LastName:    &input.Names[0].LastName,
-		PhoneNumber: &input.PhoneNumbers[0].Msisdn,
-		Gender:      (*enumutils.Gender)(&gender),
-		Email:       &primaryEmail,
-		DateOfBirth: &input.BirthDate,
-	}
-
-	err = c.infrastructure.Onboarding.CreateUserProfile(ctx, &payload)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create a user profile: %v", err)
-	}
-
-	patient, err := c.RegisterPatient(ctx, input)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create a patient profile: %v", err)
-	}
-
-	return patient, nil
-}
-
 // CreateUpdatePatientExtraInformation updates a patient's extra info
 func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
 	ctx context.Context, input domain.PatientExtraInformationInput) (bool, error) {
 	if input.PatientID == "" {
 		return false, fmt.Errorf("patient ID cannot empty: %v", input.PatientID)
-	}
-	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return false, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.PatientExtraInformationEdit)
-	if err != nil {
-		return false, err
-	}
-	if !isAuthorized {
-		return false, fmt.Errorf("user not authorized to access this resource")
 	}
 
 	patientPayload, err := c.FindPatientByID(ctx, input.PatientID)
@@ -1112,26 +1014,9 @@ func (c *ClinicalUseCaseImpl) DeleteFHIRPatientByPhone(ctx context.Context, phon
 //StartEpisodeByBreakGlass starts an emergency episode
 func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 	ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
-	user, err := c.infrastructure.BaseExtension.GetLoggedInUser(ctx)
+	normalized, err := converterandformatter.NormalizeMSISDN(input.ProviderPhone)
 	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.StartEpisodeByBreakGlassCreate)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
-
-	isVerified, normalized, err := c.infrastructure.Engagement.VerifyOTP(ctx, input.ProviderPhone, input.Otp)
-	if err != nil {
-		log.Printf(
-			"invalid phone: \nPhone: %s\nOTP: %s\n", input.ProviderPhone, input.Otp)
-		return nil, fmt.Errorf("invalid phone number/OTP: %w", err)
-	}
-	if !isVerified {
-		return nil, fmt.Errorf("invalid OTP")
+		return nil, fmt.Errorf("failed to normalize phone number: %w", err)
 	}
 
 	err = c.infrastructure.FirestoreRepo.StageStartEpisodeByBreakGlass(ctx, input)
@@ -1158,7 +1043,7 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 	pp, err := c.FindPatientByID(ctx, input.PatientID)
 	if err == nil {
 		patientName := pp.PatientRecord.Name[0].Text
-		err = c.sendAlertToAdmin(ctx, patientName, normalized)
+		err = c.sendAlertToAdmin(ctx, patientName, *normalized)
 		if err != nil {
 			log.Printf("failed to send alert message to admin during StartEpisodeByBreakGlass login: %s", err)
 		}
@@ -1169,7 +1054,7 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 			"internal server error in retrieving service provider : %v", err)
 	}
 	ep := helpers.ComposeOneHealthEpisodeOfCare(
-		normalized,
+		*normalized,
 		input.FullAccess,
 		*organizationID,
 		input.ProviderCode,

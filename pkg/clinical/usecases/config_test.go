@@ -18,10 +18,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	fakeRepoMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/mock"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/engagement"
-	svcEngagement "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/engagement/mock"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding"
-	svcOnboarding "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
@@ -54,11 +50,9 @@ var (
 
 	testFakeInfra usecases.Interactor
 
-	FHIRRepoMock   fakeRepoMock.FakeFHIRRepository
-	fakeRepo       fakeRepoMock.FakeRepository
-	fakeOCL        usecaseMock.OCLMock
-	fakeEngagement svcEngagement.FakeServiceEngagement
-	fakeOnboarding svcOnboarding.FakeOnboarding
+	FHIRRepoMock fakeRepoMock.FakeFHIRRepository
+	fakeRepo     fakeRepoMock.FakeRepository
+	fakeOCL      usecaseMock.OCLMock
 
 	fakeBaseExtension extensionMock.FakeBaseExtension
 )
@@ -67,8 +61,8 @@ func TestMain(m *testing.M) {
 	os.Setenv("ENVIRONMENT", "staging")
 	os.Setenv("ROOT_COLLECTION_SUFFIX", "staging")
 	os.Setenv("CLOUD_HEALTH_PUBSUB_TOPIC", "healthcloud-bewell-staging")
-	os.Setenv("CLOUD_HEALTH_DATASET_ID", "healthcloud-bewell-staging")
-	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-bewell-fhir-staging")
+	os.Setenv("CLOUD_HEALTH_DATASET_ID", "sghi-healthcare-staging")
+	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "sghi-healthcare-fhir-staging")
 	os.Setenv("REPOSITORY", "firebase")
 
 	ctx := context.Background()
@@ -110,7 +104,7 @@ func TestMain(m *testing.M) {
 			}
 			for _, collection := range collections {
 				ref := fsc.Collection(collection)
-				firebasetools.DeleteCollection(ctx, fsc, ref, 10)
+				_ = firebasetools.DeleteCollection(ctx, fsc, ref, 10)
 			}
 		}
 
@@ -142,15 +136,11 @@ func InitializeFakeTestlInteractor(ctx context.Context) (usecases.Interactor, er
 	var fhirRepo infrastructure.FHIRRepository = &FHIRRepoMock
 	var repo infrastructure.Repository = &fakeRepo
 	var ocl ocl.UseCases = &fakeOCL
-	var en engagement.ServiceEngagement = &fakeEngagement
-	var onboarding onboarding.ServiceOnboarding = &fakeOnboarding
 	var baseExt extensions.BaseExtension = &fakeBaseExtension
 	infra := func() infrastructure.Infrastructure {
 		return infrastructure.Infrastructure{
 			FHIRRepo:       fhirRepo,
 			FirestoreRepo:  repo,
-			Engagement:     en,
-			Onboarding:     onboarding,
 			OpenConceptLab: ocl,
 			BaseExtension:  baseExt,
 		}
@@ -161,25 +151,9 @@ func InitializeFakeTestlInteractor(ctx context.Context) (usecases.Interactor, er
 	return i, nil
 }
 
-func getTestAuthenticatedContext(t *testing.T) (context.Context, error) {
-	onboardingClient := onboardingISCClient(t)
-	ctx, token, err := interserviceclient.GetPhoneNumberAuthenticatedContextAndToken(t, onboardingClient)
-	if err != nil {
-		return nil, fmt.Errorf("cant get phone number authenticated context token: %v", err)
-	}
-
-	_, err = firebasetools.GetAuthenticatedContextFromUID(ctx, token.UID)
-	if err != nil {
-		return nil, fmt.Errorf("cant get authenticated context from UID: %v", err)
-
-	}
-	return ctx, nil
-}
-
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {
-	ctx := context.Background()
-	infra := infrastructure.NewInfrastructureInteractor()
-	return infra.Engagement.RequestOTP(ctx, msisdn)
+	// TODO:(engagement) OTP removed
+	return "", nil
 }
 
 func InitializeTestFirebaseClient(
@@ -218,23 +192,6 @@ func InitializeTestFirebaseClient(
 // 	}
 // 	return itr, nil
 // }
-
-// makes an ISC call to the onboarding service
-func onboardingISCClient(t *testing.T) *interserviceclient.InterServiceClient {
-	deps, err := interserviceclient.LoadDepsFromYAML()
-	if err != nil {
-		t.Errorf("can't load inter-service config from YAML: %v", err)
-		return nil
-	}
-
-	profileClient, err := interserviceclient.SetupISCclient(*deps, "onboarding")
-	if err != nil {
-		t.Errorf("can't set up onboarding interservice client: %v", err)
-		return nil
-	}
-
-	return profileClient
-}
 
 func simplePatientRegistration() (*domain.SimplePatientRegistrationInput, error) {
 	otherNames := gofakeit.Name()

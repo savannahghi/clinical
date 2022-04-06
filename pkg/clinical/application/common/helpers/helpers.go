@@ -10,7 +10,6 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/converterandformatter"
@@ -365,24 +364,20 @@ func ContactsToContactPoint(
 	contactUse := domain.ContactPointUseEnumHome
 	emailSystem := domain.ContactPointSystemEnumEmail
 	phoneSystem := domain.ContactPointSystemEnumPhone
-	engagement := infrastructure.NewInfrastructureInteractor()
 
 	for _, phone := range phones {
 
-		isVerified, normalized, err := engagement.Engagement.VerifyOTP(
-			ctx, phone.Msisdn, phone.VerificationCode)
+		normalized, err := converterandformatter.NormalizeMSISDN(phone.Msisdn)
 		if err != nil {
-			return nil, fmt.Errorf("invalid phone: %w", err)
+			return nil, fmt.Errorf("unable to normalize phone number: %w", err)
 		}
-		if !isVerified {
-			return nil, fmt.Errorf("invalid OTP")
-		}
+
 		phoneContact := &domain.FHIRContactPoint{
 			System: &phoneSystem,
 			Use:    &contactUse,
 			Rank:   &rank,
 			Period: common.DefaultPeriod(),
-			Value:  &normalized,
+			Value:  normalized,
 		}
 		output = append(output, phoneContact)
 		rank++

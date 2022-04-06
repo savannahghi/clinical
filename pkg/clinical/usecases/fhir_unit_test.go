@@ -438,7 +438,7 @@ func TestFHIRUseCaseImpl_CreateOrganization_Unittest(t *testing.T) {
 				ctx:               ctx,
 				providerSladeCode: "1234",
 			},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name: "invalid: invalid resource passed",
