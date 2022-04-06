@@ -63,7 +63,7 @@ func TestMain(m *testing.M) {
 		}
 		for _, collection := range collections {
 			ref := fsc.Collection(collection)
-			firebasetools.DeleteCollection(ctx, fsc, ref, 10)
+			_ = firebasetools.DeleteCollection(ctx, fsc, ref, 10)
 		}
 	}
 
@@ -133,7 +133,7 @@ func TestRepository_CreateDataset(t *testing.T) {
 					err.Error(),
 					"googleapi: Error 409: already exists",
 				) {
-					t.Errorf("unexpected error: %w", err)
+					t.Errorf("unexpected error: %v", err)
 					return
 				}
 			}
@@ -167,7 +167,7 @@ func TestRepository_GetDataset(t *testing.T) {
 					err.Error(),
 					"googleapi: Error 404: does not exist exists",
 				) {
-					t.Errorf("unexpected error: %w", err)
+					t.Errorf("unexpected error: %v", err)
 					return
 				}
 				assert.NotNil(t, got)
@@ -224,7 +224,7 @@ func TestRepository_CreateFHIRStore(t *testing.T) {
 					err.Error(),
 					"googleapi: Error 409: already exists",
 				) {
-					t.Errorf("unexpected error: %w", err)
+					t.Errorf("unexpected error: %v", err)
 					return
 				}
 			}

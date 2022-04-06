@@ -58,7 +58,7 @@ func TestMain(m *testing.M) {
 		}
 		for _, collection := range collections {
 			ref := fsc.Collection(collection)
-			firebasetools.DeleteCollection(ctx, fsc, ref, 10)
+			_ = firebasetools.DeleteCollection(ctx, fsc, ref, 10)
 		}
 	}
 

@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/mitchellh/mapstructure"
-	auth "github.com/savannahghi/clinical/pkg/clinical/application/authorization"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -42,10 +41,7 @@ const (
 	notFoundWithSearchParams = "could not find a patient with the provided parameters"
 	internalError            = "an error occurred on our end. Please try again later"
 	fullAccessLevel          = "FULL_ACCESS"
-	partialAccessLevel       = "PROFILE_AND_RECENT_VISITS_ACCESS"
 	timeFormatStr            = "2006-01-02T15:04:05+03:00"
-	baseFHIRURL              = "https://healthcare.googleapis.com/v1"
-	cloudhealthEmail         = "cloudhealth@healthcloud.co.ke"
 	defaultTimeoutSeconds    = 10
 )
 
@@ -133,17 +129,6 @@ func (fh FHIRUseCaseImpl) Encounters(
 	patientReference string,
 	status *domain.EncounterStatusEnum,
 ) ([]*domain.FHIREncounter, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	searchParams := url.Values{}
 	if status != nil {
@@ -266,17 +251,6 @@ func (fh FHIRUseCaseImpl) SearchFHIREpisodeOfCare(ctx context.Context, params ma
 // CreateEpisodeOfCare is the final common pathway for creation of episodes of
 // care.
 func (fh FHIRUseCaseImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	payload, err := converterandformatter.StructToMap(episode)
 	if err != nil {
@@ -340,17 +314,6 @@ func (fh FHIRUseCaseImpl) CreateEpisodeOfCare(ctx context.Context, episode domai
 
 // CreateFHIRCondition creates a FHIRCondition instance
 func (fh FHIRUseCaseImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Condition"
 	resource := domain.FHIRCondition{}
@@ -409,17 +372,6 @@ func (fh FHIRUseCaseImpl) CreateFHIROrganization(ctx context.Context, input doma
 // OpenOrganizationEpisodes return all organization specific open episodes
 func (fh FHIRUseCaseImpl) OpenOrganizationEpisodes(
 	ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	organizationID, err := fh.GetORCreateOrganization(ctx, providerSladeCode)
 	if err != nil {
@@ -453,18 +405,6 @@ func (fh FHIRUseCaseImpl) GetORCreateOrganization(ctx context.Context, providerS
 
 // CreateOrganization creates an organization given ist provider code
 func (fh FHIRUseCaseImpl) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	identifier := []*domain.FHIRIdentifierInput{
 		{
@@ -549,17 +489,6 @@ func (fh FHIRUseCaseImpl) FindOrganizationByID(ctx context.Context, organization
 
 // GetOrganization retrieves an organization given its code
 func (fh FHIRUseCaseImpl) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	searchParam := map[string]interface{}{
 		"identifier": providerSladeCode,
@@ -773,17 +702,6 @@ func (fh FHIRUseCaseImpl) FHIRHeaders() (http.Header, error) {
 
 // CreateFHIREncounter creates a FHIREncounter instance
 func (fh FHIRUseCaseImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Encounter"
 	resource := domain.FHIREncounter{}
@@ -950,27 +868,10 @@ func (fh *FHIRUseCaseImpl) StartEncounter(
 
 // StartEpisodeByOtp starts a patient OTP verified episode
 func (fh *FHIRUseCaseImpl) StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
-	isVerified, normalized, err := fh.infrastructure.Engagement.VerifyOTP(ctx, input.Msisdn, input.Otp)
+	normalized, err := converterandformatter.NormalizeMSISDN(input.Msisdn)
 	if err != nil {
-		log.Printf(
-			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
-		return nil, fmt.Errorf(
-			"invalid phone: got %s when validating %s", err, input.Msisdn)
-	}
-	if !isVerified {
-		return nil, fmt.Errorf("invalid OTP")
+		return nil, fmt.Errorf("failed to normalize phone number: %w", err)
 	}
 
 	organizationID, err := fh.GetORCreateOrganization(ctx, input.ProviderCode)
@@ -979,7 +880,7 @@ func (fh *FHIRUseCaseImpl) StartEpisodeByOtp(ctx context.Context, input domain.O
 			"internal server error in retrieving service provider : %v", err)
 	}
 	ep := helpers.ComposeOneHealthEpisodeOfCare(
-		normalized,
+		*normalized,
 		input.FullAccess,
 		*organizationID,
 		input.ProviderCode,
@@ -990,17 +891,7 @@ func (fh *FHIRUseCaseImpl) StartEpisodeByOtp(ctx context.Context, input domain.O
 
 // UpgradeEpisode starts a patient OTP verified episode
 func (fh *FHIRUseCaseImpl) UpgradeEpisode(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
+
 	// retrieve and validate the episode
 	episode, err := fh.GetActiveEpisode(ctx, input.EpisodeID)
 	if err != nil {
@@ -1037,16 +928,6 @@ func (fh *FHIRUseCaseImpl) UpgradeEpisode(ctx context.Context, input domain.OTPE
 	}
 
 	// validate the MSISDN and OTP
-	isVerified, _, err := fh.infrastructure.Engagement.VerifyOTP(ctx, input.Msisdn, input.Otp)
-	if err != nil {
-		log.Printf(
-			"invalid phone: \nPhone: %s\nOTP: %s\n", input.Msisdn, input.Otp)
-		return nil, fmt.Errorf(
-			"invalid phone: got %s when validating %s", err, input.Msisdn)
-	}
-	if !isVerified {
-		return nil, fmt.Errorf("invalid OTP")
-	}
 
 	// patch the episode status
 	episode.Type = []*domain.FHIRCodeableConcept{
@@ -1074,17 +955,7 @@ func (fh *FHIRUseCaseImpl) SearchEpisodeEncounter(
 	ctx context.Context,
 	episodeReference string,
 ) (*domain.FHIREncounterRelayConnection, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
+
 	episodeRef := fmt.Sprintf("Episode/%s", episodeReference)
 	encounterFilterParams := map[string]interface{}{
 		"episodeOfCare": episodeRef,
@@ -1102,17 +973,7 @@ func (fh *FHIRUseCaseImpl) SearchEpisodeEncounter(
 // EndEncounter ends an encounter
 func (fh *FHIRUseCaseImpl) EndEncounter(
 	ctx context.Context, encounterID string) (bool, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return false, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return false, err
-	}
-	if !isAuthorized {
-		return false, fmt.Errorf("user not authorized to access this resource")
-	}
+
 	resourceType := "Encounter"
 	encounterPayload, err := fh.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
@@ -1342,17 +1203,6 @@ func (fh *FHIRUseCaseImpl) CreateFHIRServiceRequest(ctx context.Context, input d
 
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
 func (fh *FHIRUseCaseImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -1496,17 +1346,6 @@ func (fh *FHIRUseCaseImpl) SearchFHIRComposition(ctx context.Context, params map
 
 // CreateFHIRComposition creates a FHIRComposition instance
 func (fh *FHIRUseCaseImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Composition"
 	resource := domain.FHIRComposition{}
@@ -1537,17 +1376,6 @@ func (fh *FHIRUseCaseImpl) CreateFHIRComposition(ctx context.Context, input doma
 // UpdateFHIRComposition updates a FHIRComposition instance
 // The resource must have it's ID set.
 func (fh *FHIRUseCaseImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Composition"
 	resource := domain.FHIRComposition{}
@@ -1581,17 +1409,6 @@ func (fh *FHIRUseCaseImpl) UpdateFHIRComposition(ctx context.Context, input doma
 
 // DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return false, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return false, err
-	}
-	if !isAuthorized {
-		return false, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Composition"
 	resp, err := fh.infrastructure.FHIRRepo.DeleteFHIRResource(resourceType, id)
@@ -1606,18 +1423,6 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRComposition(ctx context.Context, id string)
 
 // SearchFHIRCondition provides a search API for FHIRCondition
 func (fh *FHIRUseCaseImpl) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
-
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
@@ -1659,17 +1464,6 @@ func (fh *FHIRUseCaseImpl) SearchFHIRCondition(ctx context.Context, params map[s
 // UpdateFHIRCondition updates a FHIRCondition instance
 // The resource must have it's ID set.
 func (fh *FHIRUseCaseImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Condition"
 	resource := domain.FHIRCondition{}
@@ -1703,17 +1497,6 @@ func (fh *FHIRUseCaseImpl) UpdateFHIRCondition(ctx context.Context, input domain
 
 // GetFHIREncounter retrieves instances of FHIREncounter by ID
 func (fh *FHIRUseCaseImpl) GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Encounter"
 	var resource domain.FHIREncounter
@@ -1737,17 +1520,6 @@ func (fh *FHIRUseCaseImpl) GetFHIREncounter(ctx context.Context, id string) (*do
 
 // SearchFHIREncounter provides a search API for FHIREncounter
 func (fh *FHIRUseCaseImpl) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -1789,17 +1561,6 @@ func (fh *FHIRUseCaseImpl) SearchFHIREncounter(ctx context.Context, params map[s
 
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
 func (fh *FHIRUseCaseImpl) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
@@ -1841,17 +1602,6 @@ func (fh *FHIRUseCaseImpl) SearchFHIRMedicationRequest(ctx context.Context, para
 
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
 func (fh *FHIRUseCaseImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "MedicationRequest"
 	resource := domain.FHIRMedicationRequest{}
@@ -1882,17 +1632,6 @@ func (fh *FHIRUseCaseImpl) CreateFHIRMedicationRequest(ctx context.Context, inpu
 // UpdateFHIRMedicationRequest updates a FHIRMedicationRequest instance
 // The resource must have it's ID set.
 func (fh *FHIRUseCaseImpl) UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "MedicationRequest"
 	resource := domain.FHIRMedicationRequest{}
@@ -1926,17 +1665,7 @@ func (fh *FHIRUseCaseImpl) UpdateFHIRMedicationRequest(ctx context.Context, inpu
 
 // DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return false, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return false, err
-	}
-	if !isAuthorized {
-		return false, fmt.Errorf("user not authorized to access this resource")
-	}
+
 	resourceType := "MedicationRequest"
 	resp, err := fh.infrastructure.FHIRRepo.DeleteFHIRResource(resourceType, id)
 	if err != nil {
@@ -1950,18 +1679,6 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRMedicationRequest(ctx context.Context, id s
 
 // SearchFHIRObservation provides a search API for FHIRObservation
 func (fh *FHIRUseCaseImpl) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return nil, err
-	}
-	if !isAuthorized {
-		return nil, fmt.Errorf("user not authorized to access this resource")
-	}
-
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
@@ -2030,17 +1747,6 @@ func (fh *FHIRUseCaseImpl) CreateFHIRObservation(ctx context.Context, input doma
 
 // DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
 func (fh *FHIRUseCaseImpl) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
-	user, err := fh.infrastructure.BaseExtension.GetLoggedInUser(ctx)
-	if err != nil {
-		return false, fmt.Errorf("unable to get user: %w", err)
-	}
-	isAuthorized, err := auth.IsAuthorized(user, auth.ProblemSummaryView)
-	if err != nil {
-		return false, err
-	}
-	if !isAuthorized {
-		return false, fmt.Errorf("user not authorized to access this resource")
-	}
 
 	resourceType := "Observation"
 	resp, err := fh.infrastructure.FHIRRepo.DeleteFHIRResource(resourceType, id)
@@ -2118,6 +1824,8 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRPatient(ctx context.Context, id string) (bo
 	// This list stores the patient ResourceType and ResourceID
 	patient := []map[string]string{}
 
+	medicationRequests := []map[string]string{}
+
 	for _, en := range entries {
 		entry, ok := en.(map[string]interface{})
 		if !ok {
@@ -2170,9 +1878,21 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRPatient(ctx context.Context, id string) (bo
 				resourceTypeIDMap,
 			)
 			continue
+
+		case "MedicationRequest":
+			medicationRequests = append(
+				medicationRequests,
+				resourceTypeIDMap,
+			)
+			continue
 		}
 
 		assortedResourceTypes = append(assortedResourceTypes, resourceTypeIDMap)
+	}
+
+	// Special case, a medication request causes the failure for deleting a FHIR Condition
+	if err = fh.DeleteFHIRResourceType(medicationRequests); err != nil {
+		return false, err
 	}
 
 	// Order of deletion matters to avoid conflicts
@@ -2213,8 +1933,8 @@ func (fh *FHIRUseCaseImpl) DeleteFHIRResourceType(results []map[string]string) e
 		)
 		if err != nil {
 			return fmt.Errorf(
-				"unable to delete %s, response %s, error: %v",
-				resourceType, string(resp), err,
+				"unable to delete %s:%s, response %s, error: %v",
+				resourceType, resourceID, string(resp), err,
 			)
 		}
 	}

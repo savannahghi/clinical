@@ -1,21 +1,9 @@
 staging:
-  - depName: onboarding
-    depRootDomain: https://onboarding-testing.savannahghi.org
-  - depName: engagement
-    depRootDomain: https://engagement-testing.savannahghi.org
   - depName: mycarehub
     depRootDomain: https://mycarehub-staging.savannahghi.org
 testing:
-  - depName: onboarding
-    depRootDomain: https://onboarding-testing.savannahghi.org
-  - depName: engagement
-    depRootDomain: https://engagement-testing.savannahghi.org
   - depName: mycarehub
     depRootDomain: https://mycarehub-testing.savannahghi.org
 production:
-  - depName: onboarding
-    depRootDomain: https://onboarding-prod.savannahghi.org
-  - depName: engagement
-    depRootDomain: https://engagement-prod.savannahghi.org
   - depName: mycarehub
     depRootDomain: https://mycarehub-prod.savannahghi.org

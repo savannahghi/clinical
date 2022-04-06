@@ -9,20 +9,22 @@ require (
 	cloud.google.com/go/profiler v0.2.0 // indirect
 	cloud.google.com/go/pubsub v1.19.0
 	cloud.google.com/go/trace v1.2.0 // indirect
+	contrib.go.opencensus.io/exporter/stackdriver v0.13.8 // indirect
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/99designs/gqlgen v0.13.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.40.0 // indirect
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/casbin/casbin/v2 v2.37.2
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/imroc/req v0.3.0
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/labstack/gommon v0.3.0
 	github.com/mitchellh/mapstructure v1.4.2
-	github.com/pkg/errors v0.9.1
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/rs/xid v1.3.0
 	github.com/savannahghi/converterandformatter v0.0.11
@@ -31,7 +33,6 @@ require (
 	github.com/savannahghi/feedlib v0.0.6
 	github.com/savannahghi/firebasetools v0.0.15
 	github.com/savannahghi/interserviceclient v0.0.18
-	github.com/savannahghi/onboarding v0.0.22
 	github.com/savannahghi/profileutils v0.0.17
 	github.com/savannahghi/pubsubtools v0.0.2
 	github.com/savannahghi/scalarutils v0.0.4

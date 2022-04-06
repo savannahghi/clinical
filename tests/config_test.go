@@ -65,9 +65,9 @@ func TestMain(m *testing.M) {
 	// setup
 	os.Setenv("ENVIRONMENT", "staging")
 	os.Setenv("ROOT_COLLECTION_SUFFIX", "staging")
-	os.Setenv("CLOUD_HEALTH_PUBSUB_TOPIC", "healthcloud-bewell-staging")
-	os.Setenv("CLOUD_HEALTH_DATASET_ID", "healthcloud-bewell-staging")
-	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-bewell-fhir-staging")
+	os.Setenv("CLOUD_HEALTH_PUBSUB_TOPIC", "healthcloud-sghi-staging")
+	os.Setenv("CLOUD_HEALTH_DATASET_ID", "healthcloud-sghi-staging")
+	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-sghi-fhir-staging")
 	os.Setenv("REPOSITORY", "firebase")
 
 	ctx := context.Background()
@@ -107,7 +107,7 @@ func TestMain(m *testing.M) {
 			}
 			for _, collection := range collections {
 				ref := fsc.Collection(collection)
-				firebasetools.DeleteCollection(ctx, fsc, ref, 10)
+				_ = firebasetools.DeleteCollection(ctx, fsc, ref, 10)
 			}
 		}
 
@@ -143,9 +143,8 @@ func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastru
 }
 
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {
-	ctx := context.Background()
-	infra := infrastructure.NewInfrastructureInteractor()
-	return infra.Engagement.RequestOTP(ctx, msisdn)
+	// TODO:(engagement) Replace engagement
+	return "", nil
 }
 
 func createFHIRTestObservation(ctx context.Context, encounterID string) (
