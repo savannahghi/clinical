@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
@@ -49,6 +50,7 @@ func (p PresentationHandlersImpl) DeleteFHIRPatientByPhone() http.HandlerFunc {
 		}
 		deleted, err := p.usecases.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 		if err != nil {
+			utils.ReportErrorToSentry(err)
 			err := fmt.Sprintf("unable to delete patient: %v", err.Error())
 			serverutils.WriteJSONResponse(
 				w,

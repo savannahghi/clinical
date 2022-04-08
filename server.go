@@ -25,6 +25,7 @@ func init() {
 
 func main() {
 	ctx := context.Background()
+
 	err := serverutils.Sentry()
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)

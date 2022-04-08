@@ -18,6 +18,7 @@ env:
   OPENCONCEPTLAB_API_URL: ${{ secrets.OPENCONCEPTLAB_API_URL }}
   JWT_KEY: ${{ secrets.JWT_KEY }}
   CLOUD_HEALTH_FHIRSTORE_ID: ${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}
+  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
 
   # Schema Registry CLI command version
   CLI_VERSION: v0.0.1
