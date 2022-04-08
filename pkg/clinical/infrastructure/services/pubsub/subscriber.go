@@ -3,6 +3,7 @@ package pubsubmessaging
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -131,7 +132,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			}, http.StatusBadRequest)
 			return
 		}
-
 		err = ps.infra.MyCareHub.AddFHIRIDToFacility(ctx, *response.Resource.ID, *data.ID)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
@@ -151,6 +151,17 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			}, http.StatusBadRequest)
 			return
 		}
+
+		var patientName string
+		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+		patientName = *patient.PatientRecord.Name[0].Given[0]
 
 		response, err := ps.ocl.GetConcept(
 			ctx,
@@ -210,8 +221,26 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			ValueString: &data.Value,
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
-				Display:   data.PatientID,
+				Display:   patientName,
 			},
+		}
+
+		if data.OrganizationID != "" {
+			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID)
+			if err != nil {
+				//Should not fail incase the organization is not found
+				log.Printf("the error is: %v", err)
+			}
+
+			if organization != nil {
+				performerReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
+				referenceInput := &domain.FHIRReferenceInput{
+					Reference: &performerReference,
+					Display:   *organization.Resource.Name,
+				}
+
+				input.Performer = append(input.Performer, referenceInput)
+			}
 		}
 
 		_, err = ps.fhir.CreateFHIRObservation(ctx, input)
@@ -233,6 +262,17 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			}, http.StatusBadRequest)
 			return
 		}
+
+		var patientName string
+		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+		patientName = *patient.PatientRecord.Name[0].Given[0]
 
 		response, err := ps.ocl.GetConcept(
 			ctx,
@@ -286,7 +326,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			VerificationStatus: domain.FHIRCodeableConceptInput{},
 			Patient: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
-				Display:   data.PatientID,
+				Display:   patientName,
 			},
 			Reaction: []*domain.FHIRAllergyintoleranceReactionInput{
 				{
@@ -319,6 +359,24 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			},
 		}
 
+		if data.OrganizationID != "" {
+			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization resposne
+			if err != nil {
+				//Should not fail incase the organization is not found
+				log.Printf("the error is: %v", err)
+			}
+			if organization != nil {
+				recorderReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
+
+				referenceInput := &domain.FHIRReferenceInput{
+					Reference: &recorderReference,
+					Display:   *organization.Resource.Name,
+				}
+
+				input.Recorder = referenceInput
+			}
+		}
+
 		_, err = ps.fhir.CreateFHIRAllergyIntolerance(ctx, input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
@@ -338,6 +396,17 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			}, http.StatusBadRequest)
 			return
 		}
+
+		var patientName string
+		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+		patientName = *patient.PatientRecord.Name[0].Given[0]
 
 		resp, err := ps.ocl.GetConcept(
 			ctx,
@@ -418,13 +487,31 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			},
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
-				Display:   data.PatientID,
+				Display:   patientName,
 			},
 			EffectiveDateTime: &scalarutils.Date{
 				Year:  year,
 				Month: int(month),
 				Day:   day,
 			},
+		}
+
+		if data.OrganizationID != "" {
+			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization resposne
+			if err != nil {
+				//Should not fail incase the organization is not found
+				log.Printf("the error is: %v", err)
+			}
+			if organization != nil {
+				informationSourceReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
+
+				referenceInput := &domain.FHIRReferenceInput{
+					Reference: &informationSourceReference,
+					Display:   *organization.Resource.Name,
+				}
+
+				msInput.InformationSource = referenceInput
+			}
 		}
 
 		_, err = ps.fhir.CreateFHIRMedicationStatement(ctx, msInput)
@@ -446,6 +533,17 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			}, http.StatusBadRequest)
 			return
 		}
+
+		var patientName string
+		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
+		if err != nil {
+			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+			return
+		}
+		patientName = *patient.PatientRecord.Name[0].Given[0]
 
 		response, err := ps.ocl.GetConcept(
 			ctx,
@@ -505,8 +603,26 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			EffectiveInstant: &instant,
 			Subject: &domain.FHIRReferenceInput{
 				Reference: &subjectReference,
-				Display:   data.PatientID,
+				Display:   patientName,
 			},
+		}
+
+		if data.OrganizationID != "" {
+			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization resposne
+			if err != nil {
+				//Should not fail incase the organization is not found
+				log.Printf("the error is: %v", err)
+			}
+			if organization != nil {
+				performerReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
+
+				referenceInput := &domain.FHIRReferenceInput{
+					Reference: &performerReference,
+					Display:   *organization.Resource.Name,
+				}
+
+				input.Performer = append(input.Performer, referenceInput)
+			}
 		}
 
 		_, err = ps.fhir.CreateFHIRObservation(ctx, input)

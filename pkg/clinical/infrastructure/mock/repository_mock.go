@@ -2,6 +2,8 @@ package mock
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 )
@@ -16,6 +18,19 @@ type FakeFHIRRepository struct {
 	FHIRRestURLFn              func() string
 	GetFHIRResourceFn          func(resourceType, fhirResourceID string) ([]byte, error)
 	GetFHIRPatientEverythingFn func(fhirResourceID string) ([]byte, error)
+}
+
+// NewFakeFHIRRepositoryMock initializes a new FakeFHIRRepositoryMock
+func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
+	return &FakeFHIRRepository{
+		GetFHIRResourceFn: func(resourceType, fhirResourceID string) ([]byte, error) {
+			bs, err := json.Marshal("m")
+			if err != nil {
+				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
+			}
+			return bs, nil
+		},
+	}
 }
 
 // CreateFHIRResource ...

@@ -287,6 +287,18 @@ func (r *queryResolver) GetMedicalData(ctx context.Context, patientID string) (*
 	return r.usecases.GetMedicalData(ctx, patientID)
 }
 
+func (r *queryResolver) SearchOrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.SearchFHIROrganization(ctx, params)
+}
+
+func (r *queryResolver) FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.FindOrganizationByID(ctx, organizationID)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

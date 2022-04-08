@@ -494,6 +494,55 @@ func TestFHIRUseCaseImpl_CreateOrganization_Unittest(t *testing.T) {
 	}
 }
 
+func TestFHIRUseCaseImpl_FindOrganizationByID_Unittest(t *testing.T) {
+	ctx := context.Background()
+
+	fh := testFakeInfra
+
+	type args struct {
+		ctx            context.Context
+		organizationID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIROrganizationRelayPayload
+		wantErr bool
+	}{
+		{
+			name: "Sad case",
+			args: args{
+				ctx:            ctx,
+				organizationID: "",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.name == "Sad case" {
+				FHIRRepoMock.GetFHIRResourceFn = func(resourceType string, id string) ([]byte, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			got, err := fh.FindOrganizationByID(tt.args.ctx, tt.args.organizationID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.FindOrganizationByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && got != nil {
+				t.Errorf("expected response to be nil for %v", tt.name)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected response not to be nil for %v", tt.name)
+				return
+			}
+		})
+	}
+}
+
 // func TestFHIRUseCaseImpl_SearchFHIROrganization_Unittest(t *testing.T) {
 // 	ctx, err := getTestAuthenticatedContext(t)
 // 	if err != nil {

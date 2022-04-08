@@ -60,6 +60,7 @@ type FHIRUseCase interface {
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error)
 	SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error)
+	FindOrganizationByID(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error)
 	POSTRequest(
 		resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
 	SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error)
@@ -522,6 +523,28 @@ func (fh FHIRUseCaseImpl) SearchFHIROrganization(ctx context.Context, params map
 		})
 	}
 	return &output, nil
+}
+
+// FindOrganizationByID finds and retrieves organization details using the specified organization ID
+func (fh FHIRUseCaseImpl) FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error) {
+	if organizationID == "" {
+		return nil, fmt.Errorf("organization ID is required")
+	}
+
+	data, err := fh.infrastructure.FHIRRepo.GetFHIRResource("Organization", organizationID)
+	if err != nil {
+		return nil, fmt.Errorf("unable to retrieve organization: %w", err)
+	}
+	var organization domain.FHIROrganization
+	err = json.Unmarshal(data, &organization)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal organization data from JSON to the target struct: %w", err)
+	}
+
+	return &domain.FHIROrganizationRelayPayload{
+		Resource: &organization,
+	}, nil
+
 }
 
 // GetOrganization retrieves an organization given its code
