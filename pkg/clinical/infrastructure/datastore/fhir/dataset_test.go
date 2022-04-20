@@ -11,6 +11,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
@@ -105,7 +106,8 @@ func InitializeTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth
 }
 
 func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
-	infrastructure := infrastructure.NewInfrastructureInteractor()
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension)
 
 	usecases := interactor.NewUsecasesInteractor(infrastructure)
 	return usecases, nil

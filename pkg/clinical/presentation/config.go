@@ -108,7 +108,7 @@ func Router(ctx context.Context) (*mux.Router, error) {
 		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
 	}
 
-	infrastructure := infrastructure.NewInfrastructureInteractor()
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	oclUseCase := ocl.NewUseCasesImpl(infrastructure)
 	h := rest.NewPresentationHandlers(infrastructure, usecases)

@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/brianvoe/gofakeit"
+	"github.com/google/uuid"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/profileutils"
 	"github.com/savannahghi/pubsubtools"
@@ -58,6 +60,98 @@ type FakeBaseExtension struct {
 		r *http.Request,
 	) (*pubsubtools.PubSubPayload, error)
 	MockGetPubSubTopicFn func(m *pubsubtools.PubSubPayload) (string, error)
+}
+
+// NewFakeBaseExtensionMock is a new instance of FakeBaseExtension
+func NewFakeBaseExtensionMock() *FakeBaseExtension {
+	id := uuid.New().String()
+	return &FakeBaseExtension{
+		GetLoggedInUserFn: func(ctx context.Context) (*profileutils.UserInfo, error) {
+			return &profileutils.UserInfo{
+				DisplayName: gofakeit.Name(),
+				Email:       gofakeit.Email(),
+				PhoneNumber: "0721568526",
+				PhotoURL:    gofakeit.URL(),
+				ProviderID:  gofakeit.UUID(),
+				UID:         gofakeit.UUID(),
+			}, nil
+		},
+		GetLoggedInUserUIDFn: func(ctx context.Context) (string, error) {
+			return id, nil
+		},
+		NormalizeMSISDNFn: func(msisdn string) (*string, error) {
+			return &msisdn, nil
+		},
+		LoadDepsFromYAMLFn: func() (*interserviceclient.DepsConfig, error) {
+			return &interserviceclient.DepsConfig{}, nil
+		},
+		SetupISCclientFn: func(config interserviceclient.DepsConfig, serviceName string) (*interserviceclient.InterServiceClient, error) {
+			return &interserviceclient.InterServiceClient{}, nil
+		},
+		GetEnvVarFn: func(envName string) (string, error) {
+			return "", nil
+		},
+		ErrorMapFn: func(err error) map[string]string {
+			return map[string]string{}
+		},
+		WriteJSONResponseFn: func(
+			w http.ResponseWriter,
+			source interface{},
+			status int,
+		) {
+
+		},
+
+		MockEnsureTopicsExistFn: func(
+			ctx context.Context,
+			pubsubClient *pubsub.Client,
+			topicIDs []string,
+		) error {
+			return nil
+		},
+		MockNamespacePubsubIdentifierFn: func(
+			serviceName string,
+			topicID string,
+			environment string,
+			version string,
+		) string {
+			return ""
+		},
+		MockPublishToPubsubFn: func(
+			ctx context.Context,
+			pubsubClient *pubsub.Client,
+			topicID string,
+			environment string,
+			serviceName string,
+			version string,
+			payload []byte,
+		) error {
+			return nil
+		},
+		MockEnsureSubscriptionsExistFn: func(
+			ctx context.Context,
+			pubsubClient *pubsub.Client,
+			topicSubscriptionMap map[string]string,
+			callbackURL string,
+		) error {
+			return nil
+		},
+		MockSubscriptionIDsFn: func(topicIDs []string) map[string]string {
+			return map[string]string{}
+		},
+		MockPubSubHandlerPathFn: func() string {
+			return ""
+		},
+		MockVerifyPubSubJWTAndDecodePayloadFn: func(
+			w http.ResponseWriter,
+			r *http.Request,
+		) (*pubsubtools.PubSubPayload, error) {
+			return &pubsubtools.PubSubPayload{}, nil
+		},
+		MockGetPubSubTopicFn: func(m *pubsubtools.PubSubPayload) (string, error) {
+			return "", nil
+		},
+	}
 }
 
 // GetLoggedInUser retrieves logged in user information

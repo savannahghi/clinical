@@ -9,6 +9,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/asaskevich/govalidator"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 
@@ -365,7 +366,8 @@ func ContactsToContactPoint(
 	contactUse := domain.ContactPointUseEnumHome
 	emailSystem := domain.ContactPointSystemEnumEmail
 	phoneSystem := domain.ContactPointSystemEnumPhone
-	engagement := infrastructure.NewInfrastructureInteractor()
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+	engagement := infrastructure.NewInfrastructureInteractor(baseExtension)
 
 	for _, phone := range phones {
 

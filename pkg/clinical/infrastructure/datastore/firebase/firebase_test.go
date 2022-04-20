@@ -10,6 +10,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/firebasetools"
@@ -81,8 +82,8 @@ func TestMain(m *testing.M) {
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-
-	return infrastructure.NewInfrastructureInteractor(), nil
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+	return infrastructure.NewInfrastructureInteractor(baseExtension), nil
 }
 
 func InitializeTestFirebaseRepository() (*fb.Repository, error) {

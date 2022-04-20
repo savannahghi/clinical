@@ -7,7 +7,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/onboarding"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
-	"github.com/savannahghi/firebasetools"
 )
 
 // Infrastructure ...
@@ -22,8 +21,9 @@ type Infrastructure struct {
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
-func NewInfrastructureInteractor() Infrastructure {
-	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+func NewInfrastructureInteractor(
+	baseExtension extensions.BaseExtension,
+) Infrastructure {
 	fhirRepository := NewFHIRService()
 
 	engagementClient := common.NewInterServiceClient("engagement", baseExtension)

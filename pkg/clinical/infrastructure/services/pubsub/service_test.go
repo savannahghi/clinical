@@ -36,7 +36,7 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 	// Initialize base (common) extension
 	baseExtension := extensions.NewBaseExtensionImpl(fc)
 
-	infrastructure := infrastructure.NewInfrastructureInteractor()
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	oclUseCase := ocl.NewUseCasesImpl(infrastructure)
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(

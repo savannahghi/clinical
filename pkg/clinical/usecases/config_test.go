@@ -46,8 +46,9 @@ const ( // Repo the env to identify which repo to use
 )
 
 var (
-	// fakePatient     usecaseMock.ClinicalMock
-	// fakeUsecaseIntr usecases.Interactor
+	fakePatient usecaseMock.ClinicalMock
+	fakeFHIR    usecaseMock.FHIRMock
+	fakeInfra   infrastructure.Infrastructure
 
 	testUsecaseInteractor interactor.Usecases
 	testInfrastructure    infrastructure.Infrastructure
@@ -102,6 +103,10 @@ func TestMain(m *testing.M) {
 
 	testUsecaseInteractor = svc
 
+	fakeBaseExtension = *extensionMock.NewFakeBaseExtensionMock()
+	fakeFHIR = *usecaseMock.NewFHIRMock()
+	fakeInfra = infrastructure.NewInfrastructureInteractor(&fakeBaseExtension)
+
 	purgeRecords := func() {
 		if serverutils.MustGetEnvVar(Repo) == FirebaseRepository {
 			r := fb.Repository{}
@@ -134,7 +139,8 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-	return infrastructure.NewInfrastructureInteractor(), nil
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+	return infrastructure.NewInfrastructureInteractor(baseExtension), nil
 }
 
 func InitializeFakeTestlInteractor(ctx context.Context) (usecases.Interactor, error) {
@@ -178,7 +184,8 @@ func getTestAuthenticatedContext(t *testing.T) (context.Context, error) {
 
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {
 	ctx := context.Background()
-	infra := infrastructure.NewInfrastructureInteractor()
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+	infra := infrastructure.NewInfrastructureInteractor(baseExtension)
 	return infra.Engagement.RequestOTP(ctx, msisdn)
 }
 

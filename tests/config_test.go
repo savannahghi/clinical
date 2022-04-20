@@ -15,6 +15,7 @@ import (
 	"firebase.google.com/go/auth"
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
@@ -138,13 +139,15 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
 
-	return infrastructure.NewInfrastructureInteractor(), nil
+	return infrastructure.NewInfrastructureInteractor(baseExtension), nil
 }
 
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {
 	ctx := context.Background()
-	infra := infrastructure.NewInfrastructureInteractor()
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+	infra := infrastructure.NewInfrastructureInteractor(baseExtension)
 	return infra.Engagement.RequestOTP(ctx, msisdn)
 }
 

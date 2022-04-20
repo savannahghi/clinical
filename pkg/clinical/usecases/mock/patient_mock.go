@@ -27,6 +27,8 @@ type ClinicalMock struct {
 	DeleteFHIRPatientByPhoneFn            func(ctx context.Context, phoneNumber string) (bool, error)
 	StartEpisodeByBreakGlassFn            func(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
 	FindPatientsByMSISDNFn                func(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
+	PatientTimelineFn                     func(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error)
+	GetMedicalDataFn                      func(ctx context.Context, patientID string) (*domain.MedicalData, error)
 }
 
 // NewClinicalMock is a new instance of ClinicalMock
@@ -153,6 +155,16 @@ func NewClinicalMock() *ClinicalMock {
 				},
 			}, nil
 		},
+		PatientTimelineFn: func(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
+			return []map[string]interface{}{
+				1: {
+					"Test": "Test",
+				},
+			}, nil
+		},
+		GetMedicalDataFn: func(ctx context.Context, patientID string) (*domain.MedicalData, error) {
+			return &domain.MedicalData{}, nil
+		},
 	}
 }
 
@@ -239,4 +251,14 @@ func (p *ClinicalMock) StartEpisodeByBreakGlass(ctx context.Context, input domai
 // FindPatientsByMSISDN initializes finds a patient's record(s), given a search term FindPatientsByMSISDN mock
 func (p *ClinicalMock) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
 	return p.FindPatientsByMSISDNFn(ctx, msisdn)
+}
+
+// PatientTimeline initializes PatientTimeline mock
+func (p *ClinicalMock) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
+	return p.PatientTimelineFn(ctx, patientID, count)
+}
+
+// GetMedicalData initializes GetMedicalData mock
+func (p *ClinicalMock) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
+	return p.GetMedicalDataFn(ctx, patientID)
 }

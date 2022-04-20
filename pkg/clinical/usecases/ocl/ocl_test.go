@@ -6,8 +6,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
+	"github.com/savannahghi/firebasetools"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -44,8 +46,9 @@ func TestMain(m *testing.M) {
 }
 
 func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
 
-	infrastructure := infrastructure.NewInfrastructureInteractor()
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension)
 
 	usecases := interactor.NewUsecasesInteractor(
 		infrastructure,
@@ -54,7 +57,8 @@ func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-	return infrastructure.NewInfrastructureInteractor(), nil
+	baseExtension := extensions.NewBaseExtensionImpl(&firebasetools.FirebaseClient{})
+	return infrastructure.NewInfrastructureInteractor(baseExtension), nil
 }
 
 func TestUseCasesImpl_ListConcepts(t *testing.T) {

@@ -5,62 +5,88 @@ import (
 	"io"
 	"net/url"
 
+	"github.com/brianvoe/gofakeit"
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/scalarutils"
+	"github.com/segmentio/ksuid"
 )
 
 // FHIRMock contains all mock methods
 type FHIRMock struct {
-	CreateEpisodeOfCareFn          func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
-	CreateFHIRConditionFn          func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
-	OpenOrganizationEpisodesFn     func(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error)
-	GetORCreateOrganizationFn      func(ctx context.Context, providerSladeCode string) (*string, error)
-	GetOrganizationFn              func(ctx context.Context, providerSladeCode string) (*string, error)
-	CreateFHIROrganizationFn       func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
-	CreateOrganizationFn           func(ctx context.Context, providerSladeCode string) (*string, error)
-	SearchFHIROrganizationFn       func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error)
-	POSTRequestFn                  func(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
-	SearchEpisodesByParamFn        func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error)
-	HasOpenEpisodeFn               func(ctx context.Context, patient domain.FHIRPatient) (bool, error)
-	OpenEpisodesFn                 func(ctx context.Context, patientReference string) ([]*domain.FHIREpisodeOfCare, error)
-	CreateFHIREncounterFn          func(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error)
-	GetFHIREpisodeOfCareFn         func(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error)
-	EncountersFn                   func(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum) ([]*domain.FHIREncounter, error)
-	SearchFHIREpisodeOfCareFn      func(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error)
-	StartEncounterFn               func(ctx context.Context, episodeID string) (string, error)
-	StartEpisodeByOtpFn            func(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
-	UpgradeEpisodeFn               func(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error)
-	SearchEpisodeEncounterFn       func(ctx context.Context, episodeReference string) (*domain.FHIREncounterRelayConnection, error)
-	EndEncounterFn                 func(ctx context.Context, encounterID string) (bool, error)
-	EndEpisodeFn                   func(ctx context.Context, episodeID string) (bool, error)
-	GetActiveEpisodeFn             func(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error)
-	SearchFHIRServiceRequestFn     func(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error)
-	CreateFHIRServiceRequestFn     func(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
-	SearchFHIRAllergyIntoleranceFn func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error)
-	CreateFHIRAllergyIntoleranceFn func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
-	UpdateFHIRAllergyIntoleranceFn func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
-	SearchFHIRCompositionFn        func(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error)
-	CreateFHIRCompositionFn        func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
-	UpdateFHIRCompositionFn        func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
-	DeleteFHIRCompositionFn        func(ctx context.Context, id string) (bool, error)
-	SearchFHIRConditionFn          func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error)
-	UpdateFHIRConditionFn          func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
-	GetFHIREncounterFn             func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
-	SearchFHIREncounterFn          func(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error)
-	SearchFHIRMedicationRequestFn  func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error)
-	CreateFHIRMedicationRequestFn  func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
-	UpdateFHIRMedicationRequestFn  func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
-	DeleteFHIRMedicationRequestFn  func(ctx context.Context, id string) (bool, error)
-	SearchFHIRObservationFn        func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error)
-	CreateFHIRObservationFn        func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
-	DeleteFHIRObservationFn        func(ctx context.Context, id string) (bool, error)
-	GetFHIRPatientFn               func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
-	DeleteFHIRPatientFn            func(ctx context.Context, id string) (bool, error)
-	DeleteFHIRResourceTypeFn       func(results []map[string]string) error
-	DeleteFHIRServiceRequestFn     func(ctx context.Context, id string) (bool, error)
+	CreateEpisodeOfCareFn      func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
+	CreateFHIRConditionFn      func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
+	OpenOrganizationEpisodesFn func(
+		ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error)
+	GetORCreateOrganizationFn func(ctx context.Context, providerSladeCode string) (*string, error)
+	GetOrganizationFn         func(ctx context.Context, providerSladeCode string) (*string, error)
+	CreateFHIROrganizationFn  func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
+	CreateOrganizationFn      func(ctx context.Context, providerSladeCode string) (*string, error)
+	SearchFHIROrganizationFn  func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error)
+	FindOrganizationByIDFn    func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error)
+	POSTRequestFn             func(
+		resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
+	SearchEpisodesByParamFn func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error)
+	HasOpenEpisodeFn        func(
+		ctx context.Context,
+		patient domain.FHIRPatient,
+	) (bool, error)
+	OpenEpisodesFn func(
+		ctx context.Context, patientReference string) ([]*domain.FHIREpisodeOfCare, error)
+	CreateFHIREncounterFn     func(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error)
+	GetFHIREpisodeOfCareFn    func(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error)
+	EncountersFn              func(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum) ([]*domain.FHIREncounter, error)
+	SearchFHIREpisodeOfCareFn func(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error)
+	StartEncounterFn          func(ctx context.Context, episodeID string) (string, error)
+	StartEpisodeByOtpFn       func(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
+	UpgradeEpisodeFn          func(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error)
+	SearchEpisodeEncounterFn  func(
+		ctx context.Context,
+		episodeReference string,
+	) (*domain.FHIREncounterRelayConnection, error)
+	EndEncounterFn                  func(ctx context.Context, encounterID string) (bool, error)
+	EndEpisodeFn                    func(ctx context.Context, episodeID string) (bool, error)
+	GetActiveEpisodeFn              func(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error)
+	SearchFHIRServiceRequestFn      func(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error)
+	CreateFHIRServiceRequestFn      func(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
+	SearchFHIRAllergyIntoleranceFn  func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error)
+	CreateFHIRAllergyIntoleranceFn  func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
+	UpdateFHIRAllergyIntoleranceFn  func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
+	SearchFHIRCompositionFn         func(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error)
+	CreateFHIRCompositionFn         func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
+	UpdateFHIRCompositionFn         func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
+	DeleteFHIRCompositionFn         func(ctx context.Context, id string) (bool, error)
+	SearchFHIRConditionFn           func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error)
+	UpdateFHIRConditionFn           func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
+	GetFHIREncounterFn              func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
+	SearchFHIREncounterFn           func(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error)
+	SearchFHIRMedicationRequestFn   func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error)
+	CreateFHIRMedicationRequestFn   func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
+	UpdateFHIRMedicationRequestFn   func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
+	DeleteFHIRMedicationRequestFn   func(ctx context.Context, id string) (bool, error)
+	SearchFHIRObservationFn         func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error)
+	CreateFHIRObservationFn         func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
+	DeleteFHIRObservationFn         func(ctx context.Context, id string) (bool, error)
+	GetFHIRPatientFn                func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
+	DeleteFHIRPatientFn             func(ctx context.Context, id string) (bool, error)
+	DeleteFHIRServiceRequestFn      func(ctx context.Context, id string) (bool, error)
+	DeleteFHIRResourceTypeFn        func(results []map[string]string) error
+	CreateFHIRMedicationStatementFn func(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error)
+	CreateFHIRMedicationFn          func(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error)
+	SearchFHIRMedicationStatementFn func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 }
 
 // NewFHIRMock is a new instance of FHIRMock
 func NewFHIRMock() *FHIRMock {
+	reasonCode := scalarutils.Code("21")
+	encounterID := "1234"
+	cursor := "1"
+	testString := gofakeit.Name()
+	testID := ksuid.New().String()
+	generated := domain.NarrativeStatusEnumGenerated
+	system := scalarutils.URI(testString)
+	id := uuid.New().String()
 	return &FHIRMock{
 		CreateEpisodeOfCareFn: func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
 			return &domain.EpisodeOfCarePayload{}, nil
@@ -141,7 +167,36 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRServiceRequestRelayPayload{}, nil
 		},
 		SearchFHIRAllergyIntoleranceFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-			return &domain.FHIRAllergyIntoleranceRelayConnection{}, nil
+			return &domain.FHIRAllergyIntoleranceRelayConnection{
+				Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+					{
+						Cursor: &cursor,
+						Node: &domain.FHIRAllergyIntolerance{
+							ID:                 &id,
+							Text:               &domain.FHIRNarrative{},
+							Identifier:         []*domain.FHIRIdentifier{},
+							ClinicalStatus:     domain.FHIRCodeableConcept{},
+							VerificationStatus: domain.FHIRCodeableConcept{},
+							Category:           []*domain.AllergyIntoleranceCategoryEnum{},
+							Criticality:        "",
+							Code:               &domain.FHIRCodeableConcept{},
+							Patient:            &domain.FHIRReference{},
+							Encounter:          &domain.FHIRReference{},
+							OnsetDateTime:      &scalarutils.Date{Day: 1, Month: 1, Year: 2020},
+							OnsetAge:           &domain.FHIRAge{},
+							OnsetPeriod:        &domain.FHIRPeriod{},
+							OnsetRange:         &domain.FHIRRange{},
+							OnsetString:        new(string),
+							RecordedDate:       &scalarutils.Date{Day: 1, Month: 1, Year: 2020},
+							Recorder:           &domain.FHIRReference{},
+							Asserter:           &domain.FHIRReference{},
+							Note:               []*domain.FHIRAnnotation{},
+							Reaction:           []*domain.FHIRAllergyintoleranceReaction{},
+						},
+					},
+				},
+				PageInfo: &firebasetools.PageInfo{},
+			}, nil
 		},
 		CreateFHIRAllergyIntoleranceFn: func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 			return &domain.FHIRAllergyIntoleranceRelayPayload{}, nil
@@ -162,13 +217,103 @@ func NewFHIRMock() *FHIRMock {
 			return true, nil
 		},
 		SearchFHIRConditionFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
-			return &domain.FHIRConditionRelayConnection{}, nil
+
+			return &domain.FHIRConditionRelayConnection{
+				Edges: []*domain.FHIRConditionRelayEdge{
+					{
+						Cursor: &cursor,
+						Node: &domain.FHIRCondition{
+							ID: &testID,
+							Text: &domain.FHIRNarrative{
+								ID:     new(string),
+								Status: &generated,
+								Div:    scalarutils.XHTML(testString),
+							},
+							Identifier: []*domain.FHIRIdentifier{
+								{
+									ID:     &testID,
+									Use:    domain.IdentifierUseEnum(testString),
+									Type:   domain.FHIRCodeableConcept{},
+									System: &system,
+									Value:  "",
+									Period: &domain.FHIRPeriod{
+										ID:    &testID,
+										Start: "",
+										End:   "",
+									},
+									Assigner: &domain.FHIRReference{},
+								},
+							},
+							ClinicalStatus:     &domain.FHIRCodeableConcept{},
+							VerificationStatus: &domain.FHIRCodeableConcept{},
+							Category:           []*domain.FHIRCodeableConcept{},
+							Severity:           &domain.FHIRCodeableConcept{},
+							Code: &domain.FHIRCodeableConcept{
+								Text: "Hospital re-admission",
+							},
+							BodySite:          []*domain.FHIRCodeableConcept{},
+							Subject:           &domain.FHIRReference{},
+							Encounter:         &domain.FHIRReference{},
+							OnsetDateTime:     &scalarutils.Date{Day: 1, Month: 1, Year: 2020},
+							OnsetAge:          &domain.FHIRAge{},
+							OnsetPeriod:       &domain.FHIRPeriod{},
+							OnsetRange:        &domain.FHIRRange{},
+							OnsetString:       new(string),
+							AbatementDateTime: &scalarutils.Date{Day: 1, Month: 1, Year: 2020},
+							AbatementAge:      &domain.FHIRAge{},
+							AbatementPeriod:   &domain.FHIRPeriod{},
+							AbatementRange:    &domain.FHIRRange{},
+							AbatementString:   new(string),
+							RecordedDate:      &scalarutils.Date{Day: 1, Month: 1, Year: 2020},
+							Recorder:          &domain.FHIRReference{},
+							Asserter:          &domain.FHIRReference{},
+							Stage:             []*domain.FHIRConditionStage{},
+							Evidence:          []*domain.FHIRConditionEvidence{},
+							Note:              []*domain.FHIRAnnotation{},
+						},
+					},
+				},
+				PageInfo: &firebasetools.PageInfo{},
+			}, nil
 		},
 		UpdateFHIRConditionFn: func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
 			return &domain.FHIRConditionRelayPayload{}, nil
 		},
 		GetFHIREncounterFn: func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-			return &domain.FHIREncounterRelayPayload{}, nil
+			return &domain.FHIREncounterRelayPayload{
+				Resource: &domain.FHIREncounter{
+					ID:            &encounterID,
+					Text:          &domain.FHIRNarrative{},
+					Identifier:    []*domain.FHIRIdentifier{},
+					Status:        "",
+					StatusHistory: []*domain.FHIREncounterStatushistory{},
+					Class:         domain.FHIRCoding{},
+					ClassHistory:  []*domain.FHIREncounterClasshistory{},
+					Type:          []*domain.FHIRCodeableConcept{},
+					ServiceType:   &domain.FHIRCodeableConcept{},
+					Priority:      &domain.FHIRCodeableConcept{},
+					Subject: &domain.FHIRReference{
+						ID:         &id,
+						Reference:  &testString,
+						Identifier: &domain.FHIRIdentifier{},
+						Display:    "",
+					},
+					EpisodeOfCare:   []*domain.FHIRReference{},
+					BasedOn:         []*domain.FHIRReference{},
+					Participant:     []*domain.FHIREncounterParticipant{},
+					Appointment:     []*domain.FHIRReference{},
+					Period:          &domain.FHIRPeriod{},
+					Length:          &domain.FHIRDuration{},
+					ReasonCode:      &reasonCode,
+					ReasonReference: []*domain.FHIRReference{},
+					Diagnosis:       []*domain.FHIREncounterDiagnosis{},
+					Account:         []*domain.FHIRReference{},
+					Hospitalization: &domain.FHIREncounterHospitalization{},
+					Location:        []*domain.FHIREncounterLocation{},
+					ServiceProvider: &domain.FHIRReference{},
+					PartOf:          &domain.FHIRReference{},
+				},
+			}, nil
 		},
 		SearchFHIREncounterFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
 			return &domain.FHIREncounterRelayConnection{}, nil
@@ -205,6 +350,18 @@ func NewFHIRMock() *FHIRMock {
 		},
 		DeleteFHIRServiceRequestFn: func(ctx context.Context, id string) (bool, error) {
 			return true, nil
+		},
+		SearchFHIRMedicationStatementFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+			return &domain.FHIRMedicationStatementRelayConnection{}, nil
+		},
+		FindOrganizationByIDFn: func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+			return &domain.FHIROrganizationRelayPayload{}, nil
+		},
+		CreateFHIRMedicationStatementFn: func(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
+			return &domain.FHIRMedicationStatementRelayPayload{}, nil
+		},
+		CreateFHIRMedicationFn: func(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
+			return &domain.FHIRMedicationRelayPayload{}, nil
 		},
 	}
 }
@@ -442,4 +599,24 @@ func (fh *FHIRMock) DeleteFHIRResourceType(results []map[string]string) error {
 // DeleteFHIRServiceRequest is a mock implementation of DeleteFHIRServiceRequest method
 func (fh *FHIRMock) DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error) {
 	return fh.DeleteFHIRServiceRequestFn(ctx, id)
+}
+
+// SearchFHIRMedicationStatement is a mock implementation of SearchFHIRMedicationStatement method
+func (fh *FHIRMock) SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+	return fh.SearchFHIRMedicationStatementFn(ctx, params)
+}
+
+// FindOrganizationByID is a mock implementation of FindOrganizationByID method
+func (fh *FHIRMock) FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error) {
+	return fh.FindOrganizationByIDFn(ctx, organizationID)
+}
+
+// CreateFHIRMedicationStatement is a mock implementation of CreateFHIRMedicationStatement method
+func (fh *FHIRMock) CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
+	return fh.CreateFHIRMedicationStatementFn(ctx, input)
+}
+
+// CreateFHIRMedication is a mock implementation of CreateFHIRMedication method
+func (fh *FHIRMock) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
+	return fh.CreateFHIRMedicationFn(ctx, input)
 }
