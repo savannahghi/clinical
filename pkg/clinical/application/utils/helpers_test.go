@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/savannahghi/firebasetools"
@@ -35,6 +36,28 @@ func TestValidateEmail(t *testing.T) {
 			if err := ValidateEmail(tt.args.email); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateEmail() error = %v, wantErr %v", err, tt.wantErr)
 			}
+		})
+	}
+}
+
+func TestReportErrorToSentry(t *testing.T) {
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "Happy case",
+			args: args{
+				err: fmt.Errorf("test error"),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ReportErrorToSentry(tt.args.err)
 		})
 	}
 }

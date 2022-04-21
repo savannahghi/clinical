@@ -16,6 +16,7 @@ require (
 	github.com/aws/aws-sdk-go v1.40.0 // indirect
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/casbin/casbin/v2 v2.37.2
+	github.com/getsentry/sentry-go v0.11.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
@@ -36,7 +37,7 @@ require (
 	github.com/savannahghi/profileutils v0.0.17
 	github.com/savannahghi/pubsubtools v0.0.2
 	github.com/savannahghi/scalarutils v0.0.4
-	github.com/savannahghi/serverutils v0.0.4
+	github.com/savannahghi/serverutils v0.0.6
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
