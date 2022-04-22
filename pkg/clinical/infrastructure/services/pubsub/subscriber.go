@@ -52,7 +52,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			}, http.StatusBadRequest)
 			return
 		}
-
 		profile, err := ps.infra.MyCareHub.UserProfile(ctx, data.UserID)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{

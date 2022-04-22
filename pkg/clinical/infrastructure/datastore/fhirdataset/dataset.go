@@ -1,17 +1,47 @@
-package fhir
+package fhirdataset
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
+	"time"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/serverutils"
+	"golang.org/x/oauth2/google"
 	"google.golang.org/api/healthcare/v1"
 )
+
+// constants used to configure the Google Cloud Healthcare API
+const (
+	DatasetLocation       = "europe-west4"
+	baseFHIRURL           = "https://healthcare.googleapis.com/v1"
+	defaultTimeoutSeconds = 10
+)
+
+// FHIRRepository ...
+type FHIRRepository interface {
+	CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error)
+	DeleteFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
+	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
+	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
+	GetFHIRPatientAllData(fhirResourceID string) ([]byte, error)
+	FHIRRestURL() string
+	GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
+	GetFHIRPatientEverything(fhirResourceID string) ([]byte, error)
+	POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
+	FHIRHeaders() (http.Header, error)
+	CreateDataset() (*healthcare.Operation, error)
+	GetDataset() (*healthcare.Dataset, error)
+	GetFHIRStore() (*healthcare.FhirStore, error)
+	CreateFHIRStore() (*healthcare.FhirStore, error)
+}
 
 // Repository accesses and updates patient data that is stored on Healthcare
 // FHIR repository
@@ -21,7 +51,7 @@ type Repository struct {
 }
 
 // NewFHIRRepository initializes a FHIR repository
-func NewFHIRRepository() *Repository {
+func NewFHIRRepository() FHIRRepository {
 	project := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
 	_ = serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
 	dataset := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
@@ -376,4 +406,87 @@ func (fr Repository) GetFHIRPatientEverything(fhirResourceID string) ([]byte, er
 	}
 
 	return respBytes, nil
+}
+
+// POSTRequest is used to manually compose POST requests to the FHIR service
+//
+// - `resourceName` is a FHIR resource name e.g "Patient"
+// - `path` is a sub-path e.g `_search` under a resource
+// - `params` should be query params, sent as `url.Values`
+func (fr Repository) POSTRequest(
+	resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
+	fhirHeaders, err := fr.FHIRHeaders()
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("unable to get FHIR headers: %v", err)
+	}
+	url := fmt.Sprintf(
+		"%s/%s/%s?%s", fr.FHIRRestURL(), resourceName, path, params.Encode())
+	req, err := http.NewRequest("POST", url, body)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("unable to compose FHIR POST request: %v", err)
+	}
+	for k, v := range fhirHeaders {
+		for _, h := range v {
+			req.Header.Add(k, h)
+		}
+	}
+	httpClient := &http.Client{Timeout: time.Second * defaultTimeoutSeconds}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("HTTP response error: %v", err)
+	}
+	defer func() {
+		_ = resp.Body.Close()
+	}()
+
+	respBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("could not read response: %v", err)
+	}
+	if resp.StatusCode > 299 {
+		return nil, fmt.Errorf(
+			"search: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
+	}
+	return respBytes, nil
+}
+
+// GetBearerToken logs in and gets a Google bearer auth token.
+// The user referred to by `cloudhealthEmail` needs to have IAM permissions
+// that allow them to read and write from the project's Cloud Healthcare base.
+func GetBearerToken() (string, error) {
+	ctx := context.Background()
+	scopes := []string{
+		"https://www.googleapis.com/auth/cloud-platform",
+	}
+	creds, err := google.FindDefaultCredentials(ctx, scopes...)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return "", fmt.Errorf("default creds error: %v", err)
+	}
+	token, err := creds.TokenSource.Token()
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return "", fmt.Errorf("oauth token error: %v", err)
+	}
+	return fmt.Sprintf("Bearer %s", token.AccessToken), nil
+}
+
+// FHIRHeaders composes suitable FHIR headers, with authentication and content
+// type already set
+func (fr Repository) FHIRHeaders() (http.Header, error) {
+	headers := make(map[string][]string)
+	bearerHeader, err := GetBearerToken()
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("can't get bearer token: %v", err)
+	}
+	headers["Content-Type"] = []string{"application/fhir+json; charset=utf-8"}
+	headers["Accept"] = []string{"application/fhir+json; charset=utf-8"}
+	headers["Authorization"] = []string{bearerHeader}
+	return headers, nil
 }

@@ -11,6 +11,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const (
+	// MaxClinicalRecordPageSize is the maximum number of encounters we can show on a timeline
+	MaxClinicalRecordPageSize = 50
+)
+
 // NewInterServiceClient initializes an external service in the correct environment given its name
 func NewInterServiceClient(serviceName string, baseExt extensions.BaseExtension) *interserviceclient.InterServiceClient {
 	config, err := baseExt.LoadDepsFromYAML()

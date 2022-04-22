@@ -6,9 +6,9 @@ package graph
 import (
 	"context"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 )
 
 func (r *mutationResolver) StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
@@ -212,7 +212,7 @@ func (r *queryResolver) ProblemSummary(ctx context.Context, patientID string) ([
 func (r *queryResolver) VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
-	return r.usecases.VisitSummary(ctx, encounterID, usecases.MaxClinicalRecordPageSize)
+	return r.usecases.VisitSummary(ctx, encounterID, common.MaxClinicalRecordPageSize)
 }
 
 func (r *queryResolver) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {

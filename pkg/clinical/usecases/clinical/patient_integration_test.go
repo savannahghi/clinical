@@ -1,4 +1,4 @@
-package usecases_test
+package clinical_test
 
 import (
 	"context"
@@ -95,8 +95,6 @@ func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, msisdn)
 }
 
 func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
@@ -220,8 +218,6 @@ func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 			}
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
@@ -355,8 +351,6 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
@@ -414,8 +408,6 @@ func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
 
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
@@ -483,8 +475,6 @@ func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
 
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
@@ -573,8 +563,6 @@ func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
 			}
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_FindPatientByID(t *testing.T) {
@@ -640,93 +628,89 @@ func TestClinicalUseCaseImpl_FindPatientByID(t *testing.T) {
 			}
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
-// func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
-// 	TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t)
+func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
+	TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t)
 
-// 	ctx := context.Background()
-// 	u := testUsecaseInteractor
+	ctx := context.Background()
+	u := testUsecaseInteractor
 
-// 	patientInput, err := simplePatientRegistration()
-// 	if err != nil {
-// 		t.Errorf("an error occurred: %v\n", err)
-// 		return
-// 	}
+	patientInput, err := simplePatientRegistration()
+	if err != nil {
+		t.Errorf("an error occurred: %v\n", err)
+		return
+	}
 
-// 	patient, err := u.RegisterPatient(ctx, *patientInput)
-// 	if err != nil {
-// 		t.Errorf("unable to create patient: %v", err)
-// 		return
-// 	}
+	patient, err := u.RegisterPatient(ctx, *patientInput)
+	if err != nil {
+		t.Errorf("unable to create patient: %v", err)
+		return
+	}
 
-// 	updatePhone := interserviceclient.TestUserPhoneNumber
-// 	otp, err := generateTestOTP(t, updatePhone)
-// 	if err != nil {
-// 		log.Errorf("unable to get verified phone number and OTP")
-// 		return
-// 	}
+	updatePhone := interserviceclient.TestUserPhoneNumber
+	otp, err := generateTestOTP(t, updatePhone)
+	if err != nil {
+		log.Errorf("unable to get verified phone number and OTP")
+		return
+	}
 
-// 	phone := &domain.PhoneNumberInput{
-// 		Msisdn:           updatePhone,
-// 		VerificationCode: otp,
-// 	}
-// 	patientInput.PhoneNumbers = []*domain.PhoneNumberInput{phone}
-// 	date := scalarutils.Date{
-// 		Year:  1900,
-// 		Month: 12,
-// 		Day:   20,
-// 	}
+	phone := &domain.PhoneNumberInput{
+		Msisdn:           updatePhone,
+		VerificationCode: otp,
+	}
+	patientInput.PhoneNumbers = []*domain.PhoneNumberInput{phone}
+	date := scalarutils.Date{
+		Year:  1900,
+		Month: 12,
+		Day:   20,
+	}
 
-// 	type args struct {
-// 		ctx   context.Context
-// 		input domain.SimplePatientRegistrationInput
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "Happy case",
-// 			args: args{
-// 				ctx: ctx,
-// 				input: domain.SimplePatientRegistrationInput{
-// 					ID:           *patient.PatientRecord.ID,
-// 					BirthDate:    date,
-// 					PhoneNumbers: patientInput.PhoneNumbers,
-// 					Gender:       "male",
-// 				},
-// 			},
-// 			wantErr: false,
-// 		},
-// 		{
-// 			name: "Sad case",
-// 			args: args{
-// 				ctx: ctx,
-// 				input: domain.SimplePatientRegistrationInput{
-// 					ID:           "",
-// 					PhoneNumbers: patientInput.PhoneNumbers,
-// 					Gender:       "male",
-// 				},
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			_, err := u.UpdatePatient(tt.args.ctx, tt.args.input)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("ClinicalUseCaseImpl.UpdatePatient() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// 	// teardown
-// 	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
-// }
+	type args struct {
+		ctx   context.Context
+		input domain.SimplePatientRegistrationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case",
+			args: args{
+				ctx: ctx,
+				input: domain.SimplePatientRegistrationInput{
+					ID:           *patient.PatientRecord.ID,
+					BirthDate:    date,
+					PhoneNumbers: patientInput.PhoneNumbers,
+					Gender:       "male",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case",
+			args: args{
+				ctx: ctx,
+				input: domain.SimplePatientRegistrationInput{
+					ID:           "",
+					PhoneNumbers: patientInput.PhoneNumbers,
+					Gender:       "male",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := u.UpdatePatient(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ClinicalUseCaseImpl.UpdatePatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
 
 func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
 	ctx := context.Background()
@@ -804,8 +788,6 @@ func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
 			}
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_AddNHIF(t *testing.T) {
@@ -866,8 +848,6 @@ func TestClinicalUseCaseImpl_AddNHIF(t *testing.T) {
 			}
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
@@ -936,8 +916,6 @@ func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
 			}
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
@@ -1002,8 +980,6 @@ func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
 			}
 		})
 	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
@@ -1067,92 +1043,6 @@ func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
 	}
 }
 
-func TestClinicalUseCaseImpl_StartEpisodeByBreakGlass(t *testing.T) {
-	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	phone := interserviceclient.TestUserPhoneNumber
-	otp, err := generateTestOTP(t, phone)
-	if err != nil {
-		log.Errorf("unable to get verified phone number and OTP")
-		return
-	}
-
-	patientInput, err := simplePatientRegistration()
-	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
-		return
-	}
-
-	patient, err := u.RegisterPatient(ctx, *patientInput)
-	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
-		return
-	}
-
-	type args struct {
-		ctx   context.Context
-		input domain.BreakGlassEpisodeCreationInput
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "Happy case",
-			args: args{
-				ctx: ctx,
-				input: domain.BreakGlassEpisodeCreationInput{
-					PatientID:       *patient.PatientRecord.ID,
-					ProviderCode:    ksuid.New().String(),
-					PractitionerUID: ksuid.New().String(),
-					ProviderPhone:   phone,
-					Otp:             otp,
-					FullAccess:      true,
-					PatientPhone:    phone,
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "Sad case: empty patient ID",
-			args: args{
-				ctx: ctx,
-				input: domain.BreakGlassEpisodeCreationInput{
-					PatientID:       "",
-					ProviderCode:    ksuid.New().String(),
-					PractitionerUID: ksuid.New().String(),
-					ProviderPhone:   ksuid.New().String(),
-					Otp:             otp,
-					FullAccess:      true,
-					PatientPhone:    ksuid.New().String(),
-				},
-			},
-			wantErr: true,
-		},
-
-		{
-			name: "Sad case: no input",
-			args: args{
-				ctx: ctx,
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			_, err := u.StartEpisodeByBreakGlass(tt.args.ctx, tt.args.input)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ClinicalUseCaseImpl.StartEpisodeByBreakGlass() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-		})
-	}
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
-}
-
 func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 	ctx := context.Background()
 	u := testUsecaseInteractor
@@ -1162,8 +1052,6 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 		t.Errorf("an error occurred: %v\n", err)
 		return
 	}
-
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 
 	patient, err := u.RegisterPatient(ctx, *patientInput)
 	if err != nil {
@@ -1249,8 +1137,6 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 		})
 	}
 
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
@@ -1262,8 +1148,6 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 		t.Errorf("an error occurred: %v\n", err)
 		return
 	}
-
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 
 	patient, err := u.RegisterPatient(ctx, *patientInput)
 	if err != nil {
@@ -1351,8 +1235,6 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 		})
 	}
 
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }
 
 func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
@@ -1364,8 +1246,6 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		t.Errorf("an error occurred: %v\n", err)
 		return
 	}
-
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 
 	patient, err := u.RegisterPatient(ctx, *patientInput)
 	if err != nil {
@@ -1449,6 +1329,4 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		})
 	}
 
-	// teardown
-	deleteTestPatient(ctx, interserviceclient.TestUserPhoneNumber)
 }

@@ -189,7 +189,7 @@ input HealthTimelineInput {
 
 extend type Query {
   patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
-
+  
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
 
   findPatients(search: String!): PatientConnection!

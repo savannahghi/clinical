@@ -23,7 +23,7 @@ type FirestoreClientExtensionImpl struct {
 }
 
 // NewFirestoreClientExtension initializes a new FirestoreClient extension
-func NewFirestoreClientExtension(fc *firestore.Client) *FirestoreClientExtensionImpl {
+func NewFirestoreClientExtension(fc *firestore.Client) FirestoreClientExtension {
 	return &FirestoreClientExtensionImpl{client: fc}
 }
 
