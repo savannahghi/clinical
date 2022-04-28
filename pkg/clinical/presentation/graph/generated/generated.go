@@ -949,6 +949,11 @@ type ComplexityRoot struct {
 		When           func(childComplexity int) int
 	}
 
+	HealthTimeline struct {
+		Timeline   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
 	MedicalData struct {
 		Allergies func(childComplexity int) int
 		BMI       func(childComplexity int) int
@@ -1031,6 +1036,7 @@ type ComplexityRoot struct {
 		ListConcepts                  func(childComplexity int, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) int
 		OpenEpisodes                  func(childComplexity int, patientReference string) int
 		OpenOrganizationEpisodes      func(childComplexity int, providerSladeCode string) int
+		PatientHealthTimeline         func(childComplexity int, input domain.HealthTimelineInput) int
 		PatientTimeline               func(childComplexity int, patientID string, count int) int
 		PatientTimelineWithCount      func(childComplexity int, episodeID string, count int) int
 		ProblemSummary                func(childComplexity int, patientID string) int
@@ -1085,6 +1091,7 @@ type MutationResolver interface {
 	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
+	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
 	FindPatientsByMsisdn(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
 	FindPatients(ctx context.Context, search string) (*domain.PatientConnection, error)
 	GetPatient(ctx context.Context, id string) (*domain.PatientPayload, error)
@@ -5427,6 +5434,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRTimingRepeat.When(childComplexity), true
 
+	case "HealthTimeline.timeline":
+		if e.complexity.HealthTimeline.Timeline == nil {
+			break
+		}
+
+		return e.complexity.HealthTimeline.Timeline(childComplexity), true
+
+	case "HealthTimeline.totalCount":
+		if e.complexity.HealthTimeline.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.HealthTimeline.TotalCount(childComplexity), true
+
 	case "MedicalData.allergies":
 		if e.complexity.MedicalData.Allergies == nil {
 			break
@@ -6001,6 +6022,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.OpenOrganizationEpisodes(childComplexity, args["providerSladeCode"].(string)), true
 
+	case "Query.patientHealthTimeline":
+		if e.complexity.Query.PatientHealthTimeline == nil {
+			break
+		}
+
+		args, err := ec.field_Query_patientHealthTimeline_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.PatientHealthTimeline(childComplexity, args["input"].(domain.HealthTimelineInput)), true
+
 	case "Query.patientTimeline":
 		if e.complexity.Query.PatientTimeline == nil {
 			break
@@ -6467,7 +6500,20 @@ input PhotoInput {
   photoFilename: String!
 }
 
+type HealthTimeline {
+  timeline: [Map]
+  totalCount: Int!
+}
+
+input HealthTimelineInput {
+  patientID: String!
+  offset: Int!
+  limit: Int!
+}
+
 extend type Query {
+  patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
+
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
 
   findPatients(search: String!): PatientConnection!
@@ -13442,6 +13488,21 @@ func (ec *executionContext) field_Query_openOrganizationEpisodes_args(ctx contex
 		}
 	}
 	args["providerSladeCode"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_patientHealthTimeline_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 domain.HealthTimelineInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNHealthTimelineInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimelineInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -33582,6 +33643,73 @@ func (ec *executionContext) _FHIRTimingRepeat_Offset(ctx context.Context, field 
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _HealthTimeline_timeline(ctx context.Context, field graphql.CollectedField, obj *domain.HealthTimeline) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "HealthTimeline",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Timeline, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]map[string]interface{})
+	fc.Result = res
+	return ec.marshalOMap2ᚕmap(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _HealthTimeline_totalCount(ctx context.Context, field graphql.CollectedField, obj *domain.HealthTimeline) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "HealthTimeline",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _MedicalData_regimen(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -35400,6 +35528,48 @@ func (ec *executionContext) _PatientPayload_openEpisodes(ctx context.Context, fi
 	res := resTmp.([]*domain.FHIREpisodeOfCare)
 	fc.Result = res
 	return ec.marshalOFHIREpisodeOfCare2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIREpisodeOfCare(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_patientHealthTimeline(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_patientHealthTimeline_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().PatientHealthTimeline(rctx, args["input"].(domain.HealthTimelineInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*domain.HealthTimeline)
+	fc.Result = res
+	return ec.marshalNHealthTimeline2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimeline(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_findPatientsByMSISDN(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -42662,6 +42832,42 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Context, obj interface{}) (domain.HealthTimelineInput, error) {
+	var it domain.HealthTimelineInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "offset":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+			it.Offset, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "limit":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+			it.Limit, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Context, obj interface{}) (domain.IdentificationDocument, error) {
 	var it domain.IdentificationDocument
 	var asMap = obj.(map[string]interface{})
@@ -46972,6 +47178,35 @@ func (ec *executionContext) _FHIRTimingRepeat(ctx context.Context, sel ast.Selec
 	return out
 }
 
+var healthTimelineImplementors = []string{"HealthTimeline"}
+
+func (ec *executionContext) _HealthTimeline(ctx context.Context, sel ast.SelectionSet, obj *domain.HealthTimeline) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, healthTimelineImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("HealthTimeline")
+		case "timeline":
+			out.Values[i] = ec._HealthTimeline_timeline(ctx, field, obj)
+		case "totalCount":
+			out.Values[i] = ec._HealthTimeline_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var medicalDataImplementors = []string{"MedicalData"}
 
 func (ec *executionContext) _MedicalData(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicalData) graphql.Marshaler {
@@ -47365,6 +47600,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "patientHealthTimeline":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_patientHealthTimeline(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "findPatientsByMSISDN":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -48843,6 +49092,25 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNHealthTimeline2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimeline(ctx context.Context, sel ast.SelectionSet, v domain.HealthTimeline) graphql.Marshaler {
+	return ec._HealthTimeline(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNHealthTimeline2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimeline(ctx context.Context, sel ast.SelectionSet, v *domain.HealthTimeline) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._HealthTimeline(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNHealthTimelineInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimelineInput(ctx context.Context, v interface{}) (domain.HealthTimelineInput, error) {
+	res, err := ec.unmarshalInputHealthTimelineInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNHumanNameUseEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHumanNameUseEnum(ctx context.Context, v interface{}) (domain.HumanNameUseEnum, error) {
@@ -53622,6 +53890,57 @@ func (ec *executionContext) marshalOLanguage2ᚖgithubᚗcomᚋsavannahghiᚋenu
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) unmarshalOMap2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalMap(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMap2map(ctx context.Context, sel ast.SelectionSet, v map[string]interface{}) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalMap(v)
+}
+
+func (ec *executionContext) unmarshalOMap2ᚕmap(ctx context.Context, v interface{}) ([]map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]map[string]interface{}, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOMap2map(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOMap2ᚕmap(ctx context.Context, sel ast.SelectionSet, v []map[string]interface{}) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOMap2map(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOMaritalStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMaritalStatus(ctx context.Context, v interface{}) (domain.MaritalStatus, error) {

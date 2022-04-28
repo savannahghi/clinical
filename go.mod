@@ -12,6 +12,7 @@ require (
 	contrib.go.opencensus.io/exporter/stackdriver v0.13.8 // indirect
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/99designs/gqlgen v0.13.0
+	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/aws/aws-sdk-go v1.40.0 // indirect
 	github.com/brianvoe/gofakeit v3.18.0+incompatible

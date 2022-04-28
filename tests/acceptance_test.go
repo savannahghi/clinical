@@ -9200,13 +9200,19 @@ func TestGraphQLPatientTimeline(t *testing.T) {
 			name: "valid query",
 			args: args{
 				query: map[string]interface{}{
-					"query": `query patientTimeline($patientID: String!, $count: Int!) {
-						patientTimeline(patientID: $patientID, count: $count)
+					"query": `query patientTimeline($input: HealthTimelineInput!) {
+						patientHealthTimeline(input: $input) {
+						  totalCount
+						  timeline
+						}
 					  }
 					`,
 					"variables": map[string]interface{}{
-						"patientID": patient.ID,
-						"count":     1,
+						"input": map[string]interface{}{
+							"patientID": patient.ID,
+							"offset":    0,
+							"limit":     10,
+						},
 					},
 				},
 			},

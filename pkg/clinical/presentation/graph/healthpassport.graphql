@@ -176,7 +176,20 @@ input PhotoInput {
   photoFilename: String!
 }
 
+type HealthTimeline {
+  timeline: [Map]
+  totalCount: Int!
+}
+
+input HealthTimelineInput {
+  patientID: String!
+  offset: Int!
+  limit: Int!
+}
+
 extend type Query {
+  patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
+
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
 
   findPatients(search: String!): PatientConnection!
