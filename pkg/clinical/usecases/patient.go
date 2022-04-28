@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"sort"
 	"strconv"
+	"sync"
 
+	linq "github.com/ahmetb/go-linq/v3"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -44,6 +45,7 @@ type ClinicalUseCase interface {
 	StartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error)
 	FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error)
 	PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error)
+	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 }
 
@@ -1123,123 +1125,170 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 // PatientTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
 func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
+
 	timeline := []map[string]interface{}{}
+	wg := &sync.WaitGroup{}
+	mut := &sync.Mutex{}
 
 	patientFilterParams := map[string]interface{}{
 		"patient": fmt.Sprintf("Patient/%v", patientID),
 	}
 
-	resources := []string{
-		"AllergyIntolerance",
-		"Observation",
-		"MedicationStatement",
-	}
+	// timelineResourceFunc is a go routine that fetches particular FHIR resource and
+	// adds it to the timeline
+	type timelineResourceFunc func(wg *sync.WaitGroup, mut *sync.Mutex)
 
-	for _, resourceName := range resources {
-		switch resourceName {
-		case "AllergyIntolerance":
-			conn, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
+	allergyIntoleranceResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
+		defer wg.Done()
+
+		conn, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			log.Errorf("AllergyIntolerance search error: %v", err)
+			return
+		}
+		for _, edge := range conn.Edges {
+			if edge.Node == nil {
+				continue
+			}
+
+			rMap, err := converterandformatter.StructToMap(edge.Node)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
+				log.Errorf("AllergyIntolerance edge struct to map error: %v", err)
+				return
 			}
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-
-				rMap, err := converterandformatter.StructToMap(edge.Node)
-				if err != nil {
-					utils.ReportErrorToSentry(err)
-					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
-				}
-				if rMap == nil {
-					continue
-				}
-
-				rMap["resourceType"] = "AllergyIntolerance"
-				rMap["timelineDate"] = rMap["recordedDate"]
-
-				timeline = append(timeline, rMap)
+			if rMap == nil {
+				continue
 			}
 
-		case "Observation":
-			conn, err := c.fhir.SearchFHIRObservation(ctx, patientFilterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
-			}
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
+			rMap["resourceType"] = "AllergyIntolerance"
+			rMap["timelineDate"] = rMap["recordedDate"]
 
-				rMap, err := converterandformatter.StructToMap(edge.Node)
-				if err != nil {
-					utils.ReportErrorToSentry(err)
-					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
-				}
-				if rMap == nil {
-					continue
-				}
-
-				rMap["resourceType"] = "Observation"
-				rMap["timelineDate"] = rMap["effectiveInstant"]
-
-				timeline = append(timeline, rMap)
-			}
-		case "MedicationStatement":
-			conn, err := c.fhir.SearchFHIRMedicationStatement(ctx, patientFilterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
-			}
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-
-				rMap, err := converterandformatter.StructToMap(edge.Node)
-				if err != nil {
-					utils.ReportErrorToSentry(err)
-					return nil, fmt.Errorf("%s edge struct to map error: %w", resourceName, err)
-				}
-				if rMap == nil {
-					continue
-				}
-
-				rMap["resourceType"] = "MedicationStatement"
-				rMap["timelineDate"] = rMap["effectiveDateTime"]
-
-				timeline = append(timeline, rMap)
-			}
-		default:
-			return nil, fmt.Errorf("server error: unknown resource %s when composing visit summary", resourceName)
+			mut.Lock()
+			timeline = append(timeline, rMap)
+			mut.Unlock()
 		}
 	}
 
-	sort.Slice(timeline, func(i, j int) bool {
-		dateStringI, ok := timeline[i]["timelineDate"].(string)
+	observationResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
+		defer wg.Done()
+
+		conn, err := c.fhir.SearchFHIRObservation(ctx, patientFilterParams)
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			log.Errorf("Observation search error: %v", err)
+			return
+		}
+		for _, edge := range conn.Edges {
+			if edge.Node == nil {
+				continue
+			}
+
+			rMap, err := converterandformatter.StructToMap(edge.Node)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				log.Errorf("Observation edge struct to map error: %v", err)
+				return
+			}
+			if rMap == nil {
+				continue
+			}
+
+			rMap["resourceType"] = "Observation"
+			rMap["timelineDate"] = rMap["effectiveInstant"]
+
+			mut.Lock()
+			timeline = append(timeline, rMap)
+			mut.Unlock()
+		}
+	}
+
+	medicationStatementResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
+		defer wg.Done()
+
+		conn, err := c.fhir.SearchFHIRMedicationStatement(ctx, patientFilterParams)
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			log.Errorf("MedicationStatement search error: %v", err)
+			return
+		}
+		for _, edge := range conn.Edges {
+			if edge.Node == nil {
+				continue
+			}
+
+			rMap, err := converterandformatter.StructToMap(edge.Node)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				log.Errorf("MedicationStatement edge struct to map error: %v", err)
+				return
+			}
+			if rMap == nil {
+				continue
+			}
+
+			rMap["resourceType"] = "MedicationStatement"
+			rMap["timelineDate"] = rMap["effectiveDateTime"]
+
+			mut.Lock()
+			timeline = append(timeline, rMap)
+			mut.Unlock()
+		}
+	}
+
+	resources := []timelineResourceFunc{
+		allergyIntoleranceResourceFunc,
+		observationResourceFunc,
+		medicationStatementResourceFunc,
+	}
+
+	for _, resource := range resources {
+		wg.Add(1)
+		go resource(wg, mut)
+	}
+
+	wg.Wait()
+
+	return timeline, nil
+}
+
+// PatientHealthTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
+// The timeline consists of Allergies, Observations, Medication statement and Test results
+func (c *ClinicalUseCaseImpl) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
+	records, err := c.PatientTimeline(ctx, input.PatientID, 0)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("cannot retrieve patient timeline error: %w", err)
+	}
+
+	data := &domain.HealthTimeline{}
+	timeline := []map[string]interface{}{}
+
+	sortFunc := func(i, j interface{}) bool {
+		itemI := i.(map[string]interface{})
+		dateStringI, ok := itemI["timelineDate"].(string)
 		if !ok {
 			return false
 		}
 		timeI := helpers.ParseDate(dateStringI)
 
-		dateStringJ, _ := timeline[j]["timelineDate"].(string)
+		itemJ := j.(map[string]interface{})
+		dateStringJ, _ := itemJ["timelineDate"].(string)
 		if !ok {
 			return false
 		}
 		timeJ := helpers.ParseDate(dateStringJ)
 
 		return timeI.After(timeJ)
-	})
-
-	total := len(timeline)
-	if total > 0 && count <= total {
-		return timeline[:count], nil
 	}
 
-	return timeline, nil
+	linq.From(records).Sort(sortFunc).Skip(input.Offset).Take(input.Limit).ToSlice(&timeline)
+
+	data.TotalCount = len(records)
+	data.Timeline = timeline
+
+	return data, nil
 }
 
 // GetMedicalData returns a limited subset of specific medical data that for a specific patient
