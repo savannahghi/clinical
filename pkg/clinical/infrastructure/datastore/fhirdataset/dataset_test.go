@@ -1,4 +1,4 @@
-package fhir_test
+package fhirdataset_test
 
 import (
 	"context"
@@ -11,15 +11,11 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
-	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/firebasetools"
 	"github.com/tj/assert"
 )
-
-var testUsecase interactor.Usecases
 
 func TestMain(m *testing.M) {
 	log.Printf("Setting tests up ...")
@@ -48,14 +44,6 @@ func TestMain(m *testing.M) {
 		log.Printf("failed to initialize test FireBase client")
 		return
 	}
-
-	i, err := InitializeTestService(ctx)
-	if err != nil {
-		log.Printf("unable to initialize test service: %v", err)
-		return
-	}
-
-	testUsecase = i
 
 	purgeRecords := func() {
 		collections := []string{
@@ -104,15 +92,8 @@ func InitializeTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth
 	return fsc, fbc
 }
 
-func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
-	infrastructure := infrastructure.NewInfrastructureInteractor()
-
-	usecases := interactor.NewUsecasesInteractor(infrastructure)
-	return usecases, nil
-}
-
 func TestRepository_CreateDataset(t *testing.T) {
-	fhirRepo := fhir.NewFHIRRepository()
+	fhirRepo := dataset.NewFHIRRepository()
 	tests := []struct {
 		name    string
 		wantNil bool
@@ -146,7 +127,7 @@ func TestRepository_CreateDataset(t *testing.T) {
 }
 
 func TestRepository_GetDataset(t *testing.T) {
-	fhirRepo := fhir.NewFHIRRepository()
+	fhirRepo := dataset.NewFHIRRepository()
 	tests := []struct {
 		name    string
 		wantNil bool
@@ -181,7 +162,7 @@ func TestRepository_GetDataset(t *testing.T) {
 }
 
 func TestRepository_GetFHIRStore(t *testing.T) {
-	fhirRepo := fhir.NewFHIRRepository()
+	fhirRepo := dataset.NewFHIRRepository()
 	tests := []struct {
 		name    string
 		wantErr bool
@@ -204,7 +185,7 @@ func TestRepository_GetFHIRStore(t *testing.T) {
 }
 
 func TestRepository_CreateFHIRStore(t *testing.T) {
-	fhirRepo := fhir.NewFHIRRepository()
+	fhirRepo := dataset.NewFHIRRepository()
 	tests := []struct {
 		name    string
 		wantNil bool

@@ -6513,7 +6513,7 @@ input HealthTimelineInput {
 
 extend type Query {
   patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
-
+  
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
 
   findPatients(search: String!): PatientConnection!
@@ -36810,6 +36810,41 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) ___Directive_isRepeatable(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "__Directive",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsRepeatable, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -37762,7 +37797,10 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx context.Context, obj interface{}) (domain.BreakGlassEpisodeCreationInput, error) {
 	var it domain.BreakGlassEpisodeCreationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37830,7 +37868,10 @@ func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx con
 
 func (ec *executionContext) unmarshalInputEmailInput(ctx context.Context, obj interface{}) (domain.EmailInput, error) {
 	var it domain.EmailInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37858,7 +37899,10 @@ func (ec *executionContext) unmarshalInputEmailInput(ctx context.Context, obj in
 
 func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, obj interface{}) (domain.FHIRAddressInput, error) {
 	var it domain.FHIRAddressInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -37958,7 +38002,10 @@ func (ec *executionContext) unmarshalInputFHIRAddressInput(ctx context.Context, 
 
 func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj interface{}) (domain.FHIRAgeInput, error) {
 	var it domain.FHIRAgeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38018,7 +38065,10 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 
 func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx context.Context, obj interface{}) (domain.FHIRAllergyIntoleranceInput, error) {
 	var it domain.FHIRAllergyIntoleranceInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38198,7 +38248,10 @@ func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx contex
 
 func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ctx context.Context, obj interface{}) (domain.FHIRAllergyintoleranceReactionInput, error) {
 	var it domain.FHIRAllergyintoleranceReactionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38274,7 +38327,10 @@ func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ct
 
 func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Context, obj interface{}) (domain.FHIRAnnotationInput, error) {
 	var it domain.FHIRAnnotationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38326,7 +38382,10 @@ func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Contex
 
 func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Context, obj interface{}) (domain.FHIRAttachmentInput, error) {
 	var it domain.FHIRAttachmentInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38410,7 +38469,10 @@ func (ec *executionContext) unmarshalInputFHIRAttachmentInput(ctx context.Contex
 
 func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.Context, obj interface{}) (domain.FHIRCodeableConceptInput, error) {
 	var it domain.FHIRCodeableConceptInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38446,7 +38508,10 @@ func (ec *executionContext) unmarshalInputFHIRCodeableConceptInput(ctx context.C
 
 func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, obj interface{}) (domain.FHIRCodingInput, error) {
 	var it domain.FHIRCodingInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38506,7 +38571,10 @@ func (ec *executionContext) unmarshalInputFHIRCodingInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionAttesterInput, error) {
 	var it domain.FHIRCompositionAttesterInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38550,7 +38618,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionAttesterInput(ctx conte
 
 func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionEventInput, error) {
 	var it domain.FHIRCompositionEventInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38594,7 +38665,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionEventInput(ctx context.
 
 func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionInput, error) {
 	var it domain.FHIRCompositionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38734,7 +38808,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionRelatestoInput, error) {
 	var it domain.FHIRCompositionRelatestoInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38778,7 +38855,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionRelatestoInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx context.Context, obj interface{}) (domain.FHIRCompositionSectionInput, error) {
 	var it domain.FHIRCompositionSectionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38878,7 +38958,10 @@ func (ec *executionContext) unmarshalInputFHIRCompositionSectionInput(ctx contex
 
 func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context.Context, obj interface{}) (domain.FHIRConditionEvidenceInput, error) {
 	var it domain.FHIRConditionEvidenceInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -38914,7 +38997,10 @@ func (ec *executionContext) unmarshalInputFHIRConditionEvidenceInput(ctx context
 
 func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context, obj interface{}) (domain.FHIRConditionInput, error) {
 	var it domain.FHIRConditionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39134,7 +39220,10 @@ func (ec *executionContext) unmarshalInputFHIRConditionInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Context, obj interface{}) (domain.FHIRConditionStageInput, error) {
 	var it domain.FHIRConditionStageInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39178,7 +39267,10 @@ func (ec *executionContext) unmarshalInputFHIRConditionStageInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Context, obj interface{}) (domain.FHIRContactPointInput, error) {
 	var it domain.FHIRContactPointInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39238,7 +39330,10 @@ func (ec *executionContext) unmarshalInputFHIRContactPointInput(ctx context.Cont
 
 func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context.Context, obj interface{}) (domain.FHIRDosageDoseandrateInput, error) {
 	var it domain.FHIRDosageDoseandrateInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39306,7 +39401,10 @@ func (ec *executionContext) unmarshalInputFHIRDosageDoseandrateInput(ctx context
 
 func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, obj interface{}) (domain.FHIRDosageInput, error) {
 	var it domain.FHIRDosageInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39438,7 +39536,10 @@ func (ec *executionContext) unmarshalInputFHIRDosageInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context, obj interface{}) (domain.FHIRDurationInput, error) {
 	var it domain.FHIRDurationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39498,7 +39599,10 @@ func (ec *executionContext) unmarshalInputFHIRDurationInput(ctx context.Context,
 
 func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx context.Context, obj interface{}) (domain.FHIREncounterClasshistoryInput, error) {
 	var it domain.FHIREncounterClasshistoryInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39534,7 +39638,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterClasshistoryInput(ctx con
 
 func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx context.Context, obj interface{}) (domain.FHIREncounterDiagnosisInput, error) {
 	var it domain.FHIREncounterDiagnosisInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39578,7 +39685,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterDiagnosisInput(ctx contex
 
 func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx context.Context, obj interface{}) (domain.FHIREncounterHospitalizationInput, error) {
 	var it domain.FHIREncounterHospitalizationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39670,7 +39780,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterHospitalizationInput(ctx 
 
 func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context, obj interface{}) (domain.FHIREncounterInput, error) {
 	var it domain.FHIREncounterInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39874,7 +39987,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context.Context, obj interface{}) (domain.FHIREncounterLocationInput, error) {
 	var it domain.FHIREncounterLocationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39926,7 +40042,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterLocationInput(ctx context
 
 func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx context.Context, obj interface{}) (domain.FHIREncounterParticipantInput, error) {
 	var it domain.FHIREncounterParticipantInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -39970,7 +40089,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterParticipantInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx context.Context, obj interface{}) (domain.FHIREncounterStatushistoryInput, error) {
 	var it domain.FHIREncounterStatushistoryInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40006,7 +40128,10 @@ func (ec *executionContext) unmarshalInputFHIREncounterStatushistoryInput(ctx co
 
 func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Context, obj interface{}) (domain.FHIREpisodeOfCareInput, error) {
 	var it domain.FHIREpisodeOfCareInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40122,7 +40247,10 @@ func (ec *executionContext) unmarshalInputFHIREpisodeOfCareInput(ctx context.Con
 
 func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx context.Context, obj interface{}) (domain.FHIREpisodeofcareDiagnosisInput, error) {
 	var it domain.FHIREpisodeofcareDiagnosisInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40166,7 +40294,10 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareDiagnosisInput(ctx co
 
 func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ctx context.Context, obj interface{}) (domain.FHIREpisodeofcareStatushistoryInput, error) {
 	var it domain.FHIREpisodeofcareStatushistoryInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40202,7 +40333,10 @@ func (ec *executionContext) unmarshalInputFHIREpisodeofcareStatushistoryInput(ct
 
 func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context, obj interface{}) (domain.FHIRHumanNameInput, error) {
 	var it domain.FHIRHumanNameInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40278,7 +40412,10 @@ func (ec *executionContext) unmarshalInputFHIRHumanNameInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Context, obj interface{}) (domain.FHIRIdentifierInput, error) {
 	var it domain.FHIRIdentifierInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40346,7 +40483,10 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 
 func (ec *executionContext) unmarshalInputFHIRMedicationInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationInput, error) {
 	var it domain.FHIRMedicationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40438,7 +40578,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationInput(ctx context.Contex
 
 func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationRequestInput, error) {
 	var it domain.FHIRMedicationRequestInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40730,7 +40873,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationRequestInput(ctx context
 
 func (ec *executionContext) unmarshalInputFHIRMedicationStatementInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationStatementInput, error) {
 	var it domain.FHIRMedicationStatementInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40910,7 +41056,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationStatementInput(ctx conte
 
 func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationrequestDispenserequestInput, error) {
 	var it domain.FHIRMedicationrequestDispenserequestInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -40986,7 +41135,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestDispenserequestIn
 
 func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationrequestInitialfillInput, error) {
 	var it domain.FHIRMedicationrequestInitialfillInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41022,7 +41174,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestInitialfillInput(
 
 func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationrequestSubstitutionInput, error) {
 	var it domain.FHIRMedicationrequestSubstitutionInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41066,7 +41221,10 @@ func (ec *executionContext) unmarshalInputFHIRMedicationrequestSubstitutionInput
 
 func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context, obj interface{}) (domain.FHIRNarrativeInput, error) {
 	var it domain.FHIRNarrativeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41102,7 +41260,10 @@ func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx context.Context, obj interface{}) (domain.FHIRObservationComponentInput, error) {
 	var it domain.FHIRObservationComponentInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41242,7 +41403,10 @@ func (ec *executionContext) unmarshalInputFHIRObservationComponentInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Context, obj interface{}) (domain.FHIRObservationInput, error) {
 	var it domain.FHIRObservationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41558,7 +41722,10 @@ func (ec *executionContext) unmarshalInputFHIRObservationInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx context.Context, obj interface{}) (domain.FHIRObservationReferencerangeInput, error) {
 	var it domain.FHIRObservationReferencerangeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41626,7 +41793,10 @@ func (ec *executionContext) unmarshalInputFHIRObservationReferencerangeInput(ctx
 
 func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Context, obj interface{}) (domain.FHIROrganizationInput, error) {
 	var it domain.FHIROrganizationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41702,7 +41872,10 @@ func (ec *executionContext) unmarshalInputFHIROrganizationInput(ctx context.Cont
 
 func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx context.Context, obj interface{}) (domain.FHIRPatientCommunicationInput, error) {
 	var it domain.FHIRPatientCommunicationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41738,7 +41911,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientCommunicationInput(ctx cont
 
 func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Context, obj interface{}) (domain.FHIRPatientContactInput, error) {
 	var it domain.FHIRPatientContactInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41814,7 +41990,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientContactInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, obj interface{}) (domain.FHIRPatientInput, error) {
 	var it domain.FHIRPatientInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -41978,7 +42157,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientInput(ctx context.Context, 
 
 func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Context, obj interface{}) (domain.FHIRPatientLinkInput, error) {
 	var it domain.FHIRPatientLinkInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42014,7 +42196,10 @@ func (ec *executionContext) unmarshalInputFHIRPatientLinkInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, obj interface{}) (domain.FHIRPeriodInput, error) {
 	var it domain.FHIRPeriodInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42050,7 +42235,10 @@ func (ec *executionContext) unmarshalInputFHIRPeriodInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context, obj interface{}) (domain.FHIRQuantityInput, error) {
 	var it domain.FHIRQuantityInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42110,7 +42298,10 @@ func (ec *executionContext) unmarshalInputFHIRQuantityInput(ctx context.Context,
 
 func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, obj interface{}) (domain.FHIRRangeInput, error) {
 	var it domain.FHIRRangeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42146,7 +42337,10 @@ func (ec *executionContext) unmarshalInputFHIRRangeInput(ctx context.Context, ob
 
 func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, obj interface{}) (domain.FHIRRatioInput, error) {
 	var it domain.FHIRRatioInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42182,7 +42376,10 @@ func (ec *executionContext) unmarshalInputFHIRRatioInput(ctx context.Context, ob
 
 func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context, obj interface{}) (domain.FHIRReferenceInput, error) {
 	var it domain.FHIRReferenceInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42234,7 +42431,10 @@ func (ec *executionContext) unmarshalInputFHIRReferenceInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Context, obj interface{}) (domain.FHIRSampledDataInput, error) {
 	var it domain.FHIRSampledDataInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42310,7 +42510,10 @@ func (ec *executionContext) unmarshalInputFHIRSampledDataInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Context, obj interface{}) (domain.FHIRServiceRequestInput, error) {
 	var it domain.FHIRServiceRequestInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42634,7 +42837,10 @@ func (ec *executionContext) unmarshalInputFHIRServiceRequestInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, obj interface{}) (domain.FHIRTimingInput, error) {
 	var it domain.FHIRTimingInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42678,7 +42884,10 @@ func (ec *executionContext) unmarshalInputFHIRTimingInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Context, obj interface{}) (domain.FHIRTimingRepeatInput, error) {
 	var it domain.FHIRTimingRepeatInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42834,7 +43043,10 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 
 func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Context, obj interface{}) (domain.HealthTimelineInput, error) {
 	var it domain.HealthTimelineInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42870,7 +43082,10 @@ func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Contex
 
 func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Context, obj interface{}) (domain.IdentificationDocument, error) {
 	var it domain.IdentificationDocument
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42922,7 +43137,10 @@ func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Con
 
 func (ec *executionContext) unmarshalInputMedicationBatchInput(ctx context.Context, obj interface{}) (domain.MedicationBatchInput, error) {
 	var it domain.MedicationBatchInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42950,7 +43168,10 @@ func (ec *executionContext) unmarshalInputMedicationBatchInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputMedicationIngredientInput(ctx context.Context, obj interface{}) (domain.MedicationIngredientInput, error) {
 	var it domain.MedicationIngredientInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -42994,7 +43215,10 @@ func (ec *executionContext) unmarshalInputMedicationIngredientInput(ctx context.
 
 func (ec *executionContext) unmarshalInputNameInput(ctx context.Context, obj interface{}) (domain.NameInput, error) {
 	var it domain.NameInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43030,7 +43254,10 @@ func (ec *executionContext) unmarshalInputNameInput(ctx context.Context, obj int
 
 func (ec *executionContext) unmarshalInputOTPEpisodeCreationInput(ctx context.Context, obj interface{}) (domain.OTPEpisodeCreationInput, error) {
 	var it domain.OTPEpisodeCreationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43082,7 +43309,10 @@ func (ec *executionContext) unmarshalInputOTPEpisodeCreationInput(ctx context.Co
 
 func (ec *executionContext) unmarshalInputOTPEpisodeUpgradeInput(ctx context.Context, obj interface{}) (domain.OTPEpisodeUpgradeInput, error) {
 	var it domain.OTPEpisodeUpgradeInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43118,7 +43348,10 @@ func (ec *executionContext) unmarshalInputOTPEpisodeUpgradeInput(ctx context.Con
 
 func (ec *executionContext) unmarshalInputPatientExtraInformationInput(ctx context.Context, obj interface{}) (domain.PatientExtraInformationInput, error) {
 	var it domain.PatientExtraInformationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43162,7 +43395,10 @@ func (ec *executionContext) unmarshalInputPatientExtraInformationInput(ctx conte
 
 func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, obj interface{}) (domain.PhoneNumberInput, error) {
 	var it domain.PhoneNumberInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43206,7 +43442,10 @@ func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, 
 
 func (ec *executionContext) unmarshalInputPhotoInput(ctx context.Context, obj interface{}) (domain.PhotoInput, error) {
 	var it domain.PhotoInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43242,7 +43481,10 @@ func (ec *executionContext) unmarshalInputPhotoInput(ctx context.Context, obj in
 
 func (ec *executionContext) unmarshalInputPhysicalAddress(ctx context.Context, obj interface{}) (domain.PhysicalAddress, error) {
 	var it domain.PhysicalAddress
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43270,7 +43512,10 @@ func (ec *executionContext) unmarshalInputPhysicalAddress(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputPostalAddress(ctx context.Context, obj interface{}) (domain.PostalAddress, error) {
 	var it domain.PostalAddress
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43298,7 +43543,10 @@ func (ec *executionContext) unmarshalInputPostalAddress(ctx context.Context, obj
 
 func (ec *executionContext) unmarshalInputRetirePatientInput(ctx context.Context, obj interface{}) (domain.RetirePatientInput, error) {
 	var it domain.RetirePatientInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43318,7 +43566,10 @@ func (ec *executionContext) unmarshalInputRetirePatientInput(ctx context.Context
 
 func (ec *executionContext) unmarshalInputSimpleNHIFInput(ctx context.Context, obj interface{}) (domain.SimpleNHIFInput, error) {
 	var it domain.SimpleNHIFInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43378,7 +43629,10 @@ func (ec *executionContext) unmarshalInputSimpleNHIFInput(ctx context.Context, o
 
 func (ec *executionContext) unmarshalInputSimpleNextOfKinInput(ctx context.Context, obj interface{}) (domain.SimpleNextOfKinInput, error) {
 	var it domain.SimpleNextOfKinInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -43470,7 +43724,10 @@ func (ec *executionContext) unmarshalInputSimpleNextOfKinInput(ctx context.Conte
 
 func (ec *executionContext) unmarshalInputSimplePatientRegistrationInput(ctx context.Context, obj interface{}) (domain.SimplePatientRegistrationInput, error) {
 	var it domain.SimplePatientRegistrationInput
-	var asMap = obj.(map[string]interface{})
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
 
 	for k, v := range asMap {
 		switch k {
@@ -48014,6 +48271,11 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "isRepeatable":
+			out.Values[i] = ec.___Directive_isRepeatable(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -48420,6 +48682,13 @@ func (ec *executionContext) marshalNFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsav
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -48502,6 +48771,13 @@ func (ec *executionContext) marshalNFHIRCoding2ᚕᚖgithubᚗcomᚋsavannahghi�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -48690,6 +48966,13 @@ func (ec *executionContext) marshalNFHIREpisodeOfCare2ᚕᚖgithubᚗcomᚋsavan
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -48737,6 +49020,13 @@ func (ec *executionContext) marshalNFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -48997,6 +49287,13 @@ func (ec *executionContext) marshalNFHIRReference2ᚕᚖgithubᚗcomᚋsavannahg
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49226,6 +49523,12 @@ func (ec *executionContext) marshalNMap2ᚕmapᚄ(ctx context.Context, sel ast.S
 		ret[i] = ec.marshalNMap2map(ctx, sel, v[i])
 	}
 
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49396,6 +49699,12 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
 	}
 
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49467,6 +49776,12 @@ func (ec *executionContext) marshalN_Any2ᚕmapᚄ(ctx context.Context, sel ast.
 		ret[i] = ec.marshalN_Any2map(ctx, sel, v[i])
 	}
 
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49504,6 +49819,7 @@ func (ec *executionContext) marshalN_Entity2ᚕgithubᚗcomᚋ99designsᚋgqlgen
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -49564,6 +49880,13 @@ func (ec *executionContext) marshalN__Directive2ᚕgithubᚗcomᚋ99designsᚋgq
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49637,6 +49960,13 @@ func (ec *executionContext) marshalN__DirectiveLocation2ᚕstringᚄ(ctx context
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49686,6 +50016,13 @@ func (ec *executionContext) marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋg
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49727,6 +50064,13 @@ func (ec *executionContext) marshalN__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgen�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -49864,6 +50208,7 @@ func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50336,6 +50681,7 @@ func (ec *executionContext) marshalOFHIRAddress2ᚕᚖgithubᚗcomᚋsavannahghi
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50430,6 +50776,7 @@ func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50477,6 +50824,7 @@ func (ec *executionContext) marshalOFHIRAllergyIntoleranceRelayEdge2ᚕᚖgithub
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50524,6 +50872,7 @@ func (ec *executionContext) marshalOFHIRAllergyintoleranceReaction2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50603,6 +50952,7 @@ func (ec *executionContext) marshalOFHIRAnnotation2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50682,6 +51032,7 @@ func (ec *executionContext) marshalOFHIRAttachment2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50761,6 +51112,7 @@ func (ec *executionContext) marshalOFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsav
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50847,6 +51199,7 @@ func (ec *executionContext) marshalOFHIRCompositionAttester2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -50926,6 +51279,7 @@ func (ec *executionContext) marshalOFHIRCompositionEvent2ᚕᚖgithubᚗcomᚋsa
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51005,6 +51359,7 @@ func (ec *executionContext) marshalOFHIRCompositionRelatesto2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51084,6 +51439,7 @@ func (ec *executionContext) marshalOFHIRCompositionRelayEdge2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51131,6 +51487,7 @@ func (ec *executionContext) marshalOFHIRCompositionSection2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51217,6 +51574,7 @@ func (ec *executionContext) marshalOFHIRConditionEvidence2ᚕᚖgithubᚗcomᚋs
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51296,6 +51654,7 @@ func (ec *executionContext) marshalOFHIRConditionRelayEdge2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51343,6 +51702,7 @@ func (ec *executionContext) marshalOFHIRConditionStage2ᚕᚖgithubᚗcomᚋsava
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51422,6 +51782,7 @@ func (ec *executionContext) marshalOFHIRContactPoint2ᚕᚖgithubᚗcomᚋsavann
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51501,6 +51862,7 @@ func (ec *executionContext) marshalOFHIRDosage2ᚕᚖgithubᚗcomᚋsavannahghi�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51548,6 +51910,7 @@ func (ec *executionContext) marshalOFHIRDosageDoseandrate2ᚕᚖgithubᚗcomᚋs
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51681,6 +52044,7 @@ func (ec *executionContext) marshalOFHIREncounterClasshistory2ᚕᚖgithubᚗcom
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51760,6 +52124,7 @@ func (ec *executionContext) marshalOFHIREncounterDiagnosis2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51854,6 +52219,7 @@ func (ec *executionContext) marshalOFHIREncounterLocation2ᚕᚖgithubᚗcomᚋs
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -51933,6 +52299,7 @@ func (ec *executionContext) marshalOFHIREncounterParticipant2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52012,6 +52379,7 @@ func (ec *executionContext) marshalOFHIREncounterRelayEdge2ᚕᚖgithubᚗcomᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52059,6 +52427,7 @@ func (ec *executionContext) marshalOFHIREncounterStatushistory2ᚕᚖgithubᚗco
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52138,6 +52507,7 @@ func (ec *executionContext) marshalOFHIREpisodeOfCare2ᚕᚖgithubᚗcomᚋsavan
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52185,6 +52555,7 @@ func (ec *executionContext) marshalOFHIREpisodeOfCareRelayEdge2ᚕᚖgithubᚗco
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52232,6 +52603,7 @@ func (ec *executionContext) marshalOFHIREpisodeofcareDiagnosis2ᚕᚖgithubᚗco
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52311,6 +52683,7 @@ func (ec *executionContext) marshalOFHIREpisodeofcareStatushistory2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52390,6 +52763,7 @@ func (ec *executionContext) marshalOFHIRHumanName2ᚕᚖgithubᚗcomᚋsavannahg
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52469,6 +52843,7 @@ func (ec *executionContext) marshalOFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannah
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52563,6 +52938,7 @@ func (ec *executionContext) marshalOFHIRMedicationRelayEdge2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52617,6 +52993,7 @@ func (ec *executionContext) marshalOFHIRMedicationRequestRelayEdge2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52664,6 +53041,7 @@ func (ec *executionContext) marshalOFHIRMedicationStatement2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52711,6 +53089,7 @@ func (ec *executionContext) marshalOFHIRMedicationStatementRelayEdge2ᚕᚖgithu
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52818,6 +53197,7 @@ func (ec *executionContext) marshalOFHIRObservation2ᚕᚖgithubᚗcomᚋsavanna
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52865,6 +53245,7 @@ func (ec *executionContext) marshalOFHIRObservationComponent2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -52944,6 +53325,7 @@ func (ec *executionContext) marshalOFHIRObservationReferencerange2ᚕᚖgithub�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53023,6 +53405,7 @@ func (ec *executionContext) marshalOFHIRObservationRelayEdge2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53085,6 +53468,7 @@ func (ec *executionContext) marshalOFHIROrganizationRelayEdge2ᚕᚖgithubᚗcom
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53139,6 +53523,7 @@ func (ec *executionContext) marshalOFHIRPatientCommunication2ᚕᚖgithubᚗcom�
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53218,6 +53603,7 @@ func (ec *executionContext) marshalOFHIRPatientContact2ᚕᚖgithubᚗcomᚋsava
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53297,6 +53683,7 @@ func (ec *executionContext) marshalOFHIRPatientLink2ᚕᚖgithubᚗcomᚋsavanna
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53376,6 +53763,7 @@ func (ec *executionContext) marshalOFHIRPatientRelayEdge2ᚕᚖgithubᚗcomᚋsa
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53488,6 +53876,7 @@ func (ec *executionContext) marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahg
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53589,6 +53978,7 @@ func (ec *executionContext) marshalOFHIRServiceRequestRelayEdge2ᚕᚖgithubᚗc
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53809,6 +54199,7 @@ func (ec *executionContext) marshalOLanguage2ᚕgithubᚗcomᚋsavannahghiᚋenu
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -53873,6 +54264,7 @@ func (ec *executionContext) marshalOLanguage2ᚕᚖgithubᚗcomᚋsavannahghiᚋ
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -54044,6 +54436,7 @@ func (ec *executionContext) marshalOMedicationIngredient2ᚕᚖgithubᚗcomᚋsa
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -54204,6 +54597,7 @@ func (ec *executionContext) marshalOPatientEdge2ᚕᚖgithubᚗcomᚋsavannahghi
 
 	}
 	wg.Wait()
+
 	return ret
 }
 
@@ -54631,6 +55025,13 @@ func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgq
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -54671,6 +55072,13 @@ func (ec *executionContext) marshalO__Field2ᚕgithubᚗcomᚋ99designsᚋgqlgen
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -54711,6 +55119,13 @@ func (ec *executionContext) marshalO__InputValue2ᚕgithubᚗcomᚋ99designsᚋg
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
@@ -54758,6 +55173,13 @@ func (ec *executionContext) marshalO__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgen�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 

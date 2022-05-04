@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/pubsub"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -15,12 +16,15 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
+	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
+	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
@@ -108,12 +112,18 @@ func Router(ctx context.Context) (*mux.Router, error) {
 		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
 	}
 
-	infrastructure := infrastructure.NewInfrastructureInteractor()
+	repo := dataset.NewFHIRRepository()
+	fhir := fhir.NewFHIRStoreImpl(repo)
+	firestoreExt := fb.NewFirestoreClientExtension(&firestore.Client{})
+	fbExt := fb.NewFBClientExtensionImpl()
+	f := fb.NewFirebaseRepository(firestoreExt, fbExt)
+	ocl := openconceptlab.NewServiceOCL()
+
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, f, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
-	oclUseCase := ocl.NewUseCasesImpl(infrastructure)
 	h := rest.NewPresentationHandlers(infrastructure, usecases)
 
-	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases, usecases, oclUseCase)
+	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases, usecases, ocl)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %v", err)
 	}

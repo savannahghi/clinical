@@ -1,4 +1,4 @@
-package acceptance_test
+package tests
 
 import (
 	"context"
@@ -15,8 +15,8 @@ import (
 	"firebase.google.com/go/auth"
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common/testutils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
@@ -31,16 +31,17 @@ const ( // Repo the env to identify which repo to use
 	Repo = "REPOSITORY"
 	//FirebaseRepository is the value of the env when using firebase
 	FirebaseRepository = "firebase"
+	instantFormat      = "2006-01-02T15:04:05.999-07:00"
 )
 
 /// these are set up once in TestMain and used by all the acceptance tests in
 // this package
 var (
-	srv            *http.Server
-	baseURL        string
-	serverErr      error
-	testInteractor interactor.Usecases
-	testInfra      infrastructure.Infrastructure
+	srv              *http.Server
+	baseURL          string
+	serverErr        error
+	testInteractor   interactor.Usecases
+	testProviderCode = "1234"
 )
 
 func initializeAcceptanceTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth.Client) {
@@ -83,15 +84,7 @@ func TestMain(m *testing.M) {
 
 	fsc, _ := initializeAcceptanceTestFirebaseClient(ctx)
 
-	infra, err := InitializeTestInfrastructure(ctx)
-	if err != nil {
-		log.Printf("unable to initialize test infrastructure: %v", err)
-		return
-	}
-
-	testInfra = infra
-
-	i, err := InitializeTestService(ctx, infra)
+	i, err := testutils.InitializeTestService(ctx)
 	if err != nil {
 		log.Printf("unable to initialize test service: %v", err)
 		return
@@ -128,18 +121,6 @@ func TestMain(m *testing.M) {
 		}
 	}()
 	os.Exit(code)
-}
-
-func InitializeTestService(ctx context.Context, infra infrastructure.Infrastructure) (interactor.Usecases, error) {
-	usecases := interactor.NewUsecasesInteractor(
-		infra,
-	)
-	return usecases, nil
-}
-
-func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-
-	return infrastructure.NewInfrastructureInteractor(), nil
 }
 
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {

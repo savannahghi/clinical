@@ -6,12 +6,16 @@ import (
 	"fmt"
 	"testing"
 
+	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
+	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
+	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
 )
@@ -35,10 +39,17 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 
 	// Initialize base (common) extension
 	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	repo := dataset.NewFHIRRepository()
+	fhir := fhir.NewFHIRStoreImpl(repo)
+	firestoreExt := fb.NewFirestoreClientExtension(&firestore.Client{})
+	fbExt := fb.NewFBClientExtensionImpl()
+	//firestoreRepo := fb.NewFirebaseRepository(firestoreExt, fbExt)
+	f := fb.NewFirebaseRepository(firestoreExt, fbExt)
+	ocl := openconceptlab.NewServiceOCL()
 
-	infrastructure := infrastructure.NewInfrastructureInteractor()
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, f, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
-	oclUseCase := ocl.NewUseCasesImpl(infrastructure)
+	oclUseCase := usecases.UseCasesOCL
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		pubSubClient,
 		baseExtension,

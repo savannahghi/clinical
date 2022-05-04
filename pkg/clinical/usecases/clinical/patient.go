@@ -1,4 +1,4 @@
-package usecases
+package clinical
 
 import (
 	"context"
@@ -16,6 +16,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/fhir"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
@@ -26,8 +27,29 @@ import (
 
 var isc interserviceclient.InterServiceClient
 
-// ClinicalUseCase represents all the patient business logic
-type ClinicalUseCase interface {
+// constants and defaults
+const (
+	// LimitedProfileEncounterCount is the number of encounters to show when a
+	// patient has approved limited access to their health record
+	LimitedProfileEncounterCount = 5
+
+	NHIFImageFrontPicName            = "nhif_front_photo"
+	NHIFImageRearPicName             = "nhif_rear_photo"
+	RelationshipSystem               = "http://terminology.hl7.org/CodeSystem/v2-0131"
+	RelationshipVersion              = "2.9"
+	StringTimeParseMonthNameLayout   = "2006-Jan-02"
+	StringTimeParseMonthNumberLayout = "2006-01-02"
+	SavannahAdminEmail               = "SAVANNAH_ADMIN_EMAIL"
+	TwilioSMSNumberEnvVarName        = "TWILIO_SMS_NUMBER"
+
+	notFoundWithSearchParams = "could not find a patient with the provided parameters"
+	internalError            = "an error occurred on our end. Please try again later"
+	timeFormatStr            = "2006-01-02T15:04:05+03:00"
+	//defaultTimeoutSeconds    = 10
+)
+
+// UseCasesClinical represents all the patient business logic
+type UseCasesClinical interface {
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
 	VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error)
 	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
@@ -49,22 +71,21 @@ type ClinicalUseCase interface {
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 }
 
-// ClinicalUseCaseImpl represents the patient usecase implementation
-type ClinicalUseCaseImpl struct {
+// UseCasesClinicalImpl represents the patient usecase implementation
+type UseCasesClinicalImpl struct {
 	infrastructure infrastructure.Infrastructure
-	fhir           FHIRUseCase
+	fhirUsecase    fhir.UseCasesFHIR
 }
 
-// NewClinicalUseCaseImpl initializes new Clinical/Patient implementation
-func NewClinicalUseCaseImpl(infra infrastructure.Infrastructure, fhir FHIRUseCase) ClinicalUseCase {
-	return &ClinicalUseCaseImpl{
+// NewUseCasesClinicalImpl initializes new Clinical/Patient implementation
+func NewUseCasesClinicalImpl(infra infrastructure.Infrastructure) UseCasesClinical {
+	return &UseCasesClinicalImpl{
 		infrastructure: infra,
-		fhir:           fhir,
 	}
 }
 
 // ProblemSummary returns a short list of the patient's active and confirmed problems (by name).
-func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
+func (c *UseCasesClinicalImpl) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {
 	if patientID == "" {
 		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
@@ -75,7 +96,7 @@ func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID stri
 		"category":            "problem-list-item",
 		"subject":             fmt.Sprintf("Patient/%s", patientID),
 	}
-	results, err := c.fhir.SearchFHIRCondition(ctx, params)
+	results, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, params)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("error when searching for patient conditions: %w", err)
@@ -95,8 +116,8 @@ func (c *ClinicalUseCaseImpl) ProblemSummary(ctx context.Context, patientID stri
 }
 
 // VisitSummary returns a narrative friendly display of the data that has been associated with a single visit
-func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
-	encounterPayload, err := c.fhir.GetFHIREncounter(ctx, encounterID)
+func (c *UseCasesClinicalImpl) VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error) {
+	encounterPayload, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -134,7 +155,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 		nodes[resourceName] = []map[string]interface{}{}
 		switch resourceName {
 		case "AllergyIntolerance":
-			conn, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
@@ -154,7 +175,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 				nodes[resourceName] = append(nodes[resourceName], rMap)
 			}
 		case "Encounter":
-			conn, err := c.fhir.SearchFHIREncounter(ctx, encounterInstanceFilterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIREncounter(ctx, encounterInstanceFilterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
@@ -174,7 +195,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 				nodes[resourceName] = append(nodes[resourceName], rMap)
 			}
 		case "Condition":
-			conn, err := c.fhir.SearchFHIRCondition(ctx, encounterFilterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, encounterFilterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
@@ -194,7 +215,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 				nodes[resourceName] = append(nodes[resourceName], rMap)
 			}
 		case "Observation":
-			conn, err := c.fhir.SearchFHIRObservation(ctx, encounterFilterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, encounterFilterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
@@ -214,7 +235,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 				nodes[resourceName] = append(nodes[resourceName], rMap)
 			}
 		case "Composition":
-			conn, err := c.fhir.SearchFHIRComposition(ctx, encounterFilterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRComposition(ctx, encounterFilterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
@@ -234,7 +255,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 				nodes[resourceName] = append(nodes[resourceName], rMap)
 			}
 		case "MedicationRequest":
-			conn, err := c.fhir.SearchFHIRMedicationRequest(ctx, encounterFilterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRMedicationRequest(ctx, encounterFilterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
@@ -254,7 +275,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 				nodes[resourceName] = append(nodes[resourceName], rMap)
 			}
 		case "ServiceRequest":
-			conn, err := c.fhir.SearchFHIRServiceRequest(ctx, encounterFilterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRServiceRequest(ctx, encounterFilterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", resourceName, err)
@@ -291,7 +312,7 @@ func (c *ClinicalUseCaseImpl) VisitSummary(ctx context.Context, encounterID stri
 // PatientTimelineWithCount returns the patient's visit note timeline (a list of
 // narratives that are sorted with the most recent one first), while
 // respecting the approval level AND limiting the number
-func (c *ClinicalUseCaseImpl) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
+func (c *UseCasesClinicalImpl) PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error) {
 	episode, _, err := c.getTimelineEpisode(ctx, episodeID)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -306,12 +327,12 @@ func (c *ClinicalUseCaseImpl) PatientTimelineWithCount(ctx context.Context, epis
 }
 
 // PatientSearch searches for a patient by identifiers and names
-func (c *ClinicalUseCaseImpl) PatientSearch(ctx context.Context, search string) (*domain.PatientConnection, error) {
+func (c *UseCasesClinicalImpl) PatientSearch(ctx context.Context, search string) (*domain.PatientConnection, error) {
 
 	params := url.Values{}
 	params.Add("_content", search) // entire doc
 
-	bs, err := c.fhir.POSTRequest("Patient", "_search", params, nil)
+	bs, err := c.infrastructure.FHIRRepo.POSTRequest("Patient", "_search", params, nil)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to search: %v", err)
@@ -397,7 +418,7 @@ func (c *ClinicalUseCaseImpl) PatientSearch(ctx context.Context, search string) 
 			return nil, fmt.Errorf(internalError)
 		}
 
-		hasOpenEpisodes, err := c.fhir.HasOpenEpisode(ctx, patient)
+		hasOpenEpisodes, err := c.infrastructure.FHIR.HasOpenEpisode(ctx, patient)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("error while checking if hasOpenEpisodes: %v", err)
@@ -423,7 +444,7 @@ func (c *ClinicalUseCaseImpl) PatientSearch(ctx context.Context, search string) 
 // Known limitations:
 //
 // 1. The normalization of phone number assumes Kenyan (+254) numbers only
-func (c *ClinicalUseCaseImpl) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
+func (c *UseCasesClinicalImpl) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
 
 	search, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
@@ -434,7 +455,7 @@ func (c *ClinicalUseCaseImpl) FindPatientsByMSISDN(ctx context.Context, msisdn s
 }
 
 // CheckPatientExistenceUsingPhoneNumber checks whether a patient with the phone number they're trying to register with exists
-func (c *ClinicalUseCaseImpl) CheckPatientExistenceUsingPhoneNumber(ctx context.Context, patientInput domain.SimplePatientRegistrationInput) (bool, error) {
+func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context.Context, patientInput domain.SimplePatientRegistrationInput) (bool, error) {
 	exists := false
 	for _, phone := range patientInput.PhoneNumbers {
 		phoneNumber := &phone.Msisdn
@@ -453,7 +474,7 @@ func (c *ClinicalUseCaseImpl) CheckPatientExistenceUsingPhoneNumber(ctx context.
 
 // ContactsToContactPointInput translates phone and email contacts to
 // FHIR contact points
-func (c *ClinicalUseCaseImpl) ContactsToContactPointInput(ctx context.Context, phones []*domain.PhoneNumberInput, emails []*domain.EmailInput) ([]*domain.FHIRContactPointInput, error) {
+func (c *UseCasesClinicalImpl) ContactsToContactPointInput(ctx context.Context, phones []*domain.PhoneNumberInput, emails []*domain.EmailInput) ([]*domain.FHIRContactPointInput, error) {
 	if phones == nil && emails == nil {
 		return nil, nil
 	}
@@ -486,11 +507,7 @@ func (c *ClinicalUseCaseImpl) ContactsToContactPointInput(ctx context.Context, p
 		if emailErr != nil {
 			return nil, fmt.Errorf("invalid email: %v", emailErr)
 		}
-		err := c.infrastructure.FirestoreRepo.SaveEmailOTP(ctx, email.Email, email.CommunicationOptIn)
-		if err != nil {
-			utils.ReportErrorToSentry(err)
-			return nil, fmt.Errorf("unable to save email otp: %v", err)
-		}
+
 		emailContact := &domain.FHIRContactPointInput{
 			System: &emailSystem,
 			Use:    &use,
@@ -501,13 +518,12 @@ func (c *ClinicalUseCaseImpl) ContactsToContactPointInput(ctx context.Context, p
 		output = append(output, emailContact)
 		rank++
 	}
-
 	return output, nil
 }
 
 // SimplePatientRegistrationInputToPatientInput transforms a patient input into
 // a
-func (c *ClinicalUseCaseImpl) SimplePatientRegistrationInputToPatientInput(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.FHIRPatientInput, error) {
+func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.FHIRPatientInput, error) {
 	_, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, input)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -546,7 +562,7 @@ func (c *ClinicalUseCaseImpl) SimplePatientRegistrationInputToPatientInput(ctx c
 }
 
 // RegisterPatient implements simple patient registration
-func (c *ClinicalUseCaseImpl) RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
+func (c *UseCasesClinicalImpl) RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
 	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, input)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -563,7 +579,7 @@ func (c *ClinicalUseCaseImpl) RegisterPatient(ctx context.Context, input domain.
 }
 
 // CreatePatient creates or updates a patient record on FHIR
-func (c *ClinicalUseCaseImpl) CreatePatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
+func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
 	// set the record ID if not set
 	if input.ID == nil {
 		newID := uuid.New().String()
@@ -610,7 +626,7 @@ func (c *ClinicalUseCaseImpl) CreatePatient(ctx context.Context, input domain.FH
 }
 
 // FindPatientByID retrieves a single patient by their ID
-func (c *ClinicalUseCaseImpl) FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error) {
+func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error) {
 	if id == "" {
 		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
@@ -629,7 +645,7 @@ func (c *ClinicalUseCaseImpl) FindPatientByID(ctx context.Context, id string) (*
 			"unable to unmarshal patient data from JSON, err: %v", err)
 	}
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	openEpisodes, err := c.fhir.OpenEpisodes(ctx, patientReference)
+	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -644,7 +660,7 @@ func (c *ClinicalUseCaseImpl) FindPatientByID(ctx context.Context, id string) (*
 
 // UpdatePatient patches a patient record with fresh data.
 // It updates elements that are set and ignores the ones that are nil.
-func (c *ClinicalUseCaseImpl) UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
+func (c *UseCasesClinicalImpl) UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
 	op := "add" // this method replaces data at the indicated paths
 
 	if input.ID == "" {
@@ -756,7 +772,7 @@ func (c *ClinicalUseCaseImpl) UpdatePatient(ctx context.Context, input domain.Si
 			string(data), err)
 	}
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	openEpisodes, err := c.fhir.OpenEpisodes(ctx, patientReference)
+	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -770,7 +786,7 @@ func (c *ClinicalUseCaseImpl) UpdatePatient(ctx context.Context, input domain.Si
 }
 
 // AddNextOfKin patches a patient with next of kin
-func (c *ClinicalUseCaseImpl) AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error) {
+func (c *UseCasesClinicalImpl) AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error) {
 	if input.PatientID == "" {
 		return nil, fmt.Errorf("a patient ID must be specified")
 	}
@@ -859,7 +875,7 @@ func (c *ClinicalUseCaseImpl) AddNextOfKin(ctx context.Context, input domain.Sim
 			string(data), err)
 	}
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	openEpisodes, err := c.fhir.OpenEpisodes(ctx, patientReference)
+	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -874,7 +890,7 @@ func (c *ClinicalUseCaseImpl) AddNextOfKin(ctx context.Context, input domain.Sim
 }
 
 // AddNHIF patches a patient with NHIF details
-func (c *ClinicalUseCaseImpl) AddNHIF(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
+func (c *UseCasesClinicalImpl) AddNHIF(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
 	if input == nil {
 		return nil, fmt.Errorf("AddNHIF: nil input")
 	}
@@ -943,7 +959,7 @@ func (c *ClinicalUseCaseImpl) AddNHIF(ctx context.Context, input *domain.SimpleN
 			string(data), err)
 	}
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	openEpisodes, err := c.fhir.OpenEpisodes(ctx, patientReference)
+	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -957,7 +973,7 @@ func (c *ClinicalUseCaseImpl) AddNHIF(ctx context.Context, input *domain.SimpleN
 }
 
 // CreateUpdatePatientExtraInformation updates a patient's extra info
-func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
+func (c *UseCasesClinicalImpl) CreateUpdatePatientExtraInformation(
 	ctx context.Context, input domain.PatientExtraInformationInput) (bool, error) {
 	if input.PatientID == "" {
 		return false, fmt.Errorf("patient ID cannot empty: %v", input.PatientID)
@@ -1015,7 +1031,7 @@ func (c *ClinicalUseCaseImpl) CreateUpdatePatientExtraInformation(
 
 // AllergySummary returns a short list of the patient's active and confirmed
 // allergies (by name)
-func (c *ClinicalUseCaseImpl) AllergySummary(ctx context.Context, patientID string) ([]string, error) {
+func (c *UseCasesClinicalImpl) AllergySummary(ctx context.Context, patientID string) ([]string, error) {
 	if patientID == "" {
 		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
@@ -1026,7 +1042,7 @@ func (c *ClinicalUseCaseImpl) AllergySummary(ctx context.Context, patientID stri
 		"criticality":         "high",
 		"patient":             fmt.Sprintf("Patient/%s", patientID),
 	}
-	results, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, params)
+	results, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, params)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("error when searching for patient allergies: %w", err)
@@ -1047,7 +1063,7 @@ func (c *ClinicalUseCaseImpl) AllergySummary(ctx context.Context, patientID stri
 
 // DeleteFHIRPatientByPhone delete's a patient's FHIR compartment
 // given their phone number
-func (c *ClinicalUseCaseImpl) DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error) {
+func (c *UseCasesClinicalImpl) DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error) {
 	patient, err := c.FindPatientsByMSISDN(ctx, phoneNumber)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -1060,11 +1076,11 @@ func (c *ClinicalUseCaseImpl) DeleteFHIRPatientByPhone(ctx context.Context, phon
 		patientID = *edge.Node.ID
 	}
 
-	return c.fhir.DeleteFHIRPatient(ctx, patientID)
+	return c.infrastructure.FHIR.DeleteFHIRPatient(ctx, patientID)
 }
 
 //StartEpisodeByBreakGlass starts an emergency episode
-func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
+func (c *UseCasesClinicalImpl) StartEpisodeByBreakGlass(
 	ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
 	normalized, err := converterandformatter.NormalizeMSISDN(input.ProviderPhone)
 	if err != nil {
@@ -1072,11 +1088,6 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 		return nil, fmt.Errorf("failed to normalize phone number: %w", err)
 	}
 
-	err = c.infrastructure.FirestoreRepo.StageStartEpisodeByBreakGlass(ctx, input)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("an error occurred: %v", err)
-	}
 	// validatePhone patient phone number
 	validatePhone, err := converterandformatter.NormalizeMSISDN(input.PatientPhone)
 	if err != nil {
@@ -1106,7 +1117,7 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 			log.Printf("failed to send alert message to admin during StartEpisodeByBreakGlass login: %s", err)
 		}
 	}
-	organizationID, err := c.fhir.GetORCreateOrganization(ctx, input.ProviderCode)
+	organizationID, err := c.fhirUsecase.GetORCreateOrganization(ctx, input.ProviderCode)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -1119,12 +1130,12 @@ func (c *ClinicalUseCaseImpl) StartEpisodeByBreakGlass(
 		input.ProviderCode,
 		input.PatientID,
 	)
-	return c.fhir.CreateEpisodeOfCare(ctx, ep)
+	return c.infrastructure.FHIR.CreateEpisodeOfCare(ctx, ep)
 }
 
 // PatientTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
-func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
+func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
 
 	timeline := []map[string]interface{}{}
 	wg := &sync.WaitGroup{}
@@ -1141,7 +1152,7 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 	allergyIntoleranceResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
+		conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("AllergyIntolerance search error: %v", err)
@@ -1174,7 +1185,7 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 	observationResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.fhir.SearchFHIRObservation(ctx, patientFilterParams)
+		conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, patientFilterParams)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("Observation search error: %v", err)
@@ -1207,7 +1218,7 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 	medicationStatementResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.fhir.SearchFHIRMedicationStatement(ctx, patientFilterParams)
+		conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, patientFilterParams)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("MedicationStatement search error: %v", err)
@@ -1253,9 +1264,126 @@ func (c *ClinicalUseCaseImpl) PatientTimeline(ctx context.Context, patientID str
 	return timeline, nil
 }
 
+// GetMedicalData returns a limited subset of specific medical data that for a specific patient
+// These include: Allergies, Viral Load, Body Mass Index, Weight, CD4 Count using their respective OCL CIEL Terminology
+// For each category the latest three records are fetched
+func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
+	data := &domain.MedicalData{}
+
+	filterParams := map[string]interface{}{
+		"patient": fmt.Sprintf("Patient/%v", patientID),
+		"_count":  common.MedicalDataCount,
+		"_sort":   "-date",
+	}
+
+	fields := []string{
+		"Regimen",
+		"AllergyIntolerance",
+		"Weight",
+		"BMI",
+		"ViralLoad",
+		"CD4Count",
+	}
+
+	for _, field := range fields {
+		switch field {
+		case "Regimen":
+			conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, filterParams)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.Regimen = append(data.Regimen, edge.Node)
+			}
+		case "AllergyIntolerance":
+			conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, filterParams)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.Allergies = append(data.Allergies, edge.Node)
+			}
+
+		case "Weight":
+			filterParams["code"] = common.WeightCIELTerminologyCode
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.Weight = append(data.Weight, edge.Node)
+			}
+
+		case "BMI":
+			filterParams["code"] = common.BMICIELTerminologyCode
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.BMI = append(data.BMI, edge.Node)
+			}
+
+		case "ViralLoad":
+			filterParams["code"] = common.ViralLoadCIELTerminologyCode
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.ViralLoad = append(data.ViralLoad, edge.Node)
+			}
+
+		case "CD4Count":
+			filterParams["code"] = common.CD4CountCIELTerminologyCode
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return nil, fmt.Errorf("%s search error: %w", field, err)
+			}
+
+			for _, edge := range conn.Edges {
+				if edge.Node == nil {
+					continue
+				}
+				data.CD4Count = append(data.CD4Count, edge.Node)
+			}
+
+		}
+
+	}
+
+	return data, nil
+}
+
 // PatientHealthTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
-func (c *ClinicalUseCaseImpl) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
+func (c *UseCasesClinicalImpl) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
 	records, err := c.PatientTimeline(ctx, input.PatientID, 0)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -1287,123 +1415,6 @@ func (c *ClinicalUseCaseImpl) PatientHealthTimeline(ctx context.Context, input d
 
 	data.TotalCount = len(records)
 	data.Timeline = timeline
-
-	return data, nil
-}
-
-// GetMedicalData returns a limited subset of specific medical data that for a specific patient
-// These include: Allergies, Viral Load, Body Mass Index, Weight, CD4 Count using their respective OCL CIEL Terminology
-// For each category the latest three records are fetched
-func (c *ClinicalUseCaseImpl) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
-	data := &domain.MedicalData{}
-
-	filterParams := map[string]interface{}{
-		"patient": fmt.Sprintf("Patient/%v", patientID),
-		"_count":  common.MedicalDataCount,
-		"_sort":   "-date",
-	}
-
-	fields := []string{
-		"Regimen",
-		"AllergyIntolerance",
-		"Weight",
-		"BMI",
-		"ViralLoad",
-		"CD4Count",
-	}
-
-	for _, field := range fields {
-		switch field {
-		case "Regimen":
-			conn, err := c.fhir.SearchFHIRMedicationStatement(ctx, filterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", field, err)
-			}
-
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-				data.Regimen = append(data.Regimen, edge.Node)
-			}
-		case "AllergyIntolerance":
-			conn, err := c.fhir.SearchFHIRAllergyIntolerance(ctx, filterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", field, err)
-			}
-
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-				data.Allergies = append(data.Allergies, edge.Node)
-			}
-
-		case "Weight":
-			filterParams["code"] = common.WeightCIELTerminologyCode
-			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", field, err)
-			}
-
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-				data.Weight = append(data.Weight, edge.Node)
-			}
-
-		case "BMI":
-			filterParams["code"] = common.BMICIELTerminologyCode
-			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", field, err)
-			}
-
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-				data.BMI = append(data.BMI, edge.Node)
-			}
-
-		case "ViralLoad":
-			filterParams["code"] = common.ViralLoadCIELTerminologyCode
-			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", field, err)
-			}
-
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-				data.ViralLoad = append(data.ViralLoad, edge.Node)
-			}
-
-		case "CD4Count":
-			filterParams["code"] = common.CD4CountCIELTerminologyCode
-			conn, err := c.fhir.SearchFHIRObservation(ctx, filterParams)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				return nil, fmt.Errorf("%s search error: %w", field, err)
-			}
-
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
-				}
-				data.CD4Count = append(data.CD4Count, edge.Node)
-			}
-
-		}
-
-	}
 
 	return data, nil
 }

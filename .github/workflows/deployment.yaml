@@ -95,7 +95,8 @@ jobs:
           --set-env-vars "CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}" \
           --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
           --set-env-vars "SERVICE_HOST=${{ secrets.SERVICE_HOST }}" \
-          --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
+          --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}" \
+          --set-env-vars "SAVANNAH_ADMIN_EMAIL=${{ secrets.SAVANNAH_ADMIN_EMAIL }}"
 
 
 
@@ -141,7 +142,8 @@ jobs:
           --set-env-vars "CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}" \
           --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
           --set-env-vars "SERVICE_HOST=${{ secrets.SERVICE_HOST }}" \
-          --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
+          --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}" \
+          --set-env-vars "SAVANNAH_ADMIN_EMAIL=${{ secrets.SAVANNAH_ADMIN_EMAIL }}"
 
   deploy_to_prod:
     name: Deploy Prod Server to Google Cloud Run
@@ -198,7 +200,8 @@ jobs:
           --set-env-vars "CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}" \
           --set-env-vars "OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}" \
           --set-env-vars "SERVICE_HOST=${{ secrets.SERVICE_HOST }}" \
-          --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}"
+          --set-env-vars "OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}" \
+          --set-env-vars "SAVANNAH_ADMIN_EMAIL=${{ secrets.SAVANNAH_ADMIN_EMAIL }}"
 
   push_schema_staging_registry:
     name: Publish schema to staging schema registry

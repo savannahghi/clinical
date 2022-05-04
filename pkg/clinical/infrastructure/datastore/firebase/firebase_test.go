@@ -10,12 +10,16 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
 	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/firebasetools"
 )
 
-var testRepo *fb.Repository
+var testRepo fb.FirestoreRepository
 
 func TestMain(m *testing.M) {
 	log.Printf("Setting tests up ...")
@@ -80,12 +84,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-
-	return infrastructure.NewInfrastructureInteractor(), nil
-}
-
-func InitializeTestFirebaseRepository() (*fb.Repository, error) {
+func InitializeTestFirebaseRepository() (fb.FirestoreRepository, error) {
 	ctx := context.Background()
 	fsc, fbc := InitializeTestFirebaseClient(ctx)
 	if fsc == nil {
@@ -99,6 +98,18 @@ func InitializeTestFirebaseRepository() (*fb.Repository, error) {
 	firestoreExtension := fb.NewFirestoreClientExtension(fsc)
 	fr := fb.NewFirebaseRepository(firestoreExtension, fbc)
 	return fr, nil
+}
+func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
+	fc := &firebasetools.FirebaseClient{}
+	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	repo := dataset.NewFHIRRepository()
+	fhir := fhir.NewFHIRStoreImpl(repo)
+	firestoreExt := fb.NewFirestoreClientExtension(&firestore.Client{})
+	fbExt := fb.NewFBClientExtensionImpl()
+	//firestoreRepo := fb.NewFirebaseRepository(firestoreExt, fbExt)
+	f := fb.NewFirebaseRepository(firestoreExt, fbExt)
+	ocl := openconceptlab.NewServiceOCL()
+	return infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, f, ocl), nil
 }
 func InitializeTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth.Client) {
 	fc := firebasetools.FirebaseClient{}

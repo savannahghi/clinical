@@ -15,6 +15,12 @@ const (
 	BreakGlassCollectionName = "break_glass"
 )
 
+// FirestoreRepository ...
+type FirestoreRepository interface {
+	SaveEmailOTP(ctx context.Context, email string, optIn bool) error
+	StageStartEpisodeByBreakGlass(ctx context.Context, input domain.BreakGlassEpisodeCreationInput) error
+}
+
 // Repository accesses and updates an item that is stored on Firebase
 type Repository struct {
 	FirestoreClient FirestoreClientExtension
@@ -25,7 +31,7 @@ type Repository struct {
 func NewFirebaseRepository(
 	firestoreClient FirestoreClientExtension,
 	firebaseClient FBClientExtension,
-) *Repository {
+) FirestoreRepository {
 	return &Repository{
 		FirestoreClient: firestoreClient,
 		FirebaseClient:  firebaseClient,

@@ -9,7 +9,8 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	fhirUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/fhir"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/serverutils"
 )
@@ -59,9 +60,9 @@ type ServicePubSubMessaging struct {
 	client  *pubsub.Client
 	baseExt extensions.BaseExtension
 	infra   infrastructure.Infrastructure
-	patient usecases.ClinicalUseCase
-	fhir    usecases.FHIRUseCase
-	ocl     ocl.UseCases
+	patient clinical.UseCasesClinical
+	fhir    fhirUsecase.UseCasesFHIR
+	ocl     ocl.UseCasesOCL
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
@@ -69,9 +70,9 @@ func NewServicePubSubMessaging(
 	client *pubsub.Client,
 	baseExt extensions.BaseExtension,
 	infra infrastructure.Infrastructure,
-	patient usecases.ClinicalUseCase,
-	fhir usecases.FHIRUseCase,
-	ocl ocl.UseCases,
+	patient clinical.UseCasesClinical,
+	fhir fhirUsecase.UseCasesFHIR,
+	ocl ocl.UseCasesOCL,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
 		client:  client,

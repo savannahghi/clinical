@@ -1,12 +1,10 @@
-package usecases
+package clinical
 
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"text/template"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -19,113 +17,132 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// import (
+// 	"bytes"
+// 	"context"
+// 	"encoding/json"
+// 	"fmt"
+// 	"net/http"
+// 	"net/url"
+// 	"text/template"
+
+// 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+// 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+// 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
+// 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+// 	"github.com/savannahghi/enumutils"
+// 	"github.com/savannahghi/scalarutils"
+// 	"github.com/savannahghi/serverutils"
+// 	log "github.com/sirupsen/logrus"
+// )
+
+// // TODO: remove receiver
+// func validateSearchParams(params map[string]interface{}) (url.Values, error) {
+// 	if params == nil {
+// 		return nil, fmt.Errorf("can't search with nil params")
+// 	}
+// 	output := url.Values{}
+// 	for k, v := range params {
+// 		val, ok := v.(string)
+// 		if !ok {
+// 			return nil, fmt.Errorf("the search/filter params should all be sent as strings")
+// 		}
+// 		output.Add(k, val)
+// 	}
+// 	return output, nil
+// }
+
+// // searchFilterHelper helps with the composition of FHIR REST search and filter requests.
+// //
+// // - the `resourceName` is a FHIR resource name e.g "Patient", "Appointment" etc
+// // - the `path` is a resource sub-path e.g "_search". If there is no sub-path, send a blank string
+// // - `params` should contain the filter parameters e.g
+// //
+// //    params := url.Values{}
+// //    params.Add("_content", search)
+// // TODO: remove receiver
+// func (fh *UseCasesClinicalImpl) searchFilterHelper(
+// 	ctx context.Context,
+// 	resourceName string,
+// 	path string, params url.Values,
+// ) ([]map[string]interface{}, error) {
+// 	// s.checkPreconditions()
+// 	bs, err := fh.infrastructure.FHIR.POSTRequest(resourceName, path, params, nil)
+// 	if err != nil {
+// 		log.Errorf("unable to search: %v", err)
+// 		return nil, fmt.Errorf("unable to search: %v", err)
+// 	}
+// 	respMap := make(map[string]interface{})
+// 	err = json.Unmarshal(bs, &respMap)
+// 	if err != nil {
+// 		log.Errorf("%s could not be found with search params %v: %s", resourceName, params, err)
+// 		return nil, fmt.Errorf(
+// 			"%s could not be found with search params %v: %s", resourceName, params, err)
+// 	}
+
+// 	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
+// 	for _, k := range mandatoryKeys {
+// 		_, found := respMap[k]
+// 		if !found {
+// 			return nil, fmt.Errorf("server error: mandatory search result key %s not found", k)
+// 		}
+// 	}
+// 	resourceType, ok := respMap["resourceType"].(string)
+// 	if !ok {
+// 		return nil, fmt.Errorf("server error: the resourceType is not a string")
+// 	}
+// 	if resourceType != "Bundle" {
+// 		return nil, fmt.Errorf(
+// 			"server error: the resourceType value is not 'Bundle' as expected")
+// 	}
+
+// 	resultType, ok := respMap["type"].(string)
+// 	if !ok {
+// 		return nil, fmt.Errorf("server error: the search result type value is not a string")
+// 	}
+// 	if resultType != "searchset" {
+// 		return nil, fmt.Errorf("server error: the type value is not 'searchset' as expected")
+// 	}
+
+// 	respEntries := respMap["entry"]
+// 	if respEntries == nil {
+// 		return []map[string]interface{}{}, nil
+// 	}
+// 	entries, ok := respEntries.([]interface{})
+// 	if !ok {
+// 		return nil, fmt.Errorf(
+// 			"server error: entries is not a list of maps, it is: %T", respEntries)
+// 	}
+
+// 	results := []map[string]interface{}{}
+// 	for _, en := range entries {
+// 		entry, ok := en.(map[string]interface{})
+// 		if !ok {
+// 			return nil, fmt.Errorf(
+// 				"server error: expected each entry to be map, they are %T instead", en)
+// 		}
+// 		expectedKeys := []string{"fullUrl", "resource", "search"}
+// 		for _, k := range expectedKeys {
+// 			_, found := entry[k]
+// 			if !found {
+// 				return nil, fmt.Errorf("server error: FHIR search entry does not have key '%s'", k)
+// 			}
+// 		}
+
+// 		resource, ok := entry["resource"].(map[string]interface{})
+// 		if !ok {
+// 			{
+// 				return nil, fmt.Errorf("server error: result entry %#v is not a map", entry["resource"])
+// 			}
+// 		}
+// 		results = append(results, resource)
+// 	}
+// 	return results, nil
+// }
+
 // TODO: remove receiver
-func (fh FHIRUseCaseImpl) validateSearchParams(params map[string]interface{}) (url.Values, error) {
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	output := url.Values{}
-	for k, v := range params {
-		val, ok := v.(string)
-		if !ok {
-			return nil, fmt.Errorf("the search/filter params should all be sent as strings")
-		}
-		output.Add(k, val)
-	}
-	return output, nil
-}
-
-// searchFilterHelper helps with the composition of FHIR REST search and filter requests.
-//
-// - the `resourceName` is a FHIR resource name e.g "Patient", "Appointment" etc
-// - the `path` is a resource sub-path e.g "_search". If there is no sub-path, send a blank string
-// - `params` should contain the filter parameters e.g
-//
-//    params := url.Values{}
-//    params.Add("_content", search)
-// TODO: remove receiver
-func (fh FHIRUseCaseImpl) searchFilterHelper(
-	ctx context.Context,
-	resourceName string,
-	path string, params url.Values,
-) ([]map[string]interface{}, error) {
-	// s.checkPreconditions()
-	bs, err := fh.POSTRequest(resourceName, path, params, nil)
-	if err != nil {
-		log.Errorf("unable to search: %v", err)
-		return nil, fmt.Errorf("unable to search: %v", err)
-	}
-	respMap := make(map[string]interface{})
-	err = json.Unmarshal(bs, &respMap)
-	if err != nil {
-		log.Errorf("%s could not be found with search params %v: %s", resourceName, params, err)
-		return nil, fmt.Errorf(
-			"%s could not be found with search params %v: %s", resourceName, params, err)
-	}
-
-	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
-	for _, k := range mandatoryKeys {
-		_, found := respMap[k]
-		if !found {
-			return nil, fmt.Errorf("server error: mandatory search result key %s not found", k)
-		}
-	}
-	resourceType, ok := respMap["resourceType"].(string)
-	if !ok {
-		return nil, fmt.Errorf("server error: the resourceType is not a string")
-	}
-	if resourceType != "Bundle" {
-		return nil, fmt.Errorf(
-			"server error: the resourceType value is not 'Bundle' as expected")
-	}
-
-	resultType, ok := respMap["type"].(string)
-	if !ok {
-		return nil, fmt.Errorf("server error: the search result type value is not a string")
-	}
-	if resultType != "searchset" {
-		return nil, fmt.Errorf("server error: the type value is not 'searchset' as expected")
-	}
-
-	respEntries := respMap["entry"]
-	if respEntries == nil {
-		return []map[string]interface{}{}, nil
-	}
-	entries, ok := respEntries.([]interface{})
-	if !ok {
-		return nil, fmt.Errorf(
-			"server error: entries is not a list of maps, it is: %T", respEntries)
-	}
-
-	results := []map[string]interface{}{}
-	for _, en := range entries {
-		entry, ok := en.(map[string]interface{})
-		if !ok {
-			return nil, fmt.Errorf(
-				"server error: expected each entry to be map, they are %T instead", en)
-		}
-		expectedKeys := []string{"fullUrl", "resource", "search"}
-		for _, k := range expectedKeys {
-			_, found := entry[k]
-			if !found {
-				return nil, fmt.Errorf("server error: FHIR search entry does not have key '%s'", k)
-			}
-		}
-
-		resource, ok := entry["resource"].(map[string]interface{})
-		if !ok {
-			{
-				return nil, fmt.Errorf("server error: result entry %#v is not a map", entry["resource"])
-			}
-		}
-		results = append(results, resource)
-	}
-	return results, nil
-}
-
-// TODO: remove receiver
-func (c *ClinicalUseCaseImpl) getTimelineEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, string, error) {
-	episodePayload, err := c.fhir.GetFHIREpisodeOfCare(ctx, episodeID)
+func (c *UseCasesClinicalImpl) getTimelineEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, string, error) {
+	episodePayload, err := c.infrastructure.FHIR.GetFHIREpisodeOfCare(ctx, episodeID)
 	if err != nil {
 		return nil, "", fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
 	}
@@ -151,12 +168,12 @@ func (c *ClinicalUseCaseImpl) getTimelineEpisode(ctx context.Context, episodeID 
 }
 
 // TODO: remove receiver
-func (c *ClinicalUseCaseImpl) getTimelineVisitSummaries(
+func (c *UseCasesClinicalImpl) getTimelineVisitSummaries(
 	ctx context.Context,
 	encounterSearchParams map[string]interface{},
 	count int,
 ) ([]map[string]interface{}, error) {
-	encounterConn, err := c.fhir.SearchFHIREncounter(ctx, encounterSearchParams)
+	encounterConn, err := c.infrastructure.FHIR.SearchFHIREncounter(ctx, encounterSearchParams)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search for encounters for the timeline: %w", err)
 	}
@@ -180,7 +197,7 @@ func (c *ClinicalUseCaseImpl) getTimelineVisitSummaries(
 }
 
 // TODO: remove receiver
-func (c *ClinicalUseCaseImpl) birthdateMapper(resource map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) birthdateMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
 
@@ -199,7 +216,7 @@ func (c *ClinicalUseCaseImpl) birthdateMapper(resource map[string]interface{}) m
 }
 
 // TODO: remove receiver
-func (c *ClinicalUseCaseImpl) periodMapper(period map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) periodMapper(period map[string]interface{}) map[string]interface{} {
 
 	periodCopy := period
 
@@ -215,7 +232,7 @@ func (c *ClinicalUseCaseImpl) periodMapper(period map[string]interface{}) map[st
 }
 
 // TODO: remove receiver
-func (c *ClinicalUseCaseImpl) identifierMapper(resource map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) identifierMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
 
@@ -245,7 +262,7 @@ func (c *ClinicalUseCaseImpl) identifierMapper(resource map[string]interface{}) 
 }
 
 // TODO: remove receiver
-func (c *ClinicalUseCaseImpl) nameMapper(resource map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) nameMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
 
@@ -276,7 +293,7 @@ func (c *ClinicalUseCaseImpl) nameMapper(resource map[string]interface{}) map[st
 }
 
 // TODO: remove receiver
-func (c *ClinicalUseCaseImpl) telecomMapper(resource map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) telecomMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
 
@@ -307,7 +324,7 @@ func (c *ClinicalUseCaseImpl) telecomMapper(resource map[string]interface{}) map
 }
 
 // TODO: move to engagement
-func (c *ClinicalUseCaseImpl) addressMapper(resource map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) addressMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
 
@@ -337,7 +354,7 @@ func (c *ClinicalUseCaseImpl) addressMapper(resource map[string]interface{}) map
 }
 
 // TODO: move to engagement
-func (c *ClinicalUseCaseImpl) photoMapper(resource map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) photoMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
 
@@ -362,7 +379,7 @@ func (c *ClinicalUseCaseImpl) photoMapper(resource map[string]interface{}) map[s
 	return resourceCopy
 }
 
-func (c *ClinicalUseCaseImpl) contactMapper(resource map[string]interface{}) map[string]interface{} {
+func (c *UseCasesClinicalImpl) contactMapper(resource map[string]interface{}) map[string]interface{} {
 
 	resourceCopy := resource
 
@@ -429,7 +446,7 @@ func (c *ClinicalUseCaseImpl) contactMapper(resource map[string]interface{}) map
 
 // sendAlertToPatient to send notification to patient when break glass request is made
 // TODO: move to engagement
-func (c *ClinicalUseCaseImpl) sendAlertToPatient(ctx context.Context, phoneNumber string, patientID string) error {
+func (c *UseCasesClinicalImpl) sendAlertToPatient(ctx context.Context, phoneNumber string, patientID string) error {
 	patientPayload, err := c.FindPatientByID(ctx, patientID)
 	if err != nil {
 		return err
@@ -467,7 +484,7 @@ func (c *ClinicalUseCaseImpl) sendAlertToPatient(ctx context.Context, phoneNumbe
 
 //sendAlertToNextOfKin send an alert message to the patient's next of kin.
 // TODO: move to engagement
-func (c *ClinicalUseCaseImpl) sendAlertToNextOfKin(ctx context.Context, patientID string) error {
+func (c *UseCasesClinicalImpl) sendAlertToNextOfKin(ctx context.Context, patientID string) error {
 	patientPayload, err := c.FindPatientByID(ctx, patientID)
 	if err != nil {
 		return err
@@ -536,7 +553,7 @@ func (c *ClinicalUseCaseImpl) sendAlertToNextOfKin(ctx context.Context, patientI
 
 // sendAlertToAdmin send email to admin notifying them of the access.
 // TODO: move to engagement
-func (c *ClinicalUseCaseImpl) sendAlertToAdmin(ctx context.Context, patientName string, patientContact string) error {
+func (c *UseCasesClinicalImpl) sendAlertToAdmin(ctx context.Context, patientName string, patientContact string) error {
 	adminEmail, err := serverutils.GetEnvVar(SavannahAdminEmail)
 	if err != nil {
 		return err
