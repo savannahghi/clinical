@@ -66,6 +66,7 @@ type FHIR interface {
 	CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
 	UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
 	DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error)
+	DeleteFHIROganization(ctx context.Context, id string) (bool, error)
 	SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error)
 	CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
 	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
@@ -1430,6 +1431,86 @@ func (fh *StoreImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string)
 		return false, fmt.Errorf(
 			"unable to delete %s, response %s, error: %v",
 			resourceType, string(resp), err,
+		)
+	}
+	return true, nil
+}
+
+// DeleteFHIROganization deletes a FHIR organization
+func (fh *StoreImpl) DeleteFHIROganization(ctx context.Context, id string) (bool, error) {
+	searchParams := url.Values{"": []string{"resourceType"}}
+
+	ep, err := fh.SearchEpisodesByParam(ctx, searchParams)
+	//epi, _ := json.Marshal(ep)
+	//logrus.Print("1446: SearchEpisodesByParam: ", string(epi))
+	if err != nil {
+		return false, err
+	}
+	for _, k := range ep {
+		patientRef := k.Patient.Reference
+		encounters, err := fh.Encounters(ctx, *patientRef, nil)
+		//ENCO, _ := json.Marshal(encounters)
+		//logrus.Print("1454: HERE ARE THE ENCOUNTERS: ", string(ENCO))
+		if err != nil {
+			return false, err
+		}
+
+		for _, c := range encounters {
+			// Delete Observation
+			encounterRef := fmt.Sprintf("Encounter/%s", *c.ID)
+			encounterFilterParams := map[string]interface{}{
+				"encounter": encounterRef,
+			}
+			o, err := fh.SearchFHIRObservation(ctx, encounterFilterParams)
+			//OBS, _ := json.Marshal(o)
+			//logrus.Print("1467: HERE ARE THE OBSERVATIONS: ", string(OBS))
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return false, err
+			}
+
+			ObservationsResourceType := "Observation"
+			observationRes, err := fh.Dataset.DeleteFHIRResource(ObservationsResourceType, *o.Edges[0].Node.ID)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return false, fmt.Errorf(
+					"unable to delete %s, response %s, error: %v",
+					ObservationsResourceType, string(observationRes), err,
+				)
+			}
+
+			// Delete Encounter
+			//logrus.Print("1484: HERE IS THE ENCOUNTER ID: ", c.ID)
+			EncounterResourceType := "Encounter"
+			encounterRes, err := fh.Dataset.DeleteFHIRResource(EncounterResourceType, *c.ID)
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				return false, fmt.Errorf(
+					"unable to delete %s, response %s, error: %v",
+					EncounterResourceType, string(encounterRes), err,
+				)
+			}
+		}
+
+		//Delete Episode of care
+		EpisodeOfCareResourceType := "EpisodeOfCare"
+		e, err := fh.Dataset.DeleteFHIRResource(EpisodeOfCareResourceType, *k.ID)
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			return false, fmt.Errorf(
+				"unable to delete %s, response %s, error: %v",
+				EpisodeOfCareResourceType, string(e), err,
+			)
+		}
+	}
+
+	OrgResourceType := "Organization"
+	resp, err := fh.Dataset.DeleteFHIRResource(OrgResourceType, id)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return false, fmt.Errorf(
+			"unable to delete %s, response %s, error: %v",
+			OrgResourceType, string(resp), err,
 		)
 	}
 	return true, nil

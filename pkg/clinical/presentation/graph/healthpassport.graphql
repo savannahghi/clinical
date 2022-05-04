@@ -311,4 +311,6 @@ extend type Mutation {
   deleteFHIRPatient(id: ID!): Boolean!
 
   deleteFHIRObservation(id: ID!): Boolean!
+
+  deleteOrganizationByID(organizationID: String!): Boolean!
 }

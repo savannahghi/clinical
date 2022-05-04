@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -167,6 +168,10 @@ func (r *mutationResolver) DeleteFHIRObservation(ctx context.Context, id string)
 	return r.usecases.DeleteFHIRObservation(ctx, id)
 }
 
+func (r *mutationResolver) DeleteOrganizationByID(ctx context.Context, organizationID string) (bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
@@ -307,3 +312,15 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) DeleteOrganizationByID(ctx context.Context, organizationID string) (bool, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.DeleteFHIROrganization(ctx, organizationID)
+}

@@ -80,6 +80,7 @@ type UseCasesFHIR interface {
 	CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error)
 	CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error)
 	SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
+	DeleteFHIROrganization(ctx context.Context, id string) (bool, error)
 }
 
 // UseCasesFHIRImpl represents the FHIR usecase implementation
@@ -489,6 +490,23 @@ func (fh *UseCasesFHIRImpl) UpdateFHIRMedicationRequest(ctx context.Context, inp
 // DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
 func (fh *UseCasesFHIRImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
 	return fh.infrastructure.FHIR.DeleteFHIRMedicationRequest(ctx, id)
+}
+
+// DeleteFHIROrganization deletes a FHIR organization
+func (fh *UseCasesFHIRImpl) DeleteFHIROrganization(ctx context.Context, id string) (bool, error) {
+	searchParam := map[string]interface{}{
+		"id": id,
+	}
+	organization, err := fh.SearchFHIROrganization(ctx, searchParam)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return false, err
+	}
+	if organization.Edges == nil {
+		return false, nil
+	}
+	orgID := organization.Edges[0].Node.ID
+	return fh.infrastructure.FHIR.DeleteFHIROganization(ctx, *orgID)
 }
 
 // SearchFHIRObservation provides a search API for FHIRObservation

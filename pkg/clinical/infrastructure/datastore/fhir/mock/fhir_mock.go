@@ -67,6 +67,7 @@ type FHIRMock struct {
 	MockSearchFHIRMedicationStatementFn func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 	MockFHIRHeadersFn                   func() (http.Header, error)
 	MockGetBearerTokenFn                func() (string, error)
+	MockDeleteFHIROganizationFn         func(ctx context.Context, id string) (bool, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -255,6 +256,9 @@ func NewFHIRMock() *FHIRMock {
 		MockDeleteFHIRCompositionFn: func(ctx context.Context, id string) (bool, error) {
 			return true, nil
 		},
+		MockDeleteFHIROganizationFn: func(ctx context.Context, id string) (bool, error) {
+			return true, nil
+		},
 		MockSearchFHIRConditionFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
 			return &domain.FHIRConditionRelayConnection{}, nil
 		},
@@ -427,6 +431,11 @@ func (fh *FHIRMock) SearchEpisodesByParam(ctx context.Context, searchParams url.
 // HasOpenEpisode is a mock implementation of HasOpenEpisode method
 func (fh *FHIRMock) HasOpenEpisode(ctx context.Context, patient domain.FHIRPatient) (bool, error) {
 	return fh.MockHasOpenEpisodeFn(ctx, patient)
+}
+
+// DeleteFHIROganization is a mock implementation of DeleteFHIROganization method
+func (fh *FHIRMock) DeleteFHIROganization(ctx context.Context, id string) (bool, error) {
+	return fh.MockDeleteFHIROganizationFn(ctx, id)
 }
 
 // OpenEpisodes is a mock implementation of OpenEpisodes method
