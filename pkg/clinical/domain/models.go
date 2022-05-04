@@ -100,7 +100,7 @@ type SimplePatientRegistrationInput struct {
 // break glass protocol
 type BreakGlassEpisodeCreationInput struct {
 	PatientID       string `json:"patientID" firestore:"patientID"`
-	ProviderCode    string `json:"providerCode" firestore:"providerCode"`
+	MFLCode         string `json:"MFLCode" firestore:"MFLCode"`
 	PractitionerUID string `json:"practitionerUID" firestore:"practitionerUID"`
 	// ProviderPhone is the provider phone number
 	ProviderPhone string `json:"providerPhone" firestore:"providerPhone"`
@@ -112,11 +112,11 @@ type BreakGlassEpisodeCreationInput struct {
 
 // OTPEpisodeCreationInput is used to start patient visits via OTP
 type OTPEpisodeCreationInput struct {
-	PatientID    string `json:"patientID"`
-	ProviderCode string `json:"providerCode"`
-	Msisdn       string `json:"msisdn"`
-	Otp          string `json:"otp"`
-	FullAccess   bool   `json:"fullAccess"`
+	PatientID  string `json:"patientID"`
+	MFLCode    string `json:"mflCode"`
+	Msisdn     string `json:"msisdn"`
+	Otp        string `json:"otp"`
+	FullAccess bool   `json:"fullAccess"`
 }
 
 // OTPEpisodeUpgradeInput is used to upgrade existing open episodes
@@ -152,11 +152,11 @@ type SimpleNextOfKinInput struct {
 
 // USSDEpisodeCreationInput is used to start episodes via USSD
 type USSDEpisodeCreationInput struct {
-	PatientID    string `json:"patientID"`
-	ProviderCode string `json:"providerCode"`
-	SessionID    string `json:"sessionID"`
-	Msisdn       string `json:"msisdn"`
-	FullAccess   bool   `json:"fullAccess"`
+	PatientID  string `json:"patientID"`
+	MFLCode    string `json:"MFLCode"`
+	SessionID  string `json:"sessionID"`
+	Msisdn     string `json:"msisdn"`
+	FullAccess bool   `json:"fullAccess"`
 }
 
 // Reference defines references to other FHIR resources.

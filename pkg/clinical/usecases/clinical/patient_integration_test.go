@@ -26,7 +26,7 @@ func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -107,7 +107,7 @@ func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant create test episode of care: %v\n", err)
@@ -235,7 +235,7 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 		ctx,
 		*normalized,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		log.Printf("cant get test encounter id: %v\n", err)
@@ -1064,7 +1064,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 		context.Background(),
 		interserviceclient.TestUserPhoneNumber,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test encounter id: %v\n", err)
@@ -1160,7 +1160,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 		context.Background(),
 		interserviceclient.TestUserPhoneNumber,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test encounter id: %v\n", err)
@@ -1258,7 +1258,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		context.Background(),
 		interserviceclient.TestUserPhoneNumber,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test encounter id: %v\n", err)

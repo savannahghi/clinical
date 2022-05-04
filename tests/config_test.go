@@ -37,11 +37,11 @@ const ( // Repo the env to identify which repo to use
 /// these are set up once in TestMain and used by all the acceptance tests in
 // this package
 var (
-	srv              *http.Server
-	baseURL          string
-	serverErr        error
-	testInteractor   interactor.Usecases
-	testProviderCode = "1234"
+	srv            *http.Server
+	baseURL        string
+	serverErr      error
+	testInteractor interactor.Usecases
+	MFLCode        = "1234"
 )
 
 func initializeAcceptanceTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth.Client) {
@@ -430,7 +430,7 @@ func getTestEpisodeOfCare(
 	ctx context.Context,
 	msisdn string,
 	fullAccess bool,
-	providerCode string,
+	MFLCode string,
 ) (*domain.FHIREpisodeOfCare, *domain.FHIRPatient, error) {
 	normalized, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
@@ -442,7 +442,14 @@ func getTestEpisodeOfCare(
 		return nil, nil, fmt.Errorf("can't create test patient: %w", err)
 	}
 
-	orgID, err := testInteractor.GetORCreateOrganization(ctx, providerCode)
+	p := domain.FHIROrganizationInput{
+		Identifier: []*domain.FHIRIdentifierInput{
+			{
+				Value: MFLCode,
+			},
+		},
+	}
+	orgID, err := testInteractor.GetORCreateOrganization(ctx, p)
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't get or create test organization : %v", err)
 	}
@@ -451,7 +458,7 @@ func getTestEpisodeOfCare(
 		*normalized,
 		fullAccess,
 		*orgID,
-		providerCode,
+		MFLCode,
 		*patient.ID,
 	)
 	epPayload, err := testInteractor.CreateEpisodeOfCare(ctx, ep)
@@ -465,10 +472,10 @@ func getTestEncounterID(
 	ctx context.Context,
 	msisdn string,
 	fullAccess bool,
-	providerCode string,
+	MFLCode string,
 ) (*domain.FHIREpisodeOfCare, *domain.FHIRPatient, string, error) {
 	episode, patient, err := getTestEpisodeOfCare(
-		ctx, msisdn, fullAccess, providerCode)
+		ctx, msisdn, fullAccess, MFLCode)
 	if err != nil {
 		return nil, nil, "", fmt.Errorf("can't create episode of care: %w", err)
 	}
@@ -749,7 +756,7 @@ func createTestCondition(
 
 func patientVisitSummary(ctx context.Context) (string, string, error) {
 	episode, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		return "", "", fmt.Errorf("error creating test encounter ID: %w", err)
 	}

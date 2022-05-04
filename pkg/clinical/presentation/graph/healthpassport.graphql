@@ -62,7 +62,7 @@ type EpisodeOfCarePayload {
 
 input OTPEpisodeCreationInput {
   patientID: String!
-  providerCode: String!
+  MFLCode: String!
   msisdn: String!
   otp: String!
   fullAccess: Boolean!
@@ -76,7 +76,7 @@ input OTPEpisodeUpgradeInput {
 
 input BreakGlassEpisodeCreationInput {
   patientID: String!
-  providerCode: String!
+  MFLCode: String!
   practitionerUID: String!
   providerPhone: String!
   otp: String!
@@ -198,7 +198,7 @@ extend type Query {
 
   openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
 
-  openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
+  openOrganizationEpisodes(MFLCode: String!): [FHIREpisodeOfCare!]!
 
   problemSummary(patientID: String!): [String!]!
 

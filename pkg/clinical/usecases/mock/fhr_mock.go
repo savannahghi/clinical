@@ -12,11 +12,11 @@ import (
 type FHIRMock struct {
 	CreateEpisodeOfCareFn          func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
 	CreateFHIRConditionFn          func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
-	OpenOrganizationEpisodesFn     func(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error)
-	GetORCreateOrganizationFn      func(ctx context.Context, providerSladeCode string) (*string, error)
-	GetOrganizationFn              func(ctx context.Context, providerSladeCode string) (*string, error)
+	OpenOrganizationEpisodesFn     func(ctx context.Context, MFLCode string) ([]*domain.FHIREpisodeOfCare, error)
+	GetORCreateOrganizationFn      func(ctx context.Context, MFLCode string) (*string, error)
+	GetOrganizationFn              func(ctx context.Context, MFLCode string) (*string, error)
 	CreateFHIROrganizationFn       func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
-	CreateOrganizationFn           func(ctx context.Context, providerSladeCode string) (*string, error)
+	CreateOrganizationFn           func(ctx context.Context, MFLCode string) (*string, error)
 	SearchFHIROrganizationFn       func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error)
 	POSTRequestFn                  func(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
 	SearchEpisodesByParamFn        func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error)
@@ -68,21 +68,21 @@ func NewFHIRMock() *FHIRMock {
 		CreateFHIRConditionFn: func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
 			return &domain.FHIRConditionRelayPayload{}, nil
 		},
-		OpenOrganizationEpisodesFn: func(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
+		OpenOrganizationEpisodesFn: func(ctx context.Context, MFLCode string) ([]*domain.FHIREpisodeOfCare, error) {
 			return []*domain.FHIREpisodeOfCare{}, nil
 		},
-		GetORCreateOrganizationFn: func(ctx context.Context, providerSladeCode string) (*string, error) {
+		GetORCreateOrganizationFn: func(ctx context.Context, MFLCode string) (*string, error) {
 			org := "test-organization"
 			return &org, nil
 		},
-		GetOrganizationFn: func(ctx context.Context, providerSladeCode string) (*string, error) {
+		GetOrganizationFn: func(ctx context.Context, MFLCode string) (*string, error) {
 			org := "test-organization"
 			return &org, nil
 		},
 		CreateFHIROrganizationFn: func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
 			return &domain.FHIROrganizationRelayPayload{}, nil
 		},
-		CreateOrganizationFn: func(ctx context.Context, providerSladeCode string) (*string, error) {
+		CreateOrganizationFn: func(ctx context.Context, MFLCode string) (*string, error) {
 			org := "test-organization"
 			return &org, nil
 		},
@@ -220,18 +220,18 @@ func (fh *FHIRMock) CreateFHIRCondition(ctx context.Context, input domain.FHIRCo
 }
 
 // OpenOrganizationEpisodes is a mock implementation of OpenOrganizationEpisodes method
-func (fh *FHIRMock) OpenOrganizationEpisodes(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
-	return fh.OpenOrganizationEpisodesFn(ctx, providerSladeCode)
+func (fh *FHIRMock) OpenOrganizationEpisodes(ctx context.Context, MFLCode string) ([]*domain.FHIREpisodeOfCare, error) {
+	return fh.OpenOrganizationEpisodesFn(ctx, MFLCode)
 }
 
 // GetORCreateOrganization is a mock implementation of GetORCreateOrganization method
-func (fh *FHIRMock) GetORCreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	return fh.GetORCreateOrganizationFn(ctx, providerSladeCode)
+func (fh *FHIRMock) GetORCreateOrganization(ctx context.Context, MFLCode string) (*string, error) {
+	return fh.GetORCreateOrganizationFn(ctx, MFLCode)
 }
 
 // GetOrganization is a mock implementation of GetOrganization method
-func (fh *FHIRMock) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	return fh.GetOrganizationFn(ctx, providerSladeCode)
+func (fh *FHIRMock) GetOrganization(ctx context.Context, MFLCode string) (*string, error) {
+	return fh.GetOrganizationFn(ctx, MFLCode)
 }
 
 // CreateFHIROrganization is a mock implementation of CreateFHIROrganization method
@@ -240,8 +240,8 @@ func (fh *FHIRMock) CreateFHIROrganization(ctx context.Context, input domain.FHI
 }
 
 // CreateOrganization is a mock implementation of CreateOrganization method
-func (fh *FHIRMock) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	return fh.CreateOrganizationFn(ctx, providerSladeCode)
+func (fh *FHIRMock) CreateOrganization(ctx context.Context, MFLCode string) (*string, error) {
+	return fh.CreateOrganizationFn(ctx, MFLCode)
 }
 
 // SearchFHIROrganization is a mock implementation of SearchFHIROrganization method

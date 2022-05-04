@@ -1117,7 +1117,14 @@ func (c *UseCasesClinicalImpl) StartEpisodeByBreakGlass(
 			log.Printf("failed to send alert message to admin during StartEpisodeByBreakGlass login: %s", err)
 		}
 	}
-	organizationID, err := c.fhirUsecase.GetORCreateOrganization(ctx, input.ProviderCode)
+	p := domain.FHIROrganizationInput{
+		Identifier: []*domain.FHIRIdentifierInput{
+			{
+				Value: input.MFLCode,
+			},
+		},
+	}
+	organizationID, err := c.fhirUsecase.GetORCreateOrganization(ctx, p)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -1127,7 +1134,7 @@ func (c *UseCasesClinicalImpl) StartEpisodeByBreakGlass(
 		*normalized,
 		input.FullAccess,
 		*organizationID,
-		input.ProviderCode,
+		input.MFLCode,
 		input.PatientID,
 	)
 	return c.infrastructure.FHIR.CreateEpisodeOfCare(ctx, ep)
