@@ -1,6 +1,7 @@
 package pubsubmessaging
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -15,6 +16,12 @@ import (
 	"github.com/savannahghi/errorcodeutil"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
+)
+
+var (
+	fhirAllergyIntoleranceClinicalStatusURL     = "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical"
+	fhirAllergyIntoleranceVerificationStatusURL = "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification"
+	unknownConceptID                            = "1067"
 )
 
 // ReceivePubSubPushMessages receives and processes a pubsub message
@@ -227,7 +234,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		if data.OrganizationID != "" {
 			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID)
 			if err != nil {
-				//Should not fail incase the organization is not found
+				//Should not fail if organization is not found
 				log.Printf("the error is: %v", err)
 			}
 
@@ -262,25 +269,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		var patientName string
-		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-		patientName = *patient.PatientRecord.Name[0].Given[0]
-
-		response, err := ps.ocl.GetConcept(
-			ctx,
-			"CIEL",
-			"CIEL",
-			*data.ConceptID,
-			false,
-			false,
-		)
+		input, err := ps.ComposeAllergyIntoleranceInput(ctx, data)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -289,63 +278,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		var ConceptPayload domain.Concept
-		err = mapstructure.Decode(response, &ConceptPayload)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-
-		allergyType := domain.AllergyIntoleranceTypeEnumAllergy
-		allergyCategory := domain.AllergyIntoleranceCategoryEnumMedication
-		year, month, day := data.Date.Date()
-		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
-		severity := data.Severity.Name
-		input := domain.FHIRAllergyIntoleranceInput{
-			Type: &allergyType,
-			RecordedDate: &scalarutils.Date{
-				Year:  year,
-				Month: int(month),
-				Day:   day,
-			},
-			Category: []*domain.AllergyIntoleranceCategoryEnum{&allergyCategory},
-			ClinicalStatus: domain.FHIRCodeableConceptInput{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&ConceptPayload.URL),
-						Code:    scalarutils.Code(ConceptPayload.ID),
-						Display: ConceptPayload.DisplayName,
-					},
-				},
-				Text: ConceptPayload.DisplayName,
-			},
-			VerificationStatus: domain.FHIRCodeableConceptInput{},
-			Patient: &domain.FHIRReferenceInput{
-				Reference: &subjectReference,
-				Display:   patientName,
-			},
-			Reaction: []*domain.FHIRAllergyintoleranceReactionInput{
-				{
-					Substance: &domain.FHIRCodeableConceptInput{
-						Coding: []*domain.FHIRCodingInput{
-							{
-								System:  (*scalarutils.URI)(&ConceptPayload.URL),
-								Code:    scalarutils.Code(ConceptPayload.ID),
-								Display: ConceptPayload.DisplayName,
-							},
-						},
-						Text: ConceptPayload.DisplayName,
-					},
-					Description: &data.Name,
-					Severity:    (*domain.AllergyIntoleranceReactionSeverityEnum)(&severity),
-				},
-			},
-		}
-
-		_, err = ps.fhir.CreateFHIRAllergyIntolerance(ctx, input)
+		_, err = ps.fhir.CreateFHIRAllergyIntolerance(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -465,9 +398,9 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		}
 
 		if data.OrganizationID != "" {
-			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization resposne
+			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization response
 			if err != nil {
-				//Should not fail incase the organization is not found
+				//Should not fail if the organization is not found
 				log.Printf("the error is: %v", err)
 			}
 			if organization != nil {
@@ -576,9 +509,9 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		}
 
 		if data.OrganizationID != "" {
-			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization resposne
+			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization response
 			if err != nil {
-				//Should not fail incase the organization is not found
+				//Should not fail if the organization is not found
 				log.Printf("the error is: %v", err)
 			}
 			if organization != nil {
@@ -613,4 +546,145 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		return
 	}
 	_, _ = w.Write(returnedResponse)
+}
+
+// ComposeAllergyIntoleranceInput composes an allergy intolerance input from the data received
+func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Context, input dto.CreatePatientAllergyPubSubMessage) (*domain.FHIRAllergyIntoleranceInput, error) {
+	allergyType := domain.AllergyIntoleranceTypeEnumAllergy
+	allergyCategory := domain.AllergyIntoleranceCategoryEnumMedication
+	allergy := &domain.FHIRAllergyIntoleranceInput{
+		Type:     &allergyType,
+		Category: []*domain.AllergyIntoleranceCategoryEnum{&allergyCategory},
+		ClinicalStatus: domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&fhirAllergyIntoleranceClinicalStatusURL),
+					Code:    scalarutils.Code("active"),
+					Display: "Active",
+				},
+			},
+			Text: "Active",
+		},
+		VerificationStatus: domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&fhirAllergyIntoleranceVerificationStatusURL),
+					Code:    scalarutils.Code("confirmed"),
+					Display: "Confirmed",
+				},
+			},
+			Text: "Confirmed",
+		},
+	}
+
+	year, month, day := input.Date.Date()
+	allergy.RecordedDate = &scalarutils.Date{
+		Year:  year,
+		Month: int(month),
+		Day:   day,
+	}
+
+	var patientName string
+	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	if err != nil {
+		return nil, err
+	}
+	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
+	patientName = *patient.PatientRecord.Name[0].Given[0]
+
+	allergy.Patient = &domain.FHIRReferenceInput{
+		Reference: &subjectReference,
+		Display:   patientName,
+	}
+
+	conceptHelper := func(ctx context.Context, conceptID string) (*domain.Concept, error) {
+		response, err := ps.ocl.GetConcept(
+			ctx,
+			"CIEL",
+			"CIEL",
+			conceptID,
+			false,
+			false,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		var concept *domain.Concept
+		err = mapstructure.Decode(response, concept)
+		if err != nil {
+			return nil, err
+		}
+
+		return concept, nil
+	}
+
+	AllergenConcept, err := conceptHelper(ctx, *input.ConceptID)
+	if err != nil {
+		return nil, err
+	}
+
+	allergy.Code = domain.FHIRCodeableConceptInput{
+		Coding: []*domain.FHIRCodingInput{
+			{
+				System:  (*scalarutils.URI)(&AllergenConcept.URL),
+				Code:    scalarutils.Code(AllergenConcept.ID),
+				Display: AllergenConcept.DisplayName,
+			},
+		},
+		Text: AllergenConcept.DisplayName,
+	}
+
+	UnknownConcept, err := conceptHelper(ctx, unknownConceptID)
+	if err != nil {
+		return nil, err
+	}
+
+	if input.Severity.ConceptID != nil {
+		SeverityConcept, err := conceptHelper(ctx, *input.Severity.ConceptID)
+		if err != nil {
+			return nil, err
+		}
+
+		allergy.Reaction = []*domain.FHIRAllergyintoleranceReactionInput{
+			{
+				Description: &SeverityConcept.DisplayName,
+			},
+		}
+	}
+
+	if input.Reaction.ConceptID != nil {
+		ReactionConcept, err := conceptHelper(ctx, *input.Reaction.ConceptID)
+		if err != nil {
+			return nil, err
+		}
+
+		allergy.Reaction[0].Manifestation = []*domain.FHIRCodeableConceptInput{
+			{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&ReactionConcept.URL),
+						Code:    scalarutils.Code(ReactionConcept.ID),
+						Display: ReactionConcept.DisplayName,
+					},
+				},
+				Text: ReactionConcept.DisplayName,
+			},
+		}
+	} else {
+		allergy.Reaction[0].Manifestation = []*domain.FHIRCodeableConceptInput{
+			{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&UnknownConcept.URL),
+						Code:    scalarutils.Code(UnknownConcept.ID),
+						Display: UnknownConcept.DisplayName,
+					},
+				},
+				Text: UnknownConcept.DisplayName,
+			},
+		}
+	}
+
+	return allergy, nil
 }
