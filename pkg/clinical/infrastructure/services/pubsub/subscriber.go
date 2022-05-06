@@ -330,7 +330,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			Reaction: []*domain.FHIRAllergyintoleranceReactionInput{
 				{
 					Substance: &domain.FHIRCodeableConceptInput{
-						// TODO: Change this to the reaction coding
 						Coding: []*domain.FHIRCodingInput{
 							{
 								System:  (*scalarutils.URI)(&ConceptPayload.URL),
@@ -340,40 +339,10 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 						},
 						Text: ConceptPayload.DisplayName,
 					},
-					Manifestation: []*domain.FHIRCodeableConceptInput{
-						{
-							Coding: []*domain.FHIRCodingInput{
-								{
-									System:  (*scalarutils.URI)(&ConceptPayload.URL),
-									Code:    "512",
-									Display: "Rash",
-								},
-							},
-							Text: "Rash",
-						},
-					},
 					Description: &data.Name,
 					Severity:    (*domain.AllergyIntoleranceReactionSeverityEnum)(&severity),
 				},
 			},
-		}
-
-		if data.OrganizationID != "" {
-			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization resposne
-			if err != nil {
-				//Should not fail incase the organization is not found
-				log.Printf("the error is: %v", err)
-			}
-			if organization != nil {
-				recorderReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
-
-				referenceInput := &domain.FHIRReferenceInput{
-					Reference: &recorderReference,
-					Display:   *organization.Resource.Name,
-				}
-
-				input.Recorder = referenceInput
-			}
 		}
 
 		_, err = ps.fhir.CreateFHIRAllergyIntolerance(ctx, input)
