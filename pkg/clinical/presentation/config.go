@@ -26,6 +26,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -150,6 +151,13 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	r.Path("/delete_patient").
 		Methods(http.MethodPost).
 		HandlerFunc(h.DeleteFHIRPatientByPhone())
+
+	// ISC routes. These are inter service route
+	isc := r.PathPrefix("/internal").Subrouter()
+	isc.Use(interserviceclient.InterServiceAuthenticationMiddleware())
+	isc.Path("/delete-patient").Methods(
+		http.MethodDelete,
+	).HandlerFunc(h.DeleteFHIRPatientByPhone())
 
 	//Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
