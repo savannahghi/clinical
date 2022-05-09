@@ -611,7 +611,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 		}
 
 		var concept *domain.Concept
-		err = mapstructure.Decode(response, concept)
+		err = mapstructure.Decode(response, &concept)
 		if err != nil {
 			return nil, err
 		}
@@ -640,50 +640,61 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 		return nil, err
 	}
 
-	if input.Severity.ConceptID != nil {
-		SeverityConcept, err := conceptHelper(ctx, *input.Severity.ConceptID)
-		if err != nil {
-			return nil, err
-		}
-
-		allergy.Reaction = []*domain.FHIRAllergyintoleranceReactionInput{
-			{
-				Description: &SeverityConcept.DisplayName,
-			},
-		}
-	}
-
 	if input.Reaction.ConceptID != nil {
 		ReactionConcept, err := conceptHelper(ctx, *input.Reaction.ConceptID)
 		if err != nil {
 			return nil, err
 		}
 
-		allergy.Reaction[0].Manifestation = []*domain.FHIRCodeableConceptInput{
-			{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&ReactionConcept.URL),
-						Code:    scalarutils.Code(ReactionConcept.ID),
-						Display: ReactionConcept.DisplayName,
-					},
+		codelabConcept := &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&ReactionConcept.URL),
+					Code:    scalarutils.Code(ReactionConcept.ID),
+					Display: ReactionConcept.DisplayName,
 				},
-				Text: ReactionConcept.DisplayName,
 			},
+			Text: ReactionConcept.DisplayName,
 		}
+
+		reaction := &domain.FHIRAllergyintoleranceReactionInput{}
+		reaction.Manifestation = append(reaction.Manifestation, codelabConcept)
+
+		if input.Severity.ConceptID != nil {
+			SeverityConcept, err := conceptHelper(ctx, *input.Severity.ConceptID)
+			if err != nil {
+				return nil, err
+			}
+
+			reaction.Description = &SeverityConcept.DisplayName
+		}
+
+		allergy.Reaction = append(allergy.Reaction, reaction)
+
 	} else {
-		allergy.Reaction[0].Manifestation = []*domain.FHIRCodeableConceptInput{
-			{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&UnknownConcept.URL),
-						Code:    scalarutils.Code(UnknownConcept.ID),
-						Display: UnknownConcept.DisplayName,
-					},
+		codelabConcept := &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&UnknownConcept.URL),
+					Code:    scalarutils.Code(UnknownConcept.ID),
+					Display: UnknownConcept.DisplayName,
 				},
-				Text: UnknownConcept.DisplayName,
 			},
+			Text: UnknownConcept.DisplayName,
 		}
+
+		reaction := &domain.FHIRAllergyintoleranceReactionInput{}
+		reaction.Manifestation = append(reaction.Manifestation, codelabConcept)
+		if input.Severity.ConceptID != nil {
+			SeverityConcept, err := conceptHelper(ctx, *input.Severity.ConceptID)
+			if err != nil {
+				return nil, err
+			}
+
+			reaction.Description = &SeverityConcept.DisplayName
+		}
+
+		allergy.Reaction = append(allergy.Reaction, reaction)
 	}
 
 	return allergy, nil
