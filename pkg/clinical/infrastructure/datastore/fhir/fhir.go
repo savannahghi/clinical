@@ -1595,6 +1595,9 @@ func (fh *StoreImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, er
 	// This list stores the patient ResourceType and ResourceID
 	patient := []map[string]string{}
 
+	// This list stores all the observations resource types
+	observations := []map[string]string{}
+
 	medicationRequests := []map[string]string{}
 
 	for _, en := range entries {
@@ -1650,6 +1653,13 @@ func (fh *StoreImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, er
 			)
 			continue
 
+		case "Observation":
+			observations = append(
+				observations,
+				resourceTypeIDMap,
+			)
+			continue
+
 		case "MedicationRequest":
 			medicationRequests = append(
 				medicationRequests,
@@ -1681,6 +1691,10 @@ func (fh *StoreImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, er
 	// Thirdly, delete the episodes of care. This will bring no conflict
 	// as it ensures the any Encounter that refers to the EpisodeOfCare is not found
 	if err = fh.DeleteFHIRResourceType(episodesOfCare); err != nil {
+		return false, err
+	}
+
+	if err = fh.DeleteFHIRResourceType(observations); err != nil {
 		return false, err
 	}
 
