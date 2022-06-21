@@ -13,6 +13,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/errorcodeutil"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
@@ -158,25 +159,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		var patientName string
-		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-		patientName = *patient.PatientRecord.Name[0].Given[0]
-
-		response, err := ps.ocl.GetConcept(
-			ctx,
-			"CIEL",
-			"CIEL",
-			*data.ConceptID,
-			false,
-			false,
-		)
+		input, err := ps.ComposeVitalsInput(ctx, data)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -185,71 +168,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		var ConceptPayload domain.Concept
-		err = mapstructure.Decode(response, &ConceptPayload)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-
-		system := "http://terminology.hl7.org/CodeSystem/observation-category"
-		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
-		status := domain.ObservationStatusEnumPreliminary
-		instant := scalarutils.Instant(data.Date.Format(time.RFC3339))
-		input := domain.FHIRObservationInput{
-			Status: &status,
-			Category: []*domain.FHIRCodeableConceptInput{
-				{
-					Coding: []*domain.FHIRCodingInput{
-						{
-							System:  (*scalarutils.URI)(&system),
-							Code:    "vital-signs",
-							Display: "Vital Signs",
-						},
-					},
-					Text: "Vital Signs",
-				},
-			},
-			EffectiveInstant: &instant,
-			Code: domain.FHIRCodeableConceptInput{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&ConceptPayload.URL),
-						Code:    scalarutils.Code(ConceptPayload.ID),
-						Display: ConceptPayload.DisplayName,
-					},
-				},
-				Text: ConceptPayload.DisplayName,
-			},
-			ValueString: &data.Value,
-			Subject: &domain.FHIRReferenceInput{
-				Reference: &subjectReference,
-				Display:   patientName,
-			},
-		}
-
-		if data.OrganizationID != "" {
-			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID)
-			if err != nil {
-				//Should not fail if organization is not found
-				log.Printf("the error is: %v", err)
-			}
-
-			if organization != nil {
-				performerReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
-				referenceInput := &domain.FHIRReferenceInput{
-					Reference: &performerReference,
-					Display:   *organization.Resource.Name,
-				}
-
-				input.Performer = append(input.Performer, referenceInput)
-			}
-		}
-
-		_, err = ps.fhir.CreateFHIRObservation(ctx, input)
+		_, err = ps.fhir.CreateFHIRObservation(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -298,25 +217,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		var patientName string
-		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-		patientName = *patient.PatientRecord.Name[0].Given[0]
-
-		resp, err := ps.ocl.GetConcept(
-			ctx,
-			"CIEL",
-			"CIEL",
-			*data.ConceptID,
-			false,
-			false,
-		)
+		input, err := ps.ComposeMedicationStatementInput(ctx, data)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -325,97 +226,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		response, err := ps.ocl.GetConcept(
-			ctx,
-			"CIEL",
-			"CIEL",
-			*data.Drug.ConceptID,
-			false,
-			false,
-		)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-
-		var StatementConceptPayload domain.Concept
-		err = mapstructure.Decode(resp, &StatementConceptPayload)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-
-		var DrugConceptPayload domain.Concept
-		err = mapstructure.Decode(response, &DrugConceptPayload)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-
-		year, month, day := data.Date.Date()
-		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
-		status := domain.MedicationStatementStatusEnumUnknown
-		msInput := domain.FHIRMedicationStatementInput{
-			Status: &status,
-			Category: &domain.FHIRCodeableConceptInput{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&StatementConceptPayload.URL),
-						Code:    scalarutils.Code(StatementConceptPayload.ID),
-						Display: StatementConceptPayload.DisplayName,
-					},
-				},
-				Text: StatementConceptPayload.DisplayName,
-			},
-			MedicationCodeableConcept: &domain.FHIRCodeableConceptInput{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&DrugConceptPayload.URL),
-						Code:    scalarutils.Code(DrugConceptPayload.ID),
-						Display: DrugConceptPayload.DisplayName,
-					},
-				},
-				Text: DrugConceptPayload.DisplayName,
-			},
-			Subject: &domain.FHIRReferenceInput{
-				Reference: &subjectReference,
-				Display:   patientName,
-			},
-			EffectiveDateTime: &scalarutils.Date{
-				Year:  year,
-				Month: int(month),
-				Day:   day,
-			},
-		}
-
-		if data.OrganizationID != "" {
-			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization response
-			if err != nil {
-				//Should not fail if the organization is not found
-				log.Printf("the error is: %v", err)
-			}
-			if organization != nil {
-				informationSourceReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
-
-				referenceInput := &domain.FHIRReferenceInput{
-					Reference: &informationSourceReference,
-					Display:   *organization.Resource.Name,
-				}
-
-				msInput.InformationSource = referenceInput
-			}
-		}
-
-		_, err = ps.fhir.CreateFHIRMedicationStatement(ctx, msInput)
+		_, err = ps.fhir.CreateFHIRMedicationStatement(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -435,25 +246,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		var patientName string
-		patient, err := ps.patient.FindPatientByID(ctx, data.PatientID)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-		patientName = *patient.PatientRecord.Name[0].Given[0]
-
-		response, err := ps.ocl.GetConcept(
-			ctx,
-			"CIEL",
-			"CIEL",
-			*data.ConceptID,
-			false,
-			false,
-		)
+		input, err := ps.ComposeTestResultInput(ctx, data)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -462,71 +255,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		var ConceptPayload domain.Concept
-		err = mapstructure.Decode(response, &ConceptPayload)
-		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
-				Err:     err,
-				Message: err.Error(),
-			}, http.StatusBadRequest)
-			return
-		}
-
-		system := "http://terminology.hl7.org/CodeSystem/observation-category"
-		subjectReference := fmt.Sprintf("Patient/%v", data.PatientID)
-		status := domain.ObservationStatusEnumPreliminary
-		instant := scalarutils.Instant(data.Date.Format(time.RFC3339))
-		input := domain.FHIRObservationInput{
-			Status: &status,
-			Category: []*domain.FHIRCodeableConceptInput{
-				{
-					Coding: []*domain.FHIRCodingInput{
-						{
-							System:  (*scalarutils.URI)(&system),
-							Code:    "laboratory",
-							Display: "Laboratory",
-						},
-					},
-					Text: "Laboratory",
-				},
-			},
-			Code: domain.FHIRCodeableConceptInput{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&ConceptPayload.URL),
-						Code:    scalarutils.Code(ConceptPayload.ID),
-						Display: ConceptPayload.DisplayName,
-					},
-				},
-				Text: ConceptPayload.DisplayName,
-			},
-			ValueString:      &data.Result.Name,
-			EffectiveInstant: &instant,
-			Subject: &domain.FHIRReferenceInput{
-				Reference: &subjectReference,
-				Display:   patientName,
-			},
-		}
-
-		if data.OrganizationID != "" {
-			organization, err := ps.fhir.FindOrganizationByID(ctx, data.OrganizationID) // rename organization response
-			if err != nil {
-				//Should not fail if the organization is not found
-				log.Printf("the error is: %v", err)
-			}
-			if organization != nil {
-				performerReference := fmt.Sprintf("Organization/%v", data.OrganizationID)
-
-				referenceInput := &domain.FHIRReferenceInput{
-					Reference: &performerReference,
-					Display:   *organization.Resource.Name,
-				}
-
-				input.Performer = append(input.Performer, referenceInput)
-			}
-		}
-
-		_, err = ps.fhir.CreateFHIRObservation(ctx, input)
+		_, err = ps.fhir.CreateFHIRObservation(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -546,6 +275,222 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		return
 	}
 	_, _ = w.Write(returnedResponse)
+}
+
+// ComposeTestResultInput composes a test result input from data received
+func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, input dto.CreatePatientTestResultPubSubMessage) (*domain.FHIRObservationInput, error) {
+	var patientName string
+	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	if err != nil {
+		return nil, err
+	}
+	patientName = *patient.PatientRecord.Name[0].Given[0]
+
+	observationConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
+	if err != nil {
+		return nil, err
+	}
+
+	system := "http://terminology.hl7.org/CodeSystem/observation-category"
+	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
+	status := domain.ObservationStatusEnumPreliminary
+	instant := scalarutils.Instant(input.Date.Format(time.RFC3339))
+
+	observation := domain.FHIRObservationInput{
+		Status: &status,
+		Category: []*domain.FHIRCodeableConceptInput{
+			{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&system),
+						Code:    "laboratory",
+						Display: "Laboratory",
+					},
+				},
+				Text: "Laboratory",
+			},
+		},
+		Code: domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&observationConcept.URL),
+					Code:    scalarutils.Code(observationConcept.ID),
+					Display: observationConcept.DisplayName,
+				},
+			},
+			Text: observationConcept.DisplayName,
+		},
+		ValueString:      &input.Result.Name,
+		EffectiveInstant: &instant,
+		Subject: &domain.FHIRReferenceInput{
+			Reference: &subjectReference,
+			Display:   patientName,
+		},
+	}
+
+	if input.OrganizationID != "" {
+		organization, err := ps.fhir.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		if err != nil {
+			//Should not fail if the organization is not found
+			log.Printf("the error is: %v", err)
+		}
+		if organization != nil {
+			performer := fmt.Sprintf("Organization/%v", input.OrganizationID)
+
+			referenceInput := &domain.FHIRReferenceInput{
+				Reference: &performer,
+				Display:   *organization.Resource.Name,
+			}
+
+			observation.Performer = append(observation.Performer, referenceInput)
+		}
+	}
+
+	return &observation, nil
+}
+
+// ComposeVitalsInput composes a vitals observation from data received
+func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input dto.CreateVitalSignPubSubMessage) (*domain.FHIRObservationInput, error) {
+	vitalsConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
+	if err != nil {
+		return nil, err
+	}
+
+	system := "http://terminology.hl7.org/CodeSystem/observation-category"
+	status := domain.ObservationStatusEnumPreliminary
+	instant := scalarutils.Instant(input.Date.Format(time.RFC3339))
+	observation := domain.FHIRObservationInput{
+		Status: &status,
+		Category: []*domain.FHIRCodeableConceptInput{
+			{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&system),
+						Code:    "vital-signs",
+						Display: "Vital Signs",
+					},
+				},
+				Text: "Vital Signs",
+			},
+		},
+		EffectiveInstant: &instant,
+		Code: domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&vitalsConcept.URL),
+					Code:    scalarutils.Code(vitalsConcept.ID),
+					Display: vitalsConcept.DisplayName,
+				},
+			},
+			Text: vitalsConcept.DisplayName,
+		},
+		ValueString: &input.Value,
+	}
+
+	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	if err != nil {
+		return nil, err
+	}
+	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
+	patientName := *patient.PatientRecord.Name[0].Given[0]
+	observation.Subject = &domain.FHIRReferenceInput{
+		Reference: &patientReference,
+		Display:   patientName,
+	}
+
+	if input.OrganizationID != "" {
+		organization, err := ps.fhir.FindOrganizationByID(ctx, input.OrganizationID)
+		if err != nil {
+			//Should not fail if organization is not found
+			log.Printf("the error is: %v", err)
+		}
+
+		if organization != nil {
+			performerReference := fmt.Sprintf("Organization/%v", input.OrganizationID)
+			referenceInput := &domain.FHIRReferenceInput{
+				Reference: &performerReference,
+				Display:   *organization.Resource.Name,
+			}
+
+			observation.Performer = append(observation.Performer, referenceInput)
+		}
+	}
+
+	return &observation, nil
+}
+
+// ComposeMedicationStatementInput composes a medication statement input from received data
+func (ps ServicePubSubMessaging) ComposeMedicationStatementInput(ctx context.Context, input dto.CreateMedicationPubSubMessage) (*domain.FHIRMedicationStatementInput, error) {
+	medicationConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
+	if err != nil {
+		return nil, err
+	}
+
+	drugConcept, err := getCIELConcept(ctx, ps.ocl, *input.Drug.ConceptID)
+	if err != nil {
+		return nil, err
+	}
+
+	year, month, day := input.Date.Date()
+	status := domain.MedicationStatementStatusEnumUnknown
+	medicationStatement := domain.FHIRMedicationStatementInput{
+		Status: &status,
+		Category: &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&medicationConcept.URL),
+					Code:    scalarutils.Code(medicationConcept.ID),
+					Display: medicationConcept.DisplayName,
+				},
+			},
+			Text: medicationConcept.DisplayName,
+		},
+		MedicationCodeableConcept: &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&drugConcept.URL),
+					Code:    scalarutils.Code(drugConcept.ID),
+					Display: drugConcept.DisplayName,
+				},
+			},
+			Text: drugConcept.DisplayName,
+		},
+		EffectiveDateTime: &scalarutils.Date{
+			Year:  year,
+			Month: int(month),
+			Day:   day,
+		},
+	}
+
+	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	if err != nil {
+		return nil, err
+	}
+	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
+	patientName := *patient.PatientRecord.Name[0].Given[0]
+	medicationStatement.Subject = &domain.FHIRReferenceInput{
+		Reference: &patientReference,
+		Display:   patientName,
+	}
+
+	if input.OrganizationID != "" {
+		organization, err := ps.fhir.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		if err != nil {
+			log.Printf("the error is: %v", err)
+		}
+		if organization != nil {
+			informationSourceReference := fmt.Sprintf("Organization/%v", input.OrganizationID)
+
+			reference := &domain.FHIRReferenceInput{
+				Reference: &informationSourceReference,
+				Display:   *organization.Resource.Name,
+			}
+
+			medicationStatement.InformationSource = reference
+		}
+	}
+
+	return &medicationStatement, nil
 }
 
 // ComposeAllergyIntoleranceInput composes an allergy intolerance input from the data received
@@ -575,6 +520,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 			},
 			Text: "Confirmed",
 		},
+		Reaction: []*domain.FHIRAllergyintoleranceReactionInput{},
 	}
 
 	year, month, day := input.Date.Date()
@@ -584,42 +530,19 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 		Day:   day,
 	}
 
-	var patientName string
 	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
 	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
-	patientName = *patient.PatientRecord.Name[0].Given[0]
+	patientName := *patient.PatientRecord.Name[0].Given[0]
 
 	allergy.Patient = &domain.FHIRReferenceInput{
 		Reference: &subjectReference,
 		Display:   patientName,
 	}
 
-	conceptHelper := func(ctx context.Context, conceptID string) (*domain.Concept, error) {
-		response, err := ps.ocl.GetConcept(
-			ctx,
-			"CIEL",
-			"CIEL",
-			conceptID,
-			false,
-			false,
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		var concept *domain.Concept
-		err = mapstructure.Decode(response, &concept)
-		if err != nil {
-			return nil, err
-		}
-
-		return concept, nil
-	}
-
-	AllergenConcept, err := conceptHelper(ctx, *input.ConceptID)
+	allergenConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -627,75 +550,83 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 	allergy.Code = domain.FHIRCodeableConceptInput{
 		Coding: []*domain.FHIRCodingInput{
 			{
-				System:  (*scalarutils.URI)(&AllergenConcept.URL),
-				Code:    scalarutils.Code(AllergenConcept.ID),
-				Display: AllergenConcept.DisplayName,
+				System:  (*scalarutils.URI)(&allergenConcept.URL),
+				Code:    scalarutils.Code(allergenConcept.ID),
+				Display: allergenConcept.DisplayName,
 			},
 		},
-		Text: AllergenConcept.DisplayName,
+		Text: allergenConcept.DisplayName,
 	}
 
-	UnknownConcept, err := conceptHelper(ctx, unknownConceptID)
-	if err != nil {
-		return nil, err
-	}
+	// create the allergy reaction
+	var reaction *domain.FHIRAllergyintoleranceReactionInput
 
+	// reaction manifestation is required
+	//
+	// check if there is a reaction manifestation,
+	// if no reaction use unknown
+	var manifestationConcept *domain.Concept
 	if input.Reaction.ConceptID != nil {
-		ReactionConcept, err := conceptHelper(ctx, *input.Reaction.ConceptID)
+		manifestationConcept, err = getCIELConcept(ctx, ps.ocl, *input.Reaction.ConceptID)
 		if err != nil {
 			return nil, err
 		}
 
-		codelabConcept := &domain.FHIRCodeableConceptInput{
-			Coding: []*domain.FHIRCodingInput{
-				{
-					System:  (*scalarutils.URI)(&ReactionConcept.URL),
-					Code:    scalarutils.Code(ReactionConcept.ID),
-					Display: ReactionConcept.DisplayName,
-				},
-			},
-			Text: ReactionConcept.DisplayName,
-		}
-
-		reaction := &domain.FHIRAllergyintoleranceReactionInput{}
-		reaction.Manifestation = append(reaction.Manifestation, codelabConcept)
-
-		if input.Severity.ConceptID != nil {
-			SeverityConcept, err := conceptHelper(ctx, *input.Severity.ConceptID)
-			if err != nil {
-				return nil, err
-			}
-
-			reaction.Description = &SeverityConcept.DisplayName
-		}
-
-		allergy.Reaction = append(allergy.Reaction, reaction)
-
 	} else {
-		codelabConcept := &domain.FHIRCodeableConceptInput{
-			Coding: []*domain.FHIRCodingInput{
-				{
-					System:  (*scalarutils.URI)(&UnknownConcept.URL),
-					Code:    scalarutils.Code(UnknownConcept.ID),
-					Display: UnknownConcept.DisplayName,
-				},
-			},
-			Text: UnknownConcept.DisplayName,
+		manifestationConcept, err = getCIELConcept(ctx, ps.ocl, unknownConceptID)
+		if err != nil {
+			return nil, err
 		}
 
-		reaction := &domain.FHIRAllergyintoleranceReactionInput{}
-		reaction.Manifestation = append(reaction.Manifestation, codelabConcept)
-		if input.Severity.ConceptID != nil {
-			SeverityConcept, err := conceptHelper(ctx, *input.Severity.ConceptID)
-			if err != nil {
-				return nil, err
-			}
-
-			reaction.Description = &SeverityConcept.DisplayName
-		}
-
-		allergy.Reaction = append(allergy.Reaction, reaction)
 	}
 
+	manifestation := &domain.FHIRCodeableConceptInput{
+		Coding: []*domain.FHIRCodingInput{
+			{
+				System:  (*scalarutils.URI)(&manifestationConcept.URL),
+				Code:    scalarutils.Code(manifestationConcept.ID),
+				Display: manifestationConcept.DisplayName,
+			},
+		},
+		Text: manifestationConcept.DisplayName,
+	}
+
+	// add reaction manifestation
+	reaction.Manifestation = append(reaction.Manifestation, manifestation)
+
+	if input.Severity.ConceptID != nil {
+		severityConcept, err := getCIELConcept(ctx, ps.ocl, *input.Severity.ConceptID)
+		if err != nil {
+			return nil, err
+		}
+
+		reaction.Description = &severityConcept.DisplayName
+	}
+
+	// add allergy reaction
+	allergy.Reaction = append(allergy.Reaction, reaction)
+
 	return allergy, nil
+}
+
+func getCIELConcept(ctx context.Context, ocl ocl.UseCasesOCL, conceptID string) (*domain.Concept, error) {
+	response, err := ocl.GetConcept(
+		ctx,
+		"CIEL",
+		"CIEL",
+		conceptID,
+		false,
+		false,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var concept *domain.Concept
+	err = mapstructure.Decode(response, &concept)
+	if err != nil {
+		return nil, err
+	}
+
+	return concept, nil
 }
