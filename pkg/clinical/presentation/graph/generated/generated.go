@@ -1035,7 +1035,7 @@ type ComplexityRoot struct {
 		GetPatient                    func(childComplexity int, id string) int
 		ListConcepts                  func(childComplexity int, org string, source string, verbose bool, q *string, sortAsc *string, sortDesc *string, conceptClass *string, dataType *string, locale *string, includeRetired *bool, includeMappings *bool, includeInverseMappings *bool) int
 		OpenEpisodes                  func(childComplexity int, patientReference string) int
-		OpenOrganizationEpisodes      func(childComplexity int, providerSladeCode string) int
+		OpenOrganizationEpisodes      func(childComplexity int, mFLCode string) int
 		PatientHealthTimeline         func(childComplexity int, input domain.HealthTimelineInput) int
 		PatientTimeline               func(childComplexity int, patientID string, count int) int
 		PatientTimelineWithCount      func(childComplexity int, episodeID string, count int) int
@@ -1096,7 +1096,7 @@ type QueryResolver interface {
 	FindPatients(ctx context.Context, search string) (*domain.PatientConnection, error)
 	GetPatient(ctx context.Context, id string) (*domain.PatientPayload, error)
 	OpenEpisodes(ctx context.Context, patientReference string) ([]*domain.FHIREpisodeOfCare, error)
-	OpenOrganizationEpisodes(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error)
+	OpenOrganizationEpisodes(ctx context.Context, mFLCode string) ([]*domain.FHIREpisodeOfCare, error)
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
 	VisitSummary(ctx context.Context, encounterID string) (map[string]interface{}, error)
 	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
@@ -6020,7 +6020,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.OpenOrganizationEpisodes(childComplexity, args["providerSladeCode"].(string)), true
+		return e.complexity.Query.OpenOrganizationEpisodes(childComplexity, args["MFLCode"].(string)), true
 
 	case "Query.patientHealthTimeline":
 		if e.complexity.Query.PatientHealthTimeline == nil {
@@ -6386,7 +6386,7 @@ type EpisodeOfCarePayload {
 
 input OTPEpisodeCreationInput {
   patientID: String!
-  providerCode: String!
+  MFLCode: String!
   msisdn: String!
   otp: String!
   fullAccess: Boolean!
@@ -6400,7 +6400,7 @@ input OTPEpisodeUpgradeInput {
 
 input BreakGlassEpisodeCreationInput {
   patientID: String!
-  providerCode: String!
+  MFLCode: String!
   practitionerUID: String!
   providerPhone: String!
   otp: String!
@@ -6522,7 +6522,7 @@ extend type Query {
 
   openEpisodes(patientReference: String!): [FHIREpisodeOfCare!]!
 
-  openOrganizationEpisodes(providerSladeCode: String!): [FHIREpisodeOfCare!]!
+  openOrganizationEpisodes(MFLCode: String!): [FHIREpisodeOfCare!]!
 
   problemSummary(patientID: String!): [String!]!
 
@@ -13480,14 +13480,14 @@ func (ec *executionContext) field_Query_openOrganizationEpisodes_args(ctx contex
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["providerSladeCode"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("providerSladeCode"))
+	if tmp, ok := rawArgs["MFLCode"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MFLCode"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["providerSladeCode"] = arg0
+	args["MFLCode"] = arg0
 	return args, nil
 }
 
@@ -35765,7 +35765,7 @@ func (ec *executionContext) _Query_openOrganizationEpisodes(ctx context.Context,
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().OpenOrganizationEpisodes(rctx, args["providerSladeCode"].(string))
+		return ec.resolvers.Query().OpenOrganizationEpisodes(rctx, args["MFLCode"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -37812,11 +37812,11 @@ func (ec *executionContext) unmarshalInputBreakGlassEpisodeCreationInput(ctx con
 			if err != nil {
 				return it, err
 			}
-		case "providerCode":
+		case "MFLCode":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("providerCode"))
-			it.ProviderCode, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MFLCode"))
+			it.MFLCode, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -43269,11 +43269,11 @@ func (ec *executionContext) unmarshalInputOTPEpisodeCreationInput(ctx context.Co
 			if err != nil {
 				return it, err
 			}
-		case "providerCode":
+		case "MFLCode":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("providerCode"))
-			it.ProviderCode, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MFLCode"))
+			it.MFLCode, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

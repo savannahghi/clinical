@@ -1058,11 +1058,11 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 					  }`,
 					"variables": map[string]interface{}{
 						"input": map[string]interface{}{
-							"patientID":    patientID,
-							"providerCode": testProviderCode,
-							"otp":          otp,
-							"msisdn":       msisdn,
-							"fullAccess":   false,
+							"patientID":  patientID,
+							"MFLCode":    MFLCode,
+							"otp":        otp,
+							"msisdn":     msisdn,
+							"fullAccess": false,
 						},
 					},
 				},
@@ -1193,7 +1193,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 	episode, _, err := getTestEpisodeOfCare(
 		ctx,
 		interserviceclient.TestUserPhoneNumber,
-		false, testProviderCode,
+		false, MFLCode,
 	)
 	if err != nil {
 		t.Errorf("can't create test episode: %v", err)
@@ -1357,7 +1357,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 	episode, _, err := getTestEpisodeOfCare(
 		ctx,
 		interserviceclient.TestUserPhoneNumber,
-		false, testProviderCode,
+		false, MFLCode,
 	)
 	if err != nil {
 		t.Errorf("can't create test episode: %v", err)
@@ -1506,7 +1506,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 		return
 	}
 	episode, _, _, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -1660,7 +1660,7 @@ func TestGraphQLEndEncounter(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -1792,7 +1792,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 	_, patient, err := getTestEpisodeOfCare(
 		ctx,
 		interserviceclient.TestUserPhoneNumber,
-		false, testProviderCode,
+		false, MFLCode,
 	)
 	if err != nil {
 		t.Errorf("can't create test episode: %v", err)
@@ -1968,7 +1968,7 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 	}
 
 	episode, _, _, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -2149,7 +2149,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 	_, _, err = getTestEpisodeOfCare(
 		ctx,
 		interserviceclient.TestUserPhoneNumber,
-		false, testProviderCode,
+		false, MFLCode,
 	)
 	if err != nil {
 		t.Errorf("can't create test episode: %v", err)
@@ -2183,8 +2183,8 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 			args: args{
 				query: map[string]interface{}{
 					"query": `
-					query openOrganizationEpisodes($providerSladeCode: String!) {
-						openOrganizationEpisodes(providerSladeCode: $providerSladeCode) {
+					query openOrganizationEpisodes($MFLCode: String!) {
+						openOrganizationEpisodes(MFLCode: $MFLCode) {
 						  ID
 						  Status
 						  Patient {
@@ -2197,7 +2197,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 					  }
 					`,
 					"variables": map[string]interface{}{
-						"providerSladeCode": testProviderCode,
+						"MFLCode": MFLCode,
 					},
 				},
 			},
@@ -3768,7 +3768,7 @@ func TestGraphQLProblemSummary(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -3956,7 +3956,7 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -4183,7 +4183,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -4453,7 +4453,7 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -4651,7 +4651,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 
 	// create a medication request
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -4932,7 +4932,7 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -5205,7 +5205,7 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -5436,7 +5436,7 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -5693,7 +5693,7 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -5905,7 +5905,7 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -6403,7 +6403,7 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -6629,7 +6629,7 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -6790,7 +6790,7 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("error creating test encounter ID: %v", err)
 		return
@@ -6997,7 +6997,7 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 
 	instantRecorded := time.Now().Format(instantFormat)
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("can't create test encounter: %v", err)
 		return
@@ -7222,7 +7222,7 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("can't create test encounter: %v", err)
 		return
@@ -7442,7 +7442,7 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -7660,7 +7660,7 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 	}
 
 	_, patient, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("can't create test encounter: %v", err)
 		return
@@ -7887,7 +7887,7 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -8078,7 +8078,7 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -8281,7 +8281,7 @@ func TestGraphQLAllergySummary(t *testing.T) {
 	}
 
 	_, _, encounterID, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, true, MFLCode)
 	if err != nil {
 		t.Errorf("unable to generate test encounter ID: %v", err)
 		return
@@ -8796,7 +8796,7 @@ func TestGraphQSearchFHIRMedicationStatement(t *testing.T) {
 	}
 
 	_, patient, _, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("can't create test encounter: %v", err)
 		return
@@ -8984,7 +8984,7 @@ func TestGraphQLPatientTimeline(t *testing.T) {
 	}
 
 	_, patient, _, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("can't create test encounter: %v", err)
 		return
@@ -9126,7 +9126,7 @@ func TestGraphQLPatientMedicalData(t *testing.T) {
 	}
 
 	_, patient, _, err := getTestEncounterID(
-		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
+		ctx, interserviceclient.TestUserPhoneNumber, false, MFLCode)
 	if err != nil {
 		t.Errorf("can't create test encounter: %v", err)
 		return

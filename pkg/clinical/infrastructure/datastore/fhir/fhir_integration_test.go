@@ -22,7 +22,7 @@ func TestFHIRImpl_Encounters(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant create test episode of care: %v", err)
@@ -77,7 +77,7 @@ func TestFHIRImpl_CreateEpisodeOfCare(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -196,7 +196,7 @@ func TestFHIRImpl_CreateFHIRCondition(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -279,7 +279,7 @@ func TestFHIRImpl_CreateFHIROrganization(t *testing.T) {
 	identifier := []*domain.FHIRIdentifierInput{
 		{
 			Use:   "official",
-			Value: testProviderCode,
+			Value: MFLCode,
 		},
 	}
 	OrgName := gofakeit.BeerName()
@@ -337,7 +337,7 @@ func TestFHIRImpl_SearchFHIROrganization(t *testing.T) {
 	identifier := []*domain.FHIRIdentifierInput{
 		{
 			Use:   "official",
-			Value: testProviderCode,
+			Value: MFLCode,
 		},
 	}
 
@@ -403,7 +403,7 @@ func TestFHIRImpl_FindOrganizationByID(t *testing.T) {
 	identifier := []*domain.FHIRIdentifierInput{
 		{
 			Use:   "official",
-			Value: testProviderCode,
+			Value: MFLCode,
 		},
 	}
 
@@ -491,7 +491,7 @@ func TestFHIRImpl_SearchEpisodesByParam(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -539,7 +539,7 @@ func TestFHIRImpl_OpenEpisodes(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -588,7 +588,7 @@ func TestFHIRImpl_HasOpenEpisode(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -647,7 +647,7 @@ func TestFHIRImpl_CreateFHIREncounter(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -720,7 +720,7 @@ func TestFHIRImpl_GetFHIREpisodeOfCare(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -776,7 +776,7 @@ func TestFHIRImpl_StartEncounter(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -840,7 +840,7 @@ func TestFHIRImpl_SearchEpisodeEncounter(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -897,7 +897,7 @@ func TestFHIRImpl_EndEncounter(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -965,7 +965,7 @@ func TestFHIRImpl_EndEpisode(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1028,7 +1028,7 @@ func TestFHIRImpl_GetActiveEpisode(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1132,7 +1132,7 @@ func TestFHIRImpl_CreateFHIRServiceRequest(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1240,7 +1240,7 @@ func TestFHIRImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1306,7 +1306,7 @@ func TestFHIRImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1422,7 +1422,7 @@ func TestFHIRImpl_CreateFHIRComposition(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1496,7 +1496,7 @@ func TestFHIRImpl_UpdateFHIRComposition(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1578,7 +1578,7 @@ func TestFHIRImpl_DeleteFHIRComposition(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1701,7 +1701,7 @@ func TestFHIRImpl_UpdateFHIRCondition(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1795,7 +1795,7 @@ func TestFHIRImpl_GetFHIREncounter(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -1961,7 +1961,7 @@ func TestFHIRImpl_CreateFHIRMedicationRequest(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -2046,7 +2046,7 @@ func TestFHIRImpl_UpdateFHIRMedicationRequest(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -2139,7 +2139,7 @@ func TestFHIRImpl_DeleteFHIRMedicationRequest(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -2232,7 +2232,7 @@ func TestFHIRImpl_SearchFHIRObservation(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -2300,7 +2300,7 @@ func TestFHIRImpl_CreateFHIRObservation(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -2365,7 +2365,7 @@ func TestFHIRImpl_DeleteFHIRObservation(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
@@ -2446,13 +2446,20 @@ func TestFHIRImpl_GetFHIRPatient(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)
 		return
 	}
-	_, err = u.GetORCreateOrganization(ctx, testProviderCode)
+	p := domain.FHIROrganizationInput{
+		Identifier: []*domain.FHIRIdentifierInput{
+			{
+				Value: MFLCode,
+			},
+		},
+	}
+	_, err = u.GetORCreateOrganization(ctx, p)
 	if err != nil {
 		log.Printf("can't get or create test organization : %v\n", err)
 	}
@@ -2569,7 +2576,7 @@ func TestFHIRImpl_DeleteFHIRServiceRequest(t *testing.T) {
 		ctx,
 		msisdn,
 		false,
-		testProviderCode,
+		MFLCode,
 	)
 	if err != nil {
 		t.Errorf("cant get test episode of care: %v\n", err)

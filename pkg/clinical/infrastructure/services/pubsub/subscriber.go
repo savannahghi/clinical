@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -116,10 +117,27 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		use := domain.ContactPointUseEnumWork
 		rank := int64(1)
 		phoneSystem := domain.ContactPointSystemEnumPhone
+
 		input := domain.FHIROrganizationInput{
 			ID:     data.ID,
 			Active: &data.Active,
 			Name:   &data.Name,
+			Identifier: []*domain.FHIRIdentifierInput{
+				{
+					Use:   "official",
+					Value: strconv.Itoa(data.Code),
+				},
+			},
+			Type: []*domain.FHIRCodeableConceptInput{
+				{
+					ID: new(string),
+					Coding: []*domain.FHIRCodingInput{
+						{
+							Display: "Healthcare Provider",
+						},
+					},
+				},
+			},
 			Telecom: []*domain.FHIRContactPointInput{
 				{
 					System: &phoneSystem,
@@ -131,7 +149,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			},
 		}
 
-		response, err := ps.fhir.CreateFHIROrganization(ctx, input)
+		response, err := ps.fhir.GetORCreateOrganization(ctx, input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -139,7 +157,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			}, http.StatusBadRequest)
 			return
 		}
-		err = ps.infra.MyCareHub.AddFHIRIDToFacility(ctx, *response.Resource.ID, *data.ID)
+		err = ps.infra.MyCareHub.AddFHIRIDToFacility(ctx, *response, *data.ID)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,

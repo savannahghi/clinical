@@ -197,10 +197,10 @@ func (r *queryResolver) OpenEpisodes(ctx context.Context, patientReference strin
 	return r.usecases.OpenEpisodes(ctx, patientReference)
 }
 
-func (r *queryResolver) OpenOrganizationEpisodes(ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
+func (r *queryResolver) OpenOrganizationEpisodes(ctx context.Context, mFLCode string) ([]*domain.FHIREpisodeOfCare, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
-	return r.usecases.OpenOrganizationEpisodes(ctx, providerSladeCode)
+	return r.usecases.OpenOrganizationEpisodes(ctx, mFLCode)
 }
 
 func (r *queryResolver) ProblemSummary(ctx context.Context, patientID string) ([]string, error) {

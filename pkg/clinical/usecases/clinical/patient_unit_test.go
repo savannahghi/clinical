@@ -687,7 +687,7 @@ func TestClinicalUseCaseImpl_CreatePatient_Unittest(t *testing.T) {
 // 				ctx: ctx,
 // 				input: domain.BreakGlassEpisodeCreationInput{
 // 					PatientID:       ksuid.New().String(),
-// 					ProviderCode:    ksuid.New().String(),
+// 					MFLCode:    ksuid.New().String(),
 // 					PractitionerUID: ksuid.New().String(),
 // 					ProviderPhone:   ksuid.New().String(),
 // 					Otp:             "000000",
@@ -704,7 +704,7 @@ func TestClinicalUseCaseImpl_CreatePatient_Unittest(t *testing.T) {
 // 				ctx: ctx,
 // 				input: domain.BreakGlassEpisodeCreationInput{
 // 					PatientID:       "",
-// 					ProviderCode:    ksuid.New().String(),
+// 					MFLCode:    ksuid.New().String(),
 // 					PractitionerUID: ksuid.New().String(),
 // 					ProviderPhone:   ksuid.New().String(),
 // 					Otp:             "000000",

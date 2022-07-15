@@ -44,7 +44,7 @@ const (
 
 // ComposeOneHealthEpisodeOfCare is used to create an episode of care
 func ComposeOneHealthEpisodeOfCare(
-	validPhone string, fullAccess bool, organizationID, providerCode, patientID string,
+	validPhone string, fullAccess bool, organizationID, MFLCode, patientID string,
 ) domain.FHIREpisodeOfCare {
 	accessLevel := ""
 	if fullAccess {
@@ -56,7 +56,7 @@ func ComposeOneHealthEpisodeOfCare(
 	farFuture := time.Now().Add(time.Hour * CenturyHours)
 	orgIdentifier := &domain.FHIRIdentifier{
 		Use:   "official",
-		Value: providerCode,
+		Value: MFLCode,
 	}
 	active := domain.EpisodeOfCareStatusEnumActive
 	orgRef := fmt.Sprintf("Organization/%s", organizationID)
@@ -71,7 +71,7 @@ func ComposeOneHealthEpisodeOfCare(
 		},
 		ManagingOrganization: &domain.FHIRReference{
 			Reference:  &orgRef,
-			Display:    providerCode,
+			Display:    MFLCode,
 			Type:       &orgType,
 			Identifier: orgIdentifier,
 		},

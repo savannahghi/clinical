@@ -23,11 +23,11 @@ type UseCasesFHIR interface {
 	CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
 	CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	OpenOrganizationEpisodes(
-		ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error)
-	GetORCreateOrganization(ctx context.Context, providerSladeCode string) (*string, error)
-	GetOrganization(ctx context.Context, providerSladeCode string) (*string, error)
+		ctx context.Context, MFLCode string) ([]*domain.FHIREpisodeOfCare, error)
+	GetORCreateOrganization(ctx context.Context, org domain.FHIROrganizationInput) (*string, error)
+	GetOrganization(ctx context.Context, MFLCode string) (*string, error)
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
-	CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error)
+	CreateOrganization(ctx context.Context, org domain.FHIROrganizationInput) (*string, error)
 	SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error)
 	FindOrganizationByID(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error)
 	POSTRequest(
@@ -131,9 +131,16 @@ func (fh UseCasesFHIRImpl) CreateFHIROrganization(ctx context.Context, input dom
 
 // OpenOrganizationEpisodes return all organization specific open episodes
 func (fh UseCasesFHIRImpl) OpenOrganizationEpisodes(
-	ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
+	ctx context.Context, MFLCode string) ([]*domain.FHIREpisodeOfCare, error) {
+	org := domain.FHIROrganizationInput{
+		Identifier: []*domain.FHIRIdentifierInput{
+			{
+				Value: MFLCode,
+			},
+		},
+	}
 
-	organizationID, err := fh.GetORCreateOrganization(ctx, providerSladeCode)
+	organizationID, err := fh.GetORCreateOrganization(ctx, org)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -147,19 +154,8 @@ func (fh UseCasesFHIRImpl) OpenOrganizationEpisodes(
 }
 
 // CreateOrganization creates an organization given ist provider code
-func (fh UseCasesFHIRImpl) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-
-	identifier := []*domain.FHIRIdentifierInput{
-		{
-			Use:   "official",
-			Value: providerSladeCode,
-		},
-	}
-	organizationInput := domain.FHIROrganizationInput{
-		Identifier: identifier,
-		Name:       &providerSladeCode,
-	}
-	createdOrganization, err := fh.CreateFHIROrganization(ctx, organizationInput)
+func (fh UseCasesFHIRImpl) CreateOrganization(ctx context.Context, org domain.FHIROrganizationInput) (*string, error) {
+	createdOrganization, err := fh.CreateFHIROrganization(ctx, org)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
@@ -186,15 +182,15 @@ func (fh UseCasesFHIRImpl) FindOrganizationByID(ctx context.Context, organizatio
 }
 
 // GetORCreateOrganization retrieve an organisation via its code if not found create a new one.
-func (fh UseCasesFHIRImpl) GetORCreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	retrievedOrg, err := fh.GetOrganization(ctx, providerSladeCode)
+func (fh UseCasesFHIRImpl) GetORCreateOrganization(ctx context.Context, org domain.FHIROrganizationInput) (*string, error) {
+	retrievedOrg, err := fh.GetOrganization(ctx, org.Identifier[0].Value)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
 			"internal server error in getting organisation : %v", err)
 	}
 	if retrievedOrg == nil {
-		createdOrg, err := fh.CreateOrganization(ctx, providerSladeCode)
+		createdOrg, err := fh.CreateOrganization(ctx, org)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			return nil, fmt.Errorf(
@@ -206,10 +202,10 @@ func (fh UseCasesFHIRImpl) GetORCreateOrganization(ctx context.Context, provider
 }
 
 // GetOrganization retrieves an organization given its code
-func (fh UseCasesFHIRImpl) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
+func (fh UseCasesFHIRImpl) GetOrganization(ctx context.Context, MFLCode string) (*string, error) {
 
 	searchParam := map[string]interface{}{
-		"identifier": providerSladeCode,
+		"identifier": MFLCode,
 	}
 	organization, err := fh.SearchFHIROrganization(ctx, searchParam)
 	if err != nil {
@@ -282,7 +278,14 @@ func (fh *UseCasesFHIRImpl) StartEpisodeByOtp(ctx context.Context, input domain.
 		return nil, fmt.Errorf("failed to normalize phone number: %w", err)
 	}
 
-	organizationID, err := fh.GetORCreateOrganization(ctx, input.ProviderCode)
+	p := domain.FHIROrganizationInput{
+		Identifier: []*domain.FHIRIdentifierInput{
+			{
+				Value: input.MFLCode,
+			},
+		},
+	}
+	organizationID, err := fh.GetORCreateOrganization(ctx, p)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -292,7 +295,7 @@ func (fh *UseCasesFHIRImpl) StartEpisodeByOtp(ctx context.Context, input domain.
 		*normalized,
 		input.FullAccess,
 		*organizationID,
-		input.ProviderCode,
+		input.MFLCode,
 		input.PatientID,
 	)
 	return fh.CreateEpisodeOfCare(ctx, ep)
