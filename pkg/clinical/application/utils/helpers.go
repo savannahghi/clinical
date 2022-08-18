@@ -25,5 +25,6 @@ func ReportErrorToSentry(err error) {
 
 // CaptureSentryMessage captures the sentry message and registers the message in sentry
 func CaptureSentryMessage(errMsg string) {
+	defer sentry.Flush(2 * time.Millisecond)
 	sentry.CaptureMessage(errMsg)
 }
