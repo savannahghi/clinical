@@ -63,7 +63,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		}
 		profile, err := ps.infra.MyCareHub.UserProfile(ctx, data.UserID)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
