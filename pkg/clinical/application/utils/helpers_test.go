@@ -61,3 +61,25 @@ func TestReportErrorToSentry(t *testing.T) {
 		})
 	}
 }
+
+func TestCaptureSentryMessage(t *testing.T) {
+	type args struct {
+		errMsg string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "Happy case",
+			args: args{
+				errMsg: "test error",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			CaptureSentryMessage(tt.args.errMsg)
+		})
+	}
+}

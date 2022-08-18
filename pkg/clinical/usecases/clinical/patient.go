@@ -633,7 +633,7 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 
 	data, err := c.infrastructure.FHIRRepo.GetFHIRResource("Patient", id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
+		utils.CaptureSentryMessage(err.Error())
 		return nil, fmt.Errorf(
 			"unable to get patient with ID %s, err: %v", id, err)
 	}
