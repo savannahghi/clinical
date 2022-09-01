@@ -68,6 +68,7 @@ jobs:
           go get cloud.google.com/go/trace/apiv2
           go get cloud.google.com/go/errorreporting
           go get cloud.google.com/go/profiler
+          go get cloud.google.com/go/storage
           go get firebase.google.com/go/storage@v3.13.0+incompatible
           go get github.com/tj/assert
           go install github.com/savannahghi/bewellcli@$CLI_VERSION
