@@ -30,7 +30,7 @@ jobs:
   lint_and_test:
     strategy:
       matrix:
-        go-version: [1.16.x]
+        go-version: [1.17.x]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 80
@@ -71,6 +71,7 @@ jobs:
           go get cloud.google.com/go/storage
           go get firebase.google.com/go/storage@v3.13.0+incompatible
           go get github.com/tj/assert
+          go get golang.org/x/sys/unix
           go install github.com/savannahghi/bewellcli@$CLI_VERSION
 
       - name: Run lint and test

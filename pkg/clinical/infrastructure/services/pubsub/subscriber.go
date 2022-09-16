@@ -12,7 +12,6 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
-	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/errorcodeutil"
@@ -87,7 +86,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		patient, err := ps.patient.RegisterPatient(ctx, payload)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
@@ -97,7 +95,6 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		err = ps.infra.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, data.ID)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
