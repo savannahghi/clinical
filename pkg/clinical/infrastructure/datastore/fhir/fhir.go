@@ -1492,7 +1492,6 @@ func (fh *StoreImpl) CreateFHIRObservation(ctx context.Context, input domain.FHI
 
 	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
 	}
 
@@ -1748,19 +1747,16 @@ func (fh *StoreImpl) CreateFHIRMedicationStatement(ctx context.Context, input do
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
 	}
 
 	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
 			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
 			resourceType, string(data), err)

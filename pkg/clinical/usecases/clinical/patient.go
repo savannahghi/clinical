@@ -448,7 +448,6 @@ func (c *UseCasesClinicalImpl) FindPatientsByMSISDN(ctx context.Context, msisdn 
 
 	search, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("can't normalize contact: %w", err)
 	}
 	return c.PatientSearch(ctx, *search)
@@ -461,7 +460,6 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 		phoneNumber := &phone.Msisdn
 		patient, err := c.FindPatientsByMSISDN(ctx, *phoneNumber)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
 			return false, fmt.Errorf("unable to find patient")
 		}
 		if len(patient.Edges) > 1 {
@@ -565,7 +563,6 @@ func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx 
 func (c *UseCasesClinicalImpl) RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
 	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
