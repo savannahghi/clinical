@@ -460,7 +460,7 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 		phoneNumber := &phone.Msisdn
 		patient, err := c.FindPatientsByMSISDN(ctx, *phoneNumber)
 		if err != nil {
-			return false, fmt.Errorf("unable to find patient")
+			return false, fmt.Errorf("unable to find patient by phonenumber: %v", *phoneNumber)
 		}
 		if len(patient.Edges) > 1 {
 			exists = true
