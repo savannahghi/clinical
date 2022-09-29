@@ -292,7 +292,7 @@ func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, inp
 	}
 
 	system := "http://terminology.hl7.org/CodeSystem/observation-category"
-	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
+	subjectReference := fmt.Sprintf("Patient/%s", input.PatientID)
 	status := domain.ObservationStatusEnumPreliminary
 	instant := scalarutils.Instant(input.Date.Format(time.RFC3339))
 
@@ -335,7 +335,7 @@ func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, inp
 			log.Printf("the error is: %v", err)
 		}
 		if organization != nil {
-			performer := fmt.Sprintf("Organization/%v", input.OrganizationID)
+			performer := fmt.Sprintf("Organization/%s", input.OrganizationID)
 
 			referenceInput := &domain.FHIRReferenceInput{
 				Reference: &performer,
@@ -384,6 +384,7 @@ func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input d
 			},
 			Text: vitalsConcept.DisplayName,
 		},
+		Performer:   []*domain.FHIRReferenceInput{},
 		ValueString: &input.Value,
 	}
 
@@ -391,7 +392,7 @@ func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input d
 	if err != nil {
 		return nil, err
 	}
-	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
+	patientReference := fmt.Sprintf("Patient/%s", *patient.PatientRecord.ID)
 	patientName := *patient.PatientRecord.Name[0].Given[0]
 	observation.Subject = &domain.FHIRReferenceInput{
 		Reference: &patientReference,
@@ -406,7 +407,7 @@ func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input d
 		}
 
 		if organization != nil {
-			performerReference := fmt.Sprintf("Organization/%v", input.OrganizationID)
+			performerReference := fmt.Sprintf("Organization/%s", input.OrganizationID)
 			referenceInput := &domain.FHIRReferenceInput{
 				Reference: &performerReference,
 				Display:   *organization.Resource.Name,
@@ -466,7 +467,7 @@ func (ps ServicePubSubMessaging) ComposeMedicationStatementInput(ctx context.Con
 	if err != nil {
 		return nil, err
 	}
-	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
+	patientReference := fmt.Sprintf("Patient/%s", *patient.PatientRecord.ID)
 	patientName := *patient.PatientRecord.Name[0].Given[0]
 	medicationStatement.Subject = &domain.FHIRReferenceInput{
 		Reference: &patientReference,
@@ -479,7 +480,7 @@ func (ps ServicePubSubMessaging) ComposeMedicationStatementInput(ctx context.Con
 			log.Printf("the error is: %v", err)
 		}
 		if organization != nil {
-			informationSourceReference := fmt.Sprintf("Organization/%v", input.OrganizationID)
+			informationSourceReference := fmt.Sprintf("Organization/%s", input.OrganizationID)
 
 			reference := &domain.FHIRReferenceInput{
 				Reference: &informationSourceReference,
@@ -534,7 +535,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
-	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
+	subjectReference := fmt.Sprintf("Patient/%s", input.PatientID)
 	patientName := *patient.PatientRecord.Name[0].Given[0]
 
 	allergy.Patient = &domain.FHIRReferenceInput{
@@ -559,7 +560,9 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 	}
 
 	// create the allergy reaction
-	var reaction *domain.FHIRAllergyintoleranceReactionInput
+	reaction := &domain.FHIRAllergyintoleranceReactionInput{
+		Manifestation: []*domain.FHIRCodeableConceptInput{},
+	}
 
 	// reaction manifestation is required
 	//
