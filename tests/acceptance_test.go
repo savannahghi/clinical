@@ -14,11 +14,9 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
-	"github.com/imroc/req"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
@@ -39,51 +37,6 @@ func mapToJSONReader(m map[string]interface{}) (io.Reader, error) {
 
 	buf := bytes.NewBuffer(bs)
 	return buf, nil
-}
-
-// GetGraphQLHeaders gets relevant GraphQLHeaders
-func GetGraphQLHeaders(ctx context.Context) (map[string]string, error) {
-	authorization, err := GetBearerTokenHeader(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("can't Generate Bearer Token: %s", err)
-	}
-	return req.Header{
-		"Accept":        "application/json",
-		"Content-Type":  "application/json",
-		"Authorization": authorization,
-	}, nil
-}
-
-// GetBearerTokenHeader gets bearer Token Header
-func GetBearerTokenHeader(ctx context.Context) (string, error) {
-	TestUserEmail := "test@bewell.co.ke"
-	user, err := firebasetools.GetOrCreateFirebaseUser(ctx, TestUserEmail)
-	if err != nil {
-		return "", fmt.Errorf("can't get or create firebase user: %s", err)
-	}
-
-	if user == nil {
-		return "", fmt.Errorf("nil firebase user")
-	}
-
-	customToken, err := firebasetools.CreateFirebaseCustomToken(ctx, user.UID)
-	if err != nil {
-		return "", fmt.Errorf("can't create custom token: %s", err)
-	}
-
-	if customToken == "" {
-		return "", fmt.Errorf("blank custom token: %s", err)
-	}
-
-	idTokens, err := firebasetools.AuthenticateCustomFirebaseToken(customToken)
-	if err != nil {
-		return "", fmt.Errorf("can't authenticate custom token: %s", err)
-	}
-	if idTokens == nil {
-		return "", fmt.Errorf("nil idTokens")
-	}
-
-	return fmt.Sprintf("Bearer %s", idTokens.IDToken), nil
 }
 
 func getTestSimplePatientRegistration() (*domain.SimplePatientRegistrationInput, string, error) {
@@ -166,19 +119,13 @@ func getTestPatient(ctx context.Context) (*domain.FHIRPatient, string, error) {
 }
 
 func TestGraphQLRegisterPatient(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
-
+	ctx := context.Background()
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	simplePatientRegInput, _, err := getTestSimplePatientRegistration()
 	if err != nil {
@@ -392,7 +339,6 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 				t.Errorf("nil request")
 				return
 			}
-
 			for k, v := range headers {
 				r.Header.Add(k, v)
 			}
@@ -448,7 +394,7 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 }
 
 func TestGraphQFindPatientsByMSISDN(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -456,11 +402,6 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, msisdn, err := getTestPatient(ctx)
 	if err != nil {
@@ -623,7 +564,7 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 }
 
 func TestGraphQLFindPatients(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -631,11 +572,6 @@ func TestGraphQLFindPatients(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
@@ -815,7 +751,7 @@ func TestGraphQLFindPatients(t *testing.T) {
 }
 
 func TestGraphQGetPatient(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -823,11 +759,6 @@ func TestGraphQGetPatient(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
@@ -976,18 +907,14 @@ func TestGraphQGetPatient(t *testing.T) {
 }
 
 func TestGraphQLStartEpisodeByOTP(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
+
 	msisdn := interserviceclient.TestUserPhoneNumber
 	otp, err := generateTestOTP(t, msisdn)
 	if err != nil {
@@ -1169,7 +1096,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 }
 
 func TestGraphQLUpgradeEpisode(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -1177,11 +1104,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
+
 	msisdn := interserviceclient.TestUserPhoneNumber
 
 	otp, err := generateTestOTP(t, msisdn)
@@ -1340,7 +1263,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 }
 
 func TestGraphQLEndEpisode(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -1348,11 +1271,6 @@ func TestGraphQLEndEpisode(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	episode, _, err := getTestEpisodeOfCare(
 		ctx,
@@ -1492,7 +1410,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 }
 
 func TestGraphQLStartEncounter(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -1500,11 +1418,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
+
 	episode, _, _, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
 	if err != nil {
@@ -1645,7 +1559,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 }
 
 func TestGraphQLEndEncounter(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -1653,11 +1567,6 @@ func TestGraphQLEndEncounter(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -1783,7 +1692,7 @@ func TestGraphQLEndEncounter(t *testing.T) {
 }
 
 func TestGraphQLOpenEpisodes(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -1805,11 +1714,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 
 	patientID := *patient.ID
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
+
 	patientRef := fmt.Sprintf("Patient/%s", patientID)
 
 	type args struct {
@@ -1953,7 +1858,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 }
 
 func TestGraphQLSearchFHIREncounter(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -1961,11 +1866,6 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	episode, _, _, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -2132,7 +2032,7 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 }
 
 func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -2140,13 +2040,8 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
-	_, _, err = getTestEpisodeOfCare(
+	_, _, err := getTestEpisodeOfCare(
 		ctx,
 		interserviceclient.TestUserPhoneNumber,
 		false, testProviderCode,
@@ -2285,7 +2180,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 }
 
 func TestGraphQLAddNextOfKin(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -2293,11 +2188,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
+
 	msisdn := interserviceclient.TestUserPhoneNumber
 	otp, err := generateTestOTP(t, msisdn)
 	if err != nil {
@@ -2488,7 +2379,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 }
 
 func TestGraphQLUpdatePatient(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -2496,11 +2387,6 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
@@ -2786,7 +2672,7 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 }
 
 func TestGraphQLAddNHIF(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -2794,11 +2680,6 @@ func TestGraphQLAddNHIF(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
@@ -2932,7 +2813,7 @@ func TestGraphQLAddNHIF(t *testing.T) {
 }
 
 func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -2940,11 +2821,6 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
@@ -3103,7 +2979,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 }
 
 func TestGraphQLVisitSummary(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -3111,11 +2987,6 @@ func TestGraphQLVisitSummary(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	encounterID, _, err := patientVisitSummary(ctx)
 	if err != nil {
@@ -3424,7 +3295,7 @@ func TestGraphQLVisitSummary(t *testing.T) {
 }
 
 func TestGraphQLPatientTimelineWithCount(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -3432,11 +3303,6 @@ func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, episodeID, err := patientVisitSummary(ctx)
 	if err != nil {
@@ -3753,7 +3619,7 @@ func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 }
 
 func TestGraphQLProblemSummary(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -3761,11 +3627,6 @@ func TestGraphQLProblemSummary(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -3941,7 +3802,7 @@ func TestGraphQLProblemSummary(t *testing.T) {
 }
 
 func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -3949,11 +3810,6 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -4175,7 +4031,7 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 }
 
 func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -4205,11 +4061,6 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 	dateRecorded := time.Now().Format(dateFormat)
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	type args struct {
 		query map[string]interface{}
@@ -4438,7 +4289,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 
 // TODO restore this
 func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -4446,11 +4297,6 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -4635,7 +4481,7 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 }
 
 func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -4643,11 +4489,6 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	// create a medication request
 	_, _, encounterID, err := getTestEncounterID(
@@ -4917,7 +4758,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 }
 
 func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -4925,11 +4766,6 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -5190,7 +5026,7 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 }
 
 func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -5198,11 +5034,6 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -5421,7 +5252,7 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 }
 
 func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -5429,11 +5260,6 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -5678,7 +5504,7 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 }
 
 func TestGraphQLCreateFHIRCondition(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -5686,11 +5512,6 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -5890,7 +5711,7 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 }
 
 func TestGraphQUpdateFHIRCondition(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -5898,11 +5719,6 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -6141,7 +5957,7 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 }
 
 func TestGraphQSearchFHIRCondition(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -6149,11 +5965,6 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
@@ -6388,7 +6199,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 }
 
 func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -6396,11 +6207,6 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -6614,7 +6420,7 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 }
 
 func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -6622,11 +6428,6 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -6775,7 +6576,7 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 }
 
 func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -6783,11 +6584,6 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -6982,18 +6778,13 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 }
 
 func TestGraphQCreateFHIRObservation(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	instantRecorded := time.Now().Format(instantFormat)
 	_, patient, encounterID, err := getTestEncounterID(
@@ -7208,18 +6999,13 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 }
 
 func TestGraphQSearchFHIRObservation(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -7427,7 +7213,7 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 }
 
 func TestGraphQCreateFHIRComposition(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -7435,11 +7221,6 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -7646,18 +7427,13 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 }
 
 func TestGraphQUpdateFHIRComposition(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -7872,7 +7648,7 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 }
 
 func TestGraphQLDeleteFHIRComposition(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -7880,11 +7656,6 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -8063,7 +7834,7 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 }
 
 func TestGraphQlSearchFHIRComposition(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -8071,11 +7842,6 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -8266,7 +8032,7 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 }
 
 func TestGraphQLAllergySummary(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -8274,11 +8040,6 @@ func TestGraphQLAllergySummary(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, _, encounterID, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, true, testProviderCode)
@@ -8454,7 +8215,7 @@ func TestGraphQLAllergySummary(t *testing.T) {
 }
 
 func TestGraphQLDeleteFHIRPatient(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -8462,11 +8223,6 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	patient, _, err := getTestPatient(ctx)
 	if err != nil {
@@ -8624,7 +8380,7 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 }
 
 func TestGraphQLListConcepts(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -8632,11 +8388,6 @@ func TestGraphQLListConcepts(t *testing.T) {
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	type args struct {
 		query map[string]interface{}
@@ -8782,18 +8533,13 @@ func TestGraphQLListConcepts(t *testing.T) {
 }
 
 func TestGraphQSearchFHIRMedicationStatement(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, _, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -8970,18 +8716,13 @@ func TestGraphQSearchFHIRMedicationStatement(t *testing.T) {
 }
 
 func TestGraphQLPatientTimeline(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, _, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)
@@ -9112,18 +8853,13 @@ func TestGraphQLPatientTimeline(t *testing.T) {
 }
 
 func TestGraphQLPatientMedicalData(t *testing.T) {
-	ctx := firebasetools.GetAuthenticatedContext(t)
+	ctx := context.Background()
 	if ctx == nil {
 		t.Errorf("nil context")
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-	headers, err := GetGraphQLHeaders(ctx)
-	if err != nil {
-		t.Errorf("error in getting GraphQL headers: %v", err)
-		return
-	}
 
 	_, patient, _, err := getTestEncounterID(
 		ctx, interserviceclient.TestUserPhoneNumber, false, testProviderCode)

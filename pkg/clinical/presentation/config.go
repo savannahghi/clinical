@@ -14,6 +14,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
@@ -26,7 +27,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
-	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -64,6 +64,15 @@ var ClinicalAllowedHeaders = []string{
 	"X-Authorization",
 }
 
+var (
+	authServerEndpoint = serverutils.MustGetEnvVar("AUTHSERVER_ENDPOINT")
+	clientID           = serverutils.MustGetEnvVar("CLIENT_ID")
+	clientSecret       = serverutils.MustGetEnvVar("CLIENT_SECRET")
+	username           = serverutils.MustGetEnvVar("AUTH_USERNAME")
+	password           = serverutils.MustGetEnvVar("AUTH_PASSWORD")
+	grantType          = serverutils.MustGetEnvVar("GRANT_TYPE")
+)
+
 // PrepareServer sets up the HTTP server
 func PrepareServer(
 	ctx context.Context,
@@ -100,10 +109,6 @@ func PrepareServer(
 // Router sets up the ginContext router
 func Router(ctx context.Context) (*mux.Router, error) {
 	fc := &firebasetools.FirebaseClient{}
-	firebaseApp, err := fc.InitFirebase()
-	if err != nil {
-		return nil, err
-	}
 
 	baseExtension := extensions.NewBaseExtensionImpl(fc)
 
@@ -127,6 +132,19 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases, usecases, ocl)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %v", err)
+	}
+
+	authServerConfig := authutils.Config{
+		AuthServerEndpoint: authServerEndpoint,
+		ClientID:           clientID,
+		ClientSecret:       clientSecret,
+		GrantType:          grantType,
+		Username:           username,
+		Password:           password,
+	}
+	authClient, err := authutils.NewClient(authServerConfig)
+	if err != nil {
+		return nil, err
 	}
 
 	r := mux.NewRouter() // gorilla mux
@@ -154,14 +172,14 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	// ISC routes. These are inter service route
 	isc := r.PathPrefix("/internal").Subrouter()
-	isc.Use(interserviceclient.InterServiceAuthenticationMiddleware())
+	isc.Use(authutils.SladeAuthenticationMiddleware(*authClient))
 	isc.Path("/delete-patient").Methods(
 		http.MethodDelete,
 	).HandlerFunc(h.DeleteFHIRPatientByPhone())
 
 	//Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
-	gqlR.Use(firebasetools.AuthenticationMiddleware(firebaseApp))
+	gqlR.Use(authutils.SladeAuthenticationMiddleware(*authClient))
 	gqlR.Methods(
 		http.MethodPost, http.MethodGet, http.MethodOptions,
 	).HandlerFunc(GQLHandler(ctx, usecases))
