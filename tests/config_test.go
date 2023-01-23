@@ -14,6 +14,8 @@ import (
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
 	"github.com/brianvoe/gofakeit"
+	"github.com/imroc/req"
+	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/testutils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -44,6 +46,18 @@ var (
 	testProviderCode = "1234"
 )
 
+var (
+	authServerEndpoint = serverutils.MustGetEnvVar("AUTHSERVER_ENDPOINT")
+	clientID           = serverutils.MustGetEnvVar("CLIENT_ID")
+	clientSecret       = serverutils.MustGetEnvVar("CLIENT_SECRET")
+	username           = serverutils.MustGetEnvVar("AUTH_USERNAME")
+	password           = serverutils.MustGetEnvVar("AUTH_PASSWORD")
+	grantType          = serverutils.MustGetEnvVar("GRANT_TYPE")
+)
+
+var oauthPayload *authutils.OAUTHResponse
+var headers map[string]string
+
 func initializeAcceptanceTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth.Client) {
 	fc := firebasetools.FirebaseClient{}
 	fa, err := fc.InitFirebase()
@@ -62,7 +76,10 @@ func initializeAcceptanceTestFirebaseClient(ctx context.Context) (*firestore.Cli
 	}
 	return fsc, fbc
 }
+
 func TestMain(m *testing.M) {
+	ctx := context.Background()
+
 	// setup
 	os.Setenv("ENVIRONMENT", "staging")
 	os.Setenv("ROOT_COLLECTION_SUFFIX", "staging")
@@ -71,7 +88,31 @@ func TestMain(m *testing.M) {
 	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "healthcloud-sghi-fhir-staging")
 	os.Setenv("REPOSITORY", "firebase")
 
-	ctx := context.Background()
+	authServerConfig := authutils.Config{
+		AuthServerEndpoint: authServerEndpoint,
+		ClientID:           clientID,
+		ClientSecret:       clientSecret,
+		GrantType:          grantType,
+		Username:           username,
+		Password:           password,
+	}
+	authClient, err := authutils.NewClient(authServerConfig)
+	if err != nil {
+		log.Printf("an error occurred: %v", err)
+	}
+
+	oauthPayload, err = authClient.Authenticate()
+	if err != nil {
+		log.Printf("unable to authenticate with slade 360 auth server")
+		return
+	}
+
+	headers, err = GetGraphQLHeaders(ctx)
+	if err != nil {
+		log.Printf("error adding the graphql headers")
+		return
+	}
+
 	srv, baseURL, serverErr = serverutils.StartTestServer(
 		ctx,
 		presentation.PrepareServer,
@@ -121,6 +162,17 @@ func TestMain(m *testing.M) {
 		}
 	}()
 	os.Exit(code)
+}
+
+// GetGraphQLHeaders gets relevant GraphQLHeaders
+func GetGraphQLHeaders(ctx context.Context) (map[string]string, error) {
+	accessToken := fmt.Sprintf("Bearer %s", oauthPayload.AccessToken)
+
+	return req.Header{
+		"Accept":        "application/json",
+		"Content-Type":  "application/json",
+		"Authorization": accessToken,
+	}, nil
 }
 
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {

@@ -4,9 +4,8 @@ import (
 	"context"
 	"log"
 
-	"firebase.google.com/go/auth"
+	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	"github.com/savannahghi/firebasetools"
 )
 
 //go:generate go run github.com/99designs/gqlgen
@@ -27,9 +26,9 @@ func NewResolver(
 	}, nil
 }
 
-// CheckUserTokenInContext ensures that the context has a valid Firebase auth token
-func (r *Resolver) CheckUserTokenInContext(ctx context.Context) *auth.Token {
-	token, err := firebasetools.GetUserTokenFromContext(ctx)
+// CheckUserTokenInContext ensures that the context has a valid slade360 auth token
+func (r *Resolver) CheckUserTokenInContext(ctx context.Context) *authutils.TokenIntrospectionResponse {
+	token, err := authutils.GetUserTokenFromContext(ctx)
 	if err != nil {
 		log.Panicf("graph.Resolver: context user token is nil")
 	}
