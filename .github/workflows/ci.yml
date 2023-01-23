@@ -20,11 +20,13 @@ env:
   CLOUD_HEALTH_FHIRSTORE_ID: ${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}
   SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   SAVANNAH_ADMIN_EMAIL: ${{ secrets.SAVANNAH_ADMIN_EMAIL }}
+  AUTHSERVER_ENDPOINT: ${{ secrets.AUTHSERVER_ENDPOINT }}
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
+  AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+  GRANT_TYPE: ${{ secrets.GRANT_TYPE }}
 
-  # Schema Registry CLI command version
-  CLI_VERSION: v0.0.1
-  # Schema Registry URL
-  REGISTRY_URL: ${{ secrets.TEST_SCHEMA_REGISTRY_URL }}
 
 jobs:
   lint_and_test:
@@ -72,13 +74,14 @@ jobs:
           go get firebase.google.com/go/storage@v3.13.0+incompatible
           go get github.com/tj/assert
           go get golang.org/x/sys/unix
-          go install github.com/savannahghi/bewellcli@$CLI_VERSION
+          go get cloud.google.com/go/firestore@v1.9.0
+          go get cloud.google.com/go/logging/apiv2@v1.6.1
+          go get cloud.google.com/go/logging/apiv2@v1.6.1
+          go get google.golang.org/genproto/googleapis/longrunning@v0.0.0-20230112194545-e10362b5ecf9
 
       - name: Run lint and test
         run: |
-          echo $REGISTRY_URL
           staticcheck ./...
-          bewellcli service validate-schema --name clinical --version $GITHUB_SHA --url ${{ secrets.SERVICE_GRAPHQL_URL }}
           go fmt $(go list ./... | grep -v /vendor/)
           go vet $(go list ./... | grep -v /vendor/)
           golint -set_exit_status $(go list ./... | grep -v /vendor/)
