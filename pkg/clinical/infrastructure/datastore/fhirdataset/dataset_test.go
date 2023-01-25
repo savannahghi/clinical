@@ -1,19 +1,12 @@
 package fhirdataset_test
 
 import (
-	"context"
-	"fmt"
 	"log"
 	"os"
 	"strings"
 	"testing"
-	"time"
 
-	"cloud.google.com/go/firestore"
-	"firebase.google.com/go/auth"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
-	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
-	"github.com/savannahghi/firebasetools"
 	"github.com/tj/assert"
 )
 
@@ -29,41 +22,11 @@ func TestMain(m *testing.M) {
 	os.Setenv("CLOUD_HEALTH_DATASET_ID", "datasetid")
 	os.Setenv("CLOUD_HEALTH_FHIRSTORE_ID", "fhirid")
 
-	// !NOTE!
-	// Under no circumstances should you remove this env var when testing
-	// You risk purging important collections, like our prod collections
-	os.Setenv("ROOT_COLLECTION_SUFFIX", fmt.Sprintf("clinical_ci_%v", time.Now().Unix()))
-	ctx := context.Background()
-	r := fb.Repository{} // They are nil
-	fsc, fbc := InitializeTestFirebaseClient(ctx)
-	if fsc == nil {
-		log.Printf("failed to initialize test FireStore client")
-		return
-	}
-	if fbc == nil {
-		log.Printf("failed to initialize test FireBase client")
-		return
-	}
-
-	purgeRecords := func() {
-		collections := []string{
-			r.GetEmailOptInCollectionName(),
-		}
-		for _, collection := range collections {
-			ref := fsc.Collection(collection)
-			_ = firebasetools.DeleteCollection(ctx, fsc, ref, 10)
-		}
-	}
-
-	// try clean up first
-	purgeRecords()
-
 	// do clean up
 	log.Printf("Running tests ...")
 	code := m.Run()
 
 	log.Printf("Tearing tests down ...")
-	purgeRecords()
 
 	// restore environment varibles to original values
 	os.Setenv(envOriginalValue, "ENVIRONMENT")
@@ -71,25 +34,6 @@ func TestMain(m *testing.M) {
 	os.Setenv("ROOT_COLLECTION_SUFFIX", collectionEnvValue)
 
 	os.Exit(code)
-}
-
-func InitializeTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth.Client) {
-	fc := firebasetools.FirebaseClient{}
-	fa, err := fc.InitFirebase()
-	if err != nil {
-		log.Panicf("unable to initialize Firebase: %s", err)
-	}
-
-	fsc, err := fa.Firestore(ctx)
-	if err != nil {
-		log.Panicf("unable to initialize Firestore: %s", err)
-	}
-
-	fbc, err := fa.Auth(ctx)
-	if err != nil {
-		log.Panicf("can't initialize Firebase auth when setting up tests: %s", err)
-	}
-	return fsc, fbc
 }
 
 func TestRepository_CreateDataset(t *testing.T) {

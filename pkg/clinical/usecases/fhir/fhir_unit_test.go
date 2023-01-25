@@ -13,20 +13,11 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir/mock"
 	fakeDatasetMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset/mock"
-	fakeFirebaseMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	fhirUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/fhir"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 )
-
-// var (
-// 	FakeExt            fakeExtMock.FakeBaseExtension
-// 	FakefhirRepository fakeDatasetMock.FakeFHIRRepository
-// 	Fakefhir           fakeFHIRMock.FHIRMock
-// 	FakefirestoreDB    fakeFirebaseMock.FakeFirebase
-// 	Fakeopenconceptlab fakeOCLMock.FakeOCL
-// )
 
 func TestUsecaseImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 	ctx := context.Background()
@@ -34,10 +25,9 @@ func TestUsecaseImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	UUID := uuid.New().String()
@@ -118,10 +108,9 @@ func TestUsecaseStoreImpl_CreateFHIRCondition(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	ID := uuid.New().String()
@@ -226,10 +215,9 @@ func TestUsecaseStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	ID := ksuid.New().String()
@@ -306,10 +294,9 @@ func TestUsecaseStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	type args struct {
@@ -362,10 +349,9 @@ func TestUsecaseStoreImpl_SearchEpisodesByParam(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	type args struct {
@@ -416,10 +402,9 @@ func TestUsecaseStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	type args struct {
@@ -473,10 +458,9 @@ func TestUsecaseStoreImpl_OpenEpisodes(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	patientReference := fmt.Sprintf("Patient/%s", ksuid.New().String())
@@ -528,10 +512,9 @@ func TestUsecaseStoreImpl_HasOpenEpisode(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	UUID := uuid.New().String()
@@ -591,10 +574,9 @@ func TestUsecaseStoreImpl_CreateFHIREncounter(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	input := domain.FHIREncounterInput{}
@@ -647,10 +629,9 @@ func TestUsecaseStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	id := ksuid.New().String()
@@ -703,10 +684,9 @@ func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	episodeID := uuid.New().String()
@@ -751,10 +731,9 @@ func TestUsecaseStoreImpl_GetFHIREncounter(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	type args struct {
@@ -804,10 +783,9 @@ func TestUsecaseStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	UUID := uuid.New().String()
@@ -860,10 +838,9 @@ func TestUsecaseStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	UUID := uuid.New().String()
@@ -916,10 +893,9 @@ func TestUsecaseStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	UUID := uuid.New().String()
@@ -976,10 +952,9 @@ func TestUsecaseStoreImpl_SearchFHIRComposition(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	params := map[string]interface{}{"test": "123"}
@@ -1033,10 +1008,9 @@ func TestUsecaseStoreImpl_CreateFHIRComposition(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	input := domain.FHIRCompositionInput{}
@@ -1090,10 +1064,9 @@ func TestUsecaseStoreImpl_UpdateFHIRComposition(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	UUID := uuid.New().String()
@@ -1150,10 +1123,9 @@ func TestUsecaseStoreImpl_DeleteFHIRComposition(t *testing.T) {
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
-	FakefirestoreDB := fakeFirebaseMock.NewFakeFirebaseMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, FakefirestoreDB, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
 	m := fhirUsecase.NewUseCasesFHIRImpl(n)
 
 	id := ksuid.New().String()

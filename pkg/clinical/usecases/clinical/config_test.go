@@ -8,20 +8,15 @@ import (
 	"testing"
 	"time"
 
-	"cloud.google.com/go/firestore"
-	"firebase.google.com/go/auth"
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/testutils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
-	"github.com/savannahghi/serverutils"
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 )
@@ -49,37 +44,12 @@ func TestMain(m *testing.M) {
 
 	ctx := context.Background()
 
-	fsc, fbc := InitializeTestFirebaseClient(ctx)
-	if fsc == nil {
-		log.Panicf("failed to Initialize Test Firestore Client")
-	}
-
-	if fbc == nil {
-		log.Panicf("failed to Initialize Test Firebase Client")
-	}
-
 	i, err := testutils.InitializeTestService(ctx)
 	if err != nil {
 		log.Panicf("failed to initialize test service: %v", err)
 	}
 
 	testUsecaseInteractor = i
-
-	purgeRecords := func() {
-		if serverutils.MustGetEnvVar(Repo) == FirebaseRepository {
-			r := fb.Repository{}
-			collections := []string{
-				r.GetEmailOptInCollectionName(),
-			}
-			for _, collection := range collections {
-				ref := fsc.Collection(collection)
-				_ = firebasetools.DeleteCollection(ctx, fsc, ref, 10)
-			}
-		}
-
-	}
-
-	purgeRecords()
 
 	// run the tests
 	log.Printf("about to run tests\n")
@@ -88,27 +58,6 @@ func TestMain(m *testing.M) {
 
 	// cleanup here
 	os.Exit(code)
-}
-
-func InitializeTestFirebaseClient(
-	ctx context.Context,
-) (*firestore.Client, *auth.Client) {
-	fc := firebasetools.FirebaseClient{}
-	fa, err := fc.InitFirebase()
-	if err != nil {
-		log.Panicf("unable to initialize Firebase: %s", err)
-	}
-
-	fsc, err := fa.Firestore(ctx)
-	if err != nil {
-		log.Panicf("unable to initialize Firestore: %s", err)
-	}
-
-	fbc, err := fa.Auth(ctx)
-	if err != nil {
-		log.Panicf("can't initialize Firebase auth when setting up tests: %s", err)
-	}
-	return fsc, fbc
 }
 
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {
