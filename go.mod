@@ -5,7 +5,6 @@ go 1.16
 require (
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/pubsub v1.21.0
-	firebase.google.com/go v3.13.0+incompatible
 	github.com/99designs/gqlgen v0.14.0
 	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d

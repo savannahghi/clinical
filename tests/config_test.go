@@ -11,19 +11,15 @@ import (
 	"testing"
 	"time"
 
-	"cloud.google.com/go/firestore"
-	"firebase.google.com/go/auth"
 	"github.com/brianvoe/gofakeit"
 	"github.com/imroc/req"
 	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/testutils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/converterandformatter"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
@@ -57,25 +53,6 @@ var (
 
 var oauthPayload *authutils.OAUTHResponse
 var headers map[string]string
-
-func initializeAcceptanceTestFirebaseClient(ctx context.Context) (*firestore.Client, *auth.Client) {
-	fc := firebasetools.FirebaseClient{}
-	fa, err := fc.InitFirebase()
-	if err != nil {
-		log.Panicf("unable to initialize Firestore for the Feed: %s", err)
-	}
-
-	fsc, err := fa.Firestore(ctx)
-	if err != nil {
-		log.Panicf("unable to initialize Firestore: %s", err)
-	}
-
-	fbc, err := fa.Auth(ctx)
-	if err != nil {
-		log.Panicf("can't initialize Firebase auth when setting up profile service: %s", err)
-	}
-	return fsc, fbc
-}
 
 func TestMain(m *testing.M) {
 	ctx := context.Background()
@@ -123,8 +100,6 @@ func TestMain(m *testing.M) {
 		return
 	}
 
-	fsc, _ := initializeAcceptanceTestFirebaseClient(ctx)
-
 	i, err := testutils.InitializeTestService(ctx)
 	if err != nil {
 		log.Printf("unable to initialize test service: %v", err)
@@ -132,22 +107,6 @@ func TestMain(m *testing.M) {
 	}
 
 	testInteractor = i
-
-	purgeRecords := func() {
-		if serverutils.MustGetEnvVar(Repo) == FirebaseRepository {
-			r := fb.Repository{}
-			collections := []string{
-				r.GetEmailOptInCollectionName(),
-			}
-			for _, collection := range collections {
-				ref := fsc.Collection(collection)
-				_ = firebasetools.DeleteCollection(ctx, fsc, ref, 10)
-			}
-		}
-
-	}
-
-	purgeRecords()
 
 	// run the tests
 	log.Printf("about to run tests")

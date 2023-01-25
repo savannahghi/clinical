@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/pubsub"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -19,7 +18,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
-	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
@@ -120,12 +118,9 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	repo := dataset.NewFHIRRepository()
 	fhir := fhir.NewFHIRStoreImpl(repo)
-	firestoreExt := fb.NewFirestoreClientExtension(&firestore.Client{})
-	fbExt := fb.NewFBClientExtensionImpl()
-	f := fb.NewFirebaseRepository(firestoreExt, fbExt)
 	ocl := openconceptlab.NewServiceOCL()
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, f, ocl)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	h := rest.NewPresentationHandlers(infrastructure, usecases)
 

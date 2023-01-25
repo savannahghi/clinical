@@ -11,10 +11,8 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 
-	fb "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/firebase"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -409,18 +407,6 @@ func ValidateEmail(
 	email string, optIn bool, firestoreClient *firestore.Client) error {
 	if !govalidator.IsEmail(email) {
 		return fmt.Errorf("invalid email format")
-	}
-
-	if optIn {
-		data := domain.EmailOptIn{
-			Email:   email,
-			OptedIn: optIn,
-		}
-		_, err := firebasetools.SaveDataToFirestore(
-			firestoreClient, fb.EmailOptInCollectionName, data)
-		if err != nil {
-			return fmt.Errorf("unable to save email opt in: %v", err)
-		}
 	}
 	return nil
 }
