@@ -6,7 +6,6 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
 )
@@ -18,13 +17,12 @@ type PresentationHandlers interface {
 
 // PresentationHandlersImpl represents the usecase implementation object
 type PresentationHandlersImpl struct {
-	usecases       usecases.Interactor
-	infrastructure infrastructure.Infrastructure
+	usecases usecases.Interactor
 }
 
 // NewPresentationHandlers initializes a new rest handlers usecase
-func NewPresentationHandlers(infrastructure infrastructure.Infrastructure, usecases usecases.Interactor) PresentationHandlers {
-	return &PresentationHandlersImpl{infrastructure: infrastructure, usecases: usecases}
+func NewPresentationHandlers(usecases usecases.Interactor) PresentationHandlers {
+	return &PresentationHandlersImpl{usecases: usecases}
 }
 
 // DeleteFHIRPatientByPhone handler exposes an endpoint that takes a

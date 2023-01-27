@@ -3,16 +3,16 @@ package infrastructure
 import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
-	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
+	"github.com/savannahghi/clinical/pkg/clinical/repository"
 )
 
 // Infrastructure ...
 type Infrastructure struct {
 	FHIRRepo       dataset.FHIRRepository
-	FHIR           fhir.FHIR
+	FHIR           repository.FHIR
 	OpenConceptLab openconceptlab.ServiceOCL
 	BaseExtension  extensions.BaseExtension
 	MyCareHub      mycarehub.IServiceMyCareHub
@@ -22,7 +22,7 @@ type Infrastructure struct {
 func NewInfrastructureInteractor(
 	ext extensions.BaseExtension,
 	fhirRepository dataset.FHIRRepository,
-	fhir fhir.FHIR,
+	fhir repository.FHIR,
 	openconceptlab openconceptlab.ServiceOCL,
 ) Infrastructure {
 	myCareHubClient := common.NewInterServiceClient("mycarehub", ext)

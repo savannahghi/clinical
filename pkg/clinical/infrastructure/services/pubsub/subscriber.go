@@ -84,7 +84,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			Active:       profile.Active,
 		}
 
-		patient, err := ps.patient.RegisterPatient(ctx, payload)
+		patient, err := ps.clinical.RegisterPatient(ctx, payload)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -131,7 +131,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			},
 		}
 
-		response, err := ps.fhir.CreateFHIROrganization(ctx, input)
+		response, err := ps.clinical.CreateFHIROrganization(ctx, input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -168,7 +168,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		_, err = ps.fhir.CreateFHIRObservation(ctx, *input)
+		_, err = ps.clinical.CreateFHIRObservation(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -197,7 +197,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		_, err = ps.fhir.CreateFHIRAllergyIntolerance(ctx, *input)
+		_, err = ps.clinical.CreateFHIRAllergyIntolerance(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -226,7 +226,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		_, err = ps.fhir.CreateFHIRMedicationStatement(ctx, *input)
+		_, err = ps.clinical.CreateFHIRMedicationStatement(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -255,7 +255,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 			return
 		}
 
-		_, err = ps.fhir.CreateFHIRObservation(ctx, *input)
+		_, err = ps.clinical.CreateFHIRObservation(ctx, *input)
 		if err != nil {
 			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 				Err:     err,
@@ -280,7 +280,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 // ComposeTestResultInput composes a test result input from data received
 func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, input dto.CreatePatientTestResultPubSubMessage) (*domain.FHIRObservationInput, error) {
 	var patientName string
-	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	patient, err := ps.clinical.FindPatientByID(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
@@ -329,7 +329,7 @@ func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, inp
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := ps.fhir.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		organization, err := ps.clinical.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
 		if err != nil {
 			//Should not fail if the organization is not found
 			log.Printf("the error is: %v", err)
@@ -387,7 +387,7 @@ func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input d
 		ValueString: &input.Value,
 	}
 
-	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	patient, err := ps.clinical.FindPatientByID(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
@@ -399,7 +399,7 @@ func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input d
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := ps.fhir.FindOrganizationByID(ctx, input.OrganizationID)
+		organization, err := ps.clinical.FindOrganizationByID(ctx, input.OrganizationID)
 		if err != nil {
 			//Should not fail if organization is not found
 			log.Printf("the error is: %v", err)
@@ -462,7 +462,7 @@ func (ps ServicePubSubMessaging) ComposeMedicationStatementInput(ctx context.Con
 		},
 	}
 
-	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	patient, err := ps.clinical.FindPatientByID(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
@@ -474,7 +474,7 @@ func (ps ServicePubSubMessaging) ComposeMedicationStatementInput(ctx context.Con
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := ps.fhir.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		organization, err := ps.clinical.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
 		if err != nil {
 			log.Printf("the error is: %v", err)
 		}
@@ -530,7 +530,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 		Day:   day,
 	}
 
-	patient, err := ps.patient.FindPatientByID(ctx, input.PatientID)
+	patient, err := ps.clinical.FindPatientByID(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}

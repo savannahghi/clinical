@@ -30,8 +30,5 @@ RUN apk add --no-cache ca-certificates
 COPY --from=builder /app/server /server
 COPY --from=builder /app/deps.yaml /deps.yaml
 
-COPY --from=builder /app/pkg/clinical/application/authorization/rbac_model.conf /app/pkg/clinical/application/authorization/rbac_model.conf
-COPY --from=builder /app/pkg/clinical/application/authorization/data/rbac_policy.csv /app/pkg/clinical/application/authorization/data/rbac_policy.csv
-
 # Run the web service on container startup.
 CMD ["/server"]

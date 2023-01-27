@@ -16,7 +16,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/fhir"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
@@ -50,6 +49,8 @@ const (
 
 // UseCasesClinical represents all the patient business logic
 type UseCasesClinical interface {
+	UseCasesFHIR
+
 	ProblemSummary(ctx context.Context, patientID string) ([]string, error)
 	VisitSummary(ctx context.Context, encounterID string, count int) (map[string]interface{}, error)
 	PatientTimelineWithCount(ctx context.Context, episodeID string, count int) ([]map[string]interface{}, error)
@@ -74,7 +75,6 @@ type UseCasesClinical interface {
 // UseCasesClinicalImpl represents the patient usecase implementation
 type UseCasesClinicalImpl struct {
 	infrastructure infrastructure.Infrastructure
-	fhirUsecase    fhir.UseCasesFHIR
 }
 
 // NewUseCasesClinicalImpl initializes new Clinical/Patient implementation
@@ -1113,7 +1113,7 @@ func (c *UseCasesClinicalImpl) StartEpisodeByBreakGlass(
 			log.Printf("failed to send alert message to admin during StartEpisodeByBreakGlass login: %s", err)
 		}
 	}
-	organizationID, err := c.fhirUsecase.GetORCreateOrganization(ctx, input.ProviderCode)
+	organizationID, err := c.GetORCreateOrganization(ctx, input.ProviderCode)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(

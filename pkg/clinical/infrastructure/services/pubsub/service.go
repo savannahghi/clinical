@@ -10,7 +10,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
-	fhirUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/fhir"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	"github.com/savannahghi/serverutils"
 )
@@ -57,12 +56,11 @@ type ServicePubsub interface {
 
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
-	client  *pubsub.Client
-	baseExt extensions.BaseExtension
-	infra   infrastructure.Infrastructure
-	patient clinical.UseCasesClinical
-	fhir    fhirUsecase.UseCasesFHIR
-	ocl     ocl.UseCasesOCL
+	client   *pubsub.Client
+	baseExt  extensions.BaseExtension
+	infra    infrastructure.Infrastructure
+	clinical clinical.UseCasesClinical
+	ocl      ocl.UseCasesOCL
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
@@ -70,17 +68,15 @@ func NewServicePubSubMessaging(
 	client *pubsub.Client,
 	baseExt extensions.BaseExtension,
 	infra infrastructure.Infrastructure,
-	patient clinical.UseCasesClinical,
-	fhir fhirUsecase.UseCasesFHIR,
+	clinical clinical.UseCasesClinical,
 	ocl ocl.UseCasesOCL,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
-		client:  client,
-		baseExt: baseExt,
-		infra:   infra,
-		patient: patient,
-		fhir:    fhir,
-		ocl:     ocl,
+		client:   client,
+		baseExt:  baseExt,
+		infra:    infra,
+		clinical: clinical,
+		ocl:      ocl,
 	}
 
 	ctx := context.Background()

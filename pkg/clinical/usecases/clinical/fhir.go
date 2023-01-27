@@ -1,4 +1,4 @@
-package fhir
+package clinical
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
 )
 
@@ -82,58 +81,46 @@ type UseCasesFHIR interface {
 	SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 }
 
-// UseCasesFHIRImpl represents the FHIR usecase implementation
-type UseCasesFHIRImpl struct {
-	infrastructure infrastructure.Infrastructure
-}
-
-// NewUseCasesFHIRImpl initializes the new FHIR implementation
-func NewUseCasesFHIRImpl(infra infrastructure.Infrastructure) UseCasesFHIR {
-	return &UseCasesFHIRImpl{
-		infrastructure: infra,
-	}
-}
-
 // Encounters returns encounters that belong to the indicated patient.
 //
 // The patientReference should be a [string] in the format "Patient/<patient resource ID>".
-func (fh UseCasesFHIRImpl) Encounters(
+func (c *UseCasesClinicalImpl) Encounters(
 	ctx context.Context,
 	patientReference string,
 	status *domain.EncounterStatusEnum,
 ) ([]*domain.FHIREncounter, error) {
 
-	return fh.infrastructure.FHIR.Encounters(ctx, patientReference, status)
+	return c.infrastructure.FHIR.Encounters(ctx, patientReference, status)
 }
 
 // SearchFHIREpisodeOfCare provides a search API for FHIREpisodeOfCare
-func (fh UseCasesFHIRImpl) SearchFHIREpisodeOfCare(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIREpisodeOfCare(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error) {
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIREpisodeOfCare(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIREpisodeOfCare(ctx, params)
 }
 
 //CreateEpisodeOfCare is the final common pathway for creation of episodes of care.
-func (fh UseCasesFHIRImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
-	return fh.infrastructure.FHIR.CreateEpisodeOfCare(ctx, episode)
+func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
+	return c.infrastructure.FHIR.CreateEpisodeOfCare(ctx, episode)
 }
 
 // CreateFHIRCondition creates a FHIRCondition instance
-func (fh UseCasesFHIRImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRCondition(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRCondition(ctx, input)
 }
 
 // CreateFHIROrganization creates a FHIROrganization instance
-func (fh UseCasesFHIRImpl) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIROrganization(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIROrganization(ctx, input)
 }
 
 // OpenOrganizationEpisodes return all organization specific open episodes
-func (fh UseCasesFHIRImpl) OpenOrganizationEpisodes(
+func (c *UseCasesClinicalImpl) OpenOrganizationEpisodes(
 	ctx context.Context, providerSladeCode string) ([]*domain.FHIREpisodeOfCare, error) {
 
-	organizationID, err := fh.GetORCreateOrganization(ctx, providerSladeCode)
+	organizationID, err := c.GetORCreateOrganization(ctx, providerSladeCode)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -143,11 +130,11 @@ func (fh UseCasesFHIRImpl) OpenOrganizationEpisodes(
 	searchParams := url.Values{}
 	searchParams.Add("status", domain.EpisodeOfCareStatusEnumActive.String())
 	searchParams.Add("organization", organizationReference)
-	return fh.SearchEpisodesByParam(ctx, searchParams)
+	return c.SearchEpisodesByParam(ctx, searchParams)
 }
 
 // CreateOrganization creates an organization given ist provider code
-func (fh UseCasesFHIRImpl) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
+func (c *UseCasesClinicalImpl) CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
 
 	identifier := []*domain.FHIRIdentifierInput{
 		{
@@ -159,7 +146,7 @@ func (fh UseCasesFHIRImpl) CreateOrganization(ctx context.Context, providerSlade
 		Identifier: identifier,
 		Name:       &providerSladeCode,
 	}
-	createdOrganization, err := fh.CreateFHIROrganization(ctx, organizationInput)
+	createdOrganization, err := c.CreateFHIROrganization(ctx, organizationInput)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
@@ -169,32 +156,32 @@ func (fh UseCasesFHIRImpl) CreateOrganization(ctx context.Context, providerSlade
 }
 
 // SearchFHIROrganization provides a search API for FHIROrganization
-func (fh UseCasesFHIRImpl) SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIROrganization(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIROrganization(ctx, params)
 }
 
 // FindOrganizationByID finds and retrieves organization details using the specified organization ID
-func (fh UseCasesFHIRImpl) FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error) {
+func (c *UseCasesClinicalImpl) FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error) {
 	if organizationID == "" {
 		return nil, fmt.Errorf("organization ID is required")
 	}
-	return fh.infrastructure.FHIR.FindOrganizationByID(ctx, organizationID)
+	return c.infrastructure.FHIR.FindOrganizationByID(ctx, organizationID)
 }
 
 // GetORCreateOrganization retrieve an organisation via its code if not found create a new one.
-func (fh UseCasesFHIRImpl) GetORCreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
-	retrievedOrg, err := fh.GetOrganization(ctx, providerSladeCode)
+func (c *UseCasesClinicalImpl) GetORCreateOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
+	retrievedOrg, err := c.GetOrganization(ctx, providerSladeCode)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
 			"internal server error in getting organisation : %v", err)
 	}
 	if retrievedOrg == nil {
-		createdOrg, err := fh.CreateOrganization(ctx, providerSladeCode)
+		createdOrg, err := c.CreateOrganization(ctx, providerSladeCode)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			return nil, fmt.Errorf(
@@ -206,12 +193,12 @@ func (fh UseCasesFHIRImpl) GetORCreateOrganization(ctx context.Context, provider
 }
 
 // GetOrganization retrieves an organization given its code
-func (fh UseCasesFHIRImpl) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
+func (c *UseCasesClinicalImpl) GetOrganization(ctx context.Context, providerSladeCode string) (*string, error) {
 
 	searchParam := map[string]interface{}{
 		"identifier": providerSladeCode,
 	}
-	organization, err := fh.SearchFHIROrganization(ctx, searchParam)
+	organization, err := c.SearchFHIROrganization(ctx, searchParam)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
@@ -224,8 +211,8 @@ func (fh UseCasesFHIRImpl) GetOrganization(ctx context.Context, providerSladeCod
 }
 
 // SearchEpisodesByParam search episodes by params
-func (fh UseCasesFHIRImpl) SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
-	return fh.infrastructure.FHIR.SearchEpisodesByParam(ctx, searchParams)
+func (c *UseCasesClinicalImpl) SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
+	return c.infrastructure.FHIR.SearchEpisodesByParam(ctx, searchParams)
 }
 
 // POSTRequest is used to manually compose POST requests to the FHIR service
@@ -233,48 +220,48 @@ func (fh UseCasesFHIRImpl) SearchEpisodesByParam(ctx context.Context, searchPara
 // - `resourceName` is a FHIR resource name e.g "Patient"
 // - `path` is a sub-path e.g `_search` under a resource
 // - `params` should be query params, sent as `url.Values`
-func (fh UseCasesFHIRImpl) POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
-	return fh.infrastructure.FHIRRepo.POSTRequest(resourceName, path, params, body)
+func (c *UseCasesClinicalImpl) POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
+	return c.infrastructure.FHIRRepo.POSTRequest(resourceName, path, params, body)
 }
 
 // OpenEpisodes returns the IDs of a patient's open episodes
-func (fh UseCasesFHIRImpl) OpenEpisodes(
+func (c *UseCasesClinicalImpl) OpenEpisodes(
 	ctx context.Context, patientReference string) ([]*domain.FHIREpisodeOfCare, error) {
-	return fh.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
+	return c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 }
 
 // HasOpenEpisode determines if a patient has an open episode
-func (fh UseCasesFHIRImpl) HasOpenEpisode(
+func (c *UseCasesClinicalImpl) HasOpenEpisode(
 	ctx context.Context,
 	patient domain.FHIRPatient,
 ) (bool, error) {
-	return fh.infrastructure.FHIR.HasOpenEpisode(ctx, patient)
+	return c.infrastructure.FHIR.HasOpenEpisode(ctx, patient)
 }
 
 // FHIRHeaders composes suitable FHIR headers, with authentication and content
 // type already set
-func (fh UseCasesFHIRImpl) FHIRHeaders() (http.Header, error) {
-	return fh.infrastructure.FHIRRepo.FHIRHeaders()
+func (c *UseCasesClinicalImpl) FHIRHeaders() (http.Header, error) {
+	return c.infrastructure.FHIRRepo.FHIRHeaders()
 }
 
 // CreateFHIREncounter creates a FHIREncounter instance
-func (fh UseCasesFHIRImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIREncounter(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIREncounter(ctx, input)
 }
 
 // GetFHIREpisodeOfCare retrieves instances of FHIREpisodeOfCare by ID
-func (fh UseCasesFHIRImpl) GetFHIREpisodeOfCare(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
-	return fh.infrastructure.FHIR.GetFHIREpisodeOfCare(ctx, id)
+func (c *UseCasesClinicalImpl) GetFHIREpisodeOfCare(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
+	return c.infrastructure.FHIR.GetFHIREpisodeOfCare(ctx, id)
 }
 
 // StartEncounter starts an encounter within an episode of care
-func (fh *UseCasesFHIRImpl) StartEncounter(
+func (c *UseCasesClinicalImpl) StartEncounter(
 	ctx context.Context, episodeID string) (string, error) {
-	return fh.infrastructure.FHIR.StartEncounter(ctx, episodeID)
+	return c.infrastructure.FHIR.StartEncounter(ctx, episodeID)
 }
 
 // StartEpisodeByOtp starts a patient OTP verified episode
-func (fh *UseCasesFHIRImpl) StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
+func (c *UseCasesClinicalImpl) StartEpisodeByOtp(ctx context.Context, input domain.OTPEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
 
 	normalized, err := converterandformatter.NormalizeMSISDN(input.Msisdn)
 	if err != nil {
@@ -282,7 +269,7 @@ func (fh *UseCasesFHIRImpl) StartEpisodeByOtp(ctx context.Context, input domain.
 		return nil, fmt.Errorf("failed to normalize phone number: %w", err)
 	}
 
-	organizationID, err := fh.GetORCreateOrganization(ctx, input.ProviderCode)
+	organizationID, err := c.GetORCreateOrganization(ctx, input.ProviderCode)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -295,13 +282,13 @@ func (fh *UseCasesFHIRImpl) StartEpisodeByOtp(ctx context.Context, input domain.
 		input.ProviderCode,
 		input.PatientID,
 	)
-	return fh.CreateEpisodeOfCare(ctx, ep)
+	return c.CreateEpisodeOfCare(ctx, ep)
 }
 
 // UpgradeEpisode starts a patient OTP verified episode
-func (fh *UseCasesFHIRImpl) UpgradeEpisode(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
+func (c *UseCasesClinicalImpl) UpgradeEpisode(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
 	// retrieve and validate the episode
-	episode, err := fh.GetActiveEpisode(ctx, input.EpisodeID)
+	episode, err := c.GetActiveEpisode(ctx, input.EpisodeID)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("can't get active episode to upgrade: %w", err)
@@ -320,7 +307,7 @@ func (fh *UseCasesFHIRImpl) UpgradeEpisode(ctx context.Context, input domain.OTP
 	if episodeTypes[0] == nil {
 		return nil, fmt.Errorf("system error: nil episode")
 	}
-	encounters, err := fh.Encounters(ctx, *episode.Patient.Reference, nil)
+	encounters, err := c.Encounters(ctx, *episode.Patient.Reference, nil)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
@@ -347,7 +334,7 @@ func (fh *UseCasesFHIRImpl) UpgradeEpisode(ctx context.Context, input domain.OTP
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
 
-	_, err = fh.infrastructure.FHIRRepo.UpdateFHIRResource(
+	_, err = c.infrastructure.FHIRRepo.UpdateFHIRResource(
 		"EpisodeOfCare", *episode.ID, payload)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -361,188 +348,188 @@ func (fh *UseCasesFHIRImpl) UpgradeEpisode(ctx context.Context, input domain.OTP
 }
 
 // SearchEpisodeEncounter returns all encounters in a visit
-func (fh *UseCasesFHIRImpl) SearchEpisodeEncounter(
+func (c *UseCasesClinicalImpl) SearchEpisodeEncounter(
 	ctx context.Context,
 	episodeReference string,
 ) (*domain.FHIREncounterRelayConnection, error) {
-	return fh.infrastructure.FHIR.SearchEpisodeEncounter(ctx, episodeReference)
+	return c.infrastructure.FHIR.SearchEpisodeEncounter(ctx, episodeReference)
 }
 
 // EndEncounter ends an encounter
-func (fh *UseCasesFHIRImpl) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
-	return fh.infrastructure.FHIR.EndEncounter(ctx, encounterID)
+func (c *UseCasesClinicalImpl) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
+	return c.infrastructure.FHIR.EndEncounter(ctx, encounterID)
 }
 
 // EndEpisode ends an episode of care by patching it's status to "finished"
-func (fh *UseCasesFHIRImpl) EndEpisode(ctx context.Context, episodeID string) (bool, error) {
-	return fh.infrastructure.FHIR.EndEpisode(ctx, episodeID)
+func (c *UseCasesClinicalImpl) EndEpisode(ctx context.Context, episodeID string) (bool, error) {
+	return c.infrastructure.FHIR.EndEpisode(ctx, episodeID)
 }
 
 // GetActiveEpisode returns any ACTIVE episode that has to the indicated ID
-func (fh *UseCasesFHIRImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error) {
-	return fh.infrastructure.FHIR.GetActiveEpisode(ctx, episodeID)
+func (c *UseCasesClinicalImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error) {
+	return c.infrastructure.FHIR.GetActiveEpisode(ctx, episodeID)
 }
 
 // SearchFHIRServiceRequest provides a search API for FHIRServiceRequest
-func (fh *UseCasesFHIRImpl) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIRServiceRequest(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIRServiceRequest(ctx, params)
 }
 
 // CreateFHIRServiceRequest creates a FHIRServiceRequest instance
-func (fh *UseCasesFHIRImpl) CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRServiceRequest(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRServiceRequest(ctx, input)
 }
 
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
-func (fh *UseCasesFHIRImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-	return fh.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, params)
+func (c *UseCasesClinicalImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+	return c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, params)
 }
 
 // CreateFHIRAllergyIntolerance creates a FHIRAllergyIntolerance instance
-func (fh *UseCasesFHIRImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRAllergyIntolerance(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRAllergyIntolerance(ctx, input)
 }
 
 // UpdateFHIRAllergyIntolerance updates a FHIRAllergyIntolerance instance
 // The resource must have it's ID set.
-func (fh *UseCasesFHIRImpl) UpdateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-	return fh.infrastructure.FHIR.UpdateFHIRAllergyIntolerance(ctx, input)
+func (c *UseCasesClinicalImpl) UpdateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+	return c.infrastructure.FHIR.UpdateFHIRAllergyIntolerance(ctx, input)
 }
 
 // SearchFHIRComposition provides a search API for FHIRComposition
-func (fh *UseCasesFHIRImpl) SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIRComposition(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIRComposition(ctx, params)
 }
 
 // CreateFHIRComposition creates a FHIRComposition instance
-func (fh *UseCasesFHIRImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRComposition(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRComposition(ctx, input)
 }
 
 // UpdateFHIRComposition updates a FHIRComposition instance
 // The resource must have it's ID set.
-func (fh *UseCasesFHIRImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	return fh.infrastructure.FHIR.UpdateFHIRComposition(ctx, input)
+func (c *UseCasesClinicalImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+	return c.infrastructure.FHIR.UpdateFHIRComposition(ctx, input)
 }
 
 // DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
-func (fh *UseCasesFHIRImpl) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
-	return fh.infrastructure.FHIR.DeleteFHIRComposition(ctx, id)
+func (c *UseCasesClinicalImpl) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
+	return c.infrastructure.FHIR.DeleteFHIRComposition(ctx, id)
 }
 
 // SearchFHIRCondition provides a search API for FHIRCondition
-func (fh *UseCasesFHIRImpl) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIRCondition(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIRCondition(ctx, params)
 }
 
 // UpdateFHIRCondition updates a FHIRCondition instance
 // The resource must have it's ID set.
-func (fh *UseCasesFHIRImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	return fh.infrastructure.FHIR.UpdateFHIRCondition(ctx, input)
+func (c *UseCasesClinicalImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+	return c.infrastructure.FHIR.UpdateFHIRCondition(ctx, input)
 }
 
 // GetFHIREncounter retrieves instances of FHIREncounter by ID
-func (fh *UseCasesFHIRImpl) GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-	return fh.infrastructure.FHIR.GetFHIREncounter(ctx, id)
+func (c *UseCasesClinicalImpl) GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+	return c.infrastructure.FHIR.GetFHIREncounter(ctx, id)
 }
 
 // SearchFHIREncounter provides a search API for FHIREncounter
-func (fh *UseCasesFHIRImpl) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIREncounter(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIREncounter(ctx, params)
 }
 
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
-func (fh *UseCasesFHIRImpl) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
 
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIRMedicationRequest(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIRMedicationRequest(ctx, params)
 }
 
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
-func (fh *UseCasesFHIRImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRMedicationRequest(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRMedicationRequest(ctx, input)
 }
 
 // UpdateFHIRMedicationRequest updates a FHIRMedicationRequest instance
 // The resource must have it's ID set.
-func (fh *UseCasesFHIRImpl) UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	return fh.infrastructure.FHIR.UpdateFHIRMedicationRequest(ctx, input)
+func (c *UseCasesClinicalImpl) UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
+	return c.infrastructure.FHIR.UpdateFHIRMedicationRequest(ctx, input)
 }
 
 // DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
-func (fh *UseCasesFHIRImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	return fh.infrastructure.FHIR.DeleteFHIRMedicationRequest(ctx, id)
+func (c *UseCasesClinicalImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
+	return c.infrastructure.FHIR.DeleteFHIRMedicationRequest(ctx, id)
 }
 
 // SearchFHIRObservation provides a search API for FHIRObservation
-func (fh *UseCasesFHIRImpl) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIRObservation(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIRObservation(ctx, params)
 }
 
 // CreateFHIRObservation creates a FHIRObservation instance
-func (fh *UseCasesFHIRImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRObservation(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRObservation(ctx, input)
 }
 
 // DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
-func (fh *UseCasesFHIRImpl) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
-	return fh.infrastructure.FHIR.DeleteFHIRObservation(ctx, id)
+func (c *UseCasesClinicalImpl) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
+	return c.infrastructure.FHIR.DeleteFHIRObservation(ctx, id)
 }
 
 // GetFHIRPatient retrieves instances of FHIRPatient by ID
-func (fh *UseCasesFHIRImpl) GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-	return fh.infrastructure.FHIR.GetFHIRPatient(ctx, id)
+func (c *UseCasesClinicalImpl) GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+	return c.infrastructure.FHIR.GetFHIRPatient(ctx, id)
 }
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
-func (fh *UseCasesFHIRImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	return fh.infrastructure.FHIR.DeleteFHIRPatient(ctx, id)
+func (c *UseCasesClinicalImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
+	return c.infrastructure.FHIR.DeleteFHIRPatient(ctx, id)
 }
 
 // DeleteFHIRResourceType takes a ResourceType and ID and deletes them from FHIR
-func (fh *UseCasesFHIRImpl) DeleteFHIRResourceType(results []map[string]string) error {
-	return fh.infrastructure.FHIR.DeleteFHIRResourceType(results)
+func (c *UseCasesClinicalImpl) DeleteFHIRResourceType(results []map[string]string) error {
+	return c.infrastructure.FHIR.DeleteFHIRResourceType(results)
 }
 
 // DeleteFHIRServiceRequest deletes the FHIRServiceRequest identified by the supplied ID
-func (fh *UseCasesFHIRImpl) DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error) {
-	return fh.infrastructure.FHIR.DeleteFHIRServiceRequest(ctx, id)
+func (c *UseCasesClinicalImpl) DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error) {
+	return c.infrastructure.FHIR.DeleteFHIRServiceRequest(ctx, id)
 }
 
 // CreateFHIRMedicationStatement creates a new FHIR Medication statement instance
-func (fh *UseCasesFHIRImpl) CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRMedicationStatement(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRMedicationStatement(ctx, input)
 }
 
 // CreateFHIRMedication creates a new FHIR Medication instance
-func (fh *UseCasesFHIRImpl) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
-	return fh.infrastructure.FHIR.CreateFHIRMedication(ctx, input)
+func (c *UseCasesClinicalImpl) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
+	return c.infrastructure.FHIR.CreateFHIRMedication(ctx, input)
 }
 
 // SearchFHIRMedicationStatement used to search for a fhir medication statement
-func (fh *UseCasesFHIRImpl) SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+func (c *UseCasesClinicalImpl) SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
-	return fh.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, params)
+	return c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, params)
 }
