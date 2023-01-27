@@ -14,8 +14,8 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	usecaseMock "github.com/savannahghi/clinical/pkg/clinical/usecases/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
+	oclMock "github.com/savannahghi/clinical/pkg/clinical/usecases/ocl/mock"
 	"github.com/savannahghi/firebasetools"
 	log "github.com/sirupsen/logrus"
 )
@@ -27,7 +27,7 @@ var (
 	testFakeInfra usecases.Interactor
 
 	FHIRRepoMock fhirRepoMock.FakeFHIRRepository
-	fakeOCL      usecaseMock.OCLMock
+	fakeOCL      oclMock.OCLMock
 
 	fakeBaseExtension extensionMock.FakeBaseExtension
 )

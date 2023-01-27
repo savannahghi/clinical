@@ -1,4 +1,4 @@
-package fhir_test
+package clinical_test
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir/mock"
 	fakeDatasetMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
-	fhirUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/fhir"
+	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 )
@@ -28,7 +28,7 @@ func TestUsecaseImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	UUID := uuid.New().String()
 	PatientRef := "Patient/1"
@@ -111,7 +111,7 @@ func TestUsecaseStoreImpl_CreateFHIRCondition(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	ID := uuid.New().String()
 
@@ -218,7 +218,7 @@ func TestUsecaseStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	ID := ksuid.New().String()
 	active := true
@@ -297,7 +297,7 @@ func TestUsecaseStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	type args struct {
 		ctx            context.Context
@@ -352,7 +352,7 @@ func TestUsecaseStoreImpl_SearchEpisodesByParam(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	type args struct {
 		ctx          context.Context
@@ -405,7 +405,7 @@ func TestUsecaseStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	type args struct {
 		ctx    context.Context
@@ -461,7 +461,7 @@ func TestUsecaseStoreImpl_OpenEpisodes(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	patientReference := fmt.Sprintf("Patient/%s", ksuid.New().String())
 
@@ -515,7 +515,7 @@ func TestUsecaseStoreImpl_HasOpenEpisode(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	UUID := uuid.New().String()
 
@@ -577,7 +577,7 @@ func TestUsecaseStoreImpl_CreateFHIREncounter(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	input := domain.FHIREncounterInput{}
 	type args struct {
@@ -632,7 +632,7 @@ func TestUsecaseStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	id := ksuid.New().String()
 
@@ -687,7 +687,7 @@ func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	episodeID := uuid.New().String()
 
@@ -734,7 +734,7 @@ func TestUsecaseStoreImpl_GetFHIREncounter(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	type args struct {
 		ctx context.Context
@@ -786,7 +786,7 @@ func TestUsecaseStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	UUID := uuid.New().String()
 
@@ -841,7 +841,7 @@ func TestUsecaseStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	UUID := uuid.New().String()
 
@@ -896,7 +896,7 @@ func TestUsecaseStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	UUID := uuid.New().String()
 
@@ -955,7 +955,7 @@ func TestUsecaseStoreImpl_SearchFHIRComposition(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	params := map[string]interface{}{"test": "123"}
 
@@ -1011,7 +1011,7 @@ func TestUsecaseStoreImpl_CreateFHIRComposition(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	input := domain.FHIRCompositionInput{}
 
@@ -1067,7 +1067,7 @@ func TestUsecaseStoreImpl_UpdateFHIRComposition(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	UUID := uuid.New().String()
 
@@ -1126,7 +1126,7 @@ func TestUsecaseStoreImpl_DeleteFHIRComposition(t *testing.T) {
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
 	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
-	m := fhirUsecase.NewUseCasesFHIRImpl(n)
+	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	id := ksuid.New().String()
 

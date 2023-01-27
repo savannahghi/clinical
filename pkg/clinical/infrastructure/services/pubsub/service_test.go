@@ -49,7 +49,6 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 		baseExtension,
 		infrastructure,
 		usecases,
-		usecases,
 		oclUseCase,
 	)
 	if err != nil {
