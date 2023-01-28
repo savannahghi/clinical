@@ -2,6 +2,7 @@ package mock
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -67,6 +68,11 @@ type FHIRMock struct {
 	MockSearchFHIRMedicationStatementFn func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 	MockFHIRHeadersFn                   func() (http.Header, error)
 	MockGetBearerTokenFn                func() (string, error)
+
+	MockCreateFHIRResourceFn func(resourceType string, payload map[string]interface{}) ([]byte, error)
+	MockPatchFHIRResourceFn  func(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
+	MockUpdateFHIRResourceFn func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
+	MockGetFHIRResourceFn    func(resourceType, fhirResourceID string) ([]byte, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -145,7 +151,17 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIROrganizationRelayConnection{}, nil
 		},
 		MockPOSTRequestFn: func(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
-			return []byte("m"), nil
+			m := map[string]string{
+				"resourceType": "Bundle",
+				"type":         "searchset",
+				"total":        "10",
+				"link":         "test",
+			}
+			bs, err := json.Marshal(m)
+			if err != nil {
+				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
+			}
+			return bs, nil
 		},
 		MockSearchEpisodesByParamFn: func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
 			return []*domain.FHIREpisodeOfCare{}, nil
@@ -385,6 +401,55 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockGetBearerTokenFn: func() (string, error) {
 			return fmt.Sprintf("Bearer %s", uuid.NewString()), nil
+		},
+		MockCreateFHIRResourceFn: func(resourceType string, payload map[string]interface{}) ([]byte, error) {
+			m := map[string]interface{}{
+				"key": "value",
+			}
+			bs, err := json.Marshal(m)
+			if err != nil {
+				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
+			}
+			return bs, nil
+		},
+		MockPatchFHIRResourceFn: func(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
+			m := map[string]interface{}{
+				"key": "value",
+			}
+			bs, err := json.Marshal(m)
+			if err != nil {
+				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
+			}
+			return bs, nil
+		},
+		MockUpdateFHIRResourceFn: func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
+			m := map[string]interface{}{
+				"key": "value",
+			}
+			bs, err := json.Marshal(m)
+			if err != nil {
+				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
+			}
+			return bs, nil
+		},
+		MockGetFHIRResourceFn: func(resourceType, fhirResourceID string) ([]byte, error) {
+			n := map[string]interface{}{"given": []string{"John"}, "family": []string{"Doe"}}
+			p := map[string]interface{}{
+				"resourceType": "Patient/",
+				"id":           "test-UUID",
+				"name":         []map[string]interface{}{n},
+			}
+			m := map[string]interface{}{
+				"resourceType":  "Patient/",
+				"status":        "active",
+				"id":            "test-UUID",
+				"patientRecord": p,
+			}
+			bs, err := json.Marshal(m)
+			if err != nil {
+				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
+			}
+			return bs, nil
 		},
 	}
 }
@@ -628,4 +693,24 @@ func (fh *FHIRMock) CreateFHIRMedication(ctx context.Context, input domain.FHIRM
 // FHIRHeaders is a mock implementation of CreateFHIRMedication method
 func (fh *FHIRMock) FHIRHeaders() (http.Header, error) {
 	return fh.MockFHIRHeadersFn()
+}
+
+// CreateFHIRResource mocks the implementation for creating a fhir resource
+func (fh *FHIRMock) CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error) {
+	return fh.MockCreateFHIRResourceFn(resourceType, payload)
+}
+
+// PatchFHIRResource mocks the implementation for patching a fhir resource
+func (fh *FHIRMock) PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
+	return fh.MockPatchFHIRResourceFn(resourceType, fhirResourceID, payload)
+}
+
+// UpdateFHIRResource mocks the implementation for updating a FHIR resource
+func (fh *FHIRMock) UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
+	return fh.MockUpdateFHIRResourceFn(resourceType, fhirResourceID, payload)
+}
+
+// GetFHIRResource mocks the implementation of getting a FHIR resource
+func (fh *FHIRMock) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
+	return fh.MockGetFHIRResourceFn(resourceType, fhirResourceID)
 }

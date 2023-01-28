@@ -8,8 +8,8 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
-	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
+	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/firebasetools"
@@ -55,7 +55,7 @@ func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, ocl)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
 
 	usecases := interactor.NewUsecasesInteractor(
 		infrastructure,
@@ -70,7 +70,7 @@ func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastru
 	fhir := fhir.NewFHIRStoreImpl(repo)
 
 	ocl := openconceptlab.NewServiceOCL()
-	return infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, ocl), nil
+	return infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl), nil
 }
 
 func TestUseCasesImpl_ListConcepts(t *testing.T) {

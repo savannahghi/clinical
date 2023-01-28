@@ -221,7 +221,7 @@ func (c *UseCasesClinicalImpl) SearchEpisodesByParam(ctx context.Context, search
 // - `path` is a sub-path e.g `_search` under a resource
 // - `params` should be query params, sent as `url.Values`
 func (c *UseCasesClinicalImpl) POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
-	return c.infrastructure.FHIRRepo.POSTRequest(resourceName, path, params, body)
+	return c.infrastructure.FHIR.POSTRequest(resourceName, path, params, body)
 }
 
 // OpenEpisodes returns the IDs of a patient's open episodes
@@ -241,7 +241,7 @@ func (c *UseCasesClinicalImpl) HasOpenEpisode(
 // FHIRHeaders composes suitable FHIR headers, with authentication and content
 // type already set
 func (c *UseCasesClinicalImpl) FHIRHeaders() (http.Header, error) {
-	return c.infrastructure.FHIRRepo.FHIRHeaders()
+	return c.infrastructure.FHIR.FHIRHeaders()
 }
 
 // CreateFHIREncounter creates a FHIREncounter instance
@@ -334,7 +334,7 @@ func (c *UseCasesClinicalImpl) UpgradeEpisode(ctx context.Context, input domain.
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
 
-	_, err = c.infrastructure.FHIRRepo.UpdateFHIRResource(
+	_, err = c.infrastructure.FHIR.UpdateFHIRResource(
 		"EpisodeOfCare", *episode.ID, payload)
 	if err != nil {
 		utils.ReportErrorToSentry(err)

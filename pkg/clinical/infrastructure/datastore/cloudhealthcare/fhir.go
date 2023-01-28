@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -12,7 +14,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/scalarutils"
@@ -1793,4 +1795,35 @@ func (fh *StoreImpl) SearchFHIRMedicationStatement(ctx context.Context, params m
 		})
 	}
 	return &output, nil
+}
+
+// CreateFHIRResource creates a FHIR resource
+func (fh *StoreImpl) CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error) {
+	return fh.Dataset.CreateFHIRResource(resourceType, payload)
+}
+
+// PatchFHIRResource patches a FHIR resource
+func (fh *StoreImpl) PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
+	return fh.Dataset.PatchFHIRResource(resourceType, fhirResourceID, payload)
+}
+
+// UpdateFHIRResource updates a FHIR resource
+func (fh *StoreImpl) UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
+	return fh.Dataset.UpdateFHIRResource(resourceType, fhirResourceID, payload)
+}
+
+// POSTRequest is used to manually compose POST requests to the FHIR service
+func (fh *StoreImpl) POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
+	return fh.Dataset.POSTRequest(resourceName, path, params, body)
+}
+
+// GetFHIRResource gets a FHIR resource.
+func (fh *StoreImpl) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
+	return fh.Dataset.GetFHIRResource(resourceType, fhirResourceID)
+}
+
+// FHIRHeaders composes suitable FHIR headers, with authentication and content
+// type already set
+func (fh *StoreImpl) FHIRHeaders() (http.Header, error) {
+	return fh.Dataset.FHIRHeaders()
 }
