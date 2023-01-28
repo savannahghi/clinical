@@ -332,7 +332,7 @@ func (c *UseCasesClinicalImpl) PatientSearch(ctx context.Context, search string)
 	params := url.Values{}
 	params.Add("_content", search) // entire doc
 
-	bs, err := c.infrastructure.FHIRRepo.POSTRequest("Patient", "_search", params, nil)
+	bs, err := c.infrastructure.FHIR.POSTRequest("Patient", "_search", params, nil)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to search: %v", err)
@@ -601,7 +601,7 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input domain.F
 		return nil, fmt.Errorf("unable to turn patient input into a map: %v", err)
 	}
 
-	data, err := c.infrastructure.FHIRRepo.CreateFHIRResource("Patient", payload)
+	data, err := c.infrastructure.FHIR.CreateFHIRResource("Patient", payload)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to create/update patient resource: %v", err)
@@ -628,7 +628,7 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
 
-	data, err := c.infrastructure.FHIRRepo.GetFHIRResource("Patient", id)
+	data, err := c.infrastructure.FHIR.GetFHIRResource("Patient", id)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"unable to get patient with ID %s, err: %v", id, err)
@@ -754,7 +754,7 @@ func (c *UseCasesClinicalImpl) UpdatePatient(ctx context.Context, input domain.S
 		patches = append(patches, patch)
 	}
 
-	data, err := c.infrastructure.FHIRRepo.PatchFHIRResource("Patient", input.ID, patches)
+	data, err := c.infrastructure.FHIR.PatchFHIRResource("Patient", input.ID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("UpdatePatient: %v", err)
@@ -856,7 +856,7 @@ func (c *UseCasesClinicalImpl) AddNextOfKin(ctx context.Context, input domain.Si
 		},
 	}
 
-	data, err := c.infrastructure.FHIRRepo.PatchFHIRResource(
+	data, err := c.infrastructure.FHIR.PatchFHIRResource(
 		"Patient", input.PatientID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -940,7 +940,7 @@ func (c *UseCasesClinicalImpl) AddNHIF(ctx context.Context, input *domain.Simple
 		},
 	}
 
-	data, err := c.infrastructure.FHIRRepo.PatchFHIRResource(
+	data, err := c.infrastructure.FHIR.PatchFHIRResource(
 		"Patient", input.PatientID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -1017,7 +1017,7 @@ func (c *UseCasesClinicalImpl) CreateUpdatePatientExtraInformation(
 		return false, fmt.Errorf("an error occurred: %v", err)
 	}
 
-	_, err = c.infrastructure.FHIRRepo.PatchFHIRResource("Patient", input.PatientID, patches)
+	_, err = c.infrastructure.FHIR.PatchFHIRResource("Patient", input.PatientID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf("UpdatePatient: %v", err)

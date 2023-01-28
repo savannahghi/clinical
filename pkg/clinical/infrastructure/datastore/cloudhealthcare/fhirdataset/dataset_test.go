@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/tj/assert"
 )
 

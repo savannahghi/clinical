@@ -10,8 +10,7 @@ import (
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir/mock"
-	fakeDatasetMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset/mock"
+	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/interserviceclient"
@@ -23,11 +22,10 @@ func TestClinicalUseCaseImpl_ProblemSummary_Unittest(t *testing.T) {
 	ctx := context.Background()
 
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, Fakeopenconceptlab)
 	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	type args struct {
@@ -77,11 +75,10 @@ func TestClinicalUseCaseImpl_VisitSummary_Unittest(t *testing.T) {
 	ctx := context.Background()
 
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, Fakeopenconceptlab)
 	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	type args struct {
@@ -148,11 +145,10 @@ func TestClinicalUseCaseImpl_PatientSearch_Unittest(t *testing.T) {
 	ctx := context.Background()
 
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, Fakeopenconceptlab)
 	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	searchPatient := "Test user"
@@ -186,7 +182,7 @@ func TestClinicalUseCaseImpl_PatientSearch_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Sad case" {
-				FakefhirRepository.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
+				Fakefhir.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
 					return nil, fmt.Errorf("error")
 				}
 			}
@@ -204,11 +200,10 @@ func TestClinicalUseCaseImpl_ContactsToContactPointInput_Unittest(t *testing.T) 
 	ctx := context.Background()
 
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, Fakeopenconceptlab)
 	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	type args struct {
@@ -254,11 +249,10 @@ func TestClinicalUseCaseImpl_CreatePatient_Unittest(t *testing.T) {
 	ctx := context.Background()
 
 	FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-	FakefhirRepository := fakeDatasetMock.NewFakeFHIRRepositoryMock()
 	Fakefhir := fakeFHIRMock.NewFHIRMock()
 	Fakeopenconceptlab := fakeOCLMock.NewFakeOCLMock()
 
-	n := infrastructure.NewInfrastructureInteractor(FakeExt, FakefhirRepository, Fakefhir, Fakeopenconceptlab)
+	n := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, Fakeopenconceptlab)
 	m := clinicalUsecase.NewUseCasesClinicalImpl(n)
 
 	ID := ksuid.New().String()
@@ -296,11 +290,6 @@ func TestClinicalUseCaseImpl_CreatePatient_Unittest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.name == "Sad case" {
-				FakefhirRepository.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("error")
-				}
-			}
 			_, err := m.CreatePatient(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ClinicalUseCaseImpl.CreatePatient() error = %v, wantErr %v", err, tt.wantErr)

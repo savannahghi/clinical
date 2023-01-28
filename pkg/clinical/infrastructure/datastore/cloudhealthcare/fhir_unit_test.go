@@ -10,11 +10,11 @@ import (
 	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	FHIR "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
+	FHIR "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 
-	fakeDataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset/mock"
+	fakeDataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset/mock"
 )
 
 func TestStoreImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {

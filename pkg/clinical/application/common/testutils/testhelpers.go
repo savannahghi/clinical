@@ -5,8 +5,8 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
-	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
+	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/firebasetools"
@@ -21,7 +21,7 @@ func InitializeTestService(ctx context.Context) (usecases.Interactor, error) {
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, ocl)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
 
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 

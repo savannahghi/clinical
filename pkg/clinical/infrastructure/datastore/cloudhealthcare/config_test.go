@@ -14,8 +14,8 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhir"
-	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/fhirdataset"
+	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
+	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/converterandformatter"
@@ -82,7 +82,7 @@ func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastru
 	fhir := fhir.NewFHIRStoreImpl(repo)
 
 	ocl := openconceptlab.NewServiceOCL()
-	return infrastructure.NewInfrastructureInteractor(baseExtension, repo, fhir, ocl), nil
+	return infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl), nil
 }
 
 // func simplePatientRegistration() (*domain.SimplePatientRegistrationInput, error) {
