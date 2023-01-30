@@ -2,15 +2,12 @@ package clinical
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/url"
 	"strconv"
 	"sync"
 
 	linq "github.com/ahmetb/go-linq/v3"
 	"github.com/google/uuid"
-	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
@@ -18,7 +15,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
@@ -40,11 +36,6 @@ const (
 	StringTimeParseMonthNumberLayout = "2006-01-02"
 	SavannahAdminEmail               = "SAVANNAH_ADMIN_EMAIL"
 	TwilioSMSNumberEnvVarName        = "TWILIO_SMS_NUMBER"
-
-	notFoundWithSearchParams = "could not find a patient with the provided parameters"
-	internalError            = "an error occurred on our end. Please try again later"
-	timeFormatStr            = "2006-01-02T15:04:05+03:00"
-	//defaultTimeoutSeconds    = 10
 )
 
 // UseCasesClinical represents all the patient business logic
@@ -328,108 +319,11 @@ func (c *UseCasesClinicalImpl) PatientTimelineWithCount(ctx context.Context, epi
 
 // PatientSearch searches for a patient by identifiers and names
 func (c *UseCasesClinicalImpl) PatientSearch(ctx context.Context, search string) (*domain.PatientConnection, error) {
-
-	params := url.Values{}
-	params.Add("_content", search) // entire doc
-
-	bs, err := c.infrastructure.FHIR.POSTRequest("Patient", "_search", params, nil)
+	output, err := c.infrastructure.FHIR.SearchFHIRPatient(ctx, search)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to search: %v", err)
+		return nil, fmt.Errorf("unable to find patient: %w", err)
 	}
-	respMap := make(map[string]interface{})
-	err = json.Unmarshal(bs, &respMap)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		log.Errorf("unable to unmarshal FHIR search response: %v", err)
-		return nil, fmt.Errorf(notFoundWithSearchParams)
-	}
-
-	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
-	for _, k := range mandatoryKeys {
-		_, found := respMap[k]
-		if !found {
-			log.Errorf("search response does not have key '%s'", k)
-			return nil, fmt.Errorf(notFoundWithSearchParams)
-		}
-	}
-	resourceType, ok := respMap["resourceType"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the resourceType is not a string")
-	}
-	if resourceType != "Bundle" {
-		log.Errorf("Search: the resourceType value is not 'Bundle' as expected")
-		return nil, fmt.Errorf(notFoundWithSearchParams)
-	}
-
-	resultType, ok := respMap["type"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the type is not a string")
-	}
-	if resultType != "searchset" {
-		log.Errorf("Search: the type value is not 'searchset' as expected")
-		return nil, fmt.Errorf(notFoundWithSearchParams)
-	}
-
-	respEntries := respMap["entry"]
-	if respEntries == nil {
-		return &domain.PatientConnection{
-			Edges:    []*domain.PatientEdge{},
-			PageInfo: &firebasetools.PageInfo{},
-		}, nil
-	}
-	entries, ok := respEntries.([]interface{})
-	if !ok {
-		log.Errorf("Search: entries is not a list of maps, it is: %T", respEntries)
-		return nil, fmt.Errorf(notFoundWithSearchParams)
-	}
-
-	output := domain.PatientConnection{}
-	for _, en := range entries {
-		entry, ok := en.(map[string]interface{})
-		if !ok {
-			return nil, fmt.Errorf("expected each entry to be map, they are %T instead", en)
-		}
-		expectedKeys := []string{"fullUrl", "resource", "search"}
-		for _, k := range expectedKeys {
-			_, found := entry[k]
-			if !found {
-				log.Errorf("search entry does not have key '%s'", k)
-				return nil, fmt.Errorf(notFoundWithSearchParams)
-			}
-		}
-
-		resource := entry["resource"].(map[string]interface{})
-
-		resource = c.birthdateMapper(resource)
-		resource = c.identifierMapper(resource)
-		resource = c.nameMapper(resource)
-		resource = c.telecomMapper(resource)
-		resource = c.addressMapper(resource)
-		resource = c.photoMapper(resource)
-		resource = c.contactMapper(resource)
-
-		var patient domain.FHIRPatient
-
-		err := mapstructure.Decode(resource, &patient)
-		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to map decode resource: %v", err)
-			return nil, fmt.Errorf(internalError)
-		}
-
-		hasOpenEpisodes, err := c.infrastructure.FHIR.HasOpenEpisode(ctx, patient)
-		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("error while checking if hasOpenEpisodes: %v", err)
-			return nil, fmt.Errorf(internalError)
-		}
-		output.Edges = append(output.Edges, &domain.PatientEdge{
-			Node:            &patient,
-			HasOpenEpisodes: hasOpenEpisodes,
-		})
-	}
-	return &output, nil
+	return output, nil
 }
 
 // FindPatientsByMSISDN finds a patient's record(s), given a search term

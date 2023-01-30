@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"io"
 	"net/http"
 	"net/url"
 
@@ -65,7 +64,7 @@ type FHIR interface {
 	SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 	CreateFHIRPatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
 	PatchFHIRPatient(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
+	SearchFHIRPatient(ctx context.Context, searchParams string) (*domain.PatientConnection, error)
 
-	POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
 	FHIRHeaders() (http.Header, error)
 }

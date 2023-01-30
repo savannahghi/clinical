@@ -2,9 +2,7 @@ package mock
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 
@@ -17,7 +15,6 @@ import (
 // FHIRMock struct implements mocks of FHIR methods.
 type FHIRMock struct {
 	MockCreateEpisodeOfCareFn    func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
-	MockPOSTRequestFn            func(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
 	MockSearchFHIRConditionFn    func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error)
 	MockCreateFHIRConditionFn    func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	MockCreateFHIROrganizationFn func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
@@ -71,6 +68,7 @@ type FHIRMock struct {
 	MockCreateFHIRPatientFn             func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
 	MockPatchFHIRPatientFn              func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
 	MockUpdateFHIREpisodeOfCareFn       func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
+	MockSearchFHIRPatientFn             func(ctx context.Context, searchParams string) (*domain.PatientConnection, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -147,19 +145,6 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockSearchFHIROrganizationFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
 			return &domain.FHIROrganizationRelayConnection{}, nil
-		},
-		MockPOSTRequestFn: func(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
-			m := map[string]string{
-				"resourceType": "Bundle",
-				"type":         "searchset",
-				"total":        "10",
-				"link":         "test",
-			}
-			bs, err := json.Marshal(m)
-			if err != nil {
-				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
-			}
-			return bs, nil
 		},
 		MockSearchEpisodesByParamFn: func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
 			return []*domain.FHIREpisodeOfCare{}, nil
@@ -467,6 +452,12 @@ func NewFHIRMock() *FHIRMock {
 				Account:              []*domain.FHIRReference{},
 			}, nil
 		},
+		MockSearchFHIRPatientFn: func(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+			return &domain.PatientConnection{
+				Edges:    []*domain.PatientEdge{},
+				PageInfo: &firebasetools.PageInfo{},
+			}, nil
+		},
 	}
 }
 
@@ -493,11 +484,6 @@ func (fh *FHIRMock) CreateFHIROrganization(ctx context.Context, input domain.FHI
 // SearchFHIROrganization is a mock implementation of SearchFHIROrganization method
 func (fh *FHIRMock) SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
 	return fh.MockSearchFHIROrganizationFn(ctx, params)
-}
-
-// POSTRequest is a mock implementation of POSTRequest method
-func (fh *FHIRMock) POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
-	return fh.MockPOSTRequestFn(resourceName, path, params, body)
 }
 
 // SearchEpisodesByParam is a mock implementation of SearchEpisodesByParam method
@@ -724,4 +710,9 @@ func (fh *FHIRMock) PatchFHIRPatient(ctx context.Context, id string, params []ma
 // UpdateFHIREpisodeOfCare mocks the implementation of updating a FHIR episode of care
 func (fh *FHIRMock) UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error) {
 	return fh.MockUpdateFHIREpisodeOfCareFn(ctx, fhirResourceID, payload)
+}
+
+// SearchFHIRPatient mocks the implementation of searching a FHIR patient
+func (fh *FHIRMock) SearchFHIRPatient(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+	return fh.MockSearchFHIRPatientFn(ctx, searchParams)
 }

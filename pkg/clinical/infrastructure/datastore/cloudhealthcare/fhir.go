@@ -17,13 +17,15 @@ import (
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
 	"github.com/savannahghi/converterandformatter"
+	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 )
 
 // constants and defaults
 const (
-	internalError = "an error occurred on our end. Please try again later"
-	timeFormatStr = "2006-01-02T15:04:05+03:00"
+	internalError            = "an error occurred on our end. Please try again later"
+	timeFormatStr            = "2006-01-02T15:04:05+03:00"
+	notFoundWithSearchParams = "could not find a patient with the provided parameters"
 )
 
 var (
@@ -1882,6 +1884,111 @@ func (fh *StoreImpl) PatchFHIRResource(resourceType, fhirResourceID string, payl
 // UpdateFHIRResource updates a FHIR resource
 func (fh *StoreImpl) UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
 	return fh.Dataset.UpdateFHIRResource(resourceType, fhirResourceID, payload)
+}
+
+// SearchFHIRPatient searches for a FHIR patient
+func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+	params := url.Values{}
+	params.Add("_content", searchParams)
+
+	bs, err := fh.Dataset.POSTRequest(patientResourceType, "_search", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("unable to search for patient: %w", err)
+	}
+
+	respMap := make(map[string]interface{})
+	err = json.Unmarshal(bs, &respMap)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		log.Errorf("unable to unmarshal FHIR search response: %v", err)
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
+	for _, k := range mandatoryKeys {
+		_, found := respMap[k]
+		if !found {
+			log.Errorf("search response does not have key '%s'", k)
+			return nil, fmt.Errorf(notFoundWithSearchParams)
+		}
+	}
+	resourceType, ok := respMap["resourceType"].(string)
+	if !ok {
+		return nil, fmt.Errorf("search: the resourceType is not a string")
+	}
+	if resourceType != "Bundle" {
+		log.Errorf("Search: the resourceType value is not 'Bundle' as expected")
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	resultType, ok := respMap["type"].(string)
+	if !ok {
+		return nil, fmt.Errorf("search: the type is not a string")
+	}
+	if resultType != "searchset" {
+		log.Errorf("Search: the type value is not 'searchset' as expected")
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	respEntries := respMap["entry"]
+	if respEntries == nil {
+		return &domain.PatientConnection{
+			Edges:    []*domain.PatientEdge{},
+			PageInfo: &firebasetools.PageInfo{},
+		}, nil
+	}
+	entries, ok := respEntries.([]interface{})
+	if !ok {
+		log.Errorf("Search: entries is not a list of maps, it is: %T", respEntries)
+		return nil, fmt.Errorf(notFoundWithSearchParams)
+	}
+
+	output := domain.PatientConnection{}
+	for _, en := range entries {
+		entry, ok := en.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("expected each entry to be map, they are %T instead", en)
+		}
+		expectedKeys := []string{"fullUrl", "resource", "search"}
+		for _, k := range expectedKeys {
+			_, found := entry[k]
+			if !found {
+				log.Errorf("search entry does not have key '%s'", k)
+				return nil, fmt.Errorf(notFoundWithSearchParams)
+			}
+		}
+
+		resource := entry["resource"].(map[string]interface{})
+
+		resource = birthdateMapper(resource)
+		resource = identifierMapper(resource)
+		resource = nameMapper(resource)
+		resource = telecomMapper(resource)
+		resource = addressMapper(resource)
+		resource = photoMapper(resource)
+		resource = contactMapper(resource)
+
+		var patient domain.FHIRPatient
+
+		err := mapstructure.Decode(resource, &patient)
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			log.Errorf("unable to map decode resource: %v", err)
+			return nil, fmt.Errorf(internalError)
+		}
+
+		hasOpenEpisodes, err := fh.HasOpenEpisode(ctx, patient)
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			log.Errorf("error while checking if hasOpenEpisodes: %v", err)
+			return nil, fmt.Errorf(internalError)
+		}
+		output.Edges = append(output.Edges, &domain.PatientEdge{
+			Node:            &patient,
+			HasOpenEpisodes: hasOpenEpisodes,
+		})
+	}
+	return &output, nil
 }
 
 // POSTRequest is used to manually compose POST requests to the FHIR service

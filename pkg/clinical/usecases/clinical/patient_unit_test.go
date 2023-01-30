@@ -3,8 +3,6 @@ package clinical_test
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/url"
 	"testing"
 
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
@@ -182,8 +180,8 @@ func TestClinicalUseCaseImpl_PatientSearch_Unittest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "Sad case" {
-				Fakefhir.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
-					return nil, fmt.Errorf("error")
+				Fakefhir.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+					return nil, fmt.Errorf("failed to get patient")
 				}
 			}
 			_, err := m.PatientSearch(tt.args.ctx, tt.args.search)
