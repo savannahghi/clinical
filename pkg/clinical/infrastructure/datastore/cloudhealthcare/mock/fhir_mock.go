@@ -69,10 +69,8 @@ type FHIRMock struct {
 	MockFHIRHeadersFn                   func() (http.Header, error)
 	MockGetBearerTokenFn                func() (string, error)
 	MockCreateFHIRPatientFn             func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
-
-	MockPatchFHIRResourceFn  func(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
-	MockUpdateFHIRResourceFn func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
-	MockGetFHIRResourceFn    func(resourceType, fhirResourceID string) ([]byte, error)
+	MockPatchFHIRPatientFn              func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
+	MockUpdateFHIREpisodeOfCareFn       func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -429,45 +427,45 @@ func NewFHIRMock() *FHIRMock {
 				OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
 			}, nil
 		},
-
-		MockPatchFHIRResourceFn: func(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
-			m := map[string]interface{}{
-				"key": "value",
-			}
-			bs, err := json.Marshal(m)
-			if err != nil {
-				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
-			}
-			return bs, nil
+		MockPatchFHIRPatientFn: func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error) {
+			return &domain.FHIRPatient{
+				ID:                   new(string),
+				Text:                 &domain.FHIRNarrative{},
+				Identifier:           []*domain.FHIRIdentifier{},
+				Active:               new(bool),
+				Name:                 []*domain.FHIRHumanName{},
+				Telecom:              []*domain.FHIRContactPoint{},
+				BirthDate:            &scalarutils.Date{},
+				DeceasedBoolean:      new(bool),
+				DeceasedDateTime:     &scalarutils.Date{},
+				Address:              []*domain.FHIRAddress{},
+				MaritalStatus:        &domain.FHIRCodeableConcept{},
+				MultipleBirthBoolean: new(bool),
+				MultipleBirthInteger: new(string),
+				Photo:                []*domain.FHIRAttachment{},
+				Contact:              []*domain.FHIRPatientContact{},
+				Communication:        []*domain.FHIRPatientCommunication{},
+				GeneralPractitioner:  []*domain.FHIRReference{},
+				ManagingOrganization: &domain.FHIRReference{},
+				Link:                 []*domain.FHIRPatientLink{},
+			}, nil
 		},
-		MockUpdateFHIRResourceFn: func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
-			m := map[string]interface{}{
-				"key": "value",
-			}
-			bs, err := json.Marshal(m)
-			if err != nil {
-				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
-			}
-			return bs, nil
-		},
-		MockGetFHIRResourceFn: func(resourceType, fhirResourceID string) ([]byte, error) {
-			n := map[string]interface{}{"given": []string{"John"}, "family": []string{"Doe"}}
-			p := map[string]interface{}{
-				"resourceType": "Patient/",
-				"id":           "test-UUID",
-				"name":         []map[string]interface{}{n},
-			}
-			m := map[string]interface{}{
-				"resourceType":  "Patient/",
-				"status":        "active",
-				"id":            "test-UUID",
-				"patientRecord": p,
-			}
-			bs, err := json.Marshal(m)
-			if err != nil {
-				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
-			}
-			return bs, nil
+		MockUpdateFHIREpisodeOfCareFn: func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error) {
+			return &domain.FHIREpisodeOfCare{
+				ID:                   new(string),
+				Text:                 &domain.FHIRNarrative{},
+				Identifier:           []*domain.FHIRIdentifier{},
+				StatusHistory:        []*domain.FHIREpisodeofcareStatushistory{},
+				Type:                 []*domain.FHIRCodeableConcept{},
+				Diagnosis:            []*domain.FHIREpisodeofcareDiagnosis{},
+				Patient:              &domain.FHIRReference{},
+				ManagingOrganization: &domain.FHIRReference{},
+				Period:               &domain.FHIRPeriod{},
+				ReferralRequest:      []*domain.FHIRReference{},
+				CareManager:          &domain.FHIRReference{},
+				Team:                 []*domain.FHIRReference{},
+				Account:              []*domain.FHIRReference{},
+			}, nil
 		},
 	}
 }
@@ -718,17 +716,12 @@ func (fh *FHIRMock) CreateFHIRPatient(ctx context.Context, input domain.FHIRPati
 	return fh.MockCreateFHIRPatientFn(ctx, input)
 }
 
-// PatchFHIRResource mocks the implementation for patching a fhir resource
-func (fh *FHIRMock) PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
-	return fh.MockPatchFHIRResourceFn(resourceType, fhirResourceID, payload)
+// PatchFHIRPatient mocks the implementation for patching a fhir patient
+func (fh *FHIRMock) PatchFHIRPatient(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error) {
+	return fh.MockPatchFHIRPatientFn(ctx, id, params)
 }
 
-// UpdateFHIRResource mocks the implementation for updating a FHIR resource
-func (fh *FHIRMock) UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
-	return fh.MockUpdateFHIRResourceFn(resourceType, fhirResourceID, payload)
-}
-
-// GetFHIRResource mocks the implementation of getting a FHIR resource
-func (fh *FHIRMock) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
-	return fh.MockGetFHIRResourceFn(resourceType, fhirResourceID)
+// UpdateFHIREpisodeOfCare mocks the implementation of updating a FHIR episode of care
+func (fh *FHIRMock) UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error) {
+	return fh.MockUpdateFHIREpisodeOfCareFn(ctx, fhirResourceID, payload)
 }

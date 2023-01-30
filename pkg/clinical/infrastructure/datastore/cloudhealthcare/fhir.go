@@ -27,7 +27,8 @@ const (
 )
 
 var (
-	patientResourceType = "Patient"
+	patientResourceType       = "Patient"
+	episodeOfCareResourceType = "EpisodeOfCare"
 )
 
 // StoreImpl represents the FHIR infrastructure implementation
@@ -1478,21 +1479,19 @@ func (fh *StoreImpl) DeleteFHIRObservation(ctx context.Context, id string) (bool
 
 // GetFHIRPatient retrieves instances of FHIRPatient by ID
 func (fh *StoreImpl) GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-
-	resourceType := "Patient"
 	var resource domain.FHIRPatient
 
-	data, err := fh.Dataset.GetFHIRResource(resourceType, id)
+	data, err := fh.Dataset.GetFHIRResource(patientResourceType, id)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", patientResourceType, id, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
+			"unable to unmarshal %s data from JSON, err: %v", patientResourceType, err)
 	}
 
 	hasOpenEpisodes, err := fh.HasOpenEpisode(ctx, resource)
@@ -1829,6 +1828,45 @@ func (fh *StoreImpl) CreateFHIRPatient(ctx context.Context, input domain.FHIRPat
 		OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
 	}
 	return output, nil
+}
+
+// PatchFHIRPatient is used to patch a patient resource
+func (fh *StoreImpl) PatchFHIRPatient(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error) {
+	resource := domain.FHIRPatient{}
+
+	data, err := fh.Dataset.PatchFHIRResource(patientResourceType, id, params)
+	if err != nil {
+		return nil, fmt.Errorf("unable to patch %s resource: %v", patientResourceType, err)
+	}
+
+	err = json.Unmarshal(data, &resource)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			patientResourceType, string(data), err)
+	}
+	return &resource, nil
+}
+
+// UpdateFHIREpisodeOfCare updates a fhir episode of care
+func (fh *StoreImpl) UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error) {
+	resource := domain.FHIREpisodeOfCare{}
+
+	if fhirResourceID == "" {
+		return nil, fmt.Errorf("can't update with a nil ID")
+	}
+
+	data, err := fh.Dataset.UpdateFHIRResource(episodeOfCareResourceType, fhirResourceID, payload)
+	if err != nil {
+		return nil, fmt.Errorf("unable to update %s resource: %w", episodeOfCareResourceType, err)
+	}
+	err = json.Unmarshal(data, &resource)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			episodeOfCareResourceType, string(data), err)
+	}
+	return &resource, nil
 }
 
 // CreateFHIRResource creates a FHIR resource
