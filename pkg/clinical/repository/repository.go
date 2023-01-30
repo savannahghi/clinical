@@ -63,7 +63,8 @@ type FHIR interface {
 	CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error)
 	SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
 
-	CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error)
+	CreateFHIRPatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
+
 	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
 	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
 	POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
