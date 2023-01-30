@@ -595,31 +595,13 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input domain.F
 		input.Identifier = append(input.Identifier, common.DefaultIdentifier())
 	}
 
-	payload, err := converterandformatter.StructToMap(input)
+	patientRecord, err := c.infrastructure.FHIR.CreateFHIRPatient(ctx, input)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn patient input into a map: %v", err)
+		return nil, err
 	}
 
-	data, err := c.infrastructure.FHIR.CreateFHIRResource("Patient", payload)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update patient resource: %v", err)
-	}
-	patient := &domain.FHIRPatient{}
-	err = json.Unmarshal(data, patient)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to unmarshal patient response JSON: data: %v\n, error: %v",
-			string(data), err)
-	}
-	output := &domain.PatientPayload{
-		PatientRecord:   patient,
-		HasOpenEpisodes: false, // the patient is newly created so we can safely assume this
-		OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
-	}
-	return output, nil
+	return patientRecord, nil
 }
 
 // FindPatientByID retrieves a single patient by their ID

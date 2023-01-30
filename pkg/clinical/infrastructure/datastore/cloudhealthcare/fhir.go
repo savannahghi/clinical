@@ -26,6 +26,10 @@ const (
 	timeFormatStr = "2006-01-02T15:04:05+03:00"
 )
 
+var (
+	patientResourceType = "Patient"
+)
+
 // StoreImpl represents the FHIR infrastructure implementation
 type StoreImpl struct {
 	Dataset dataset.FHIRRepository
@@ -1795,6 +1799,36 @@ func (fh *StoreImpl) SearchFHIRMedicationStatement(ctx context.Context, params m
 		})
 	}
 	return &output, nil
+}
+
+// CreateFHIRPatient creates a patient on FHIR
+func (fh *StoreImpl) CreateFHIRPatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
+	resource := domain.FHIRPatient{}
+
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %v", patientResourceType, err)
+	}
+
+	data, err := fh.Dataset.CreateFHIRResource(patientResourceType, payload)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create/update %s resource: %v", patientResourceType, err)
+	}
+
+	err = json.Unmarshal(data, &resource)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			patientResourceType, string(data), err)
+	}
+
+	output := &domain.PatientPayload{
+		PatientRecord: &resource,
+		// The patient is newly created so we can assume they have no open episodes
+		HasOpenEpisodes: false,
+		OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
+	}
+	return output, nil
 }
 
 // CreateFHIRResource creates a FHIR resource
