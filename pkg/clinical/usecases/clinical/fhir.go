@@ -334,15 +334,13 @@ func (c *UseCasesClinicalImpl) UpgradeEpisode(ctx context.Context, input domain.
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
 	}
 
-	_, err = c.infrastructure.FHIR.UpdateFHIRResource(
-		"EpisodeOfCare", *episode.ID, payload)
+	episodeOfCare, err := c.infrastructure.FHIR.UpdateFHIREpisodeOfCare(ctx, *episode.ID, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to update episode of care resource: %v", err)
+		return nil, err
 	}
+
 	return &domain.EpisodeOfCarePayload{
-		EpisodeOfCare: episode,
+		EpisodeOfCare: episodeOfCare,
 		TotalVisits:   len(encounters),
 	}, nil
 }

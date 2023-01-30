@@ -610,19 +610,13 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 		return nil, fmt.Errorf("patient ID cannot be empty")
 	}
 
-	data, err := c.infrastructure.FHIR.GetFHIRResource("Patient", id)
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"unable to get patient with ID %s, err: %v", id, err)
 	}
-	var patient domain.FHIRPatient
-	err = json.Unmarshal(data, &patient)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to unmarshal patient data from JSON, err: %v", err)
-	}
-	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
+
+	patientReference := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
 	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -630,7 +624,7 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 			"unable to get open episodes for %s, err: %v", patientReference, err)
 	}
 	return &domain.PatientPayload{
-		PatientRecord:   &patient,
+		PatientRecord:   patient.Resource,
 		OpenEpisodes:    openEpisodes,
 		HasOpenEpisodes: len(openEpisodes) > 0,
 	}, nil
@@ -736,18 +730,10 @@ func (c *UseCasesClinicalImpl) UpdatePatient(ctx context.Context, input domain.S
 		patches = append(patches, patch)
 	}
 
-	data, err := c.infrastructure.FHIR.PatchFHIRResource("Patient", input.ID, patches)
+	patient, err := c.infrastructure.FHIR.PatchFHIRPatient(ctx, input.ID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("UpdatePatient: %v", err)
-	}
-	patient := domain.FHIRPatient{}
-	err = json.Unmarshal(data, &patient)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to unmarshal patient response JSON: data: %v\n, error: %v",
-			string(data), err)
 	}
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
 	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
@@ -757,7 +743,7 @@ func (c *UseCasesClinicalImpl) UpdatePatient(ctx context.Context, input domain.S
 			"unable to get open episodes for %s, err: %v", patientReference, err)
 	}
 	return &domain.PatientPayload{
-		PatientRecord:   &patient,
+		PatientRecord:   patient,
 		OpenEpisodes:    openEpisodes,
 		HasOpenEpisodes: len(openEpisodes) > 0,
 	}, nil
@@ -838,20 +824,12 @@ func (c *UseCasesClinicalImpl) AddNextOfKin(ctx context.Context, input domain.Si
 		},
 	}
 
-	data, err := c.infrastructure.FHIR.PatchFHIRResource(
-		"Patient", input.PatientID, patches)
+	patient, err := c.infrastructure.FHIR.PatchFHIRPatient(ctx, input.PatientID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("UpdatePatient: %v", err)
 	}
-	patient := domain.FHIRPatient{}
-	err = json.Unmarshal(data, &patient)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to unmarshal patient response JSON: data: %v\n, error: %v",
-			string(data), err)
-	}
+
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
 	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 	if err != nil {
@@ -861,7 +839,7 @@ func (c *UseCasesClinicalImpl) AddNextOfKin(ctx context.Context, input domain.Si
 	}
 
 	return &domain.PatientPayload{
-		PatientRecord:   &patient,
+		PatientRecord:   patient,
 		OpenEpisodes:    openEpisodes,
 		HasOpenEpisodes: len(openEpisodes) > 0,
 	}, nil
@@ -922,20 +900,12 @@ func (c *UseCasesClinicalImpl) AddNHIF(ctx context.Context, input *domain.Simple
 		},
 	}
 
-	data, err := c.infrastructure.FHIR.PatchFHIRResource(
-		"Patient", input.PatientID, patches)
+	patient, err := c.infrastructure.FHIR.PatchFHIRPatient(ctx, input.PatientID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("UpdatePatient: %v", err)
 	}
-	patient := domain.FHIRPatient{}
-	err = json.Unmarshal(data, &patient)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to unmarshal patient response JSON: data: %v\n, error: %v",
-			string(data), err)
-	}
+
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
 	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
 	if err != nil {
@@ -944,7 +914,7 @@ func (c *UseCasesClinicalImpl) AddNHIF(ctx context.Context, input *domain.Simple
 			"unable to get open episodes for %s, err: %v", patientReference, err)
 	}
 	return &domain.PatientPayload{
-		PatientRecord:   &patient,
+		PatientRecord:   patient,
 		OpenEpisodes:    openEpisodes,
 		HasOpenEpisodes: len(openEpisodes) > 0,
 	}, nil
@@ -999,7 +969,7 @@ func (c *UseCasesClinicalImpl) CreateUpdatePatientExtraInformation(
 		return false, fmt.Errorf("an error occurred: %v", err)
 	}
 
-	_, err = c.infrastructure.FHIR.PatchFHIRResource("Patient", input.PatientID, patches)
+	_, err = c.infrastructure.FHIR.PatchFHIRPatient(ctx, input.PatientID, patches)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf("UpdatePatient: %v", err)
