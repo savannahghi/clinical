@@ -3,7 +3,6 @@ package clinical
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 
@@ -29,8 +28,6 @@ type UseCasesFHIR interface {
 	CreateOrganization(ctx context.Context, providerSladeCode string) (*string, error)
 	SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error)
 	FindOrganizationByID(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error)
-	POSTRequest(
-		resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
 	SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error)
 	HasOpenEpisode(
 		ctx context.Context,
@@ -213,15 +210,6 @@ func (c *UseCasesClinicalImpl) GetOrganization(ctx context.Context, providerSlad
 // SearchEpisodesByParam search episodes by params
 func (c *UseCasesClinicalImpl) SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
 	return c.infrastructure.FHIR.SearchEpisodesByParam(ctx, searchParams)
-}
-
-// POSTRequest is used to manually compose POST requests to the FHIR service
-//
-// - `resourceName` is a FHIR resource name e.g "Patient"
-// - `path` is a sub-path e.g `_search` under a resource
-// - `params` should be query params, sent as `url.Values`
-func (c *UseCasesClinicalImpl) POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
-	return c.infrastructure.FHIR.POSTRequest(resourceName, path, params, body)
 }
 
 // OpenEpisodes returns the IDs of a patient's open episodes
