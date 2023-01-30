@@ -3,7 +3,6 @@ package clinical
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"net/url"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
@@ -224,12 +223,6 @@ func (c *UseCasesClinicalImpl) HasOpenEpisode(
 	patient domain.FHIRPatient,
 ) (bool, error) {
 	return c.infrastructure.FHIR.HasOpenEpisode(ctx, patient)
-}
-
-// FHIRHeaders composes suitable FHIR headers, with authentication and content
-// type already set
-func (c *UseCasesClinicalImpl) FHIRHeaders() (http.Header, error) {
-	return c.infrastructure.FHIR.FHIRHeaders()
 }
 
 // CreateFHIREncounter creates a FHIREncounter instance
