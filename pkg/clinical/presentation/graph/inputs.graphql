@@ -1,0 +1,121 @@
+input OTPEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  msisdn: String!
+  otp: String!
+  fullAccess: Boolean!
+}
+
+input OTPEpisodeUpgradeInput {
+  episodeID: String!
+  msisdn: String!
+  otp: String!
+}
+
+input BreakGlassEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  practitionerUID: String!
+  providerPhone: String!
+  otp: String!
+  fullAccess: Boolean!
+  patientPhone: String!
+}
+
+input PhysicalAddress {
+  mapsCode: String! # can be a Plus Code or Google Maps co-ordinates
+  physicalAddress: String!
+}
+
+input PostalAddress {
+  postalAddress: String!
+  postalCode: String!
+}
+
+input SimplePatientRegistrationInput {
+  id: ID
+  names: [NameInput!]!
+  gender: String!
+  identificationDocuments: [IdentificationDocument!]
+  birthDate: Date!
+  phoneNumbers: [PhoneNumberInput!]!
+  photos: [PhotoInput]
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  active: Boolean!
+  replicateUSSD: Boolean
+}
+
+input SimpleNextOfKinInput {
+  patientID: String!
+  names: [NameInput!]!
+  phoneNumbers: [PhoneNumberInput!]!
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  gender: String!
+  birthDate: Date!
+  relationship: RelationshipType!
+  active: Boolean!
+}
+
+input SimpleNHIFInput {
+  patientID: String!
+  membershipNumber: String!
+  frontImageBase64: String
+  frontImageContentType: ContentType
+  rearImageBase64: String
+  rearImageContentType: ContentType
+}
+
+input PatientExtraInformationInput {
+  patientID: String!
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  emails: [EmailInput]
+}
+
+input RetirePatientInput {
+  id: ID! # ID of patient to be retired
+}
+
+input EmailInput {
+  email: String!
+  communicationOptIn: Boolean!
+}
+
+input NameInput {
+  firstName: String!
+  lastName: String!
+  otherNames: String
+}
+
+input IdentificationDocument {
+  documentType: IDDocumentType!
+  documentNumber: String!
+  title: String
+  imageContentType: ContentType
+  imageBase64: String
+}
+
+input PhoneNumberInput {
+  msisdn: String!
+  verificationCode: String
+  isUSSD: Boolean
+  communicationOptIn: Boolean!
+}
+
+input PhotoInput {
+  photoContentType: ContentType!
+  photoBase64data: String!
+  photoFilename: String!
+}
+
+input HealthTimelineInput {
+  patientID: String!
+  offset: Int!
+  limit: Int!
+}

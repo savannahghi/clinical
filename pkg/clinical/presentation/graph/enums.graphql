@@ -1,0 +1,30 @@
+enum MaritalStatus {
+  A
+  D
+  I
+  L
+  M
+  P
+  S
+  T
+  U
+  W
+  UNK
+}
+
+enum RelationshipType {
+  C
+  E
+  F
+  I
+  N
+  O
+  S
+  U
+}
+
+enum IDDocumentType {
+  national_id
+  passport
+  alien_id
+}

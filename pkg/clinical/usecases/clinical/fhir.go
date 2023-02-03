@@ -110,7 +110,12 @@ func (c *UseCasesClinicalImpl) CreateFHIRCondition(ctx context.Context, input do
 
 // CreateFHIROrganization creates a FHIROrganization instance
 func (c *UseCasesClinicalImpl) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
-	return c.infrastructure.FHIR.CreateFHIROrganization(ctx, input)
+	organizationRelayPayload, err := c.infrastructure.FHIR.CreateFHIROrganization(ctx, input)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, err
+	}
+	return organizationRelayPayload, nil
 }
 
 // OpenOrganizationEpisodes return all organization specific open episodes

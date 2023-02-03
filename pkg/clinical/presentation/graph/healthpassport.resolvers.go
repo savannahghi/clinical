@@ -167,6 +167,12 @@ func (r *mutationResolver) DeleteFHIRObservation(ctx context.Context, id string)
 	return r.usecases.DeleteFHIRObservation(ctx, id)
 }
 
+func (r *mutationResolver) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+	r.CheckDependencies()
+	r.CheckUserTokenInContext(ctx)
+	return r.usecases.CreateFHIROrganization(ctx, input)
+}
+
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
 	r.CheckDependencies()
 	r.CheckUserTokenInContext(ctx)
