@@ -983,6 +983,7 @@ type ComplexityRoot struct {
 		CreateFHIRCondition                 func(childComplexity int, input domain.FHIRConditionInput) int
 		CreateFHIRMedicationRequest         func(childComplexity int, input domain.FHIRMedicationRequestInput) int
 		CreateFHIRObservation               func(childComplexity int, input domain.FHIRObservationInput) int
+		CreateFHIROrganization              func(childComplexity int, input domain.FHIROrganizationInput) int
 		CreateFHIRServiceRequest            func(childComplexity int, input domain.FHIRServiceRequestInput) int
 		CreateUpdatePatientExtraInformation func(childComplexity int, input domain.PatientExtraInformationInput) int
 		DeleteFHIRComposition               func(childComplexity int, id string) int
@@ -1089,6 +1090,7 @@ type MutationResolver interface {
 	DeleteFHIRComposition(ctx context.Context, id string) (bool, error)
 	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
 	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
+	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
@@ -5616,6 +5618,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateFHIRObservation(childComplexity, args["input"].(domain.FHIRObservationInput)), true
 
+	case "Mutation.createFHIROrganization":
+		if e.complexity.Mutation.CreateFHIROrganization == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createFHIROrganization_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateFHIROrganization(childComplexity, args["input"].(domain.FHIROrganizationInput)), true
+
 	case "Mutation.createFHIRServiceRequest":
 		if e.complexity.Mutation.CreateFHIRServiceRequest == nil {
 			break
@@ -6280,6 +6294,37 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "pkg/clinical/presentation/graph/enums.graphql", Input: `enum MaritalStatus {
+  A
+  D
+  I
+  L
+  M
+  P
+  S
+  T
+  U
+  W
+  UNK
+}
+
+enum RelationshipType {
+  C
+  E
+  F
+  I
+  N
+  O
+  S
+  U
+}
+
+enum IDDocumentType {
+  national_id
+  passport
+  alien_id
+}
+`, BuiltIn: false},
 	{Name: "pkg/clinical/presentation/graph/external.graphql", Input: `scalar Map
 scalar Any
 scalar Time
@@ -6322,198 +6367,9 @@ enum Language {
   sw
 }
 `, BuiltIn: false},
-	{Name: "pkg/clinical/presentation/graph/healthpassport.graphql", Input: `enum MaritalStatus {
-  A
-  D
-  I
-  L
-  M
-  P
-  S
-  T
-  U
-  W
-  UNK
-}
-
-enum RelationshipType {
-  C
-  E
-  F
-  I
-  N
-  O
-  S
-  U
-}
-
-enum IDDocumentType {
-  national_id
-  passport
-  alien_id
-}
-
-type PatientEdge {
-  cursor: String!
-  node: FHIRPatient!
-  hasOpenEpisodes: Boolean!
-}
-
-type PatientConnection {
-  edges: [PatientEdge]
-  pageInfo: PageInfo!
-}
-
-type PatientPayload {
-  patientRecord: FHIRPatient!
-  hasOpenEpisodes: Boolean!
-  openEpisodes: [FHIREpisodeOfCare]
-}
-
-type MedicalData {
-  regimen: [FHIRMedicationStatement]
-  allergies: [FHIRAllergyIntolerance]
-  weight: [FHIRObservation]
-  bmi: [FHIRObservation]
-  viralLoad: [FHIRObservation]
-  cd4Count: [FHIRObservation]
-}
-
-type EpisodeOfCarePayload {
-  episodeOfCare: FHIREpisodeOfCare!
-  totalVisits: Int!
-}
-
-input OTPEpisodeCreationInput {
-  patientID: String!
-  providerCode: String!
-  msisdn: String!
-  otp: String!
-  fullAccess: Boolean!
-}
-
-input OTPEpisodeUpgradeInput {
-  episodeID: String!
-  msisdn: String!
-  otp: String!
-}
-
-input BreakGlassEpisodeCreationInput {
-  patientID: String!
-  providerCode: String!
-  practitionerUID: String!
-  providerPhone: String!
-  otp: String!
-  fullAccess: Boolean!
-  patientPhone: String!
-}
-
-input PhysicalAddress {
-  mapsCode: String! # can be a Plus Code or Google Maps co-ordinates
-  physicalAddress: String!
-}
-
-input PostalAddress {
-  postalAddress: String!
-  postalCode: String!
-}
-
-input SimplePatientRegistrationInput {
-  id: ID
-  names: [NameInput!]!
-  gender: String!
-  identificationDocuments: [IdentificationDocument!]
-  birthDate: Date!
-  phoneNumbers: [PhoneNumberInput!]!
-  photos: [PhotoInput]
-  emails: [EmailInput]
-  physicalAddresses: [PhysicalAddress]
-  postalAddresses: [PostalAddress]
-  maritalStatus: MaritalStatus
-  languages: [Language]
-  active: Boolean!
-  replicateUSSD: Boolean
-}
-
-input SimpleNextOfKinInput {
-  patientID: String!
-  names: [NameInput!]!
-  phoneNumbers: [PhoneNumberInput!]!
-  emails: [EmailInput]
-  physicalAddresses: [PhysicalAddress]
-  postalAddresses: [PostalAddress]
-  gender: String!
-  birthDate: Date!
-  relationship: RelationshipType!
-  active: Boolean!
-}
-
-input SimpleNHIFInput {
-  patientID: String!
-  membershipNumber: String!
-  frontImageBase64: String
-  frontImageContentType: ContentType
-  rearImageBase64: String
-  rearImageContentType: ContentType
-}
-
-input PatientExtraInformationInput {
-  patientID: String!
-  maritalStatus: MaritalStatus
-  languages: [Language]
-  emails: [EmailInput]
-}
-
-input RetirePatientInput {
-  id: ID! # ID of patient to be retired
-}
-
-input EmailInput {
-  email: String!
-  communicationOptIn: Boolean!
-}
-
-input NameInput {
-  firstName: String!
-  lastName: String!
-  otherNames: String
-}
-
-input IdentificationDocument {
-  documentType: IDDocumentType!
-  documentNumber: String!
-  title: String
-  imageContentType: ContentType
-  imageBase64: String
-}
-
-input PhoneNumberInput {
-  msisdn: String!
-  verificationCode: String
-  isUSSD: Boolean
-  communicationOptIn: Boolean!
-}
-
-input PhotoInput {
-  photoContentType: ContentType!
-  photoBase64data: String!
-  photoFilename: String!
-}
-
-type HealthTimeline {
-  timeline: [Map]
-  totalCount: Int!
-}
-
-input HealthTimelineInput {
-  patientID: String!
-  offset: Int!
-  limit: Int!
-}
-
-extend type Query {
+	{Name: "pkg/clinical/presentation/graph/healthpassport.graphql", Input: `extend type Query {
   patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
-  
+
   findPatientsByMSISDN(msisdn: String!): PatientConnection!
 
   findPatients(search: String!): PatientConnection!
@@ -6635,6 +6491,132 @@ extend type Mutation {
   deleteFHIRPatient(id: ID!): Boolean!
 
   deleteFHIRObservation(id: ID!): Boolean!
+
+  createFHIROrganization(
+    input: FHIROrganizationInput!
+  ): FHIROrganizationRelayPayload!
+}
+`, BuiltIn: false},
+	{Name: "pkg/clinical/presentation/graph/inputs.graphql", Input: `input OTPEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  msisdn: String!
+  otp: String!
+  fullAccess: Boolean!
+}
+
+input OTPEpisodeUpgradeInput {
+  episodeID: String!
+  msisdn: String!
+  otp: String!
+}
+
+input BreakGlassEpisodeCreationInput {
+  patientID: String!
+  providerCode: String!
+  practitionerUID: String!
+  providerPhone: String!
+  otp: String!
+  fullAccess: Boolean!
+  patientPhone: String!
+}
+
+input PhysicalAddress {
+  mapsCode: String! # can be a Plus Code or Google Maps co-ordinates
+  physicalAddress: String!
+}
+
+input PostalAddress {
+  postalAddress: String!
+  postalCode: String!
+}
+
+input SimplePatientRegistrationInput {
+  id: ID
+  names: [NameInput!]!
+  gender: String!
+  identificationDocuments: [IdentificationDocument!]
+  birthDate: Date!
+  phoneNumbers: [PhoneNumberInput!]!
+  photos: [PhotoInput]
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  active: Boolean!
+  replicateUSSD: Boolean
+}
+
+input SimpleNextOfKinInput {
+  patientID: String!
+  names: [NameInput!]!
+  phoneNumbers: [PhoneNumberInput!]!
+  emails: [EmailInput]
+  physicalAddresses: [PhysicalAddress]
+  postalAddresses: [PostalAddress]
+  gender: String!
+  birthDate: Date!
+  relationship: RelationshipType!
+  active: Boolean!
+}
+
+input SimpleNHIFInput {
+  patientID: String!
+  membershipNumber: String!
+  frontImageBase64: String
+  frontImageContentType: ContentType
+  rearImageBase64: String
+  rearImageContentType: ContentType
+}
+
+input PatientExtraInformationInput {
+  patientID: String!
+  maritalStatus: MaritalStatus
+  languages: [Language]
+  emails: [EmailInput]
+}
+
+input RetirePatientInput {
+  id: ID! # ID of patient to be retired
+}
+
+input EmailInput {
+  email: String!
+  communicationOptIn: Boolean!
+}
+
+input NameInput {
+  firstName: String!
+  lastName: String!
+  otherNames: String
+}
+
+input IdentificationDocument {
+  documentType: IDDocumentType!
+  documentNumber: String!
+  title: String
+  imageContentType: ContentType
+  imageBase64: String
+}
+
+input PhoneNumberInput {
+  msisdn: String!
+  verificationCode: String
+  isUSSD: Boolean
+  communicationOptIn: Boolean!
+}
+
+input PhotoInput {
+  photoContentType: ContentType!
+  photoBase64data: String!
+  photoFilename: String!
+}
+
+input HealthTimelineInput {
+  patientID: String!
+  offset: Int!
+  limit: Int!
 }
 `, BuiltIn: false},
 	{Name: "pkg/clinical/presentation/graph/ocl.graphql", Input: `extend type Query {
@@ -6654,6 +6636,42 @@ extend type Mutation {
     includeMappings: Boolean
     includeInverseMappings: Boolean
   ): [Map!]!
+}
+`, BuiltIn: false},
+	{Name: "pkg/clinical/presentation/graph/types.graphql", Input: `type PatientEdge {
+  cursor: String!
+  node: FHIRPatient!
+  hasOpenEpisodes: Boolean!
+}
+
+type PatientConnection {
+  edges: [PatientEdge]
+  pageInfo: PageInfo!
+}
+
+type PatientPayload {
+  patientRecord: FHIRPatient!
+  hasOpenEpisodes: Boolean!
+  openEpisodes: [FHIREpisodeOfCare]
+}
+
+type MedicalData {
+  regimen: [FHIRMedicationStatement]
+  allergies: [FHIRAllergyIntolerance]
+  weight: [FHIRObservation]
+  bmi: [FHIRObservation]
+  viralLoad: [FHIRObservation]
+  cd4Count: [FHIRObservation]
+}
+
+type EpisodeOfCarePayload {
+  episodeOfCare: FHIREpisodeOfCare!
+  totalVisits: Int!
+}
+
+type HealthTimeline {
+  timeline: [Map]
+  totalCount: Int!
 }
 `, BuiltIn: false},
 	{Name: "pkg/clinical/presentation/graph/fhir/AllergyIntolerance.graphql", Input: `"""
@@ -12934,6 +12952,21 @@ func (ec *executionContext) field_Mutation_createFHIRObservation_args(ctx contex
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIRObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createFHIROrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 domain.FHIROrganizationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNFHIROrganizationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -35186,6 +35219,48 @@ func (ec *executionContext) _Mutation_deleteFHIRObservation(ctx context.Context,
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createFHIROrganization_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateFHIROrganization(rctx, args["input"].(domain.FHIROrganizationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*domain.FHIROrganizationRelayPayload)
+	fc.Result = res
+	return ec.marshalNFHIROrganizationRelayPayload2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationRelayPayload(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *firebasetools.PageInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -47699,6 +47774,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "createFHIROrganization":
+			out.Values[i] = ec._Mutation_createFHIROrganization(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -49174,6 +49254,11 @@ func (ec *executionContext) marshalNFHIROrganization2ᚖgithubᚗcomᚋsavannahg
 		return graphql.Null
 	}
 	return ec._FHIROrganization(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNFHIROrganizationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx context.Context, v interface{}) (domain.FHIROrganizationInput, error) {
+	res, err := ec.unmarshalInputFHIROrganizationInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIROrganizationRelayConnection2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationRelayConnection(ctx context.Context, sel ast.SelectionSet, v domain.FHIROrganizationRelayConnection) graphql.Marshaler {
