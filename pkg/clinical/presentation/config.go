@@ -179,7 +179,6 @@ func Router(ctx context.Context) (*mux.Router, error) {
 		http.MethodPost, http.MethodGet, http.MethodOptions,
 	).HandlerFunc(GQLHandler(ctx, usecases))
 	return r, nil
-
 }
 
 // GQLHandler sets up a GraphQL resolver

@@ -1810,7 +1810,7 @@ func (fh *StoreImpl) CreateFHIRPatient(ctx context.Context, input domain.FHIRPat
 
 	data, err := fh.Dataset.CreateFHIRResource(patientResourceType, payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", patientResourceType, err)
+		return nil, fmt.Errorf("unable to create %s resource: %v", patientResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)

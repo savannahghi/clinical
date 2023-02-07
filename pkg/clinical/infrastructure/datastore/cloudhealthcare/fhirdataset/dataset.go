@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/serverutils"
 	"golang.org/x/oauth2/google"
@@ -144,6 +145,21 @@ func (fr Repository) FHIRRestURL() string {
 		baseFHIRURL, fr.projectID, fr.location, fr.datasetID, fr.fhirStoreID)
 }
 
+// getErrorMessage unmarshalls the error response that is returned from the FHIR server.
+// This function should be called when a status code > 299 has been returned
+func getErrorMessage(respBytes []byte) (errorText string, diagnostics string, err error) {
+	var errorResponse dto.ErrorResponse
+	err = json.Unmarshal(respBytes, &errorResponse)
+	if err != nil {
+		return "", "", fmt.Errorf("could not unmarshal error response: %v", err)
+	}
+
+	errorText = errorResponse.Issue[0].Details.Text
+	diagnostics = errorResponse.Issue[0].Diagnostics
+
+	return errorText, diagnostics, nil
+}
+
 // CreateFHIRResource creates an FHIR resource.
 //
 // The payload should be the result of marshalling a resource to JSON
@@ -155,7 +171,6 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 	payload["language"] = "EN"
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("json.Encode: %v", err)
 	}
 
@@ -168,7 +183,6 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 	call.Header().Set("Content-Type", "application/fhir+json;charset=utf-8")
 	resp, err := call.Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("create: %v", err)
 	}
 	defer func() {
@@ -177,12 +191,15 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 
 	respBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("could not read response: %v", err)
 	}
 	if resp.StatusCode > 299 {
-		return nil, fmt.Errorf(
-			"create: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
+		errorText, diagnostics, err := getErrorMessage(respBytes)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, fmt.Errorf("%s: %s: %s", resp.Status, errorText, diagnostics)
 	}
 	return respBytes, nil
 }
@@ -217,13 +234,15 @@ func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) ([]
 // The payload is a JSON patch document that follows guidance on Patch from the
 // FHIR standard.
 // See:
-// payload := []map[string]interface{}{
-// 	{
-// 		"op":    "replace",
-// 		"path":  "/active",
-// 		"value": active,
-// 	},
-// }
+//
+//	payload := []map[string]interface{}{
+//		{
+//			"op":    "replace",
+//			"path":  "/active",
+//			"value": active,
+//		},
+//	}
+//
 // See: https://www.hl7.org/fhir/http.html#patch
 func (fr Repository) PatchFHIRResource(
 	resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
@@ -449,8 +468,12 @@ func (fr Repository) POSTRequest(
 		return nil, fmt.Errorf("could not read response: %v", err)
 	}
 	if resp.StatusCode > 299 {
-		return nil, fmt.Errorf(
-			"search: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
+		errorText, diagnostics, err := getErrorMessage(respBytes)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, fmt.Errorf("%s: %s: %s", resp.Status, errorText, diagnostics)
 	}
 	return respBytes, nil
 }

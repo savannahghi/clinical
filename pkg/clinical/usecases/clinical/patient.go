@@ -463,7 +463,7 @@ func (c *UseCasesClinicalImpl) RegisterPatient(ctx context.Context, input domain
 	output, err := c.CreatePatient(ctx, *patientInput)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create patient: %v", err)
+		return nil, err
 	}
 
 	return output, nil
