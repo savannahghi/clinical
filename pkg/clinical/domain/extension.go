@@ -10,14 +10,14 @@ type Extension struct {
 	ValueBase64Binary    string               `json:"valueBase64Binary,omitempty"`
 	ValueInstant         string               `json:"valueInstant,omitempty"`
 	ValueString          string               `json:"valueString,omitempty"`
-	ValueUri             string               `json:"valueUri,omitempty"`
+	ValueURI             string               `json:"valueUri,omitempty"`
 	ValueDate            string               `json:"valueDate,omitempty"`
 	ValueDateTime        string               `json:"valueDateTime,omitempty"`
 	ValueTime            string               `json:"valueTime,omitempty"`
 	ValueCode            string               `json:"valueCode,omitempty"`
 	ValueOid             string               `json:"valueOid,omitempty"`
-	ValueUuid            string               `json:"valueUuid,omitempty"`
-	ValueId              string               `json:"valueId,omitempty"`
+	ValueUUID            string               `json:"valueUuid,omitempty"`
+	ValueID              string               `json:"valueId,omitempty"`
 	ValueUnsignedInt     int                  `json:"valueUnsignedInt,omitempty"`
 	ValuePositiveInt     int                  `json:"valuePositiveInt,omitempty"`
 	ValueMarkdown        string               `json:"valueMarkdown,omitempty"`

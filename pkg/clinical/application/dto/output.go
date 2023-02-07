@@ -13,7 +13,7 @@ type UserInfo struct {
 	UID        string `json:"rawId,omitempty"`
 }
 
-// ErrorDetails contains more details about the error that occured while making a REST API call to FHIR servers
+// ErrorDetails contains more details about the error that occurred while making a REST API call to FHIR servers
 type ErrorDetails struct {
 	Text string `json:"text"`
 }

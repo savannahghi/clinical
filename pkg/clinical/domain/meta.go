@@ -2,7 +2,7 @@ package domain
 
 // Meta field in FHIR is used to capture metadata about a resource
 type Meta struct {
-	VersionId   string          `json:"versionId,omitempty"`
+	VersionID   string          `json:"versionId,omitempty"`
 	LastUpdated string          `json:"lastUpdated,omitempty"`
 	Source      string          `json:"source,omitempty"`
 	Profile     []string        `json:"profile,omitempty"`

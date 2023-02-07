@@ -6,9 +6,7 @@ exec:
   filename: pkg/clinical/presentation/graph/generated/generated.go
   package: generated
 
-federation:
-  filename: pkg/clinical/presentation/graph/generated/federation.go
-  package: generated
+
 model:
   filename: pkg/clinical/domain/model/models_gen.go
   package: model

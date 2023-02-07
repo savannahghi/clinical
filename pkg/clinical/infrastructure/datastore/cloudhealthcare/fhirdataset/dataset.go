@@ -511,5 +511,6 @@ func (fr Repository) FHIRHeaders() (http.Header, error) {
 	headers["Content-Type"] = []string{"application/fhir+json; charset=utf-8"}
 	headers["Accept"] = []string{"application/fhir+json; charset=utf-8"}
 	headers["Authorization"] = []string{bearerHeader}
+	headers["Prefer"] = []string{"handling=strict"}
 	return headers, nil
 }
