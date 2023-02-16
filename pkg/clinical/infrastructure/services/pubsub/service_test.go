@@ -43,13 +43,11 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
-	oclUseCase := usecases.UseCasesOCL
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		pubSubClient,
 		baseExtension,
 		infrastructure,
 		usecases,
-		oclUseCase,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
