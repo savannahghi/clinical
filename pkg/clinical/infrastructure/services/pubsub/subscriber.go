@@ -13,7 +13,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/errorcodeutil"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
@@ -286,7 +286,7 @@ func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, inp
 	}
 	patientName = *patient.PatientRecord.Name[0].Given[0]
 
-	observationConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
+	observationConcept, err := getCIELConcept(ctx, ps.infra.OpenConceptLab, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -351,7 +351,7 @@ func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, inp
 
 // ComposeVitalsInput composes a vitals observation from data received
 func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input dto.CreateVitalSignPubSubMessage) (*domain.FHIRObservationInput, error) {
-	vitalsConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
+	vitalsConcept, err := getCIELConcept(ctx, ps.infra.OpenConceptLab, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -421,12 +421,12 @@ func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input d
 
 // ComposeMedicationStatementInput composes a medication statement input from received data
 func (ps ServicePubSubMessaging) ComposeMedicationStatementInput(ctx context.Context, input dto.CreateMedicationPubSubMessage) (*domain.FHIRMedicationStatementInput, error) {
-	medicationConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
+	medicationConcept, err := getCIELConcept(ctx, ps.infra.OpenConceptLab, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
 
-	drugConcept, err := getCIELConcept(ctx, ps.ocl, *input.Drug.ConceptID)
+	drugConcept, err := getCIELConcept(ctx, ps.infra.OpenConceptLab, *input.Drug.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -542,7 +542,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 		Display:   patientName,
 	}
 
-	allergenConcept, err := getCIELConcept(ctx, ps.ocl, *input.ConceptID)
+	allergenConcept, err := getCIELConcept(ctx, ps.infra.OpenConceptLab, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -567,13 +567,13 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 	// if no reaction use unknown
 	var manifestationConcept *domain.Concept
 	if input.Reaction.ConceptID != nil {
-		manifestationConcept, err = getCIELConcept(ctx, ps.ocl, *input.Reaction.ConceptID)
+		manifestationConcept, err = getCIELConcept(ctx, ps.infra.OpenConceptLab, *input.Reaction.ConceptID)
 		if err != nil {
 			return nil, err
 		}
 
 	} else {
-		manifestationConcept, err = getCIELConcept(ctx, ps.ocl, unknownConceptID)
+		manifestationConcept, err = getCIELConcept(ctx, ps.infra.OpenConceptLab, unknownConceptID)
 		if err != nil {
 			return nil, err
 		}
@@ -595,7 +595,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 	reaction.Manifestation = append(reaction.Manifestation, manifestation)
 
 	if input.Severity.ConceptID != nil {
-		severityConcept, err := getCIELConcept(ctx, ps.ocl, *input.Severity.ConceptID)
+		severityConcept, err := getCIELConcept(ctx, ps.infra.OpenConceptLab, *input.Severity.ConceptID)
 		if err != nil {
 			return nil, err
 		}
@@ -609,7 +609,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 	return allergy, nil
 }
 
-func getCIELConcept(ctx context.Context, ocl ocl.UseCasesOCL, conceptID string) (*domain.Concept, error) {
+func getCIELConcept(ctx context.Context, ocl openconceptlab.ServiceOCL, conceptID string) (*domain.Concept, error) {
 	response, err := ocl.GetConcept(
 		ctx,
 		"CIEL",

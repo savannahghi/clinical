@@ -64,6 +64,7 @@ jobs:
           go get github.com/ory/go-acc
           go get golang.org/x/oauth2/internal
           go get google.golang.org/api/transport/http
+          go get -d github.com/99designs/gqlgen@v0.17.24
           go get google.golang.org/grpc
           go get google.golang.org/grpc/internal/transport
           go get cloud.google.com/go/monitoring/apiv3/v2
