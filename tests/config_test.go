@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
+	"github.com/google/uuid"
 	"github.com/imroc/req"
 	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
@@ -32,7 +33,7 @@ const ( // Repo the env to identify which repo to use
 	instantFormat      = "2006-01-02T15:04:05.999-07:00"
 )
 
-/// these are set up once in TestMain and used by all the acceptance tests in
+// / these are set up once in TestMain and used by all the acceptance tests in
 // this package
 var (
 	srv              *http.Server
@@ -128,9 +129,10 @@ func GetGraphQLHeaders(ctx context.Context) (map[string]string, error) {
 	accessToken := fmt.Sprintf("Bearer %s", oauthPayload.AccessToken)
 
 	return req.Header{
-		"Accept":        "application/json",
-		"Content-Type":  "application/json",
-		"Authorization": accessToken,
+		"Accept":         "application/json",
+		"Content-Type":   "application/json",
+		"Authorization":  accessToken,
+		"OrganizationID": uuid.New().String(),
 	}, nil
 }
 

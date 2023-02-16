@@ -175,6 +175,7 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	//Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
 	gqlR.Use(authutils.SladeAuthenticationMiddleware(*authClient))
+	gqlR.Use(rest.TenantIdentifierExtractionMiddleware)
 	gqlR.Methods(
 		http.MethodPost, http.MethodGet, http.MethodOptions,
 	).HandlerFunc(GQLHandler(ctx, usecases))
