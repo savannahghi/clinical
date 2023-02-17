@@ -12,7 +12,6 @@ import (
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
-	"github.com/savannahghi/firebasetools"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,8 +48,7 @@ func TestMain(m *testing.M) {
 }
 
 func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
-	fc := &firebasetools.FirebaseClient{}
-	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	baseExtension := extensions.NewBaseExtensionImpl()
 	repo := dataset.NewFHIRRepository()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
@@ -64,8 +62,7 @@ func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-	fc := &firebasetools.FirebaseClient{}
-	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	baseExtension := extensions.NewBaseExtensionImpl()
 	repo := dataset.NewFHIRRepository()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 

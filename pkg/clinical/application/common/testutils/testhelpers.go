@@ -9,14 +9,12 @@ import (
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	"github.com/savannahghi/firebasetools"
 )
 
 // InitializeTestService sets up the structure that will be used by the usecase layer for
 // integration tests
 func InitializeTestService(ctx context.Context) (usecases.Interactor, error) {
-	fc := &firebasetools.FirebaseClient{}
-	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	baseExtension := extensions.NewBaseExtensionImpl()
 	repo := dataset.NewFHIRRepository()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()

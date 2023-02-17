@@ -10,6 +10,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
 )
 
@@ -93,7 +94,7 @@ func NewServicePubSubMessaging(
 // <service name>-<topicName>-<environment>-v1
 func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName, ServiceName string) string {
 	environment := serverutils.GetRunningEnvironment()
-	return ps.baseExt.NamespacePubsubIdentifier(
+	return pubsubtools.NamespacePubsubIdentifier(
 		ServiceName,
 		topicName,
 		environment,
@@ -125,7 +126,7 @@ func (ps ServicePubSubMessaging) PublishToPubsub(
 	if err != nil {
 		return err
 	}
-	return ps.baseExt.PublishToPubsub(
+	return pubsubtools.PublishToPubsub(
 		ctx,
 		ps.client,
 		topicID,
@@ -142,7 +143,7 @@ func (ps ServicePubSubMessaging) EnsureTopicsExist(
 	ctx context.Context,
 	topicIDs []string,
 ) error {
-	return ps.baseExt.EnsureTopicsExist(
+	return pubsubtools.EnsureTopicsExist(
 		ctx,
 		ps.client,
 		topicIDs,
@@ -162,10 +163,10 @@ func (ps ServicePubSubMessaging) EnsureSubscriptionsExist(
 	callbackURL := fmt.Sprintf(
 		"%s%s",
 		hostName,
-		ps.baseExt.PubSubHandlerPath(),
+		pubsubtools.PubSubHandlerPath,
 	)
 
-	return ps.baseExt.EnsureSubscriptionsExist(
+	return pubsubtools.EnsureSubscriptionsExist(
 		ctx,
 		ps.client,
 		ps.SubscriptionIDs(),
@@ -175,5 +176,5 @@ func (ps ServicePubSubMessaging) EnsureSubscriptionsExist(
 
 // SubscriptionIDs returns a map of topic IDs to subscription IDs
 func (ps ServicePubSubMessaging) SubscriptionIDs() map[string]string {
-	return ps.baseExt.SubscriptionIDs(ps.TopicIDs())
+	return pubsubtools.SubscriptionIDs(ps.TopicIDs())
 }
