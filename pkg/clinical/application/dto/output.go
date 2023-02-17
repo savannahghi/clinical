@@ -29,3 +29,8 @@ type ErrorIssue struct {
 type ErrorResponse struct {
 	Issue []ErrorIssue `json:"issue"`
 }
+
+// TenantIdentifiers models the json object used to store some of the tenant identifiers
+type TenantIdentifiers struct {
+	OrganizationID string `json:"organizationID,omitempty"`
+}

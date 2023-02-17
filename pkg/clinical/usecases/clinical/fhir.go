@@ -98,7 +98,7 @@ func (c *UseCasesClinicalImpl) SearchFHIREpisodeOfCare(ctx context.Context, para
 	return c.infrastructure.FHIR.SearchFHIREpisodeOfCare(ctx, params)
 }
 
-//CreateEpisodeOfCare is the final common pathway for creation of episodes of care.
+// CreateEpisodeOfCare is the final common pathway for creation of episodes of care.
 func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
 	return c.infrastructure.FHIR.CreateEpisodeOfCare(ctx, episode)
 }

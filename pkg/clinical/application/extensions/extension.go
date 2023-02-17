@@ -2,8 +2,12 @@ package extensions
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
@@ -37,6 +41,7 @@ func (i *ISCExtensionImpl) MakeRequest(ctx context.Context, method string, path 
 type BaseExtension interface {
 	GetLoggedInUser(ctx context.Context) (*profileutils.UserInfo, error)
 	GetLoggedInUserUID(ctx context.Context) (string, error)
+	GetTenantIdentifiers(ctx context.Context) (*dto.TenantIdentifiers, error)
 	NormalizeMSISDN(msisdn string) (*string, error)
 	LoadDepsFromYAML() (*interserviceclient.DepsConfig, error)
 	SetupISCclient(config interserviceclient.DepsConfig, serviceName string) (*interserviceclient.InterServiceClient, error)
@@ -102,4 +107,24 @@ func (b *BaseExtensionImpl) WriteJSONResponse(
 // ErrorMap turns the supplied error into a map with "error" as the key
 func (b *BaseExtensionImpl) ErrorMap(err error) map[string]string {
 	return serverutils.ErrorMap(err)
+}
+
+// GetTenantIdentifiers retrieves the tenant identifiers e.g OrganizationID, FacilityID from the context
+func (b *BaseExtensionImpl) GetTenantIdentifiers(ctx context.Context) (*dto.TenantIdentifiers, error) {
+	organizationID, err := GetOrganizationIDFromContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve organization ID from context: %w", err)
+	}
+	return &dto.TenantIdentifiers{
+		OrganizationID: organizationID,
+	}, nil
+}
+
+// GetOrganizationIDFromContext is a function that retrieves the organization ID from the context.
+func GetOrganizationIDFromContext(ctx context.Context) (string, error) {
+	organizationID, ok := ctx.Value(utils.OrganizationIDContextKey).(string)
+	if !ok {
+		return "", errors.New("unable to get organization ID from context")
+	}
+	return organizationID, nil
 }
