@@ -20,7 +20,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/enumutils"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
@@ -76,8 +75,7 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-	fc := &firebasetools.FirebaseClient{}
-	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	baseExtension := extensions.NewBaseExtensionImpl()
 	repo := dataset.NewFHIRRepository()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 

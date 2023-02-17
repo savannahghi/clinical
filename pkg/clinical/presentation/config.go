@@ -24,7 +24,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 )
@@ -106,9 +105,7 @@ func PrepareServer(
 
 // Router sets up the ginContext router
 func Router(ctx context.Context) (*mux.Router, error) {
-	fc := &firebasetools.FirebaseClient{}
-
-	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	baseExtension := extensions.NewBaseExtensionImpl()
 
 	projectID := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
 	pubSubClient, err := pubsub.NewClient(ctx, projectID)

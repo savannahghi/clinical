@@ -16,7 +16,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	oclMock "github.com/savannahghi/clinical/pkg/clinical/usecases/ocl/mock"
-	"github.com/savannahghi/firebasetools"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -78,8 +77,7 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
-	fc := &firebasetools.FirebaseClient{}
-	baseExtension := extensions.NewBaseExtensionImpl(fc)
+	baseExtension := extensions.NewBaseExtensionImpl()
 	repo := dataset.NewFHIRRepository()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()

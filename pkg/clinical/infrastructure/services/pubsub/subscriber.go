@@ -15,6 +15,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/errorcodeutil"
+	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/scalarutils"
 	"github.com/savannahghi/serverutils"
 )
@@ -31,7 +32,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 	r *http.Request,
 ) {
 	ctx := r.Context()
-	message, err := ps.baseExt.VerifyPubSubJWTAndDecodePayload(w, r)
+	message, err := pubsubtools.VerifyPubSubJWTAndDecodePayload(w, r)
 	if err != nil {
 		serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 			Err:     err,
@@ -40,7 +41,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		return
 	}
 
-	topicID, err := ps.baseExt.GetPubSubTopic(message)
+	topicID, err := pubsubtools.GetPubSubTopic(message)
 	if err != nil {
 		serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
 			Err:     err,
