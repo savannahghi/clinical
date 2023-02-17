@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 )
 
@@ -21,7 +22,7 @@ func TestIDExtractionMiddleware(t *testing.T) {
 				"OrganizationID": "123",
 			},
 			expectedContext: map[interface{}]interface{}{
-				rest.OrganizationIDContextKey: "123",
+				utils.OrganizationIDContextKey: "123",
 			},
 			wantErr: false,
 		},

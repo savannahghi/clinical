@@ -5,22 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/serverutils"
-)
-
-// ContextKey is a custom type used as a key value when adding IDs to the context
-// This is because using a built-in type as a context key can cause collisions with keys used by other packages, leading to unexpected behavior.
-type ContextKey string
-
-const (
-	// OrganizationIDContextKey is the key used to add an organizationID to the context
-	OrganizationIDContextKey = ContextKey("OrganizationID")
-
-	// ProgramIDContextKey is the key used to add a program to the context
-	ProgramIDContextKey = ContextKey("ProgramID")
-
-	// FacilityIDContextKey is the key used to add a facility to the context
-	FacilityIDContextKey = ContextKey("FacilityID")
 )
 
 // TenantIdentifier is a type representing a header name and a corresponding context key
@@ -28,7 +14,7 @@ const (
 // Will be the key value used when adding the header in the request context
 type TenantIdentifier struct {
 	HeaderKey  string
-	ContextKey ContextKey
+	ContextKey utils.ContextKey
 }
 
 type errResponse struct {
@@ -56,7 +42,7 @@ func TenantIdentifierExtractionMiddleware(next http.Handler) http.Handler {
 		headers := []TenantIdentifier{
 			{
 				HeaderKey:  "OrganizationID",
-				ContextKey: OrganizationIDContextKey,
+				ContextKey: utils.OrganizationIDContextKey,
 			},
 			// TODO: Add more headers here as needed e.g FacilityID, ProgramID
 		}
