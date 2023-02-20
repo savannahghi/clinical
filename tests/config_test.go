@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
-	"github.com/google/uuid"
 	"github.com/imroc/req"
 	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
@@ -85,12 +84,6 @@ func TestMain(m *testing.M) {
 		return
 	}
 
-	headers, err = GetGraphQLHeaders(ctx)
-	if err != nil {
-		log.Printf("error adding the graphql headers")
-		return
-	}
-
 	srv, baseURL, serverErr = serverutils.StartTestServer(
 		ctx,
 		presentation.PrepareServer,
@@ -108,6 +101,12 @@ func TestMain(m *testing.M) {
 	}
 
 	testInteractor = i
+
+	headers, err = GetGraphQLHeaders(ctx)
+	if err != nil {
+		log.Printf("error adding the graphql headers")
+		return
+	}
 
 	// run the tests
 	log.Printf("about to run tests")
@@ -128,11 +127,16 @@ func TestMain(m *testing.M) {
 func GetGraphQLHeaders(ctx context.Context) (map[string]string, error) {
 	accessToken := fmt.Sprintf("Bearer %s", oauthPayload.AccessToken)
 
+	orgID, err := testInteractor.GetORCreateOrganization(ctx, testProviderCode)
+	if err != nil {
+		return nil, fmt.Errorf("can't get or create test organization : %v", err)
+	}
+
 	return req.Header{
 		"Accept":         "application/json",
 		"Content-Type":   "application/json",
 		"Authorization":  accessToken,
-		"OrganizationID": uuid.New().String(),
+		"OrganizationID": *orgID,
 	}, nil
 }
 
