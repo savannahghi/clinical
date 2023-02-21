@@ -7,6 +7,7 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical/mock"
 )
 
 func TestIDExtractionMiddleware(t *testing.T) {
@@ -41,7 +42,9 @@ func TestIDExtractionMiddleware(t *testing.T) {
 		}
 
 		res := httptest.NewRecorder()
-		middleware := rest.TenantIdentifierExtractionMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		usecase := mock.NewFHIRUsecaseMock()
+		middleware := rest.TenantIdentifierExtractionMiddleware(usecase)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
 			for expectedKey, expectedValue := range test.expectedContext {
 				ctxValue := ctx.Value(expectedKey)
