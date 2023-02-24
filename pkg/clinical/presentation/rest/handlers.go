@@ -13,6 +13,7 @@ import (
 // PresentationHandlers represents all the REST API logic
 type PresentationHandlers interface {
 	DeleteFHIRPatientByPhone() http.HandlerFunc
+	CreateFHIROrganization() http.HandlerFunc
 }
 
 // PresentationHandlersImpl represents the usecase implementation object
@@ -66,6 +67,52 @@ func (p PresentationHandlersImpl) DeleteFHIRPatientByPhone() http.HandlerFunc {
 		serverutils.WriteJSONResponse(
 			w,
 			response{Deleted: deleted},
+			http.StatusOK,
+		)
+	}
+}
+
+// CreateFHIROrganization handler exposes an endpoint that takes a
+// FHIR organization input and creates an organization
+func (p PresentationHandlersImpl) CreateFHIROrganization() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
+		payload := domain.FHIROrganizationInput{}
+		type errResponse struct {
+			Err string `json:"error"`
+		}
+		serverutils.DecodeJSONToTargetStruct(w, r, payload)
+		if payload.ID == nil {
+			serverutils.WriteJSONResponse(
+				w,
+				errResponse{
+					Err: "expected an ID to be defined",
+				},
+				http.StatusBadRequest,
+			)
+			return
+		}
+		organization, err := p.usecases.CreateFHIROrganization(ctx, payload)
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			err := fmt.Sprintf("unable to delete patient: %v", err.Error())
+			serverutils.WriteJSONResponse(
+				w,
+				errResponse{
+					Err: err,
+				},
+				http.StatusInternalServerError,
+			)
+			return
+		}
+
+		type response struct {
+			Organization *domain.FHIROrganizationRelayPayload `json:"organization"`
+		}
+		serverutils.WriteJSONResponse(
+			w,
+			response{Organization: organization},
 			http.StatusOK,
 		)
 	}

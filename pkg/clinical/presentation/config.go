@@ -168,6 +168,9 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	isc.Path("/delete-patient").Methods(
 		http.MethodDelete,
 	).HandlerFunc(h.DeleteFHIRPatientByPhone())
+	isc.Path("/create-fhir-organisation").Methods(
+		http.MethodPost,
+	).HandlerFunc(h.CreateFHIROrganization())
 
 	//Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
