@@ -49,6 +49,12 @@ type FHIRMedicationStatement struct {
 	Note []*FHIRAnnotation `json:"note,omitempty"`
 
 	Dosage []*FHIRDosage `json:"dosage,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRMedicationStatementInput ...
@@ -94,6 +100,12 @@ type FHIRMedicationStatementInput struct {
 	Note []*FHIRAnnotationInput `json:"note,omitempty"`
 
 	Dosage []*FHIRDosageInput `json:"dosage,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRMedicationStatementRelayConnection is a Relay connection for MedicationStatement

@@ -126,6 +126,12 @@ type FHIRServiceRequest struct {
 
 	// Key events in the history of the request.
 	RelevantHistory []*FHIRReference `json:"relevantHistory,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRServiceRequestInput is the input type for ServiceRequest
@@ -246,6 +252,12 @@ type FHIRServiceRequestInput struct {
 
 	// Key events in the history of the request.
 	RelevantHistory []*FHIRReferenceInput `json:"relevantHistory,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRServiceRequestRelayConnection is a Relay connection for ServiceRequest

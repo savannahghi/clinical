@@ -87,6 +87,12 @@ type FHIRCondition struct {
 
 	// Additional information about the Condition. This is a general notes/comments entry  for description of the Condition, its diagnosis and prognosis.
 	Note []*FHIRAnnotation `json:"note,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRConditionEvidence definition: a clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.
@@ -192,6 +198,12 @@ type FHIRConditionInput struct {
 
 	// Additional information about the Condition. This is a general notes/comments entry  for description of the Condition, its diagnosis and prognosis.
 	Note []*FHIRAnnotationInput `json:"note,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRConditionStage definition: a clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.

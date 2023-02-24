@@ -76,11 +76,11 @@ type FHIRPatient struct {
 	// Link to another patient resource that concerns the same actual patient.
 	Link []*FHIRPatientLink `json:"link,omitempty"`
 
-	// Extension is an optional element that provides additional information not captured in the basic resource definition
-	Extension []*Extension `json:"extension,omitempty"`
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
 
-	// Metadata stores more information about the resource
-	Metadata *Meta `json:"meta,omitempty"`
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRPatientCommunication definition: demographics and other administrative information about an individual or animal receiving care or other health-related services.
@@ -159,9 +159,6 @@ type FHIRPatientContactInput struct {
 
 	// The period during which this contact person or organization is valid to be contacted relating to this patient.
 	Period *FHIRPeriodInput `json:"period,omitempty"`
-
-	// Metadata stores more information about the resource
-	Metadata *Meta `json:"meta,omitempty"`
 }
 
 // FHIRPatientInput is the input type for Patient
@@ -172,7 +169,7 @@ type FHIRPatientInput struct {
 	// An identifier for this patient.
 	Identifier []*FHIRIdentifierInput `json:"identifier,omitempty"`
 
-	//     Whether this patient record is in active use.
+	// Whether this patient record is in active use.
 	// Many systems use this property to mark as non-current patients, such as those that have not been seen for a period of time based on an organization's business rules.
 	//
 	// It is often used to filter patient lists to exclude inactive patients
@@ -227,6 +224,12 @@ type FHIRPatientInput struct {
 
 	// Link to another patient resource that concerns the same actual patient.
 	Link []*FHIRPatientLinkInput `json:"link,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRPatientLink definition: demographics and other administrative information about an individual or animal receiving care or other health-related services.

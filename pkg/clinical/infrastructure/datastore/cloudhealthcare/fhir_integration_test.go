@@ -15,6 +15,11 @@ import (
 
 func TestFHIRImpl_Encounters(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
 
 	msisdn := interserviceclient.TestUserPhoneNumber
 
@@ -68,6 +73,11 @@ func TestFHIRImpl_Encounters(t *testing.T) {
 
 func TestFHIRImpl_CreateEpisodeOfCare(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
 
 	f := testInfrastructure
 
@@ -146,6 +156,12 @@ func TestFHIRImpl_CreateEpisodeOfCare(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	params := map[string]interface{}{}
@@ -188,6 +204,12 @@ func TestFHIRImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIRCondition(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -274,6 +296,12 @@ func TestFHIRImpl_CreateFHIRCondition(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIROrganization(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	identifier := []*domain.FHIRIdentifierInput{
@@ -329,6 +357,12 @@ func TestFHIRImpl_CreateFHIROrganization(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIROrganization(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	OrgName := gofakeit.BeerName()
@@ -346,7 +380,7 @@ func TestFHIRImpl_SearchFHIROrganization(t *testing.T) {
 		Name:       &OrgName,
 	}
 
-	_, err := fh.FHIR.CreateFHIROrganization(ctx, input)
+	_, err = fh.FHIR.CreateFHIROrganization(ctx, input)
 	if err != nil {
 		t.Errorf("failed to create fhir organization: %v", err)
 		return
@@ -394,6 +428,12 @@ func TestFHIRImpl_SearchFHIROrganization(t *testing.T) {
 
 func TestFHIRImpl_FindOrganizationByID(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	organizationID := "a1bf993c-c2b6-44dd-8991-3a47b54a6789"
@@ -483,11 +523,17 @@ func TestFHIRImpl_FindOrganizationByID(t *testing.T) {
 
 func TestFHIRImpl_SearchEpisodesByParam(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
 
-	_, _, err := createTestEpisodeOfCare(
+	_, _, err = createTestEpisodeOfCare(
 		ctx,
 		msisdn,
 		false,
@@ -531,6 +577,12 @@ func TestFHIRImpl_SearchEpisodesByParam(t *testing.T) {
 
 func TestFHIRImpl_OpenEpisodes(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -580,6 +632,12 @@ func TestFHIRImpl_OpenEpisodes(t *testing.T) {
 
 func TestFHIRImpl_HasOpenEpisode(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -639,6 +697,12 @@ func TestFHIRImpl_HasOpenEpisode(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIREncounter(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -712,6 +776,12 @@ func TestFHIRImpl_CreateFHIREncounter(t *testing.T) {
 
 func TestFHIRImpl_GetFHIREpisodeOfCare(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -768,6 +838,12 @@ func TestFHIRImpl_GetFHIREpisodeOfCare(t *testing.T) {
 
 func TestFHIRImpl_StartEncounter(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -832,6 +908,12 @@ func TestFHIRImpl_StartEncounter(t *testing.T) {
 
 func TestFHIRImpl_SearchEpisodeEncounter(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -889,6 +971,12 @@ func TestFHIRImpl_SearchEpisodeEncounter(t *testing.T) {
 
 func TestFHIRImpl_EndEncounter(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -957,6 +1045,12 @@ func TestFHIRImpl_EndEncounter(t *testing.T) {
 
 func TestFHIRImpl_EndEpisode(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1020,6 +1114,12 @@ func TestFHIRImpl_EndEpisode(t *testing.T) {
 
 func TestFHIRImpl_GetActiveEpisode(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1081,6 +1181,12 @@ func TestFHIRImpl_GetActiveEpisode(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIRServiceRequest(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	params := map[string]interface{}{"name": "123"}
@@ -1124,6 +1230,12 @@ func TestFHIRImpl_SearchFHIRServiceRequest(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIRServiceRequest(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1189,6 +1301,12 @@ func TestFHIRImpl_CreateFHIRServiceRequest(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	params := map[string]interface{}{}
@@ -1232,6 +1350,12 @@ func TestFHIRImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1298,6 +1422,12 @@ func TestFHIRImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 
 func TestFHIRImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1372,6 +1502,12 @@ func TestFHIRImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIRComposition(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	params := map[string]interface{}{"name": "123"}
@@ -1414,6 +1550,12 @@ func TestFHIRImpl_SearchFHIRComposition(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIRComposition(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1488,6 +1630,12 @@ func TestFHIRImpl_CreateFHIRComposition(t *testing.T) {
 
 func TestFHIRImpl_UpdateFHIRComposition(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1570,6 +1718,12 @@ func TestFHIRImpl_UpdateFHIRComposition(t *testing.T) {
 
 func TestFHIRImpl_DeleteFHIRComposition(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1651,6 +1805,12 @@ func TestFHIRImpl_DeleteFHIRComposition(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIRCondition(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	params := map[string]interface{}{"name": "123"}
@@ -1693,6 +1853,12 @@ func TestFHIRImpl_SearchFHIRCondition(t *testing.T) {
 
 func TestFHIRImpl_UpdateFHIRCondition(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1787,6 +1953,12 @@ func TestFHIRImpl_UpdateFHIRCondition(t *testing.T) {
 
 func TestFHIRImpl_GetFHIREncounter(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -1869,6 +2041,12 @@ func TestFHIRImpl_GetFHIREncounter(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIREncounter(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	params := map[string]interface{}{"name": "123"}
@@ -1911,6 +2089,12 @@ func TestFHIRImpl_SearchFHIREncounter(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	params := map[string]interface{}{"name": "123"}
@@ -1953,6 +2137,12 @@ func TestFHIRImpl_SearchFHIRMedicationRequest(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2038,6 +2228,12 @@ func TestFHIRImpl_CreateFHIRMedicationRequest(t *testing.T) {
 
 func TestFHIRImpl_UpdateFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2131,6 +2327,12 @@ func TestFHIRImpl_UpdateFHIRMedicationRequest(t *testing.T) {
 
 func TestFHIRImpl_DeleteFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2224,6 +2426,12 @@ func TestFHIRImpl_DeleteFHIRMedicationRequest(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIRObservation(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2292,6 +2500,12 @@ func TestFHIRImpl_SearchFHIRObservation(t *testing.T) {
 
 func TestFHIRImpl_CreateFHIRObservation(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2357,6 +2571,12 @@ func TestFHIRImpl_CreateFHIRObservation(t *testing.T) {
 
 func TestFHIRImpl_DeleteFHIRObservation(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2437,12 +2657,18 @@ func TestFHIRImpl_DeleteFHIRObservation(t *testing.T) {
 
 func TestFHIRImpl_GetFHIRPatient(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 	u := testUsecaseInteractor
 
 	msisdn := interserviceclient.TestUserPhoneNumber
 
-	_, _, err := createTestEpisodeOfCare(
+	_, _, err = createTestEpisodeOfCare(
 		ctx,
 		msisdn,
 		false,
@@ -2510,6 +2736,12 @@ func TestFHIRImpl_GetFHIRPatient(t *testing.T) {
 
 func TestFHIRImpl_DeleteFHIRPatient(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 	u := testUsecaseInteractor
 	patientFhirInput := getTestFHIRPatientInput()
@@ -2561,6 +2793,12 @@ func TestFHIRImpl_DeleteFHIRPatient(t *testing.T) {
 
 func TestFHIRImpl_DeleteFHIRServiceRequest(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -2632,6 +2870,12 @@ func TestFHIRImpl_DeleteFHIRServiceRequest(t *testing.T) {
 
 func TestFHIRImpl_SearchFHIRMedicationStatement(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	fh := testInfrastructure
 
 	patient, _, err := createTestPatient(ctx)

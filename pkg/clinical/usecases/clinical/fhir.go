@@ -105,6 +105,15 @@ func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, episode 
 
 // CreateFHIRCondition creates a FHIRCondition instance
 func (c *UseCasesClinicalImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRCondition(ctx, input)
 }
 
@@ -239,6 +248,16 @@ func (c *UseCasesClinicalImpl) FHIRHeaders() (http.Header, error) {
 
 // CreateFHIREncounter creates a FHIREncounter instance
 func (c *UseCasesClinicalImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIREncounter(ctx, input)
 }
 
@@ -372,6 +391,15 @@ func (c *UseCasesClinicalImpl) SearchFHIRServiceRequest(ctx context.Context, par
 
 // CreateFHIRServiceRequest creates a FHIRServiceRequest instance
 func (c *UseCasesClinicalImpl) CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRServiceRequest(ctx, input)
 }
 
@@ -382,6 +410,16 @@ func (c *UseCasesClinicalImpl) SearchFHIRAllergyIntolerance(ctx context.Context,
 
 // CreateFHIRAllergyIntolerance creates a FHIRAllergyIntolerance instance
 func (c *UseCasesClinicalImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRAllergyIntolerance(ctx, input)
 }
 
@@ -402,6 +440,16 @@ func (c *UseCasesClinicalImpl) SearchFHIRComposition(ctx context.Context, params
 
 // CreateFHIRComposition creates a FHIRComposition instance
 func (c *UseCasesClinicalImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRComposition(ctx, input)
 }
 
@@ -455,6 +503,16 @@ func (c *UseCasesClinicalImpl) SearchFHIRMedicationRequest(ctx context.Context, 
 
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
 func (c *UseCasesClinicalImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRMedicationRequest(ctx, input)
 }
 
@@ -479,6 +537,16 @@ func (c *UseCasesClinicalImpl) SearchFHIRObservation(ctx context.Context, params
 
 // CreateFHIRObservation creates a FHIRObservation instance
 func (c *UseCasesClinicalImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRObservation(ctx, input)
 }
 
@@ -509,11 +577,31 @@ func (c *UseCasesClinicalImpl) DeleteFHIRServiceRequest(ctx context.Context, id 
 
 // CreateFHIRMedicationStatement creates a new FHIR Medication statement instance
 func (c *UseCasesClinicalImpl) CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRMedicationStatement(ctx, input)
 }
 
 // CreateFHIRMedication creates a new FHIR Medication instance
 func (c *UseCasesClinicalImpl) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
+	}
+
 	return c.infrastructure.FHIR.CreateFHIRMedication(ctx, input)
 }
 

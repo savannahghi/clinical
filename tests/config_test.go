@@ -16,6 +16,7 @@ import (
 	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/testutils"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
@@ -121,6 +122,17 @@ func TestMain(m *testing.M) {
 		}
 	}()
 	os.Exit(code)
+}
+
+func addOrganisationContext(ctx context.Context, providerCode string) (context.Context, error) {
+	orgID, err := testInteractor.GetORCreateOrganization(ctx, providerCode)
+	if err != nil {
+		return nil, fmt.Errorf("can't get or create test organization : %v", err)
+	}
+
+	value := *orgID
+
+	return context.WithValue(ctx, utils.OrganizationIDContextKey, value), nil
 }
 
 // GetGraphQLHeaders gets relevant GraphQLHeaders

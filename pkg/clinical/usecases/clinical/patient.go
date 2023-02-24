@@ -28,8 +28,6 @@ const (
 	// patient has approved limited access to their health record
 	LimitedProfileEncounterCount = 5
 
-	NHIFImageFrontPicName            = "nhif_front_photo"
-	NHIFImageRearPicName             = "nhif_rear_photo"
 	RelationshipSystem               = "http://terminology.hl7.org/CodeSystem/v2-0131"
 	RelationshipVersion              = "2.9"
 	StringTimeParseMonthNameLayout   = "2006-Jan-02"
@@ -52,7 +50,6 @@ type UseCasesClinical interface {
 	PatientSearch(ctx context.Context, search string) (*domain.PatientConnection, error)
 	UpdatePatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
 	AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error)
-	AddNHIF(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error)
 	CreateUpdatePatientExtraInformation(ctx context.Context, input domain.PatientExtraInformationInput) (bool, error)
 	AllergySummary(ctx context.Context, patientID string) ([]string, error)
 	DeleteFHIRPatientByPhone(ctx context.Context, phoneNumber string) (bool, error)
@@ -416,12 +413,6 @@ func (c *UseCasesClinicalImpl) ContactsToContactPointInput(ctx context.Context, 
 // SimplePatientRegistrationInputToPatientInput transforms a patient input into
 // a
 func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.FHIRPatientInput, error) {
-	_, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, input)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to check patient existence")
-	}
-
 	contacts, err := c.ContactsToContactPointInput(ctx, input.PhoneNumbers, input.Emails)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -453,8 +444,49 @@ func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx 
 	return &patientInput, nil
 }
 
+// GetTenantMetaTags is a helper to create tags that are used to identify which tenant a resource belongs to
+// and are saved in a resources `Meta` attribute
+func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.FHIRCodingInput, error) {
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	organisation, err := c.FindOrganizationByID(ctx, identifiers.OrganizationID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find tenant organisation: %w", err)
+	}
+
+	userSelected := false
+	organisationTagVersion := "1.0"
+	organisationTagSystem := scalarutils.URI("http://mycarehub/tenant-identification/organisation")
+
+	tags := []domain.FHIRCodingInput{
+		{
+			System:       &organisationTagSystem,
+			Version:      &organisationTagVersion,
+			Code:         scalarutils.Code(identifiers.OrganizationID),
+			Display:      *organisation.Resource.Name,
+			UserSelected: &userSelected,
+		},
+	}
+
+	return tags, nil
+}
+
 // RegisterPatient implements simple patient registration
 func (c *UseCasesClinicalImpl) RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error) {
+	exist, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, input)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("unable to check patient existence")
+	}
+
+	if exist {
+		return nil, fmt.Errorf("patient with phone number already exists")
+	}
+
 	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, input)
 	if err != nil {
 		return nil, err
@@ -487,6 +519,15 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input domain.F
 	}
 	if input.Identifier != nil {
 		input.Identifier = append(input.Identifier, common.DefaultIdentifier())
+	}
+
+	tenantTags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tenantTags,
 	}
 
 	patientRecord, err := c.infrastructure.FHIR.CreateFHIRPatient(ctx, input)
@@ -739,81 +780,6 @@ func (c *UseCasesClinicalImpl) AddNextOfKin(ctx context.Context, input domain.Si
 	}, nil
 }
 
-// AddNHIF patches a patient with NHIF details
-func (c *UseCasesClinicalImpl) AddNHIF(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
-	if input == nil {
-		return nil, fmt.Errorf("AddNHIF: nil input")
-	}
-
-	if input.PatientID == "" {
-		return nil, fmt.Errorf("a patient ID must be specified")
-	}
-
-	patientPayload, err := c.FindPatientByID(ctx, input.PatientID)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"can't get patient with ID %s: %v", input.PatientID, err)
-	}
-
-	existingIdentifiers := patientPayload.PatientRecord.Identifier
-	updatedIdentifierInputs := []*domain.FHIRIdentifierInput{}
-	for _, existing := range existingIdentifiers {
-		updatedTypeCoding := []*domain.FHIRCodingInput{}
-		for _, coding := range existing.Type.Coding {
-			updatedTypeCoding = append(updatedTypeCoding, &domain.FHIRCodingInput{
-				System:       coding.System,
-				Version:      coding.Version,
-				Code:         coding.Code,
-				Display:      coding.Display,
-				UserSelected: coding.UserSelected,
-			})
-		}
-		updatedIdentifierInputs = append(updatedIdentifierInputs, &domain.FHIRIdentifierInput{
-			ID:  existing.ID,
-			Use: existing.Use,
-			Type: domain.FHIRCodeableConceptInput{
-				ID:     existing.Type.ID,
-				Text:   existing.Type.Text,
-				Coding: updatedTypeCoding,
-			},
-			System: existing.System,
-			Value:  existing.Value,
-			Period: &domain.FHIRPeriodInput{
-				ID:    existing.Period.ID,
-				Start: existing.Period.Start,
-				End:   existing.Period.End,
-			},
-		})
-	}
-	patches := []map[string]interface{}{
-		{
-			"op":    "add",
-			"path":  "/identifier",
-			"value": updatedIdentifierInputs,
-		},
-	}
-
-	patient, err := c.infrastructure.FHIR.PatchFHIRPatient(ctx, input.PatientID, patches)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("UpdatePatient: %v", err)
-	}
-
-	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
-	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to get open episodes for %s, err: %v", patientReference, err)
-	}
-	return &domain.PatientPayload{
-		PatientRecord:   patient,
-		OpenEpisodes:    openEpisodes,
-		HasOpenEpisodes: len(openEpisodes) > 0,
-	}, nil
-}
-
 // CreateUpdatePatientExtraInformation updates a patient's extra info
 func (c *UseCasesClinicalImpl) CreateUpdatePatientExtraInformation(
 	ctx context.Context, input domain.PatientExtraInformationInput) (bool, error) {
@@ -921,7 +887,7 @@ func (c *UseCasesClinicalImpl) DeleteFHIRPatientByPhone(ctx context.Context, pho
 	return c.infrastructure.FHIR.DeleteFHIRPatient(ctx, patientID)
 }
 
-//StartEpisodeByBreakGlass starts an emergency episode
+// StartEpisodeByBreakGlass starts an emergency episode
 func (c *UseCasesClinicalImpl) StartEpisodeByBreakGlass(
 	ctx context.Context, input domain.BreakGlassEpisodeCreationInput) (*domain.EpisodeOfCarePayload, error) {
 	normalized, err := converterandformatter.NormalizeMSISDN(input.ProviderPhone)

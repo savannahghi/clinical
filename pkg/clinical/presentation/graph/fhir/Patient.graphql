@@ -383,6 +383,28 @@ type FHIRPatient {
   Link to another patient resource that concerns the same actual patient.
   """
   Link: [FHIRPatientLink]
+
+  Meta: FHIRMeta
+
+  Extension: [FHIRExtension]
+}
+
+type FHIRMeta {
+  VersionId:   String       
+	# LastUpdated: Time    
+	Source:      String      
+	Tag:         [FHIRCoding]
+	Security:   [FHIRCoding]
+}
+
+type FHIRExtension {
+  URL: String
+  Extension: [Extension]
+}
+
+type Extension {
+  URL: String
+  ValueString: String
 }
 
 """

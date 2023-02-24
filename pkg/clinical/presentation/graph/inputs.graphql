@@ -62,15 +62,6 @@ input SimpleNextOfKinInput {
   active: Boolean!
 }
 
-input SimpleNHIFInput {
-  patientID: String!
-  membershipNumber: String!
-  frontImageBase64: String
-  frontImageContentType: ContentType
-  rearImageBase64: String
-  rearImageContentType: ContentType
-}
-
 input PatientExtraInformationInput {
   patientID: String!
   maritalStatus: MaritalStatus
