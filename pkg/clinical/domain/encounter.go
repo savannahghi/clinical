@@ -81,6 +81,12 @@ type FHIREncounter struct {
 
 	// Another Encounter of which this encounter is a part of (administratively or in time).
 	PartOf *FHIRReference `json:"partOf,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIREncounterClasshistory definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
@@ -276,6 +282,12 @@ type FHIREncounterInput struct {
 
 	// Another Encounter of which this encounter is a part of (administratively or in time).
 	PartOf *FHIRReferenceInput `json:"partOf,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIREncounterLocation definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.

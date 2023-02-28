@@ -47,6 +47,12 @@ type FHIREpisodeOfCare struct {
 
 	// The set of accounts that may be used for billing for this EpisodeOfCare.
 	Account []*FHIRReference `json:"account,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIREpisodeOfCareInput is the input type for EpisodeOfCare
@@ -89,6 +95,12 @@ type FHIREpisodeOfCareInput struct {
 
 	// The set of accounts that may be used for billing for this EpisodeOfCare.
 	Account []*FHIRReferenceInput `json:"account,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIREpisodeOfCareRelayConnection is a Relay connection for EpisodeOfCare

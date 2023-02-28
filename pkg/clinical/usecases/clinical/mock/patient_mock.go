@@ -22,7 +22,6 @@ type FakeClinical struct {
 	MockPatientSearchFn                       func(ctx context.Context, search string) (*domain.PatientConnection, error)
 	MockUpdatePatientFn                       func(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
 	MockAddNextOfKinFn                        func(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error)
-	MockAddNHIFFn                             func(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error)
 	MockCreateUpdatePatientExtraInformationFn func(ctx context.Context, input domain.PatientExtraInformationInput) (bool, error)
 	MockAllergySummaryFn                      func(ctx context.Context, patientID string) ([]string, error)
 	MockDeleteFHIRPatientByPhoneFn            func(ctx context.Context, phoneNumber string) (bool, error)
@@ -190,13 +189,6 @@ func NewFakeClinicalMock() *FakeClinical {
 				OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
 			}, nil
 		},
-		MockAddNHIFFn: func(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
-			return &domain.PatientPayload{
-				PatientRecord:   &domain.FHIRPatient{},
-				HasOpenEpisodes: false,
-				OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
-			}, nil
-		},
 		MockCreateUpdatePatientExtraInformationFn: func(ctx context.Context, input domain.PatientExtraInformationInput) (bool, error) { return true, nil },
 		MockAllergySummaryFn: func(ctx context.Context, patientID string) ([]string, error) {
 			return []string{"test"}, nil
@@ -281,11 +273,6 @@ func (f *FakeClinical) UpdatePatient(ctx context.Context, input domain.SimplePat
 // AddNextOfKin ...
 func (f *FakeClinical) AddNextOfKin(ctx context.Context, input domain.SimpleNextOfKinInput) (*domain.PatientPayload, error) {
 	return f.MockAddNextOfKinFn(ctx, input)
-}
-
-// AddNHIF ...
-func (f *FakeClinical) AddNHIF(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
-	return f.MockAddNHIFFn(ctx, input)
 }
 
 // CreateUpdatePatientExtraInformation ...

@@ -18,6 +18,12 @@ import (
 
 func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	u := testUsecaseInteractor
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -80,7 +86,7 @@ func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: context.Background(),
+				ctx: ctx,
 			},
 			wantErr: true,
 		},
@@ -99,6 +105,12 @@ func TestClinicalUseCaseImpl_ProblemSummary(t *testing.T) {
 
 func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	u := testUsecaseInteractor
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -222,6 +234,12 @@ func TestClinicalUseCaseImpl_VisitSummary(t *testing.T) {
 
 func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	u := testUsecaseInteractor
 
 	msisdn := interserviceclient.TestUserPhoneNumber
@@ -355,20 +373,22 @@ func TestClinicalUseCaseImpl_PatientTimelineWithCount(t *testing.T) {
 
 func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	u := testUsecaseInteractor
 
 	searchPatient := "Test user"
 
-	patientInput, err := simplePatientRegistration()
+	_, err = registerPatient(ctx)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
-		return
-	}
-
-	_, err = u.RegisterPatient(ctx, *patientInput)
-	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
-		return
+		if !strings.Contains(err.Error(), "already exists") {
+			t.Errorf("unable to create patient: %v", err)
+			return
+		}
 	}
 
 	type args struct {
@@ -412,18 +432,20 @@ func TestClinicalUseCaseImpl_PatientSearch(t *testing.T) {
 
 func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
 	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	_, err = u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	_, err = registerPatient(ctx)
 	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
-		return
+		if !strings.Contains(err.Error(), "already exists") {
+			t.Errorf("unable to create patient: %v", err)
+			return
+		}
 	}
 
 	phone := &domain.PhoneNumberInput{
@@ -479,20 +501,22 @@ func TestClinicalUseCaseImpl_ContactsToContactPointInput(t *testing.T) {
 
 func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	u := testUsecaseInteractor
 
 	ID := ksuid.New().String()
 
-	patientInput, err := simplePatientRegistration()
+	_, err = registerPatient(ctx)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
-		return
-	}
-
-	_, err = u.RegisterPatient(ctx, *patientInput)
-	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
-		return
+		if !strings.Contains(err.Error(), "already exists") {
+			t.Errorf("unable to create patient: %v", err)
+			return
+		}
 	}
 
 	gender := domain.PatientGenderEnumMale
@@ -567,30 +591,18 @@ func TestClinicalUseCaseImpl_CreatePatient(t *testing.T) {
 
 func TestClinicalUseCaseImpl_FindPatientByID(t *testing.T) {
 	ctx := context.Background()
-
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	var patient domain.FHIRPatient
-	p, err := u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		if strings.Contains(err.Error(), "already exists") {
-			p, err := u.FindPatientsByMSISDN(ctx, interserviceclient.TestUserPhoneNumber)
-			if err != nil {
-				t.Errorf("can't find existing patient by MSISDN: %v", err)
-			}
-			patient = *p.Edges[0].Node
-		} else {
-			t.Errorf("unable to create patient: %v", err)
-			return
-		}
-	} else {
-		patient = *p.PatientRecord
+		t.Errorf("an error occurred registering patient: %v\n", err)
+		return
 	}
 
 	type args struct {
@@ -634,6 +646,12 @@ func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
 	TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t)
 
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	u := testUsecaseInteractor
 
 	patientInput, err := simplePatientRegistration()
@@ -642,9 +660,9 @@ func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
 		return
 	}
 
-	patient, err := u.RegisterPatient(ctx, *patientInput)
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
+		t.Errorf("an error occurred registering patient: %v\n", err)
 		return
 	}
 
@@ -680,7 +698,7 @@ func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
 			args: args{
 				ctx: ctx,
 				input: domain.SimplePatientRegistrationInput{
-					ID:           *patient.PatientRecord.ID,
+					ID:           *patient.ID,
 					BirthDate:    date,
 					PhoneNumbers: patientInput.PhoneNumbers,
 					Gender:       "male",
@@ -714,17 +732,17 @@ func TestClinicalUseCaseImpl_UpdatePatient(t *testing.T) {
 
 func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
 	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	patient, err := u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
+		t.Errorf("an error occurred registering patient: %v\n", err)
 		return
 	}
 
@@ -754,7 +772,7 @@ func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
 			args: args{
 				ctx: ctx,
 				input: domain.SimpleNextOfKinInput{
-					PatientID: *patient.PatientRecord.ID,
+					PatientID: *patient.ID,
 					Names: []*domain.NameInput{
 						name,
 					},
@@ -790,85 +808,25 @@ func TestClinicalUseCaseImpl_AddNextOfKin(t *testing.T) {
 	}
 }
 
-func TestClinicalUseCaseImpl_AddNHIF(t *testing.T) {
-	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	testInput := ksuid.New().String()
-
-	patientInput, err := simplePatientRegistration()
-	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
-		return
-	}
-
-	patient, err := u.RegisterPatient(ctx, *patientInput)
-	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
-		return
-	}
-
-	type args struct {
-		ctx   context.Context
-		input *domain.SimpleNHIFInput
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "Happy case",
-			args: args{
-				ctx: ctx,
-				input: &domain.SimpleNHIFInput{
-					PatientID:        *patient.PatientRecord.ID,
-					MembershipNumber: ksuid.New().String(),
-					FrontImageBase64: &testInput,
-					RearImageBase64:  &testInput,
-				},
-			},
-			wantErr: false,
-		},
-
-		{
-			name: "Sad case",
-			args: args{
-				ctx: ctx,
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			_, err := u.AddNHIF(tt.args.ctx, tt.args.input)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ClinicalUseCaseImpl.AddNHIF() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-		})
-	}
-}
-
 func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
+
 	u := testUsecaseInteractor
 
 	maritalStatus := ksuid.New().String()
 
-	patientInput, err := simplePatientRegistration()
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("an error occurred registering patient: %v\n", err)
 		return
 	}
 
-	patient, err := u.RegisterPatient(ctx, *patientInput)
-	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
-		return
-	}
-
-	pid, err := u.FindPatientByID(ctx, *patient.PatientRecord.ID)
+	pid, err := u.FindPatientByID(ctx, *patient.ID)
 	if err != nil {
 		t.Errorf("cant get authenticated context from UID: %v", err)
 		return
@@ -921,17 +879,17 @@ func TestClinicalUseCaseImpl_CreateUpdatePatientExtraInformation(t *testing.T) {
 func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
 
 	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	patient, err := u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
+		t.Errorf("an error occurred registering patient: %v\n", err)
 		return
 	}
 
@@ -948,7 +906,7 @@ func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
 			name: "Happy case",
 			args: args{
 				ctx:       ctx,
-				patientID: *patient.PatientRecord.ID,
+				patientID: *patient.ID,
 			},
 			wantErr: false,
 		},
@@ -984,18 +942,20 @@ func TestClinicalUseCaseImpl_AllergySummary(t *testing.T) {
 
 func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
 	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	_, err = u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	_, err = registerPatient(ctx)
 	if err != nil {
-		t.Errorf("unable to create patient: %v", err)
-		return
+		if !strings.Contains(err.Error(), "already exists") {
+			t.Errorf("unable to create patient: %v", err)
+			return
+		}
 	}
 
 	type args struct {
@@ -1045,23 +1005,22 @@ func TestClinicalUseCaseImpl_DeleteFHIRPatientByPhone(t *testing.T) {
 
 func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	patient, err := u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		// TODO: investigate register patient
-		// t.Errorf("unable to create patient: %v", err)
+		t.Errorf("an error occurred registering patient: %v\n", err)
 		return
 	}
 
 	episode, _, err := createTestEpisodeOfCare(
-		context.Background(),
+		ctx,
 		interserviceclient.TestUserPhoneNumber,
 		false,
 		testProviderCode,
@@ -1076,7 +1035,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 		t.Errorf("failed to start encounter: %v\n", err)
 	}
 
-	oInput, err := getFhirObservationInput(*patient.PatientRecord, encounterID)
+	oInput, err := getFhirObservationInput(*patient, encounterID)
 	if err != nil {
 		t.Errorf("failed to get fhir observation input: %v", err)
 	}
@@ -1086,7 +1045,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 		t.Errorf("failed to create fhir observation: %v", err)
 	}
 
-	msInput, err := getFhirMedicationStatementInput(*patient.PatientRecord)
+	msInput, err := getFhirMedicationStatementInput(*patient)
 	if err != nil {
 		t.Errorf("failed to get fhir medication statement input: %v", err)
 	}
@@ -1110,8 +1069,8 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 		{
 			name: "Happy case: patient timeline",
 			args: args{
-				ctx:       context.Background(),
-				patientID: *patient.PatientRecord.ID,
+				ctx:       ctx,
+				patientID: *patient.ID,
 				count:     4,
 			},
 			wantErr: false,
@@ -1141,23 +1100,22 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 
 func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	patient, err := u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		// TODO: investigate register patient
-		// t.Errorf("unable to create patient: %v", err)
+		t.Errorf("an error occurred registering patient: %v\n", err)
 		return
 	}
 
 	episode, _, err := createTestEpisodeOfCare(
-		context.Background(),
+		ctx,
 		interserviceclient.TestUserPhoneNumber,
 		false,
 		testProviderCode,
@@ -1172,7 +1130,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 		t.Errorf("failed to start encounter: %v\n", err)
 	}
 
-	oInput, err := getFhirObservationInput(*patient.PatientRecord, encounterID)
+	oInput, err := getFhirObservationInput(*patient, encounterID)
 	if err != nil {
 		t.Errorf("failed to get fhir observation input: %v", err)
 	}
@@ -1182,7 +1140,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 		t.Errorf("failed to create fhir observation: %v", err)
 	}
 
-	msInput, err := getFhirMedicationStatementInput(*patient.PatientRecord)
+	msInput, err := getFhirMedicationStatementInput(*patient)
 	if err != nil {
 		t.Errorf("failed to get fhir medication statement input: %v", err)
 	}
@@ -1205,9 +1163,9 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 		{
 			name: "Happy case: patient timeline",
 			args: args{
-				ctx: context.Background(),
+				ctx: ctx,
 				input: domain.HealthTimelineInput{
-					PatientID: *patient.PatientRecord.ID,
+					PatientID: *patient.ID,
 					Offset:    0,
 					Limit:     20,
 				},
@@ -1239,23 +1197,22 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 
 func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 	ctx := context.Background()
-	u := testUsecaseInteractor
-
-	patientInput, err := simplePatientRegistration()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
 	if err != nil {
-		t.Errorf("an error occurred: %v\n", err)
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
-	patient, err := u.RegisterPatient(ctx, *patientInput)
+	u := testUsecaseInteractor
+
+	patient, err := registerPatient(ctx)
 	if err != nil {
-		// TODO: investigate register patient
-		// t.Errorf("unable to create patient: %v", err)
+		t.Errorf("an error occurred registering patient: %v\n", err)
 		return
 	}
 
 	episode, _, err := createTestEpisodeOfCare(
-		context.Background(),
+		ctx,
 		interserviceclient.TestUserPhoneNumber,
 		false,
 		testProviderCode,
@@ -1270,7 +1227,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		t.Errorf("failed to start encounter: %v\n", err)
 	}
 
-	oInput, err := getFhirObservationInput(*patient.PatientRecord, encounterID)
+	oInput, err := getFhirObservationInput(*patient, encounterID)
 	if err != nil {
 		t.Errorf("failed to get fhir observation input: %v", err)
 	}
@@ -1280,7 +1237,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		t.Errorf("failed to create fhir observation: %v", err)
 	}
 
-	msInput, err := getFhirMedicationStatementInput(*patient.PatientRecord)
+	msInput, err := getFhirMedicationStatementInput(*patient)
 	if err != nil {
 		t.Errorf("failed to get fhir medication statement input: %v", err)
 	}
@@ -1303,8 +1260,8 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Happy case: patient timeline",
 			args: args{
-				ctx:       context.Background(),
-				patientID: *patient.PatientRecord.ID,
+				ctx:       ctx,
+				patientID: *patient.ID,
 			},
 			wantErr: false,
 		},

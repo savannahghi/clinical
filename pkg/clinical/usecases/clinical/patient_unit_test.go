@@ -350,63 +350,6 @@ func TestClinicalUseCaseImpl_CreatePatient_Unittest(t *testing.T) {
 // 	}
 // }
 
-// func TestClinicalUseCaseImpl_AddNHIF_Unittest(t *testing.T) {
-// 	ctx := context.Background()
-// 	i := fakeUsecaseIntr
-
-// 	testInput := ksuid.New().String()
-
-// 	type args struct {
-// 		ctx   context.Context
-// 		input *domain.SimpleNHIFInput
-// 	}
-// 	tests := []struct {
-// 		name    string
-// 		args    args
-// 		wantErr bool
-// 	}{
-// 		{
-// 			name: "Happy case",
-// 			args: args{
-// 				ctx: ctx,
-// 				input: &domain.SimpleNHIFInput{
-// 					PatientID:        ksuid.New().String(),
-// 					MembershipNumber: ksuid.New().String(),
-// 					FrontImageBase64: &testInput,
-// 					RearImageBase64:  &testInput,
-// 				},
-// 			},
-// 			wantErr: false,
-// 		},
-
-// 		{
-// 			name: "Sad case",
-// 			args: args{
-// 				ctx: ctx,
-// 			},
-// 			wantErr: true,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			if tt.name == "Happy case" {
-// 				fakePatient.AddNHIFFn = usecaseMock.NewClinicalMock().AddNHIF
-// 			}
-
-// 			if tt.name == "Sad case" {
-// 				fakePatient.AddNHIFFn = func(ctx context.Context, input *domain.SimpleNHIFInput) (*domain.PatientPayload, error) {
-// 					return nil, fmt.Errorf("an error occurred")
-// 				}
-// 			}
-// 			_, err := i.AddNHIF(tt.args.ctx, tt.args.input)
-// 			if (err != nil) != tt.wantErr {
-// 				t.Errorf("ClinicalUseCaseImpl.AddNHIF() error = %v, wantErr %v", err, tt.wantErr)
-// 				return
-// 			}
-// 		})
-// 	}
-// }
-
 // func TestClinicalUseCaseImpl_RegisterUser_Unittest(t *testing.T) {
 // 	ctx := context.Background()
 // 	i := fakeUsecaseIntr

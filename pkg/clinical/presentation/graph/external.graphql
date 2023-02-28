@@ -19,10 +19,6 @@ scalar URI
 scalar UUID
 scalar XHTML
 
-type Dummy @key(fields: "id") {
-  id: ID!
-}
-
 extend type PageInfo {
   hasNextPage: Boolean! @external
   hasPreviousPage: Boolean! @external

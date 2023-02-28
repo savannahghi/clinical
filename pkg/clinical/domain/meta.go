@@ -1,18 +1,21 @@
 package domain
 
-// Meta field in FHIR is used to capture metadata about a resource
-type Meta struct {
-	VersionID   string          `json:"versionID,omitempty"`
-	LastUpdated string          `json:"lastUpdated,omitempty"`
-	Source      string          `json:"source,omitempty"`
-	Profile     []string        `json:"profile,omitempty"`
-	Security    []SecurityLabel `json:"security,omitempty"`
-	Tag         []FHIRCoding    `json:"tag,omitempty"`
+import "time"
+
+// FHIRMetaInput is the input to resource meta
+type FHIRMetaInput struct {
+	VersionID   string            `json:"versionId,omitempty"`
+	LastUpdated time.Time         `json:"lastUpdated,omitempty"`
+	Source      string            `json:"source,omitempty"`
+	Tag         []FHIRCodingInput `json:"tag,omitempty"`
+	Security    []FHIRCodingInput `json:"security,omitempty"`
 }
 
-// SecurityLabel is used to manage access control to the resource
-type SecurityLabel struct {
-	System  string `json:"system,omitempty"`
-	Code    string `json:"code,omitempty"`
-	Display string `json:"display,omitempty"`
+// FHIRMeta is a set of metadata that provides technical and workflow context to a resource.
+type FHIRMeta struct {
+	VersionID string `json:"versionId,omitempty"`
+	// LastUpdated time.Time    `json:"lastUpdated,omitempty"`
+	Source   string       `json:"source,omitempty"`
+	Tag      []FHIRCoding `json:"tag,omitempty"`
+	Security []FHIRCoding `json:"security,omitempty"`
 }

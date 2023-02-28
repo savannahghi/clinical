@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/testutils"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/converterandformatter"
@@ -63,6 +65,42 @@ func TestMain(m *testing.M) {
 func generateTestOTP(t *testing.T, msisdn string) (string, error) {
 	// TODO:(engagement) Replace engagement
 	return "", nil
+}
+
+func addOrganisationContext(ctx context.Context, providerCode string) (context.Context, error) {
+	orgID, err := testUsecaseInteractor.GetORCreateOrganization(ctx, providerCode)
+	if err != nil {
+		return nil, fmt.Errorf("can't get or create test organization : %v", err)
+	}
+
+	value := *orgID
+
+	return context.WithValue(ctx, utils.OrganizationIDContextKey, value), nil
+}
+
+func registerPatient(ctx context.Context) (*domain.FHIRPatient, error) {
+	patientInput, err := simplePatientRegistration()
+	if err != nil {
+		return nil, fmt.Errorf("an error occurred: %v\n", err)
+	}
+
+	var patient domain.FHIRPatient
+	p, err := testUsecaseInteractor.RegisterPatient(ctx, *patientInput)
+	if err != nil {
+		if strings.Contains(err.Error(), "already exists") {
+			p, err := testUsecaseInteractor.FindPatientsByMSISDN(ctx, interserviceclient.TestUserPhoneNumber)
+			if err != nil {
+				return nil, fmt.Errorf("can't find existing patient by MSISDN: %v", err)
+			}
+			patient = *p.Edges[0].Node
+		} else {
+			return nil, fmt.Errorf("unable to create patient: %v", err)
+		}
+	} else {
+		patient = *p.PatientRecord
+	}
+
+	return &patient, nil
 }
 
 func simplePatientRegistration() (*domain.SimplePatientRegistrationInput, error) {

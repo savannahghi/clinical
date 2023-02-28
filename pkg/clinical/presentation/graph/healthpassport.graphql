@@ -71,8 +71,6 @@ extend type Mutation {
 
   addNextOfKin(input: SimpleNextOfKinInput!): PatientPayload!
 
-  addNHIF(input: SimpleNHIFInput): PatientPayload!
-
   createUpdatePatientExtraInformation(
     input: PatientExtraInformationInput!
   ): Boolean!

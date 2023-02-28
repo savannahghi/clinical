@@ -72,6 +72,12 @@ type FHIRAllergyIntolerance struct {
 
 	// Details about each adverse reaction event linked to exposure to the identified substance.
 	Reaction []*FHIRAllergyintoleranceReaction `json:"reaction,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRAllergyIntoleranceInput is the input type for AllergyIntolerance
@@ -138,6 +144,12 @@ type FHIRAllergyIntoleranceInput struct {
 
 	// Details about each adverse reaction event linked to exposure to the identified substance.
 	Reaction []*FHIRAllergyintoleranceReactionInput `json:"reaction,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRAllergyintoleranceReaction definition: risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.

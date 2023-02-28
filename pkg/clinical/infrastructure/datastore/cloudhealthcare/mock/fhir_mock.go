@@ -369,7 +369,14 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRMedicationStatementRelayConnection{}, nil
 		},
 		MockFindOrganizationByIDFn: func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
-			return &domain.FHIROrganizationRelayPayload{}, nil
+			id := uuid.New().String()
+			name := "Test Organisation"
+			return &domain.FHIROrganizationRelayPayload{
+				Resource: &domain.FHIROrganization{
+					ID:   &id,
+					Name: &name,
+				},
+			}, nil
 		},
 		MockCreateFHIRMedicationStatementFn: func(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
 			return &domain.FHIRMedicationStatementRelayPayload{}, nil

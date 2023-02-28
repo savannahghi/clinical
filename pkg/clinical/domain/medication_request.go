@@ -114,6 +114,12 @@ type FHIRMedicationRequest struct {
 
 	// Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource.
 	EventHistory []*FHIRReference `json:"eventHistory,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRMedicationRequestInput is the input type for MedicationRequest
@@ -222,6 +228,12 @@ type FHIRMedicationRequestInput struct {
 
 	// Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource.
 	EventHistory []*FHIRReferenceInput `json:"eventHistory,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRMedicationrequestDispenserequest definition: an order or request for both supply of the medication and the instructions for administration of the medication to a patient. the resource is called "medicationrequest" rather than "medicationprescription" or "medicationorder" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.

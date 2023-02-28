@@ -119,12 +119,6 @@ func getTestPatient(ctx context.Context) (*domain.FHIRPatient, string, error) {
 }
 
 func TestGraphQLRegisterPatient(t *testing.T) {
-	ctx := context.Background()
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 
 	simplePatientRegInput, _, err := getTestSimplePatientRegistration()
@@ -395,9 +389,9 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 
 func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -565,9 +559,9 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 
 func TestGraphQLFindPatients(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -752,9 +746,9 @@ func TestGraphQLFindPatients(t *testing.T) {
 
 func TestGraphQGetPatient(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -908,6 +902,11 @@ func TestGraphQGetPatient(t *testing.T) {
 
 func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 	ctx := context.Background()
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
+		return
+	}
 
 	if ctx == nil {
 		t.Errorf("nil context")
@@ -1097,9 +1096,9 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 
 func TestGraphQLUpgradeEpisode(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -1264,9 +1263,9 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 
 func TestGraphQLEndEpisode(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -1411,9 +1410,9 @@ func TestGraphQLEndEpisode(t *testing.T) {
 
 func TestGraphQLStartEncounter(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -1560,9 +1559,9 @@ func TestGraphQLStartEncounter(t *testing.T) {
 
 func TestGraphQLEndEncounter(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -1693,11 +1692,12 @@ func TestGraphQLEndEncounter(t *testing.T) {
 
 func TestGraphQLOpenEpisodes(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
+
 	_, patient, err := getTestEpisodeOfCare(
 		ctx,
 		interserviceclient.TestUserPhoneNumber,
@@ -1859,9 +1859,9 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 
 func TestGraphQLSearchFHIREncounter(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -2033,15 +2033,15 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 
 func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 
-	_, _, err := getTestEpisodeOfCare(
+	_, _, err = getTestEpisodeOfCare(
 		ctx,
 		interserviceclient.TestUserPhoneNumber,
 		false, testProviderCode,
@@ -2181,9 +2181,9 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 
 func TestGraphQLAddNextOfKin(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -2380,9 +2380,9 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 
 func TestGraphQLUpdatePatient(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -2671,152 +2671,11 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 	_, _ = s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
 }
 
-func TestGraphQLAddNHIF(t *testing.T) {
-	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
-	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
-
-	patient, _, err := getTestPatient(ctx)
-	if err != nil {
-		t.Errorf("error in getting test patient: %v", err)
-		return
-	}
-
-	type args struct {
-		query map[string]interface{}
-	}
-	tests := []struct {
-		name       string
-		args       args
-		wantStatus int
-		wantErr    bool
-	}{
-		{
-			name: "valid query",
-			args: args{
-				query: map[string]interface{}{
-					"query": `mutation AddNHIF($input: SimpleNHIFInput) {
-						addNHIF(input: $input) {
-							patientRecord {
-							  ID
-							}
-						}
-					  }`,
-					"variables": map[string]interface{}{
-						"input": map[string]interface{}{
-							"patientID":        *patient.ID,
-							"membershipNumber": gofakeit.BuzzWord(),
-						},
-					},
-				},
-			},
-			wantStatus: http.StatusOK,
-			wantErr:    false,
-		},
-		{
-			name: "invalid query",
-			args: args{
-				query: map[string]interface{}{
-					"query":     `bad format query`,
-					"variables": map[string]interface{}{},
-				},
-			},
-			wantStatus: http.StatusUnprocessableEntity,
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			body, err := mapToJSONReader(tt.args.query)
-			if err != nil {
-				t.Errorf("unable to get GQL JSON io Reader: %s", err)
-				return
-			}
-
-			r, err := http.NewRequest(
-				http.MethodPost,
-				graphQLURL,
-				body,
-			)
-			if err != nil {
-				t.Errorf("unable to compose request: %s", err)
-				return
-			}
-
-			if r == nil {
-				t.Errorf("nil request")
-				return
-			}
-
-			for k, v := range headers {
-				r.Header.Add(k, v)
-			}
-			client := http.Client{
-				Timeout: time.Second * testHTTPClientTimeout,
-			}
-			resp, err := client.Do(r)
-			if err != nil {
-				t.Errorf("request error: %s", err)
-				return
-			}
-
-			dataResponse, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("can't read request body: %s", err)
-				return
-			}
-
-			if dataResponse == nil {
-				t.Errorf("nil response data")
-				return
-			}
-
-			data := map[string]interface{}{}
-			err = json.Unmarshal(dataResponse, &data)
-			if err != nil {
-				t.Errorf("bad data returned")
-				return
-			}
-			if tt.wantErr {
-				_, ok := data["errors"]
-				if !ok {
-					t.Errorf("expected an error")
-					return
-				}
-			}
-
-			if !tt.wantErr {
-				errMsg, ok := data["errors"]
-				if ok {
-					t.Errorf("error not expected got: %v", errMsg)
-					return
-				}
-			}
-
-			if tt.wantStatus != resp.StatusCode {
-				t.Errorf("Bad status response returned")
-				return
-			}
-
-		})
-	}
-	s := testInteractor
-	payload := &domain.PhoneNumberPayload{}
-	_, _ = s.DeleteFHIRPatientByPhone(ctx, payload.PhoneNumber)
-}
-
 func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -2980,9 +2839,9 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 
 func TestGraphQLVisitSummary(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -3296,9 +3155,9 @@ func TestGraphQLVisitSummary(t *testing.T) {
 
 func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -3620,9 +3479,9 @@ func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 
 func TestGraphQLProblemSummary(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -3803,9 +3662,9 @@ func TestGraphQLProblemSummary(t *testing.T) {
 
 func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -4032,9 +3891,9 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 
 func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -4290,9 +4149,9 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 // TODO restore this
 func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -4482,9 +4341,9 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 
 func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -4759,9 +4618,9 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 
 func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -5027,9 +4886,9 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 
 func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -5253,9 +5112,9 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 
 func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -5505,9 +5364,9 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 
 func TestGraphQLCreateFHIRCondition(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -5712,9 +5571,9 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 
 func TestGraphQUpdateFHIRCondition(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -5958,9 +5817,9 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 
 func TestGraphQSearchFHIRCondition(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -6200,9 +6059,9 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 
 func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -6421,9 +6280,9 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 
 func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -6577,9 +6436,9 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 
 func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -6779,8 +6638,9 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 
 func TestGraphQCreateFHIRObservation(t *testing.T) {
 	ctx := context.Background()
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -7000,8 +6860,9 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 
 func TestGraphQSearchFHIRObservation(t *testing.T) {
 	ctx := context.Background()
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -7214,9 +7075,9 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 
 func TestGraphQCreateFHIRComposition(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -7428,8 +7289,9 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 
 func TestGraphQUpdateFHIRComposition(t *testing.T) {
 	ctx := context.Background()
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -7649,9 +7511,9 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 
 func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -7835,9 +7697,9 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 
 func TestGraphQlSearchFHIRComposition(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -8033,9 +7895,9 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 
 func TestGraphQLAllergySummary(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -8216,9 +8078,9 @@ func TestGraphQLAllergySummary(t *testing.T) {
 
 func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -8380,13 +8242,6 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 }
 
 func TestGraphQLListConcepts(t *testing.T) {
-	ctx := context.Background()
-
-	if ctx == nil {
-		t.Errorf("nil context")
-		return
-	}
-
 	graphQLURL := fmt.Sprintf("%s/%s", baseURL, "graphql")
 
 	type args struct {
@@ -8534,8 +8389,9 @@ func TestGraphQLListConcepts(t *testing.T) {
 
 func TestGraphQSearchFHIRMedicationStatement(t *testing.T) {
 	ctx := context.Background()
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -8717,8 +8573,9 @@ func TestGraphQSearchFHIRMedicationStatement(t *testing.T) {
 
 func TestGraphQLPatientTimeline(t *testing.T) {
 	ctx := context.Background()
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 
@@ -8854,8 +8711,9 @@ func TestGraphQLPatientTimeline(t *testing.T) {
 
 func TestGraphQLPatientMedicalData(t *testing.T) {
 	ctx := context.Background()
-	if ctx == nil {
-		t.Errorf("nil context")
+	ctx, err := addOrganisationContext(ctx, testProviderCode)
+	if err != nil {
+		t.Errorf("cant add test organisation context: %v\n", err)
 		return
 	}
 

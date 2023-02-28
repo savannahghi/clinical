@@ -16,7 +16,7 @@ type Dummy struct {
 	ID string `json:"id"`
 }
 
-//IsEntity ...
+// IsEntity ...
 func (d Dummy) IsEntity() {}
 
 // IsNode ..
@@ -80,19 +80,19 @@ type PostalAddress struct {
 // SimplePatientRegistrationInput provides a simplified API to support registration
 // of patients.
 type SimplePatientRegistrationInput struct {
-	ID                      string                    `json:"id"`
-	Names                   []*NameInput              `json:"names"`
-	IdentificationDocuments []*IdentificationDocument `json:"identificationDocuments"`
-	BirthDate               scalarutils.Date          `json:"birthDate"`
-	PhoneNumbers            []*PhoneNumberInput       `json:"phoneNumbers"`
-	Photos                  []*PhotoInput             `json:"photos"`
-	Emails                  []*EmailInput             `json:"emails"`
-	PhysicalAddresses       []*PhysicalAddress        `json:"physicalAddresses"`
-	PostalAddresses         []*PostalAddress          `json:"postalAddresses"`
-	Gender                  string                    `json:"gender"`
-	Active                  bool                      `json:"active"`
-	MaritalStatus           MaritalStatus             `json:"maritalStatus"`
-	Languages               []enumutils.Language      `json:"languages"`
+	ID                      string                    `json:"id,omitempty"`
+	Names                   []*NameInput              `json:"names,omitempty"`
+	IdentificationDocuments []*IdentificationDocument `json:"identificationDocuments,omitempty"`
+	BirthDate               scalarutils.Date          `json:"birthDate,omitempty"`
+	PhoneNumbers            []*PhoneNumberInput       `json:"phoneNumbers,omitempty"`
+	Photos                  []*PhotoInput             `json:"photos,omitempty"`
+	Emails                  []*EmailInput             `json:"emails,omitempty"`
+	PhysicalAddresses       []*PhysicalAddress        `json:"physicalAddresses,omitempty"`
+	PostalAddresses         []*PostalAddress          `json:"postalAddresses,omitempty"`
+	Gender                  string                    `json:"gender,omitempty"`
+	Active                  bool                      `json:"active,omitempty"`
+	MaritalStatus           MaritalStatus             `json:"maritalStatus,omitempty"`
+	Languages               []enumutils.Language      `json:"languages,omitempty"`
 	ReplicateUSSD           bool                      `json:"replicate_ussd,omitempty"`
 }
 
@@ -437,7 +437,7 @@ type EmailOptIn struct {
 	OptedIn bool   `json:"optedIn" firestore:"optedIn"`
 }
 
-//IsEntity ...
+// IsEntity ...
 func (e EmailOptIn) IsEntity() {}
 
 // RelationshipTypeDisplay computes friendly string for relationship types

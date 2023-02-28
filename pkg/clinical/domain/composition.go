@@ -59,6 +59,12 @@ type FHIRComposition struct {
 
 	// The root of the sections that make up the composition.
 	Section []*FHIRCompositionSection `json:"section,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta *FHIRMeta `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRCompositionAttester definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).
@@ -170,6 +176,12 @@ type FHIRCompositionInput struct {
 
 	// The root of the sections that make up the composition.
 	Section []*FHIRCompositionSectionInput `json:"section,omitempty"`
+
+	// Meta stores more information about the resource
+	Meta FHIRMetaInput `json:"meta,omitempty"`
+
+	// Extension is an optional element that provides additional information not captured in the basic resource definition
+	Extension []*FHIRExtension `json:"extension,omitempty"`
 }
 
 // FHIRCompositionRelatesto definition: a set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement. a composition defines the structure and narrative content necessary for a document. however, a composition alone does not constitute a document. rather, the composition must be the first entry in a bundle where bundle.type=document, and any other resources referenced from composition must be included as subsequent entries in the bundle (for example patient, practitioner, encounter, etc.).

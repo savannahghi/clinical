@@ -12,6 +12,7 @@ import (
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
@@ -151,6 +152,17 @@ func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastru
 // 	}
 // 	return patientInput, nil
 // }
+
+func addOrganisationContext(ctx context.Context, providerCode string) (context.Context, error) {
+	orgID, err := testUsecaseInteractor.GetORCreateOrganization(ctx, providerCode)
+	if err != nil {
+		return nil, fmt.Errorf("can't get or create test organization : %v", err)
+	}
+
+	value := *orgID
+
+	return context.WithValue(ctx, utils.OrganizationIDContextKey, value), nil
+}
 
 func createTestEpisodeOfCare(
 	ctx context.Context,
