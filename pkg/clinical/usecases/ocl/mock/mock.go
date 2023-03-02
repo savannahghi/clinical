@@ -41,12 +41,12 @@ func NewOCLMock() *OCLMock {
 	}
 }
 
-//MakeRequest is the MakeRequest mock
+// MakeRequest is the MakeRequest mock
 func (ocl *OCLMock) MakeRequest(method string, path string, params url.Values, body io.Reader) (*http.Response, error) {
 	return ocl.MakeRequestFn(method, path, params, body)
 }
 
-//ListConcepts is the ListConcepts mock
+// ListConcepts is the ListConcepts mock
 func (ocl *OCLMock) ListConcepts(
 	ctx context.Context, org string, source string, verbose bool, q *string,
 	sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,

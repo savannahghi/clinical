@@ -1,4 +1,29 @@
 # Options for analysis running.
 run:
+  timeout: 2m
+  tests: false
   skip-dirs:
     - pkg/clinical/presentation/graph/
+  
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - gosec
+    - misspell
+    - revive
+    - funlen
+    - gofmt
+
+linters-settings:
+  staticcheck:
+    checks: ["all"]
+  funlen:
+    lines: -1 
+    statements: -1
+  

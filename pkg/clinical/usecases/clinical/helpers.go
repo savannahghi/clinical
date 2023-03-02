@@ -232,7 +232,7 @@ func (c *UseCasesClinicalImpl) sendAlertToPatient(ctx context.Context, phoneNumb
 	return nil
 }
 
-//sendAlertToNextOfKin send an alert message to the patient's next of kin.
+// sendAlertToNextOfKin send an alert message to the patient's next of kin.
 // TODO: move to engagement
 func (c *UseCasesClinicalImpl) sendAlertToNextOfKin(ctx context.Context, patientID string) error {
 	patientPayload, err := c.FindPatientByID(ctx, patientID)

@@ -32,8 +32,9 @@ func validateSearchParams(params map[string]interface{}) (url.Values, error) {
 // - the `path` is a resource sub-path e.g "_search". If there is no sub-path, send a blank string
 // - `params` should contain the filter parameters e.g
 //
-//    params := url.Values{}
-//    params.Add("_content", search)
+//	params := url.Values{}
+//	params.Add("_content", search)
+//
 // TODO: remove receiver
 func (fh *StoreImpl) searchFilterHelper(
 	ctx context.Context,
