@@ -187,7 +187,7 @@ func (f *FakeFHIRRepository) GetFHIRResource(resourceType, fhirResourceID string
 	return f.MockGetFHIRResourceFn(resourceType, fhirResourceID)
 }
 
-//GetFHIRPatientEverything ....
+// GetFHIRPatientEverything ....
 func (f *FakeFHIRRepository) GetFHIRPatientEverything(fhirResourceID string) ([]byte, error) {
 	return f.MockGetFHIRPatientEverythingFn(fhirResourceID)
 }

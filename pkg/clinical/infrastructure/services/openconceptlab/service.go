@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -105,7 +104,7 @@ func (s Service) GetConcept(
 	}
 	output := make(map[string]interface{})
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read OCL API response body: %w", err)
 	}
@@ -168,7 +167,7 @@ func (s Service) ListConcepts(
 		return nil, fmt.Errorf("OCL API request error: %w", err)
 	}
 	output := []map[string]interface{}{}
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read OCL API response body: %w", err)
 	}

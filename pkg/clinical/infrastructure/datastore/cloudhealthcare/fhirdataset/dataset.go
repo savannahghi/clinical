@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -189,7 +188,7 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 		_ = resp.Body.Close()
 	}()
 
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("could not read response: %v", err)
 	}
@@ -218,7 +217,7 @@ func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) ([]
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("delete: %v", err)
 	}
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("could not read response: %v", err)
@@ -271,7 +270,7 @@ func (fr Repository) PatchFHIRResource(
 	defer func() {
 		_ = resp.Body.Close()
 	}()
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if serverutils.IsDebug() {
 		log.Printf("Patch FHIR Resource %d Response: %s", resp.StatusCode, string(respBytes))
 	}
@@ -314,7 +313,7 @@ func (fr Repository) UpdateFHIRResource(
 	defer func() {
 		_ = resp.Body.Close()
 	}()
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("could not read response: %v", err)
@@ -349,7 +348,7 @@ func (fr Repository) GetFHIRPatientAllData(fhirResourceID string) ([]byte, error
 		_ = resp.Body.Close()
 	}()
 
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("could not read response: %v", err)
@@ -380,7 +379,7 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string) ([]byt
 	defer func() {
 		_ = resp.Body.Close()
 	}()
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("could not read response: %v", err)
@@ -414,7 +413,7 @@ func (fr Repository) GetFHIRPatientEverything(fhirResourceID string) ([]byte, er
 		_ = resp.Body.Close()
 	}()
 
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("could not read response: %v", err)
@@ -462,7 +461,7 @@ func (fr Repository) POSTRequest(
 		_ = resp.Body.Close()
 	}()
 
-	respBytes, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("could not read response: %v", err)

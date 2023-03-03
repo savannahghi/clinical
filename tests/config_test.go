@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -615,7 +615,7 @@ func getTestFHIRMedicationRequestID(ctx context.Context, encounterID string) (st
 		return "", fmt.Errorf("request error: %s", err)
 	}
 
-	dataResponse, err := ioutil.ReadAll(resp.Body)
+	dataResponse, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("can't read request body: %s", err)
 	}

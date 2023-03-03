@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -345,7 +344,7 @@ func TestGraphQLRegisterPatient(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -512,7 +511,7 @@ func TestGraphQFindPatientsByMSISDN(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -662,7 +661,7 @@ func TestGraphQLFindPatients(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -855,7 +854,7 @@ func TestGraphQGetPatient(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -1034,7 +1033,7 @@ func TestGraphQLStartEpisodeByOTP(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -1205,7 +1204,7 @@ func TestGraphQLUpgradeEpisode(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -1355,7 +1354,7 @@ func TestGraphQLEndEpisode(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -1500,7 +1499,7 @@ func TestGraphQLStartEncounter(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -1648,7 +1647,7 @@ func TestGraphQLEndEncounter(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -1802,7 +1801,7 @@ func TestGraphQLOpenEpisodes(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -1964,7 +1963,7 @@ func TestGraphQLSearchFHIREncounter(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -2137,7 +2136,7 @@ func TestGraphqlOpenOrganizationEpisodes(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -2306,7 +2305,7 @@ func TestGraphQLAddNextOfKin(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -2627,7 +2626,7 @@ func TestGraphQLUpdatePatient(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -2778,7 +2777,7 @@ func TestGraphQLCreateUpdatePatientExtraInformation(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -2927,7 +2926,7 @@ func TestGraphQLVisitSummary(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -3244,7 +3243,7 @@ func TestGraphQLPatientTimelineWithCount(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -3592,7 +3591,7 @@ func TestGraphQLProblemSummary(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -3807,7 +3806,7 @@ func TestGraphQLCreateFHIRMedicationRequest(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -4065,7 +4064,7 @@ func TestGraphQLUpdateFHIRMedicationRequest(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -4270,7 +4269,7 @@ func TestGraphQLDeleteFHIRMedicationRequest(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -4539,7 +4538,7 @@ func TestGraphQSearchFHIRMedicationRequest(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -4808,7 +4807,7 @@ func TestGraphQLCreateFHIRAllergyIntolerance(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -5023,7 +5022,7 @@ func TestGraphQLUpdateFHIRAllergyIntolerance(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -5286,7 +5285,7 @@ func TestGraphQSearchFHIRAllergyIntolerance(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -5528,7 +5527,7 @@ func TestGraphQLCreateFHIRCondition(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -5740,7 +5739,7 @@ func TestGraphQUpdateFHIRCondition(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -5984,7 +5983,7 @@ func TestGraphQSearchFHIRCondition(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -6203,7 +6202,7 @@ func TestGraphQLCreateFHIRServiceRequest(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -6379,7 +6378,7 @@ func TestGraphQLDeleteFHIRServiceRequest(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -6580,7 +6579,7 @@ func TestGraphQLSearchFHIRServiceRequest(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -6816,7 +6815,7 @@ func TestGraphQCreateFHIRObservation(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -7032,7 +7031,7 @@ func TestGraphQSearchFHIRObservation(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -7222,7 +7221,7 @@ func TestGraphQCreateFHIRComposition(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -7441,7 +7440,7 @@ func TestGraphQUpdateFHIRComposition(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -7626,7 +7625,7 @@ func TestGraphQLDeleteFHIRComposition(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -7830,7 +7829,7 @@ func TestGraphQlSearchFHIRComposition(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -8008,7 +8007,7 @@ func TestGraphQLAllergySummary(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -8170,7 +8169,7 @@ func TestGraphQLDeleteFHIRPatient(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -8345,7 +8344,7 @@ func TestGraphQLListConcepts(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -8530,7 +8529,7 @@ func TestGraphQSearchFHIRMedicationStatement(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -8668,7 +8667,7 @@ func TestGraphQLPatientTimeline(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
@@ -8836,7 +8835,7 @@ func TestGraphQLPatientMedicalData(t *testing.T) {
 				return
 			}
 
-			dataResponse, err := ioutil.ReadAll(resp.Body)
+			dataResponse, err := io.ReadAll(resp.Body)
 			if err != nil {
 				t.Errorf("can't read request body: %s", err)
 				return
