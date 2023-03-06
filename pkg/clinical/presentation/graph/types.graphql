@@ -1,20 +1,3 @@
-type PatientEdge {
-  cursor: String!
-  node: FHIRPatient!
-  hasOpenEpisodes: Boolean!
-}
-
-type PatientConnection {
-  edges: [PatientEdge]
-  pageInfo: PageInfo!
-}
-
-type PatientPayload {
-  patientRecord: FHIRPatient!
-  hasOpenEpisodes: Boolean!
-  openEpisodes: [FHIREpisodeOfCare]
-}
-
 type MedicalData {
   regimen: [FHIRMedicationStatement]
   allergies: [FHIRAllergyIntolerance]
@@ -22,11 +5,6 @@ type MedicalData {
   bmi: [FHIRObservation]
   viralLoad: [FHIRObservation]
   cd4Count: [FHIRObservation]
-}
-
-type EpisodeOfCarePayload {
-  episodeOfCare: FHIREpisodeOfCare!
-  totalVisits: Int!
 }
 
 type HealthTimeline {

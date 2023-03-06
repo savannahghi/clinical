@@ -20,18 +20,6 @@ scalar UUID
 scalar XHTML
 
 extend type PageInfo {
-  hasNextPage: Boolean! @external
-  hasPreviousPage: Boolean! @external
-}
-
-# supported content types
-enum ContentType {
-  PNG
-  JPG
-  PDF
-}
-
-enum Language {
-  en
-  sw
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
 }
