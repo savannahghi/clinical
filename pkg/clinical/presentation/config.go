@@ -119,7 +119,6 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
-	h := rest.NewPresentationHandlers(usecases)
 
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases)
 	if err != nil {
@@ -157,17 +156,6 @@ func Router(ctx context.Context) (*mux.Router, error) {
 
 	// check server status.
 	r.Path("/health").HandlerFunc(serverutils.HealthStatusCheck)
-
-	r.Path("/delete_patient").
-		Methods(http.MethodPost).
-		HandlerFunc(h.DeleteFHIRPatientByPhone())
-
-	// ISC routes. These are inter service route
-	isc := r.PathPrefix("/internal").Subrouter()
-	isc.Use(authutils.SladeAuthenticationMiddleware(*authClient))
-	isc.Path("/delete-patient").Methods(
-		http.MethodDelete,
-	).HandlerFunc(h.DeleteFHIRPatientByPhone())
 
 	//Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
