@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -28,13 +29,12 @@ var (
 
 // ReceivePubSubPushMessages receives and processes a pubsub message
 func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
-	w http.ResponseWriter,
-	r *http.Request,
+	c *gin.Context,
 ) {
-	ctx := r.Context()
-	message, err := pubsubtools.VerifyPubSubJWTAndDecodePayload(w, r)
+	ctx := c.Request.Context()
+	message, err := pubsubtools.VerifyPubSubJWTAndDecodePayload(c.Writer, c.Request)
 	if err != nil {
-		serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,
 			Message: err.Error(),
 		}, http.StatusBadRequest)
@@ -43,7 +43,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 	topicID, err := pubsubtools.GetPubSubTopic(message)
 	if err != nil {
-		serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,
 			Message: err.Error(),
 		}, http.StatusBadRequest)
@@ -55,7 +55,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		var data dto.CreatePatientPubSubMessage
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -63,7 +63,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		}
 		profile, err := ps.infra.MyCareHub.UserProfile(ctx, data.UserID)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -87,7 +87,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		patient, err := ps.clinical.RegisterPatient(ctx, payload)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -96,7 +96,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		err = ps.infra.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, data.ID)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -107,7 +107,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		var data dto.CreateFacilityPubSubMessage
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -134,7 +134,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		response, err := ps.clinical.CreateFHIROrganization(ctx, input)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -142,7 +142,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		}
 		err = ps.infra.MyCareHub.AddFHIRIDToFacility(ctx, *response.Resource.ID, *data.ID)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -153,7 +153,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		var data dto.CreateVitalSignPubSubMessage
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -162,7 +162,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		input, err := ps.ComposeVitalsInput(ctx, data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -171,7 +171,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		_, err = ps.clinical.CreateFHIRObservation(ctx, *input)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -182,7 +182,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		var data dto.CreatePatientAllergyPubSubMessage
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -191,7 +191,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		input, err := ps.ComposeAllergyIntoleranceInput(ctx, data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -200,7 +200,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		_, err = ps.clinical.CreateFHIRAllergyIntolerance(ctx, *input)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -211,7 +211,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		var data dto.CreateMedicationPubSubMessage
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -220,7 +220,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		input, err := ps.ComposeMedicationStatementInput(ctx, data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -229,7 +229,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		_, err = ps.clinical.CreateFHIRMedicationStatement(ctx, *input)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -240,7 +240,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 		var data dto.CreatePatientTestResultPubSubMessage
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -249,7 +249,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		input, err := ps.ComposeTestResultInput(ctx, data)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -258,7 +258,7 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 
 		_, err = ps.clinical.CreateFHIRObservation(ctx, *input)
 		if err != nil {
-			serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
@@ -269,13 +269,13 @@ func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
 	resp := map[string]string{"Status": "Success"}
 	returnedResponse, err := json.Marshal(resp)
 	if err != nil {
-		serverutils.WriteJSONResponse(w, errorcodeutil.CustomError{
+		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,
 			Message: err.Error(),
 		}, http.StatusBadRequest)
 		return
 	}
-	_, _ = w.Write(returnedResponse)
+	_, _ = c.Writer.Write(returnedResponse)
 }
 
 // ComposeTestResultInput composes a test result input from data received
