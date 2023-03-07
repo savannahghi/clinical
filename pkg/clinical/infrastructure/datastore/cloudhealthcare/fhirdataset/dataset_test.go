@@ -1,6 +1,7 @@
 package fhirdataset_test
 
 import (
+	"context"
 	"log"
 	"os"
 	"strings"
@@ -37,7 +38,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestRepository_CreateDataset(t *testing.T) {
-	fhirRepo := dataset.NewFHIRRepository()
+
 	tests := []struct {
 		name    string
 		wantNil bool
@@ -51,7 +52,7 @@ func TestRepository_CreateDataset(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fr := fhirRepo
+			fr := dataset.NewFHIRRepository(context.Background())
 			got, err := fr.CreateDataset()
 			if !tt.wantErr && err != nil {
 				if !strings.Contains(
@@ -71,7 +72,7 @@ func TestRepository_CreateDataset(t *testing.T) {
 }
 
 func TestRepository_GetDataset(t *testing.T) {
-	fhirRepo := dataset.NewFHIRRepository()
+
 	tests := []struct {
 		name    string
 		wantNil bool
@@ -85,7 +86,7 @@ func TestRepository_GetDataset(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fr := fhirRepo
+			fr := dataset.NewFHIRRepository(context.Background())
 			got, err := fr.GetDataset()
 			if !tt.wantErr && err != nil {
 				if !strings.Contains(
@@ -106,7 +107,7 @@ func TestRepository_GetDataset(t *testing.T) {
 }
 
 func TestRepository_GetFHIRStore(t *testing.T) {
-	fhirRepo := dataset.NewFHIRRepository()
+
 	tests := []struct {
 		name    string
 		wantErr bool
@@ -118,7 +119,9 @@ func TestRepository_GetFHIRStore(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := fhirRepo.GetFHIRStore()
+			fr := dataset.NewFHIRRepository(context.Background())
+
+			got, err := fr.GetFHIRStore()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.GetFHIRStore() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -129,7 +132,7 @@ func TestRepository_GetFHIRStore(t *testing.T) {
 }
 
 func TestRepository_CreateFHIRStore(t *testing.T) {
-	fhirRepo := dataset.NewFHIRRepository()
+
 	tests := []struct {
 		name    string
 		wantNil bool
@@ -143,7 +146,9 @@ func TestRepository_CreateFHIRStore(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := fhirRepo.CreateFHIRStore()
+			fr := dataset.NewFHIRRepository(context.Background())
+
+			got, err := fr.CreateFHIRStore()
 			if !tt.wantErr && err != nil {
 				if !strings.Contains(
 					err.Error(),

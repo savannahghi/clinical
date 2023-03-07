@@ -78,7 +78,7 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
 	baseExtension := extensions.NewBaseExtensionImpl()
-	repo := dataset.NewFHIRRepository()
+	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 

@@ -64,6 +64,7 @@ type ServicePubSubMessaging struct {
 
 // NewServicePubSubMessaging returns a new instance of pubsub
 func NewServicePubSubMessaging(
+	ctx context.Context,
 	client *pubsub.Client,
 	baseExt extensions.BaseExtension,
 	infra infrastructure.Infrastructure,
@@ -76,7 +77,6 @@ func NewServicePubSubMessaging(
 		clinical: clinical,
 	}
 
-	ctx := context.Background()
 	if err := s.EnsureTopicsExist(
 		ctx,
 		s.TopicIDs(),
@@ -92,10 +92,10 @@ func NewServicePubSubMessaging(
 
 // AddPubSubNamespace creates unique topics. The topics will be in the form
 // <service name>-<topicName>-<environment>-v1
-func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName, ServiceName string) string {
+func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName, serviceName string) string {
 	environment := serverutils.GetRunningEnvironment()
 	return pubsubtools.NamespacePubsubIdentifier(
-		ServiceName,
+		serviceName,
 		topicName,
 		environment,
 		TopicVersion,

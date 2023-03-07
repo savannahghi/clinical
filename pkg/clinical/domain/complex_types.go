@@ -1973,8 +1973,7 @@ func (e AllergyIntoleranceCriticalityEnum) IsValid() bool {
 
 // String ...
 func (e AllergyIntoleranceCriticalityEnum) String() string {
-	switch e {
-	case AllergyIntoleranceCriticalityEnumUnableToAssess:
+	if e == AllergyIntoleranceCriticalityEnumUnableToAssess {
 		return "unable-to-assess"
 	}
 	return string(e)
@@ -2142,8 +2141,7 @@ func (e CompositionStatusEnum) IsValid() bool {
 
 // String ...
 func (e CompositionStatusEnum) String() string {
-	switch e {
-	case CompositionStatusEnumEnteredInError:
+	if e == CompositionStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
 	return string(e)
@@ -2487,8 +2485,7 @@ func (e EpisodeOfCareStatusEnum) IsValid() bool {
 
 // String ...
 func (e EpisodeOfCareStatusEnum) String() string {
-	switch e {
-	case EpisodeOfCareStatusEnumEnteredInError:
+	if e == EpisodeOfCareStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
 	return string(e)
@@ -2558,8 +2555,7 @@ func (e EpisodeOfCareStatusHistoryStatusEnum) IsValid() bool {
 
 // String ...
 func (e EpisodeOfCareStatusHistoryStatusEnum) String() string {
-	switch e {
-	case EpisodeOfCareStatusHistoryStatusEnumEnteredInError:
+	if e == EpisodeOfCareStatusHistoryStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
 	return string(e)
@@ -2632,8 +2628,7 @@ func (e ObservationStatusEnum) IsValid() bool {
 
 // String ...
 func (e ObservationStatusEnum) String() string {
-	switch e {
-	case ObservationStatusEnumEnteredInError:
+	if e == ObservationStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
 	return string(e)
@@ -2810,8 +2805,7 @@ func (e PatientLinkTypeEnum) IsValid() bool {
 
 // String ...
 func (e PatientLinkTypeEnum) String() string {
-	switch e {
-	case PatientLinkTypeEnumReplacedBy:
+	if e == PatientLinkTypeEnumReplacedBy {
 		return "replaced-by"
 	}
 	return string(e)

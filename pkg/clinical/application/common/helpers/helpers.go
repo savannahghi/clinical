@@ -151,7 +151,7 @@ func IDToIdentifier(
 		// assume already verified by the contact input transform step
 		normalized, err := converterandformatter.NormalizeMSISDN(phone.Msisdn)
 		if err != nil {
-			return nil, fmt.Errorf("invalid phone number: %v", err)
+			return nil, fmt.Errorf("invalid phone number: %w", err)
 		}
 		identifier := &domain.FHIRIdentifierInput{
 			Use: domain.IdentifierUseEnumOfficial,
@@ -385,7 +385,7 @@ func ContactsToContactPoint(
 		err := ValidateEmail(
 			email.Email, email.CommunicationOptIn, firestoreClient)
 		if err != nil {
-			return nil, fmt.Errorf("invalid email: %v", err)
+			return nil, fmt.Errorf("invalid email: %w", err)
 		}
 		emailContact := &domain.FHIRContactPoint{
 			System: &emailSystem,

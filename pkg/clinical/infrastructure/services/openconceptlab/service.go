@@ -102,6 +102,8 @@ func (s Service) GetConcept(
 	if err != nil {
 		return nil, fmt.Errorf("OCL API request error: %w", err)
 	}
+	defer resp.Body.Close()
+
 	output := make(map[string]interface{})
 
 	data, err := io.ReadAll(resp.Body)
@@ -166,6 +168,8 @@ func (s Service) ListConcepts(
 	if err != nil {
 		return nil, fmt.Errorf("OCL API request error: %w", err)
 	}
+	defer resp.Body.Close()
+
 	output := []map[string]interface{}{}
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {

@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
-	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/serverutils"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/healthcare/v1"
@@ -34,7 +33,6 @@ type FHIRRepository interface {
 	GetFHIRPatientAllData(fhirResourceID string) ([]byte, error)
 	FHIRRestURL() string
 	GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
-	GetFHIRPatientEverything(fhirResourceID string) ([]byte, error)
 	POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
 	FHIRHeaders() (http.Header, error)
 	CreateDataset() (*healthcare.Operation, error)
@@ -51,15 +49,13 @@ type Repository struct {
 }
 
 // NewFHIRRepository initializes a FHIR repository
-func NewFHIRRepository() FHIRRepository {
+func NewFHIRRepository(ctx context.Context) FHIRRepository {
 	project := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
 	_ = serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
 	dataset := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
 	fhirStore := serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
-	ctx := context.Background()
 	hsv, err := healthcare.NewService(ctx)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
 	}
 	return &Repository{
@@ -78,8 +74,7 @@ func (fr Repository) CreateDataset() (*healthcare.Operation, error) {
 	parent := fmt.Sprintf("projects/%s/locations/%s", fr.projectID, fr.location)
 	resp, err := datasetsService.Create(parent, &healthcare.Dataset{}).DatasetId(fr.datasetID).Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("create Data Set: %v", err)
+		return nil, fmt.Errorf("create Data Set: %w", err)
 	}
 	return resp, nil
 }
@@ -91,8 +86,7 @@ func (fr Repository) GetDataset() (*healthcare.Dataset, error) {
 	name := fmt.Sprintf("projects/%s/locations/%s/datasets/%s", fr.projectID, fr.location, fr.datasetID)
 	resp, err := datasetsService.Get(name).Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("get Data Set: %v", err)
+		return nil, fmt.Errorf("get Data Set: %w", err)
 	}
 	return resp, nil
 }
@@ -110,8 +104,7 @@ func (fr Repository) CreateFHIRStore() (*healthcare.FhirStore, error) {
 	parent := fmt.Sprintf("projects/%s/locations/%s/datasets/%s", fr.projectID, fr.location, fr.datasetID)
 	resp, err := storesService.Create(parent, store).FhirStoreId(fr.fhirStoreID).Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("create FHIR Store: %v", err)
+		return nil, fmt.Errorf("create FHIR Store: %w", err)
 	}
 	return resp, nil
 }
@@ -125,8 +118,7 @@ func (fr Repository) GetFHIRStore() (*healthcare.FhirStore, error) {
 		fr.projectID, fr.location, fr.datasetID, fr.fhirStoreID)
 	store, err := storesService.Get(name).Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("get FHIR Store: %v", err)
+		return nil, fmt.Errorf("get FHIR Store: %w", err)
 	}
 	return store, nil
 }
@@ -144,13 +136,13 @@ func (fr Repository) FHIRRestURL() string {
 		baseFHIRURL, fr.projectID, fr.location, fr.datasetID, fr.fhirStoreID)
 }
 
-// getErrorMessage unmarshalls the error response that is returned from the FHIR server.
+// getErrorMessage un-marshals the error response that is returned from the FHIR server.
 // This function should be called when a status code > 299 has been returned
 func getErrorMessage(respBytes []byte) (errorText string, diagnostics string, err error) {
 	var errorResponse dto.ErrorResponse
 	err = json.Unmarshal(respBytes, &errorResponse)
 	if err != nil {
-		return "", "", fmt.Errorf("could not unmarshal error response: %v", err)
+		return "", "", fmt.Errorf("could not unmarshal error response: %w", err)
 	}
 
 	errorText = errorResponse.Issue[0].Details.Text
@@ -170,7 +162,7 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 	payload["language"] = "EN"
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("json.Encode: %v", err)
+		return nil, fmt.Errorf("json.Encode: %w", err)
 	}
 
 	parent := fmt.Sprintf(
@@ -182,7 +174,7 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 	call.Header().Set("Content-Type", "application/fhir+json;charset=utf-8")
 	resp, err := call.Do()
 	if err != nil {
-		return nil, fmt.Errorf("create: %v", err)
+		return nil, fmt.Errorf("create: %w", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -190,7 +182,7 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not read response: %v", err)
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	if resp.StatusCode > 299 {
 		errorText, diagnostics, err := getErrorMessage(respBytes)
@@ -214,13 +206,13 @@ func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) ([]
 		resourceType, fhirResourceID)
 	resp, err := fhirService.Delete(name).Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("delete: %v", err)
+		return nil, fmt.Errorf("delete: %w", err)
 	}
+	defer resp.Body.Close()
+
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("could not read response: %v", err)
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	if resp.StatusCode > 299 {
 		return nil, fmt.Errorf(
@@ -252,8 +244,7 @@ func (fr Repository) PatchFHIRResource(
 	}
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("json.Encode: %v", err)
+		return nil, fmt.Errorf("json.Encode: %w", err)
 	}
 	name := fmt.Sprintf(
 		"projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s/%s",
@@ -264,8 +255,7 @@ func (fr Repository) PatchFHIRResource(
 	call.Header().Set("Content-Type", "application/json-patch+json")
 	resp, err := call.Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("patch: %v", err)
+		return nil, fmt.Errorf("patch: %w", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -275,8 +265,7 @@ func (fr Repository) PatchFHIRResource(
 		log.Printf("Patch FHIR Resource %d Response: %s", resp.StatusCode, string(respBytes))
 	}
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("could not read response: %v", err)
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	if resp.StatusCode > 299 {
 		return nil, fmt.Errorf(
@@ -293,8 +282,7 @@ func (fr Repository) UpdateFHIRResource(
 	payload["resourceType"] = resourceType
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("json.Encode: %v", err)
+		return nil, fmt.Errorf("json.Encode: %w", err)
 	}
 	if serverutils.IsDebug() {
 		log.Printf("FHIR Update payload: %s", string(jsonPayload))
@@ -307,16 +295,14 @@ func (fr Repository) UpdateFHIRResource(
 	call.Header().Set("Content-Type", "application/fhir+json;charset=utf-8")
 	resp, err := call.Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("update: %v", err)
+		return nil, fmt.Errorf("update: %w", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
 	}()
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("could not read response: %v", err)
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	if resp.StatusCode > 299 {
 		return nil, fmt.Errorf(
@@ -340,8 +326,7 @@ func (fr Repository) GetFHIRPatientAllData(fhirResourceID string) ([]byte, error
 
 	resp, err := fhirService.PatientEverything(name).Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("PatientAllData: %v", err)
+		return nil, fmt.Errorf("PatientAllData: %w", err)
 	}
 
 	defer func() {
@@ -350,8 +335,7 @@ func (fr Repository) GetFHIRPatientAllData(fhirResourceID string) ([]byte, error
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("could not read response: %v", err)
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 
 	if resp.StatusCode > 299 {
@@ -373,56 +357,18 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string) ([]byt
 	call.Header().Set("Content-Type", "application/fhir+json;charset=utf-8")
 	resp, err := call.Do()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("read: %v", err)
+		return nil, fmt.Errorf("read: %w", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
 	}()
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("could not read response: %v", err)
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	if resp.StatusCode > 299 {
 		return nil, fmt.Errorf("read: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
 	}
-	return respBytes, nil
-}
-
-// GetFHIRPatientEverything gets all resources associated with a particular
-// patient compartment.
-func (fr Repository) GetFHIRPatientEverything(fhirResourceID string) ([]byte, error) {
-	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
-	name := fmt.Sprintf(
-		"projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/Patient/%s",
-		fr.projectID,
-		fr.location,
-		fr.datasetID,
-		fr.fhirStoreID,
-		fhirResourceID,
-	)
-
-	resp, err := fhirService.PatientEverything(name).Do()
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("PatientEverything: %v", err)
-	}
-
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
-	respBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("could not read response: %v", err)
-	}
-
-	if resp.StatusCode > 299 {
-		return nil, fmt.Errorf("PatientEverything: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
-	}
-
 	return respBytes, nil
 }
 
@@ -435,15 +381,13 @@ func (fr Repository) POSTRequest(
 	resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
 	fhirHeaders, err := fr.FHIRHeaders()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to get FHIR headers: %v", err)
+		return nil, fmt.Errorf("unable to get FHIR headers: %w", err)
 	}
 	url := fmt.Sprintf(
 		"%s/%s/%s?%s", fr.FHIRRestURL(), resourceName, path, params.Encode())
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to compose FHIR POST request: %v", err)
+		return nil, fmt.Errorf("unable to compose FHIR POST request: %w", err)
 	}
 	for k, v := range fhirHeaders {
 		for _, h := range v {
@@ -454,8 +398,7 @@ func (fr Repository) POSTRequest(
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("HTTP response error: %v", err)
+		return nil, fmt.Errorf("HTTP response error: %w", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -463,8 +406,7 @@ func (fr Repository) POSTRequest(
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("could not read response: %v", err)
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	if resp.StatusCode > 299 {
 		errorText, diagnostics, err := getErrorMessage(respBytes)
@@ -487,13 +429,11 @@ func GetBearerToken() (string, error) {
 	}
 	creds, err := google.FindDefaultCredentials(ctx, scopes...)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return "", fmt.Errorf("default creds error: %v", err)
+		return "", fmt.Errorf("default creds error: %w", err)
 	}
 	token, err := creds.TokenSource.Token()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return "", fmt.Errorf("oauth token error: %v", err)
+		return "", fmt.Errorf("oauth token error: %w", err)
 	}
 	return fmt.Sprintf("Bearer %s", token.AccessToken), nil
 }
@@ -504,8 +444,7 @@ func (fr Repository) FHIRHeaders() (http.Header, error) {
 	headers := make(map[string][]string)
 	bearerHeader, err := GetBearerToken()
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("can't get bearer token: %v", err)
+		return nil, fmt.Errorf("can't get bearer token: %w", err)
 	}
 	headers["Content-Type"] = []string{"application/fhir+json; charset=utf-8"}
 	headers["Accept"] = []string{"application/fhir+json; charset=utf-8"}

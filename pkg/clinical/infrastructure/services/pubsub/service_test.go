@@ -35,13 +35,14 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 
 	// Initialize base (common) extension
 	baseExtension := extensions.NewBaseExtensionImpl()
-	repo := dataset.NewFHIRRepository()
+	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
+		ctx,
 		pubSubClient,
 		baseExtension,
 		infrastructure,

@@ -71,6 +71,7 @@ func (s ServiceMyCareHubImpl) UserProfile(
 			err,
 		)
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("failed to get user profile: %w, with status code %v",
@@ -125,6 +126,7 @@ func (s ServiceMyCareHubImpl) AddFHIRIDToPatientProfile(
 	if err != nil {
 		return fmt.Errorf("failed to make a request to mycarehub service: %w", err)
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to update patient fhir ID : %w, with status code %v",
@@ -156,6 +158,7 @@ func (s ServiceMyCareHubImpl) AddFHIRIDToFacility(
 	if err != nil {
 		return fmt.Errorf("failed to make a request to mycarehub service: %w", err)
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to update facility fhir ID : %w, with status code %v",

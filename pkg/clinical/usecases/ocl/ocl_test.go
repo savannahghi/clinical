@@ -49,7 +49,7 @@ func TestMain(m *testing.M) {
 
 func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
 	baseExtension := extensions.NewBaseExtensionImpl()
-	repo := dataset.NewFHIRRepository()
+	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 
@@ -63,7 +63,7 @@ func InitializeTestService(ctx context.Context) (interactor.Usecases, error) {
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
 	baseExtension := extensions.NewBaseExtensionImpl()
-	repo := dataset.NewFHIRRepository()
+	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 
 	ocl := openconceptlab.NewServiceOCL()

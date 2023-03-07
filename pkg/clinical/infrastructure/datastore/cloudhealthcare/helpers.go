@@ -37,22 +37,32 @@ func validateSearchParams(params map[string]interface{}) (url.Values, error) {
 //
 // TODO: remove receiver
 func (fh *StoreImpl) searchFilterHelper(
-	ctx context.Context,
+	_ context.Context,
 	resourceName string,
-	path string, params url.Values,
+	params map[string]interface{},
 ) ([]map[string]interface{}, error) {
 	// s.checkPreconditions()
-	bs, err := fh.Dataset.POSTRequest(resourceName, path, params, nil)
+	if params == nil {
+		return nil, fmt.Errorf("can't search with nil params")
+	}
+
+	urlParams, err := validateSearchParams(params)
+	if err != nil {
+		return nil, err
+	}
+
+	path := "_search"
+	bs, err := fh.Dataset.POSTRequest(resourceName, path, urlParams, nil)
 	if err != nil {
 		log.Errorf("unable to search: %v", err)
-		return nil, fmt.Errorf("unable to search: %v", err)
+		return nil, fmt.Errorf("unable to search: %w", err)
 	}
 	respMap := make(map[string]interface{})
 	err = json.Unmarshal(bs, &respMap)
 	if err != nil {
 		log.Errorf("%s could not be found with search params %v: %s", resourceName, params, err)
 		return nil, fmt.Errorf(
-			"%s could not be found with search params %v: %s", resourceName, params, err)
+			"%s could not be found with search params %v: %w", resourceName, params, err)
 	}
 
 	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
