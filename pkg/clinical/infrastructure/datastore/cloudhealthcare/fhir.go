@@ -12,7 +12,6 @@ import (
 	"github.com/labstack/gommon/log"
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
-	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
@@ -23,14 +22,22 @@ import (
 
 // constants and defaults
 const (
-	internalError            = "an error occurred on our end. Please try again later"
-	timeFormatStr            = "2006-01-02T15:04:05+03:00"
-	notFoundWithSearchParams = "could not find a patient with the provided parameters"
+	internalError = "an error occurred on our end. Please try again later"
+	timeFormatStr = "2006-01-02T15:04:05+03:00"
 )
 
-var (
-	patientResourceType       = "Patient"
-	episodeOfCareResourceType = "EpisodeOfCare"
+// resource types
+const (
+	patientResourceType             = "Patient"
+	episodeOfCareResourceType       = "EpisodeOfCare"
+	observationResourceType         = "Observation"
+	allergyIntoleranceResourceType  = "AllergyIntolerance"
+	serviceRequestResourceType      = "ServiceRequest"
+	medicationRequestResourceType   = "MedicationRequest"
+	conditionResourceType           = "Condition"
+	encounterResourceType           = "Encounter"
+	compositionResourceType         = "Composition"
+	medicationStatementResourceType = "MedicationStatement"
 )
 
 // StoreImpl represents the FHIR infrastructure implementation
@@ -61,40 +68,16 @@ func (fh StoreImpl) Encounters(
 	}
 	searchParams.Add("patient", patientReference)
 
-	bs, err := fh.Dataset.POSTRequest("Encounter", "_search", searchParams, nil)
+	bs, err := fh.Dataset.POSTRequest(encounterResourceType, "_search", searchParams, nil)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to search for encounter: %v", err)
-	}
-	respMap := make(map[string]interface{})
-	err = json.Unmarshal(bs, &respMap)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to unmarshal FHIR encounter search response: %v", err)
+		return nil, fmt.Errorf("unable to search for encounter: %w", err)
 	}
 
-	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
-	for _, k := range mandatoryKeys {
-		_, found := respMap[k]
-		if !found {
-			return nil, fmt.Errorf("search response does not have key '%s'", k)
-		}
+	respMap, err := responseToMap(bs)
+	if err != nil {
+		return nil, err
 	}
-	resourceType, ok := respMap["resourceType"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the resourceType is not a string")
-	}
-	if resourceType != "Bundle" {
-		return nil, fmt.Errorf("search: the resourceType value is not 'Bundle' as expected")
-	}
-	resultType, ok := respMap["type"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the type is not a string")
-	}
-	if resultType != "searchset" {
-		return nil, fmt.Errorf("search: the type value is not 'searchset' as expected")
-	}
+
 	output := []*domain.FHIREncounter{}
 	respEntries := respMap["entry"]
 	if respEntries == nil {
@@ -121,13 +104,11 @@ func (fh StoreImpl) Encounters(
 		var encounter domain.FHIREncounter
 		resourceBs, err := json.Marshal(resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			return nil, fmt.Errorf("unable to marshal resource to JSON: %v", err)
+			return nil, fmt.Errorf("unable to marshal resource to JSON: %w", err)
 		}
 		err = json.Unmarshal(resourceBs, &encounter)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			return nil, fmt.Errorf("unable to unmarshal resource: %v", err)
+			return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
 		}
 		output = append(output, &encounter)
 	}
@@ -136,22 +117,11 @@ func (fh StoreImpl) Encounters(
 
 // SearchFHIREpisodeOfCare provides a search API for FHIREpisodeOfCare
 func (fh StoreImpl) SearchFHIREpisodeOfCare(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error) {
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
 
-	resourceName := "EpisodeOfCare"
-	path := "_search"
 	output := domain.FHIREpisodeOfCareRelayConnection{}
 
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, episodeOfCareResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 	for _, result := range resources {
@@ -159,17 +129,13 @@ func (fh StoreImpl) SearchFHIREpisodeOfCare(ctx context.Context, params map[stri
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", episodeOfCareResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIREpisodeOfCareRelayEdge{
 			Node: &resource,
@@ -183,8 +149,7 @@ func (fh StoreImpl) SearchFHIREpisodeOfCare(ctx context.Context, params map[stri
 func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
 	payload, err := converterandformatter.StructToMap(episode)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn episode of care input into a map: %v", err)
+		return nil, fmt.Errorf("unable to turn episode of care input into a map: %w", err)
 	}
 
 	// search for the episode of care before creating new one.
@@ -197,8 +162,7 @@ func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIR
 	}
 	episodeOfCarePayload, err := fh.SearchFHIREpisodeOfCare(ctx, episodeOfCareSearchParams)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to get patients episodes of care: %v", err)
+		return nil, fmt.Errorf("unable to get patients episodes of care: %w", err)
 	}
 
 	// don't create a new episode if there is an ongoing one
@@ -215,25 +179,22 @@ func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIR
 	}
 
 	// create a new episode if none has been found
-	data, err := fh.Dataset.CreateFHIRResource("EpisodeOfCare", payload)
+	data, err := fh.Dataset.CreateFHIRResource(episodeOfCareResourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to create episode of care resource: %v", err)
+			"unable to create episode of care resource: %w", err)
 	}
 	fhirEpisode := &domain.FHIREpisodeOfCare{}
 	err = json.Unmarshal(data, fhirEpisode)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal episode of care response JSON: data: %v\n, error: %v",
+			"unable to unmarshal episode of care response JSON: data: %v\n, error: %w",
 			string(data), err)
 	}
 	encounters, err := fh.Encounters(ctx, *episode.Patient.Reference, nil)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to get encounters for episode %s: %v",
+			"unable to get encounters for episode %s: %w",
 			*episode.ID, err,
 		)
 	}
@@ -246,27 +207,23 @@ func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIR
 
 // CreateFHIRCondition creates a FHIRCondition instance
 func (fh StoreImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	resourceType := "Condition"
 	resource := domain.FHIRCondition{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", conditionResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(conditionResourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", conditionResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			conditionResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRConditionRelayPayload{
@@ -282,17 +239,17 @@ func (fh StoreImpl) CreateFHIROrganization(ctx context.Context, input domain.FHI
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", resourceType, err)
 	}
 
 	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create %s resource: %w", resourceType, err)
 	}
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
 			resourceType, string(data), err)
 	}
 
@@ -305,21 +262,10 @@ func (fh StoreImpl) CreateFHIROrganization(ctx context.Context, input domain.FHI
 // SearchFHIROrganization provides a search API for FHIROrganization
 func (fh StoreImpl) SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
 
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
 	resourceName := "Organization"
-	path := "_search"
 	output := domain.FHIROrganizationRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, resourceName, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -328,17 +274,13 @@ func (fh StoreImpl) SearchFHIROrganization(ctx context.Context, params map[strin
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", resourceName, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIROrganizationRelayEdge{
 			Node: &resource,
@@ -355,13 +297,11 @@ func (fh StoreImpl) FindOrganizationByID(ctx context.Context, organizationID str
 
 	data, err := fh.Dataset.GetFHIRResource("Organization", organizationID)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to retrieve organization: %w", err)
 	}
 	var organization domain.FHIROrganization
 	err = json.Unmarshal(data, &organization)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to unmarshal organization data from JSON to the target struct: %w", err)
 	}
 	return &domain.FHIROrganizationRelayPayload{
@@ -372,42 +312,16 @@ func (fh StoreImpl) FindOrganizationByID(ctx context.Context, organizationID str
 
 // SearchEpisodesByParam search episodes by params
 func (fh StoreImpl) SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
-	bs, err := fh.Dataset.POSTRequest(
-		"EpisodeOfCare", "_search", searchParams, nil)
+	bs, err := fh.Dataset.POSTRequest(episodeOfCareResourceType, "_search", searchParams, nil)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to search for episode of care: %v", err)
+		return nil, fmt.Errorf("unable to search for episode of care: %w", err)
 	}
 
-	respMap := make(map[string]interface{})
-	err = json.Unmarshal(bs, &respMap)
+	respMap, err := responseToMap(bs)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf(
-			"unable to unmarshal FHIR episode of care search response: %v", err)
+		return nil, err
 	}
 
-	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
-	for _, k := range mandatoryKeys {
-		_, found := respMap[k]
-		if !found {
-			return nil, fmt.Errorf("search response does not have key '%s'", k)
-		}
-	}
-	resourceType, ok := respMap["resourceType"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the resourceType is not a string")
-	}
-	if resourceType != "Bundle" {
-		return nil, fmt.Errorf("search: the resourceType value is not 'Bundle' as expected")
-	}
-	resultType, ok := respMap["type"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the type is not a string")
-	}
-	if resultType != "searchset" {
-		return nil, fmt.Errorf("search: the type value is not 'searchset' as expected")
-	}
 	output := []*domain.FHIREpisodeOfCare{}
 	respEntries := respMap["entry"]
 	if respEntries == nil {
@@ -450,15 +364,13 @@ func (fh StoreImpl) SearchEpisodesByParam(ctx context.Context, searchParams url.
 		endDateAsMap["day"] = resEnd.Day()
 		period["end"] = scalarutils.DateTime(resEnd.Format(timeFormatStr))
 
-		//update the original period resource
+		// update the original period resource
 		resource["period"] = period
 
 		var episode domain.FHIREpisodeOfCare
 
 		err := mapstructure.Decode(resource, &episode)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to map decode resource: %v", err)
 			return nil, fmt.Errorf(internalError)
 		}
 
@@ -484,7 +396,6 @@ func (fh StoreImpl) HasOpenEpisode(
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
 	episodes, err := fh.OpenEpisodes(ctx, patientReference)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, err
 	}
 	return len(episodes) > 0, nil
@@ -492,26 +403,22 @@ func (fh StoreImpl) HasOpenEpisode(
 
 // CreateFHIREncounter creates a FHIREncounter instance
 func (fh StoreImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
-	resourceType := "Encounter"
 	resource := domain.FHIREncounter{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", encounterResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(encounterResourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", encounterResourceType, err)
 	}
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			encounterResourceType, string(data), err)
 	}
 
 	output := &domain.FHIREncounterRelayPayload{
@@ -522,19 +429,16 @@ func (fh StoreImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREn
 
 // GetFHIREpisodeOfCare retrieves instances of FHIREpisodeOfCare by ID
 func (fh StoreImpl) GetFHIREpisodeOfCare(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
-	resourceType := "EpisodeOfCare"
 	var resource domain.FHIREpisodeOfCare
 
-	data, err := fh.Dataset.GetFHIRResource(resourceType, id)
+	data, err := fh.Dataset.GetFHIRResource(episodeOfCareResourceType, id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", episodeOfCareResourceType, id, err)
 	}
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
+			"unable to unmarshal %s data from JSON, err: %w", episodeOfCareResourceType, err)
 	}
 
 	payload := &domain.FHIREpisodeOfCareRelayPayload{
@@ -548,7 +452,6 @@ func (fh *StoreImpl) StartEncounter(
 	ctx context.Context, episodeID string) (string, error) {
 	episodePayload, err := fh.GetFHIREpisodeOfCare(ctx, episodeID)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return "", fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
 	}
 	activeEpisodeStatus := domain.EpisodeOfCareStatusEnumActive
@@ -595,7 +498,6 @@ func (fh *StoreImpl) StartEncounter(
 	}
 	encPl, err := fh.CreateFHIREncounter(ctx, encounterInput)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return "", fmt.Errorf("unable to start encounter: %w", err)
 	}
 	return *encPl.Resource.ID, nil
@@ -614,7 +516,6 @@ func (fh *StoreImpl) SearchEpisodeEncounter(
 	encounterConn, err := fh.SearchFHIREncounter(ctx, encounterFilterParams)
 
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to search encounter: %w", err)
 	}
 	return encounterConn, nil
@@ -623,10 +524,8 @@ func (fh *StoreImpl) SearchEpisodeEncounter(
 // EndEncounter ends an encounter
 func (fh *StoreImpl) EndEncounter(
 	ctx context.Context, encounterID string) (bool, error) {
-	resourceType := "Encounter"
 	encounterPayload, err := fh.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf("unable to get encounter with ID %s: %w", encounterID, err)
 	}
 	updatedStatus := domain.EncounterStatusEnumFinished
@@ -643,14 +542,12 @@ func (fh *StoreImpl) EndEncounter(
 
 	payload, err := converterandformatter.StructToMap(encounterPayload.Resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %v", err)
+		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %w", err)
 	}
 
-	_, err = fh.Dataset.UpdateFHIRResource(resourceType, encounterID, payload)
+	_, err = fh.Dataset.UpdateFHIRResource(encounterResourceType, encounterID, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return false, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
+		return false, fmt.Errorf("unable to create/update %s resource: %w", encounterResourceType, err)
 	}
 	return true, nil
 }
@@ -658,10 +555,8 @@ func (fh *StoreImpl) EndEncounter(
 // EndEpisode ends an episode of care by patching it's status to "finished"
 func (fh *StoreImpl) EndEpisode(
 	ctx context.Context, episodeID string) (bool, error) {
-	resourceType := "EpisodeOfCare"
 	episodePayload, err := fh.GetFHIREpisodeOfCare(ctx, episodeID)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
 	}
 	startTime := scalarutils.DateTime(time.Now().Format(timeFormatStr))
@@ -672,13 +567,11 @@ func (fh *StoreImpl) EndEpisode(
 	// Close all encounters in this visit
 	encounterConn, err := fh.SearchEpisodeEncounter(ctx, episodeID)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf("unable to search episode encounter %w", err)
 	}
 	for _, edge := range encounterConn.Edges {
 		_, err = fh.EndEncounter(ctx, *edge.Node.ID)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
 			log.Printf("unable to end encounter %s", *edge.Node.ID)
 			continue
 		}
@@ -697,38 +590,22 @@ func (fh *StoreImpl) EndEpisode(
 	episodePayload.Resource.Period.End = endTime
 	payload, err := converterandformatter.StructToMap(episodePayload.Resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %v", err)
+		return false, fmt.Errorf("unable to turn the updated episode of care into a map: %w", err)
 	}
 
-	_, err = fh.Dataset.UpdateFHIRResource(resourceType, episodeID, payload)
+	_, err = fh.Dataset.UpdateFHIRResource(episodeOfCareResourceType, episodeID, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return false, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
+		return false, fmt.Errorf("unable to create/update %s resource: %w", episodeOfCareResourceType, err)
 	}
 	return true, nil
 }
 
-// GetActiveEpisode returns any ACTIVE episode that has to the indicated ID
-func (fh *StoreImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error) {
-
-	searchParams := url.Values{}
-	searchParams.Add("status:exact", domain.EpisodeOfCareStatusEnumActive.String())
-	searchParams.Add("_id", episodeID) // logical ID of the resource
-
-	bs, err := fh.Dataset.POSTRequest(
-		"EpisodeOfCare", "_search", searchParams, nil)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to search for episode of care: %v", err)
-	}
-
+func responseToMap(response []byte) (map[string]interface{}, error) {
 	respMap := make(map[string]interface{})
-	err = json.Unmarshal(bs, &respMap)
+	err := json.Unmarshal(response, &respMap)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal FHIR episode of care search response: %v", err)
+			"unable to unmarshal search response: %w", err)
 	}
 
 	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
@@ -751,6 +628,26 @@ func (fh *StoreImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*d
 	}
 	if resultType != "searchset" {
 		return nil, fmt.Errorf("search: the type value is not 'searchset' as expected")
+	}
+
+	return respMap, nil
+}
+
+// GetActiveEpisode returns any ACTIVE episode that has to the indicated ID
+func (fh *StoreImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*domain.FHIREpisodeOfCare, error) {
+
+	searchParams := url.Values{}
+	searchParams.Add("status:exact", domain.EpisodeOfCareStatusEnumActive.String())
+	searchParams.Add("_id", episodeID) // logical ID of the resource
+
+	bs, err := fh.Dataset.POSTRequest(episodeOfCareResourceType, "_search", searchParams, nil)
+	if err != nil {
+		return nil, fmt.Errorf("unable to search for episode of care: %w", err)
+	}
+
+	respMap, err := responseToMap(bs)
+	if err != nil {
+		return nil, err
 	}
 
 	respEntries := respMap["entry"]
@@ -781,13 +678,11 @@ func (fh *StoreImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*d
 	var episode domain.FHIREpisodeOfCare
 	resourceBs, err := json.Marshal(resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to marshal resource to JSON: %v", err)
+		return nil, fmt.Errorf("unable to marshal resource to JSON: %w", err)
 	}
 	err = json.Unmarshal(resourceBs, &episode)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to unmarshal resource: %v", err)
+		return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
 	}
 	return &episode, nil
 }
@@ -795,22 +690,10 @@ func (fh *StoreImpl) GetActiveEpisode(ctx context.Context, episodeID string) (*d
 // SearchFHIRServiceRequest provides a search API for FHIRServiceRequest
 func (fh *StoreImpl) SearchFHIRServiceRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRServiceRequestRelayConnection, error) {
 
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
-	resourceName := "ServiceRequest"
-	path := "_search"
 	output := domain.FHIRServiceRequestRelayConnection{}
 
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, serviceRequestResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -819,17 +702,13 @@ func (fh *StoreImpl) SearchFHIRServiceRequest(ctx context.Context, params map[st
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", serviceRequestResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIRServiceRequestRelayEdge{
 			Node: &resource,
@@ -840,27 +719,23 @@ func (fh *StoreImpl) SearchFHIRServiceRequest(ctx context.Context, params map[st
 
 // CreateFHIRServiceRequest creates a FHIRServiceRequest instance
 func (fh *StoreImpl) CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
-	resourceType := "ServiceRequest"
 	resource := domain.FHIRServiceRequest{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", serviceRequestResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(serviceRequestResourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", serviceRequestResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			serviceRequestResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRServiceRequestRelayPayload{
@@ -872,21 +747,9 @@ func (fh *StoreImpl) CreateFHIRServiceRequest(ctx context.Context, input domain.
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
 func (fh *StoreImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
-	resourceName := "AllergyIntolerance"
-	path := "_search"
 	output := domain.FHIRAllergyIntoleranceRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, allergyIntoleranceResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -895,17 +758,13 @@ func (fh *StoreImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params ma
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", allergyIntoleranceResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIRAllergyIntoleranceRelayEdge{
 			Node: &resource,
@@ -916,27 +775,23 @@ func (fh *StoreImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params ma
 
 // CreateFHIRAllergyIntolerance creates a FHIRAllergyIntolerance instance
 func (fh *StoreImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-	resourceType := "AllergyIntolerance"
 	resource := domain.FHIRAllergyIntolerance{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", allergyIntoleranceResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(allergyIntoleranceResourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", allergyIntoleranceResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			allergyIntoleranceResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRAllergyIntoleranceRelayPayload{
@@ -948,7 +803,6 @@ func (fh *StoreImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input dom
 // UpdateFHIRAllergyIntolerance updates a FHIRAllergyIntolerance instance
 // The resource must have it's ID set.
 func (fh *StoreImpl) UpdateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-	resourceType := "AllergyIntolerance"
 	resource := domain.FHIRAllergyIntolerance{}
 
 	if input.ID == nil {
@@ -957,22 +811,19 @@ func (fh *StoreImpl) UpdateFHIRAllergyIntolerance(ctx context.Context, input dom
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", allergyIntoleranceResourceType, err)
 	}
 
-	data, err := fh.Dataset.UpdateFHIRResource(resourceType, *input.ID, payload)
+	data, err := fh.Dataset.UpdateFHIRResource(allergyIntoleranceResourceType, *input.ID, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", allergyIntoleranceResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			allergyIntoleranceResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRAllergyIntoleranceRelayPayload{
@@ -984,21 +835,9 @@ func (fh *StoreImpl) UpdateFHIRAllergyIntolerance(ctx context.Context, input dom
 // SearchFHIRComposition provides a search API for FHIRComposition
 func (fh *StoreImpl) SearchFHIRComposition(ctx context.Context, params map[string]interface{}) (*domain.FHIRCompositionRelayConnection, error) {
 
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
-	resourceName := "Composition"
-	path := "_search"
 	output := domain.FHIRCompositionRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, compositionResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -1007,17 +846,13 @@ func (fh *StoreImpl) SearchFHIRComposition(ctx context.Context, params map[strin
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", compositionResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIRCompositionRelayEdge{
 			Node: &resource,
@@ -1028,27 +863,23 @@ func (fh *StoreImpl) SearchFHIRComposition(ctx context.Context, params map[strin
 
 // CreateFHIRComposition creates a FHIRComposition instance
 func (fh *StoreImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	resourceType := "Composition"
 	resource := domain.FHIRComposition{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", compositionResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(compositionResourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", compositionResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			compositionResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRCompositionRelayPayload{
@@ -1060,8 +891,6 @@ func (fh *StoreImpl) CreateFHIRComposition(ctx context.Context, input domain.FHI
 // UpdateFHIRComposition updates a FHIRComposition instance
 // The resource must have it's ID set.
 func (fh *StoreImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-
-	resourceType := "Composition"
 	resource := domain.FHIRComposition{}
 
 	if input.ID == nil {
@@ -1070,22 +899,19 @@ func (fh *StoreImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHI
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", compositionResourceType, err)
 	}
 
-	data, err := fh.Dataset.UpdateFHIRResource(resourceType, *input.ID, payload)
+	data, err := fh.Dataset.UpdateFHIRResource(compositionResourceType, *input.ID, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", compositionResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			compositionResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRCompositionRelayPayload{
@@ -1096,13 +922,11 @@ func (fh *StoreImpl) UpdateFHIRComposition(ctx context.Context, input domain.FHI
 
 // DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
 func (fh *StoreImpl) DeleteFHIRComposition(ctx context.Context, id string) (bool, error) {
-	resourceType := "Composition"
-	resp, err := fh.Dataset.DeleteFHIRResource(resourceType, id)
+	resp, err := fh.Dataset.DeleteFHIRResource(compositionResourceType, id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
+			"unable to delete %s, response %s, error: %w",
+			compositionResourceType, string(resp), err,
 		)
 	}
 	return true, nil
@@ -1110,21 +934,10 @@ func (fh *StoreImpl) DeleteFHIRComposition(ctx context.Context, id string) (bool
 
 // SearchFHIRCondition provides a search API for FHIRCondition
 func (fh *StoreImpl) SearchFHIRCondition(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error) {
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
 
-	resourceName := "Condition"
-	path := "_search"
 	output := domain.FHIRConditionRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, conditionResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -1133,17 +946,13 @@ func (fh *StoreImpl) SearchFHIRCondition(ctx context.Context, params map[string]
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", conditionResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIRConditionRelayEdge{
 			Node: &resource,
@@ -1155,8 +964,6 @@ func (fh *StoreImpl) SearchFHIRCondition(ctx context.Context, params map[string]
 // UpdateFHIRCondition updates a FHIRCondition instance
 // The resource must have it's ID set.
 func (fh *StoreImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-
-	resourceType := "Condition"
 	resource := domain.FHIRCondition{}
 
 	if input.ID == nil {
@@ -1165,22 +972,19 @@ func (fh *StoreImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRC
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", conditionResourceType, err)
 	}
 
-	data, err := fh.Dataset.UpdateFHIRResource(resourceType, *input.ID, payload)
+	data, err := fh.Dataset.UpdateFHIRResource(conditionResourceType, *input.ID, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", conditionResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			conditionResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRConditionRelayPayload{
@@ -1191,21 +995,17 @@ func (fh *StoreImpl) UpdateFHIRCondition(ctx context.Context, input domain.FHIRC
 
 // GetFHIREncounter retrieves instances of FHIREncounter by ID
 func (fh *StoreImpl) GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-
-	resourceType := "Encounter"
 	var resource domain.FHIREncounter
 
-	data, err := fh.Dataset.GetFHIRResource(resourceType, id)
+	data, err := fh.Dataset.GetFHIRResource(encounterResourceType, id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", resourceType, id, err)
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", encounterResourceType, id, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", resourceType, err)
+			"unable to unmarshal %s data from JSON, err: %w", encounterResourceType, err)
 	}
 
 	payload := &domain.FHIREncounterRelayPayload{
@@ -1217,21 +1017,9 @@ func (fh *StoreImpl) GetFHIREncounter(ctx context.Context, id string) (*domain.F
 // SearchFHIREncounter provides a search API for FHIREncounter
 func (fh *StoreImpl) SearchFHIREncounter(ctx context.Context, params map[string]interface{}) (*domain.FHIREncounterRelayConnection, error) {
 
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
-	resourceName := "Encounter"
-	path := "_search"
 	output := domain.FHIREncounterRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, encounterResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -1240,17 +1028,13 @@ func (fh *StoreImpl) SearchFHIREncounter(ctx context.Context, params map[string]
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", encounterResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIREncounterRelayEdge{
 			Node: &resource,
@@ -1262,21 +1046,9 @@ func (fh *StoreImpl) SearchFHIREncounter(ctx context.Context, params map[string]
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
 func (fh *StoreImpl) SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationRequestRelayConnection, error) {
 
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
-	resourceName := "MedicationRequest"
-	path := "_search"
 	output := domain.FHIRMedicationRequestRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, medicationRequestResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -1285,17 +1057,13 @@ func (fh *StoreImpl) SearchFHIRMedicationRequest(ctx context.Context, params map
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", medicationRequestResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIRMedicationRequestRelayEdge{
 			Node: &resource,
@@ -1306,28 +1074,23 @@ func (fh *StoreImpl) SearchFHIRMedicationRequest(ctx context.Context, params map
 
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
 func (fh *StoreImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-
-	resourceType := "MedicationRequest"
 	resource := domain.FHIRMedicationRequest{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", medicationRequestResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(medicationRequestResourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", medicationRequestResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			medicationRequestResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRMedicationRequestRelayPayload{
@@ -1339,8 +1102,6 @@ func (fh *StoreImpl) CreateFHIRMedicationRequest(ctx context.Context, input doma
 // UpdateFHIRMedicationRequest updates a FHIRMedicationRequest instance
 // The resource must have it's ID set.
 func (fh *StoreImpl) UpdateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-
-	resourceType := "MedicationRequest"
 	resource := domain.FHIRMedicationRequest{}
 
 	if input.ID == nil {
@@ -1349,22 +1110,19 @@ func (fh *StoreImpl) UpdateFHIRMedicationRequest(ctx context.Context, input doma
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", medicationRequestResourceType, err)
 	}
 
-	data, err := fh.Dataset.UpdateFHIRResource(resourceType, *input.ID, payload)
+	data, err := fh.Dataset.UpdateFHIRResource(medicationRequestResourceType, *input.ID, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", medicationRequestResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			medicationRequestResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRMedicationRequestRelayPayload{
@@ -1375,13 +1133,11 @@ func (fh *StoreImpl) UpdateFHIRMedicationRequest(ctx context.Context, input doma
 
 // DeleteFHIRMedicationRequest deletes the FHIRMedicationRequest identified by the supplied ID
 func (fh *StoreImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string) (bool, error) {
-	resourceType := "MedicationRequest"
-	resp, err := fh.Dataset.DeleteFHIRResource(resourceType, id)
+	resp, err := fh.Dataset.DeleteFHIRResource(medicationRequestResourceType, id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
+			"unable to delete %s, response %s, error: %w",
+			medicationRequestResourceType, string(resp), err,
 		)
 	}
 	return true, nil
@@ -1389,21 +1145,10 @@ func (fh *StoreImpl) DeleteFHIRMedicationRequest(ctx context.Context, id string)
 
 // SearchFHIRObservation provides a search API for FHIRObservation
 func (fh *StoreImpl) SearchFHIRObservation(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
 
-	resourceName := "Observation"
-	path := "_search"
 	output := domain.FHIRObservationRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, observationResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -1412,17 +1157,13 @@ func (fh *StoreImpl) SearchFHIRObservation(ctx context.Context, params map[strin
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", observationResourceType, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIRObservationRelayEdge{
 			Node: &resource,
@@ -1433,26 +1174,23 @@ func (fh *StoreImpl) SearchFHIRObservation(ctx context.Context, params map[strin
 
 // CreateFHIRObservation creates a FHIRObservation instance
 func (fh *StoreImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-	resourceType := "Observation"
 	resource := domain.FHIRObservation{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", observationResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(observationResourceType, payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", observationResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			observationResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRObservationRelayPayload{
@@ -1463,14 +1201,11 @@ func (fh *StoreImpl) CreateFHIRObservation(ctx context.Context, input domain.FHI
 
 // DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID
 func (fh *StoreImpl) DeleteFHIRObservation(ctx context.Context, id string) (bool, error) {
-
-	resourceType := "Observation"
-	resp, err := fh.Dataset.DeleteFHIRResource(resourceType, id)
+	resp, err := fh.Dataset.DeleteFHIRResource(observationResourceType, id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
+			"unable to delete %s, response %s, error: %w",
+			observationResourceType, string(resp), err,
 		)
 	}
 	return true, nil
@@ -1482,20 +1217,17 @@ func (fh *StoreImpl) GetFHIRPatient(ctx context.Context, id string) (*domain.FHI
 
 	data, err := fh.Dataset.GetFHIRResource(patientResourceType, id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to get %s with ID %s, err: %s", patientResourceType, id, err)
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", patientResourceType, id, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s data from JSON, err: %v", patientResourceType, err)
+			"unable to unmarshal %s data from JSON, err: %w", patientResourceType, err)
 	}
 
 	hasOpenEpisodes, err := fh.HasOpenEpisode(ctx, resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("unable to get open episodes for patient %#v: %w", resource, err)
 	}
 	payload := &domain.FHIRPatientRelayPayload{
@@ -1507,16 +1239,14 @@ func (fh *StoreImpl) GetFHIRPatient(ctx context.Context, id string) (*domain.FHI
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
 func (fh *StoreImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, error) {
-	patientEverythingBs, err := fh.Dataset.GetFHIRPatientEverything(id)
+	patientEverythingBs, err := fh.Dataset.GetFHIRPatientAllData(id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return false, fmt.Errorf("unable to get patient's compartment: %v", err)
+		return false, fmt.Errorf("unable to get patient's compartment: %w", err)
 	}
 
 	var patientEverything map[string]interface{}
 	err = json.Unmarshal(patientEverythingBs, &patientEverything)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf("unable to unmarshal patient everything")
 	}
 
@@ -1582,34 +1312,34 @@ func (fh *StoreImpl) DeleteFHIRPatient(ctx context.Context, id string) (bool, er
 		}
 
 		switch resourceType {
-		case "Encounter":
+		case encounterResourceType:
 			encounters = append(
 				encounters,
 				resourceTypeIDMap,
 			)
 			continue
 
-		case "EpisodeOfCare":
+		case episodeOfCareResourceType:
 			episodesOfCare = append(
 				episodesOfCare,
 				resourceTypeIDMap,
 			)
 			continue
-		case "Patient":
+		case patientResourceType:
 			patient = append(
 				patient,
 				resourceTypeIDMap,
 			)
 			continue
 
-		case "Observation":
+		case observationResourceType:
 			observations = append(
 				observations,
 				resourceTypeIDMap,
 			)
 			continue
 
-		case "MedicationRequest":
+		case medicationRequestResourceType:
 			medicationRequests = append(
 				medicationRequests,
 				resourceTypeIDMap,
@@ -1665,9 +1395,8 @@ func (fh *StoreImpl) DeleteFHIRResourceType(results []map[string]string) error {
 			resourceID,
 		)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
 			return fmt.Errorf(
-				"unable to delete %s:%s, response %s, error: %v",
+				"unable to delete %s:%s, response %s, error: %w",
 				resourceType, resourceID, string(resp), err,
 			)
 		}
@@ -1677,13 +1406,11 @@ func (fh *StoreImpl) DeleteFHIRResourceType(results []map[string]string) error {
 
 // DeleteFHIRServiceRequest deletes the FHIRServiceRequest identified by the supplied ID
 func (fh *StoreImpl) DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error) {
-	resourceType := "ServiceRequest"
-	resp, err := fh.Dataset.DeleteFHIRResource(resourceType, id)
+	resp, err := fh.Dataset.DeleteFHIRResource(serviceRequestResourceType, id)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return false, fmt.Errorf(
-			"unable to delete %s, response %s, error: %v",
-			resourceType, string(resp), err,
+			"unable to delete %s, response %s, error: %w",
+			serviceRequestResourceType, string(resp), err,
 		)
 	}
 	return true, nil
@@ -1691,25 +1418,24 @@ func (fh *StoreImpl) DeleteFHIRServiceRequest(ctx context.Context, id string) (b
 
 // CreateFHIRMedicationStatement creates a new FHIR Medication statement instance
 func (fh *StoreImpl) CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
-	resourceType := "MedicationStatement"
 
 	resource := domain.FHIRMedicationStatement{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", medicationStatementResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(medicationStatementResourceType, payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", medicationStatementResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
-			resourceType, string(data), err)
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			medicationStatementResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRMedicationStatementRelayPayload{
@@ -1727,21 +1453,18 @@ func (fh *StoreImpl) CreateFHIRMedication(ctx context.Context, input domain.FHIR
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", resourceType, err)
 	}
 
 	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to create/update %s resource: %v", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
 			resourceType, string(data), err)
 	}
 
@@ -1754,23 +1477,10 @@ func (fh *StoreImpl) CreateFHIRMedication(ctx context.Context, input domain.FHIR
 
 // SearchFHIRMedicationStatement used to search for a fhir medication statement
 func (fh *StoreImpl) SearchFHIRMedicationStatement(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
-	if params == nil {
-		return nil, fmt.Errorf("can't search with nil params")
-	}
-
-	urlParams, err := validateSearchParams(params)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
-	resourceName := "MedicationStatement"
-	path := "_search"
 	output := domain.FHIRMedicationStatementRelayConnection{}
 
-	resources, err := fh.searchFilterHelper(ctx, resourceName, path, urlParams)
+	resources, err := fh.searchFilterHelper(ctx, medicationStatementResourceType, params)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
@@ -1779,17 +1489,13 @@ func (fh *StoreImpl) SearchFHIRMedicationStatement(ctx context.Context, params m
 
 		resourceBs, err := json.Marshal(result)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to marshal map to JSON: %v", err)
-			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %s", err)
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
 		}
 
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to unmarshal %s: %v", resourceName, err)
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %s", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", medicationStatementResourceType, err)
 		}
 
 		output.Edges = append(output.Edges, &domain.FHIRMedicationStatementRelayEdge{
@@ -1805,18 +1511,18 @@ func (fh *StoreImpl) CreateFHIRPatient(ctx context.Context, input domain.FHIRPat
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %v", patientResourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", patientResourceType, err)
 	}
 
 	data, err := fh.Dataset.CreateFHIRResource(patientResourceType, payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create %s resource: %v", patientResourceType, err)
+		return nil, fmt.Errorf("unable to create %s resource: %w", patientResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
 			patientResourceType, string(data), err)
 	}
 
@@ -1835,13 +1541,13 @@ func (fh *StoreImpl) PatchFHIRPatient(ctx context.Context, id string, params []m
 
 	data, err := fh.Dataset.PatchFHIRResource(patientResourceType, id, params)
 	if err != nil {
-		return nil, fmt.Errorf("unable to patch %s resource: %v", patientResourceType, err)
+		return nil, fmt.Errorf("unable to patch %s resource: %w", patientResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
 			patientResourceType, string(data), err)
 	}
 	return &resource, nil
@@ -1862,7 +1568,7 @@ func (fh *StoreImpl) UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %v",
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
 			episodeOfCareResourceType, string(data), err)
 	}
 	return &resource, nil
@@ -1893,38 +1599,9 @@ func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string)
 		return nil, fmt.Errorf("unable to search for patient: %w", err)
 	}
 
-	respMap := make(map[string]interface{})
-	err = json.Unmarshal(bs, &respMap)
+	respMap, err := responseToMap(bs)
 	if err != nil {
-		utils.ReportErrorToSentry(err)
-		log.Errorf("unable to unmarshal FHIR search response: %v", err)
-		return nil, fmt.Errorf(notFoundWithSearchParams)
-	}
-
-	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
-	for _, k := range mandatoryKeys {
-		_, found := respMap[k]
-		if !found {
-			log.Errorf("search response does not have key '%s'", k)
-			return nil, fmt.Errorf(notFoundWithSearchParams)
-		}
-	}
-	resourceType, ok := respMap["resourceType"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the resourceType is not a string")
-	}
-	if resourceType != "Bundle" {
-		log.Errorf("Search: the resourceType value is not 'Bundle' as expected")
-		return nil, fmt.Errorf(notFoundWithSearchParams)
-	}
-
-	resultType, ok := respMap["type"].(string)
-	if !ok {
-		return nil, fmt.Errorf("search: the type is not a string")
-	}
-	if resultType != "searchset" {
-		log.Errorf("Search: the type value is not 'searchset' as expected")
-		return nil, fmt.Errorf(notFoundWithSearchParams)
+		return nil, err
 	}
 
 	respEntries := respMap["entry"]
@@ -1936,8 +1613,7 @@ func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string)
 	}
 	entries, ok := respEntries.([]interface{})
 	if !ok {
-		log.Errorf("Search: entries is not a list of maps, it is: %T", respEntries)
-		return nil, fmt.Errorf(notFoundWithSearchParams)
+		return nil, fmt.Errorf("could not find a patient with the provided parameters")
 	}
 
 	output := domain.PatientConnection{}
@@ -1950,8 +1626,7 @@ func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string)
 		for _, k := range expectedKeys {
 			_, found := entry[k]
 			if !found {
-				log.Errorf("search entry does not have key '%s'", k)
-				return nil, fmt.Errorf(notFoundWithSearchParams)
+				return nil, fmt.Errorf("could not find a patient with the provided parameters")
 			}
 		}
 
@@ -1969,15 +1644,11 @@ func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string)
 
 		err := mapstructure.Decode(resource, &patient)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("unable to map decode resource: %v", err)
 			return nil, fmt.Errorf(internalError)
 		}
 
 		hasOpenEpisodes, err := fh.HasOpenEpisode(ctx, patient)
 		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("error while checking if hasOpenEpisodes: %v", err)
 			return nil, fmt.Errorf(internalError)
 		}
 		output.Edges = append(output.Edges, &domain.PatientEdge{

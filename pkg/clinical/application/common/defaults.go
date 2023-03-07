@@ -42,7 +42,7 @@ const (
 	// TestResultTopicName is the topic for publishing a patient's test results
 	TestResultTopicName = "test.result.create"
 
-	//TestOrderTopicName is the topic for publishing a patient's test order
+	// TestOrderTopicName is the topic for publishing a patient's test order
 	TestOrderTopicName = "test.order.create"
 
 	// OrganizationTopicName is the topic where organization(facility) details are published to

@@ -113,16 +113,16 @@ func Router(ctx context.Context) (*mux.Router, error) {
 		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
 	}
 
-	repo := dataset.NewFHIRRepository()
+	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 
-	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(pubSubClient, baseExtension, infrastructure, usecases)
+	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient, baseExtension, infrastructure, usecases)
 	if err != nil {
-		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %v", err)
+		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
 	}
 
 	authServerConfig := authutils.Config{
@@ -157,7 +157,7 @@ func Router(ctx context.Context) (*mux.Router, error) {
 	// check server status.
 	r.Path("/health").HandlerFunc(serverutils.HealthStatusCheck)
 
-	//Authenticated routes
+	// Authenticated routes
 	gqlR := r.Path("/graphql").Subrouter()
 	gqlR.Use(authutils.SladeAuthenticationMiddleware(*authClient))
 	gqlR.Use(rest.TenantIdentifierExtractionMiddleware(usecases))

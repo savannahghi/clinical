@@ -49,14 +49,16 @@ func main() {
 
 	// Create a deadline to wait for.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*waitSeconds)
-	defer cancel()
 
 	// Doesn't block if no connections, but will otherwise wait until timeout
 	err = srv.Shutdown(ctx)
 	log.Printf("graceful shutdown started; the timeout is %d secs", waitSeconds)
 	if err != nil {
 		log.Printf("error during clean shutdown: %s", err)
+		cancel()
 		os.Exit(-1)
 	}
+
 	os.Exit(0)
+	cancel()
 }

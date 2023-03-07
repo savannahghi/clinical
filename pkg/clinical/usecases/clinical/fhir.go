@@ -85,7 +85,7 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 		phoneNumber := &phone.Msisdn
 		patient, err := c.FindPatientsByMSISDN(ctx, *phoneNumber)
 		if err != nil {
-			return false, fmt.Errorf("unable to find patient by phonenumber: %v", *phoneNumber)
+			return false, fmt.Errorf("unable to find patient by phonenumber: %s", *phoneNumber)
 		}
 		if len(patient.Edges) > 1 {
 			exists = true
@@ -101,13 +101,13 @@ func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx 
 	contacts, err := c.ContactsToContactPointInput(ctx, input.PhoneNumbers, input.Emails)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("can't register patient with invalid contacts: %v", err)
+		return nil, fmt.Errorf("can't register patient with invalid contacts: %w", err)
 	}
 
 	ids, err := helpers.IDToIdentifier(input.IdentificationDocuments, input.PhoneNumbers)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("can't register patient with invalid identifiers: %v", err)
+		return nil, fmt.Errorf("can't register patient with invalid identifiers: %w", err)
 	}
 
 	// fullPatientInput is to be filled up by processing the simple patient input
@@ -168,7 +168,7 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to get patient with ID %s, err: %v", id, err)
+			"unable to get patient with ID %s, err: %w", id, err)
 	}
 
 	patientReference := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
@@ -176,7 +176,7 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
-			"unable to get open episodes for %s, err: %v", patientReference, err)
+			"unable to get open episodes for %s, err: %w", patientReference, err)
 	}
 	return &domain.PatientPayload{
 		PatientRecord:   patient.Resource,
@@ -239,7 +239,7 @@ func (c *UseCasesClinicalImpl) ContactsToContactPointInput(ctx context.Context, 
 	for _, email := range emails {
 		emailErr := utils.ValidateEmail(email.Email)
 		if emailErr != nil {
-			return nil, fmt.Errorf("invalid email: %v", emailErr)
+			return nil, fmt.Errorf("invalid email: %w", emailErr)
 		}
 
 		emailContact := &domain.FHIRContactPointInput{

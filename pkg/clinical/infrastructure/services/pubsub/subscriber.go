@@ -332,7 +332,7 @@ func (ps ServicePubSubMessaging) ComposeTestResultInput(ctx context.Context, inp
 	if input.OrganizationID != "" {
 		organization, err := ps.clinical.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
 		if err != nil {
-			//Should not fail if the organization is not found
+			// Should not fail if the organization is not found
 			log.Printf("the error is: %v", err)
 		}
 		if organization != nil {
@@ -402,7 +402,7 @@ func (ps ServicePubSubMessaging) ComposeVitalsInput(ctx context.Context, input d
 	if input.OrganizationID != "" {
 		organization, err := ps.clinical.FindOrganizationByID(ctx, input.OrganizationID)
 		if err != nil {
-			//Should not fail if organization is not found
+			// Should not fail if organization is not found
 			log.Printf("the error is: %v", err)
 		}
 

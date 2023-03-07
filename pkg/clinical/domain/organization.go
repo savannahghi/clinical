@@ -18,7 +18,7 @@ type FHIROrganization struct {
 	Name *string `json:"name,omitempty"`
 	// A list of alternate names that the organization is known as, or was known as in the past
 	Alias []string `json:"alias,omitempty"`
-	//A contact detail for the organization
+	// A contact detail for the organization
 	// ! Rule: The telecom of an organization can never be of use 'home'
 	Telecom []*FHIRContactPoint `json:"telecom,omitempty"`
 
@@ -40,7 +40,7 @@ type FHIROrganizationInput struct {
 	Name *string `json:"name,omitempty"`
 	// A list of alternate names that the organization is known as, or was known as in the past
 	Alias []string `json:"alias,omitempty"`
-	//A contact detail for the organization
+	// A contact detail for the organization
 	// ! Rule: The telecom of an organization can never be of use 'home'
 	Telecom []*FHIRContactPointInput `json:"telecom,omitempty"`
 

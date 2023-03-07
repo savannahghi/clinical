@@ -15,7 +15,7 @@ import (
 // integration tests
 func InitializeTestService(ctx context.Context) (usecases.Interactor, error) {
 	baseExtension := extensions.NewBaseExtensionImpl()
-	repo := dataset.NewFHIRRepository()
+	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 

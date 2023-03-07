@@ -13,20 +13,19 @@ import (
 
 // FakeFHIRRepository is a mock FHIR repository
 type FakeFHIRRepository struct {
-	MockCreateFHIRResourceFn       func(resourceType string, payload map[string]interface{}) ([]byte, error)
-	MockDeleteFHIRResourceFn       func(resourceType, fhirResourceID string) ([]byte, error)
-	MockPatchFHIRResourceFn        func(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
-	MockUpdateFHIRResourceFn       func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
-	MockGetFHIRPatientAllDataFn    func(fhirResourceID string) ([]byte, error)
-	MockFHIRRestURLFn              func() string
-	MockFHIRHeadersFn              func() (http.Header, error)
-	MockGetFHIRResourceFn          func(resourceType, fhirResourceID string) ([]byte, error)
-	MockGetFHIRPatientEverythingFn func(fhirResourceID string) ([]byte, error)
-	MockPOSTRequestFn              func(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
-	MockCreateDatasetFn            func() (*healthcare.Operation, error)
-	MockGetDatasetFn               func() (*healthcare.Dataset, error)
-	MockGetFHIRStoreFn             func() (*healthcare.FhirStore, error)
-	MockCreateFHIRStoreFn          func() (*healthcare.FhirStore, error)
+	MockCreateFHIRResourceFn    func(resourceType string, payload map[string]interface{}) ([]byte, error)
+	MockDeleteFHIRResourceFn    func(resourceType, fhirResourceID string) ([]byte, error)
+	MockPatchFHIRResourceFn     func(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
+	MockUpdateFHIRResourceFn    func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
+	MockGetFHIRPatientAllDataFn func(fhirResourceID string) ([]byte, error)
+	MockFHIRRestURLFn           func() string
+	MockFHIRHeadersFn           func() (http.Header, error)
+	MockGetFHIRResourceFn       func(resourceType, fhirResourceID string) ([]byte, error)
+	MockPOSTRequestFn           func(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
+	MockCreateDatasetFn         func() (*healthcare.Operation, error)
+	MockGetDatasetFn            func() (*healthcare.Dataset, error)
+	MockGetFHIRStoreFn          func() (*healthcare.FhirStore, error)
+	MockCreateFHIRStoreFn       func() (*healthcare.FhirStore, error)
 }
 
 // NewFakeFHIRRepositoryMock initializes a new FakeFHIRRepositoryMock
@@ -93,13 +92,6 @@ func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 				"patientRecord": p,
 			}
 			bs, err := json.Marshal(m)
-			if err != nil {
-				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
-			}
-			return bs, nil
-		},
-		MockGetFHIRPatientEverythingFn: func(fhirResourceID string) ([]byte, error) {
-			bs, err := json.Marshal("m")
 			if err != nil {
 				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
 			}
@@ -185,11 +177,6 @@ func (f *FakeFHIRRepository) FHIRRestURL() string {
 // GetFHIRResource ...
 func (f *FakeFHIRRepository) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
 	return f.MockGetFHIRResourceFn(resourceType, fhirResourceID)
-}
-
-// GetFHIRPatientEverything ....
-func (f *FakeFHIRRepository) GetFHIRPatientEverything(fhirResourceID string) ([]byte, error) {
-	return f.MockGetFHIRPatientEverythingFn(fhirResourceID)
 }
 
 // POSTRequest is a mock implementation of POSTRequest method
