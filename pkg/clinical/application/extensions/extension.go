@@ -24,7 +24,7 @@ type ISCClientExtension interface {
 type ISCExtensionImpl struct{}
 
 // NewISCExtension initializes an ISC extension
-func NewISCExtension() ISCClientExtension {
+func NewISCExtension() *ISCExtensionImpl {
 	return &ISCExtensionImpl{}
 }
 
@@ -59,7 +59,7 @@ type BaseExtensionImpl struct {
 }
 
 // NewBaseExtensionImpl ...
-func NewBaseExtensionImpl() BaseExtension {
+func NewBaseExtensionImpl() *BaseExtensionImpl {
 	return &BaseExtensionImpl{}
 }
 

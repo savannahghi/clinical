@@ -30,13 +30,16 @@ type FHIRRepository interface {
 	DeleteFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
 	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
 	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
+
 	GetFHIRPatientAllData(fhirResourceID string) ([]byte, error)
 	FHIRRestURL() string
 	GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
 	POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
 	FHIRHeaders() (http.Header, error)
+
 	CreateDataset() (*healthcare.Operation, error)
 	GetDataset() (*healthcare.Dataset, error)
+
 	GetFHIRStore() (*healthcare.FhirStore, error)
 	CreateFHIRStore() (*healthcare.FhirStore, error)
 }
@@ -49,7 +52,7 @@ type Repository struct {
 }
 
 // NewFHIRRepository initializes a FHIR repository
-func NewFHIRRepository(ctx context.Context) FHIRRepository {
+func NewFHIRRepository(ctx context.Context) *Repository {
 	project := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
 	_ = serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
 	dataset := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")

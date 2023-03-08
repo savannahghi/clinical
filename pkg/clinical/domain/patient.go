@@ -312,8 +312,8 @@ type PatientLinkEdge struct {
 func (pl *PatientLink) IsNode() {}
 
 // GetID returns the patient links primary key
-func (pl *PatientLink) GetID() firebasetools.ID {
-	return firebasetools.IDValue(pl.ID)
+func (pl *PatientLink) GetID() string {
+	return pl.ID
 }
 
 // SetID sets the patient links' id

@@ -14,6 +14,6 @@ type PresentationHandlersImpl struct {
 }
 
 // NewPresentationHandlers initializes a new rest handlers usecase
-func NewPresentationHandlers(usecases usecases.Interactor) PresentationHandlers {
+func NewPresentationHandlers(usecases usecases.Interactor) *PresentationHandlersImpl {
 	return &PresentationHandlersImpl{usecases: usecases}
 }

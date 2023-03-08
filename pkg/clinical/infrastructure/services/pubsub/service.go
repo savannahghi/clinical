@@ -8,8 +8,8 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
 )
@@ -54,12 +54,23 @@ type ServicePubsub interface {
 	)
 }
 
+// Clinical represents all the patient business logic
+type Clinical interface {
+	FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
+	RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
+	CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
+	CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
+	FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error)
+	CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error)
+	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
+}
+
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
 	client   *pubsub.Client
 	baseExt  extensions.BaseExtension
 	infra    infrastructure.Infrastructure
-	clinical clinical.UseCasesClinical
+	clinical Clinical
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
@@ -68,7 +79,7 @@ func NewServicePubSubMessaging(
 	client *pubsub.Client,
 	baseExt extensions.BaseExtension,
 	infra infrastructure.Infrastructure,
-	clinical clinical.UseCasesClinical,
+	clinical Clinical,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
 		client:   client,

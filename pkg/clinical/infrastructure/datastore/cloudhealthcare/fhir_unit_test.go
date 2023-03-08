@@ -18,36 +18,11 @@ import (
 )
 
 func TestStoreImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	UUID := uuid.New().String()
 	PatientRef := "Patient/1"
 	OrgRef := "Organization/1"
 	status := domain.EpisodeOfCareStatusEnumFinished
-
-	episode := &domain.FHIREpisodeOfCare{
-		ID:            &UUID,
-		Text:          &domain.FHIRNarrative{},
-		Identifier:    []*domain.FHIRIdentifier{},
-		Status:        &(status),
-		StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
-		Type:          []*domain.FHIRCodeableConcept{},
-		Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
-		Patient: &domain.FHIRReference{
-			Reference: &PatientRef,
-		},
-		ManagingOrganization: &domain.FHIRReference{
-			Reference: &OrgRef,
-		},
-		Period:          &domain.FHIRPeriod{},
-		ReferralRequest: []*domain.FHIRReference{},
-		CareManager:     &domain.FHIRReference{},
-		Team:            []*domain.FHIRReference{},
-		Account:         []*domain.FHIRReference{},
-	}
 
 	type args struct {
 		ctx     context.Context
@@ -61,8 +36,27 @@ func TestStoreImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:     ctx,
-				episode: *episode,
+				ctx: context.Background(),
+				episode: domain.FHIREpisodeOfCare{
+					ID:            &UUID,
+					Text:          &domain.FHIRNarrative{},
+					Identifier:    []*domain.FHIRIdentifier{},
+					Status:        &(status),
+					StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
+					Type:          []*domain.FHIRCodeableConcept{},
+					Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
+					Patient: &domain.FHIRReference{
+						Reference: &PatientRef,
+					},
+					ManagingOrganization: &domain.FHIRReference{
+						Reference: &OrgRef,
+					},
+					Period:          &domain.FHIRPeriod{},
+					ReferralRequest: []*domain.FHIRReference{},
+					CareManager:     &domain.FHIRReference{},
+					Team:            []*domain.FHIRReference{},
+					Account:         []*domain.FHIRReference{},
+				},
 			},
 			wantErr: false,
 		},
@@ -70,7 +64,7 @@ func TestStoreImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				episode: domain.FHIREpisodeOfCare{
 					ID:            nil,
 					Text:          &domain.FHIRNarrative{},
@@ -96,6 +90,9 @@ func TestStoreImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
 
 			if tt.name == "Sad case" {
 				d.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
@@ -112,55 +109,10 @@ func TestStoreImpl_CreateEpisodeOfCare_Unittest(t *testing.T) {
 }
 
 func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	ID := uuid.New().String()
 
-	fhirconditionInput := &domain.FHIRConditionInput{
-		ID:                 &ID,
-		Identifier:         []*domain.FHIRIdentifierInput{},
-		ClinicalStatus:     &domain.FHIRCodeableConceptInput{},
-		VerificationStatus: &domain.FHIRCodeableConceptInput{},
-		Category:           []*domain.FHIRCodeableConceptInput{},
-		Severity:           &domain.FHIRCodeableConceptInput{},
-		Code:               &domain.FHIRCodeableConceptInput{},
-		BodySite:           []*domain.FHIRCodeableConceptInput{},
-		Subject:            &domain.FHIRReferenceInput{},
-		Encounter:          &domain.FHIRReferenceInput{},
-		OnsetDateTime: &scalarutils.Date{
-			Year:  2000,
-			Month: 3,
-			Day:   30,
-		},
-		OnsetAge:    &domain.FHIRAgeInput{},
-		OnsetPeriod: &domain.FHIRPeriodInput{},
-		OnsetRange:  &domain.FHIRRangeInput{},
-		OnsetString: new(string),
-		AbatementDateTime: &scalarutils.Date{
-			Year:  2000,
-			Month: 3,
-			Day:   30,
-		},
-		AbatementAge:    &domain.FHIRAgeInput{},
-		AbatementPeriod: &domain.FHIRPeriodInput{},
-		AbatementRange:  &domain.FHIRRangeInput{},
-		AbatementString: new(string),
-		RecordedDate: &scalarutils.Date{
-			Year:  2000,
-			Month: 3,
-			Day:   30,
-		},
-		Recorder: &domain.FHIRReferenceInput{},
-		Asserter: &domain.FHIRReferenceInput{},
-		Stage:    []*domain.FHIRConditionStageInput{},
-		Evidence: []*domain.FHIRConditionEvidenceInput{},
-		Note:     []*domain.FHIRAnnotationInput{},
-	}
-
-	invalidfhirconditionInput := &domain.FHIRConditionInput{
+	invalidfhirconditionInput := domain.FHIRConditionInput{
 		ID:                 nil,
 		Identifier:         []*domain.FHIRIdentifierInput{},
 		ClinicalStatus:     &domain.FHIRCodeableConceptInput{},
@@ -182,8 +134,47 @@ func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:   ctx,
-				input: *fhirconditionInput,
+				ctx: context.Background(),
+				input: domain.FHIRConditionInput{
+					ID:                 &ID,
+					Identifier:         []*domain.FHIRIdentifierInput{},
+					ClinicalStatus:     &domain.FHIRCodeableConceptInput{},
+					VerificationStatus: &domain.FHIRCodeableConceptInput{},
+					Category:           []*domain.FHIRCodeableConceptInput{},
+					Severity:           &domain.FHIRCodeableConceptInput{},
+					Code:               &domain.FHIRCodeableConceptInput{},
+					BodySite:           []*domain.FHIRCodeableConceptInput{},
+					Subject:            &domain.FHIRReferenceInput{},
+					Encounter:          &domain.FHIRReferenceInput{},
+					OnsetDateTime: &scalarutils.Date{
+						Year:  2000,
+						Month: 3,
+						Day:   30,
+					},
+					OnsetAge:    &domain.FHIRAgeInput{},
+					OnsetPeriod: &domain.FHIRPeriodInput{},
+					OnsetRange:  &domain.FHIRRangeInput{},
+					OnsetString: new(string),
+					AbatementDateTime: &scalarutils.Date{
+						Year:  2000,
+						Month: 3,
+						Day:   30,
+					},
+					AbatementAge:    &domain.FHIRAgeInput{},
+					AbatementPeriod: &domain.FHIRPeriodInput{},
+					AbatementRange:  &domain.FHIRRangeInput{},
+					AbatementString: new(string),
+					RecordedDate: &scalarutils.Date{
+						Year:  2000,
+						Month: 3,
+						Day:   30,
+					},
+					Recorder: &domain.FHIRReferenceInput{},
+					Asserter: &domain.FHIRReferenceInput{},
+					Stage:    []*domain.FHIRConditionStageInput{},
+					Evidence: []*domain.FHIRConditionEvidenceInput{},
+					Note:     []*domain.FHIRAnnotationInput{},
+				},
 			},
 			wantErr: false,
 		},
@@ -191,14 +182,17 @@ func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:   ctx,
-				input: *invalidfhirconditionInput,
+				ctx:   context.Background(),
+				input: invalidfhirconditionInput,
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("error")
@@ -214,16 +208,12 @@ func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
 }
 
 func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	ID := ksuid.New().String()
 	active := true
 	testname := gofakeit.FirstName()
 
-	orgInput := &domain.FHIROrganizationInput{
+	orgInput := domain.FHIROrganizationInput{
 		ID:         &ID,
 		Active:     &active,
 		Identifier: []*domain.FHIRIdentifierInput{},
@@ -234,7 +224,7 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 		Address:    []*domain.FHIRAddressInput{},
 	}
 
-	invalidOrgInput := &domain.FHIROrganizationInput{
+	invalidOrgInput := domain.FHIROrganizationInput{
 		ID:         &ID,
 		Active:     new(bool),
 		Identifier: []*domain.FHIRIdentifierInput{},
@@ -256,8 +246,8 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:   ctx,
-				input: *orgInput,
+				ctx:   context.Background(),
+				input: orgInput,
 			},
 			wantErr: false,
 		},
@@ -265,14 +255,18 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:   ctx,
-				input: *invalidOrgInput,
+				ctx:   context.Background(),
+				input: invalidOrgInput,
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				if tt.name == "Sad case" {
 					d.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
@@ -290,10 +284,6 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 }
 
 func TestStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	type args struct {
 		ctx            context.Context
@@ -308,7 +298,7 @@ func TestStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:            ctx,
+				ctx:            context.Background(),
 				organizationID: "",
 			},
 			wantErr: true,
@@ -316,6 +306,10 @@ func TestStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockGetFHIRResourceFn = func(resourceType string, id string) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -340,10 +334,6 @@ func TestStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
 }
 
 func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	type args struct {
 		ctx          context.Context
@@ -357,7 +347,7 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				searchParams: map[string][]string{
 					"patient": {"12233"},
 				},
@@ -367,13 +357,17 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -389,10 +383,6 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 }
 
 func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	type args struct {
 		ctx    context.Context
@@ -406,7 +396,7 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				params: map[string]interface{}{
 					"patient": "12233",
 				},
@@ -416,7 +406,7 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				params: map[string]interface{}{
 					"patient": "12233",
 				},
@@ -426,6 +416,10 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -441,10 +435,6 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 }
 
 func TestStoreImpl_OpenEpisodes(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	patientReference := fmt.Sprintf("Patient/%s", ksuid.New().String())
 
@@ -460,7 +450,7 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:              ctx,
+				ctx:              context.Background(),
 				patientReference: patientReference,
 			},
 			wantErr: false,
@@ -468,7 +458,7 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:              ctx,
+				ctx:              context.Background(),
 				patientReference: patientReference,
 			},
 			wantErr: true,
@@ -476,6 +466,10 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -491,10 +485,6 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 }
 
 func TestStoreImpl_HasOpenEpisode(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	UUID := uuid.New().String()
 
@@ -516,7 +506,7 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:     ctx,
+				ctx:     context.Background(),
 				patient: patient,
 			},
 			wantErr: false,
@@ -525,7 +515,7 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:     ctx,
+				ctx:     context.Background(),
 				patient: patient,
 			},
 			wantErr: true,
@@ -534,6 +524,10 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -550,11 +544,6 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 
 func TestStoreImpl_CreateFHIREncounter(t *testing.T) {
 
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
-
 	input := domain.FHIREncounterInput{}
 	type args struct {
 		ctx   context.Context
@@ -569,7 +558,7 @@ func TestStoreImpl_CreateFHIREncounter(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: false,
@@ -577,7 +566,7 @@ func TestStoreImpl_CreateFHIREncounter(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: true,
@@ -585,6 +574,10 @@ func TestStoreImpl_CreateFHIREncounter(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -601,10 +594,6 @@ func TestStoreImpl_CreateFHIREncounter(t *testing.T) {
 }
 
 func TestStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	id := ksuid.New().String()
 
@@ -620,7 +609,7 @@ func TestStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				id:  id,
 			},
 			wantErr: false,
@@ -628,7 +617,7 @@ func TestStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				id:  id,
 			},
 			wantErr: true,
@@ -636,6 +625,10 @@ func TestStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -652,10 +645,6 @@ func TestStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	episodeID := uuid.New().String()
 
@@ -672,7 +661,7 @@ func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				episodeID: episodeID,
 			},
 			wantErr: true,
@@ -680,6 +669,10 @@ func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -695,10 +688,6 @@ func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
 }
 
 func TestStoreImpl_GetFHIREncounter(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	type args struct {
 		ctx context.Context
@@ -712,7 +701,7 @@ func TestStoreImpl_GetFHIREncounter(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				id:  uuid.New().String(),
 			},
 			wantErr: false,
@@ -720,7 +709,7 @@ func TestStoreImpl_GetFHIREncounter(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				id:  "",
 			},
 			wantErr: true,
@@ -728,6 +717,10 @@ func TestStoreImpl_GetFHIREncounter(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -743,10 +736,6 @@ func TestStoreImpl_GetFHIREncounter(t *testing.T) {
 }
 
 func TestStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	UUID := uuid.New().String()
 
@@ -762,7 +751,7 @@ func TestStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				input: domain.FHIRServiceRequestInput{
 					ID: &UUID,
 				},
@@ -772,13 +761,17 @@ func TestStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -794,10 +787,6 @@ func TestStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 }
 
 func TestStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	UUID := uuid.New().String()
 
@@ -813,7 +802,7 @@ func TestStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				input: domain.FHIRAllergyIntoleranceInput{
 					ID: &UUID,
 				},
@@ -823,13 +812,17 @@ func TestStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -845,10 +838,6 @@ func TestStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 }
 
 func TestStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	UUID := uuid.New().String()
 
@@ -869,7 +858,7 @@ func TestStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: false,
@@ -877,7 +866,7 @@ func TestStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: true,
@@ -885,6 +874,10 @@ func TestStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -900,10 +893,6 @@ func TestStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 }
 
 func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	params := map[string]interface{}{"test": "123"}
 
@@ -920,7 +909,7 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:    ctx,
+				ctx:    context.Background(),
 				params: params,
 			},
 			wantErr: false,
@@ -928,7 +917,7 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:    ctx,
+				ctx:    context.Background(),
 				params: params,
 			},
 			wantErr: true,
@@ -936,6 +925,10 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockPOSTRequestFn = func(resourceName, path string, params url.Values, body io.Reader) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -952,10 +945,6 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 }
 
 func TestStoreImpl_CreateFHIRComposition(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	input := domain.FHIRCompositionInput{}
 
@@ -972,7 +961,7 @@ func TestStoreImpl_CreateFHIRComposition(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: false,
@@ -980,7 +969,7 @@ func TestStoreImpl_CreateFHIRComposition(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: true,
@@ -988,6 +977,10 @@ func TestStoreImpl_CreateFHIRComposition(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -1004,10 +997,6 @@ func TestStoreImpl_CreateFHIRComposition(t *testing.T) {
 }
 
 func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	UUID := uuid.New().String()
 
@@ -1028,7 +1017,7 @@ func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: false,
@@ -1036,7 +1025,7 @@ func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx:   ctx,
+				ctx:   context.Background(),
 				input: input,
 			},
 			wantErr: true,
@@ -1044,6 +1033,10 @@ func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -1059,10 +1052,6 @@ func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
 }
 
 func TestStoreImpl_DeleteFHIRComposition(t *testing.T) {
-	ctx := context.Background()
-	var d = fakeDataset.NewFakeFHIRRepositoryMock()
-
-	h := FHIR.NewFHIRStoreImpl(d)
 
 	id := ksuid.New().String()
 
@@ -1079,7 +1068,7 @@ func TestStoreImpl_DeleteFHIRComposition(t *testing.T) {
 		{
 			name: "Happy case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				id:  id,
 			},
 			wantErr: false,
@@ -1088,7 +1077,7 @@ func TestStoreImpl_DeleteFHIRComposition(t *testing.T) {
 		{
 			name: "Sad case",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				id:  id,
 			},
 			wantErr: true,
@@ -1097,6 +1086,10 @@ func TestStoreImpl_DeleteFHIRComposition(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var d = fakeDataset.NewFakeFHIRRepositoryMock()
+
+			h := FHIR.NewFHIRStoreImpl(d)
+
 			if tt.name == "Sad case" {
 				d.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
 					return nil, fmt.Errorf("an error occurred")

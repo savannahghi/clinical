@@ -14,7 +14,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 	oclMock "github.com/savannahghi/clinical/pkg/clinical/usecases/ocl/mock"
 	log "github.com/sirupsen/logrus"
 )
@@ -86,7 +85,7 @@ func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastru
 }
 
 func InitializeFakeTestlInteractor(ctx context.Context) (usecases.Interactor, error) {
-	var ocl ocl.UseCasesOCL = &fakeOCL
+	var ocl infrastructure.ServiceOCL = &fakeOCL
 	var baseExt extensions.BaseExtension = &fakeBaseExtension
 	infra := func() infrastructure.Infrastructure {
 		return infrastructure.Infrastructure{

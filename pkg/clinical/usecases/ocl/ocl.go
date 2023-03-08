@@ -9,19 +9,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 )
 
-// UseCasesOCL represents all the Open Concept Lab business logic
-type UseCasesOCL interface {
-	MakeRequest(method string, path string, params url.Values, body io.Reader) (*http.Response, error)
-	ListConcepts(
-		ctx context.Context, org string, source string, verbose bool, q *string,
-		sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
-		locale *string, includeRetired *bool,
-		includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error)
-	GetConcept(
-		ctx context.Context, org string, source string, concept string,
-		includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error)
-}
-
 // UseCasesOCLImpl represents the OCL usecase implementation
 type UseCasesOCLImpl struct {
 	infrastructure infrastructure.Infrastructure
