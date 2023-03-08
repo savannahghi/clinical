@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -14,7 +16,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/errorcodeutil"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/scalarutils"
@@ -26,6 +27,19 @@ var (
 	fhirAllergyIntoleranceVerificationStatusURL = "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification"
 	unknownConceptID                            = "1067"
 )
+
+// ServiceOCL ...
+type ServiceOCL interface {
+	MakeRequest(method string, path string, params url.Values, body io.Reader) (*http.Response, error)
+	ListConcepts(
+		ctx context.Context, org string, source string, verbose bool, q *string,
+		sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
+		locale *string, includeRetired *bool,
+		includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error)
+	GetConcept(
+		ctx context.Context, org string, source string, concept string,
+		includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error)
+}
 
 // ReceivePubSubPushMessages receives and processes a pubsub message
 func (ps ServicePubSubMessaging) ReceivePubSubPushMessages(
@@ -610,7 +624,7 @@ func (ps ServicePubSubMessaging) ComposeAllergyIntoleranceInput(ctx context.Cont
 	return allergy, nil
 }
 
-func getCIELConcept(ctx context.Context, ocl openconceptlab.ServiceOCL, conceptID string) (*domain.Concept, error) {
+func getCIELConcept(ctx context.Context, ocl ServiceOCL, conceptID string) (*domain.Concept, error) {
 	response, err := ocl.GetConcept(
 		ctx,
 		"CIEL",

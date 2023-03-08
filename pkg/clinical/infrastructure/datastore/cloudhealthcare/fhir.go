@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"net/url"
 	"time"
 
@@ -14,7 +13,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
-	"github.com/savannahghi/clinical/pkg/clinical/repository"
 	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
@@ -28,6 +26,7 @@ const (
 
 // resource types
 const (
+	organizationResource            = "Organization"
 	patientResourceType             = "Patient"
 	episodeOfCareResourceType       = "EpisodeOfCare"
 	observationResourceType         = "Observation"
@@ -38,6 +37,7 @@ const (
 	encounterResourceType           = "Encounter"
 	compositionResourceType         = "Composition"
 	medicationStatementResourceType = "MedicationStatement"
+	medicationResourceType          = "Medication"
 )
 
 // StoreImpl represents the FHIR infrastructure implementation
@@ -48,7 +48,7 @@ type StoreImpl struct {
 // NewFHIRStoreImpl initializes the new FHIR implementation
 func NewFHIRStoreImpl(
 	dataset dataset.FHIRRepository,
-) repository.FHIR {
+) *StoreImpl {
 	return &StoreImpl{
 		Dataset: dataset,
 	}
@@ -234,23 +234,22 @@ func (fh StoreImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRCo
 
 // CreateFHIROrganization creates a FHIROrganization instance
 func (fh StoreImpl) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
-	resourceType := "Organization"
 	resource := domain.FHIROrganization{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %w", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", organizationResource, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(organizationResource, payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create %s resource: %w", resourceType, err)
+		return nil, fmt.Errorf("unable to create %s resource: %w", organizationResource, err)
 	}
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			resourceType, string(data), err)
+			organizationResource, string(data), err)
 	}
 
 	output := &domain.FHIROrganizationRelayPayload{
@@ -261,10 +260,8 @@ func (fh StoreImpl) CreateFHIROrganization(ctx context.Context, input domain.FHI
 
 // SearchFHIROrganization provides a search API for FHIROrganization
 func (fh StoreImpl) SearchFHIROrganization(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
-
-	resourceName := "Organization"
 	output := domain.FHIROrganizationRelayConnection{}
-	resources, err := fh.searchFilterHelper(ctx, resourceName, params)
+	resources, err := fh.searchFilterHelper(ctx, organizationResource, params)
 	if err != nil {
 		return nil, err
 	}
@@ -280,7 +277,7 @@ func (fh StoreImpl) SearchFHIROrganization(ctx context.Context, params map[strin
 		err = json.Unmarshal(resourceBs, &resource)
 		if err != nil {
 			return nil, fmt.Errorf(
-				"server error: Unable to unmarshal %s: %w", resourceName, err)
+				"server error: Unable to unmarshal %s: %w", organizationResource, err)
 		}
 		output.Edges = append(output.Edges, &domain.FHIROrganizationRelayEdge{
 			Node: &resource,
@@ -295,7 +292,7 @@ func (fh StoreImpl) FindOrganizationByID(ctx context.Context, organizationID str
 		return nil, fmt.Errorf("organization ID is required")
 	}
 
-	data, err := fh.Dataset.GetFHIRResource("Organization", organizationID)
+	data, err := fh.Dataset.GetFHIRResource(organizationResource, organizationID)
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve organization: %w", err)
 	}
@@ -1447,25 +1444,23 @@ func (fh *StoreImpl) CreateFHIRMedicationStatement(ctx context.Context, input do
 
 // CreateFHIRMedication creates a new FHIR Medication instance
 func (fh *StoreImpl) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
-	resourceType := "Medication"
-
 	resource := domain.FHIRMedication{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
-		return nil, fmt.Errorf("unable to turn %s input into a map: %w", resourceType, err)
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", medicationResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(resourceType, payload)
+	data, err := fh.Dataset.CreateFHIRResource(medicationResourceType, payload)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %w", resourceType, err)
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", medicationResourceType, err)
 	}
 
 	err = json.Unmarshal(data, &resource)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			resourceType, string(data), err)
+			medicationResourceType, string(data), err)
 	}
 
 	output := &domain.FHIRMedicationRelayPayload{
@@ -1667,10 +1662,4 @@ func (fh *StoreImpl) POSTRequest(resourceName string, path string, params url.Va
 // GetFHIRResource gets a FHIR resource.
 func (fh *StoreImpl) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
 	return fh.Dataset.GetFHIRResource(resourceType, fhirResourceID)
-}
-
-// FHIRHeaders composes suitable FHIR headers, with authentication and content
-// type already set
-func (fh *StoreImpl) FHIRHeaders() (http.Header, error) {
-	return fh.Dataset.FHIRHeaders()
 }

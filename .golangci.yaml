@@ -26,6 +26,8 @@ linters:
     - contextcheck
     - gocritic
     - nilerr
+    - ireturn
+    - importas
 
 linters-settings:
   staticcheck:
