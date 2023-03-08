@@ -2,8 +2,6 @@ package mock
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 	"net/url"
 
 	"github.com/google/uuid"
@@ -63,8 +61,6 @@ type FHIRMock struct {
 	MockCreateFHIRMedicationStatementFn func(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error)
 	MockCreateFHIRMedicationFn          func(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error)
 	MockSearchFHIRMedicationStatementFn func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error)
-	MockFHIRHeadersFn                   func() (http.Header, error)
-	MockGetBearerTokenFn                func() (string, error)
 	MockCreateFHIRPatientFn             func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
 	MockPatchFHIRPatientFn              func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
 	MockUpdateFHIREpisodeOfCareFn       func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
@@ -384,14 +380,6 @@ func NewFHIRMock() *FHIRMock {
 		MockCreateFHIRMedicationFn: func(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
 			return &domain.FHIRMedicationRelayPayload{}, nil
 		},
-		MockFHIRHeadersFn: func() (http.Header, error) {
-			return http.Header{
-				"Authorization": []string{"Bearer " + uuid.NewString()},
-			}, nil
-		},
-		MockGetBearerTokenFn: func() (string, error) {
-			return fmt.Sprintf("Bearer %s", uuid.NewString()), nil
-		},
 		MockCreateFHIRPatientFn: func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
 			return &domain.PatientPayload{
 				PatientRecord: &domain.FHIRPatient{
@@ -466,11 +454,6 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 	}
-}
-
-// GetBearerToken is a mock implementation of get bearer token method
-func (fh *FHIRMock) GetBearerToken() (string, error) {
-	return fh.MockGetBearerTokenFn()
 }
 
 // CreateEpisodeOfCare is a mock implementation of CreateEpisodeOfCare method
@@ -697,11 +680,6 @@ func (fh *FHIRMock) CreateFHIRMedicationStatement(ctx context.Context, input dom
 func (fh *FHIRMock) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
 	return fh.MockCreateFHIRMedicationFn(ctx, input)
 
-}
-
-// FHIRHeaders is a mock implementation of CreateFHIRMedication method
-func (fh *FHIRMock) FHIRHeaders() (http.Header, error) {
-	return fh.MockFHIRHeadersFn()
 }
 
 // CreateFHIRPatient mocks the implementation of creating a FHIR patient

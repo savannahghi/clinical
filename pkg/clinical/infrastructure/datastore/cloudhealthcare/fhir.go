@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/url"
 	"time"
 
@@ -1569,21 +1568,6 @@ func (fh *StoreImpl) UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID
 	return &resource, nil
 }
 
-// CreateFHIRResource creates a FHIR resource
-func (fh *StoreImpl) CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error) {
-	return fh.Dataset.CreateFHIRResource(resourceType, payload)
-}
-
-// PatchFHIRResource patches a FHIR resource
-func (fh *StoreImpl) PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
-	return fh.Dataset.PatchFHIRResource(resourceType, fhirResourceID, payload)
-}
-
-// UpdateFHIRResource updates a FHIR resource
-func (fh *StoreImpl) UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
-	return fh.Dataset.UpdateFHIRResource(resourceType, fhirResourceID, payload)
-}
-
 // SearchFHIRPatient searches for a FHIR patient
 func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
 	params := url.Values{}
@@ -1652,14 +1636,4 @@ func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string)
 		})
 	}
 	return &output, nil
-}
-
-// POSTRequest is used to manually compose POST requests to the FHIR service
-func (fh *StoreImpl) POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error) {
-	return fh.Dataset.POSTRequest(resourceName, path, params, body)
-}
-
-// GetFHIRResource gets a FHIR resource.
-func (fh *StoreImpl) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
-	return fh.Dataset.GetFHIRResource(resourceType, fhirResourceID)
 }
