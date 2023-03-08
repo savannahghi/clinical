@@ -1,18 +1,16 @@
 package presentation
 
 import (
-	"compress/gzip"
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -25,10 +23,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
-	log "github.com/sirupsen/logrus"
 )
-
-const serverTimeoutSeconds = 120
 
 // ClinicalAllowedOrigins is a list of CORS origins allowed to interact with
 // this service
@@ -70,41 +65,43 @@ var (
 	grantType          = serverutils.MustGetEnvVar("GRANT_TYPE")
 )
 
-// PrepareServer sets up the HTTP server
-func PrepareServer(
+// StartGin sets up gin
+func StartGin(
 	ctx context.Context,
 	port int,
 	allowedOrigins []string,
-) *http.Server {
+) {
 	// start up the router
 	r, err := Router(ctx)
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
 	}
 
-	// start the server
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     allowedOrigins,
+		AllowMethods:     []string{http.MethodPut, http.MethodPatch, http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
+		AllowHeaders:     ClinicalAllowedHeaders,
+		ExposeHeaders:    []string{"Content-Length", "Link"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "http://localhost:8000" || origin == "http://localhost:8080"
+		},
+		MaxAge:          12 * time.Hour,
+		AllowWebSockets: true,
+	}))
 	addr := fmt.Sprintf(":%d", port)
-	h := handlers.CompressHandlerLevel(r, gzip.BestCompression)
-	h = handlers.CORS(
-		handlers.AllowedHeaders(ClinicalAllowedHeaders),
-		handlers.AllowedOrigins(allowedOrigins),
-		handlers.AllowCredentials(),
-		handlers.AllowedMethods([]string{"OPTIONS", "GET", "POST"}),
-	)(h)
-	h = handlers.CombinedLoggingHandler(os.Stdout, h)
-	h = handlers.ContentTypeHandler(h, "application/json")
-	srv := &http.Server{
-		Handler:      h,
-		Addr:         addr,
-		WriteTimeout: serverTimeoutSeconds * time.Second,
-		ReadTimeout:  serverTimeoutSeconds * time.Second,
+	if err := r.Run(addr); err != nil {
+		serverutils.LogStartupError(ctx, err)
 	}
-	log.Infof("Server running at port %v", addr)
-	return srv
 }
 
 // Router sets up the ginContext router
-func Router(ctx context.Context) (*mux.Router, error) {
+func Router(ctx context.Context) (*gin.Engine, error) {
+	err := serverutils.Sentry()
+	if err != nil {
+		serverutils.LogStartupError(ctx, err)
+	}
+
 	baseExtension := extensions.NewBaseExtensionImpl()
 
 	projectID := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
@@ -133,44 +130,32 @@ func Router(ctx context.Context) (*mux.Router, error) {
 		Username:           username,
 		Password:           password,
 	}
-	authClient, err := authutils.NewClient(authServerConfig)
+	authclient, err := authutils.NewClient(authServerConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	r := mux.NewRouter() // gorilla mux
-	r.Use(
-		handlers.RecoveryHandler(
-			handlers.PrintRecoveryStack(true),
-			handlers.RecoveryLogger(log.StandardLogger()),
-		),
-	) // recover from panics by writing a HTTP error
-	r.Use(serverutils.RequestDebugMiddleware())
+	r := gin.Default()
+
+	graphQL := r.Group("/graphql")
+	graphQL.Use(authutils.SladeAuthenticationGinMiddleware(*authclient))
+	graphQL.Use(rest.TenantIdentifierExtractionMiddleware(usecases))
+	graphQL.Any("", GQLHandler(ctx, usecases))
 
 	// Unauthenticated routes
-	r.Path("/ide").HandlerFunc(playground.Handler("GraphQL IDE", "/graphql"))
+	ide := r.Group("/ide")
+	ide.Any("", playgroundHandler())
 
-	r.Path("/pubsub").Methods(
-		http.MethodPost,
-	).HandlerFunc(pubSub.ReceivePubSubPushMessages)
+	pubsubPath := r.Group("/pubsub")
+	pubsubPath.POST("", pubSub.ReceivePubSubPushMessages)
 
-	// check server status.
-	r.Path("/health").HandlerFunc(serverutils.HealthStatusCheck)
-
-	// Authenticated routes
-	gqlR := r.Path("/graphql").Subrouter()
-	gqlR.Use(authutils.SladeAuthenticationMiddleware(*authClient))
-	gqlR.Use(rest.TenantIdentifierExtractionMiddleware(usecases))
-	gqlR.Methods(
-		http.MethodPost, http.MethodGet, http.MethodOptions,
-	).HandlerFunc(GQLHandler(ctx, usecases))
 	return r, nil
 }
 
 // GQLHandler sets up a GraphQL resolver
 func GQLHandler(ctx context.Context,
 	service usecases.Interactor,
-) http.HandlerFunc {
+) gin.HandlerFunc {
 	resolver, err := graph.NewResolver(ctx, service)
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
@@ -182,7 +167,15 @@ func GQLHandler(ctx context.Context,
 			},
 		),
 	)
-	return func(w http.ResponseWriter, r *http.Request) {
-		server.ServeHTTP(w, r)
+	return func(ctx *gin.Context) {
+		server.ServeHTTP(ctx.Writer, ctx.Request)
+	}
+}
+
+func playgroundHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL IDE", "/graphql")
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/serverutils"
@@ -55,36 +56,36 @@ func handleError(w http.ResponseWriter, err error) {
 // tasks such as filtering, or database queries
 // Note that this middleware assumes that the IDs are included in the request as headers
 // and it does not perform any validation or sanitization of the ID values.
-func TenantIdentifierExtractionMiddleware(validator Validators) func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			headers := []TenantIdentifier{
-				{
-					HeaderKey:     "OrganizationID",
-					ContextKey:    utils.OrganizationIDContextKey,
-					ValidatorFunc: OrganisationValidator,
-				},
-				// TODO: Add more headers here as needed e.g FacilityID, ProgramID
+func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		headers := []TenantIdentifier{
+			{
+				HeaderKey:     "OrganizationID",
+				ContextKey:    utils.OrganizationIDContextKey,
+				ValidatorFunc: OrganisationValidator,
+			},
+			// TODO: Add more headers here as needed e.g FacilityID, ProgramID
+		}
+
+		for _, header := range headers {
+			headerValue := c.GetHeader(header.HeaderKey)
+			if headerValue == "" {
+				err := fmt.Errorf("expected `%s` header to be included in the request", header.HeaderKey)
+				handleError(c.Writer, err)
+				c.Abort()
+				return
 			}
 
-			for _, header := range headers {
-				headerValue := r.Header.Get(header.HeaderKey)
-				if headerValue == "" {
-					err := fmt.Errorf("expected `%s` header to be included in the request", header.HeaderKey)
-					handleError(w, err)
-					return
-				}
-
-				err := header.ValidatorFunc(validator, headerValue)
-				if err != nil {
-					handleError(w, err)
-					return
-				}
-
-				ctx := context.WithValue(r.Context(), header.ContextKey, headerValue)
-				r = r.WithContext(ctx)
+			err := header.ValidatorFunc(validator, headerValue)
+			if err != nil {
+				handleError(c.Writer, err)
+				c.Abort()
+				return
 			}
-			next.ServeHTTP(w, r)
-		})
+
+			c.Set(string(header.ContextKey), headerValue)
+		}
+
+		c.Next()
 	}
 }

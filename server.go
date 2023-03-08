@@ -2,18 +2,11 @@ package main
 
 import (
 	"context"
-	"os"
-	"os/signal"
 	"strconv"
-	"time"
-
-	log "github.com/sirupsen/logrus"
 
 	"github.com/savannahghi/clinical/pkg/clinical/presentation"
 	"github.com/savannahghi/serverutils"
 )
-
-const waitSeconds = 30
 
 func init() {
 	// check if must have env variables exist
@@ -26,39 +19,9 @@ func init() {
 func main() {
 	ctx := context.Background()
 
-	err := serverutils.Sentry()
-	if err != nil {
-		serverutils.LogStartupError(ctx, err)
-	}
-
 	port, err := strconv.Atoi(serverutils.MustGetEnvVar(serverutils.PortEnvVarName))
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
 	}
-	srv := presentation.PrepareServer(ctx, port, presentation.ClinicalAllowedOrigins)
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			serverutils.LogStartupError(ctx, err)
-		}
-	}()
-
-	// Block until we receive a sigint (CTRL+C) signal
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	<-c
-
-	// Create a deadline to wait for.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*waitSeconds)
-
-	// Doesn't block if no connections, but will otherwise wait until timeout
-	err = srv.Shutdown(ctx)
-	log.Printf("graceful shutdown started; the timeout is %d secs", waitSeconds)
-	if err != nil {
-		log.Printf("error during clean shutdown: %s", err)
-		cancel()
-		os.Exit(-1)
-	}
-
-	os.Exit(0)
-	cancel()
+	presentation.StartGin(ctx, port, presentation.ClinicalAllowedOrigins)
 }
