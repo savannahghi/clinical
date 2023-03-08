@@ -24,26 +24,6 @@ const (
 	defaultTimeoutSeconds = 10
 )
 
-// FHIRRepository ...
-type FHIRRepository interface {
-	CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error)
-	DeleteFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
-	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
-	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
-
-	GetFHIRPatientAllData(fhirResourceID string) ([]byte, error)
-	FHIRRestURL() string
-	GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
-	POSTRequest(resourceName string, path string, params url.Values, body io.Reader) ([]byte, error)
-	FHIRHeaders() (http.Header, error)
-
-	CreateDataset() (*healthcare.Operation, error)
-	GetDataset() (*healthcare.Dataset, error)
-
-	GetFHIRStore() (*healthcare.FhirStore, error)
-	CreateFHIRStore() (*healthcare.FhirStore, error)
-}
-
 // Repository accesses and updates patient data that is stored on Healthcare
 // FHIR repository
 type Repository struct {
@@ -373,6 +353,95 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string) ([]byt
 		return nil, fmt.Errorf("read: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
 	}
 	return respBytes, nil
+}
+
+// SearchFHIRResource ...
+func (fr Repository) SearchFHIRResource(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+	if params == nil {
+		return nil, fmt.Errorf("can't search with nil params")
+	}
+
+	urlParams := url.Values{}
+	for k, v := range params {
+		val, ok := v.(string)
+		if !ok {
+			return nil, fmt.Errorf("the search/filter params should all be sent as strings")
+		}
+		urlParams.Add(k, val)
+	}
+
+	path := "_search"
+	bs, err := fr.POSTRequest(resourceType, path, urlParams, nil)
+	if err != nil {
+		return nil, fmt.Errorf("unable to search: %w", err)
+	}
+
+	respMap := make(map[string]interface{})
+	err = json.Unmarshal(bs, &respMap)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"%s could not be found with search params %v: %w", resourceType, params, err)
+	}
+
+	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
+	for _, k := range mandatoryKeys {
+		_, found := respMap[k]
+		if !found {
+			return nil, fmt.Errorf("server error: mandatory search result key %s not found", k)
+		}
+	}
+	resourceType, ok := respMap["resourceType"].(string)
+	if !ok {
+		return nil, fmt.Errorf("server error: the resourceType is not a string")
+	}
+	if resourceType != "Bundle" {
+		return nil, fmt.Errorf(
+			"server error: the resourceType value is not 'Bundle' as expected")
+	}
+
+	resultType, ok := respMap["type"].(string)
+	if !ok {
+		return nil, fmt.Errorf("server error: the search result type value is not a string")
+	}
+	if resultType != "searchset" {
+		return nil, fmt.Errorf("server error: the type value is not 'searchset' as expected")
+	}
+
+	respEntries := respMap["entry"]
+	if respEntries == nil {
+		return []map[string]interface{}{}, nil
+	}
+	entries, ok := respEntries.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf(
+			"server error: entries is not a list of maps, it is: %T", respEntries)
+	}
+
+	results := []map[string]interface{}{}
+	for _, en := range entries {
+		entry, ok := en.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf(
+				"server error: expected each entry to be map, they are %T instead", en)
+		}
+		expectedKeys := []string{"fullUrl", "resource", "search"}
+		for _, k := range expectedKeys {
+			_, found := entry[k]
+			if !found {
+				return nil, fmt.Errorf("server error: FHIR search entry does not have key '%s'", k)
+			}
+		}
+
+		resource, ok := entry["resource"].(map[string]interface{})
+		if !ok {
+			{
+				return nil, fmt.Errorf("server error: result entry %#v is not a map", entry["resource"])
+			}
+		}
+		results = append(results, resource)
+	}
+
+	return results, nil
 }
 
 // POSTRequest is used to manually compose POST requests to the FHIR service
