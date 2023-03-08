@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"testing"
 
 	"cloud.google.com/go/pubsub"
@@ -15,6 +16,7 @@ import (
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
+	"google.golang.org/api/healthcare/v1"
 )
 
 func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging, error) {
@@ -32,10 +34,20 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 	if err != nil {
 		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
 	}
+	project := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
+	_ = serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
+	datasetID := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
+	datasetLocation := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_LOCATION")
+	fhirStoreID := serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
+	hsv, err := healthcare.NewService(ctx)
+	if err != nil {
+		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
+	}
+
+	repo := dataset.NewFHIRRepository(ctx, hsv, project, datasetID, datasetLocation, fhirStoreID)
 
 	// Initialize base (common) extension
 	baseExtension := extensions.NewBaseExtensionImpl()
-	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 
