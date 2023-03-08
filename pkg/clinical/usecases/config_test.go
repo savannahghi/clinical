@@ -15,7 +15,9 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	oclMock "github.com/savannahghi/clinical/pkg/clinical/usecases/ocl/mock"
+	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/api/healthcare/v1"
 )
 
 var (
@@ -76,8 +78,19 @@ func InitializeTestService(ctx context.Context, infra infrastructure.Infrastruct
 }
 
 func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastructure, error) {
+	project := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
+	_ = serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
+	datasetID := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
+	datasetLocation := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_LOCATION")
+	fhirStoreID := serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
+	hsv, err := healthcare.NewService(ctx)
+	if err != nil {
+		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
+	}
+
+	repo := dataset.NewFHIRRepository(ctx, hsv, project, datasetID, datasetLocation, fhirStoreID)
+
 	baseExtension := extensions.NewBaseExtensionImpl()
-	repo := dataset.NewFHIRRepository(ctx)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 

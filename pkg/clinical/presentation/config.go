@@ -3,6 +3,7 @@ package presentation
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
-	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
@@ -23,6 +24,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
+	"google.golang.org/api/healthcare/v1"
 )
 
 // ClinicalAllowedOrigins is a list of CORS origins allowed to interact with
@@ -110,7 +112,17 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
 	}
 
-	repo := dataset.NewFHIRRepository(ctx)
+	project := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
+	_ = serverutils.MustGetEnvVar("CLOUD_HEALTH_PUBSUB_TOPIC")
+	datasetID := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
+	datasetLocation := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_LOCATION")
+	fhirStoreID := serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
+	hsv, err := healthcare.NewService(ctx)
+	if err != nil {
+		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
+	}
+
+	repo := fhirdataset.NewFHIRRepository(ctx, hsv, project, datasetID, datasetLocation, fhirStoreID)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 
