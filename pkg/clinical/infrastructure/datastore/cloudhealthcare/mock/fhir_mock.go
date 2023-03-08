@@ -2,7 +2,6 @@ package mock
 
 import (
 	"context"
-	"net/url"
 
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -18,7 +17,7 @@ type FHIRMock struct {
 	MockCreateFHIROrganizationFn func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	MockSearchFHIROrganizationFn func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error)
 	MockFindOrganizationByIDFn   func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error)
-	MockSearchEpisodesByParamFn  func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error)
+	MockSearchEpisodesByParamFn  func(ctx context.Context, searchParams map[string]interface{}) ([]*domain.FHIREpisodeOfCare, error)
 	MockHasOpenEpisodeFn         func(
 		ctx context.Context,
 		patient domain.FHIRPatient,
@@ -142,7 +141,7 @@ func NewFHIRMock() *FHIRMock {
 		MockSearchFHIROrganizationFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIROrganizationRelayConnection, error) {
 			return &domain.FHIROrganizationRelayConnection{}, nil
 		},
-		MockSearchEpisodesByParamFn: func(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
+		MockSearchEpisodesByParamFn: func(ctx context.Context, searchParams map[string]interface{}) ([]*domain.FHIREpisodeOfCare, error) {
 			return []*domain.FHIREpisodeOfCare{}, nil
 		},
 		MockHasOpenEpisodeFn: func(ctx context.Context, patient domain.FHIRPatient) (bool, error) {
@@ -477,7 +476,7 @@ func (fh *FHIRMock) SearchFHIROrganization(ctx context.Context, params map[strin
 }
 
 // SearchEpisodesByParam is a mock implementation of SearchEpisodesByParam method
-func (fh *FHIRMock) SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error) {
+func (fh *FHIRMock) SearchEpisodesByParam(ctx context.Context, searchParams map[string]interface{}) ([]*domain.FHIREpisodeOfCare, error) {
 	return fh.MockSearchEpisodesByParamFn(ctx, searchParams)
 }
 

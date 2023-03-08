@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"net/url"
 
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 )
@@ -38,7 +37,7 @@ type FHIRPatient interface {
 }
 type FHIREpisodeOfCare interface {
 	SearchFHIREpisodeOfCare(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error)
-	SearchEpisodesByParam(ctx context.Context, searchParams url.Values) ([]*domain.FHIREpisodeOfCare, error)
+	SearchEpisodesByParam(ctx context.Context, params map[string]interface{}) ([]*domain.FHIREpisodeOfCare, error)
 	GetFHIREpisodeOfCare(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error)
 	CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
 	UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
