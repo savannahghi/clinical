@@ -7,7 +7,7 @@ import (
 
 // FakeFHIRRepository is a mock FHIR repository
 type FakeFHIRRepository struct {
-	MockCreateFHIRResourceFn    func(resourceType string, payload map[string]interface{}) ([]byte, error)
+	MockCreateFHIRResourceFn    func(resourceType string, payload map[string]interface{}, resource interface{}) error
 	MockDeleteFHIRResourceFn    func(resourceType, fhirResourceID string) ([]byte, error)
 	MockPatchFHIRResourceFn     func(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
 	MockUpdateFHIRResourceFn    func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
@@ -19,15 +19,8 @@ type FakeFHIRRepository struct {
 // NewFakeFHIRRepositoryMock initializes a new FakeFHIRRepositoryMock
 func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 	return &FakeFHIRRepository{
-		MockCreateFHIRResourceFn: func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-			m := map[string]interface{}{
-				"key": "value",
-			}
-			bs, err := json.Marshal(m)
-			if err != nil {
-				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
-			}
-			return bs, nil
+		MockCreateFHIRResourceFn: func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+			return nil
 		},
 		MockDeleteFHIRResourceFn: func(resourceType, fhirResourceID string) ([]byte, error) {
 			bs, err := json.Marshal("m")
@@ -86,8 +79,8 @@ func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 }
 
 // CreateFHIRResource ...
-func (f *FakeFHIRRepository) CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error) {
-	return f.MockCreateFHIRResourceFn(resourceType, payload)
+func (f *FakeFHIRRepository) CreateFHIRResource(resourceType string, payload map[string]interface{}, resource interface{}) error {
+	return f.MockCreateFHIRResourceFn(resourceType, payload, resource)
 }
 
 // DeleteFHIRResource ...

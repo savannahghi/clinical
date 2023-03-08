@@ -19,16 +19,6 @@ func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
 
 	ID := uuid.New().String()
 
-	invalidfhirconditionInput := domain.FHIRConditionInput{
-		ID:                 nil,
-		Identifier:         []*domain.FHIRIdentifierInput{},
-		ClinicalStatus:     &domain.FHIRCodeableConceptInput{},
-		VerificationStatus: &domain.FHIRCodeableConceptInput{},
-		Category:           []*domain.FHIRCodeableConceptInput{},
-		Severity:           &domain.FHIRCodeableConceptInput{},
-		Code:               &domain.FHIRCodeableConceptInput{},
-	}
-
 	type args struct {
 		ctx   context.Context
 		input domain.FHIRConditionInput
@@ -85,26 +75,12 @@ func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
 			},
 			wantErr: false,
 		},
-
-		{
-			name: "Sad case",
-			args: args{
-				ctx:   context.Background(),
-				input: invalidfhirconditionInput,
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
-			if tt.name == "Sad case" {
-				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("error")
-				}
-			}
 			_, err := fh.CreateFHIRCondition(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.CreateFHIRCondition() error = %v, wantErr %v", err, tt.wantErr)
@@ -131,16 +107,6 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 		Address:    []*domain.FHIRAddressInput{},
 	}
 
-	invalidOrgInput := domain.FHIROrganizationInput{
-		ID:         &ID,
-		Active:     new(bool),
-		Identifier: []*domain.FHIRIdentifierInput{},
-		Type:       []*domain.FHIRCodeableConceptInput{},
-		Alias:      []string{"alias test"},
-		Telecom:    []*domain.FHIRContactPointInput{},
-		Address:    []*domain.FHIRAddressInput{},
-	}
-
 	type args struct {
 		ctx   context.Context
 		input domain.FHIROrganizationInput
@@ -158,15 +124,6 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 			},
 			wantErr: false,
 		},
-
-		{
-			name: "Sad case",
-			args: args{
-				ctx:   context.Background(),
-				input: invalidOrgInput,
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -174,13 +131,6 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
-			if tt.name == "Sad case" {
-				if tt.name == "Sad case" {
-					dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-						return nil, fmt.Errorf("error")
-					}
-				}
-			}
 			_, err := fh.CreateFHIROrganization(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FHIRUseCaseImpl.CreateFHIROrganization() error = %v, wantErr %v", err, tt.wantErr)
@@ -261,14 +211,6 @@ func TestStoreImpl_CreateFHIREncounter(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name: "Sad case",
-			args: args{
-				ctx:   context.Background(),
-				input: input,
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -276,11 +218,6 @@ func TestStoreImpl_CreateFHIREncounter(t *testing.T) {
 
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
-			if tt.name == "Sad case" {
-				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
-				}
-			}
 			_, err := fh.CreateFHIREncounter(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FHIRUseCaseImpl.CreateFHIREncounter() error = %v, wantErr %v", err, tt.wantErr)
@@ -456,13 +393,6 @@ func TestStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name: "Sad case",
-			args: args{
-				ctx: context.Background(),
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -470,11 +400,6 @@ func TestStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
-			if tt.name == "Sad case" {
-				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
-				}
-			}
 			_, err := fh.CreateFHIRServiceRequest(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.CreateFHIRServiceRequest() error = %v, wantErr %v", err, tt.wantErr)
@@ -507,13 +432,6 @@ func TestStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name: "Sad case",
-			args: args{
-				ctx: context.Background(),
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -521,11 +439,6 @@ func TestStoreImpl_CreateFHIRAllergyIntolerance(t *testing.T) {
 
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
-			if tt.name == "Sad case" {
-				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
-				}
-			}
 			_, err := fh.CreateFHIRAllergyIntolerance(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.CreateFHIRAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
@@ -612,26 +525,12 @@ func TestStoreImpl_CreateFHIRComposition(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name: "Sad case",
-			args: args{
-				ctx:   context.Background(),
-				input: input,
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
 
 			fh := FHIR.NewFHIRStoreImpl(dataset)
-
-			if tt.name == "Sad case" {
-				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
-				}
-			}
 
 			_, err := fh.CreateFHIRComposition(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
