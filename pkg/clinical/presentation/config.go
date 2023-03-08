@@ -128,8 +128,9 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
+	handlers := rest.NewPresentationHandlers(usecases)
 
-	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient, baseExtension, infrastructure, usecases)
+	_, err = pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient, baseExtension, infrastructure)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
 	}
@@ -159,7 +160,7 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 	ide.Any("", playgroundHandler())
 
 	pubsubPath := r.Group("/pubsub")
-	pubsubPath.POST("", pubSub.ReceivePubSubPushMessages)
+	pubsubPath.POST("", handlers.ReceivePubSubPushMessage)
 
 	return r, nil
 }

@@ -8,21 +8,12 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
-	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
 )
 
 const (
-	// ClinicalServiceName defines the service where the topic is created
-	ClinicalServiceName = "clinical"
-
-	// MyCareHubServiceName defines the service where some of the topics have been created
-	MyCareHubServiceName = "mycarehub"
-
-	// TopicVersion defines the topic version. That standard one is `v1`
-	TopicVersion = "v1"
 
 	// HostNameEnvVarName defines the host name
 	HostNameEnvVarName = "SERVICE_HOST"
@@ -54,23 +45,11 @@ type ServicePubsub interface {
 	)
 }
 
-// Clinical represents all the patient business logic
-type Clinical interface {
-	FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
-	RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
-	CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
-	CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
-	FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error)
-	CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error)
-	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
-}
-
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
-	client   *pubsub.Client
-	baseExt  extensions.BaseExtension
-	infra    infrastructure.Infrastructure
-	clinical Clinical
+	client  *pubsub.Client
+	baseExt extensions.BaseExtension
+	infra   infrastructure.Infrastructure
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
@@ -79,13 +58,11 @@ func NewServicePubSubMessaging(
 	client *pubsub.Client,
 	baseExt extensions.BaseExtension,
 	infra infrastructure.Infrastructure,
-	clinical Clinical,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
-		client:   client,
-		baseExt:  baseExt,
-		infra:    infra,
-		clinical: clinical,
+		client:  client,
+		baseExt: baseExt,
+		infra:   infra,
 	}
 
 	if err := s.EnsureTopicsExist(
@@ -109,21 +86,21 @@ func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName, serviceName strin
 		serviceName,
 		topicName,
 		environment,
-		TopicVersion,
+		common.TopicVersion,
 	)
 }
 
 // TopicIDs returns the known (registered) topic IDs
 func (ps ServicePubSubMessaging) TopicIDs() []string {
 	return []string{
-		ps.AddPubSubNamespace(TestTopicName, ClinicalServiceName),
-		ps.AddPubSubNamespace(common.CreatePatientTopic, ClinicalServiceName),
-		ps.AddPubSubNamespace(common.VitalsTopicName, ClinicalServiceName),
-		ps.AddPubSubNamespace(common.MedicationTopicName, ClinicalServiceName),
-		ps.AddPubSubNamespace(common.AllergyTopicName, ClinicalServiceName),
-		ps.AddPubSubNamespace(common.TestResultTopicName, ClinicalServiceName),
-		ps.AddPubSubNamespace(common.TestOrderTopicName, ClinicalServiceName),
-		ps.AddPubSubNamespace(common.OrganizationTopicName, ClinicalServiceName),
+		ps.AddPubSubNamespace(TestTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.CreatePatientTopic, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.VitalsTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.MedicationTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.AllergyTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.TestResultTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.TestOrderTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.OrganizationTopicName, common.ClinicalServiceName),
 	}
 }
 
@@ -142,8 +119,8 @@ func (ps ServicePubSubMessaging) PublishToPubsub(
 		ps.client,
 		topicID,
 		environment,
-		ClinicalServiceName,
-		TopicVersion,
+		common.ClinicalServiceName,
+		common.TopicVersion,
 		payload,
 	)
 }
