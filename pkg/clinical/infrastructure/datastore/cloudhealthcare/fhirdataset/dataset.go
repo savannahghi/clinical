@@ -128,7 +128,7 @@ func getErrorMessage(respBytes []byte) (errorText string, diagnostics string, er
 // CreateFHIRResource creates an FHIR resource.
 //
 // The payload should be the result of marshalling a resource to JSON
-func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error) {
+func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]interface{}, resource interface{}) error {
 	fr.checkPreconditions()
 	payload["resourceType"] = resourceType
 	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
@@ -136,14 +136,14 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 	payload["language"] = "EN"
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("json.Encode: %w", err)
+		return fmt.Errorf("json.Encode: %w", err)
 	}
 
 	call := fhirService.Create(fr.fhirStoreName, resourceType, bytes.NewReader(jsonPayload))
 	call.Header().Set("Content-Type", "application/fhir+json;charset=utf-8")
 	resp, err := call.Do()
 	if err != nil {
-		return nil, fmt.Errorf("create: %w", err)
+		return fmt.Errorf("create: %w", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -151,17 +151,23 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not read response: %w", err)
+		return fmt.Errorf("could not read response: %w", err)
 	}
 	if resp.StatusCode > 299 {
 		errorText, diagnostics, err := getErrorMessage(respBytes)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
-		return nil, fmt.Errorf("%s: %s: %s", resp.Status, errorText, diagnostics)
+		return fmt.Errorf("%s: %s: %s", resp.Status, errorText, diagnostics)
 	}
-	return respBytes, nil
+
+	err = json.Unmarshal(respBytes, resource)
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal %s response JSON: data: %v\n, error: %w", resourceType, string(respBytes), err)
+	}
+
+	return nil
 }
 
 // DeleteFHIRResource deletes an FHIR resource.

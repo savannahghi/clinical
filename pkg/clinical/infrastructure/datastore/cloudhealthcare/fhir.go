@@ -38,7 +38,7 @@ const (
 
 // Dataset ...
 type Dataset interface {
-	CreateFHIRResource(resourceType string, payload map[string]interface{}) ([]byte, error)
+	CreateFHIRResource(resourceType string, payload map[string]interface{}, resource interface{}) error
 	DeleteFHIRResource(resourceType, fhirResourceID string) ([]byte, error)
 	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error)
 	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error)
@@ -163,19 +163,14 @@ func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIR
 		}
 	}
 
+	fhirEpisode := &domain.FHIREpisodeOfCare{}
 	// create a new episode if none has been found
-	data, err := fh.Dataset.CreateFHIRResource(episodeOfCareResourceType, payload)
+	err = fh.Dataset.CreateFHIRResource(episodeOfCareResourceType, payload, fhirEpisode)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"unable to create episode of care resource: %w", err)
 	}
-	fhirEpisode := &domain.FHIREpisodeOfCare{}
-	err = json.Unmarshal(data, fhirEpisode)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal episode of care response JSON: data: %v\n, error: %w",
-			string(data), err)
-	}
+
 	encounters, err := fh.Encounters(ctx, *episode.Patient.Reference, nil)
 	if err != nil {
 		return nil, fmt.Errorf(
@@ -192,53 +187,38 @@ func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIR
 
 // CreateFHIRCondition creates a FHIRCondition instance
 func (fh StoreImpl) CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-	resource := domain.FHIRCondition{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", conditionResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(conditionResourceType, payload)
+	resource := &domain.FHIRCondition{}
+	err = fh.Dataset.CreateFHIRResource(conditionResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", conditionResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			conditionResourceType, string(data), err)
-	}
-
 	output := &domain.FHIRConditionRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 	return output, nil
 }
 
 // CreateFHIROrganization creates a FHIROrganization instance
 func (fh StoreImpl) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
-	resource := domain.FHIROrganization{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", organizationResource, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(organizationResource, payload)
+	resource := &domain.FHIROrganization{}
+	err = fh.Dataset.CreateFHIRResource(organizationResource, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create %s resource: %w", organizationResource, err)
 	}
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			organizationResource, string(data), err)
-	}
 
 	output := &domain.FHIROrganizationRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 	return output, nil
 }
@@ -360,26 +340,19 @@ func (fh StoreImpl) HasOpenEpisode(
 
 // CreateFHIREncounter creates a FHIREncounter instance
 func (fh StoreImpl) CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
-	resource := domain.FHIREncounter{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", encounterResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(encounterResourceType, payload)
+	resource := &domain.FHIREncounter{}
+	err = fh.Dataset.CreateFHIRResource(encounterResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", encounterResourceType, err)
 	}
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			encounterResourceType, string(data), err)
-	}
 
 	output := &domain.FHIREncounterRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 	return output, nil
 }
@@ -618,28 +591,22 @@ func (fh *StoreImpl) SearchFHIRServiceRequest(ctx context.Context, params map[st
 
 // CreateFHIRServiceRequest creates a FHIRServiceRequest instance
 func (fh *StoreImpl) CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
-	resource := domain.FHIRServiceRequest{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", serviceRequestResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(serviceRequestResourceType, payload)
+	resource := &domain.FHIRServiceRequest{}
+
+	err = fh.Dataset.CreateFHIRResource(serviceRequestResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", serviceRequestResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			serviceRequestResourceType, string(data), err)
+	output := &domain.FHIRServiceRequestRelayPayload{
+		Resource: resource,
 	}
 
-	output := &domain.FHIRServiceRequestRelayPayload{
-		Resource: &resource,
-	}
 	return output, nil
 }
 
@@ -674,27 +641,20 @@ func (fh *StoreImpl) SearchFHIRAllergyIntolerance(ctx context.Context, params ma
 
 // CreateFHIRAllergyIntolerance creates a FHIRAllergyIntolerance instance
 func (fh *StoreImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-	resource := domain.FHIRAllergyIntolerance{}
 
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", allergyIntoleranceResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(allergyIntoleranceResourceType, payload)
+	resource := &domain.FHIRAllergyIntolerance{}
+	err = fh.Dataset.CreateFHIRResource(allergyIntoleranceResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", allergyIntoleranceResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			allergyIntoleranceResourceType, string(data), err)
-	}
-
 	output := &domain.FHIRAllergyIntoleranceRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 	return output, nil
 }
@@ -762,28 +722,21 @@ func (fh *StoreImpl) SearchFHIRComposition(ctx context.Context, params map[strin
 
 // CreateFHIRComposition creates a FHIRComposition instance
 func (fh *StoreImpl) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-	resource := domain.FHIRComposition{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", compositionResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(compositionResourceType, payload)
+	resource := &domain.FHIRComposition{}
+	err = fh.Dataset.CreateFHIRResource(compositionResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", compositionResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			compositionResourceType, string(data), err)
+	output := &domain.FHIRCompositionRelayPayload{
+		Resource: resource,
 	}
 
-	output := &domain.FHIRCompositionRelayPayload{
-		Resource: &resource,
-	}
 	return output, nil
 }
 
@@ -973,27 +926,19 @@ func (fh *StoreImpl) SearchFHIRMedicationRequest(ctx context.Context, params map
 
 // CreateFHIRMedicationRequest creates a FHIRMedicationRequest instance
 func (fh *StoreImpl) CreateFHIRMedicationRequest(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error) {
-	resource := domain.FHIRMedicationRequest{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", medicationRequestResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(medicationRequestResourceType, payload)
+	resource := &domain.FHIRMedicationRequest{}
+	err = fh.Dataset.CreateFHIRResource(medicationRequestResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", medicationRequestResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			medicationRequestResourceType, string(data), err)
-	}
-
 	output := &domain.FHIRMedicationRequestRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 	return output, nil
 }
@@ -1073,27 +1018,19 @@ func (fh *StoreImpl) SearchFHIRObservation(ctx context.Context, params map[strin
 
 // CreateFHIRObservation creates a FHIRObservation instance
 func (fh *StoreImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-	resource := domain.FHIRObservation{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", observationResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(observationResourceType, payload)
+	resource := &domain.FHIRObservation{}
+	err = fh.Dataset.CreateFHIRResource(observationResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", observationResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			observationResourceType, string(data), err)
-	}
-
 	output := &domain.FHIRObservationRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 	return output, nil
 }
@@ -1317,28 +1254,19 @@ func (fh *StoreImpl) DeleteFHIRServiceRequest(ctx context.Context, id string) (b
 
 // CreateFHIRMedicationStatement creates a new FHIR Medication statement instance
 func (fh *StoreImpl) CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
-
-	resource := domain.FHIRMedicationStatement{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", medicationStatementResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(medicationStatementResourceType, payload)
+	resource := &domain.FHIRMedicationStatement{}
+	err = fh.Dataset.CreateFHIRResource(medicationStatementResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", medicationStatementResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			medicationStatementResourceType, string(data), err)
-	}
-
 	output := &domain.FHIRMedicationStatementRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 
 	return output, nil
@@ -1346,27 +1274,19 @@ func (fh *StoreImpl) CreateFHIRMedicationStatement(ctx context.Context, input do
 
 // CreateFHIRMedication creates a new FHIR Medication instance
 func (fh *StoreImpl) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
-	resource := domain.FHIRMedication{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", medicationResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(medicationResourceType, payload)
+	resource := &domain.FHIRMedication{}
+	err = fh.Dataset.CreateFHIRResource(medicationResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", medicationResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			medicationResourceType, string(data), err)
-	}
-
 	output := &domain.FHIRMedicationRelayPayload{
-		Resource: &resource,
+		Resource: resource,
 	}
 
 	return output, nil
@@ -1404,27 +1324,19 @@ func (fh *StoreImpl) SearchFHIRMedicationStatement(ctx context.Context, params m
 
 // CreateFHIRPatient creates a patient on FHIR
 func (fh *StoreImpl) CreateFHIRPatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
-	resource := domain.FHIRPatient{}
-
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", patientResourceType, err)
 	}
 
-	data, err := fh.Dataset.CreateFHIRResource(patientResourceType, payload)
+	resource := &domain.FHIRPatient{}
+	err = fh.Dataset.CreateFHIRResource(patientResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create %s resource: %w", patientResourceType, err)
 	}
 
-	err = json.Unmarshal(data, &resource)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
-			patientResourceType, string(data), err)
-	}
-
 	output := &domain.PatientPayload{
-		PatientRecord: &resource,
+		PatientRecord: resource,
 		// The patient is newly created so we can assume they have no open episodes
 		HasOpenEpisodes: false,
 		OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
