@@ -129,36 +129,6 @@ func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx 
 	return &patientInput, nil
 }
 
-// CreateFHIRObservation creates a FHIRObservation instance
-func (c *UseCasesClinicalImpl) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-
-	tenantTags, err := c.GetTenantMetaTags(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	input.Meta = domain.FHIRMetaInput{
-		Tag: tenantTags,
-	}
-
-	return c.infrastructure.FHIR.CreateFHIRObservation(ctx, input)
-}
-
-// CreateFHIRAllergyIntolerance creates a FHIRAllergyIntolerance instance
-func (c *UseCasesClinicalImpl) CreateFHIRAllergyIntolerance(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-
-	tenantTags, err := c.GetTenantMetaTags(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	input.Meta = domain.FHIRMetaInput{
-		Tag: tenantTags,
-	}
-
-	return c.infrastructure.FHIR.CreateFHIRAllergyIntolerance(ctx, input)
-}
-
 // FindPatientByID retrieves a single patient by their ID
 func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error) {
 	if id == "" {
@@ -291,19 +261,4 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input domain.F
 	}
 
 	return patientRecord, nil
-}
-
-// CreateFHIRMedicationStatement creates a new FHIR Medication statement instance
-func (c *UseCasesClinicalImpl) CreateFHIRMedicationStatement(ctx context.Context, input domain.FHIRMedicationStatementInput) (*domain.FHIRMedicationStatementRelayPayload, error) {
-
-	tenantTags, err := c.GetTenantMetaTags(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	input.Meta = domain.FHIRMetaInput{
-		Tag: tenantTags,
-	}
-
-	return c.infrastructure.FHIR.CreateFHIRMedicationStatement(ctx, input)
 }

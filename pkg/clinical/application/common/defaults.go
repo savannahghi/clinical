@@ -62,6 +62,18 @@ const (
 
 	// CD4CountCIELTerminologyCode is the terminology code for CD$ Count
 	CD4CountCIELTerminologyCode = "5497"
+
+	// ClinicalServiceName defines the service where the topic is created
+	ClinicalServiceName = "clinical"
+
+	// MyCareHubServiceName defines the service where some of the topics have been created
+	MyCareHubServiceName = "mycarehub"
+
+	// TestTopicName is a topic that is used for testing purposes
+	TestTopicName = "pubsub.testing.topic"
+
+	// TopicVersion defines the topic version. That standard one is `v1`
+	TopicVersion = "v1"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

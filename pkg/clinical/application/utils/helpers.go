@@ -9,6 +9,13 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/getsentry/sentry-go"
+	"github.com/savannahghi/pubsubtools"
+	"github.com/savannahghi/serverutils"
+)
+
+const (
+	// TopicVersion defines the topic version. That standard one is `v1`
+	TopicVersion = "v1"
 )
 
 // ContextKey is a custom type used as a key value when adding IDs to the context
@@ -50,4 +57,14 @@ func GeneratePatientWelcomeEmailTemplate() string {
 		log.Fatalf("Error while generating patient welcome email template: %s", err)
 	}
 	return buf.String()
+}
+
+func AddPubSubNamespace(topicName, serviceName string) string {
+	environment := serverutils.GetRunningEnvironment()
+	return pubsubtools.NamespacePubsubIdentifier(
+		serviceName,
+		topicName,
+		environment,
+		TopicVersion,
+	)
 }

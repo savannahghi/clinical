@@ -8,13 +8,13 @@ import (
 	"testing"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
 	"google.golang.org/api/healthcare/v1"
 )
@@ -52,13 +52,11 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 	ocl := openconceptlab.NewServiceOCL()
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
-	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		ctx,
 		pubSubClient,
 		baseExtension,
 		infrastructure,
-		usecases,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
@@ -90,13 +88,13 @@ func TestServicePubSubMessaging_AddPubSubNamespace(t *testing.T) {
 			name: "Happy Case -> Correct pubsub namespace",
 			args: args{
 				topicName:   topicName,
-				serviceName: pubsubmessaging.ClinicalServiceName,
+				serviceName: common.ClinicalServiceName,
 			},
 			want: fmt.Sprintf("%s-%s-%s-%s",
-				pubsubmessaging.ClinicalServiceName,
+				common.ClinicalServiceName,
 				topicName,
 				environment,
-				pubsubmessaging.TopicVersion,
+				common.TopicVersion,
 			),
 			wantErr: false,
 		},
@@ -119,7 +117,7 @@ func TestServicePubSubMessaging_PublishToPubsub(t *testing.T) {
 		return
 	}
 
-	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName, pubsubmessaging.ClinicalServiceName)
+	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName, common.ClinicalServiceName)
 	// Create the test topic
 	topics := ps.TopicIDs()
 	topics = append(topics, topic)
@@ -230,7 +228,7 @@ func TestServicePubSubMessaging_SubscriptionIDs(t *testing.T) {
 		t.Errorf("failed to initialize test pubsub: %v", err)
 		return
 	}
-	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName, pubsubmessaging.ClinicalServiceName)
+	topic := ps.AddPubSubNamespace(pubsubmessaging.TestTopicName, common.ClinicalServiceName)
 	// Create the test topic
 	topics := ps.TopicIDs()
 	topics = append(topics, topic)
