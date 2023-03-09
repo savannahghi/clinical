@@ -67,7 +67,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 			return
 		}
 
-		err = p.usecases.CreateFHIRPatient(ctx, data)
+		err = p.usecases.CreatePubsubPatient(ctx, data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,

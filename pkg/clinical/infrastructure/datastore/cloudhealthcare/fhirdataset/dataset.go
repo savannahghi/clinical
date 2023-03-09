@@ -186,7 +186,7 @@ func (fr Repository) CreateFHIRResource(resourceType string, payload map[string]
 }
 
 // DeleteFHIRResource deletes an FHIR resource.
-func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
+func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) error {
 	fr.checkPreconditions()
 
 	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
@@ -194,22 +194,22 @@ func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) ([]
 
 	resp, err := fhirService.Delete(fhirResource).Do()
 	if err != nil {
-		return nil, fmt.Errorf("delete: %w", err)
+		return fmt.Errorf("delete: %w", err)
 	}
 
 	defer resp.Body.Close()
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not read response: %w", err)
+		return fmt.Errorf("could not read response: %w", err)
 	}
 
 	if resp.StatusCode > 299 {
-		return nil, fmt.Errorf(
-			"delete: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
+		return fmt.Errorf(
+			"delete: status %d %s: %s", resp.StatusCode, resp.Status, string(respBytes))
 	}
 
-	return respBytes, nil
+	return nil
 }
 
 // PatchFHIRResource patches a FHIR resource.
@@ -227,7 +227,7 @@ func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) ([]
 //
 // See: https://www.hl7.org/fhir/http.html#patch
 func (fr Repository) PatchFHIRResource(
-	resourceType, fhirResourceID string, payload []map[string]interface{}) ([]byte, error) {
+	resourceType, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error {
 	fr.checkPreconditions()
 
 	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
@@ -238,7 +238,7 @@ func (fr Repository) PatchFHIRResource(
 
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("json.Encode: %w", err)
+		return fmt.Errorf("json.Encode: %w", err)
 	}
 
 	fhirResource := fmt.Sprintf("%s/fhir/%s/%s", fr.fhirStoreName, resourceType, fhirResourceID)
@@ -247,7 +247,7 @@ func (fr Repository) PatchFHIRResource(
 
 	resp, err := call.Do()
 	if err != nil {
-		return nil, fmt.Errorf("patch: %w", err)
+		return fmt.Errorf("patch: %w", err)
 	}
 
 	defer func() {
@@ -260,20 +260,27 @@ func (fr Repository) PatchFHIRResource(
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("could not read response: %w", err)
+		return fmt.Errorf("could not read response: %w", err)
 	}
 
 	if resp.StatusCode > 299 {
-		return nil, fmt.Errorf(
+		return fmt.Errorf(
 			"patch: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
 	}
 
-	return respBytes, nil
+	err = json.Unmarshal(respBytes, resource)
+	if err != nil {
+		return fmt.Errorf(
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			resourceType, string(respBytes), err)
+	}
+
+	return nil
 }
 
 // UpdateFHIRResource updates the entire contents of a resource.
 func (fr Repository) UpdateFHIRResource(
-	resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
+	resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
 	fr.checkPreconditions()
 
 	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
@@ -282,7 +289,7 @@ func (fr Repository) UpdateFHIRResource(
 
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("json.Encode: %w", err)
+		return fmt.Errorf("json.Encode: %w", err)
 	}
 
 	if serverutils.IsDebug() {
@@ -295,7 +302,7 @@ func (fr Repository) UpdateFHIRResource(
 
 	resp, err := call.Do()
 	if err != nil {
-		return nil, fmt.Errorf("update: %w", err)
+		return fmt.Errorf("update: %w", err)
 	}
 
 	defer func() {
@@ -304,15 +311,22 @@ func (fr Repository) UpdateFHIRResource(
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not read response: %w", err)
+		return fmt.Errorf("could not read response: %w", err)
 	}
 
 	if resp.StatusCode > 299 {
-		return nil, fmt.Errorf(
+		return fmt.Errorf(
 			"update: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
 	}
 
-	return respBytes, nil
+	err = json.Unmarshal(respBytes, resource)
+	if err != nil {
+		return fmt.Errorf(
+			"unable to unmarshal %s response JSON: data: %v\n, error: %w",
+			resourceType, string(respBytes), err)
+	}
+
+	return nil
 }
 
 // GetFHIRPatientAllData gets all resources associated with a particular
@@ -343,7 +357,7 @@ func (fr Repository) GetFHIRPatientAllData(fhirResourceID string) ([]byte, error
 }
 
 // GetFHIRResource gets an FHIR resource.
-func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string) ([]byte, error) {
+func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string, resource interface{}) error {
 	fr.checkPreconditions()
 	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
 	fhirResource := fmt.Sprintf("%s/fhir/%s/%s", fr.fhirStoreName, resourceType, fhirResourceID)
@@ -352,7 +366,7 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string) ([]byt
 
 	resp, err := call.Do()
 	if err != nil {
-		return nil, fmt.Errorf("read: %w", err)
+		return fmt.Errorf("read: %w", err)
 	}
 
 	defer func() {
@@ -361,14 +375,21 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string) ([]byt
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not read response: %w", err)
+		return fmt.Errorf("could not read response: %w", err)
 	}
 
 	if resp.StatusCode > 299 {
-		return nil, fmt.Errorf("read: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
+		return fmt.Errorf("read: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
 	}
 
-	return respBytes, nil
+	err = json.Unmarshal(respBytes, resource)
+	if err != nil {
+		return fmt.Errorf(
+			"unable to unmarshal %s , id:%s ,response JSON: data: %v\n, error: %w",
+			resourceType, fhirResourceID, string(respBytes), err)
+	}
+
+	return nil
 }
 
 // SearchFHIRResource ...

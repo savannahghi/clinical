@@ -1,10 +1,7 @@
 package utils
 
 import (
-	"bytes"
 	"fmt"
-	"html/template"
-	"log"
 	"time"
 
 	"github.com/asaskevich/govalidator"
@@ -47,19 +44,6 @@ func ValidateEmail(email string) error {
 func ReportErrorToSentry(err error) {
 	defer sentry.Flush(2 * time.Millisecond)
 	sentry.CaptureException(err)
-}
-
-// GeneratePatientWelcomeEmailTemplate generates a welcome email
-func GeneratePatientWelcomeEmailTemplate() string {
-	t := template.Must(template.New("welcomeEmail").Parse(PatientWelcomeEmail))
-	buf := new(bytes.Buffer)
-
-	err := t.Execute(buf, "")
-	if err != nil {
-		log.Fatalf("Error while generating patient welcome email template: %s", err)
-	}
-
-	return buf.String()
 }
 
 func AddPubSubNamespace(topicName, serviceName string) string {
