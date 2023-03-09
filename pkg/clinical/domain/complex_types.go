@@ -1017,6 +1017,7 @@ func (e AddressTypeEnum) IsValid() bool {
 	case AddressTypeEnumPostal, AddressTypeEnumPhysical, AddressTypeEnumBoth:
 		return true
 	}
+
 	return false
 }
 
@@ -1036,6 +1037,7 @@ func (e *AddressTypeEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AddressTypeEnum", str)
 	}
+
 	return nil
 }
 
@@ -1078,6 +1080,7 @@ func (e AddressUseEnum) IsValid() bool {
 	case AddressUseEnumHome, AddressUseEnumWork, AddressUseEnumTemp, AddressUseEnumOld, AddressUseEnumBilling:
 		return true
 	}
+
 	return false
 }
 
@@ -1097,6 +1100,7 @@ func (e *AddressUseEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AddressUseEnum", str)
 	}
+
 	return nil
 }
 
@@ -1136,6 +1140,7 @@ func (e AgeComparatorEnum) IsValid() bool {
 	case AgeComparatorEnumLessThan, AgeComparatorEnumLessThanOrEqualTo, AgeComparatorEnumGreaterThanOrEqualTo, AgeComparatorEnumGreaterThan:
 		return true
 	}
+
 	return false
 }
 
@@ -1151,6 +1156,7 @@ func (e AgeComparatorEnum) String() string {
 	case AgeComparatorEnumGreaterThan:
 		return ">"
 	}
+
 	return string(e)
 }
 
@@ -1165,6 +1171,7 @@ func (e *AgeComparatorEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AgeComparatorEnum", str)
 	}
+
 	return nil
 }
 
@@ -1213,6 +1220,7 @@ func (e ContactPointSystemEnum) IsValid() bool {
 	case ContactPointSystemEnumPhone, ContactPointSystemEnumFax, ContactPointSystemEnumEmail, ContactPointSystemEnumPager, ContactPointSystemEnumURL, ContactPointSystemEnumSms, ContactPointSystemEnumOther:
 		return true
 	}
+
 	return false
 }
 
@@ -1232,6 +1240,7 @@ func (e *ContactPointSystemEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid ContactPointSystemEnum", str)
 	}
+
 	return nil
 }
 
@@ -1274,6 +1283,7 @@ func (e ContactPointUseEnum) IsValid() bool {
 	case ContactPointUseEnumHome, ContactPointUseEnumWork, ContactPointUseEnumTemp, ContactPointUseEnumOld, ContactPointUseEnumMobile:
 		return true
 	}
+
 	return false
 }
 
@@ -1293,6 +1303,7 @@ func (e *ContactPointUseEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid ContactPointUseEnum", str)
 	}
+
 	return nil
 }
 
@@ -1332,6 +1343,7 @@ func (e DurationComparatorEnum) IsValid() bool {
 	case DurationComparatorEnumLessThan, DurationComparatorEnumLessThanOrEqualTo, DurationComparatorEnumGreaterThanOrEqualTo, DurationComparatorEnumGreaterThan:
 		return true
 	}
+
 	return false
 }
 
@@ -1347,6 +1359,7 @@ func (e DurationComparatorEnum) String() string {
 	case DurationComparatorEnumGreaterThanOrEqualTo:
 		return ">="
 	}
+
 	return string(e)
 }
 
@@ -1361,6 +1374,7 @@ func (e *DurationComparatorEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid DurationComparatorEnum", str)
 	}
+
 	return nil
 }
 
@@ -1409,6 +1423,7 @@ func (e HumanNameUseEnum) IsValid() bool {
 	case HumanNameUseEnumUsual, HumanNameUseEnumOfficial, HumanNameUseEnumTemp, HumanNameUseEnumNickname, HumanNameUseEnumAnonymous, HumanNameUseEnumOld, HumanNameUseEnumMaiden:
 		return true
 	}
+
 	return false
 }
 
@@ -1428,6 +1443,7 @@ func (e *HumanNameUseEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid HumanNameUseEnum", str)
 	}
+
 	return nil
 }
 
@@ -1470,6 +1486,7 @@ func (e IdentifierUseEnum) IsValid() bool {
 	case IdentifierUseEnumUsual, IdentifierUseEnumOfficial, IdentifierUseEnumTemp, IdentifierUseEnumSecondary, IdentifierUseEnumOld:
 		return true
 	}
+
 	return false
 }
 
@@ -1489,6 +1506,7 @@ func (e *IdentifierUseEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid IdentifierUseEnum", str)
 	}
+
 	return nil
 }
 
@@ -1528,6 +1546,7 @@ func (e NarrativeStatusEnum) IsValid() bool {
 	case NarrativeStatusEnumGenerated, NarrativeStatusEnumExtensions, NarrativeStatusEnumAdditional, NarrativeStatusEnumEmpty:
 		return true
 	}
+
 	return false
 }
 
@@ -1547,6 +1566,7 @@ func (e *NarrativeStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid NarrativeStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -1586,6 +1606,7 @@ func (e QuantityComparatorEnum) IsValid() bool {
 	case QuantityComparatorEnumLessThan, QuantityComparatorEnumLessThanOrEqualTo, QuantityComparatorEnumGreaterThanOrEqualTo, QuantityComparatorEnumGreaterThan:
 		return true
 	}
+
 	return false
 }
 
@@ -1616,6 +1637,7 @@ func (e *QuantityComparatorEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid QuantityComparatorEnum", str)
 	}
+
 	return nil
 }
 
@@ -1664,6 +1686,7 @@ func (e TimingRepeatDurationUnitEnum) IsValid() bool {
 	case TimingRepeatDurationUnitEnumS, TimingRepeatDurationUnitEnumMin, TimingRepeatDurationUnitEnumH, TimingRepeatDurationUnitEnumD, TimingRepeatDurationUnitEnumWk, TimingRepeatDurationUnitEnumMo, TimingRepeatDurationUnitEnumA:
 		return true
 	}
+
 	return false
 }
 
@@ -1683,6 +1706,7 @@ func (e *TimingRepeatDurationUnitEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Timing_RepeatDurationUnitEnum", str)
 	}
+
 	return nil
 }
 
@@ -1731,6 +1755,7 @@ func (e TimingRepeatPeriodUnitEnum) IsValid() bool {
 	case TimingRepeatPeriodUnitEnumS, TimingRepeatPeriodUnitEnumMin, TimingRepeatPeriodUnitEnumH, TimingRepeatPeriodUnitEnumD, TimingRepeatPeriodUnitEnumWk, TimingRepeatPeriodUnitEnumMo, TimingRepeatPeriodUnitEnumA:
 		return true
 	}
+
 	return false
 }
 
@@ -1750,6 +1775,7 @@ func (e *TimingRepeatPeriodUnitEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Timing_RepeatPeriodUnitEnum", str)
 	}
+
 	return nil
 }
 
@@ -1855,6 +1881,7 @@ func (e TimingRepeatWhenEnum) IsValid() bool {
 	case TimingRepeatWhenEnumMorn, TimingRepeatWhenEnumMornEarly, TimingRepeatWhenEnumMornLate, TimingRepeatWhenEnumNoon, TimingRepeatWhenEnumAft, TimingRepeatWhenEnumAftEarly, TimingRepeatWhenEnumAftLate, TimingRepeatWhenEnumEve, TimingRepeatWhenEnumEveEarly, TimingRepeatWhenEnumEveLate, TimingRepeatWhenEnumNight, TimingRepeatWhenEnumPhs, TimingRepeatWhenEnumHs, TimingRepeatWhenEnumWake, TimingRepeatWhenEnumC, TimingRepeatWhenEnumCm, TimingRepeatWhenEnumCd, TimingRepeatWhenEnumCv, TimingRepeatWhenEnumAc, TimingRepeatWhenEnumAcm, TimingRepeatWhenEnumAcd, TimingRepeatWhenEnumAcv, TimingRepeatWhenEnumPc, TimingRepeatWhenEnumPcm, TimingRepeatWhenEnumPcd, TimingRepeatWhenEnumPcv:
 		return true
 	}
+
 	return false
 }
 
@@ -1874,6 +1901,7 @@ func (e *TimingRepeatWhenEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Timing_RepeatWhenEnum", str)
 	}
+
 	return nil
 }
 
@@ -1913,6 +1941,7 @@ func (e AllergyIntoleranceCategoryEnum) IsValid() bool {
 	case AllergyIntoleranceCategoryEnumFood, AllergyIntoleranceCategoryEnumMedication, AllergyIntoleranceCategoryEnumEnvironment, AllergyIntoleranceCategoryEnumBiologic:
 		return true
 	}
+
 	return false
 }
 
@@ -1932,6 +1961,7 @@ func (e *AllergyIntoleranceCategoryEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AllergyIntoleranceCategoryEnum", str)
 	}
+
 	return nil
 }
 
@@ -1968,6 +1998,7 @@ func (e AllergyIntoleranceCriticalityEnum) IsValid() bool {
 	case AllergyIntoleranceCriticalityEnumLow, AllergyIntoleranceCriticalityEnumHigh, AllergyIntoleranceCriticalityEnumUnableToAssess:
 		return true
 	}
+
 	return false
 }
 
@@ -1976,6 +2007,7 @@ func (e AllergyIntoleranceCriticalityEnum) String() string {
 	if e == AllergyIntoleranceCriticalityEnumUnableToAssess {
 		return "unable-to-assess"
 	}
+
 	return string(e)
 }
 
@@ -1990,6 +2022,7 @@ func (e *AllergyIntoleranceCriticalityEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AllergyIntoleranceCriticalityEnum", str)
 	}
+
 	return nil
 }
 
@@ -2023,6 +2056,7 @@ func (e AllergyIntoleranceTypeEnum) IsValid() bool {
 	case AllergyIntoleranceTypeEnumAllergy, AllergyIntoleranceTypeEnumIntolerance:
 		return true
 	}
+
 	return false
 }
 
@@ -2042,6 +2076,7 @@ func (e *AllergyIntoleranceTypeEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AllergyIntoleranceTypeEnum", str)
 	}
+
 	return nil
 }
 
@@ -2078,6 +2113,7 @@ func (e AllergyIntoleranceReactionSeverityEnum) IsValid() bool {
 	case AllergyIntoleranceReactionSeverityEnumMild, AllergyIntoleranceReactionSeverityEnumModerate, AllergyIntoleranceReactionSeverityEnumSevere:
 		return true
 	}
+
 	return false
 }
 
@@ -2097,6 +2133,7 @@ func (e *AllergyIntoleranceReactionSeverityEnum) UnmarshalGQL(v interface{}) err
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AllergyIntolerance_ReactionSeverityEnum", str)
 	}
+
 	return nil
 }
 
@@ -2136,6 +2173,7 @@ func (e CompositionStatusEnum) IsValid() bool {
 	case CompositionStatusEnumPreliminary, CompositionStatusEnumFinal, CompositionStatusEnumAmended, CompositionStatusEnumEnteredInError:
 		return true
 	}
+
 	return false
 }
 
@@ -2144,6 +2182,7 @@ func (e CompositionStatusEnum) String() string {
 	if e == CompositionStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
+
 	return string(e)
 }
 
@@ -2158,6 +2197,7 @@ func (e *CompositionStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid CompositionStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -2197,6 +2237,7 @@ func (e CompositionAttesterModeEnum) IsValid() bool {
 	case CompositionAttesterModeEnumPersonal, CompositionAttesterModeEnumProfessional, CompositionAttesterModeEnumLegal, CompositionAttesterModeEnumOfficial:
 		return true
 	}
+
 	return false
 }
 
@@ -2216,6 +2257,7 @@ func (e *CompositionAttesterModeEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Composition_AttesterModeEnum", str)
 	}
+
 	return nil
 }
 
@@ -2270,6 +2312,7 @@ func (e EncounterStatusEnum) IsValid() bool {
 	case EncounterStatusEnumPlanned, EncounterStatusEnumArrived, EncounterStatusEnumTriaged, EncounterStatusEnumInProgress, EncounterStatusEnumOnleave, EncounterStatusEnumFinished, EncounterStatusEnumCancelled, EncounterStatusEnumEnteredInError, EncounterStatusEnumUnknown:
 		return true
 	}
+
 	return false
 }
 
@@ -2281,6 +2324,7 @@ func (e EncounterStatusEnum) String() string {
 	case EncounterStatusEnumEnteredInError:
 		return "entered-in-error"
 	}
+
 	return string(e)
 }
 
@@ -2295,6 +2339,7 @@ func (e *EncounterStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid EncounterStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -2334,6 +2379,7 @@ func (e EncounterLocationStatusEnum) IsValid() bool {
 	case EncounterLocationStatusEnumPlanned, EncounterLocationStatusEnumActive, EncounterLocationStatusEnumReserved, EncounterLocationStatusEnumCompleted:
 		return true
 	}
+
 	return false
 }
 
@@ -2353,6 +2399,7 @@ func (e *EncounterLocationStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Encounter_LocationStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -2407,6 +2454,7 @@ func (e EncounterStatusHistoryStatusEnum) IsValid() bool {
 	case EncounterStatusHistoryStatusEnumPlanned, EncounterStatusHistoryStatusEnumArrived, EncounterStatusHistoryStatusEnumTriaged, EncounterStatusHistoryStatusEnumInProgress, EncounterStatusHistoryStatusEnumOnleave, EncounterStatusHistoryStatusEnumFinished, EncounterStatusHistoryStatusEnumCancelled, EncounterStatusHistoryStatusEnumEnteredInError, EncounterStatusHistoryStatusEnumUnknown:
 		return true
 	}
+
 	return false
 }
 
@@ -2418,6 +2466,7 @@ func (e EncounterStatusHistoryStatusEnum) String() string {
 	case EncounterStatusHistoryStatusEnumEnteredInError:
 		return "entered-in-error"
 	}
+
 	return string(e)
 }
 
@@ -2432,6 +2481,7 @@ func (e *EncounterStatusHistoryStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Encounter_StatusHistoryStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -2480,6 +2530,7 @@ func (e EpisodeOfCareStatusEnum) IsValid() bool {
 	case EpisodeOfCareStatusEnumPlanned, EpisodeOfCareStatusEnumWaitlist, EpisodeOfCareStatusEnumActive, EpisodeOfCareStatusEnumOnhold, EpisodeOfCareStatusEnumFinished, EpisodeOfCareStatusEnumCancelled, EpisodeOfCareStatusEnumEnteredInError:
 		return true
 	}
+
 	return false
 }
 
@@ -2488,6 +2539,7 @@ func (e EpisodeOfCareStatusEnum) String() string {
 	if e == EpisodeOfCareStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
+
 	return string(e)
 }
 
@@ -2502,6 +2554,7 @@ func (e *EpisodeOfCareStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid EpisodeOfCareStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -2550,6 +2603,7 @@ func (e EpisodeOfCareStatusHistoryStatusEnum) IsValid() bool {
 	case EpisodeOfCareStatusHistoryStatusEnumPlanned, EpisodeOfCareStatusHistoryStatusEnumWaitlist, EpisodeOfCareStatusHistoryStatusEnumActive, EpisodeOfCareStatusHistoryStatusEnumOnhold, EpisodeOfCareStatusHistoryStatusEnumFinished, EpisodeOfCareStatusHistoryStatusEnumCancelled, EpisodeOfCareStatusHistoryStatusEnumEnteredInError:
 		return true
 	}
+
 	return false
 }
 
@@ -2558,6 +2612,7 @@ func (e EpisodeOfCareStatusHistoryStatusEnum) String() string {
 	if e == EpisodeOfCareStatusHistoryStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
+
 	return string(e)
 }
 
@@ -2572,6 +2627,7 @@ func (e *EpisodeOfCareStatusHistoryStatusEnum) UnmarshalGQL(v interface{}) error
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid EpisodeOfCare_StatusHistoryStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -2623,6 +2679,7 @@ func (e ObservationStatusEnum) IsValid() bool {
 	case ObservationStatusEnumRegistered, ObservationStatusEnumPreliminary, ObservationStatusEnumFinal, ObservationStatusEnumAmended, ObservationStatusEnumCorrected, ObservationStatusEnumCancelled, ObservationStatusEnumEnteredInError, ObservationStatusEnumUnknown:
 		return true
 	}
+
 	return false
 }
 
@@ -2631,6 +2688,7 @@ func (e ObservationStatusEnum) String() string {
 	if e == ObservationStatusEnumEnteredInError {
 		return "entered-in-error"
 	}
+
 	return string(e)
 }
 
@@ -2645,6 +2703,7 @@ func (e *ObservationStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid ObservationStatusEnum", str)
 	}
+
 	return nil
 }
 
@@ -2684,6 +2743,7 @@ func (e PatientGenderEnum) IsValid() bool {
 	case PatientGenderEnumMale, PatientGenderEnumFemale, PatientGenderEnumOther, PatientGenderEnumUnknown:
 		return true
 	}
+
 	return false
 }
 
@@ -2703,6 +2763,7 @@ func (e *PatientGenderEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid PatientGenderEnum", str)
 	}
+
 	return nil
 }
 
@@ -2742,6 +2803,7 @@ func (e PatientContactGenderEnum) IsValid() bool {
 	case PatientContactGenderEnumMale, PatientContactGenderEnumFemale, PatientContactGenderEnumOther, PatientContactGenderEnumUnknown:
 		return true
 	}
+
 	return false
 }
 
@@ -2761,6 +2823,7 @@ func (e *PatientContactGenderEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Patient_ContactGenderEnum", str)
 	}
+
 	return nil
 }
 
@@ -2800,6 +2863,7 @@ func (e PatientLinkTypeEnum) IsValid() bool {
 	case PatientLinkTypeEnumReplacedBy, PatientLinkTypeEnumReplaces, PatientLinkTypeEnumRefer, PatientLinkTypeEnumSeealso:
 		return true
 	}
+
 	return false
 }
 
@@ -2808,6 +2872,7 @@ func (e PatientLinkTypeEnum) String() string {
 	if e == PatientLinkTypeEnumReplacedBy {
 		return "replaced-by"
 	}
+
 	return string(e)
 }
 
@@ -2822,6 +2887,7 @@ func (e *PatientLinkTypeEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Patient_LinkTypeEnum", str)
 	}
+
 	return nil
 }
 
@@ -2887,6 +2953,7 @@ func (e MedicationStatementStatusEnum) IsValid() bool {
 		MedicationStatementStatusEnumNotTaken:
 		return true
 	}
+
 	return false
 }
 
@@ -2906,6 +2973,7 @@ func (e *MedicationStatementStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Patient_LinkTypeEnum", str)
 	}
+
 	return nil
 }
 
@@ -2946,6 +3014,7 @@ func (e MedicationStatusEnum) IsValid() bool {
 		MedicationStatusEnumEnteredInError:
 		return true
 	}
+
 	return false
 }
 
@@ -2965,6 +3034,7 @@ func (e *MedicationStatusEnum) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid Patient_LinkTypeEnum", str)
 	}
+
 	return nil
 }
 

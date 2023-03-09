@@ -28,6 +28,8 @@ linters:
     - nilerr
     - ireturn
     - importas
+    - wsl
+    - revive
 
 linters-settings:
   staticcheck:

@@ -91,7 +91,9 @@ func StartGin(
 		MaxAge:          12 * time.Hour,
 		AllowWebSockets: true,
 	}))
+
 	addr := fmt.Sprintf(":%d", port)
+
 	if err := r.Run(addr); err != nil {
 		serverutils.LogStartupError(ctx, err)
 	}
@@ -107,6 +109,7 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 	baseExtension := extensions.NewBaseExtensionImpl()
 
 	projectID := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
+
 	pubSubClient, err := pubsub.NewClient(ctx, projectID)
 	if err != nil {
 		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
@@ -117,6 +120,7 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 	datasetID := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_ID")
 	datasetLocation := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_LOCATION")
 	fhirStoreID := serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
+
 	hsv, err := healthcare.NewService(ctx)
 	if err != nil {
 		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
@@ -143,6 +147,7 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 		Username:           username,
 		Password:           password,
 	}
+
 	authclient, err := authutils.NewClient(authServerConfig)
 	if err != nil {
 		return nil, err
@@ -173,6 +178,7 @@ func GQLHandler(ctx context.Context,
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
 	}
+
 	server := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
@@ -180,6 +186,7 @@ func GQLHandler(ctx context.Context,
 			},
 		),
 	)
+
 	return func(ctx *gin.Context) {
 		server.ServeHTTP(ctx.Writer, ctx.Request)
 	}

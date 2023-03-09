@@ -44,7 +44,6 @@ func NewUseCasesClinicalImpl(infra infrastructure.Infrastructure) *UseCasesClini
 // PatientTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
 func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
-
 	timeline := []map[string]interface{}{}
 	wg := &sync.WaitGroup{}
 	mut := &sync.Mutex{}
@@ -64,8 +63,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("AllergyIntolerance search error: %v", err)
+
 			return
 		}
+
 		for _, edge := range conn.Edges {
 			if edge.Node == nil {
 				continue
@@ -75,8 +76,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				log.Errorf("AllergyIntolerance edge struct to map error: %v", err)
+
 				return
 			}
+
 			if rMap == nil {
 				continue
 			}
@@ -97,8 +100,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("Observation search error: %v", err)
+
 			return
 		}
+
 		for _, edge := range conn.Edges {
 			if edge.Node == nil {
 				continue
@@ -108,8 +113,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				log.Errorf("Observation edge struct to map error: %v", err)
+
 				return
 			}
+
 			if rMap == nil {
 				continue
 			}
@@ -130,8 +137,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("MedicationStatement search error: %v", err)
+
 			return
 		}
+
 		for _, edge := range conn.Edges {
 			if edge.Node == nil {
 				continue
@@ -141,8 +150,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				log.Errorf("MedicationStatement edge struct to map error: %v", err)
+
 				return
 			}
+
 			if rMap == nil {
 				continue
 			}
@@ -164,6 +175,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 
 	for _, resource := range resources {
 		wg.Add(1)
+
 		go resource(wg, mut)
 	}
 
@@ -206,6 +218,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				if edge.Node == nil {
 					continue
 				}
+
 				data.Regimen = append(data.Regimen, edge.Node)
 			}
 		case "AllergyIntolerance":
@@ -219,11 +232,13 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				if edge.Node == nil {
 					continue
 				}
+
 				data.Allergies = append(data.Allergies, edge.Node)
 			}
 
 		case "Weight":
 			filterParams["code"] = common.WeightCIELTerminologyCode
+
 			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
@@ -234,11 +249,13 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				if edge.Node == nil {
 					continue
 				}
+
 				data.Weight = append(data.Weight, edge.Node)
 			}
 
 		case "BMI":
 			filterParams["code"] = common.BMICIELTerminologyCode
+
 			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
@@ -249,11 +266,13 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				if edge.Node == nil {
 					continue
 				}
+
 				data.BMI = append(data.BMI, edge.Node)
 			}
 
 		case "ViralLoad":
 			filterParams["code"] = common.ViralLoadCIELTerminologyCode
+
 			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
@@ -264,11 +283,13 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				if edge.Node == nil {
 					continue
 				}
+
 				data.ViralLoad = append(data.ViralLoad, edge.Node)
 			}
 
 		case "CD4Count":
 			filterParams["code"] = common.CD4CountCIELTerminologyCode
+
 			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
@@ -279,11 +300,10 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				if edge.Node == nil {
 					continue
 				}
+
 				data.CD4Count = append(data.CD4Count, edge.Node)
 			}
-
 		}
-
 	}
 
 	return data, nil
@@ -303,17 +323,21 @@ func (c *UseCasesClinicalImpl) PatientHealthTimeline(ctx context.Context, input 
 
 	sortFunc := func(i, j interface{}) bool {
 		itemI := i.(map[string]interface{})
+
 		dateStringI, ok := itemI["timelineDate"].(string)
 		if !ok {
 			return false
 		}
+
 		timeI := helpers.ParseDate(dateStringI)
 
 		itemJ := j.(map[string]interface{})
-		dateStringJ, _ := itemJ["timelineDate"].(string)
+
+		dateStringJ, ok := itemJ["timelineDate"].(string)
 		if !ok {
 			return false
 		}
+
 		timeJ := helpers.ParseDate(dateStringJ)
 
 		return timeI.After(timeJ)
@@ -334,5 +358,6 @@ func (c *UseCasesClinicalImpl) CreateFHIROrganization(ctx context.Context, input
 		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
+
 	return organizationRelayPayload, nil
 }

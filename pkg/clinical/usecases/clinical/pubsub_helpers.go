@@ -26,6 +26,7 @@ func (c *UseCasesClinicalImpl) getCIELConcept(ctx context.Context, conceptID str
 	}
 
 	var concept *domain.Concept
+
 	err = mapstructure.Decode(response, &concept)
 	if err != nil {
 		return nil, err
@@ -76,6 +77,7 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 	if err != nil {
 		return nil, err
 	}
+
 	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
 	patientName := *patient.PatientRecord.Name[0].Given[0]
 	observation.Subject = &domain.FHIRReferenceInput{
@@ -145,6 +147,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 	if err != nil {
 		return nil, err
 	}
+
 	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
 	patientName := *patient.PatientRecord.Name[0].Given[0]
 
@@ -182,13 +185,11 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 		if err != nil {
 			return nil, err
 		}
-
 	} else {
 		manifestationConcept, err = c.getCIELConcept(ctx, unknownConceptID)
 		if err != nil {
 			return nil, err
 		}
-
 	}
 
 	manifestation := &domain.FHIRCodeableConceptInput{
@@ -223,10 +224,12 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 // ComposeTestResultInput composes a test result input from data received
 func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input dto.CreatePatientTestResultPubSubMessage) (*domain.FHIRObservationInput, error) {
 	var patientName string
+
 	patient, err := c.FindPatientByID(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
+
 	patientName = *patient.PatientRecord.Name[0].Given[0]
 
 	observationConcept, err := c.getCIELConcept(ctx, *input.ConceptID)
@@ -277,6 +280,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 			// Should not fail if the organization is not found
 			log.Printf("the error is: %v", err)
 		}
+
 		if organization != nil {
 			performer := fmt.Sprintf("Organization/%v", input.OrganizationID)
 
@@ -339,6 +343,7 @@ func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Conte
 	if err != nil {
 		return nil, err
 	}
+
 	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
 	patientName := *patient.PatientRecord.Name[0].Given[0]
 	medicationStatement.Subject = &domain.FHIRReferenceInput{
@@ -351,6 +356,7 @@ func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Conte
 		if err != nil {
 			log.Printf("the error is: %v", err)
 		}
+
 		if organization != nil {
 			informationSourceReference := fmt.Sprintf("Organization/%v", input.OrganizationID)
 

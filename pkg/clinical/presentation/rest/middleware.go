@@ -73,6 +73,7 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 				err := fmt.Errorf("expected `%s` header to be included in the request", header.HeaderKey)
 				handleError(c.Writer, err)
 				c.Abort()
+
 				return
 			}
 
@@ -80,6 +81,7 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 			if err != nil {
 				handleError(c.Writer, err)
 				c.Abort()
+
 				return
 			}
 

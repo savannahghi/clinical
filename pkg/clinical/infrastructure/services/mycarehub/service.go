@@ -59,6 +59,7 @@ func (s ServiceMyCareHubImpl) UserProfile(
 	userID string,
 ) (*domain.User, error) {
 	getUserProfileURL := fmt.Sprintf(getUserProfile, userID)
+
 	resp, err := s.MyCareHubClient.MakeRequest(
 		ctx,
 		http.MethodGet,
@@ -89,6 +90,7 @@ func (s ServiceMyCareHubImpl) UserProfile(
 	}
 
 	var profile domain.User
+
 	err = json.Unmarshal(data, &profile)
 	if err != nil {
 		return nil, fmt.Errorf(

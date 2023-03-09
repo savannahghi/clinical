@@ -74,10 +74,12 @@ func (c *UseCasesClinicalImpl) CreatePubsubOrganization(ctx context.Context, dat
 	if err != nil {
 		return err
 	}
+
 	err = c.infrastructure.MyCareHub.AddFHIRIDToFacility(ctx, *response.Resource.ID, *data.ID)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -91,6 +93,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubVitals(ctx context.Context, data dto.
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -104,6 +107,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubAllergyIntolerance(ctx context.Contex
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -117,6 +121,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubTestResult(ctx context.Context, data 
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -130,5 +135,6 @@ func (c *UseCasesClinicalImpl) CreatePubsubMedicationStatement(ctx context.Conte
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

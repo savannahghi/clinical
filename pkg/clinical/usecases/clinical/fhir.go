@@ -18,13 +18,13 @@ func (c *UseCasesClinicalImpl) FindOrganizationByID(ctx context.Context, organiz
 	if organizationID == "" {
 		return nil, fmt.Errorf("organization ID is required")
 	}
+
 	return c.infrastructure.FHIR.FindOrganizationByID(ctx, organizationID)
 }
 
 // GetTenantMetaTags is a helper to create tags that are used to identify which tenant a resource belongs to
 // and are saved in a resources `Meta` attribute
 func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.FHIRCodingInput, error) {
-
 	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
@@ -81,17 +81,21 @@ func (c *UseCasesClinicalImpl) RegisterPatient(ctx context.Context, input domain
 // CheckPatientExistenceUsingPhoneNumber checks whether a patient with the phone number they're trying to register with exists
 func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context.Context, patientInput domain.SimplePatientRegistrationInput) (bool, error) {
 	exists := false
+
 	for _, phone := range patientInput.PhoneNumbers {
 		phoneNumber := &phone.Msisdn
+
 		patient, err := c.FindPatientsByMSISDN(ctx, *phoneNumber)
 		if err != nil {
 			return false, fmt.Errorf("unable to find patient by phonenumber: %s", *phoneNumber)
 		}
+
 		if len(patient.Edges) > 1 {
 			exists = true
 			break
 		}
 	}
+
 	return exists, nil
 }
 
@@ -126,6 +130,7 @@ func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx 
 	patientInput.MaritalStatus = helpers.MaritalStatusEnumToCodeableConceptInput(
 		input.MaritalStatus)
 	patientInput.Communication = helpers.LanguagesToCommunicationInputs(input.Languages)
+
 	return &patientInput, nil
 }
 
@@ -143,11 +148,13 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 
 	patientReference := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
 	openEpisodes, err := c.infrastructure.FHIR.OpenEpisodes(ctx, patientReference)
+
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf(
 			"unable to get open episodes for %s, err: %w", patientReference, err)
 	}
+
 	return &domain.PatientPayload{
 		PatientRecord:   patient.Resource,
 		OpenEpisodes:    openEpisodes,
@@ -168,11 +175,11 @@ func (c *UseCasesClinicalImpl) FindPatientByID(ctx context.Context, id string) (
 //
 // 1. The normalization of phone number assumes Kenyan (+254) numbers only
 func (c *UseCasesClinicalImpl) FindPatientsByMSISDN(ctx context.Context, msisdn string) (*domain.PatientConnection, error) {
-
 	search, err := converterandformatter.NormalizeMSISDN(msisdn)
 	if err != nil {
 		return nil, fmt.Errorf("can't normalize contact: %w", err)
 	}
+
 	return c.infrastructure.FHIR.SearchFHIRPatient(ctx, *search)
 }
 
@@ -182,6 +189,7 @@ func (c *UseCasesClinicalImpl) ContactsToContactPointInput(ctx context.Context, 
 	if phones == nil && emails == nil {
 		return nil, nil
 	}
+
 	output := []*domain.FHIRContactPointInput{}
 	rank := int64(1)
 	phoneSystem := domain.ContactPointSystemEnumPhone
@@ -206,6 +214,7 @@ func (c *UseCasesClinicalImpl) ContactsToContactPointInput(ctx context.Context, 
 	}
 
 	emailSystem := domain.ContactPointSystemEnumEmail
+
 	for _, email := range emails {
 		emailErr := utils.ValidateEmail(email.Email)
 		if emailErr != nil {
@@ -222,6 +231,7 @@ func (c *UseCasesClinicalImpl) ContactsToContactPointInput(ctx context.Context, 
 		output = append(output, emailContact)
 		rank++
 	}
+
 	return output, nil
 }
 
@@ -241,6 +251,7 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input domain.F
 	if input.Identifier == nil {
 		input.Identifier = []*domain.FHIRIdentifierInput{common.DefaultIdentifier()}
 	}
+
 	if input.Identifier != nil {
 		input.Identifier = append(input.Identifier, common.DefaultIdentifier())
 	}

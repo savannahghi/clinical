@@ -39,6 +39,7 @@ func ValidateEmail(email string) error {
 	if !govalidator.IsEmail(email) {
 		return fmt.Errorf("invalid email format")
 	}
+
 	return nil
 }
 
@@ -52,15 +53,18 @@ func ReportErrorToSentry(err error) {
 func GeneratePatientWelcomeEmailTemplate() string {
 	t := template.Must(template.New("welcomeEmail").Parse(PatientWelcomeEmail))
 	buf := new(bytes.Buffer)
+
 	err := t.Execute(buf, "")
 	if err != nil {
 		log.Fatalf("Error while generating patient welcome email template: %s", err)
 	}
+
 	return buf.String()
 }
 
 func AddPubSubNamespace(topicName, serviceName string) string {
 	environment := serverutils.GetRunningEnvironment()
+
 	return pubsubtools.NamespacePubsubIdentifier(
 		serviceName,
 		topicName,
