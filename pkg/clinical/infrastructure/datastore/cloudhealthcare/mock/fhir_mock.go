@@ -71,7 +71,7 @@ func NewFHIRMock() *FHIRMock {
 	UUID := uuid.New().String()
 	PatientRef := "Patient/1"
 	OrgRef := "Organization/1"
-	status := domain.EpisodeOfCareStatusEnumFinished
+	status := domain.EpisodeOfCareStatusEnumActive
 
 	return &FHIRMock{
 		MockCreateEpisodeOfCareFn: func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
@@ -203,7 +203,33 @@ func NewFHIRMock() *FHIRMock {
 			return []*domain.FHIREncounter{}, nil
 		},
 		MockSearchFHIREpisodeOfCareFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error) {
-			return &domain.FHIREpisodeOfCareRelayConnection{}, nil
+			return &domain.FHIREpisodeOfCareRelayConnection{
+				Edges: []*domain.FHIREpisodeOfCareRelayEdge{
+					{
+						Cursor: new(string),
+						Node: &domain.FHIREpisodeOfCare{
+							ID:            new(string),
+							Text:          &domain.FHIRNarrative{},
+							Identifier:    []*domain.FHIRIdentifier{},
+							StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
+							Type:          []*domain.FHIRCodeableConcept{},
+							Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
+							Patient:       &domain.FHIRReference{Reference: &PatientRef},
+							ManagingOrganization: &domain.FHIRReference{
+								Reference: &OrgRef,
+							},
+							Period:          &domain.FHIRPeriod{},
+							ReferralRequest: []*domain.FHIRReference{},
+							CareManager:     &domain.FHIRReference{},
+							Team:            []*domain.FHIRReference{},
+							Account:         []*domain.FHIRReference{},
+							Meta:            &domain.FHIRMeta{},
+							Extension:       []*domain.FHIRExtension{},
+						},
+					},
+				},
+				PageInfo: &firebasetools.PageInfo{},
+			}, nil
 		},
 		MockStartEncounterFn: func(ctx context.Context, episodeID string) (string, error) {
 			return "test-encounter", nil
