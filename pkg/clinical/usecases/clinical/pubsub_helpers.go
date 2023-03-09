@@ -73,20 +73,20 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 		ValueString: &input.Value,
 	}
 
-	patient, err := c.FindPatientByID(ctx, input.PatientID)
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
 
-	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
-	patientName := *patient.PatientRecord.Name[0].Given[0]
+	patientReference := fmt.Sprintf("Patient/%v", patient.Resource.ID)
+	patientName := *patient.Resource.Name[0].Given[0]
 	observation.Subject = &domain.FHIRReferenceInput{
 		Reference: &patientReference,
 		Display:   patientName,
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := c.FindOrganizationByID(ctx, input.OrganizationID)
+		organization, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, input.OrganizationID)
 		if err != nil {
 			// Should not fail if organization is not found
 			log.Printf("the error is: %v", err)
@@ -143,13 +143,13 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 		Day:   day,
 	}
 
-	patient, err := c.FindPatientByID(ctx, input.PatientID)
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
 
 	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
-	patientName := *patient.PatientRecord.Name[0].Given[0]
+	patientName := *patient.Resource.Name[0].Given[0]
 
 	allergy.Patient = &domain.FHIRReferenceInput{
 		Reference: &subjectReference,
@@ -225,12 +225,12 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input dto.CreatePatientTestResultPubSubMessage) (*domain.FHIRObservationInput, error) {
 	var patientName string
 
-	patient, err := c.FindPatientByID(ctx, input.PatientID)
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
 
-	patientName = *patient.PatientRecord.Name[0].Given[0]
+	patientName = *patient.Resource.Name[0].Given[0]
 
 	observationConcept, err := c.getCIELConcept(ctx, *input.ConceptID)
 	if err != nil {
@@ -275,7 +275,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := c.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		organization, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
 		if err != nil {
 			// Should not fail if the organization is not found
 			log.Printf("the error is: %v", err)
@@ -339,20 +339,20 @@ func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Conte
 		},
 	}
 
-	patient, err := c.FindPatientByID(ctx, input.PatientID)
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, input.PatientID)
 	if err != nil {
 		return nil, err
 	}
 
-	patientReference := fmt.Sprintf("Patient/%v", patient.PatientRecord.ID)
-	patientName := *patient.PatientRecord.Name[0].Given[0]
+	patientReference := fmt.Sprintf("Patient/%v", patient.Resource.ID)
+	patientName := *patient.Resource.Name[0].Given[0]
 	medicationStatement.Subject = &domain.FHIRReferenceInput{
 		Reference: &patientReference,
 		Display:   patientName,
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := c.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		organization, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
 		if err != nil {
 			log.Printf("the error is: %v", err)
 		}

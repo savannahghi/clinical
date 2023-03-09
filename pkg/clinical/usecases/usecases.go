@@ -16,14 +16,12 @@ import (
 // Clinical represents all the patient business logic
 type Clinical interface {
 	FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
-	RegisterPatient(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.PatientPayload, error)
-	FindPatientByID(ctx context.Context, id string) (*domain.PatientPayload, error)
 
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 
-	CreateFHIRPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error
+	CreatePubsubPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error
 	CreatePubsubOrganization(ctx context.Context, payload dto.CreateFacilityPubSubMessage) error
 	CreatePubsubVitals(ctx context.Context, data dto.CreateVitalSignPubSubMessage) error
 	CreatePubsubAllergyIntolerance(ctx context.Context, data dto.CreatePatientAllergyPubSubMessage) error

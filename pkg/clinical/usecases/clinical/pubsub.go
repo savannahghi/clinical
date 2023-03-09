@@ -2,10 +2,13 @@ package clinical
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
 )
@@ -17,7 +20,7 @@ var (
 )
 
 // CreateFHIRPatient creates a patient on FHIR store
-func (c *UseCasesClinicalImpl) CreateFHIRPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
+func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
 	profile, err := c.infrastructure.MyCareHub.UserProfile(ctx, payload.UserID)
 	if err != nil {
 		return err
@@ -38,8 +41,29 @@ func (c *UseCasesClinicalImpl) CreateFHIRPatient(ctx context.Context, payload dt
 		Active:       profile.Active,
 	}
 
-	patient, err := c.RegisterPatient(ctx, registrationInput)
+	exists, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, registrationInput)
 	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return fmt.Errorf("unable to check patient existence")
+	}
+
+	if exists {
+		return fmt.Errorf("patient with phone number already exists")
+	}
+
+	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, registrationInput)
+	if err != nil {
+		return err
+	}
+
+	newID := uuid.New().String()
+	patientInput.ID = &newID
+
+	patientInput.Identifier = append(patientInput.Identifier, common.DefaultIdentifier())
+
+	patient, err := c.infrastructure.FHIR.CreateFHIRPatient(ctx, *patientInput)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
 		return err
 	}
 

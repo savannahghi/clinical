@@ -168,8 +168,8 @@ func TestStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case" {
-				dataset.MockGetFHIRResourceFn = func(resourceType string, id string) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
+				dataset.MockGetFHIRResourceFn = func(resourceType string, id string, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
 				}
 			}
 
@@ -265,8 +265,8 @@ func TestStoreImpl_GetFHIREpisodeOfCare(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case" {
-				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
 				}
 			}
 			_, err := fh.GetFHIREpisodeOfCare(tt.args.ctx, tt.args.id)
@@ -309,8 +309,8 @@ func TestClinicalUseCaseImpl_StartEncounter(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case" {
-				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
 				}
 			}
 			_, err := fh.StartEncounter(tt.args.ctx, tt.args.episodeID)
@@ -357,8 +357,8 @@ func TestStoreImpl_GetFHIREncounter(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case" {
-				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
 				}
 			}
 			_, err := fh.GetFHIREncounter(tt.args.ctx, tt.args.id)
@@ -521,8 +521,8 @@ func TestStoreImpl_UpdateFHIRAllergyIntolerance(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case" {
-				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
+				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
 				}
 			}
 			_, err := fh.UpdateFHIRAllergyIntolerance(tt.args.ctx, tt.args.input)
@@ -631,8 +631,8 @@ func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case" {
-				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
+				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
 				}
 			}
 			_, err := fh.UpdateFHIRComposition(tt.args.ctx, tt.args.input)
@@ -684,8 +684,8 @@ func TestStoreImpl_DeleteFHIRComposition(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case" {
-				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
-					return nil, fmt.Errorf("an error occurred")
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					return fmt.Errorf("an error occurred")
 				}
 			}
 			got, err := fh.DeleteFHIRComposition(tt.args.ctx, tt.args.id)
@@ -1121,8 +1121,8 @@ func TestStoreImpl_UpdateFHIRCondition(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to update fhir condition" {
-				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("failed to update condition")
+				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to update condition")
 				}
 			}
 
@@ -1178,8 +1178,8 @@ func TestStoreImpl_UpdateFHIRMedicationRequest(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to update fhir medication request" {
-				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}) ([]byte, error) {
-					return nil, fmt.Errorf("failed to update medication request")
+				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to update medication request")
 				}
 			}
 
@@ -1233,8 +1233,8 @@ func TestStoreImpl_DeleteFHIRMedicationRequest(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to delete a medication request" {
-				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) ([]byte, error) {
-					return nil, fmt.Errorf("failed to update resource")
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					return fmt.Errorf("failed to update resource")
 				}
 			}
 
