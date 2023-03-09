@@ -75,6 +75,25 @@ func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 			}
 			return bs, nil
 		},
+		MockSearchFHIRResourceFn: func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+			n := map[string]interface{}{"given": []string{"John"}, "family": []string{"Doe"}}
+			p := map[string]interface{}{
+				"resourceType": "Patient/",
+				"id":           "test-UUID",
+				"name":         []map[string]interface{}{n},
+			}
+
+			m := []map[string]interface{}{
+				{
+					"resourceType":  "Patient/",
+					"status":        "active",
+					"id":            "test-UUID",
+					"patientRecord": p,
+				},
+			}
+
+			return m, nil
+		},
 	}
 }
 
