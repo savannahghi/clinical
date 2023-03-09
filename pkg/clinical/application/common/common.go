@@ -16,13 +16,16 @@ func NewInterServiceClient(serviceName string, baseExt extensions.BaseExtension)
 	config, err := baseExt.LoadDepsFromYAML()
 	if err != nil {
 		logrus.Panicf("occurred while opening deps file %v", err)
+
 		return nil
 	}
 
 	client, err := baseExt.SetupISCclient(*config, serviceName)
 	if err != nil {
 		logrus.Panicf("unable to initialize inter service client for %v service: %s", err, serviceName)
+
 		return nil
 	}
+
 	return client
 }

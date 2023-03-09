@@ -17,6 +17,7 @@ func InitializeInterServiceClient(serviceName string) *interserviceclient.InterS
 		log.Errorf("error occurred while opening deps file %v", err)
 		os.Exit(1)
 	}
+
 	var config interserviceclient.DepsConfig
 	if err := yaml.Unmarshal(file, &config); err != nil {
 		log.Errorf("failed to unmarshal yaml config file %v", err)
@@ -27,5 +28,6 @@ func InitializeInterServiceClient(serviceName string) *interserviceclient.InterS
 	if err != nil {
 		log.Panicf("unable to initialize inter service client for %v service: %s", err, serviceName)
 	}
+
 	return client
 }

@@ -32,6 +32,7 @@ func (r *Resolver) CheckUserTokenInContext(ctx context.Context) *authutils.Token
 	if err != nil {
 		log.Panicf("graph.Resolver: context user token is nil")
 	}
+
 	return token
 }
 

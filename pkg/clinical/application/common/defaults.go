@@ -83,6 +83,7 @@ func DefaultIdentifier() *domain.FHIRIdentifierInput {
 	system := scalarutils.URI(healthCloudIdentifiers)
 	version := healthCloudIdentifiersVersion
 	userSelected := false
+
 	return &domain.FHIRIdentifierInput{
 		Use:   domain.IdentifierUseEnumOfficial,
 		Value: xid,
@@ -107,6 +108,7 @@ func DefaultIdentifier() *domain.FHIRIdentifierInput {
 func DefaultPeriodInput() *domain.FHIRPeriodInput {
 	now := time.Now()
 	farFuture := time.Now().Add(time.Hour * CenturyHours)
+
 	return &domain.FHIRPeriodInput{
 		Start: scalarutils.DateTime(now.Format(timeFormatStr)),
 		End:   scalarutils.DateTime(farFuture.Format(timeFormatStr)),
@@ -117,6 +119,7 @@ func DefaultPeriodInput() *domain.FHIRPeriodInput {
 func DefaultPeriod() *domain.FHIRPeriod {
 	now := time.Now()
 	farFuture := time.Now().Add(time.Hour * CenturyHours)
+
 	return &domain.FHIRPeriod{
 		Start: scalarutils.DateTime(now.Format(timeFormatStr)),
 		End:   scalarutils.DateTime(farFuture.Format(timeFormatStr)),

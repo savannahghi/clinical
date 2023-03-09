@@ -23,5 +23,6 @@ func main() {
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
 	}
+
 	presentation.StartGin(ctx, port, presentation.ClinicalAllowedOrigins)
 }

@@ -72,6 +72,7 @@ func NewFHIRMock() *FHIRMock {
 	PatientRef := "Patient/1"
 	OrgRef := "Organization/1"
 	status := domain.EpisodeOfCareStatusEnumFinished
+
 	return &FHIRMock{
 		MockCreateEpisodeOfCareFn: func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
 			return &domain.EpisodeOfCarePayload{
@@ -678,7 +679,6 @@ func (fh *FHIRMock) CreateFHIRMedicationStatement(ctx context.Context, input dom
 // CreateFHIRMedication is a mock implementation of CreateFHIRMedication method
 func (fh *FHIRMock) CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
 	return fh.MockCreateFHIRMedicationFn(ctx, input)
-
 }
 
 // CreateFHIRPatient mocks the implementation of creating a FHIR patient

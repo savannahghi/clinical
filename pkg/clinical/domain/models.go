@@ -175,16 +175,21 @@ func (p FHIRPatient) Names() string {
 	}
 
 	names := []string{}
+
 	for _, hn := range p.Name {
 		if hn == nil {
 			continue
 		}
+
 		if hn.Text == "" {
 			continue
 		}
+
 		names = append(names, hn.Text)
 	}
+
 	name = strings.Join(names, " | ")
+
 	return name
 }
 
@@ -249,6 +254,7 @@ func (e IDDocumentType) IsValid() bool {
 	case IDDocumentTypeNationalID, IDDocumentTypePassport, IDDocumentTypeAlienID:
 		return true
 	}
+
 	return false
 }
 
@@ -268,13 +274,13 @@ func (e *IDDocumentType) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid IDDocumentType", str)
 	}
+
 	return nil
 }
 
 // MarshalGQL writes the enum value to the supplied writer
 func (e IDDocumentType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
-
 }
 
 // MaritalStatus is used to code individuals' marital statuses.
@@ -329,6 +335,7 @@ func (e MaritalStatus) IsValid() bool {
 	case MaritalStatusA, MaritalStatusD, MaritalStatusI, MaritalStatusL, MaritalStatusM, MaritalStatusP, MaritalStatusS, MaritalStatusT, MaritalStatusU, MaritalStatusW, MaritalStatusUnk:
 		return true
 	}
+
 	return false
 }
 
@@ -348,6 +355,7 @@ func (e *MaritalStatus) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid MaritalStatus", str)
 	}
+
 	return nil
 }
 
@@ -399,6 +407,7 @@ func (e RelationshipType) IsValid() bool {
 	case RelationshipTypeC, RelationshipTypeE, RelationshipTypeF, RelationshipTypeI, RelationshipTypeN, RelationshipTypeO, RelationshipTypeS, RelationshipTypeU:
 		return true
 	}
+
 	return false
 }
 
@@ -418,6 +427,7 @@ func (e *RelationshipType) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid RelationshipType", str)
 	}
+
 	return nil
 }
 

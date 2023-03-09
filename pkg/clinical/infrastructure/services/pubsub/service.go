@@ -75,6 +75,7 @@ func NewServicePubSubMessaging(
 	if err := s.EnsureSubscriptionsExist(ctx); err != nil {
 		return nil, err
 	}
+
 	return s, nil
 }
 
@@ -82,6 +83,7 @@ func NewServicePubSubMessaging(
 // <service name>-<topicName>-<environment>-v1
 func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName, serviceName string) string {
 	environment := serverutils.GetRunningEnvironment()
+
 	return pubsubtools.NamespacePubsubIdentifier(
 		serviceName,
 		topicName,
@@ -114,6 +116,7 @@ func (ps ServicePubSubMessaging) PublishToPubsub(
 	if err != nil {
 		return err
 	}
+
 	return pubsubtools.PublishToPubsub(
 		ctx,
 		ps.client,

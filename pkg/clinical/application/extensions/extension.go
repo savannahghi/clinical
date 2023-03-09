@@ -115,6 +115,7 @@ func (b *BaseExtensionImpl) GetTenantIdentifiers(ctx context.Context) (*dto.Tena
 	if err != nil {
 		return nil, fmt.Errorf("failed to retrieve organization ID from context: %w", err)
 	}
+
 	return &dto.TenantIdentifiers{
 		OrganizationID: organizationID,
 	}, nil
@@ -126,5 +127,6 @@ func GetOrganizationIDFromContext(ctx context.Context) (string, error) {
 	if !ok {
 		return "", errors.New("unable to get organization ID from context")
 	}
+
 	return organizationID, nil
 }

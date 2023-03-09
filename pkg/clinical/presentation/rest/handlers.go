@@ -32,12 +32,14 @@ func NewPresentationHandlers(usecases usecases.Interactor) *PresentationHandlers
 // ReceivePubSubPushMessage receives and processes a pubsub message
 func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 	ctx := c.Request.Context()
+
 	message, err := pubsubtools.VerifyPubSubJWTAndDecodePayload(c.Writer, c.Request)
 	if err != nil {
 		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,
 			Message: err.Error(),
 		}, http.StatusBadRequest)
+
 		return
 	}
 
@@ -47,18 +49,21 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 			Err:     err,
 			Message: err.Error(),
 		}, http.StatusBadRequest)
+
 		return
 	}
 
 	switch topicID {
 	case utils.AddPubSubNamespace(common.CreatePatientTopic, common.ClinicalServiceName):
 		var data dto.CreatePatientPubSubMessage
+
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
@@ -68,17 +73,20 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
 	case utils.AddPubSubNamespace(common.OrganizationTopicName, common.ClinicalServiceName):
 		var data dto.CreateFacilityPubSubMessage
+
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
@@ -88,17 +96,20 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
 	case utils.AddPubSubNamespace(common.VitalsTopicName, common.ClinicalServiceName):
 		var data dto.CreateVitalSignPubSubMessage
+
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
@@ -108,17 +119,20 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
 	case utils.AddPubSubNamespace(common.AllergyTopicName, common.ClinicalServiceName):
 		var data dto.CreatePatientAllergyPubSubMessage
+
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
@@ -128,17 +142,20 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
 	case utils.AddPubSubNamespace(common.MedicationTopicName, common.ClinicalServiceName):
 		var data dto.CreateMedicationPubSubMessage
+
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
@@ -148,38 +165,45 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
 
 	case utils.AddPubSubNamespace(common.TestResultTopicName, common.ClinicalServiceName):
 		var data dto.CreatePatientTestResultPubSubMessage
+
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
+
 		err = p.usecases.CreatePubsubTestResult(ctx, data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,
 				Message: err.Error(),
 			}, http.StatusBadRequest)
+
 			return
 		}
-
 	}
 
 	resp := map[string]string{"Status": "Success"}
+
 	returnedResponse, err := json.Marshal(resp)
 	if err != nil {
 		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,
 			Message: err.Error(),
 		}, http.StatusBadRequest)
+
 		return
 	}
+
 	_, _ = c.Writer.Write(returnedResponse)
 }

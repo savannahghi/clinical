@@ -50,6 +50,7 @@ func ComposeOneHealthEpisodeOfCare(
 	} else {
 		accessLevel = partialAccessLevel
 	}
+
 	now := time.Now()
 	farFuture := time.Now().Add(time.Hour * CenturyHours)
 	orgIdentifier := &domain.FHIRIdentifier{
@@ -61,6 +62,7 @@ func ComposeOneHealthEpisodeOfCare(
 	patientRef := fmt.Sprintf("Patient/%s", patientID)
 	orgType := scalarutils.URI("Organization")
 	patientType := scalarutils.URI("Patient")
+
 	return domain.FHIREpisodeOfCare{
 		Status: &active,
 		Period: &domain.FHIRPeriod{
@@ -103,8 +105,10 @@ func ParseDate(date string) time.Time {
 			if err != nil {
 				log.Errorf("cannot parse date %v with error %v", date, err)
 			}
+
 			return timeValue
 		}
+
 		return timeValue
 	}
 
@@ -118,6 +122,7 @@ func IDToIdentifier(
 	if ids == nil || phones == nil {
 		return nil, nil
 	}
+
 	output := []*domain.FHIRIdentifierInput{}
 	identificationDocumentIdentifierSystem := scalarutils.URI(IDIdentifierSystem)
 	msisdnIdentifierSystem := scalarutils.URI(MSISDNIdentifierSystem)
@@ -153,6 +158,7 @@ func IDToIdentifier(
 		if err != nil {
 			return nil, fmt.Errorf("invalid phone number: %w", err)
 		}
+
 		identifier := &domain.FHIRIdentifierInput{
 			Use: domain.IdentifierUseEnumOfficial,
 			Type: domain.FHIRCodeableConceptInput{
@@ -184,12 +190,15 @@ func NameToHumanName(names []*domain.NameInput) []*domain.FHIRHumanNameInput {
 	if names == nil {
 		return nil
 	}
+
 	output := []*domain.FHIRHumanNameInput{}
+
 	for _, name := range names {
 		otherNames := ""
 		if name.OtherNames != nil {
 			otherNames = *name.OtherNames
 		}
+
 		fullName := fmt.Sprintf(
 			"%s, %s %s", name.LastName, name.FirstName, otherNames)
 		use := domain.HumanNameUseEnumOfficial
@@ -202,6 +211,7 @@ func NameToHumanName(names []*domain.NameInput) []*domain.FHIRHumanNameInput {
 		}
 		output = append(output, humanName)
 	}
+
 	return output
 }
 
@@ -211,6 +221,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 	if physical == nil && postal == nil {
 		return nil
 	}
+
 	output := []*domain.FHIRAddressInput{}
 	addrUse := domain.AddressUseEnumHome
 	country := DefaultCountry
@@ -266,6 +277,7 @@ func MaritalStatusEnumToCodeableConcept(val domain.MaritalStatus) *domain.FHIRCo
 		},
 		Text: domain.MaritalStatusDisplay(val),
 	}
+
 	return output
 }
 
@@ -277,6 +289,7 @@ func LanguagesToCommunicationInputs(languages []enumutils.Language) []*domain.FH
 	userSelected := true
 	system := scalarutils.URI(enumutils.LanguageCodingSystem)
 	version := enumutils.LanguageCodingVersion
+
 	for _, language := range languages {
 		comm := &domain.FHIRPatientCommunicationInput{
 			Language: &domain.FHIRCodeableConceptInput{
@@ -295,6 +308,7 @@ func LanguagesToCommunicationInputs(languages []enumutils.Language) []*domain.FH
 		}
 		output = append(output, comm)
 	}
+
 	return output
 }
 
@@ -310,6 +324,7 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 	if physical == nil && postal == nil {
 		return nil
 	}
+
 	addressUse := domain.AddressUseEnumHome
 	postalAddrType := domain.AddressTypeEnumPostal
 	country := DefaultCountry
@@ -327,11 +342,13 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 	for _, postal := range postal {
 		postalAddressLines = append(postalAddressLines, postal.PostalAddress)
 		postalAddressLines = append(postalAddressLines, postal.PostalCode)
+
 		if addr.PostalCode == nil {
 			postalCode := scalarutils.Code(postal.PostalCode)
 			addr.PostalCode = &postalCode
 		}
 	}
+
 	combinedPostalAddress := strings.Join(postalAddressLines, "\n")
 	addr.Line = []*string{&combinedPostalAddress}
 
@@ -340,6 +357,7 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 		physicalAddressLines = append(physicalAddressLines, physical.PhysicalAddress)
 		physicalAddressLines = append(physicalAddressLines, physical.MapsCode)
 	}
+
 	combinedPhysicalAddress := strings.Join(physicalAddressLines, "\n")
 	addr.Text = combinedPhysicalAddress
 
@@ -357,6 +375,7 @@ func ContactsToContactPoint(
 	if phones == nil && emails == nil {
 		return nil, nil
 	}
+
 	output := []*domain.FHIRContactPoint{}
 	rank := int64(1)
 	contactUse := domain.ContactPointUseEnumHome
@@ -364,7 +383,6 @@ func ContactsToContactPoint(
 	phoneSystem := domain.ContactPointSystemEnumPhone
 
 	for _, phone := range phones {
-
 		normalized, err := converterandformatter.NormalizeMSISDN(phone.Msisdn)
 		if err != nil {
 			return nil, fmt.Errorf("unable to normalize phone number: %w", err)
@@ -387,6 +405,7 @@ func ContactsToContactPoint(
 		if err != nil {
 			return nil, fmt.Errorf("invalid email: %w", err)
 		}
+
 		emailContact := &domain.FHIRContactPoint{
 			System: &emailSystem,
 			Use:    &contactUse,
@@ -408,6 +427,7 @@ func ValidateEmail(
 	if !govalidator.IsEmail(email) {
 		return fmt.Errorf("invalid email format")
 	}
+
 	return nil
 }
 
@@ -425,5 +445,6 @@ func MaritalStatusEnumToCodeableConceptInput(val domain.MaritalStatus) *domain.F
 		},
 		Text: domain.MaritalStatusDisplay(val),
 	}
+
 	return output
 }

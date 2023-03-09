@@ -23,6 +23,7 @@ func InitializeTestService(ctx context.Context) (usecases.Interactor, error) {
 	datasetLocation := serverutils.MustGetEnvVar("CLOUD_HEALTH_DATASET_LOCATION")
 	fhirStoreID := serverutils.MustGetEnvVar("CLOUD_HEALTH_FHIRSTORE_ID")
 	hsv, err := healthcare.NewService(ctx)
+
 	if err != nil {
 		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
 	}
