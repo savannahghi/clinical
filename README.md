@@ -1,7 +1,7 @@
 # clinical
 
 ![Linting and Tests](https://github.com/savannahghi/clinical/actions/workflows/ci.yml/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/savannahghi/clinical/badge.svg?branch=main)](https://coveralls.io/github/savannahghi/clinical?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/savannahghi/clinical/badge.svg?branch=develop-v2)](https://coveralls.io/github/savannahghi/clinical?branch=develop-v2)
 
 APIs to bridge to a FHIR clinical repository
 

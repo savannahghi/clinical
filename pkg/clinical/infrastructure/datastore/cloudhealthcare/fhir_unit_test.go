@@ -1049,6 +1049,446 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "happy case: delete all patient data",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "sad case: all patient data error",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "sad case: all patient data invalid entry",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "sad case: all patient data invalid entry type",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "sad case: all patient data entry invalid resource type",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "sad case: error deleting medication request",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error deleting encounters",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error deleting episode of care",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error deleting observation",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error deleting patient",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error deleting other types",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "happy case: delete all patient data" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "EpisodeOfCare",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Observation",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "AllergyIntolerance",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "ServiceRequest",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "MedicationRequest",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Condition",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Encounter",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Composition",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "MedicationStatement",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Medication",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Patient",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+
+			if tt.name == "sad case: all patient data error" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					return nil, fmt.Errorf("failed to get data")
+				}
+			}
+
+			if tt.name == "sad case: all patient data invalid entry" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": "invalid",
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+
+			if tt.name == "sad case: all patient data invalid entry type" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[int]string{
+							{
+								1: "bad",
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+
+			if tt.name == "sad case: all patient data entry invalid resource type" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+
+							{
+								"resource": "invalid",
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+
+			if tt.name == "sad case: error deleting medication request" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "MedicationRequest",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					if resourceType == "MedicationRequest" {
+						return fmt.Errorf("failed")
+					}
+					return nil
+				}
+			}
+
+			if tt.name == "sad case: error deleting other types" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Composition",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					if resourceType == "Composition" {
+						return fmt.Errorf("failed")
+					}
+					return nil
+				}
+			}
+
+			if tt.name == "sad case: error deleting patient" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Patient",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					if resourceType == "Patient" {
+						return fmt.Errorf("failed")
+					}
+					return nil
+				}
+			}
+
+			if tt.name == "sad case: error deleting observation" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Observation",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					if resourceType == "Observation" {
+						return fmt.Errorf("failed")
+					}
+					return nil
+				}
+			}
+
+			if tt.name == "sad case: error deleting encounters" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Encounter",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					if resourceType == "Encounter" {
+						return fmt.Errorf("failed")
+					}
+					return nil
+				}
+			}
+
+			if tt.name == "sad case: error deleting episode of care" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "EpisodeOfCare",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					if resourceType == "EpisodeOfCare" {
+						return fmt.Errorf("failed")
+					}
+					return nil
+				}
+			}
+
+			got, err := fh.DeleteFHIRPatient(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.DeleteFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("StoreImpl.DeleteFHIRPatient() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
 
 	ID := uuid.New().String()
