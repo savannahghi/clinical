@@ -1441,7 +1441,7 @@ func (fh *StoreImpl) SearchFHIRPatient(ctx context.Context, searchParams string)
 
 		err := mapstructure.Decode(resource, &patient)
 		if err != nil {
-			return nil, fmt.Errorf(internalError)
+			return nil, fmt.Errorf("%s, error:%w", internalError, err)
 		}
 
 		hasOpenEpisodes, err := fh.HasOpenEpisode(ctx, patient)
