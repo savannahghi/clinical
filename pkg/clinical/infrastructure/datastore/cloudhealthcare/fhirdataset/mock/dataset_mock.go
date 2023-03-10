@@ -3,6 +3,7 @@ package mock
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // FakeFHIRRepository is a mock FHIR repository
@@ -47,14 +48,19 @@ func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 				"resourceType": "Patient/",
 				"id":           "test-UUID",
 				"name":         []map[string]interface{}{n},
+				"reference":    "Patient/",
 			}
 
 			m := []map[string]interface{}{
 				{
-					"resourceType":  "Patient/",
-					"status":        "active",
-					"id":            "test-UUID",
-					"patientRecord": p,
+					"resourceType": "Patient/",
+					"status":       "active",
+					"id":           "test-UUID",
+					"patient":      p,
+					"period": map[string]interface{}{
+						"start": time.February.String(),
+						"end":   time.February.String(),
+					},
 				},
 			}
 
