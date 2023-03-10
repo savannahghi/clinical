@@ -9,13 +9,1045 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	FHIR "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
+	"github.com/savannahghi/converterandformatter"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 
 	fakeDataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset/mock"
 )
+
+func TestStoreImpl_SearchFHIRObservation(t *testing.T) {
+
+	type args struct {
+		ctx    context.Context
+		params map[string]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: search observation",
+			args: args{
+				ctx: context.Background(),
+				params: map[string]interface{}{
+					"_sort": "-date",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: search resource error",
+			args: args{
+				ctx: context.Background(),
+				params: map[string]interface{}{
+					"_sort": "-date",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: search resource error" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+					return nil, fmt.Errorf("failed to search fhir resource")
+				}
+			}
+
+			got, err := fh.SearchFHIRObservation(tt.args.ctx, tt.args.params)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchFHIRObservation() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_DeleteFHIRObservation(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "happy case: delete observation",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.NewString(),
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "sad case: error deleting resource",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.NewString(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: error deleting resource" {
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					return fmt.Errorf("failed to delete resource")
+				}
+			}
+
+			got, err := fh.DeleteFHIRObservation(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.DeleteFHIRObservation() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("StoreImpl.DeleteFHIRObservation() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStoreImpl_CreateFHIRObservation(t *testing.T) {
+
+	type args struct {
+		ctx   context.Context
+		input domain.FHIRObservationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: create fhir observation",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRObservationInput{
+					Code: domain.FHIRCodeableConceptInput{
+						Text: "Obs",
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error creating resource",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRObservationInput{
+					Code: domain.FHIRCodeableConceptInput{
+						Text: "Obs",
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: error creating resource" {
+				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to create resource")
+				}
+			}
+
+			got, err := fh.CreateFHIRObservation(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRObservation() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_GetFHIRPatient(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: get patient",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.NewString(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error retrieving fhir resource",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.NewString(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error searching active episode",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.NewString(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "happy case: get patient" {
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					id := gofakeit.UUID()
+					patient := &domain.FHIRPatient{
+						ID: &id,
+					}
+
+					bs, err := json.Marshal(patient)
+					if err != nil {
+						return err
+					}
+
+					err = json.Unmarshal(bs, resource)
+					if err != nil {
+						return err
+					}
+
+					return nil
+				}
+
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+					episode := domain.FHIREpisodeOfCare{
+						Period: &domain.FHIRPeriod{
+							Start: "2020-09-24T18:02:38.661033Z",
+							End:   "2020-09-24T18:02:38.661033Z",
+						},
+					}
+
+					payload, err := converterandformatter.StructToMap(episode)
+					if err != nil {
+						return nil, err
+					}
+
+					return []map[string]interface{}{
+						payload,
+					}, nil
+				}
+			}
+
+			if tt.name == "sad case: error retrieving fhir resource" {
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					return fmt.Errorf("failed to get resource")
+				}
+			}
+
+			if tt.name == "sad case: error searching active episode" {
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					id := gofakeit.UUID()
+					patient := &domain.FHIRPatient{
+						ID: &id,
+					}
+
+					bs, err := json.Marshal(patient)
+					if err != nil {
+						return err
+					}
+
+					err = json.Unmarshal(bs, resource)
+					if err != nil {
+						return err
+					}
+
+					return nil
+				}
+
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+					return nil, fmt.Errorf("failed to search resource")
+				}
+			}
+
+			got, err := fh.GetFHIRPatient(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.GetFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_DeleteFHIRResourceType(t *testing.T) {
+
+	type args struct {
+		results []map[string]string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: delete resource",
+			args: args{
+				results: []map[string]string{
+					{"Patient": gofakeit.UUID()},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: delete resource error",
+			args: args{
+				results: []map[string]string{
+					{"Patient": gofakeit.UUID()},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: delete resource error" {
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					return fmt.Errorf("failed to delete resource")
+				}
+			}
+
+			if err := fh.DeleteFHIRResourceType(tt.args.results); (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.DeleteFHIRResourceType() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestStoreImpl_DeleteFHIRServiceRequest(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "happy case: delete service request",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "sad case: delete resource error",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: delete resource error" {
+				dataset.MockDeleteFHIRResourceFn = func(resourceType, fhirResourceID string) error {
+					return fmt.Errorf("failed to delete resource")
+				}
+			}
+
+			got, err := fh.DeleteFHIRServiceRequest(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.DeleteFHIRServiceRequest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("StoreImpl.DeleteFHIRServiceRequest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStoreImpl_CreateFHIRMedicationStatement(t *testing.T) {
+
+	type args struct {
+		ctx   context.Context
+		input domain.FHIRMedicationStatementInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: create medication statement",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRMedicationStatementInput{
+					Category: &domain.FHIRCodeableConceptInput{
+						Text: "dawa",
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error creating resource",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRMedicationStatementInput{
+					Category: &domain.FHIRCodeableConceptInput{
+						Text: "dawa",
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: error creating resource" {
+				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to create resource")
+				}
+			}
+
+			got, err := fh.CreateFHIRMedicationStatement(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRMedicationStatement() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_CreateFHIRMedication(t *testing.T) {
+
+	type args struct {
+		ctx   context.Context
+		input domain.FHIRMedicationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: create medication",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRMedicationInput{
+					Code: &domain.FHIRCodeableConceptInput{
+						Text: "ARV",
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error creating resource",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRMedicationInput{
+					Code: &domain.FHIRCodeableConceptInput{
+						Text: "ARV",
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: error creating resource" {
+				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to create resource")
+				}
+			}
+
+			got, err := fh.CreateFHIRMedication(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRMedication() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_CreateFHIRPatient(t *testing.T) {
+
+	type args struct {
+		ctx   context.Context
+		input domain.FHIRPatientInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: create patient",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRPatientInput{
+					MaritalStatus: &domain.FHIRCodeableConceptInput{
+						Text: "single",
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error creating resource",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRPatientInput{
+					MaritalStatus: &domain.FHIRCodeableConceptInput{
+						Text: "single",
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: error creating resource" {
+				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to create resource")
+				}
+			}
+
+			got, err := fh.CreateFHIRPatient(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_PatchFHIRPatient(t *testing.T) {
+
+	type args struct {
+		ctx    context.Context
+		id     string
+		params []map[string]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: patch patient",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				params: []map[string]interface{}{
+					{"wewe": "mzee"},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error patching resource",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				params: []map[string]interface{}{
+					{"wewe": "mzee"},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: error patching resource" {
+				dataset.MockPatchFHIRResourceFn = func(resourceType string, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to patch resource")
+				}
+			}
+
+			got, err := fh.PatchFHIRPatient(tt.args.ctx, tt.args.id, tt.args.params)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.PatchFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_UpdateFHIREpisodeOfCare(t *testing.T) {
+
+	type args struct {
+		ctx            context.Context
+		fhirResourceID string
+		payload        map[string]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: update episode of care",
+			args: args{
+				ctx:            context.Background(),
+				fhirResourceID: gofakeit.UUID(),
+				payload: map[string]interface{}{
+					"episode": "one",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error updating resource",
+			args: args{
+				ctx:            context.Background(),
+				fhirResourceID: gofakeit.UUID(),
+				payload: map[string]interface{}{
+					"episode": "one",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: error updating resource" {
+				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed ro update resource")
+				}
+			}
+
+			got, err := fh.UpdateFHIREpisodeOfCare(tt.args.ctx, tt.args.fhirResourceID, tt.args.payload)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.UpdateFHIREpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_SearchFHIRMedicationStatement(t *testing.T) {
+	type args struct {
+		ctx    context.Context
+		params map[string]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: search medication statement",
+			args: args{
+				ctx: context.Background(),
+				params: map[string]interface{}{
+					"name": "ARVs",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: search resource error",
+			args: args{
+				ctx: context.Background(),
+				params: map[string]interface{}{
+					"name": "ARVs",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "sad case: search resource error" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+					return nil, fmt.Errorf("failed to search")
+				}
+			}
+
+			got, err := fh.SearchFHIRMedicationStatement(tt.args.ctx, tt.args.params)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchFHIRMedicationStatement() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func fakePatient() (*domain.FHIRPatient, error) {
+	id := gofakeit.UUID()
+	system := scalarutils.URI("test")
+	version := "0.0.1"
+	userSelected := false
+	active := true
+	phoneSystem := domain.ContactPointSystemEnumPhone
+	use := domain.ContactPointUseEnumHome
+	rank := int64(1)
+	phone := gofakeit.Phone()
+	date, err := scalarutils.NewDate(12, 12, 2000)
+	if err != nil {
+		return nil, err
+	}
+	male := domain.PatientGenderEnumMale
+	maleContact := domain.PatientContactGenderEnumMale
+	address := gofakeit.Address()
+	addrUse := domain.AddressUseEnumHome
+	country := helpers.DefaultCountry
+	postalAddrType := domain.AddressTypeEnumPostal
+	name := gofakeit.Name()
+	nameUse := domain.HumanNameUseEnumOfficial
+
+	creation := scalarutils.DateTime("2020-09-24T18:02:38.661033Z")
+
+	patient := domain.FHIRPatient{
+		ID: &id,
+		Identifier: []*domain.FHIRIdentifier{
+			{
+				ID:  &id,
+				Use: domain.IdentifierUseEnumOfficial,
+				Type: domain.FHIRCodeableConcept{
+					Text: "MR",
+					Coding: []*domain.FHIRCoding{
+						{
+							System:       &system,
+							Version:      &version,
+							Code:         scalarutils.Code(id),
+							Display:      id,
+							UserSelected: &userSelected,
+						},
+					},
+				},
+				System:   &system,
+				Value:    id,
+				Period:   common.DefaultPeriod(),
+				Assigner: &domain.FHIRReference{},
+			},
+		},
+		Active: &active,
+		Name: []*domain.FHIRHumanName{
+			{
+				Given:  []*string{&name},
+				Family: &name,
+				Use:    nameUse,
+				Period: common.DefaultPeriod(),
+				Text:   name,
+			},
+		},
+		Telecom: []*domain.FHIRContactPoint{
+			{
+				System: &phoneSystem,
+				Use:    &use,
+				Rank:   &rank,
+				Period: common.DefaultPeriod(),
+				Value:  &phone,
+			},
+		},
+		Gender:    &male,
+		BirthDate: date,
+		Address: []*domain.FHIRAddress{
+			{
+				Use:     &addrUse,
+				Type:    &postalAddrType,
+				Country: &country,
+				Period:  common.DefaultPeriod(),
+				Line:    []*string{&address.Address},
+				Text:    address.Address,
+			},
+		},
+		Photo: []*domain.FHIRAttachment{
+			{
+				ID:       &id,
+				Creation: &creation,
+			},
+		},
+		Contact: []*domain.FHIRPatientContact{
+			{
+				ID:           new(string),
+				Relationship: []*domain.FHIRCodeableConcept{},
+				Name: &domain.FHIRHumanName{
+					Given:  []*string{&name},
+					Family: &name,
+					Use:    nameUse,
+					Period: common.DefaultPeriod(),
+					Text:   name,
+				},
+				Telecom: []*domain.FHIRContactPoint{
+					{
+						System: &phoneSystem,
+						Use:    &use,
+						Rank:   &rank,
+						Period: common.DefaultPeriod(),
+						Value:  &phone,
+					},
+				},
+				Address: &domain.FHIRAddress{
+
+					Use:     &addrUse,
+					Type:    &postalAddrType,
+					Country: &country,
+					Period:  common.DefaultPeriod(),
+					Line:    []*string{&address.Address},
+					Text:    address.Address,
+				},
+				Gender: &maleContact,
+				Period: common.DefaultPeriod(),
+			},
+		},
+		MaritalStatus: &domain.FHIRCodeableConcept{
+			Coding: []*domain.FHIRCoding{
+				{
+					Code:         scalarutils.Code(domain.MaritalStatusA.String()),
+					Display:      domain.MaritalStatusDisplay(domain.MaritalStatusA),
+					UserSelected: &userSelected,
+				},
+			},
+			Text: domain.MaritalStatusDisplay(domain.MaritalStatusA),
+		},
+	}
+
+	return &patient, nil
+}
+
+func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
+
+	type args struct {
+		ctx          context.Context
+		searchParams string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: search patient",
+			args: args{
+				ctx:          context.Background(),
+				searchParams: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: search patient error",
+			args: args{
+				ctx:          context.Background(),
+				searchParams: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: search episode error",
+			args: args{
+				ctx:          context.Background(),
+				searchParams: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "happy case: search patient" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+					var payload map[string]interface{}
+
+					switch resourceType {
+					case "Patient":
+						patient, err := fakePatient()
+						if err != nil {
+							return nil, err
+						}
+
+						payload, err = converterandformatter.StructToMap(patient)
+						if err != nil {
+							return nil, err
+						}
+					case "EpisodeOfCare":
+
+						episode := domain.FHIREpisodeOfCare{
+							Period: &domain.FHIRPeriod{
+								Start: "2020-09-24T18:02:38.661033Z",
+								End:   "2020-09-24T18:02:38.661033Z",
+							},
+						}
+
+						p, err := converterandformatter.StructToMap(episode)
+						if err != nil {
+							return nil, err
+						}
+
+						payload = p
+					}
+
+					return []map[string]interface{}{
+						payload,
+					}, nil
+				}
+			}
+
+			if tt.name == "sad case: search patient error" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+					var payload map[string]interface{}
+
+					switch resourceType {
+					case "Patient":
+						return nil, fmt.Errorf("failed to find patient")
+					case "EpisodeOfCare":
+
+						episode := domain.FHIREpisodeOfCare{
+							Period: &domain.FHIRPeriod{
+								Start: "2020-09-24T18:02:38.661033Z",
+								End:   "2020-09-24T18:02:38.661033Z",
+							},
+						}
+
+						p, err := converterandformatter.StructToMap(episode)
+						if err != nil {
+							return nil, err
+						}
+
+						payload = p
+					}
+
+					return []map[string]interface{}{
+						payload,
+					}, nil
+				}
+			}
+
+			if tt.name == "sad case: search episode error" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+					var payload map[string]interface{}
+
+					switch resourceType {
+					case "Patient":
+						patient, err := fakePatient()
+						if err != nil {
+							return nil, err
+						}
+
+						payload, err = converterandformatter.StructToMap(patient)
+						if err != nil {
+							return nil, err
+						}
+					case "EpisodeOfCare":
+						return nil, fmt.Errorf("failed to find episode")
+					}
+
+					return []map[string]interface{}{
+						payload,
+					}, nil
+				}
+			}
+
+			got, err := fh.SearchFHIRPatient(tt.args.ctx, tt.args.searchParams)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
 
 func TestStoreImpl_CreateFHIRCondition(t *testing.T) {
 
