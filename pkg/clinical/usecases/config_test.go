@@ -14,7 +14,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
-	oclMock "github.com/savannahghi/clinical/pkg/clinical/usecases/ocl/mock"
 	"github.com/savannahghi/serverutils"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/api/healthcare/v1"
@@ -27,7 +26,6 @@ var (
 	testFakeInfra usecases.Interactor
 
 	FHIRRepoMock fhirRepoMock.FakeFHIRRepository
-	fakeOCL      oclMock.OCLMock
 
 	fakeBaseExtension extensionMock.FakeBaseExtension
 )
@@ -98,12 +96,10 @@ func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastru
 }
 
 func InitializeFakeTestlInteractor(ctx context.Context) (usecases.Interactor, error) {
-	var ocl infrastructure.ServiceOCL = &fakeOCL
 	var baseExt extensions.BaseExtension = &fakeBaseExtension
 	infra := func() infrastructure.Infrastructure {
 		return infrastructure.Infrastructure{
-			OpenConceptLab: ocl,
-			BaseExtension:  baseExt,
+			BaseExtension: baseExt,
 		}
 	}()
 
