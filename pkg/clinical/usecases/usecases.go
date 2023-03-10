@@ -10,7 +10,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/ocl"
 )
 
 // Clinical represents all the patient business logic
@@ -46,7 +45,6 @@ type OCL interface {
 type Interactor struct {
 	infra infrastructure.Infrastructure
 	Clinical
-	OCL
 }
 
 // NewUsecasesInteractor initializes a new usecases interactor
@@ -54,12 +52,10 @@ func NewUsecasesInteractor(
 	infrastructure infrastructure.Infrastructure,
 ) Interactor {
 	clinical := clinicalUsecase.NewUseCasesClinicalImpl(infrastructure)
-	ocl := ocl.NewUseCasesOCLImpl(infrastructure)
 
 	impl := Interactor{
 		infrastructure,
 		clinical,
-		ocl,
 	}
 
 	return impl
