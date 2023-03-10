@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
@@ -38,10 +37,8 @@ func NewInfrastructureInteractor(
 	ext extensions.BaseExtension,
 	fhir repository.FHIR,
 	openconceptlab ServiceOCL,
+	mycarehub mycarehub.IServiceMyCareHub,
 ) Infrastructure {
-	myCareHubClient := common.NewInterServiceClient("mycarehub", ext)
-	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient, ext)
-
 	return Infrastructure{
 		fhir,
 		openconceptlab,

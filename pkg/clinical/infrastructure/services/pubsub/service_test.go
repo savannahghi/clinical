@@ -13,6 +13,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/serverutils"
@@ -50,8 +51,10 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 	baseExtension := extensions.NewBaseExtensionImpl()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
+	myCareHubClient := common.NewInterServiceClient("mycarehub", baseExtension)
+	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient, baseExtension)
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub)
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		ctx,
 		pubSubClient,

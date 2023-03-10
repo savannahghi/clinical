@@ -173,7 +173,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 	}
 
 	// create the allergy reaction
-	var reaction *domain.FHIRAllergyintoleranceReactionInput
+	var reaction domain.FHIRAllergyintoleranceReactionInput
 
 	// reaction manifestation is required
 	//
@@ -216,7 +216,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 	}
 
 	// add allergy reaction
-	allergy.Reaction = append(allergy.Reaction, reaction)
+	allergy.Reaction = append(allergy.Reaction, &reaction)
 
 	return allergy, nil
 }

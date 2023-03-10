@@ -2,7 +2,9 @@ package mock
 
 import (
 	"context"
+	"time"
 
+	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 )
 
@@ -26,15 +28,24 @@ type FakeMyCareHubService struct {
 func NewFakeMyCareHubServiceMock() *FakeMyCareHubService {
 	return &FakeMyCareHubService{
 		MockUserProfileFn: func(ctx context.Context, userID string) (*domain.User, error) {
+			dob := time.Now()
 			return &domain.User{
 				ID:       new(string),
-				Username: "",
-				UserType: "",
-				Name:     "",
-				Gender:   "",
+				Username: gofakeit.Username(),
+				UserType: "STAFF",
+				Name:     gofakeit.Name(),
+				Gender:   "MALE",
 				Active:   false,
-				Flavour:  "",
+				Flavour:  "PRO",
 				Avatar:   "",
+				Contacts: &domain.Contact{
+					ID:           new(string),
+					ContactType:  "PHONE",
+					ContactValue: gofakeit.PhoneFormatted(),
+					Active:       true,
+					OptedIn:      true,
+				},
+				DateOfBirth: &dob,
 			}, nil
 		},
 		MockAddFHIRIDToPatientProfileFn: func(

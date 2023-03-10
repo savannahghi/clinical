@@ -3,6 +3,7 @@ package mock
 import (
 	"context"
 
+	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/firebasetools"
@@ -259,7 +260,27 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRAllergyIntoleranceRelayConnection{}, nil
 		},
 		MockCreateFHIRAllergyIntoleranceFn: func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
-			return &domain.FHIRAllergyIntoleranceRelayPayload{}, nil
+			return &domain.FHIRAllergyIntoleranceRelayPayload{
+				Resource: &domain.FHIRAllergyIntolerance{
+					ID:   new(string),
+					Text: &domain.FHIRNarrative{},
+					Reaction: []*domain.FHIRAllergyintoleranceReaction{
+						{
+							ID:        new(string),
+							Substance: &domain.FHIRCodeableConcept{},
+							Manifestation: []*domain.FHIRCodeableConcept{
+								{
+									ID:     new(string),
+									Coding: []*domain.FHIRCoding{},
+									Text:   gofakeit.Name(),
+								},
+							},
+						},
+					},
+					Meta:      &domain.FHIRMeta{},
+					Extension: []*domain.FHIRExtension{},
+				},
+			}, nil
 		},
 		MockUpdateFHIRAllergyIntoleranceFn: func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 			return &domain.FHIRAllergyIntoleranceRelayPayload{}, nil
@@ -376,7 +397,19 @@ func NewFHIRMock() *FHIRMock {
 			return true, nil
 		},
 		MockGetFHIRPatientFn: func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-			return &domain.FHIRPatientRelayPayload{}, nil
+			patientID := uuid.New().String()
+			patientName := gofakeit.Name()
+			return &domain.FHIRPatientRelayPayload{
+				Resource: &domain.FHIRPatient{
+					ID: &patientID,
+					Name: []*domain.FHIRHumanName{
+						{
+							Given: []*string{&patientName},
+						},
+					},
+				},
+				HasOpenEpisodes: false,
+			}, nil
 		},
 		MockDeleteFHIRPatientFn: func(ctx context.Context, id string) (bool, error) {
 			return true, nil
