@@ -3,7 +3,6 @@ package domain
 import (
 	"fmt"
 	"io"
-	"log"
 	"strconv"
 	"time"
 
@@ -1043,10 +1042,7 @@ func (e *AddressTypeEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the address type enum to the supplied writer as a quoted string
 func (e AddressTypeEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // AddressUseEnum is a FHIR enum
@@ -1106,10 +1102,7 @@ func (e *AddressUseEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the address use enum to the supplied writer as a quoted string
 func (e AddressUseEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // AgeComparatorEnum is a FHIR enum
@@ -1177,10 +1170,7 @@ func (e *AgeComparatorEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the age comparator to the supplied writer as a quoted string
 func (e AgeComparatorEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // ContactPointSystemEnum is a FHIR enum
@@ -1246,10 +1236,7 @@ func (e *ContactPointSystemEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the given enum to the supplied writer as a quoted string
 func (e ContactPointSystemEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // ContactPointUseEnum is a FHIR enum
@@ -1309,10 +1296,7 @@ func (e *ContactPointUseEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the contact point use to the supplied writer as a quoted string
 func (e ContactPointUseEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // DurationComparatorEnum is a FHIR enum
@@ -1380,10 +1364,7 @@ func (e *DurationComparatorEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the duration comparator to the supplied writer as a quoted string
 func (e DurationComparatorEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // HumanNameUseEnum is a FHIR enum
@@ -1449,10 +1430,7 @@ func (e *HumanNameUseEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the given enum to the supplied writer as a quoted string
 func (e HumanNameUseEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // IdentifierUseEnum is a FHIR enum
@@ -1512,10 +1490,7 @@ func (e *IdentifierUseEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the identifier use to the supplied writer as a quoted string
 func (e IdentifierUseEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // NarrativeStatusEnum is a FHIR enum
@@ -1572,10 +1547,7 @@ func (e *NarrativeStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the given enum to the supplied writer as a quoted string
 func (e NarrativeStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // QuantityComparatorEnum is a FHIR enum
@@ -1643,10 +1615,7 @@ func (e *QuantityComparatorEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the quality comparator to the supplied writer as a quoted string
 func (e QuantityComparatorEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // TimingRepeatDurationUnitEnum is a FHIR enum
@@ -1712,10 +1681,7 @@ func (e *TimingRepeatDurationUnitEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the timing repeat duration to the supplied writer as a quoted string
 func (e TimingRepeatDurationUnitEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // TimingRepeatPeriodUnitEnum is a FHIR enum
@@ -1781,10 +1747,7 @@ func (e *TimingRepeatPeriodUnitEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the timing repeat period to the supplied writer as a quoted string
 func (e TimingRepeatPeriodUnitEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // TimingRepeatWhenEnum is a FHIR enum
@@ -1907,10 +1870,7 @@ func (e *TimingRepeatWhenEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes when timings repeat to the supplied writer as a quoted string
 func (e TimingRepeatWhenEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // AllergyIntoleranceCategoryEnum is a FHIR enum
@@ -1967,10 +1927,7 @@ func (e *AllergyIntoleranceCategoryEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the allergy intolerance category to the supplied writer as a quoted string
 func (e AllergyIntoleranceCategoryEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // AllergyIntoleranceCriticalityEnum is a FHIR enum
@@ -2028,10 +1985,7 @@ func (e *AllergyIntoleranceCriticalityEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the allergy intolerance criticality to the supplied writer as a quoted string
 func (e AllergyIntoleranceCriticalityEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // AllergyIntoleranceTypeEnum is a FHIR enum
@@ -2082,10 +2036,7 @@ func (e *AllergyIntoleranceTypeEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the allergy intolerance type to the supplied writer as a quoted string
 func (e AllergyIntoleranceTypeEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // AllergyIntoleranceReactionSeverityEnum is a FHIR enum
@@ -2139,10 +2090,7 @@ func (e *AllergyIntoleranceReactionSeverityEnum) UnmarshalGQL(v interface{}) err
 
 // MarshalGQL writes the allergy intolerance reaction severity to the supplied writer as a quoted string
 func (e AllergyIntoleranceReactionSeverityEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // CompositionStatusEnum is a FHIR enum
@@ -2203,10 +2151,7 @@ func (e *CompositionStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the composition status to the supplied writer as a quoted string
 func (e CompositionStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // CompositionAttesterModeEnum is a FHIR enum
@@ -2263,10 +2208,7 @@ func (e *CompositionAttesterModeEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the composition attester mode to the supplied writer as a quoted string
 func (e CompositionAttesterModeEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // EncounterStatusEnum is a FHIR enum
@@ -2345,10 +2287,7 @@ func (e *EncounterStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the encounter status to the supplied writer as a quoted string
 func (e EncounterStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // EncounterLocationStatusEnum is a FHIR enum
@@ -2405,10 +2344,7 @@ func (e *EncounterLocationStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the encounter location status to the supplied writer as a quoted string
 func (e EncounterLocationStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // EncounterStatusHistoryStatusEnum is a FHIR enum
@@ -2487,10 +2423,7 @@ func (e *EncounterStatusHistoryStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the given enum  to the supplied writer as a quoted string
 func (e EncounterStatusHistoryStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // EpisodeOfCareStatusEnum is a FHIR enum
@@ -2560,10 +2493,7 @@ func (e *EpisodeOfCareStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the episode of care status to the supplied writer as a quoted string
 func (e EpisodeOfCareStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // EpisodeOfCareStatusHistoryStatusEnum is a FHIR enum
@@ -2633,10 +2563,7 @@ func (e *EpisodeOfCareStatusHistoryStatusEnum) UnmarshalGQL(v interface{}) error
 
 // MarshalGQL writes the status of the episode of care status history to the supplied writer as a quoted string
 func (e EpisodeOfCareStatusHistoryStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // ObservationStatusEnum is a FHIR enum
@@ -2709,10 +2636,7 @@ func (e *ObservationStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the observation status to the supplied writer as a quoted string
 func (e ObservationStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // PatientGenderEnum is a FHIR enum
@@ -2769,10 +2693,7 @@ func (e *PatientGenderEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the patient gender to the supplied writer as a quoted string
 func (e PatientGenderEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // PatientContactGenderEnum is a FHIR enum
@@ -2829,10 +2750,7 @@ func (e *PatientContactGenderEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the patient contact gender to the supplied writer as a quoted string
 func (e PatientContactGenderEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // PatientLinkTypeEnum is a FHIR enum
@@ -2893,10 +2811,7 @@ func (e *PatientLinkTypeEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the patient link type to the supplied writer as a quoted string
 func (e PatientLinkTypeEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // MedicationStatementStatusEnum indicates the status of a medication statement
@@ -2979,10 +2894,7 @@ func (e *MedicationStatementStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the patient link type to the supplied writer as a quoted string
 func (e MedicationStatementStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // MedicationStatusEnum indicates the medication status
@@ -3040,8 +2952,5 @@ func (e *MedicationStatusEnum) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL writes the patient link type to the supplied writer as a quoted string
 func (e MedicationStatusEnum) MarshalGQL(w io.Writer) {
-	_, err := fmt.Fprint(w, strconv.Quote(e.String()))
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
