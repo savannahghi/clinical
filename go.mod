@@ -13,6 +13,7 @@ require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.0
 	github.com/google/uuid v1.3.0
+	github.com/jarcoal/httpmock v1.3.0
 	github.com/labstack/gommon v0.4.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/rs/xid v1.4.0
@@ -90,7 +91,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/ttacon/builder v0.0.0-20170518171403-c099f663e1c2 // indirect
 	github.com/ttacon/libphonenumber v1.2.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
