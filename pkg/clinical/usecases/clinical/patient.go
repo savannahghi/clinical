@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	linq "github.com/ahmetb/go-linq/v3"
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
@@ -13,20 +14,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
 	log "github.com/sirupsen/logrus"
-)
-
-// constants and defaults
-const (
-	// LimitedProfileEncounterCount is the number of encounters to show when a
-	// patient has approved limited access to their health record
-	LimitedProfileEncounterCount = 5
-
-	RelationshipSystem               = "http://terminology.hl7.org/CodeSystem/v2-0131"
-	RelationshipVersion              = "2.9"
-	StringTimeParseMonthNameLayout   = "2006-Jan-02"
-	StringTimeParseMonthNumberLayout = "2006-01-02"
-	SavannahAdminEmail               = "SAVANNAH_ADMIN_EMAIL"
-	TwilioSMSNumberEnvVarName        = "TWILIO_SMS_NUMBER"
 )
 
 // UseCasesClinicalImpl represents the patient usecase implementation
@@ -43,7 +30,12 @@ func NewUseCasesClinicalImpl(infra infrastructure.Infrastructure) *UseCasesClini
 
 // PatientTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
-func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID string, count int) ([]map[string]interface{}, error) {
+func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID string) ([]map[string]interface{}, error) {
+	_, err := uuid.Parse(patientID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid patient id: %s", patientID)
+	}
+
 	timeline := []map[string]interface{}{}
 	wg := &sync.WaitGroup{}
 	mut := &sync.Mutex{}
@@ -312,7 +304,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 // PatientHealthTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
 func (c *UseCasesClinicalImpl) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
-	records, err := c.PatientTimeline(ctx, input.PatientID, 0)
+	records, err := c.PatientTimeline(ctx, input.PatientID)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("cannot retrieve patient timeline error: %w", err)
