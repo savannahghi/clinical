@@ -13,10 +13,12 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/authutils"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
@@ -129,8 +131,10 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 	repo := fhirdataset.NewFHIRRepository(ctx, hsv, project, datasetID, datasetLocation, fhirStoreID)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
+	myCareHubClient := common.NewInterServiceClient("mycarehub", baseExtension)
+	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient, baseExtension)
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub)
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 	handlers := rest.NewPresentationHandlers(usecases)
 

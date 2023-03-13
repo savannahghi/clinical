@@ -5,12 +5,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	extensionMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
 	fhirRepoMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset/mock"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/interactor"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
@@ -91,8 +93,10 @@ func InitializeTestInfrastructure(ctx context.Context) (infrastructure.Infrastru
 	baseExtension := extensions.NewBaseExtensionImpl()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
+	myCareHubClient := common.NewInterServiceClient("mycarehub", baseExtension)
+	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient, baseExtension)
 
-	return infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl), nil
+	return infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub), nil
 }
 
 func InitializeFakeTestlInteractor(ctx context.Context) (usecases.Interactor, error) {

@@ -10,6 +10,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
+	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/firebasetools"
@@ -76,8 +77,9 @@ func TestUsecaseImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 			Fakefhir := fakeFHIRMock.NewFHIRMock()
 			FakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL)
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case" {
@@ -209,8 +211,9 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance" {
@@ -368,8 +371,9 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 			Fakefhir := fakeFHIRMock.NewFHIRMock()
 			FakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL)
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := u.PatientHealthTimeline(tt.args.ctx, tt.args.input)
@@ -496,8 +500,9 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to search medication statement" {

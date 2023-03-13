@@ -4,10 +4,12 @@ import (
 	"context"
 	"log"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	dataset "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/serverutils"
@@ -33,8 +35,10 @@ func InitializeTestService(ctx context.Context) (usecases.Interactor, error) {
 	baseExtension := extensions.NewBaseExtensionImpl()
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
+	myCareHubClient := common.NewInterServiceClient("mycarehub", baseExtension)
+	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient, baseExtension)
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub)
 
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 
