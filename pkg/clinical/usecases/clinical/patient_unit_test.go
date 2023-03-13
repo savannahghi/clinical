@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/brianvoe/gofakeit"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -14,6 +16,7 @@ import (
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 )
 
@@ -87,9 +90,19 @@ func TestUsecaseImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 					return nil, fmt.Errorf("Error creating fhir organization")
 				}
 			}
-			_, err := u.CreateFHIROrganization(tt.args.ctx, tt.args.input)
+			got, err := u.CreateFHIROrganization(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FHIRUseCaseImpl.CreateFHIROrganization() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if tt.wantErr && got != nil {
+				t.Errorf("expected organisation to be nil for %v", tt.name)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected organisation not to be nil for %v", tt.name)
 				return
 			}
 		})
@@ -97,17 +110,9 @@ func TestUsecaseImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
-	ctx := context.Background()
-	ctx, err := addOrganisationContext(ctx, testProviderCode)
-	if err != nil {
-		t.Errorf("cant add test organisation context: %v\n", err)
-		return
-	}
-
 	type args struct {
 		ctx       context.Context
 		patientID string
-		count     int
 	}
 	tests := []struct {
 		name    string
@@ -118,90 +123,80 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 		{
 			name: "Happy case: patient timeline",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - Fail to search allergy intolerance",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - Fail to get allergy intolerance - nil node",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Happy Case - Successfully get allergy intolerance",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - Fail to search observation",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Happy Case - Successfully get observation",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - Fail to get observation - nil node",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - Fail to search medication statement",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Happy Case - Successfully get medication statement",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - Fail to search medication statement - nil node",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				count:     4,
 			},
 			wantErr: false,
 		},
@@ -315,7 +310,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 				}
 			}
 
-			got, err := u.PatientTimeline(tt.args.ctx, tt.args.patientID, tt.args.count)
+			got, err := u.PatientTimeline(tt.args.ctx, tt.args.patientID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ClinicalUseCaseImpl.PatientTimeline() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -336,13 +331,6 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
-	ctx := context.Background()
-	ctx, err := addOrganisationContext(ctx, testProviderCode)
-	if err != nil {
-		t.Errorf("cant add test organisation context: %v\n", err)
-		return
-	}
-
 	type args struct {
 		ctx   context.Context
 		input domain.HealthTimelineInput
@@ -356,7 +344,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 		{
 			name: "Happy case: patient timeline",
 			args: args{
-				ctx: ctx,
+				ctx: context.Background(),
 				input: domain.HealthTimelineInput{
 					PatientID: gofakeit.UUID(),
 					Offset:    0,
@@ -364,6 +352,30 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "Sad case: patient timeline invalid date",
+			args: args{
+				ctx: context.Background(),
+				input: domain.HealthTimelineInput{
+					PatientID: gofakeit.UUID(),
+					Offset:    0,
+					Limit:     20,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid patient id",
+			args: args{
+				ctx: context.Background(),
+				input: domain.HealthTimelineInput{
+					PatientID: "invalid",
+					Offset:    0,
+					Limit:     20,
+				},
+			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -375,6 +387,188 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Happy case: patient timeline" {
+				Fakefhir.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+					return &domain.FHIRAllergyIntoleranceRelayConnection{
+						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRAllergyIntolerance{
+									RecordedDate: &scalarutils.Date{
+										Year:  2019,
+										Month: 11,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRAllergyIntolerance{
+									RecordedDate: &scalarutils.Date{
+										Year:  2020,
+										Month: 11,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRAllergyIntolerance{
+									RecordedDate: &scalarutils.Date{
+										Year:  2021,
+										Month: 11,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRAllergyIntolerance{
+									RecordedDate: &scalarutils.Date{
+										Year:  2022,
+										Month: 11,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRAllergyIntolerance{
+									RecordedDate: &scalarutils.Date{
+										Year:  2023,
+										Month: 11,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRAllergyIntolerance{
+									RecordedDate: &scalarutils.Date{
+										Year:  2018,
+										Month: 11,
+										Day:   10,
+									},
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+
+				Fakefhir.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+					return &domain.FHIRMedicationStatementRelayConnection{
+						Edges: []*domain.FHIRMedicationStatementRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRMedicationStatement{
+									EffectiveDateTime: &scalarutils.Date{
+										Year:  2019,
+										Month: 11,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRMedicationStatement{
+									EffectiveDateTime: &scalarutils.Date{
+										Year:  2020,
+										Month: 12,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRMedicationStatement{
+									EffectiveDateTime: &scalarutils.Date{
+										Year:  2021,
+										Month: 10,
+										Day:   10,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRMedicationStatement{
+									EffectiveDateTime: &scalarutils.Date{
+										Year:  2022,
+										Month: 11,
+										Day:   13,
+									},
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRMedicationStatement{
+									EffectiveDateTime: &scalarutils.Date{
+										Year:  2023,
+										Month: 11,
+										Day:   14,
+									},
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+
+				Fakefhir.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+					instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
+
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									EffectiveInstant: &instant,
+								},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									EffectiveInstant: &instant,
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad case: patient timeline invalid date" {
+				Fakefhir.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+					instant := scalarutils.Instant("")
+
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									EffectiveInstant: &instant,
+								},
+							},
+							{
+								Cursor: new(string),
+								Node:   &domain.FHIRObservation{},
+							},
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									EffectiveInstant: &instant,
+								},
+							},
+							{
+								Cursor: new(string),
+								Node:   &domain.FHIRObservation{},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
 
 			got, err := u.PatientHealthTimeline(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
@@ -397,12 +591,6 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 }
 
 func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
-	ctx := context.Background()
-	ctx, err := addOrganisationContext(ctx, testProviderCode)
-	if err != nil {
-		t.Errorf("cant add test organisation context: %v\n", err)
-		return
-	}
 
 	type args struct {
 		ctx       context.Context
@@ -417,7 +605,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Happy case: patient timeline",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: false,
@@ -425,7 +613,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Sad Case - Fail to search medication statement",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: true,
@@ -433,7 +621,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Sad Case - Fail to search medication statement - nil node",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: false,
@@ -441,7 +629,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Happy Case - Successfully search medication statement",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: false,
@@ -449,7 +637,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Sad Case - Fail to search allergy intolerance",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: true,
@@ -457,7 +645,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Sad Case - Fail to search allergy intolerance - nil node",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: false,
@@ -465,23 +653,15 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Happy Case - Successfully search allergy intolerance",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: false,
 		},
 		{
-			name: "Sad Case - Fail to search observation",
-			args: args{
-				ctx:       ctx,
-				patientID: gofakeit.UUID(),
-			},
-			wantErr: true,
-		},
-		{
 			name: "Sad Case - Fail to search observation - nil node",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: false,
@@ -489,10 +669,42 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		{
 			name: "Happy Case - Successfully search observation",
 			args: args{
-				ctx:       ctx,
+				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
 			},
 			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to search weight",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to search BMI",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to search viralLoad",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to search cd4Count",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -571,9 +783,75 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 				}
 			}
 
-			if tt.name == "Sad Case - Fail to search observation" {
+			if tt.name == "Sad Case - Fail to search weight" {
 				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
-					return nil, fmt.Errorf("failed to search observation")
+					if params["code"] == common.WeightCIELTerminologyCode {
+						return nil, fmt.Errorf("failed to search observation")
+					}
+
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node:   &domain.FHIRObservation{},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search BMI" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+					if params["code"] == common.BMICIELTerminologyCode {
+						return nil, fmt.Errorf("failed to search observation")
+					}
+
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node:   &domain.FHIRObservation{},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search viralLoad" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+					if params["code"] == common.ViralLoadCIELTerminologyCode {
+						return nil, fmt.Errorf("failed to search observation")
+					}
+
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node:   &domain.FHIRObservation{},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search cd4Count" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+					if params["code"] == common.CD4CountCIELTerminologyCode {
+						return nil, fmt.Errorf("failed to search observation")
+					}
+
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node:   &domain.FHIRObservation{},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
 				}
 			}
 
