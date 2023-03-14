@@ -17,10 +17,7 @@ type Resolver struct {
 
 // NewResolver initializes a working top leve Resolver that has been initialized
 // with all necessary dependencies
-func NewResolver(
-	ctx context.Context,
-	usecases usecases.Interactor,
-) (*Resolver, error) {
+func NewResolver(usecases usecases.Interactor) (*Resolver, error) {
 	return &Resolver{
 		usecases: usecases,
 	}, nil

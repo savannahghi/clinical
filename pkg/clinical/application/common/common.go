@@ -1,7 +1,6 @@
 package common
 
 import (
-	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/sirupsen/logrus"
 )
@@ -11,8 +10,17 @@ const (
 	MaxClinicalRecordPageSize = 50
 )
 
+// BaseExtension is an interface that represents some methods in base
+// The `onboarding` service has a dependency on `base` library.
+// Our first step to making some functions are testable is to remove the base dependency.
+// This can be achieved with the below interface.
+type BaseExtension interface {
+	LoadDepsFromYAML() (*interserviceclient.DepsConfig, error)
+	SetupISCclient(config interserviceclient.DepsConfig, serviceName string) (*interserviceclient.InterServiceClient, error)
+}
+
 // NewInterServiceClient initializes an external service in the correct environment given its name
-func NewInterServiceClient(serviceName string, baseExt extensions.BaseExtension) *interserviceclient.InterServiceClient {
+func NewInterServiceClient(serviceName string, baseExt BaseExtension) *interserviceclient.InterServiceClient {
 	config, err := baseExt.LoadDepsFromYAML()
 	if err != nil {
 		logrus.Panicf("occurred while opening deps file %v", err)

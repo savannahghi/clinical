@@ -6,9 +6,12 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
+	"github.com/savannahghi/interserviceclient"
+	"github.com/savannahghi/profileutils"
+	"github.com/savannahghi/pubsubtools"
 )
 
 // ServiceOCL ...
@@ -24,17 +27,39 @@ type ServiceOCL interface {
 		includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error)
 }
 
+// BaseExtension is an interface that represents some methods in base
+// The `onboarding` service has a dependency on `base` library.
+// Our first step to making some functions are testable is to remove the base dependency.
+// This can be achieved with the below interface.
+type BaseExtension interface {
+	GetLoggedInUser(ctx context.Context) (*profileutils.UserInfo, error)
+	GetLoggedInUserUID(ctx context.Context) (string, error)
+	GetTenantIdentifiers(ctx context.Context) (*dto.TenantIdentifiers, error)
+	NormalizeMSISDN(msisdn string) (*string, error)
+	LoadDepsFromYAML() (*interserviceclient.DepsConfig, error)
+	SetupISCclient(config interserviceclient.DepsConfig, serviceName string) (*interserviceclient.InterServiceClient, error)
+	GetEnvVar(envName string) (string, error)
+	ErrorMap(err error) map[string]string
+	WriteJSONResponse(
+		w http.ResponseWriter,
+		source interface{},
+		status int,
+	)
+	VerifyPubSubJWTAndDecodePayload(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error)
+	GetPubSubTopic(m *pubsubtools.PubSubPayload) (string, error)
+}
+
 // Infrastructure ...
 type Infrastructure struct {
 	FHIR           repository.FHIR
 	OpenConceptLab ServiceOCL
-	BaseExtension  extensions.BaseExtension
+	BaseExtension  BaseExtension
 	MyCareHub      mycarehub.IServiceMyCareHub
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
 func NewInfrastructureInteractor(
-	ext extensions.BaseExtension,
+	ext BaseExtension,
 	fhir repository.FHIR,
 	openconceptlab ServiceOCL,
 	mycarehub mycarehub.IServiceMyCareHub,

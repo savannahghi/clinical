@@ -39,17 +39,14 @@ type IServiceMyCareHub interface {
 // ServiceMyCareHubImpl represents mycarehub usecases
 type ServiceMyCareHubImpl struct {
 	MyCareHubClient extensions.ISCClientExtension
-	baseExt         extensions.BaseExtension
 }
 
 // NewServiceMyCareHub returns new instance of ServiceMyCareHubImpl
 func NewServiceMyCareHub(
 	pr extensions.ISCClientExtension,
-	baseExt extensions.BaseExtension,
 ) *ServiceMyCareHubImpl {
 	return &ServiceMyCareHubImpl{
 		MyCareHubClient: pr,
-		baseExt:         baseExt,
 	}
 }
 

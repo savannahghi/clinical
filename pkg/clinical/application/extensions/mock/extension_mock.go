@@ -9,6 +9,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/profileutils"
+	"github.com/savannahghi/pubsubtools"
 )
 
 // FakeBaseExtension is an mock of the BaseExtension
@@ -25,7 +26,9 @@ type FakeBaseExtension struct {
 		source interface{},
 		status int,
 	)
-	MockGetTenantIdentifiersFn func(ctx context.Context) (*dto.TenantIdentifiers, error)
+	MockGetTenantIdentifiersFn            func(ctx context.Context) (*dto.TenantIdentifiers, error)
+	MockVerifyPubSubJWTAndDecodePayloadFn func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error)
+	MockGetPubSubTopicFn                  func(m *pubsubtools.PubSubPayload) (string, error)
 }
 
 // NewFakeBaseExtensionMock initializes a new instance of extension mock
@@ -91,6 +94,12 @@ func NewFakeBaseExtensionMock() *FakeBaseExtension {
 				OrganizationID: uuid.New().String(),
 			}, nil
 		},
+		MockVerifyPubSubJWTAndDecodePayloadFn: func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
+			return &pubsubtools.PubSubPayload{}, nil
+		},
+		MockGetPubSubTopicFn: func(m *pubsubtools.PubSubPayload) (string, error) {
+			return "", nil
+		},
 	}
 }
 
@@ -140,4 +149,21 @@ func (b *FakeBaseExtension) WriteJSONResponse(
 // GetTenantIdentifiers mocks the implementation of getting the tenant identifiers
 func (b *FakeBaseExtension) GetTenantIdentifiers(ctx context.Context) (*dto.TenantIdentifiers, error) {
 	return b.MockGetTenantIdentifiersFn(ctx)
+}
+
+// VerifyPubSubJWTAndDecodePayload confirms that there is a valid Google signed
+// JWT and decodes the pubsub message payload into a struct.
+//
+// It's use will simplify & shorten the handler funcs that process Cloud Pubsub
+// push notifications.
+func (b *FakeBaseExtension) VerifyPubSubJWTAndDecodePayload(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
+	return b.MockVerifyPubSubJWTAndDecodePayloadFn(w, r)
+}
+
+// GetPubSubTopic retrieves a pubsub topic from a pubsub payload.
+//
+// It follows a convention where the topic is sent as an attribute under the
+// `topicID` key.
+func (b *FakeBaseExtension) GetPubSubTopic(m *pubsubtools.PubSubPayload) (string, error) {
+	return b.MockGetPubSubTopicFn(m)
 }

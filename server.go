@@ -24,5 +24,5 @@ func main() {
 		serverutils.LogStartupError(ctx, err)
 	}
 
-	presentation.StartGin(ctx, port, presentation.ClinicalAllowedOrigins)
+	presentation.StartServer(ctx, port)
 }
