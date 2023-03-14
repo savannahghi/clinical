@@ -5,3 +5,5 @@ coverage.txt
 .idea/
 .gitmessage.txt
 .vscode/
+
+.DS_Store

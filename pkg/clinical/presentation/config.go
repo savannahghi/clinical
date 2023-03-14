@@ -169,7 +169,7 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 
 	graphQL := r.Group("/graphql")
 	graphQL.Use(authutils.SladeAuthenticationGinMiddleware(*authclient))
-	graphQL.Use(rest.TenantIdentifierExtractionMiddleware(usecases))
+	graphQL.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
 	graphQL.Any("", GQLHandler(usecases))
 
 	// Unauthenticated routes
