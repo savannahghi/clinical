@@ -61,3 +61,31 @@ func TestReportErrorToSentry(t *testing.T) {
 		})
 	}
 }
+
+func TestAddPubSubNamespace(t *testing.T) {
+	type args struct {
+		topicName   string
+		serviceName string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Happy case: add pubsub namespace",
+			args: args{
+				topicName:   "test",
+				serviceName: "service",
+			},
+			want: "service-test-staging-v1",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := AddPubSubNamespace(tt.args.topicName, tt.args.serviceName); got != tt.want {
+				t.Errorf("AddPubSubNamespace() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
