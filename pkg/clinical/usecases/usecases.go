@@ -43,7 +43,6 @@ type OCL interface {
 
 // Interactor is an implementation of the usecases interface
 type Interactor struct {
-	infra infrastructure.Infrastructure
 	Clinical
 }
 
@@ -54,7 +53,6 @@ func NewUsecasesInteractor(
 	clinical := clinicalUsecase.NewUseCasesClinicalImpl(infrastructure)
 
 	impl := Interactor{
-		infrastructure,
 		clinical,
 	}
 

@@ -67,11 +67,9 @@ func TestServiceMyCareHubImpl_UserProfile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fakeExt := extMock.NewFakeBaseExtensionMock()
 			fakeISC := extMock.NewFakeISCExtensionMock()
 			s := ServiceMyCareHubImpl{
 				MyCareHubClient: fakeISC,
-				baseExt:         fakeExt,
 			}
 
 			if tt.name == "Happy Case: get user profile" {
@@ -193,11 +191,9 @@ func TestServiceMyCareHubImpl_AddFHIRIDToPatientProfile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fakeExt := extMock.NewFakeBaseExtensionMock()
 			fakeISC := extMock.NewFakeISCExtensionMock()
 			s := ServiceMyCareHubImpl{
 				MyCareHubClient: fakeISC,
-				baseExt:         fakeExt,
 			}
 
 			if tt.name == "Happy case: add FHIR patient to profile" {
@@ -285,11 +281,9 @@ func TestServiceMyCareHubImpl_AddFHIRIDToFacility(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fakeExt := extMock.NewFakeBaseExtensionMock()
 			fakeISC := extMock.NewFakeISCExtensionMock()
 			s := ServiceMyCareHubImpl{
 				MyCareHubClient: fakeISC,
-				baseExt:         fakeExt,
 			}
 
 			if tt.name == "Happy Case: add FHIR id to facility" {

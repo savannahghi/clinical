@@ -30,6 +30,10 @@ linters:
     - importas
     - wsl
     - revive
+    - exportloopref
+    - nilerr
+    - makezero
+    - reassign
 
 linters-settings:
   staticcheck:

@@ -12,6 +12,7 @@ import (
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/profileutils"
+	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
 )
 
@@ -34,29 +35,8 @@ func (i *ISCExtensionImpl) MakeRequest(ctx context.Context, method string, path 
 	return isc.MakeRequest(ctx, method, path, body)
 }
 
-// BaseExtension is an interface that represents some methods in base
-// The `onboarding` service has a dependency on `base` library.
-// Our first step to making some functions are testable is to remove the base dependency.
-// This can be achieved with the below interface.
-type BaseExtension interface {
-	GetLoggedInUser(ctx context.Context) (*profileutils.UserInfo, error)
-	GetLoggedInUserUID(ctx context.Context) (string, error)
-	GetTenantIdentifiers(ctx context.Context) (*dto.TenantIdentifiers, error)
-	NormalizeMSISDN(msisdn string) (*string, error)
-	LoadDepsFromYAML() (*interserviceclient.DepsConfig, error)
-	SetupISCclient(config interserviceclient.DepsConfig, serviceName string) (*interserviceclient.InterServiceClient, error)
-	GetEnvVar(envName string) (string, error)
-	ErrorMap(err error) map[string]string
-	WriteJSONResponse(
-		w http.ResponseWriter,
-		source interface{},
-		status int,
-	)
-}
-
 // BaseExtensionImpl ...
-type BaseExtensionImpl struct {
-}
+type BaseExtensionImpl struct{}
 
 // NewBaseExtensionImpl ...
 func NewBaseExtensionImpl() *BaseExtensionImpl {
@@ -119,6 +99,23 @@ func (b *BaseExtensionImpl) GetTenantIdentifiers(ctx context.Context) (*dto.Tena
 	return &dto.TenantIdentifiers{
 		OrganizationID: organizationID,
 	}, nil
+}
+
+// VerifyPubSubJWTAndDecodePayload confirms that there is a valid Google signed
+// JWT and decodes the pubsub message payload into a struct.
+//
+// It's use will simplify & shorten the handler funcs that process Cloud Pubsub
+// push notifications.
+func (b *BaseExtensionImpl) VerifyPubSubJWTAndDecodePayload(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
+	return pubsubtools.VerifyPubSubJWTAndDecodePayload(w, r)
+}
+
+// GetPubSubTopic retrieves a pubsub topic from a pubsub payload.
+//
+// It follows a convention where the topic is sent as an attribute under the
+// `topicID` key.
+func (b *BaseExtensionImpl) GetPubSubTopic(m *pubsubtools.PubSubPayload) (string, error) {
+	return pubsubtools.GetPubSubTopic(m)
 }
 
 // GetOrganizationIDFromContext is a function that retrieves the organization ID from the context.

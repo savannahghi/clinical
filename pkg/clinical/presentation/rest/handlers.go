@@ -14,18 +14,20 @@ import (
 	"github.com/savannahghi/serverutils"
 )
 
-// PresentationHandlers represents all the REST API logic
-type PresentationHandlers interface {
-	ReceivePubSubPushMessage(c *gin.Context)
+// BaseExtension is an interface that represents some methods in base helper libs
+type BaseExtension interface {
+	VerifyPubSubJWTAndDecodePayload(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error)
+	GetPubSubTopic(m *pubsubtools.PubSubPayload) (string, error)
 }
 
 // PresentationHandlersImpl represents the usecase implementation object
 type PresentationHandlersImpl struct {
 	usecases usecases.Interactor
+	baseExt  BaseExtension
 }
 
 // NewPresentationHandlers initializes a new rest handlers usecase
-func NewPresentationHandlers(usecases usecases.Interactor) *PresentationHandlersImpl {
+func NewPresentationHandlers(usecases usecases.Interactor, extension BaseExtension) *PresentationHandlersImpl {
 	return &PresentationHandlersImpl{usecases: usecases}
 }
 
@@ -33,7 +35,7 @@ func NewPresentationHandlers(usecases usecases.Interactor) *PresentationHandlers
 func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	message, err := pubsubtools.VerifyPubSubJWTAndDecodePayload(c.Writer, c.Request)
+	message, err := p.baseExt.VerifyPubSubJWTAndDecodePayload(c.Writer, c.Request)
 	if err != nil {
 		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,
@@ -43,7 +45,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		return
 	}
 
-	topicID, err := pubsubtools.GetPubSubTopic(message)
+	topicID, err := p.baseExt.GetPubSubTopic(message)
 	if err != nil {
 		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,

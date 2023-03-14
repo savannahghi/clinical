@@ -69,40 +69,11 @@ var (
 	grantType          = serverutils.MustGetEnvVar("GRANT_TYPE")
 )
 
-// StartGin sets up gin
-func StartGin(
+// StartServer sets up gin
+func StartServer(
 	ctx context.Context,
 	port int,
-	allowedOrigins []string,
 ) {
-	// start up the router
-	r, err := Router(ctx)
-	if err != nil {
-		serverutils.LogStartupError(ctx, err)
-	}
-
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     allowedOrigins,
-		AllowMethods:     []string{http.MethodPut, http.MethodPatch, http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
-		AllowHeaders:     ClinicalAllowedHeaders,
-		ExposeHeaders:    []string{"Content-Length", "Link"},
-		AllowCredentials: true,
-		AllowOriginFunc: func(origin string) bool {
-			return origin == "http://localhost:8000" || origin == "http://localhost:8080"
-		},
-		MaxAge:          12 * time.Hour,
-		AllowWebSockets: true,
-	}))
-
-	addr := fmt.Sprintf(":%d", port)
-
-	if err := r.Run(addr); err != nil {
-		serverutils.LogStartupError(ctx, err)
-	}
-}
-
-// Router sets up the ginContext router
-func Router(ctx context.Context) (*gin.Engine, error) {
 	err := serverutils.Sentry()
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
@@ -114,7 +85,7 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 
 	pubSubClient, err := pubsub.NewClient(ctx, projectID)
 	if err != nil {
-		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
+		serverutils.LogStartupError(ctx, fmt.Errorf("unable to initialize pubsub client: %w", err))
 	}
 
 	project := serverutils.MustGetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
@@ -132,15 +103,13 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
 	myCareHubClient := common.NewInterServiceClient("mycarehub", baseExtension)
-	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient, baseExtension)
+	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient)
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub)
-	usecases := usecases.NewUsecasesInteractor(infrastructure)
-	handlers := rest.NewPresentationHandlers(usecases)
 
-	_, err = pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient, baseExtension, infrastructure)
+	_, err = pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient, baseExtension)
 	if err != nil {
-		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
+		serverutils.LogStartupError(ctx, fmt.Errorf("failed to initialize pubsub messaging service: %w", err))
 	}
 
 	authServerConfig := authutils.Config{
@@ -154,15 +123,54 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 
 	authclient, err := authutils.NewClient(authServerConfig)
 	if err != nil {
-		return nil, err
+		serverutils.LogStartupError(ctx, err)
 	}
 
+	usecases := usecases.NewUsecasesInteractor(infrastructure)
+
 	r := gin.Default()
+
+	SetupRoutes(r, authclient, usecases, infrastructure)
+
+	addr := fmt.Sprintf(":%d", port)
+
+	if err := r.Run(addr); err != nil {
+		serverutils.LogStartupError(ctx, err)
+	}
+}
+
+func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.Interactor, infra infrastructure.Infrastructure) {
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: ClinicalAllowedOrigins,
+		AllowMethods: []string{http.MethodPut, http.MethodPatch, http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
+		AllowHeaders: []string{
+			"Accept",
+			"Accept-Charset",
+			"Accept-Language",
+			"Accept-Encoding",
+			"Origin",
+			"Host",
+			"User-Agent",
+			"Content-Length",
+			"Content-Type",
+			"Authorization",
+			"X-Authorization",
+		},
+		ExposeHeaders:    []string{"Content-Length", "Link"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "http://localhost:8000" || origin == "http://localhost:8080"
+		},
+		MaxAge:          12 * time.Hour,
+		AllowWebSockets: true,
+	}))
+
+	handlers := rest.NewPresentationHandlers(usecases, infra.BaseExtension)
 
 	graphQL := r.Group("/graphql")
 	graphQL.Use(authutils.SladeAuthenticationGinMiddleware(*authclient))
 	graphQL.Use(rest.TenantIdentifierExtractionMiddleware(usecases))
-	graphQL.Any("", GQLHandler(ctx, usecases))
+	graphQL.Any("", GQLHandler(usecases))
 
 	// Unauthenticated routes
 	ide := r.Group("/ide")
@@ -170,17 +178,13 @@ func Router(ctx context.Context) (*gin.Engine, error) {
 
 	pubsubPath := r.Group("/pubsub")
 	pubsubPath.POST("", handlers.ReceivePubSubPushMessage)
-
-	return r, nil
 }
 
 // GQLHandler sets up a GraphQL resolver
-func GQLHandler(ctx context.Context,
-	service usecases.Interactor,
-) gin.HandlerFunc {
-	resolver, err := graph.NewResolver(ctx, service)
+func GQLHandler(service usecases.Interactor) gin.HandlerFunc {
+	resolver, err := graph.NewResolver(service)
 	if err != nil {
-		serverutils.LogStartupError(ctx, err)
+		log.Panicf("failed to start graph resolver: %s", err)
 	}
 
 	server := handler.NewDefaultServer(

@@ -3,18 +3,14 @@ package pubsubmessaging
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
-	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
 )
 
 const (
-
 	// HostNameEnvVarName defines the host name
 	HostNameEnvVarName = "SERVICE_HOST"
 
@@ -22,47 +18,29 @@ const (
 	TestTopicName = "pubsub.testing.topic"
 )
 
-// ServicePubsub represent all the logic required to interact with pubsub
-type ServicePubsub interface {
-	TopicIDs() []string
-	AddPubSubNamespace(topicName string) string
-	PublishToPubsub(
-		ctx context.Context,
-		topicID string,
-		payload []byte,
-	) error
-	EnsureTopicsExist(
-		ctx context.Context,
-		topicIDs []string,
-	) error
-	EnsureSubscriptionsExist(
-		ctx context.Context,
-	) error
-	SubscriptionIDs() map[string]string
-	ReceivePubSubPushMessages(
-		w http.ResponseWriter,
-		r *http.Request,
-	)
+// BaseExtension is an interface that represents some methods in base
+// The `onboarding` service has a dependency on `base` library.
+// Our first step to making some functions are testable is to remove the base dependency.
+// This can be achieved with the below interface.
+type BaseExtension interface {
+	GetEnvVar(envName string) (string, error)
 }
 
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
 	client  *pubsub.Client
-	baseExt extensions.BaseExtension
-	infra   infrastructure.Infrastructure
+	baseExt BaseExtension
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
 func NewServicePubSubMessaging(
 	ctx context.Context,
 	client *pubsub.Client,
-	baseExt extensions.BaseExtension,
-	infra infrastructure.Infrastructure,
+	baseExt BaseExtension,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
 		client:  client,
 		baseExt: baseExt,
-		infra:   infra,
 	}
 
 	if err := s.EnsureTopicsExist(
