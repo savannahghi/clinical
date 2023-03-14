@@ -10,8 +10,6 @@ import (
 
 // UseCasesClinical represents all the patient business logic
 type Clinical interface {
-	FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
-
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
@@ -25,7 +23,6 @@ type Usecases interface {
 // Interactor is an implementation of the usecases interface
 type Interactor struct {
 	Clinical
-	infrastructure.Infrastructure
 }
 
 // NewUsecasesInteractor initializes a new usecases interactor
@@ -36,7 +33,6 @@ func NewUsecasesInteractor(
 
 	impl := &Interactor{
 		clinical,
-		infrastructure,
 	}
 
 	return impl

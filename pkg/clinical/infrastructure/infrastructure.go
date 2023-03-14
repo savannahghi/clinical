@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/profileutils"
@@ -49,12 +49,32 @@ type BaseExtension interface {
 	GetPubSubTopic(m *pubsubtools.PubSubPayload) (string, error)
 }
 
+// IServiceMyCareHub represents mycarehub usecases
+type IServiceMyCareHub interface {
+	UserProfile(
+		ctx context.Context,
+		userID string,
+	) (*domain.User, error)
+
+	AddFHIRIDToPatientProfile(
+		ctx context.Context,
+		fhirID string,
+		clientID string,
+	) error
+
+	AddFHIRIDToFacility(
+		ctx context.Context,
+		fhirID string,
+		facilityID string,
+	) error
+}
+
 // Infrastructure ...
 type Infrastructure struct {
 	FHIR           repository.FHIR
 	OpenConceptLab ServiceOCL
 	BaseExtension  BaseExtension
-	MyCareHub      mycarehub.IServiceMyCareHub
+	MyCareHub      IServiceMyCareHub
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
@@ -62,7 +82,7 @@ func NewInfrastructureInteractor(
 	ext BaseExtension,
 	fhir repository.FHIR,
 	openconceptlab ServiceOCL,
-	mycarehub mycarehub.IServiceMyCareHub,
+	mycarehub IServiceMyCareHub,
 ) Infrastructure {
 	return Infrastructure{
 		fhir,

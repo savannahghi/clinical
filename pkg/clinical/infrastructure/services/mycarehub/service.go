@@ -17,25 +17,6 @@ const (
 	addFHIRIDToFacility = "internal/facilities"
 )
 
-// IServiceMyCareHub represents mycarehub usecases
-type IServiceMyCareHub interface {
-	UserProfile(
-		ctx context.Context,
-		userID string,
-	) (*domain.User, error)
-
-	AddFHIRIDToPatientProfile(
-		ctx context.Context,
-		fhirID string,
-		clientID string,
-	) error
-	AddFHIRIDToFacility(
-		ctx context.Context,
-		fhirID string,
-		facilityID string,
-	) error
-}
-
 // ServiceMyCareHubImpl represents mycarehub usecases
 type ServiceMyCareHubImpl struct {
 	MyCareHubClient extensions.ISCClientExtension

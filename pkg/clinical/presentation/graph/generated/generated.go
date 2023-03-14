@@ -2921,7 +2921,6 @@ extend type PageInfo {
 }`, BuiltIn: false},
 	{Name: "../healthpassport.graphql", Input: `extend type Query {
   patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
-
   getMedicalData(patientID: String!): MedicalData
 }
 

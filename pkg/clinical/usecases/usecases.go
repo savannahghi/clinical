@@ -2,9 +2,6 @@ package usecases
 
 import (
 	"context"
-	"io"
-	"net/http"
-	"net/url"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -14,8 +11,6 @@ import (
 
 // Clinical represents all the patient business logic
 type Clinical interface {
-	FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
-
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
@@ -26,19 +21,6 @@ type Clinical interface {
 	CreatePubsubAllergyIntolerance(ctx context.Context, data dto.CreatePatientAllergyPubSubMessage) error
 	CreatePubsubTestResult(ctx context.Context, data dto.CreatePatientTestResultPubSubMessage) error
 	CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error
-}
-
-// OCL represents all the Open Concept Lab business logic
-type OCL interface {
-	MakeRequest(method string, path string, params url.Values, body io.Reader) (*http.Response, error)
-	ListConcepts(
-		ctx context.Context, org string, source string, verbose bool, q *string,
-		sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
-		locale *string, includeRetired *bool,
-		includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error)
-	GetConcept(
-		ctx context.Context, org string, source string, concept string,
-		includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error)
 }
 
 // Interactor is an implementation of the usecases interface

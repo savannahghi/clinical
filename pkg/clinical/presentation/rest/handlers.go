@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,7 @@ type PresentationHandlersImpl struct {
 
 // NewPresentationHandlers initializes a new rest handlers usecase
 func NewPresentationHandlers(usecases usecases.Interactor, extension BaseExtension) *PresentationHandlersImpl {
-	return &PresentationHandlersImpl{usecases: usecases}
+	return &PresentationHandlersImpl{usecases: usecases, baseExt: extension}
 }
 
 // ReceivePubSubPushMessage receives and processes a pubsub message
@@ -193,12 +194,10 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 
 			return
 		}
-	}
 
-	resp := map[string]string{"Status": "Success"}
+	default:
+		err := fmt.Errorf("unknown topic ID: %v", topicID)
 
-	returnedResponse, err := json.Marshal(resp)
-	if err != nil {
 		serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 			Err:     err,
 			Message: err.Error(),
@@ -207,5 +206,6 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		return
 	}
 
-	_, _ = c.Writer.Write(returnedResponse)
+	resp := map[string]string{"Status": "Success"}
+	c.JSON(http.StatusOK, resp)
 }
