@@ -176,8 +176,15 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 	ide := r.Group("/ide")
 	ide.Any("", playgroundHandler())
 
-	pubsubPath := r.Group("/pubsub")
-	pubsubPath.POST("", handlers.ReceivePubSubPushMessage)
+	r.POST("/pubsub", handlers.ReceivePubSubPushMessage)
+
+	apis := r.Group("/api")
+	apis.Use(authutils.SladeAuthenticationGinMiddleware(*authclient))
+
+	v1 := apis.Group("/v1")
+
+	tenants := v1.Group("/tenants")
+	tenants.POST("", handlers.RegisterTenant)
 }
 
 // GQLHandler sets up a GraphQL resolver

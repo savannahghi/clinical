@@ -11,6 +11,8 @@ import (
 
 // Clinical represents all the patient business logic
 type Clinical interface {
+	RegisterTenant(ctx context.Context, input dto.OrganizationInput) (*dto.Organization, error)
+
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)

@@ -134,9 +134,41 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockCreateFHIROrganizationFn: func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+			active := true
+			name := gofakeit.Name()
+			uri := ""
+
+			use := domain.ContactPointUseEnumWork
+			rank := int64(1)
+			phoneSystem := domain.ContactPointSystemEnumPhone
+			phoneNumber := gofakeit.Phone()
+
 			return &domain.FHIROrganizationRelayPayload{
 				Resource: &domain.FHIROrganization{
-					ID: &UUID,
+					ID:     &UUID,
+					Name:   &name,
+					Active: &active,
+					Identifier: []*domain.FHIRIdentifier{
+						{
+							Use: "official",
+							Type: domain.FHIRCodeableConcept{
+								Text: "type",
+							},
+							System:   (*scalarutils.URI)(&uri),
+							Value:    "",
+							Period:   &domain.FHIRPeriod{},
+							Assigner: &domain.FHIRReference{},
+						},
+					},
+					Telecom: []*domain.FHIRContactPoint{
+						{
+							System: &phoneSystem,
+							Value:  &phoneNumber,
+							Use:    &use,
+							Rank:   &rank,
+							Period: &domain.FHIRPeriod{},
+						},
+					},
 				},
 			}, nil
 		},

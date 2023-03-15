@@ -209,3 +209,21 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 	resp := map[string]string{"Status": "Success"}
 	c.JSON(http.StatusOK, resp)
 }
+
+func (p PresentationHandlersImpl) RegisterTenant(c *gin.Context) {
+	input := dto.OrganizationInput{}
+
+	err := c.BindJSON(&input)
+	if err != nil {
+		resp := map[string]string{"error": err.Error()}
+		c.JSON(http.StatusBadRequest, resp)
+	}
+
+	organization, err := p.usecases.RegisterTenant(c.Request.Context(), input)
+	if err != nil {
+		resp := map[string]string{"error": err.Error()}
+		c.JSON(http.StatusBadRequest, resp)
+	}
+
+	c.JSON(http.StatusOK, organization)
+}
