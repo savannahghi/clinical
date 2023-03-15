@@ -56,3 +56,23 @@ func AddPubSubNamespace(topicName, serviceName string) string {
 		TopicVersion,
 	)
 }
+
+// CustomError represents a custom error struct
+// Reference https://blog.golang.org/error-handling-and-go
+type CustomError struct {
+	Err     error  `json:"error,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+// Error implements the error interface
+func (e CustomError) Error() string {
+	return fmt.Sprintf("%d: %s", e.Err, e.Message)
+}
+
+// NewCustomError is a helper function to create a new custom error
+func NewCustomError(err error, message string) CustomError {
+	return CustomError{
+		Err:     err,
+		Message: message,
+	}
+}
