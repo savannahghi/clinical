@@ -60,11 +60,15 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 	return func(c *gin.Context) {
 		headers := []TenantIdentifier{
 			{
-				HeaderKey:     "OrganizationID",
+				HeaderKey:     "Clinical-Organization-ID",
 				ContextKey:    utils.OrganizationIDContextKey,
 				ValidatorFunc: OrganisationValidator,
 			},
-			// TODO: Add more headers here as needed e.g FacilityID, ProgramID
+			{
+				HeaderKey:     "Clinical-Facility-ID",
+				ContextKey:    utils.FacilityIDContextKey,
+				ValidatorFunc: OrganisationValidator,
+			},
 		}
 
 		for _, header := range headers {
@@ -79,6 +83,7 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 
 			err := header.ValidatorFunc(validator, headerValue)
 			if err != nil {
+				err := fmt.Errorf("invalid `%s` header value: %s", header.HeaderKey, headerValue)
 				handleError(c.Writer, err)
 				c.Abort()
 
