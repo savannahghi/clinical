@@ -96,8 +96,14 @@ func (b *BaseExtensionImpl) GetTenantIdentifiers(ctx context.Context) (*dto.Tena
 		return nil, fmt.Errorf("failed to retrieve organization ID from context: %w", err)
 	}
 
+	facilityID, err := GetFacilityIDFromContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve facility ID from context: %w", err)
+	}
+
 	return &dto.TenantIdentifiers{
 		OrganizationID: organizationID,
+		FacilityID:     facilityID,
 	}, nil
 }
 
@@ -126,4 +132,14 @@ func GetOrganizationIDFromContext(ctx context.Context) (string, error) {
 	}
 
 	return organizationID, nil
+}
+
+// GetFacilityIDFromContext is a function that retrieves the facility ID from the context.
+func GetFacilityIDFromContext(ctx context.Context) (string, error) {
+	facilityID, ok := ctx.Value(utils.FacilityIDContextKey).(string)
+	if !ok {
+		return "", errors.New("unable to get facility ID from context")
+	}
+
+	return facilityID, nil
 }

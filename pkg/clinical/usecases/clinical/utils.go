@@ -25,9 +25,18 @@ func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.
 		return nil, fmt.Errorf("failed to find tenant organisation: %w", err)
 	}
 
+	facility, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, identifiers.FacilityID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find tenant organisation: %w", err)
+	}
+
 	userSelected := false
+
 	organisationTagVersion := "1.0"
 	organisationTagSystem := scalarutils.URI("http://mycarehub/tenant-identification/organisation")
+
+	facilityTagVersion := "1.0"
+	facilityTagSystem := scalarutils.URI("http://mycarehub/tenant-identification/facility")
 
 	tags := []domain.FHIRCodingInput{
 		{
@@ -35,6 +44,13 @@ func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.
 			Version:      &organisationTagVersion,
 			Code:         scalarutils.Code(identifiers.OrganizationID),
 			Display:      *organisation.Resource.Name,
+			UserSelected: &userSelected,
+		},
+		{
+			System:       &facilityTagSystem,
+			Version:      &facilityTagVersion,
+			Code:         scalarutils.Code(identifiers.FacilityID),
+			Display:      *facility.Resource.Name,
 			UserSelected: &userSelected,
 		},
 	}

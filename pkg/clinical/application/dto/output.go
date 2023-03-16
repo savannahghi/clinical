@@ -3,6 +3,7 @@ package dto
 // TenantIdentifiers models the json object used to store some of the tenant identifiers
 type TenantIdentifiers struct {
 	OrganizationID string `json:"organizationID,omitempty"`
+	FacilityID     string `json:"facilityID,omitempty"`
 }
 
 type Organization struct {
