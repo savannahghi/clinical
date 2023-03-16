@@ -227,3 +227,25 @@ func (p PresentationHandlersImpl) RegisterTenant(c *gin.Context) {
 
 	c.JSON(http.StatusOK, organization)
 }
+func jsonErrorResponse(c *gin.Context, statusCode int, err error) {
+	c.AbortWithStatusJSON(statusCode, gin.H{"error": err.Error()})
+}
+
+// RegisterFacility creates a facility in fhir.
+func (p PresentationHandlersImpl) RegisterFacility(c *gin.Context) {
+	input := dto.OrganizationInput{}
+
+	err := c.BindJSON(&input)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	organization, err := p.usecases.RegisterFacility(c.Request.Context(), input)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, organization)
+}

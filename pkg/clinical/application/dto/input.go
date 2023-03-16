@@ -1,12 +1,12 @@
 package dto
 
 type OrganizationIdentifier struct {
-	Type  OrganizationIdentifierType `json:"type"`
-	Value string                     `json:"value"`
+	Type  OrganizationIdentifierType `json:"type,omitempty"`
+	Value string                     `json:"value,omitempty"`
 }
 
 type OrganizationInput struct {
-	Name        string                   `json:"name"`
-	PhoneNumber string                   `json:"phoneNumber"`
-	Identifiers []OrganizationIdentifier `json:"identifiers"`
+	Name        string                   `json:"name,omitempty"`
+	PhoneNumber string                   `json:"phoneNumber,omitempty"`
+	Identifiers []OrganizationIdentifier `json:"identifiers,omitempty"`
 }

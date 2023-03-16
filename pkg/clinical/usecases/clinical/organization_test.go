@@ -118,3 +118,113 @@ func TestUseCasesClinicalImpl_RegisterTenant(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_RegisterFacility(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx   context.Context
+		input dto.OrganizationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case - successfully register facility",
+			args: args{
+				ctx: ctx,
+				input: dto.OrganizationInput{
+					Name:        "Test",
+					PhoneNumber: "Number",
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  "MFLCode",
+							Value: "1234",
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case - fail to register facility",
+			args: args{
+				ctx: ctx,
+				input: dto.OrganizationInput{
+					Name:        "Test",
+					PhoneNumber: "Number",
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  "MFLCode",
+							Value: "1234",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Missing slade code / mfl code identifier",
+			args: args{
+				ctx: ctx,
+				input: dto.OrganizationInput{
+					Name:        "Test",
+					PhoneNumber: "Number",
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  "Other",
+							Value: "1234",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Missing name",
+			args: args{
+				ctx: ctx,
+				input: dto.OrganizationInput{
+					PhoneNumber: "Number",
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  "SladeCode",
+							Value: "1234",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case - fail to register facility" {
+				fakeFHIR.MockCreateFHIROrganizationFn = func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to register facility")
+				}
+			}
+
+			got, err := u.RegisterFacility(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.RegisterFacility() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got: %v", got)
+					return
+				}
+			}
+		})
+	}
+}
