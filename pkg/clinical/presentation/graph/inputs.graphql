@@ -3,3 +3,8 @@ input HealthTimelineInput {
   offset: Int!
   limit: Int!
 }
+
+input EpisodeOfCareInput {
+  status: EpisodeOfCareStatusEnum!
+  patientID: String!
+}

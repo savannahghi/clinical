@@ -12,7 +12,7 @@ import (
 
 // FHIRMock struct implements mocks of FHIR methods.
 type FHIRMock struct {
-	MockCreateEpisodeOfCareFn    func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
+	MockCreateEpisodeOfCareFn    func(ctx context.Context, episode domain.FHIREpisodeOfCareInput) (*domain.EpisodeOfCarePayload, error)
 	MockSearchFHIRConditionFn    func(ctx context.Context, params map[string]interface{}) (*domain.FHIRConditionRelayConnection, error)
 	MockCreateFHIRConditionFn    func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	MockCreateFHIROrganizationFn func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
@@ -69,23 +69,23 @@ type FHIRMock struct {
 
 // NewFHIRMock initializes a new instance of FHIR mock
 func NewFHIRMock() *FHIRMock {
-	UUID := uuid.New().String()
-	PatientRef := "Patient/1"
-	OrgRef := "Organization/1"
-	status := domain.EpisodeOfCareStatusEnumActive
-
 	return &FHIRMock{
-		MockCreateEpisodeOfCareFn: func(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
+		MockCreateEpisodeOfCareFn: func(ctx context.Context, episode domain.FHIREpisodeOfCareInput) (*domain.EpisodeOfCarePayload, error) {
+			UUID := uuid.New().String()
+			PatientRef := "Patient/1"
+			OrgRef := "Organization/1"
+			status := domain.EpisodeOfCareStatusEnumActive
 			return &domain.EpisodeOfCarePayload{
 				EpisodeOfCare: &domain.FHIREpisodeOfCare{
 					ID:            &UUID,
 					Text:          &domain.FHIRNarrative{},
 					Identifier:    []*domain.FHIRIdentifier{},
-					Status:        &(status),
+					Status:        &status,
 					StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
 					Type:          []*domain.FHIRCodeableConcept{},
 					Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
 					Patient: &domain.FHIRReference{
+						ID:        &UUID,
 						Reference: &PatientRef,
 					},
 					ManagingOrganization: &domain.FHIRReference{
@@ -101,6 +101,7 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockCreateFHIRConditionFn: func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+			UUID := uuid.New().String()
 			return &domain.FHIRConditionRelayPayload{
 				Resource: &domain.FHIRCondition{
 					ID:                 &UUID,
@@ -134,6 +135,7 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockCreateFHIROrganizationFn: func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+			UUID := uuid.New().String()
 			active := true
 			name := gofakeit.Name()
 			uri := ""
@@ -182,12 +184,14 @@ func NewFHIRMock() *FHIRMock {
 			return true, nil
 		},
 		MockOpenEpisodesFn: func(ctx context.Context, patientReference string) ([]*domain.FHIREpisodeOfCare, error) {
+			UUID := uuid.New().String()
+			PatientRef := "Patient/1"
+			OrgRef := "Organization/1"
 			return []*domain.FHIREpisodeOfCare{
 				{
 					ID:            &UUID,
 					Text:          &domain.FHIRNarrative{},
 					Identifier:    []*domain.FHIRIdentifier{},
-					Status:        &(status),
 					StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
 					Type:          []*domain.FHIRCodeableConcept{},
 					Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
@@ -209,12 +213,14 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIREncounterRelayPayload{}, nil
 		},
 		MockGetFHIREpisodeOfCareFn: func(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
+			UUID := uuid.New().String()
+			PatientRef := "Patient/1"
+			OrgRef := "Organization/1"
 			return &domain.FHIREpisodeOfCareRelayPayload{
 				Resource: &domain.FHIREpisodeOfCare{
 					ID:            &UUID,
 					Text:          &domain.FHIRNarrative{},
 					Identifier:    []*domain.FHIRIdentifier{},
-					Status:        &(status),
 					StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
 					Type:          []*domain.FHIRCodeableConcept{},
 					Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
@@ -236,6 +242,8 @@ func NewFHIRMock() *FHIRMock {
 			return []*domain.FHIREncounter{}, nil
 		},
 		MockSearchFHIREpisodeOfCareFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error) {
+			PatientRef := "Patient/1"
+			OrgRef := "Organization/1"
 			return &domain.FHIREpisodeOfCareRelayConnection{
 				Edges: []*domain.FHIREpisodeOfCareRelayEdge{
 					{
@@ -336,6 +344,7 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRConditionRelayPayload{}, nil
 		},
 		MockGetFHIREncounterFn: func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+			UUID := uuid.New().String()
 			PatientRef := "Patient/" + uuid.NewString()
 			return &domain.FHIREncounterRelayPayload{
 				Resource: &domain.FHIREncounter{
@@ -548,7 +557,7 @@ func NewFHIRMock() *FHIRMock {
 }
 
 // CreateEpisodeOfCare is a mock implementation of CreateEpisodeOfCare method
-func (fh *FHIRMock) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
+func (fh *FHIRMock) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCareInput) (*domain.EpisodeOfCarePayload, error) {
 	return fh.MockCreateEpisodeOfCareFn(ctx, episode)
 }
 

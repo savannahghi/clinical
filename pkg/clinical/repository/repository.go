@@ -39,7 +39,7 @@ type FHIREpisodeOfCare interface {
 	SearchFHIREpisodeOfCare(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error)
 	SearchEpisodesByParam(ctx context.Context, params map[string]interface{}) ([]*domain.FHIREpisodeOfCare, error)
 	GetFHIREpisodeOfCare(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error)
-	CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error)
+	CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCareInput) (*domain.EpisodeOfCarePayload, error)
 	UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
 	HasOpenEpisode(ctx context.Context, patient domain.FHIRPatient) (bool, error)
 	OpenEpisodes(ctx context.Context, patientReference string) ([]*domain.FHIREpisodeOfCare, error)
