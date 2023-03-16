@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 )
@@ -32,16 +33,6 @@ type NameInput struct {
 	FirstName  string  `json:"firstName"`
 	LastName   string  `json:"lastName"`
 	OtherNames *string `json:"otherNames"`
-}
-
-// IdentificationDocument is used to input e.g National ID or passport document
-// numbers at patient registration.
-type IdentificationDocument struct {
-	DocumentType     IDDocumentType         `json:"documentType"`
-	DocumentNumber   string                 `json:"documentNumber"`
-	Title            *string                `json:"title,omitempty"`
-	ImageContentType *enumutils.ContentType `json:"imageContentType,omitempty"`
-	ImageBase64      *string                `json:"imageBase64,omitempty"`
 }
 
 // PhoneNumberInput is used to input phone numbers.
@@ -80,20 +71,20 @@ type PostalAddress struct {
 // SimplePatientRegistrationInput provides a simplified API to support registration
 // of patients.
 type SimplePatientRegistrationInput struct {
-	ID                      string                    `json:"id,omitempty"`
-	Names                   []*NameInput              `json:"names,omitempty"`
-	IdentificationDocuments []*IdentificationDocument `json:"identificationDocuments,omitempty"`
-	BirthDate               scalarutils.Date          `json:"birthDate,omitempty"`
-	PhoneNumbers            []*PhoneNumberInput       `json:"phoneNumbers,omitempty"`
-	Photos                  []*PhotoInput             `json:"photos,omitempty"`
-	Emails                  []*EmailInput             `json:"emails,omitempty"`
-	PhysicalAddresses       []*PhysicalAddress        `json:"physicalAddresses,omitempty"`
-	PostalAddresses         []*PostalAddress          `json:"postalAddresses,omitempty"`
-	Gender                  string                    `json:"gender,omitempty"`
-	Active                  bool                      `json:"active,omitempty"`
-	MaritalStatus           MaritalStatus             `json:"maritalStatus,omitempty"`
-	Languages               []enumutils.Language      `json:"languages,omitempty"`
-	ReplicateUSSD           bool                      `json:"replicate_ussd,omitempty"`
+	ID                      string                        `json:"id,omitempty"`
+	Names                   []*NameInput                  `json:"names,omitempty"`
+	IdentificationDocuments []*dto.IdentificationDocument `json:"identificationDocuments,omitempty"`
+	BirthDate               scalarutils.Date              `json:"birthDate,omitempty"`
+	PhoneNumbers            []*PhoneNumberInput           `json:"phoneNumbers,omitempty"`
+	Photos                  []*PhotoInput                 `json:"photos,omitempty"`
+	Emails                  []*EmailInput                 `json:"emails,omitempty"`
+	PhysicalAddresses       []*PhysicalAddress            `json:"physicalAddresses,omitempty"`
+	PostalAddresses         []*PostalAddress              `json:"postalAddresses,omitempty"`
+	Gender                  string                        `json:"gender,omitempty"`
+	Active                  bool                          `json:"active,omitempty"`
+	MaritalStatus           MaritalStatus                 `json:"maritalStatus,omitempty"`
+	Languages               []enumutils.Language          `json:"languages,omitempty"`
+	ReplicateUSSD           bool                          `json:"replicate_ussd,omitempty"`
 }
 
 // BreakGlassEpisodeCreationInput is used to start emergency episodes via a
@@ -226,61 +217,6 @@ type USSDNextOfKinCreationInput struct {
 	Gender     string    `json:"gender"`
 	Active     bool      `json:"active"`
 	ParentID   string    `json:"parentID"`
-}
-
-// IDDocumentType is an internal code system for identification document types.
-type IDDocumentType string
-
-// ID type constants
-const (
-	// IDDocumentTypeNationalID ...
-	IDDocumentTypeNationalID IDDocumentType = "national_id"
-	// IDDocumentTypePassport ...
-	IDDocumentTypePassport IDDocumentType = "passport"
-	// IDDocumentTypeAlienID ...
-	IDDocumentTypeAlienID IDDocumentType = "alien_id"
-)
-
-// AllIDDocumentType is a list of known ID types
-var AllIDDocumentType = []IDDocumentType{
-	IDDocumentTypeNationalID,
-	IDDocumentTypePassport,
-	IDDocumentTypeAlienID,
-}
-
-// IsValid checks that the ID type is valid
-func (e IDDocumentType) IsValid() bool {
-	switch e {
-	case IDDocumentTypeNationalID, IDDocumentTypePassport, IDDocumentTypeAlienID:
-		return true
-	}
-
-	return false
-}
-
-// String ...
-func (e IDDocumentType) String() string {
-	return string(e)
-}
-
-// UnmarshalGQL translates the input value to an ID type
-func (e *IDDocumentType) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = IDDocumentType(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid IDDocumentType", str)
-	}
-
-	return nil
-}
-
-// MarshalGQL writes the enum value to the supplied writer
-func (e IDDocumentType) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 // MaritalStatus is used to code individuals' marital statuses.

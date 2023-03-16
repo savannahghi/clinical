@@ -9,10 +9,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/converterandformatter"
+	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -352,4 +354,99 @@ func (c *UseCasesClinicalImpl) CreateFHIROrganization(ctx context.Context, input
 	}
 
 	return organizationRelayPayload, nil
+}
+
+// CreatePatient is used to create a new patient in the repository
+func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
+	if err := input.Validate(); err != nil {
+		return nil, err
+	}
+
+	var identifiers []*domain.FHIRIdentifierInput
+	for _, idDocument := range input.IdentificationDocuments {
+		system := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v2-0203")
+		identifierSystem := scalarutils.URI("urn:oid:1.2.36.146.595.217.0.1")
+
+		var codingInput []*domain.FHIRCodingInput
+		codingMap := map[string]string{
+			"passport":    "PPN",
+			"national_id": "NI",
+			"ccc_number":  "MR",
+		}
+		for _, identificationDocument := range input.IdentificationDocuments {
+			coding, ok := codingMap[string(identificationDocument.Type)]
+			if !ok {
+				return nil, fmt.Errorf("key %s not found", identificationDocument.Type)
+			}
+			codingInput = append(codingInput, &domain.FHIRCodingInput{
+				System: &system,
+				Code:   scalarutils.Code(coding),
+			})
+		}
+
+		identifiers = append(identifiers, &domain.FHIRIdentifierInput{
+			Use: domain.IdentifierUseEnumOfficial,
+			Type: domain.FHIRCodeableConceptInput{
+				Coding: codingInput,
+			},
+			System: &identifierSystem,
+			Value:  idDocument.Number,
+		})
+	}
+
+	var telecoms []*domain.PhoneNumberInput
+	for _, phoneNumber := range input.PhoneNumbers {
+		telecoms = append(telecoms, &domain.PhoneNumberInput{
+			Msisdn:             phoneNumber,
+			CommunicationOptIn: true,
+		})
+	}
+
+	registrationInput := domain.SimplePatientRegistrationInput{
+		Names:        []*domain.NameInput{{FirstName: input.FirstName, LastName: input.LastName, OtherNames: &input.OtherNames}},
+		BirthDate:    input.BirthDate,
+		PhoneNumbers: telecoms,
+		Gender:       input.Gender.String(),
+		Active:       true,
+	}
+
+	exists, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, registrationInput)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("unable to check patient existence")
+	}
+
+	if exists {
+		return nil, fmt.Errorf("patient with phone number already exists")
+	}
+
+	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, registrationInput)
+	if err != nil {
+		return nil, err
+	}
+
+	patientID := uuid.New().String()
+	patientInput.ID = &patientID
+
+	patientInput.Identifier = identifiers
+
+	response, err := c.infrastructure.FHIR.CreateFHIRPatient(ctx, *patientInput)
+	if err != nil {
+		return nil, err
+	}
+
+	var phones []string
+	for _, phone := range response.PatientRecord.Telecom {
+		phones = append(phones, *phone.Value)
+	}
+	patient := dto.Patient{
+		ID:          *response.PatientRecord.ID,
+		Active:      *response.PatientRecord.Active,
+		Name:        response.PatientRecord.Names(),
+		PhoneNumber: phones,
+		Gender:      string(*response.PatientRecord.Gender),
+		BirthDate:   *response.PatientRecord.BirthDate,
+	}
+
+	return &patient, nil
 }

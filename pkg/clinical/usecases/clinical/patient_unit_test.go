@@ -8,6 +8,8 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/enums"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -15,7 +17,9 @@ import (
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
+	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/scalarutils"
 	"github.com/segmentio/ksuid"
 )
@@ -900,4 +904,144 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 		})
 	}
 
+}
+
+func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input dto.PatientInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: successfully create patient",
+			args: args{
+				ctx: context.Background(),
+				input: dto.PatientInput{
+					FirstName:  "test",
+					LastName:   "test",
+					OtherNames: "test",
+					IdentificationDocuments: []dto.IdentificationDocument{
+						{
+							Type:   enums.IDDocumentTypeCCC,
+							Number: "001",
+						},
+					},
+					BirthDate: scalarutils.Date{
+						Year:  2000,
+						Month: 10,
+						Day:   10,
+					},
+					PhoneNumbers: []string{interserviceclient.TestUserPhoneNumber},
+					Gender:       enumutils.GenderMale,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: missing firstname",
+			args: args{
+				ctx: context.Background(),
+				input: dto.PatientInput{
+					LastName:   "test",
+					OtherNames: "test",
+					IdentificationDocuments: []dto.IdentificationDocument{
+						{
+							Type:   enums.IDDocumentTypeCCC,
+							Number: "001",
+						},
+					},
+					BirthDate: scalarutils.Date{
+						Year:  2000,
+						Month: 10,
+						Day:   10,
+					},
+					PhoneNumbers: []string{"1232"},
+					Gender:       enumutils.GenderMale,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to check if patient exists",
+			args: args{
+				ctx: context.Background(),
+				input: dto.PatientInput{
+					FirstName:  "test",
+					LastName:   "test",
+					OtherNames: "test",
+					IdentificationDocuments: []dto.IdentificationDocument{
+						{
+							Type:   enums.IDDocumentTypeCCC,
+							Number: "001",
+						},
+					},
+					BirthDate: scalarutils.Date{
+						Year:  2000,
+						Month: 10,
+						Day:   10,
+					},
+					PhoneNumbers: []string{"1232"},
+					Gender:       enumutils.GenderMale,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to create FHIR patient",
+			args: args{
+				ctx: context.Background(),
+				input: dto.PatientInput{
+					FirstName:  "test",
+					LastName:   "test",
+					OtherNames: "test",
+					IdentificationDocuments: []dto.IdentificationDocument{
+						{
+							Type:   enums.IDDocumentTypeCCC,
+							Number: "001",
+						},
+					},
+					BirthDate: scalarutils.Date{
+						Year:  2000,
+						Month: 10,
+						Day:   10,
+					},
+					PhoneNumbers: []string{interserviceclient.TestUserPhoneNumber, interserviceclient.TestUserPhoneNumber},
+					Gender:       enumutils.GenderMale,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to check if patient exists" {
+				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: unable to create FHIR patient" {
+				fakeFHIR.MockCreateFHIRPatientFn = func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := u.CreatePatient(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.CreatePatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
 }

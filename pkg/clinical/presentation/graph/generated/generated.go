@@ -9,12 +9,16 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/enums"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 	gqlparser "github.com/vektah/gqlparser/v2"
@@ -505,11 +509,21 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateFHIROrganization func(childComplexity int, input domain.FHIROrganizationInput) int
+		CreatePatient          func(childComplexity int, input dto.PatientInput) int
 	}
 
 	PageInfo struct {
 		HasNextPage     func(childComplexity int) int
 		HasPreviousPage func(childComplexity int) int
+	}
+
+	Patient struct {
+		Active      func(childComplexity int) int
+		BirthDate   func(childComplexity int) int
+		Gender      func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		PhoneNumber func(childComplexity int) int
 	}
 
 	Query struct {
@@ -525,6 +539,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
+	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
@@ -2742,6 +2757,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateFHIROrganization(childComplexity, args["input"].(domain.FHIROrganizationInput)), true
 
+	case "Mutation.createPatient":
+		if e.complexity.Mutation.CreatePatient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createPatient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreatePatient(childComplexity, args["input"].(dto.PatientInput)), true
+
 	case "PageInfo.hasNextPage":
 		if e.complexity.PageInfo.HasNextPage == nil {
 			break
@@ -2755,6 +2782,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PageInfo.HasPreviousPage(childComplexity), true
+
+	case "Patient.active":
+		if e.complexity.Patient.Active == nil {
+			break
+		}
+
+		return e.complexity.Patient.Active(childComplexity), true
+
+	case "Patient.birthDate":
+		if e.complexity.Patient.BirthDate == nil {
+			break
+		}
+
+		return e.complexity.Patient.BirthDate(childComplexity), true
+
+	case "Patient.gender":
+		if e.complexity.Patient.Gender == nil {
+			break
+		}
+
+		return e.complexity.Patient.Gender(childComplexity), true
+
+	case "Patient.id":
+		if e.complexity.Patient.ID == nil {
+			break
+		}
+
+		return e.complexity.Patient.ID(childComplexity), true
+
+	case "Patient.name":
+		if e.complexity.Patient.Name == nil {
+			break
+		}
+
+		return e.complexity.Patient.Name(childComplexity), true
+
+	case "Patient.phoneNumber":
+		if e.complexity.Patient.PhoneNumber == nil {
+			break
+		}
+
+		return e.complexity.Patient.PhoneNumber(childComplexity), true
 
 	case "Query.getMedicalData":
 		if e.complexity.Query.GetMedicalData == nil {
@@ -2832,8 +2901,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputFHIRTimingInput,
 		ec.unmarshalInputFHIRTimingRepeatInput,
 		ec.unmarshalInputHealthTimelineInput,
+		ec.unmarshalInputIdentificationDocument,
 		ec.unmarshalInputMedicationBatchInput,
 		ec.unmarshalInputMedicationIngredientInput,
+		ec.unmarshalInputPatientInput,
 	)
 	first := true
 
@@ -2894,6 +2965,19 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../enums.graphql", Input: `enum PatientGenderEnum {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
+}
+
+enum IDDocumentType {
+  national_id
+  passport
+  alien_id
+  ccc_number
+}`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
 scalar Time
@@ -2930,12 +3014,30 @@ extend type Mutation {
   ): FHIROrganizationRelayPayload!
 }
 `, BuiltIn: false},
-	{Name: "../inputs.graphql", Input: `input HealthTimelineInput {
+	{Name: "../input.graphql", Input: `input HealthTimelineInput {
   patientID: String!
   offset: Int!
   limit: Int!
 }
+
+input IdentificationDocument {
+  type: IDDocumentType!
+  number: String!
+}
+
+input PatientInput {
+  firstName: String!
+  lastName: String!
+  otherNames: String
+  identificationDocuments: [IdentificationDocument!]
+  birthDate: Date!
+  phoneNumbers: [String!]!
+  gender: String!
+}
 `, BuiltIn: false},
+	{Name: "../patient.graphql", Input: `extend type  Mutation {
+    createPatient(input: PatientInput!): Patient!
+}`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type MedicalData {
   regimen: [FHIRMedicationStatement]
   allergies: [FHIRAllergyIntolerance]
@@ -2948,6 +3050,15 @@ extend type Mutation {
 type HealthTimeline {
   timeline: [Map]
   totalCount: Int!
+}
+
+type Patient {
+  id: ID!
+  active: Boolean!
+  name: String!
+  phoneNumber: [String]
+  gender: String!
+  birthDate: Date
 }
 `, BuiltIn: false},
 	{Name: "../fhir/AllergyIntolerance.graphql", Input: `"""
@@ -6047,6 +6158,21 @@ func (ec *executionContext) field_Mutation_createFHIROrganization_args(ctx conte
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNFHIROrganizationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.PatientInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNPatientInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatientInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -21395,6 +21521,7 @@ func (ec *executionContext) _Mutation_createFHIROrganization(ctx context.Context
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -21429,6 +21556,75 @@ func (ec *executionContext) fieldContext_Mutation_createFHIROrganization(ctx con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createFHIROrganization_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createPatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createPatient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreatePatient(rctx, fc.Args["input"].(dto.PatientInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Patient)
+	fc.Result = res
+	return ec.marshalNPatient2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createPatient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Patient_id(ctx, field)
+			case "active":
+				return ec.fieldContext_Patient_active(ctx, field)
+			case "name":
+				return ec.fieldContext_Patient_name(ctx, field)
+			case "phoneNumber":
+				return ec.fieldContext_Patient_phoneNumber(ctx, field)
+			case "gender":
+				return ec.fieldContext_Patient_gender(ctx, field)
+			case "birthDate":
+				return ec.fieldContext_Patient_birthDate(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Patient", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createPatient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -21523,6 +21719,264 @@ func (ec *executionContext) fieldContext_PageInfo_hasPreviousPage(ctx context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Patient_id(ctx context.Context, field graphql.CollectedField, obj *dto.Patient) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Patient_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Patient_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Patient",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Patient_active(ctx context.Context, field graphql.CollectedField, obj *dto.Patient) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Patient_active(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Active, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Patient_active(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Patient",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Patient_name(ctx context.Context, field graphql.CollectedField, obj *dto.Patient) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Patient_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Patient_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Patient",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Patient_phoneNumber(ctx context.Context, field graphql.CollectedField, obj *dto.Patient) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Patient_phoneNumber(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PhoneNumber, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Patient_phoneNumber(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Patient",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Patient_gender(ctx context.Context, field graphql.CollectedField, obj *dto.Patient) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Patient_gender(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Gender, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Patient_gender(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Patient",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Patient_birthDate(ctx context.Context, field graphql.CollectedField, obj *dto.Patient) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Patient_birthDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BirthDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Patient_birthDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Patient",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Date does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_patientHealthTimeline(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_patientHealthTimeline(ctx, field)
 	if err != nil {
@@ -21541,6 +21995,7 @@ func (ec *executionContext) _Query_patientHealthTimeline(ctx context.Context, fi
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -21601,6 +22056,7 @@ func (ec *executionContext) _Query_getMedicalData(ctx context.Context, field gra
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -21666,6 +22122,7 @@ func (ec *executionContext) _Query__service(ctx context.Context, field graphql.C
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -21713,6 +22170,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -21786,6 +22244,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -26428,6 +26887,42 @@ func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Contex
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputIdentificationDocument(ctx context.Context, obj interface{}) (dto.IdentificationDocument, error) {
+	var it dto.IdentificationDocument
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"type", "number"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			it.Type, err = ec.unmarshalNIDDocumentType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋenumsᚐIDDocumentType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "number":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("number"))
+			it.Number, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputMedicationBatchInput(ctx context.Context, obj interface{}) (domain.MedicationBatchInput, error) {
 	var it domain.MedicationBatchInput
 	asMap := map[string]interface{}{}
@@ -26507,6 +27002,82 @@ func (ec *executionContext) unmarshalInputMedicationIngredientInput(ctx context.
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Strength"))
 			it.Strength, err = ec.unmarshalOFHIRRatioInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatioInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPatientInput(ctx context.Context, obj interface{}) (dto.PatientInput, error) {
+	var it dto.PatientInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"firstName", "lastName", "otherNames", "identificationDocuments", "birthDate", "phoneNumbers", "gender"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "firstName":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
+			it.FirstName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "lastName":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
+			it.LastName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "otherNames":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("otherNames"))
+			it.OtherNames, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "identificationDocuments":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identificationDocuments"))
+			it.IdentificationDocuments, err = ec.unmarshalOIdentificationDocument2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentificationDocumentᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "birthDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthDate"))
+			it.BirthDate, err = ec.unmarshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "phoneNumbers":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phoneNumbers"))
+			it.PhoneNumbers, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "gender":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gender"))
+			it.Gender, err = ec.unmarshalNString2githubᚗcomᚋsavannahghiᚋenumutilsᚐGender(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -28906,6 +29477,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	})
 
 	out := graphql.NewFieldSet(fields)
+	var invalids uint32
 	for i, field := range fields {
 		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
 			Object: field.Name,
@@ -28921,11 +29493,26 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_createFHIROrganization(ctx, field)
 			})
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createPatient":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createPatient(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -28964,6 +29551,63 @@ func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet,
 	return out
 }
 
+var patientImplementors = []string{"Patient"}
+
+func (ec *executionContext) _Patient(ctx context.Context, sel ast.SelectionSet, obj *dto.Patient) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, patientImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Patient")
+		case "id":
+
+			out.Values[i] = ec._Patient_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "active":
+
+			out.Values[i] = ec._Patient_active(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "name":
+
+			out.Values[i] = ec._Patient_name(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "phoneNumber":
+
+			out.Values[i] = ec._Patient_phoneNumber(ctx, field, obj)
+
+		case "gender":
+
+			out.Values[i] = ec._Patient_gender(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "birthDate":
+
+			out.Values[i] = ec._Patient_birthDate(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -28973,6 +29617,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	})
 
 	out := graphql.NewFieldSet(fields)
+	var invalids uint32
 	for i, field := range fields {
 		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
 			Object: field.Name,
@@ -28992,6 +29637,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_patientHealthTimeline(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -29032,6 +29680,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query__service(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -29059,6 +29710,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		}
 	}
 	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -29440,6 +30094,16 @@ func (ec *executionContext) marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutil
 	return v
 }
 
+func (ec *executionContext) unmarshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (scalarutils.Date, error) {
+	var res scalarutils.Date
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v scalarutils.Date) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, v interface{}) (scalarutils.DateTime, error) {
 	var res scalarutils.DateTime
 	err := res.UnmarshalGQL(v)
@@ -29743,6 +30407,36 @@ func (ec *executionContext) marshalNHumanNameUseEnum2githubᚗcomᚋsavannahghi�
 	return v
 }
 
+func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalID(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalID(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNIDDocumentType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋenumsᚐIDDocumentType(ctx context.Context, v interface{}) (enums.IDDocumentType, error) {
+	var res enums.IDDocumentType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNIDDocumentType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋenumsᚐIDDocumentType(ctx context.Context, sel ast.SelectionSet, v enums.IDDocumentType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNIdentificationDocument2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentificationDocument(ctx context.Context, v interface{}) (dto.IdentificationDocument, error) {
+	res, err := ec.unmarshalInputIdentificationDocument(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNIdentifierUseEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐIdentifierUseEnum(ctx context.Context, v interface{}) (domain.IdentifierUseEnum, error) {
 	var res domain.IdentifierUseEnum
 	err := res.UnmarshalGQL(v)
@@ -29776,6 +30470,40 @@ func (ec *executionContext) marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfir
 		return graphql.Null
 	}
 	return ec._PageInfo(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNPatient2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatient(ctx context.Context, sel ast.SelectionSet, v dto.Patient) graphql.Marshaler {
+	return ec._Patient(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPatient2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatient(ctx context.Context, sel ast.SelectionSet, v *dto.Patient) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Patient(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNPatientInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatientInput(ctx context.Context, v interface{}) (dto.PatientInput, error) {
+	res, err := ec.unmarshalInputPatientInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNString2githubᚗcomᚋsavannahghiᚋenumutilsᚐGender(ctx context.Context, v interface{}) (enumutils.Gender, error) {
+	res, err := graphql.UnmarshalString(v)
+	return enumutils.Gender(res), graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNString2githubᚗcomᚋsavannahghiᚋenumutilsᚐGender(ctx context.Context, sel ast.SelectionSet, v enumutils.Gender) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -30393,6 +31121,16 @@ func (ec *executionContext) marshalOContactPointUseEnum2ᚖgithubᚗcomᚋsavann
 	if v == nil {
 		return graphql.Null
 	}
+	return v
+}
+
+func (ec *executionContext) unmarshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (scalarutils.Date, error) {
+	var res scalarutils.Date
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v scalarutils.Date) graphql.Marshaler {
 	return v
 }
 
@@ -31911,6 +32649,26 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 	}
 	res := graphql.MarshalID(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOIdentificationDocument2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentificationDocumentᚄ(ctx context.Context, v interface{}) ([]dto.IdentificationDocument, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]dto.IdentificationDocument, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNIdentificationDocument2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentificationDocument(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
 func (ec *executionContext) unmarshalOInstant2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐInstant(ctx context.Context, v interface{}) (*scalarutils.Instant, error) {

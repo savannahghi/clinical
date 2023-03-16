@@ -1,0 +1,12 @@
+enum PatientGenderEnum {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
+}
+
+enum IDDocumentType {
+  national_id
+  passport
+  ccc_number
+}

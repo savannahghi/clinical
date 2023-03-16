@@ -9,6 +9,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/asaskevich/govalidator"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 
 	"github.com/savannahghi/converterandformatter"
@@ -117,8 +118,7 @@ func ParseDate(date string) time.Time {
 
 // IDToIdentifier translates simple identification
 // document details to FHIR identifiers
-func IDToIdentifier(
-	ids []*domain.IdentificationDocument, phones []*domain.PhoneNumberInput) ([]*domain.FHIRIdentifierInput, error) {
+func IDToIdentifier(ids []*dto.IdentificationDocument, phones []*domain.PhoneNumberInput) ([]*domain.FHIRIdentifierInput, error) {
 	if ids == nil || phones == nil {
 		return nil, nil
 	}
@@ -138,15 +138,15 @@ func IDToIdentifier(
 					{
 						System:       &identificationDocumentIdentifierSystem,
 						Version:      &version,
-						Code:         scalarutils.Code(id.DocumentNumber),
-						Display:      id.DocumentNumber,
+						Code:         scalarutils.Code(id.Number),
+						Display:      id.Number,
 						UserSelected: &userSelected,
 					},
 				},
-				Text: id.DocumentNumber,
+				Text: id.Number,
 			},
 			System: &idSystem,
-			Value:  id.DocumentNumber,
+			Value:  id.Number,
 			Period: common.DefaultPeriodInput(),
 		}
 		output = append(output, identifier)

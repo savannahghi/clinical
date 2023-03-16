@@ -3,14 +3,20 @@ package mock
 import (
 	"context"
 
+	"github.com/brianvoe/gofakeit"
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/enumutils"
+	"github.com/savannahghi/interserviceclient"
+	"github.com/savannahghi/scalarutils"
 )
 
 // FakeClinical ....
 type FakeClinical struct {
 	MockGetMedicalDataFn      func(ctx context.Context, patientID string) (*domain.MedicalData, error)
 	MockCreatePubsubPatientFn func(ctx context.Context, payload dto.CreatePatientPubSubMessage) error
+	MockCreatePatientFn       func(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 }
 
 // NewFakeClinicalMock ...
@@ -29,6 +35,20 @@ func NewFakeClinicalMock() *FakeClinical {
 		MockCreatePubsubPatientFn: func(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
 			return nil
 		},
+		MockCreatePatientFn: func(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
+			return &dto.Patient{
+				ID:          uuid.NewString(),
+				Active:      true,
+				Name:        gofakeit.BeerName(),
+				PhoneNumber: []string{interserviceclient.TestUserPhoneNumber},
+				Gender:      string(enumutils.GenderMale),
+				BirthDate: scalarutils.Date{
+					Year:  2000,
+					Month: 3,
+					Day:   20,
+				},
+			}, nil
+		},
 	}
 }
 
@@ -40,4 +60,9 @@ func (f *FakeClinical) GetMedicalData(ctx context.Context, patientID string) (*d
 // CreatePubsubPatient mocks the implementation os creating a user using pubsub
 func (f *FakeClinical) CreatePubsubPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
 	return f.MockCreatePubsubPatientFn(ctx, payload)
+}
+
+// CreatePatient mocks the implementation of creating a patient
+func (f *FakeClinical) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
+	return f.MockCreatePatientFn(ctx, input)
 }

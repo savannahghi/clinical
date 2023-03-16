@@ -1,0 +1,20 @@
+input HealthTimelineInput {
+  patientID: String!
+  offset: Int!
+  limit: Int!
+}
+
+input IdentificationDocument {
+  type: IDDocumentType!
+  number: String!
+}
+
+input PatientInput {
+  firstName: String!
+  lastName: String!
+  otherNames: String
+  identificationDocuments: [IdentificationDocument!]
+  birthDate: Date!
+  phoneNumbers: [String!]!
+  gender: String!
+}

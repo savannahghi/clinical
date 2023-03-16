@@ -1,5 +1,0 @@
-input HealthTimelineInput {
-  patientID: String!
-  offset: Int!
-  limit: Int!
-}

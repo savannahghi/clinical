@@ -7,6 +7,7 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/enums"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -222,10 +223,10 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 							LastName:  gofakeit.Name(),
 						},
 					},
-					IdentificationDocuments: []*domain.IdentificationDocument{
+					IdentificationDocuments: []*dto.IdentificationDocument{
 						{
-							DocumentType:   domain.IDDocumentTypePassport,
-							DocumentNumber: gofakeit.SSN(),
+							Type:   enums.IDDocumentTypePassport,
+							Number: gofakeit.SSN(),
 						},
 					},
 					BirthDate: scalarutils.Date{
@@ -280,10 +281,10 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 							LastName:  gofakeit.Name(),
 						},
 					},
-					IdentificationDocuments: []*domain.IdentificationDocument{
+					IdentificationDocuments: []*dto.IdentificationDocument{
 						{
-							DocumentType:   domain.IDDocumentTypePassport,
-							DocumentNumber: gofakeit.SSN(),
+							Type:   enums.IDDocumentTypePassport,
+							Number: gofakeit.SSN(),
 						},
 					},
 					BirthDate: scalarutils.Date{

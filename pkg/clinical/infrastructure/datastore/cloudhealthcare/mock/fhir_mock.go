@@ -472,6 +472,7 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRMedicationRelayPayload{}, nil
 		},
 		MockCreateFHIRPatientFn: func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
+			gender := domain.PatientContactGenderEnumMale
 			return &domain.PatientPayload{
 				PatientRecord: &domain.FHIRPatient{
 					ID:                   new(string),
@@ -480,6 +481,7 @@ func NewFHIRMock() *FHIRMock {
 					Active:               new(bool),
 					Name:                 []*domain.FHIRHumanName{},
 					Telecom:              []*domain.FHIRContactPoint{},
+					Gender:               (*domain.PatientGenderEnum)(&gender),
 					BirthDate:            &scalarutils.Date{},
 					DeceasedBoolean:      new(bool),
 					DeceasedDateTime:     &scalarutils.Date{},
@@ -539,8 +541,17 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockSearchFHIRPatientFn: func(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+			ID := uuid.NewString()
 			return &domain.PatientConnection{
-				Edges:    []*domain.PatientEdge{},
+				Edges: []*domain.PatientEdge{
+					{
+						Cursor: "",
+						Node: &domain.FHIRPatient{
+							ID: &ID,
+						},
+						HasOpenEpisodes: false,
+					},
+				},
 				PageInfo: &firebasetools.PageInfo{},
 			}, nil
 		},

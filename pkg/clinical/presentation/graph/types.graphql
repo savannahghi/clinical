@@ -11,3 +11,12 @@ type HealthTimeline {
   timeline: [Map]
   totalCount: Int!
 }
+
+type Patient {
+  id: ID!
+  active: Boolean!
+  name: String!
+  phoneNumber: [String]
+  gender: String!
+  birthDate: Date
+}

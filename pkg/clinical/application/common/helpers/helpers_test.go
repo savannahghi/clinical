@@ -9,6 +9,8 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/brianvoe/gofakeit"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/enums"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/enumutils"
 	"github.com/stretchr/testify/assert"
@@ -99,7 +101,7 @@ func TestIDToIdentifier(t *testing.T) {
 	base64String := base64.StdEncoding.EncodeToString([]byte(dummyString))
 	contentType := enumutils.ContentTypePng
 	type args struct {
-		ids    []*domain.IdentificationDocument
+		ids    []*dto.IdentificationDocument
 		phones []*domain.PhoneNumberInput
 	}
 	tests := []struct {
@@ -110,9 +112,9 @@ func TestIDToIdentifier(t *testing.T) {
 		{
 			name: "Happy case: convert ID to  identifier",
 			args: args{
-				ids: []*domain.IdentificationDocument{{
-					DocumentType:     domain.IDDocumentTypeNationalID,
-					DocumentNumber:   "2121212121",
+				ids: []*dto.IdentificationDocument{{
+					Type:             enums.IDDocumentTypeNationalID,
+					Number:           "2121212121",
 					Title:            &dummyString,
 					ImageContentType: &contentType,
 					ImageBase64:      &base64String,
@@ -141,9 +143,9 @@ func TestIDToIdentifier(t *testing.T) {
 		{
 			name: "Sad case: invalid phone",
 			args: args{
-				ids: []*domain.IdentificationDocument{{
-					DocumentType:     domain.IDDocumentTypeNationalID,
-					DocumentNumber:   "2121212121",
+				ids: []*dto.IdentificationDocument{{
+					Type:             enums.IDDocumentTypeNationalID,
+					Number:           "2121212121",
 					Title:            &dummyString,
 					ImageContentType: &contentType,
 					ImageBase64:      &base64String,

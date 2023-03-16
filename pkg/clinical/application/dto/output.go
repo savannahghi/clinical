@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/savannahghi/scalarutils"
+
 // TenantIdentifiers models the json object used to store some of the tenant identifiers
 type TenantIdentifiers struct {
 	OrganizationID string `json:"organizationID,omitempty"`
@@ -12,4 +14,14 @@ type Organization struct {
 	Name         string                   `json:"name"`
 	Identifiers  []OrganizationIdentifier `json:"identifiers"`
 	PhoneNumbers []string                 `json:"phoneNumbers"`
+}
+
+// Patient models the patient output data object
+type Patient struct {
+	ID          string           `json:"id"`
+	Active      bool             `json:"active"`
+	Name        string           `json:"name"`
+	PhoneNumber []string         `json:"phoneNumber"`
+	Gender      string           `json:"gender"`
+	BirthDate   scalarutils.Date `json:"birthDate"`
 }
