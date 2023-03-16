@@ -11,6 +11,8 @@ WORKDIR /app
 COPY go.* $D/
 CMD go mod download
 
+ENV GIN_MODE release
+
 # Now copy the rest.
 COPY . /app/
 
