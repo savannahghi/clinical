@@ -66,7 +66,7 @@ type CustomError struct {
 
 // Error implements the error interface
 func (e CustomError) Error() string {
-	return fmt.Sprintf("%d: %s", e.Err, e.Message)
+	return fmt.Sprintf("%s: %s", e.Message, e.Err.Error())
 }
 
 // NewCustomError is a helper function to create a new custom error

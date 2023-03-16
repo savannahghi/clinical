@@ -39,7 +39,6 @@ func (c *UseCasesClinicalImpl) RegisterTenant(ctx context.Context, input dto.Org
 		return nil, err
 	}
 
-	// fhir organization to dto organization
 	return mapFHIROrganizationToDTOOrganization(organisationPayload.Resource), nil
 }
 
@@ -126,4 +125,40 @@ func mapFHIROrganizationToDTOOrganization(organisation *domain.FHIROrganization)
 	}
 
 	return org
+}
+
+// RegisterFacility creates a facility in FHIR. The facility represents the healthcare provider that a service is using.
+// E.g if SladeAdvantage are running their program in Nairobi Hospital, then Nairobi hospital will be the facility in this context.
+func (c *UseCasesClinicalImpl) RegisterFacility(ctx context.Context, input dto.OrganizationInput) (*dto.Organization, error) {
+	found := false
+
+	for _, identifier := range input.Identifiers {
+		if identifier.Type == dto.SladeCode || identifier.Type == dto.MFLCode {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		err := fmt.Errorf("at least one identifier of type slade code or mfl code is required")
+		message := "please provide a SladeCode or MFLCode identifier"
+
+		return nil, utils.NewCustomError(err, message)
+	}
+
+	if input.Name == "" {
+		err := fmt.Errorf("expected name to be defined")
+		message := "please provide the facility name"
+
+		return nil, utils.NewCustomError(err, message)
+	}
+
+	payload := mapOrganizationInputToFHIROrganizationInput(input)
+
+	organisationPayload, err := c.infrastructure.FHIR.CreateFHIROrganization(ctx, *payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapFHIROrganizationToDTOOrganization(organisationPayload.Resource), nil
 }
