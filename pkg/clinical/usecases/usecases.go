@@ -26,6 +26,8 @@ type Clinical interface {
 	CreatePubsubAllergyIntolerance(ctx context.Context, data dto.CreatePatientAllergyPubSubMessage) error
 	CreatePubsubTestResult(ctx context.Context, data dto.CreatePatientTestResultPubSubMessage) error
 	CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error
+
+	StartEncounter(ctx context.Context, episodeID string) (string, error)
 }
 
 // Interactor is an implementation of the usecases interface

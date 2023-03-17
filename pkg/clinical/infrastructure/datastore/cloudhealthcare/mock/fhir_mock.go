@@ -210,7 +210,12 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockCreateFHIREncounterFn: func(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error) {
-			return &domain.FHIREncounterRelayPayload{}, nil
+			resourceID := uuid.New().String()
+			return &domain.FHIREncounterRelayPayload{
+				Resource: &domain.FHIREncounter{
+					ID: &resourceID,
+				},
+			}, nil
 		},
 		MockGetFHIREpisodeOfCareFn: func(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
 			UUID := uuid.New().String()

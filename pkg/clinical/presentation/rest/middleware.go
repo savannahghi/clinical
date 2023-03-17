@@ -91,6 +91,8 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 			}
 
 			c.Set(string(header.ContextKey), headerValue)
+
+			c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), header.ContextKey, headerValue))
 		}
 
 		c.Next()

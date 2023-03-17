@@ -16,3 +16,34 @@ const (
 	EpisodeOfCareStatusEnumFinished  EpisodeOfCareStatusEnum = "finished"
 	EpisodeOfCareStatusEnumCancelled EpisodeOfCareStatusEnum = "cancelled"
 )
+
+// EncounterStatusEnum is a FHIR enum
+type EncounterStatusEnum string
+
+const (
+	// EncounterStatusEnumPlanned ...
+	EncounterStatusEnumPlanned EncounterStatusEnum = "planned"
+	// EncounterStatusEnumArrived ...
+	EncounterStatusEnumArrived EncounterStatusEnum = "arrived"
+	// EncounterStatusEnumTriaged ...
+	EncounterStatusEnumTriaged EncounterStatusEnum = "triaged"
+	// EncounterStatusEnumInProgress ...
+	EncounterStatusEnumInProgress EncounterStatusEnum = "in_progress"
+	// EncounterStatusEnumOnleave ...
+	EncounterStatusEnumOnleave EncounterStatusEnum = "onleave"
+	// EncounterStatusEnumFinished ...
+	EncounterStatusEnumFinished EncounterStatusEnum = "finished"
+	// EncounterStatusEnumCancelled ...
+	EncounterStatusEnumCancelled EncounterStatusEnum = "cancelled"
+	// EncounterStatusEnumEnteredInError ...
+	EncounterStatusEnumEnteredInError EncounterStatusEnum = "entered_in_error"
+	// EncounterStatusEnumUnknown ...
+	EncounterStatusEnumUnknown EncounterStatusEnum = "unknown"
+)
+
+type EncounterClass string
+
+const (
+	// Also referred to as outpatient - For now we'll start with outpatient only
+	EncounterClassAmbulatory EncounterClass = "ambulatory"
+)
