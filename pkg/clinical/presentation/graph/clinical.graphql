@@ -1,10 +1,15 @@
 extend type Query {
   patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
   getMedicalData(patientID: String!): MedicalData
+
+  episodeOfCare(id: ID!): EpisodeOfCare
 }
 
 extend type Mutation {
   createFHIROrganization(
     input: FHIROrganizationInput!
   ): FHIROrganizationRelayPayload!
+
+  createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
+  endEpisodeOfCare(id: ID!): EpisodeOfCare
 }

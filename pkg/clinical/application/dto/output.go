@@ -13,3 +13,9 @@ type Organization struct {
 	Identifiers  []OrganizationIdentifier `json:"identifiers"`
 	PhoneNumbers []string                 `json:"phoneNumbers"`
 }
+
+type EpisodeOfCare struct {
+	ID        string                  `json:"id"`
+	Status    EpisodeOfCareStatusEnum `json:"status"`
+	PatientID string                  `json:"patientID"`
+}

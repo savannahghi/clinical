@@ -6,7 +6,9 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 )
@@ -14,22 +16,39 @@ import (
 // CreateFHIROrganization is the resolver for the createFHIROrganization field.
 func (r *mutationResolver) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
 	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
+
 	return r.usecases.CreateFHIROrganization(ctx, input)
+}
+
+// CreateEpisodeOfCare is the resolver for the createEpisodeOfCare field.
+func (r *mutationResolver) CreateEpisodeOfCare(ctx context.Context, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error) {
+	r.CheckDependencies()
+
+	return r.usecases.CreateEpisodeOfCare(ctx, episodeOfCare)
+}
+
+// EndEpisodeOfCare is the resolver for the endEpisodeOfCare field.
+func (r *mutationResolver) EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
+	panic(fmt.Errorf("not implemented: EndEpisodeOfCare - endEpisodeOfCare"))
 }
 
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
 	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
+
 	return r.usecases.PatientHealthTimeline(ctx, input)
 }
 
 // GetMedicalData is the resolver for the getMedicalData field.
 func (r *queryResolver) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
 	r.CheckDependencies()
-	r.CheckUserTokenInContext(ctx)
+
 	return r.usecases.GetMedicalData(ctx, patientID)
+}
+
+// EpisodeOfCare is the resolver for the episodeOfCare field.
+func (r *queryResolver) EpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
+	panic(fmt.Errorf("not implemented: EpisodeOfCare - episodeOfCare"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

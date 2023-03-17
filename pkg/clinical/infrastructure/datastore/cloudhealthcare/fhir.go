@@ -136,7 +136,7 @@ func (fh StoreImpl) SearchFHIREpisodeOfCare(ctx context.Context, params map[stri
 
 // CreateEpisodeOfCare is the final common pathway for creation of episodes of
 // care.
-func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCare) (*domain.EpisodeOfCarePayload, error) {
+func (fh StoreImpl) CreateEpisodeOfCare(ctx context.Context, episode domain.FHIREpisodeOfCareInput) (*domain.EpisodeOfCarePayload, error) {
 	payload, err := converterandformatter.StructToMap(episode)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn episode of care input into a map: %w", err)

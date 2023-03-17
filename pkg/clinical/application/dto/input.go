@@ -10,3 +10,8 @@ type OrganizationInput struct {
 	PhoneNumber string                   `json:"phoneNumber,omitempty"`
 	Identifiers []OrganizationIdentifier `json:"identifiers,omitempty"`
 }
+
+type EpisodeOfCareInput struct {
+	Status    EpisodeOfCareStatusEnum `json:"status"`
+	PatientID string                  `json:"patientID"`
+}

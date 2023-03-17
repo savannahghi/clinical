@@ -2903,7 +2903,7 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 	OrgRef := "Organization/"
 	type args struct {
 		ctx     context.Context
-		episode domain.FHIREpisodeOfCare
+		episode domain.FHIREpisodeOfCareInput
 	}
 	tests := []struct {
 		name    string
@@ -2914,13 +2914,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			name: "Happy case: create episode of care",
 			args: args{
 				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
+				episode: domain.FHIREpisodeOfCareInput{
 					ID:     &UUID,
 					Status: &status,
-					Patient: &domain.FHIRReference{
+					Patient: &domain.FHIRReferenceInput{
 						Reference: &PatientRef,
 					},
-					ManagingOrganization: &domain.FHIRReference{
+					ManagingOrganization: &domain.FHIRReferenceInput{
 						Reference: &OrgRef,
 					},
 				},
@@ -2931,13 +2931,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			name: "Happy case: create episode of care, episode does not exist",
 			args: args{
 				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
+				episode: domain.FHIREpisodeOfCareInput{
 					ID:     &UUID,
 					Status: &status,
-					Patient: &domain.FHIRReference{
+					Patient: &domain.FHIRReferenceInput{
 						Reference: &PatientRef,
 					},
-					ManagingOrganization: &domain.FHIRReference{
+					ManagingOrganization: &domain.FHIRReferenceInput{
 						Reference: &OrgRef,
 					},
 				},
@@ -2948,13 +2948,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			name: "Sad case: failed to search FHIR episode of care",
 			args: args{
 				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
+				episode: domain.FHIREpisodeOfCareInput{
 					ID:     &UUID,
 					Status: &status,
-					Patient: &domain.FHIRReference{
+					Patient: &domain.FHIRReferenceInput{
 						Reference: &PatientRef,
 					},
-					ManagingOrganization: &domain.FHIRReference{
+					ManagingOrganization: &domain.FHIRReferenceInput{
 						Reference: &OrgRef,
 					},
 				},
@@ -2965,13 +2965,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			name: "Sad case: failed to create FHIR resource",
 			args: args{
 				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
+				episode: domain.FHIREpisodeOfCareInput{
 					ID:     &UUID,
 					Status: &status,
-					Patient: &domain.FHIRReference{
+					Patient: &domain.FHIRReferenceInput{
 						Reference: &PatientRef,
 					},
-					ManagingOrganization: &domain.FHIRReference{
+					ManagingOrganization: &domain.FHIRReferenceInput{
 						Reference: &OrgRef,
 					},
 				},

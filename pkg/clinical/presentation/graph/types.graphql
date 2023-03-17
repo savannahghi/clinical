@@ -11,3 +11,9 @@ type HealthTimeline {
   timeline: [Map]
   totalCount: Int!
 }
+
+type EpisodeOfCare {
+  id: ID!
+  status: EpisodeOfCareStatusEnum!
+  patientID: String!
+}
