@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -534,8 +535,17 @@ type ComplexityRoot struct {
 	Query struct {
 		EpisodeOfCare         func(childComplexity int, id string) int
 		GetMedicalData        func(childComplexity int, patientID string) int
-		PatientHealthTimeline func(childComplexity int, input domain.HealthTimelineInput) int
+		PatientHealthTimeline func(childComplexity int, input dto.HealthTimelineInput) int
 		__resolve__service    func(childComplexity int) int
+	}
+
+	TimelineResource struct {
+		Date         func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		ResourceType func(childComplexity int) int
+		Status       func(childComplexity int) int
+		Value        func(childComplexity int) int
 	}
 
 	_Service struct {
@@ -551,7 +561,7 @@ type MutationResolver interface {
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 }
 type QueryResolver interface {
-	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
+	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 	EpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 }
@@ -2919,7 +2929,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.PatientHealthTimeline(childComplexity, args["input"].(domain.HealthTimelineInput)), true
+		return e.complexity.Query.PatientHealthTimeline(childComplexity, args["input"].(dto.HealthTimelineInput)), true
 
 	case "Query._service":
 		if e.complexity.Query.__resolve__service == nil {
@@ -2927,6 +2937,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.__resolve__service(childComplexity), true
+
+	case "TimelineResource.date":
+		if e.complexity.TimelineResource.Date == nil {
+			break
+		}
+
+		return e.complexity.TimelineResource.Date(childComplexity), true
+
+	case "TimelineResource.id":
+		if e.complexity.TimelineResource.ID == nil {
+			break
+		}
+
+		return e.complexity.TimelineResource.ID(childComplexity), true
+
+	case "TimelineResource.name":
+		if e.complexity.TimelineResource.Name == nil {
+			break
+		}
+
+		return e.complexity.TimelineResource.Name(childComplexity), true
+
+	case "TimelineResource.resourceType":
+		if e.complexity.TimelineResource.ResourceType == nil {
+			break
+		}
+
+		return e.complexity.TimelineResource.ResourceType(childComplexity), true
+
+	case "TimelineResource.status":
+		if e.complexity.TimelineResource.Status == nil {
+			break
+		}
+
+		return e.complexity.TimelineResource.Status(childComplexity), true
+
+	case "TimelineResource.value":
+		if e.complexity.TimelineResource.Value == nil {
+			break
+		}
+
+		return e.complexity.TimelineResource.Value(childComplexity), true
 
 	case "_Service.sdl":
 		if e.complexity._Service.SDL == nil {
@@ -3079,6 +3131,13 @@ enum EncounterStatusEnum {
 enum EncounterClass {
   ambulatory
 }
+
+enum ResourceType {
+  AllergyIntolerance
+  Observation
+  Condition
+  MedicationStatement
+}
 `, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
@@ -3124,8 +3183,17 @@ input EpisodeOfCareInput {
   cd4Count: [FHIRObservation]
 }
 
+type TimelineResource {
+  id: ID!
+  resourceType: ResourceType
+  name: String
+  value: String
+  status: String
+  date: Date
+}
+
 type HealthTimeline {
-  timeline: [Map]
+  timeline: [TimelineResource]
   totalCount: Int!
 }
 
@@ -6356,10 +6424,10 @@ func (ec *executionContext) field_Query_getMedicalData_args(ctx context.Context,
 func (ec *executionContext) field_Query_patientHealthTimeline_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 domain.HealthTimelineInput
+	var arg0 dto.HealthTimelineInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNHealthTimelineInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimelineInput(ctx, tmp)
+		arg0, err = ec.unmarshalNHealthTimelineInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐHealthTimelineInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -20967,7 +21035,7 @@ func (ec *executionContext) fieldContext_FHIRTimingRepeat_Offset(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _HealthTimeline_timeline(ctx context.Context, field graphql.CollectedField, obj *domain.HealthTimeline) (ret graphql.Marshaler) {
+func (ec *executionContext) _HealthTimeline_timeline(ctx context.Context, field graphql.CollectedField, obj *dto.HealthTimeline) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_HealthTimeline_timeline(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -20990,9 +21058,9 @@ func (ec *executionContext) _HealthTimeline_timeline(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]map[string]interface{})
+	res := resTmp.([]dto.TimelineResource)
 	fc.Result = res
-	return ec.marshalOMap2ᚕmap(ctx, field.Selections, res)
+	return ec.marshalOTimelineResource2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTimelineResource(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_HealthTimeline_timeline(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21002,13 +21070,27 @@ func (ec *executionContext) fieldContext_HealthTimeline_timeline(ctx context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Map does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_TimelineResource_id(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_TimelineResource_resourceType(ctx, field)
+			case "name":
+				return ec.fieldContext_TimelineResource_name(ctx, field)
+			case "value":
+				return ec.fieldContext_TimelineResource_value(ctx, field)
+			case "status":
+				return ec.fieldContext_TimelineResource_status(ctx, field)
+			case "date":
+				return ec.fieldContext_TimelineResource_date(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TimelineResource", field.Name)
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _HealthTimeline_totalCount(ctx context.Context, field graphql.CollectedField, obj *domain.HealthTimeline) (ret graphql.Marshaler) {
+func (ec *executionContext) _HealthTimeline_totalCount(ctx context.Context, field graphql.CollectedField, obj *dto.HealthTimeline) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_HealthTimeline_totalCount(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -22000,6 +22082,7 @@ func (ec *executionContext) _Mutation_createFHIROrganization(ctx context.Context
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -22058,6 +22141,7 @@ func (ec *executionContext) _Mutation_createEpisodeOfCare(ctx context.Context, f
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -22117,6 +22201,7 @@ func (ec *executionContext) _Mutation_endEpisodeOfCare(ctx context.Context, fiel
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -22176,6 +22261,7 @@ func (ec *executionContext) _Mutation_startEncounter(ctx context.Context, field 
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -22230,6 +22316,7 @@ func (ec *executionContext) _Mutation_endEncounter(ctx context.Context, field gr
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -22368,10 +22455,11 @@ func (ec *executionContext) _Query_patientHealthTimeline(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().PatientHealthTimeline(rctx, fc.Args["input"].(domain.HealthTimelineInput))
+		return ec.resolvers.Query().PatientHealthTimeline(rctx, fc.Args["input"].(dto.HealthTimelineInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -22379,9 +22467,9 @@ func (ec *executionContext) _Query_patientHealthTimeline(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*domain.HealthTimeline)
+	res := resTmp.(*dto.HealthTimeline)
 	fc.Result = res
-	return ec.marshalNHealthTimeline2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimeline(ctx, field.Selections, res)
+	return ec.marshalNHealthTimeline2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐHealthTimeline(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_patientHealthTimeline(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22432,6 +22520,7 @@ func (ec *executionContext) _Query_getMedicalData(ctx context.Context, field gra
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -22497,6 +22586,7 @@ func (ec *executionContext) _Query_episodeOfCare(ctx context.Context, field grap
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -22556,6 +22646,7 @@ func (ec *executionContext) _Query__service(ctx context.Context, field graphql.C
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		if !graphql.HasFieldError(ctx, fc) {
@@ -22603,6 +22694,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -22676,6 +22768,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -22707,6 +22800,255 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TimelineResource_id(ctx context.Context, field graphql.CollectedField, obj *dto.TimelineResource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TimelineResource_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TimelineResource_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TimelineResource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TimelineResource_resourceType(ctx context.Context, field graphql.CollectedField, obj *dto.TimelineResource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TimelineResource_resourceType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ResourceType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.ResourceType)
+	fc.Result = res
+	return ec.marshalOResourceType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐResourceType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TimelineResource_resourceType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TimelineResource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ResourceType does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TimelineResource_name(ctx context.Context, field graphql.CollectedField, obj *dto.TimelineResource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TimelineResource_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TimelineResource_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TimelineResource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TimelineResource_value(ctx context.Context, field graphql.CollectedField, obj *dto.TimelineResource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TimelineResource_value(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Value, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TimelineResource_value(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TimelineResource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TimelineResource_status(ctx context.Context, field graphql.CollectedField, obj *dto.TimelineResource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TimelineResource_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TimelineResource_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TimelineResource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TimelineResource_date(ctx context.Context, field graphql.CollectedField, obj *dto.TimelineResource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TimelineResource_date(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Date, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TimelineResource_date(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TimelineResource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Date does not have child fields")
 		},
 	}
 	return fc, nil
@@ -27310,8 +27652,8 @@ func (ec *executionContext) unmarshalInputFHIRTimingRepeatInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Context, obj interface{}) (domain.HealthTimelineInput, error) {
-	var it domain.HealthTimelineInput
+func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Context, obj interface{}) (dto.HealthTimelineInput, error) {
+	var it dto.HealthTimelineInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -29765,7 +30107,7 @@ func (ec *executionContext) _FHIRTimingRepeat(ctx context.Context, sel ast.Selec
 
 var healthTimelineImplementors = []string{"HealthTimeline"}
 
-func (ec *executionContext) _HealthTimeline(ctx context.Context, sel ast.SelectionSet, obj *domain.HealthTimeline) graphql.Marshaler {
+func (ec *executionContext) _HealthTimeline(ctx context.Context, sel ast.SelectionSet, obj *dto.HealthTimeline) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, healthTimelineImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
@@ -29915,6 +30257,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	})
 
 	out := graphql.NewFieldSet(fields)
+	var invalids uint32
 	for i, field := range fields {
 		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
 			Object: field.Name,
@@ -29930,6 +30273,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_createFHIROrganization(ctx, field)
 			})
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createEpisodeOfCare":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -29948,17 +30294,26 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_startEncounter(ctx, field)
 			})
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "endEncounter":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_endEncounter(ctx, field)
 			})
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -30006,6 +30361,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	})
 
 	out := graphql.NewFieldSet(fields)
+	var invalids uint32
 	for i, field := range fields {
 		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
 			Object: field.Name,
@@ -30025,6 +30381,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_patientHealthTimeline(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -30085,6 +30444,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query__service(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -30112,6 +30474,57 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		}
 	}
 	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var timelineResourceImplementors = []string{"TimelineResource"}
+
+func (ec *executionContext) _TimelineResource(ctx context.Context, sel ast.SelectionSet, obj *dto.TimelineResource) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, timelineResourceImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TimelineResource")
+		case "id":
+
+			out.Values[i] = ec._TimelineResource_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "resourceType":
+
+			out.Values[i] = ec._TimelineResource_resourceType(ctx, field, obj)
+
+		case "name":
+
+			out.Values[i] = ec._TimelineResource_name(ctx, field, obj)
+
+		case "value":
+
+			out.Values[i] = ec._TimelineResource_value(ctx, field, obj)
+
+		case "status":
+
+			out.Values[i] = ec._TimelineResource_status(ctx, field, obj)
+
+		case "date":
+
+			out.Values[i] = ec._TimelineResource_date(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -30788,11 +31201,11 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) marshalNHealthTimeline2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimeline(ctx context.Context, sel ast.SelectionSet, v domain.HealthTimeline) graphql.Marshaler {
+func (ec *executionContext) marshalNHealthTimeline2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐHealthTimeline(ctx context.Context, sel ast.SelectionSet, v dto.HealthTimeline) graphql.Marshaler {
 	return ec._HealthTimeline(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNHealthTimeline2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimeline(ctx context.Context, sel ast.SelectionSet, v *domain.HealthTimeline) graphql.Marshaler {
+func (ec *executionContext) marshalNHealthTimeline2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐHealthTimeline(ctx context.Context, sel ast.SelectionSet, v *dto.HealthTimeline) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -30802,7 +31215,7 @@ func (ec *executionContext) marshalNHealthTimeline2ᚖgithubᚗcomᚋsavannahghi
 	return ec._HealthTimeline(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNHealthTimelineInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐHealthTimelineInput(ctx context.Context, v interface{}) (domain.HealthTimelineInput, error) {
+func (ec *executionContext) unmarshalNHealthTimelineInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐHealthTimelineInput(ctx context.Context, v interface{}) (dto.HealthTimelineInput, error) {
 	res, err := ec.unmarshalInputHealthTimelineInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -31482,6 +31895,16 @@ func (ec *executionContext) marshalOContactPointUseEnum2ᚖgithubᚗcomᚋsavann
 	if v == nil {
 		return graphql.Null
 	}
+	return v
+}
+
+func (ec *executionContext) unmarshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (scalarutils.Date, error) {
+	var res scalarutils.Date
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v scalarutils.Date) graphql.Marshaler {
 	return v
 }
 
@@ -33095,54 +33518,6 @@ func (ec *executionContext) marshalOInteger2ᚖstring(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) unmarshalOMap2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalMap(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOMap2map(ctx context.Context, sel ast.SelectionSet, v map[string]interface{}) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalMap(v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOMap2ᚕmap(ctx context.Context, v interface{}) ([]map[string]interface{}, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]map[string]interface{}, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOMap2map(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOMap2ᚕmap(ctx context.Context, sel ast.SelectionSet, v []map[string]interface{}) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOMap2map(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
 func (ec *executionContext) unmarshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx context.Context, v interface{}) (*scalarutils.Markdown, error) {
 	if v == nil {
 		return nil, nil
@@ -33354,6 +33729,17 @@ func (ec *executionContext) marshalOQuantityComparatorEnum2ᚖgithubᚗcomᚋsav
 	return v
 }
 
+func (ec *executionContext) unmarshalOResourceType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐResourceType(ctx context.Context, v interface{}) (dto.ResourceType, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.ResourceType(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOResourceType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐResourceType(ctx context.Context, sel ast.SelectionSet, v dto.ResourceType) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	return res
+}
+
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -33458,6 +33844,51 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	}
 	res := graphql.MarshalTime(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOTimelineResource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTimelineResource(ctx context.Context, sel ast.SelectionSet, v dto.TimelineResource) graphql.Marshaler {
+	return ec._TimelineResource(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOTimelineResource2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTimelineResource(ctx context.Context, sel ast.SelectionSet, v []dto.TimelineResource) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOTimelineResource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTimelineResource(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOTimingRepeatDurationUnitEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐTimingRepeatDurationUnitEnum(ctx context.Context, v interface{}) (*domain.TimingRepeatDurationUnitEnum, error) {

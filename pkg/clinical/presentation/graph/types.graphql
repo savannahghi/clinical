@@ -7,8 +7,17 @@ type MedicalData {
   cd4Count: [FHIRObservation]
 }
 
+type TimelineResource {
+  id: ID!
+  resourceType: ResourceType
+  name: String
+  value: String
+  status: String
+  date: Date
+}
+
 type HealthTimeline {
-  timeline: [Map]
+  timeline: [TimelineResource]
   totalCount: Int!
 }
 

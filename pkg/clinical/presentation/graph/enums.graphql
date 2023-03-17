@@ -20,3 +20,10 @@ enum EncounterStatusEnum {
 enum EncounterClass {
   ambulatory
 }
+
+enum ResourceType {
+  AllergyIntolerance
+  Observation
+  Condition
+  MedicationStatement
+}
