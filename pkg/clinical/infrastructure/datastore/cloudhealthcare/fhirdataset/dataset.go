@@ -379,7 +379,12 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string, resour
 	}
 
 	if resp.StatusCode > 299 {
-		return fmt.Errorf("read: status %d %s: %s", resp.StatusCode, resp.Status, respBytes)
+		_, diagnostics, err := getErrorMessage(respBytes)
+		if err != nil {
+			return err
+		}
+
+		return fmt.Errorf("%s", diagnostics)
 	}
 
 	err = json.Unmarshal(respBytes, resource)

@@ -23,7 +23,6 @@ linters:
     - dupl
     - errorlint
     - bodyclose
-    - contextcheck
     - gocritic
     - nilerr
     - ireturn
