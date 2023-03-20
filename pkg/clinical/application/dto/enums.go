@@ -56,3 +56,11 @@ const (
 	ResourceTypeCondition           ResourceType = "Condition"
 	ResourceTypeMedicationStatement ResourceType = "MedicationStatement"
 )
+
+type AllergyIntoleranceReactionSeverityEnum string
+
+const (
+	AllergyIntoleranceReactionSeverityEnumMild     AllergyIntoleranceReactionSeverityEnum = "mild"
+	AllergyIntoleranceReactionSeverityEnumModerate AllergyIntoleranceReactionSeverityEnum = "moderate"
+	AllergyIntoleranceReactionSeverityEnumSevere   AllergyIntoleranceReactionSeverityEnum = "severe"
+)

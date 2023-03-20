@@ -279,7 +279,40 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				data.Allergies = append(data.Allergies, edge.Node)
+				if edge.Node.ID == nil {
+					continue
+				}
+
+				if edge.Node.Patient == nil {
+					continue
+				}
+
+				if edge.Node.Patient.ID == nil {
+					continue
+				}
+
+				if edge.Node.Encounter == nil {
+					continue
+				}
+
+				if edge.Node.Encounter.ID == nil {
+					continue
+				}
+
+				if edge.Node.Code == nil {
+					continue
+				}
+
+				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+					continue
+				}
+
+				data.Allergies = append(data.Allergies, mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(edge.Node))
+			}
+
+			if err != nil {
+				utils.ReportErrorToSentry(fmt.Errorf("failed to convert substance code to int: %w", err))
+				return nil, fmt.Errorf("failed to convert substance code to int: %w", err)
 			}
 
 		case "Weight":
@@ -353,6 +386,17 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 	}
 
 	return data, nil
+}
+func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *domain.FHIRAllergyIntolerance) *dto.AllergyIntolerance {
+	return &dto.AllergyIntolerance{
+		ID:              *fhirAllergyIntolerance.ID,
+		PatientID:       *fhirAllergyIntolerance.Patient.ID,
+		EncounterID:     *fhirAllergyIntolerance.Encounter.ID,
+		OnsetDateTime:   fhirAllergyIntolerance.OnsetPeriod.Start,
+		Severity:        dto.AllergyIntoleranceReactionSeverityEnum(fhirAllergyIntolerance.Criticality),
+		SubstanceCode:   string(fhirAllergyIntolerance.Code.Coding[0].Code),
+		SubstanceSystem: string(*fhirAllergyIntolerance.Code.Coding[0].System),
+	}
 }
 
 // PatientHealthTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
