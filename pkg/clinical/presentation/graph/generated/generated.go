@@ -49,6 +49,16 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	AllergyIntolerance struct {
+		EncounterID     func(childComplexity int) int
+		ID              func(childComplexity int) int
+		OnsetDateTime   func(childComplexity int) int
+		PatientID       func(childComplexity int) int
+		Severity        func(childComplexity int) int
+		SubstanceCode   func(childComplexity int) int
+		SubstanceSystem func(childComplexity int) int
+	}
+
 	Encounter struct {
 		Class           func(childComplexity int) int
 		EpisodeOfCareID func(childComplexity int) int
@@ -84,56 +94,6 @@ type ComplexityRoot struct {
 		System     func(childComplexity int) int
 		Unit       func(childComplexity int) int
 		Value      func(childComplexity int) int
-	}
-
-	FHIRAllergyIntolerance struct {
-		Asserter           func(childComplexity int) int
-		Category           func(childComplexity int) int
-		ClinicalStatus     func(childComplexity int) int
-		Code               func(childComplexity int) int
-		Criticality        func(childComplexity int) int
-		Encounter          func(childComplexity int) int
-		ID                 func(childComplexity int) int
-		Identifier         func(childComplexity int) int
-		LastOccurrence     func(childComplexity int) int
-		Note               func(childComplexity int) int
-		OnsetAge           func(childComplexity int) int
-		OnsetDateTime      func(childComplexity int) int
-		OnsetPeriod        func(childComplexity int) int
-		OnsetRange         func(childComplexity int) int
-		OnsetString        func(childComplexity int) int
-		Patient            func(childComplexity int) int
-		Reaction           func(childComplexity int) int
-		RecordedDate       func(childComplexity int) int
-		Recorder           func(childComplexity int) int
-		Text               func(childComplexity int) int
-		Type               func(childComplexity int) int
-		VerificationStatus func(childComplexity int) int
-	}
-
-	FHIRAllergyIntoleranceRelayConnection struct {
-		Edges    func(childComplexity int) int
-		PageInfo func(childComplexity int) int
-	}
-
-	FHIRAllergyIntoleranceRelayEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
-	}
-
-	FHIRAllergyIntoleranceRelayPayload struct {
-		Resource func(childComplexity int) int
-	}
-
-	FHIRAllergyintoleranceReaction struct {
-		Description   func(childComplexity int) int
-		ExposureRoute func(childComplexity int) int
-		ID            func(childComplexity int) int
-		Manifestation func(childComplexity int) int
-		Note          func(childComplexity int) int
-		Onset         func(childComplexity int) int
-		Severity      func(childComplexity int) int
-		Substance     func(childComplexity int) int
 	}
 
 	FHIRAnnotation struct {
@@ -583,6 +543,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "AllergyIntolerance.encounterID":
+		if e.complexity.AllergyIntolerance.EncounterID == nil {
+			break
+		}
+
+		return e.complexity.AllergyIntolerance.EncounterID(childComplexity), true
+
+	case "AllergyIntolerance.id":
+		if e.complexity.AllergyIntolerance.ID == nil {
+			break
+		}
+
+		return e.complexity.AllergyIntolerance.ID(childComplexity), true
+
+	case "AllergyIntolerance.onsetDateTime":
+		if e.complexity.AllergyIntolerance.OnsetDateTime == nil {
+			break
+		}
+
+		return e.complexity.AllergyIntolerance.OnsetDateTime(childComplexity), true
+
+	case "AllergyIntolerance.patientID":
+		if e.complexity.AllergyIntolerance.PatientID == nil {
+			break
+		}
+
+		return e.complexity.AllergyIntolerance.PatientID(childComplexity), true
+
+	case "AllergyIntolerance.severity":
+		if e.complexity.AllergyIntolerance.Severity == nil {
+			break
+		}
+
+		return e.complexity.AllergyIntolerance.Severity(childComplexity), true
+
+	case "AllergyIntolerance.substanceCode":
+		if e.complexity.AllergyIntolerance.SubstanceCode == nil {
+			break
+		}
+
+		return e.complexity.AllergyIntolerance.SubstanceCode(childComplexity), true
+
+	case "AllergyIntolerance.substanceSystem":
+		if e.complexity.AllergyIntolerance.SubstanceSystem == nil {
+			break
+		}
+
+		return e.complexity.AllergyIntolerance.SubstanceSystem(childComplexity), true
+
 	case "Encounter.class":
 		if e.complexity.Encounter.Class == nil {
 			break
@@ -757,251 +766,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FHIRAge.Value(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Asserter":
-		if e.complexity.FHIRAllergyIntolerance.Asserter == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Asserter(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Category":
-		if e.complexity.FHIRAllergyIntolerance.Category == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Category(childComplexity), true
-
-	case "FHIRAllergyIntolerance.ClinicalStatus":
-		if e.complexity.FHIRAllergyIntolerance.ClinicalStatus == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.ClinicalStatus(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Code":
-		if e.complexity.FHIRAllergyIntolerance.Code == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Code(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Criticality":
-		if e.complexity.FHIRAllergyIntolerance.Criticality == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Criticality(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Encounter":
-		if e.complexity.FHIRAllergyIntolerance.Encounter == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Encounter(childComplexity), true
-
-	case "FHIRAllergyIntolerance.ID":
-		if e.complexity.FHIRAllergyIntolerance.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.ID(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Identifier":
-		if e.complexity.FHIRAllergyIntolerance.Identifier == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Identifier(childComplexity), true
-
-	case "FHIRAllergyIntolerance.LastOccurrence":
-		if e.complexity.FHIRAllergyIntolerance.LastOccurrence == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.LastOccurrence(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Note":
-		if e.complexity.FHIRAllergyIntolerance.Note == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Note(childComplexity), true
-
-	case "FHIRAllergyIntolerance.OnsetAge":
-		if e.complexity.FHIRAllergyIntolerance.OnsetAge == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.OnsetAge(childComplexity), true
-
-	case "FHIRAllergyIntolerance.OnsetDateTime":
-		if e.complexity.FHIRAllergyIntolerance.OnsetDateTime == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.OnsetDateTime(childComplexity), true
-
-	case "FHIRAllergyIntolerance.OnsetPeriod":
-		if e.complexity.FHIRAllergyIntolerance.OnsetPeriod == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.OnsetPeriod(childComplexity), true
-
-	case "FHIRAllergyIntolerance.OnsetRange":
-		if e.complexity.FHIRAllergyIntolerance.OnsetRange == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.OnsetRange(childComplexity), true
-
-	case "FHIRAllergyIntolerance.OnsetString":
-		if e.complexity.FHIRAllergyIntolerance.OnsetString == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.OnsetString(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Patient":
-		if e.complexity.FHIRAllergyIntolerance.Patient == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Patient(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Reaction":
-		if e.complexity.FHIRAllergyIntolerance.Reaction == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Reaction(childComplexity), true
-
-	case "FHIRAllergyIntolerance.RecordedDate":
-		if e.complexity.FHIRAllergyIntolerance.RecordedDate == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.RecordedDate(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Recorder":
-		if e.complexity.FHIRAllergyIntolerance.Recorder == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Recorder(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Text":
-		if e.complexity.FHIRAllergyIntolerance.Text == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Text(childComplexity), true
-
-	case "FHIRAllergyIntolerance.Type":
-		if e.complexity.FHIRAllergyIntolerance.Type == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.Type(childComplexity), true
-
-	case "FHIRAllergyIntolerance.VerificationStatus":
-		if e.complexity.FHIRAllergyIntolerance.VerificationStatus == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntolerance.VerificationStatus(childComplexity), true
-
-	case "FHIRAllergyIntoleranceRelayConnection.edges":
-		if e.complexity.FHIRAllergyIntoleranceRelayConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntoleranceRelayConnection.Edges(childComplexity), true
-
-	case "FHIRAllergyIntoleranceRelayConnection.pageInfo":
-		if e.complexity.FHIRAllergyIntoleranceRelayConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntoleranceRelayConnection.PageInfo(childComplexity), true
-
-	case "FHIRAllergyIntoleranceRelayEdge.cursor":
-		if e.complexity.FHIRAllergyIntoleranceRelayEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntoleranceRelayEdge.Cursor(childComplexity), true
-
-	case "FHIRAllergyIntoleranceRelayEdge.node":
-		if e.complexity.FHIRAllergyIntoleranceRelayEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntoleranceRelayEdge.Node(childComplexity), true
-
-	case "FHIRAllergyIntoleranceRelayPayload.resource":
-		if e.complexity.FHIRAllergyIntoleranceRelayPayload.Resource == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyIntoleranceRelayPayload.Resource(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.Description":
-		if e.complexity.FHIRAllergyintoleranceReaction.Description == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.Description(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.ExposureRoute":
-		if e.complexity.FHIRAllergyintoleranceReaction.ExposureRoute == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.ExposureRoute(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.ID":
-		if e.complexity.FHIRAllergyintoleranceReaction.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.ID(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.Manifestation":
-		if e.complexity.FHIRAllergyintoleranceReaction.Manifestation == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.Manifestation(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.Note":
-		if e.complexity.FHIRAllergyintoleranceReaction.Note == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.Note(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.Onset":
-		if e.complexity.FHIRAllergyintoleranceReaction.Onset == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.Onset(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.Severity":
-		if e.complexity.FHIRAllergyintoleranceReaction.Severity == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.Severity(childComplexity), true
-
-	case "FHIRAllergyintoleranceReaction.Substance":
-		if e.complexity.FHIRAllergyintoleranceReaction.Substance == nil {
-			break
-		}
-
-		return e.complexity.FHIRAllergyintoleranceReaction.Substance(childComplexity), true
 
 	case "FHIRAnnotation.AuthorReference":
 		if e.complexity.FHIRAnnotation.AuthorReference == nil {
@@ -3012,8 +2776,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputEpisodeOfCareInput,
 		ec.unmarshalInputFHIRAddressInput,
 		ec.unmarshalInputFHIRAgeInput,
-		ec.unmarshalInputFHIRAllergyIntoleranceInput,
-		ec.unmarshalInputFHIRAllergyintoleranceReactionInput,
 		ec.unmarshalInputFHIRAnnotationInput,
 		ec.unmarshalInputFHIRAttachmentInput,
 		ec.unmarshalInputFHIRCodeableConceptInput,
@@ -3157,6 +2919,12 @@ enum ResourceType {
   Condition
   MedicationStatement
 }
+
+enum AllergyIntoleranceReactionSeverityEnum {
+  mild
+  moderate
+  severe
+}
 `, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
@@ -3193,9 +2961,19 @@ input EpisodeOfCareInput {
   status: EpisodeOfCareStatusEnum!
   patientID: String!
 }`, BuiltIn: false},
-	{Name: "../types.graphql", Input: `type MedicalData {
+	{Name: "../types.graphql", Input: `type AllergyIntolerance {
+  id: ID!
+  patientID: String!
+  encounterID: String
+  onsetDateTime: DateTime!
+  severity: AllergyIntoleranceReactionSeverityEnum
+  substanceCode: String!
+  substanceSystem: String
+}
+
+type MedicalData {
   regimen: [FHIRMedicationStatement]
-  allergies: [FHIRAllergyIntolerance]
+  allergies: [AllergyIntolerance]
   weight: [FHIRObservation]
   bmi: [FHIRObservation]
   viralLoad: [FHIRObservation]
@@ -3229,381 +3007,6 @@ type Encounter {
   status: EncounterStatusEnum
   patientID: String
 }
-`, BuiltIn: false},
-	{Name: "../fhir/AllergyIntolerance.graphql", Input: `"""
-AllergyIntoleranceTypeEnum is a FHIR enum
-"""
-enum AllergyIntoleranceTypeEnum {
-  allergy
-  intolerance
-}
-
-"""
-AllergyIntoleranceCategoryEnum is a FHIR enum
-"""
-enum AllergyIntoleranceCategoryEnum {
-  food
-  medication
-  environment
-  biologic
-}
-
-"""
-AllergyIntoleranceCriticalityEnum is a FHIR enum
-"""
-enum AllergyIntoleranceCriticalityEnum {
-  low
-  high
-  unable_to_assess # ` + "`" + `original: unable-to-assess` + "`" + `
-}
-
-"""
-AllergyIntoleranceReactionSeverityEnum is a FHIR enum
-"""
-enum AllergyIntoleranceReactionSeverityEnum {
-  mild
-  moderate
-  severe
-}
-
-"""
-FHIRAllergyIntoleranceInput: input for AllergyIntolerance
-"""
-input FHIRAllergyIntoleranceInput {
-  """
-  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
-  """
-  ID: ID
-
-  """
-  Business identifiers assigned to this AllergyIntolerance by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
-  """
-  Identifier: [FHIRIdentifierInput]
-
-  """
-  The clinical status of the allergy or intolerance.
-  """
-  ClinicalStatus: FHIRCodeableConceptInput!
-
-  """
-  Assertion about certainty associated with the propensity, or potential risk, of a reaction to the identified substance (including pharmaceutical product).
-  """
-  VerificationStatus: FHIRCodeableConceptInput!
-
-  """
-  Identification of the underlying physiological mechanism for the reaction risk.
-  """
-  Type: AllergyIntoleranceTypeEnum
-
-  """
-  Category of the identified substance.
-  """
-  Category: [AllergyIntoleranceCategoryEnum]
-
-  """
-  Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance.
-  """
-  Criticality: AllergyIntoleranceCriticalityEnum!
-
-  """
-  Code for an allergy or intolerance statement (either a positive or a negated/excluded statement).  This may be a code for a substance or pharmaceutical product that is considered to be responsible for the adverse reaction risk (e.g., "Latex"), an allergy or intolerance condition (e.g., "Latex allergy"), or a negated/excluded code for a specific substance or class (e.g., "No latex allergy") or a general or categorical negated statement (e.g.,  "No known allergy", "No known drug allergies").  Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
-  """
-  Code: FHIRCodeableConceptInput!
-
-  """
-  The patient who has the allergy or intolerance.
-  """
-  Patient: FHIRReferenceInput!
-
-  """
-  The encounter when the allergy or intolerance was asserted.
-  """
-  Encounter: FHIRReferenceInput
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetDateTime: Date
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetAge: FHIRAgeInput
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetPeriod: FHIRPeriodInput
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetRange: FHIRRangeInput
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetString: String
-
-  """
-  The recordedDate represents when this particular AllergyIntolerance record was created in the system, which is often a system-generated date.
-  """
-  RecordedDate: Date
-
-  """
-  Individual who recorded the record and takes responsibility for its content.
-  """
-  Recorder: FHIRReferenceInput
-
-  """
-  The source of the information about the allergy that is recorded.
-  """
-  Asserter: FHIRReferenceInput
-
-  """
-  Represents the date and/or time of the last known occurrence of a reaction event.
-  """
-  LastOccurrence: DateTime
-
-  """
-  Additional narrative about the propensity for the Adverse Reaction, not captured in other fields.
-  """
-  Note: [FHIRAnnotationInput]
-
-  """
-  Details about each adverse reaction event linked to exposure to the identified substance.
-  """
-  Reaction: [FHIRAllergyintoleranceReactionInput]
-}
-
-"""
-FHIRAllergyintoleranceReactionInput: input for AllergyintoleranceReaction
-"""
-input FHIRAllergyintoleranceReactionInput {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: String
-
-  """
-  Identification of the specific substance (or pharmaceutical product) considered to be responsible for the Adverse Reaction event. Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
-  """
-  Substance: FHIRCodeableConceptInput
-
-  """
-  Clinical symptoms and/or signs that are observed or associated with the adverse reaction event.
-  """
-  Manifestation: [FHIRCodeableConceptInput!]!
-
-  """
-  Text description about the reaction as a whole, including details of the manifestation if required.
-  """
-  Description: String
-
-  """
-  Record of the date and/or time of the onset of the Reaction.
-  """
-  Onset: DateTime
-
-  """
-  Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.
-  """
-  Severity: AllergyIntoleranceReactionSeverityEnum
-
-  """
-  Identification of the route by which the subject was exposed to the substance.
-  """
-  ExposureRoute: FHIRCodeableConceptInput
-
-  """
-  Additional text about the adverse reaction event not captured in other fields.
-  """
-  Note: [FHIRAnnotationInput]
-}
-
-"""
-FHIRAllergyintoleranceReaction definition: risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.
-"""
-type FHIRAllergyintoleranceReaction {
-  """
-  Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-  """
-  ID: ID
-
-  """
-  Identification of the specific substance (or pharmaceutical product) considered to be responsible for the Adverse Reaction event. Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
-  """
-  Substance: FHIRCodeableConcept
-
-  """
-  Clinical symptoms and/or signs that are observed or associated with the adverse reaction event.
-  """
-  Manifestation: [FHIRCodeableConcept!]!
-
-  """
-  Text description about the reaction as a whole, including details of the manifestation if required.
-  """
-  Description: String
-
-  """
-  Record of the date and/or time of the onset of the Reaction.
-  """
-  Onset: DateTime
-
-  """
-  Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.
-  """
-  Severity: AllergyIntoleranceReactionSeverityEnum
-
-  """
-  Identification of the route by which the subject was exposed to the substance.
-  """
-  ExposureRoute: FHIRCodeableConcept
-
-  """
-  Additional text about the adverse reaction event not captured in other fields.
-  """
-  Note: [FHIRAnnotation]
-}
-
-"""
-FHIRAllergyIntolerance definition: risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.
-"""
-type FHIRAllergyIntolerance {
-  """
-  The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
-  """
-  ID: ID
-
-  """
-  A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.
-  """
-  Text: FHIRNarrative
-
-  """
-  Business identifiers assigned to this AllergyIntolerance by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
-  """
-  Identifier: [FHIRIdentifier]
-
-  """
-  The clinical status of the allergy or intolerance.
-  """
-  ClinicalStatus: FHIRCodeableConcept!
-
-  """
-  Assertion about certainty associated with the propensity, or potential risk, of a reaction to the identified substance (including pharmaceutical product).
-  """
-  VerificationStatus: FHIRCodeableConcept!
-
-  """
-  Identification of the underlying physiological mechanism for the reaction risk.
-  """
-  Type: AllergyIntoleranceTypeEnum
-
-  """
-  Category of the identified substance.
-  """
-  Category: [AllergyIntoleranceCategoryEnum]
-
-  """
-  Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance.
-  """
-  Criticality: AllergyIntoleranceCriticalityEnum!
-
-  """
-  Code for an allergy or intolerance statement (either a positive or a negated/excluded statement).  This may be a code for a substance or pharmaceutical product that is considered to be responsible for the adverse reaction risk (e.g., "Latex"), an allergy or intolerance condition (e.g., "Latex allergy"), or a negated/excluded code for a specific substance or class (e.g., "No latex allergy") or a general or categorical negated statement (e.g.,  "No known allergy", "No known drug allergies").  Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance.
-  """
-  Code: FHIRCodeableConcept
-
-  """
-  The patient who has the allergy or intolerance.
-  """
-  Patient: FHIRReference!
-
-  """
-  The encounter when the allergy or intolerance was asserted.
-  """
-  Encounter: FHIRReference
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetDateTime: Date
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetAge: FHIRAge
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetPeriod: FHIRPeriod
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetRange: FHIRRange
-
-  """
-  Estimated or actual date,  date-time, or age when allergy or intolerance was identified.
-  """
-  OnsetString: String
-
-  """
-  The recordedDate represents when this particular AllergyIntolerance record was created in the system, which is often a system-generated date.
-  """
-  RecordedDate: Date
-
-  """
-  Individual who recorded the record and takes responsibility for its content.
-  """
-  Recorder: FHIRReference
-
-  """
-  The source of the information about the allergy that is recorded.
-  """
-  Asserter: FHIRReference
-
-  """
-  Represents the date and/or time of the last known occurrence of a reaction event.
-  """
-  LastOccurrence: DateTime
-
-  """
-  Additional narrative about the propensity for the Adverse Reaction, not captured in other fields.
-  """
-  Note: [FHIRAnnotation]
-
-  """
-  Details about each adverse reaction event linked to exposure to the identified substance.
-  """
-  Reaction: [FHIRAllergyintoleranceReaction]
-}
-
-"""
-FHIRAllergyIntoleranceRelayPayload is used to return single instances of AllergyIntolerance
-"""
-type FHIRAllergyIntoleranceRelayPayload {
-  resource: FHIRAllergyIntolerance!
-}
-
-"""
-FHIRAllergyIntoleranceRelayEdge is a Relay edge for AllergyIntolerance
-"""
-type FHIRAllergyIntoleranceRelayEdge {
-  cursor: String
-  node: FHIRAllergyIntolerance
-}
-
-"""
-FHIRAllergyIntoleranceRelayConnection is a Relay connection for AllergyIntolerance
-"""
-type FHIRAllergyIntoleranceRelayConnection {
-  edges: [FHIRAllergyIntoleranceRelayEdge]
-  pageInfo: PageInfo!
-}
-
 `, BuiltIn: false},
 	{Name: "../fhir/Medication.graphql", Input: `"""
 MedicationStatusEnum
@@ -6508,6 +5911,305 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _AllergyIntolerance_id(ctx context.Context, field graphql.CollectedField, obj *dto.AllergyIntolerance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AllergyIntolerance_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AllergyIntolerance_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AllergyIntolerance_patientID(ctx context.Context, field graphql.CollectedField, obj *dto.AllergyIntolerance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AllergyIntolerance_patientID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PatientID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AllergyIntolerance_patientID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AllergyIntolerance_encounterID(ctx context.Context, field graphql.CollectedField, obj *dto.AllergyIntolerance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AllergyIntolerance_encounterID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EncounterID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AllergyIntolerance_encounterID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AllergyIntolerance_onsetDateTime(ctx context.Context, field graphql.CollectedField, obj *dto.AllergyIntolerance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AllergyIntolerance_onsetDateTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OnsetDateTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(scalarutils.DateTime)
+	fc.Result = res
+	return ec.marshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AllergyIntolerance_onsetDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AllergyIntolerance_severity(ctx context.Context, field graphql.CollectedField, obj *dto.AllergyIntolerance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AllergyIntolerance_severity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Severity, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.AllergyIntoleranceReactionSeverityEnum)
+	fc.Result = res
+	return ec.marshalOAllergyIntoleranceReactionSeverityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntoleranceReactionSeverityEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AllergyIntolerance_severity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type AllergyIntoleranceReactionSeverityEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AllergyIntolerance_substanceCode(ctx context.Context, field graphql.CollectedField, obj *dto.AllergyIntolerance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AllergyIntolerance_substanceCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubstanceCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AllergyIntolerance_substanceCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AllergyIntolerance_substanceSystem(ctx context.Context, field graphql.CollectedField, obj *dto.AllergyIntolerance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AllergyIntolerance_substanceSystem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubstanceSystem, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AllergyIntolerance_substanceSystem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Encounter_id(ctx context.Context, field graphql.CollectedField, obj *dto.Encounter) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Encounter_id(ctx, field)
 	if err != nil {
@@ -7548,1758 +7250,6 @@ func (ec *executionContext) fieldContext_FHIRAge_Code(ctx context.Context, field
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Code does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_ID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_ID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Text(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Text(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRNarrative)
-	fc.Result = res
-	return ec.marshalOFHIRNarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrative(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRNarrative_ID(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRNarrative_Status(ctx, field)
-			case "Div":
-				return ec.fieldContext_FHIRNarrative_Div(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRNarrative", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Identifier(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Identifier(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Identifier, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRIdentifier)
-	fc.Result = res
-	return ec.marshalOFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifier(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Identifier(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRIdentifier_ID(ctx, field)
-			case "Use":
-				return ec.fieldContext_FHIRIdentifier_Use(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRIdentifier_Type(ctx, field)
-			case "System":
-				return ec.fieldContext_FHIRIdentifier_System(ctx, field)
-			case "Value":
-				return ec.fieldContext_FHIRIdentifier_Value(ctx, field)
-			case "Period":
-				return ec.fieldContext_FHIRIdentifier_Period(ctx, field)
-			case "Assigner":
-				return ec.fieldContext_FHIRIdentifier_Assigner(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRIdentifier", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_ClinicalStatus(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_ClinicalStatus(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ClinicalStatus, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalNFHIRCodeableConcept2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_ClinicalStatus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_VerificationStatus(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_VerificationStatus(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.VerificationStatus, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalNFHIRCodeableConcept2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_VerificationStatus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Type(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Type(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.AllergyIntoleranceTypeEnum)
-	fc.Result = res
-	return ec.marshalOAllergyIntoleranceTypeEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceTypeEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type AllergyIntoleranceTypeEnum does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Category(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Category(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Category, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.AllergyIntoleranceCategoryEnum)
-	fc.Result = res
-	return ec.marshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Category(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type AllergyIntoleranceCategoryEnum does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Criticality(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Criticality(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Criticality, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(domain.AllergyIntoleranceCriticalityEnum)
-	fc.Result = res
-	return ec.marshalNAllergyIntoleranceCriticalityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCriticalityEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Criticality(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type AllergyIntoleranceCriticalityEnum does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Code(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Code(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Code, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Patient(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Patient(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Patient, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalNFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Patient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Encounter(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Encounter(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Encounter, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Encounter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_OnsetDateTime(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_OnsetDateTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OnsetDateTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*scalarutils.Date)
-	fc.Result = res
-	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_OnsetDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Date does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_OnsetAge(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_OnsetAge(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OnsetAge, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRAge)
-	fc.Result = res
-	return ec.marshalOFHIRAge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_OnsetAge(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAge_ID(ctx, field)
-			case "Value":
-				return ec.fieldContext_FHIRAge_Value(ctx, field)
-			case "Comparator":
-				return ec.fieldContext_FHIRAge_Comparator(ctx, field)
-			case "Unit":
-				return ec.fieldContext_FHIRAge_Unit(ctx, field)
-			case "System":
-				return ec.fieldContext_FHIRAge_System(ctx, field)
-			case "Code":
-				return ec.fieldContext_FHIRAge_Code(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAge", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_OnsetPeriod(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_OnsetPeriod(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OnsetPeriod, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRPeriod)
-	fc.Result = res
-	return ec.marshalOFHIRPeriod2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRPeriod(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_OnsetPeriod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRPeriod_ID(ctx, field)
-			case "Start":
-				return ec.fieldContext_FHIRPeriod_Start(ctx, field)
-			case "End":
-				return ec.fieldContext_FHIRPeriod_End(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRPeriod", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_OnsetRange(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_OnsetRange(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OnsetRange, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRRange)
-	fc.Result = res
-	return ec.marshalOFHIRRange2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRange(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_OnsetRange(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRRange_ID(ctx, field)
-			case "Low":
-				return ec.fieldContext_FHIRRange_Low(ctx, field)
-			case "High":
-				return ec.fieldContext_FHIRRange_High(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRRange", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_OnsetString(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_OnsetString(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OnsetString, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_OnsetString(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_RecordedDate(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_RecordedDate(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.RecordedDate, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*scalarutils.Date)
-	fc.Result = res
-	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_RecordedDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Date does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Recorder(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Recorder(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Recorder, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Recorder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Asserter(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Asserter(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Asserter, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Asserter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_LastOccurrence(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_LastOccurrence(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.LastOccurrence, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*scalarutils.DateTime)
-	fc.Result = res
-	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_LastOccurrence(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DateTime does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Note(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Note(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Note, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRAnnotation)
-	fc.Result = res
-	return ec.marshalOFHIRAnnotation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotation(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Note(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAnnotation_ID(ctx, field)
-			case "AuthorReference":
-				return ec.fieldContext_FHIRAnnotation_AuthorReference(ctx, field)
-			case "AuthorString":
-				return ec.fieldContext_FHIRAnnotation_AuthorString(ctx, field)
-			case "Time":
-				return ec.fieldContext_FHIRAnnotation_Time(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRAnnotation_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAnnotation", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntolerance_Reaction(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntolerance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntolerance_Reaction(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Reaction, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRAllergyintoleranceReaction)
-	fc.Result = res
-	return ec.marshalOFHIRAllergyintoleranceReaction2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReaction(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntolerance_Reaction(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntolerance",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_ID(ctx, field)
-			case "Substance":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_Substance(ctx, field)
-			case "Manifestation":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_Manifestation(ctx, field)
-			case "Description":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_Description(ctx, field)
-			case "Onset":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_Onset(ctx, field)
-			case "Severity":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_Severity(ctx, field)
-			case "ExposureRoute":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_ExposureRoute(ctx, field)
-			case "Note":
-				return ec.fieldContext_FHIRAllergyintoleranceReaction_Note(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAllergyintoleranceReaction", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayConnection_edges(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntoleranceRelayConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntoleranceRelayConnection_edges(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRAllergyIntoleranceRelayEdge)
-	fc.Result = res
-	return ec.marshalOFHIRAllergyIntoleranceRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntoleranceRelayEdge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntoleranceRelayConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntoleranceRelayConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "cursor":
-				return ec.fieldContext_FHIRAllergyIntoleranceRelayEdge_cursor(ctx, field)
-			case "node":
-				return ec.fieldContext_FHIRAllergyIntoleranceRelayEdge_node(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAllergyIntoleranceRelayEdge", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntoleranceRelayConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntoleranceRelayConnection_pageInfo(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*firebasetools.PageInfo)
-	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntoleranceRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntoleranceRelayConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "hasNextPage":
-				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
-			case "hasPreviousPage":
-				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntoleranceRelayEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntoleranceRelayEdge_cursor(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntoleranceRelayEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntoleranceRelayEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntoleranceRelayEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntoleranceRelayEdge_node(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRAllergyIntolerance)
-	fc.Result = res
-	return ec.marshalOFHIRAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntoleranceRelayEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntoleranceRelayEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAllergyIntolerance_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRAllergyIntolerance_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRAllergyIntolerance_Identifier(ctx, field)
-			case "ClinicalStatus":
-				return ec.fieldContext_FHIRAllergyIntolerance_ClinicalStatus(ctx, field)
-			case "VerificationStatus":
-				return ec.fieldContext_FHIRAllergyIntolerance_VerificationStatus(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRAllergyIntolerance_Type(ctx, field)
-			case "Category":
-				return ec.fieldContext_FHIRAllergyIntolerance_Category(ctx, field)
-			case "Criticality":
-				return ec.fieldContext_FHIRAllergyIntolerance_Criticality(ctx, field)
-			case "Code":
-				return ec.fieldContext_FHIRAllergyIntolerance_Code(ctx, field)
-			case "Patient":
-				return ec.fieldContext_FHIRAllergyIntolerance_Patient(ctx, field)
-			case "Encounter":
-				return ec.fieldContext_FHIRAllergyIntolerance_Encounter(ctx, field)
-			case "OnsetDateTime":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetDateTime(ctx, field)
-			case "OnsetAge":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetAge(ctx, field)
-			case "OnsetPeriod":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetPeriod(ctx, field)
-			case "OnsetRange":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetRange(ctx, field)
-			case "OnsetString":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetString(ctx, field)
-			case "RecordedDate":
-				return ec.fieldContext_FHIRAllergyIntolerance_RecordedDate(ctx, field)
-			case "Recorder":
-				return ec.fieldContext_FHIRAllergyIntolerance_Recorder(ctx, field)
-			case "Asserter":
-				return ec.fieldContext_FHIRAllergyIntolerance_Asserter(ctx, field)
-			case "LastOccurrence":
-				return ec.fieldContext_FHIRAllergyIntolerance_LastOccurrence(ctx, field)
-			case "Note":
-				return ec.fieldContext_FHIRAllergyIntolerance_Note(ctx, field)
-			case "Reaction":
-				return ec.fieldContext_FHIRAllergyIntolerance_Reaction(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAllergyIntolerance", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayPayload_resource(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyIntoleranceRelayPayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyIntoleranceRelayPayload_resource(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Resource, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRAllergyIntolerance)
-	fc.Result = res
-	return ec.marshalNFHIRAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyIntoleranceRelayPayload_resource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyIntoleranceRelayPayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAllergyIntolerance_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRAllergyIntolerance_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRAllergyIntolerance_Identifier(ctx, field)
-			case "ClinicalStatus":
-				return ec.fieldContext_FHIRAllergyIntolerance_ClinicalStatus(ctx, field)
-			case "VerificationStatus":
-				return ec.fieldContext_FHIRAllergyIntolerance_VerificationStatus(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRAllergyIntolerance_Type(ctx, field)
-			case "Category":
-				return ec.fieldContext_FHIRAllergyIntolerance_Category(ctx, field)
-			case "Criticality":
-				return ec.fieldContext_FHIRAllergyIntolerance_Criticality(ctx, field)
-			case "Code":
-				return ec.fieldContext_FHIRAllergyIntolerance_Code(ctx, field)
-			case "Patient":
-				return ec.fieldContext_FHIRAllergyIntolerance_Patient(ctx, field)
-			case "Encounter":
-				return ec.fieldContext_FHIRAllergyIntolerance_Encounter(ctx, field)
-			case "OnsetDateTime":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetDateTime(ctx, field)
-			case "OnsetAge":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetAge(ctx, field)
-			case "OnsetPeriod":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetPeriod(ctx, field)
-			case "OnsetRange":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetRange(ctx, field)
-			case "OnsetString":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetString(ctx, field)
-			case "RecordedDate":
-				return ec.fieldContext_FHIRAllergyIntolerance_RecordedDate(ctx, field)
-			case "Recorder":
-				return ec.fieldContext_FHIRAllergyIntolerance_Recorder(ctx, field)
-			case "Asserter":
-				return ec.fieldContext_FHIRAllergyIntolerance_Asserter(ctx, field)
-			case "LastOccurrence":
-				return ec.fieldContext_FHIRAllergyIntolerance_LastOccurrence(ctx, field)
-			case "Note":
-				return ec.fieldContext_FHIRAllergyIntolerance_Note(ctx, field)
-			case "Reaction":
-				return ec.fieldContext_FHIRAllergyIntolerance_Reaction(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAllergyIntolerance", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_ID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_ID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_Substance(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_Substance(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Substance, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_Substance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_Manifestation(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_Manifestation(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Manifestation, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalNFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_Manifestation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_Description(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_Description(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Description, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_Description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_Onset(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_Onset(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Onset, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*scalarutils.DateTime)
-	fc.Result = res
-	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_Onset(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DateTime does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_Severity(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_Severity(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Severity, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.AllergyIntoleranceReactionSeverityEnum)
-	fc.Result = res
-	return ec.marshalOAllergyIntoleranceReactionSeverityEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceReactionSeverityEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_Severity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type AllergyIntoleranceReactionSeverityEnum does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_ExposureRoute(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_ExposureRoute(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ExposureRoute, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_ExposureRoute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction_Note(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRAllergyintoleranceReaction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRAllergyintoleranceReaction_Note(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Note, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRAnnotation)
-	fc.Result = res
-	return ec.marshalOFHIRAnnotation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotation(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRAllergyintoleranceReaction_Note(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRAllergyintoleranceReaction",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAnnotation_ID(ctx, field)
-			case "AuthorReference":
-				return ec.fieldContext_FHIRAnnotation_AuthorReference(ctx, field)
-			case "AuthorString":
-				return ec.fieldContext_FHIRAnnotation_AuthorString(ctx, field)
-			case "Time":
-				return ec.fieldContext_FHIRAnnotation_Time(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRAnnotation_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAnnotation", field.Name)
 		},
 	}
 	return fc, nil
@@ -21276,9 +19226,9 @@ func (ec *executionContext) _MedicalData_allergies(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*domain.FHIRAllergyIntolerance)
+	res := resTmp.([]*dto.AllergyIntolerance)
 	fc.Result = res
-	return ec.marshalOFHIRAllergyIntolerance2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx, field.Selections, res)
+	return ec.marshalOAllergyIntolerance2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntolerance(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MedicalData_allergies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21289,52 +19239,22 @@ func (ec *executionContext) fieldContext_MedicalData_allergies(ctx context.Conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAllergyIntolerance_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRAllergyIntolerance_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRAllergyIntolerance_Identifier(ctx, field)
-			case "ClinicalStatus":
-				return ec.fieldContext_FHIRAllergyIntolerance_ClinicalStatus(ctx, field)
-			case "VerificationStatus":
-				return ec.fieldContext_FHIRAllergyIntolerance_VerificationStatus(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRAllergyIntolerance_Type(ctx, field)
-			case "Category":
-				return ec.fieldContext_FHIRAllergyIntolerance_Category(ctx, field)
-			case "Criticality":
-				return ec.fieldContext_FHIRAllergyIntolerance_Criticality(ctx, field)
-			case "Code":
-				return ec.fieldContext_FHIRAllergyIntolerance_Code(ctx, field)
-			case "Patient":
-				return ec.fieldContext_FHIRAllergyIntolerance_Patient(ctx, field)
-			case "Encounter":
-				return ec.fieldContext_FHIRAllergyIntolerance_Encounter(ctx, field)
-			case "OnsetDateTime":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetDateTime(ctx, field)
-			case "OnsetAge":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetAge(ctx, field)
-			case "OnsetPeriod":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetPeriod(ctx, field)
-			case "OnsetRange":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetRange(ctx, field)
-			case "OnsetString":
-				return ec.fieldContext_FHIRAllergyIntolerance_OnsetString(ctx, field)
-			case "RecordedDate":
-				return ec.fieldContext_FHIRAllergyIntolerance_RecordedDate(ctx, field)
-			case "Recorder":
-				return ec.fieldContext_FHIRAllergyIntolerance_Recorder(ctx, field)
-			case "Asserter":
-				return ec.fieldContext_FHIRAllergyIntolerance_Asserter(ctx, field)
-			case "LastOccurrence":
-				return ec.fieldContext_FHIRAllergyIntolerance_LastOccurrence(ctx, field)
-			case "Note":
-				return ec.fieldContext_FHIRAllergyIntolerance_Note(ctx, field)
-			case "Reaction":
-				return ec.fieldContext_FHIRAllergyIntolerance_Reaction(ctx, field)
+			case "id":
+				return ec.fieldContext_AllergyIntolerance_id(ctx, field)
+			case "patientID":
+				return ec.fieldContext_AllergyIntolerance_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_AllergyIntolerance_encounterID(ctx, field)
+			case "onsetDateTime":
+				return ec.fieldContext_AllergyIntolerance_onsetDateTime(ctx, field)
+			case "severity":
+				return ec.fieldContext_AllergyIntolerance_severity(ctx, field)
+			case "substanceCode":
+				return ec.fieldContext_AllergyIntolerance_substanceCode(ctx, field)
+			case "substanceSystem":
+				return ec.fieldContext_AllergyIntolerance_substanceSystem(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAllergyIntolerance", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type AllergyIntolerance", field.Name)
 		},
 	}
 	return fc, nil
@@ -25181,278 +23101,6 @@ func (ec *executionContext) unmarshalInputFHIRAgeInput(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRAllergyIntoleranceInput(ctx context.Context, obj interface{}) (domain.FHIRAllergyIntoleranceInput, error) {
-	var it domain.FHIRAllergyIntoleranceInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"ID", "Identifier", "ClinicalStatus", "VerificationStatus", "Type", "Category", "Criticality", "Code", "Patient", "Encounter", "OnsetDateTime", "OnsetAge", "OnsetPeriod", "OnsetRange", "OnsetString", "RecordedDate", "Recorder", "Asserter", "LastOccurrence", "Note", "Reaction"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Identifier":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
-			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifierInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ClinicalStatus":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ClinicalStatus"))
-			it.ClinicalStatus, err = ec.unmarshalNFHIRCodeableConceptInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "VerificationStatus":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("VerificationStatus"))
-			it.VerificationStatus, err = ec.unmarshalNFHIRCodeableConceptInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Type":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalOAllergyIntoleranceTypeEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceTypeEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Category":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
-			it.Category, err = ec.unmarshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Criticality":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Criticality"))
-			it.Criticality, err = ec.unmarshalNAllergyIntoleranceCriticalityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCriticalityEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Code":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalNFHIRCodeableConceptInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Patient":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Patient"))
-			it.Patient, err = ec.unmarshalNFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Encounter":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Encounter"))
-			it.Encounter, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OnsetDateTime":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetDateTime"))
-			it.OnsetDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OnsetAge":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetAge"))
-			it.OnsetAge, err = ec.unmarshalOFHIRAgeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAgeInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OnsetPeriod":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetPeriod"))
-			it.OnsetPeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRPeriodInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OnsetRange":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetRange"))
-			it.OnsetRange, err = ec.unmarshalOFHIRRangeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRangeInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OnsetString":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OnsetString"))
-			it.OnsetString, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "RecordedDate":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RecordedDate"))
-			it.RecordedDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Recorder":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Recorder"))
-			it.Recorder, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Asserter":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Asserter"))
-			it.Asserter, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "LastOccurrence":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LastOccurrence"))
-			it.LastOccurrence, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Note":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
-			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotationInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Reaction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Reaction"))
-			it.Reaction, err = ec.unmarshalOFHIRAllergyintoleranceReactionInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReactionInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRAllergyintoleranceReactionInput(ctx context.Context, obj interface{}) (domain.FHIRAllergyintoleranceReactionInput, error) {
-	var it domain.FHIRAllergyintoleranceReactionInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"ID", "Substance", "Manifestation", "Description", "Onset", "Severity", "ExposureRoute", "Note"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Substance":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Substance"))
-			it.Substance, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Manifestation":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Manifestation"))
-			it.Manifestation, err = ec.unmarshalNFHIRCodeableConceptInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Description":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Description"))
-			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Onset":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Onset"))
-			it.Onset, err = ec.unmarshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Severity":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Severity"))
-			it.Severity, err = ec.unmarshalOAllergyIntoleranceReactionSeverityEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceReactionSeverityEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ExposureRoute":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExposureRoute"))
-			it.ExposureRoute, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Note":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
-			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotationInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputFHIRAnnotationInput(ctx context.Context, obj interface{}) (domain.FHIRAnnotationInput, error) {
 	var it domain.FHIRAnnotationInput
 	asMap := map[string]interface{}{}
@@ -27893,6 +25541,67 @@ func (ec *executionContext) unmarshalInputMedicationIngredientInput(ctx context.
 
 // region    **************************** object.gotpl ****************************
 
+var allergyIntoleranceImplementors = []string{"AllergyIntolerance"}
+
+func (ec *executionContext) _AllergyIntolerance(ctx context.Context, sel ast.SelectionSet, obj *dto.AllergyIntolerance) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, allergyIntoleranceImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AllergyIntolerance")
+		case "id":
+
+			out.Values[i] = ec._AllergyIntolerance_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "patientID":
+
+			out.Values[i] = ec._AllergyIntolerance_patientID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "encounterID":
+
+			out.Values[i] = ec._AllergyIntolerance_encounterID(ctx, field, obj)
+
+		case "onsetDateTime":
+
+			out.Values[i] = ec._AllergyIntolerance_onsetDateTime(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "severity":
+
+			out.Values[i] = ec._AllergyIntolerance_severity(ctx, field, obj)
+
+		case "substanceCode":
+
+			out.Values[i] = ec._AllergyIntolerance_substanceCode(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "substanceSystem":
+
+			out.Values[i] = ec._AllergyIntolerance_substanceSystem(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var encounterImplementors = []string{"Encounter"}
 
 func (ec *executionContext) _Encounter(ctx context.Context, sel ast.SelectionSet, obj *dto.Encounter) graphql.Marshaler {
@@ -28077,272 +25786,6 @@ func (ec *executionContext) _FHIRAge(ctx context.Context, sel ast.SelectionSet, 
 		case "Code":
 
 			out.Values[i] = ec._FHIRAge_Code(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAllergyIntoleranceImplementors = []string{"FHIRAllergyIntolerance"}
-
-func (ec *executionContext) _FHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRAllergyIntolerance) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAllergyIntoleranceImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAllergyIntolerance")
-		case "ID":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_ID(ctx, field, obj)
-
-		case "Text":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Text(ctx, field, obj)
-
-		case "Identifier":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Identifier(ctx, field, obj)
-
-		case "ClinicalStatus":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_ClinicalStatus(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "VerificationStatus":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_VerificationStatus(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "Type":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Type(ctx, field, obj)
-
-		case "Category":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Category(ctx, field, obj)
-
-		case "Criticality":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Criticality(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "Code":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Code(ctx, field, obj)
-
-		case "Patient":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Patient(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "Encounter":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Encounter(ctx, field, obj)
-
-		case "OnsetDateTime":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_OnsetDateTime(ctx, field, obj)
-
-		case "OnsetAge":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_OnsetAge(ctx, field, obj)
-
-		case "OnsetPeriod":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_OnsetPeriod(ctx, field, obj)
-
-		case "OnsetRange":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_OnsetRange(ctx, field, obj)
-
-		case "OnsetString":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_OnsetString(ctx, field, obj)
-
-		case "RecordedDate":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_RecordedDate(ctx, field, obj)
-
-		case "Recorder":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Recorder(ctx, field, obj)
-
-		case "Asserter":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Asserter(ctx, field, obj)
-
-		case "LastOccurrence":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_LastOccurrence(ctx, field, obj)
-
-		case "Note":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Note(ctx, field, obj)
-
-		case "Reaction":
-
-			out.Values[i] = ec._FHIRAllergyIntolerance_Reaction(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAllergyIntoleranceRelayConnectionImplementors = []string{"FHIRAllergyIntoleranceRelayConnection"}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayConnection(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRAllergyIntoleranceRelayConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAllergyIntoleranceRelayConnectionImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAllergyIntoleranceRelayConnection")
-		case "edges":
-
-			out.Values[i] = ec._FHIRAllergyIntoleranceRelayConnection_edges(ctx, field, obj)
-
-		case "pageInfo":
-
-			out.Values[i] = ec._FHIRAllergyIntoleranceRelayConnection_pageInfo(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAllergyIntoleranceRelayEdgeImplementors = []string{"FHIRAllergyIntoleranceRelayEdge"}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayEdge(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRAllergyIntoleranceRelayEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAllergyIntoleranceRelayEdgeImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAllergyIntoleranceRelayEdge")
-		case "cursor":
-
-			out.Values[i] = ec._FHIRAllergyIntoleranceRelayEdge_cursor(ctx, field, obj)
-
-		case "node":
-
-			out.Values[i] = ec._FHIRAllergyIntoleranceRelayEdge_node(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAllergyIntoleranceRelayPayloadImplementors = []string{"FHIRAllergyIntoleranceRelayPayload"}
-
-func (ec *executionContext) _FHIRAllergyIntoleranceRelayPayload(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRAllergyIntoleranceRelayPayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAllergyIntoleranceRelayPayloadImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAllergyIntoleranceRelayPayload")
-		case "resource":
-
-			out.Values[i] = ec._FHIRAllergyIntoleranceRelayPayload_resource(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRAllergyintoleranceReactionImplementors = []string{"FHIRAllergyintoleranceReaction"}
-
-func (ec *executionContext) _FHIRAllergyintoleranceReaction(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRAllergyintoleranceReaction) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRAllergyintoleranceReactionImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRAllergyintoleranceReaction")
-		case "ID":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_ID(ctx, field, obj)
-
-		case "Substance":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_Substance(ctx, field, obj)
-
-		case "Manifestation":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_Manifestation(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "Description":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_Description(ctx, field, obj)
-
-		case "Onset":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_Onset(ctx, field, obj)
-
-		case "Severity":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_Severity(ctx, field, obj)
-
-		case "ExposureRoute":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_ExposureRoute(ctx, field, obj)
-
-		case "Note":
-
-			out.Values[i] = ec._FHIRAllergyintoleranceReaction_Note(ctx, field, obj)
 
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -30995,16 +28438,6 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNAllergyIntoleranceCriticalityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCriticalityEnum(ctx context.Context, v interface{}) (domain.AllergyIntoleranceCriticalityEnum, error) {
-	var res domain.AllergyIntoleranceCriticalityEnum
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNAllergyIntoleranceCriticalityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCriticalityEnum(ctx context.Context, sel ast.SelectionSet, v domain.AllergyIntoleranceCriticalityEnum) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -31115,99 +28548,13 @@ func (ec *executionContext) marshalNEpisodeOfCareStatusEnum2githubᚗcomᚋsavan
 	return res
 }
 
-func (ec *executionContext) marshalNFHIRAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRAllergyIntolerance) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._FHIRAllergyIntolerance(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalNFHIRCodeableConcept2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx context.Context, sel ast.SelectionSet, v domain.FHIRCodeableConcept) graphql.Marshaler {
 	return ec._FHIRCodeableConcept(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptᚄ(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRCodeableConcept) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalNFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRCodeableConcept) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._FHIRCodeableConcept(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) (domain.FHIRCodeableConceptInput, error) {
 	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInputᚄ(ctx context.Context, v interface{}) ([]*domain.FHIRCodeableConceptInput, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*domain.FHIRCodeableConceptInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalNFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx context.Context, v interface{}) (*domain.FHIRCodeableConceptInput, error) {
-	res, err := ec.unmarshalInputFHIRCodeableConceptInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNFHIRCoding2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodingᚄ(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRCoding) graphql.Marshaler {
@@ -31346,21 +28693,6 @@ func (ec *executionContext) unmarshalNFHIRQuantityInput2githubᚗcomᚋsavannahg
 
 func (ec *executionContext) unmarshalNFHIRQuantityInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRQuantityInput(ctx context.Context, v interface{}) (*domain.FHIRQuantityInput, error) {
 	res, err := ec.unmarshalInputFHIRQuantityInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRReference) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._FHIRReference(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx context.Context, v interface{}) (*domain.FHIRReferenceInput, error) {
-	res, err := ec.unmarshalInputFHIRReferenceInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -31845,27 +29177,7 @@ func (ec *executionContext) marshalOAgeComparatorEnum2ᚖgithubᚗcomᚋsavannah
 	return v
 }
 
-func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx context.Context, v interface{}) ([]*domain.AllergyIntoleranceCategoryEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*domain.AllergyIntoleranceCategoryEnum, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOAllergyIntoleranceCategoryEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx context.Context, sel ast.SelectionSet, v []*domain.AllergyIntoleranceCategoryEnum) graphql.Marshaler {
+func (ec *executionContext) marshalOAllergyIntolerance2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v []*dto.AllergyIntolerance) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -31892,7 +29204,7 @@ func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithub�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOAllergyIntoleranceCategoryEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx, sel, v[i])
+			ret[i] = ec.marshalOAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntolerance(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -31906,52 +29218,22 @@ func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚕᚖgithub�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOAllergyIntoleranceCategoryEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx context.Context, v interface{}) (*domain.AllergyIntoleranceCategoryEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(domain.AllergyIntoleranceCategoryEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOAllergyIntoleranceCategoryEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceCategoryEnum(ctx context.Context, sel ast.SelectionSet, v *domain.AllergyIntoleranceCategoryEnum) graphql.Marshaler {
+func (ec *executionContext) marshalOAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *dto.AllergyIntolerance) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._AllergyIntolerance(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOAllergyIntoleranceReactionSeverityEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, v interface{}) (*domain.AllergyIntoleranceReactionSeverityEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(domain.AllergyIntoleranceReactionSeverityEnum)
-	err := res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalOAllergyIntoleranceReactionSeverityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, v interface{}) (dto.AllergyIntoleranceReactionSeverityEnum, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.AllergyIntoleranceReactionSeverityEnum(tmp)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, sel ast.SelectionSet, v *domain.AllergyIntoleranceReactionSeverityEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalOAllergyIntoleranceTypeEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceTypeEnum(ctx context.Context, v interface{}) (*domain.AllergyIntoleranceTypeEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(domain.AllergyIntoleranceTypeEnum)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOAllergyIntoleranceTypeEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐAllergyIntoleranceTypeEnum(ctx context.Context, sel ast.SelectionSet, v *domain.AllergyIntoleranceTypeEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
+func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntoleranceReactionSeverityEnum(ctx context.Context, sel ast.SelectionSet, v dto.AllergyIntoleranceReactionSeverityEnum) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	return res
 }
 
 func (ec *executionContext) unmarshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx context.Context, v interface{}) (*scalarutils.Base64Binary, error) {
@@ -32284,193 +29566,6 @@ func (ec *executionContext) unmarshalOFHIRAddressInput2ᚖgithubᚗcomᚋsavanna
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRAddressInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOFHIRAge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAge(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRAge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRAge(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRAgeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAgeInput(ctx context.Context, v interface{}) (*domain.FHIRAgeInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRAgeInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRAllergyIntolerance) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRAllergyIntolerance2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntolerance(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRAllergyIntolerance) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRAllergyIntolerance(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRAllergyIntoleranceRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntoleranceRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRAllergyIntoleranceRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRAllergyIntoleranceRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntoleranceRelayEdge(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRAllergyIntoleranceRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyIntoleranceRelayEdge(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRAllergyIntoleranceRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRAllergyIntoleranceRelayEdge(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRAllergyintoleranceReaction2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReaction(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRAllergyintoleranceReaction) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRAllergyintoleranceReaction2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReaction(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRAllergyintoleranceReaction2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReaction(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRAllergyintoleranceReaction) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRAllergyintoleranceReaction(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReactionInput(ctx context.Context, v interface{}) ([]*domain.FHIRAllergyintoleranceReactionInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*domain.FHIRAllergyintoleranceReactionInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRAllergyintoleranceReactionInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReactionInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOFHIRAllergyintoleranceReactionInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAllergyintoleranceReactionInput(ctx context.Context, v interface{}) (*domain.FHIRAllergyintoleranceReactionInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRAllergyintoleranceReactionInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

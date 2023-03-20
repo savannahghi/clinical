@@ -1,6 +1,16 @@
+type AllergyIntolerance {
+  id: ID!
+  patientID: String!
+  encounterID: String
+  onsetDateTime: DateTime!
+  severity: AllergyIntoleranceReactionSeverityEnum
+  substanceCode: String!
+  substanceSystem: String
+}
+
 type MedicalData {
   regimen: [FHIRMedicationStatement]
-  allergies: [FHIRAllergyIntolerance]
+  allergies: [AllergyIntolerance]
   weight: [FHIRObservation]
   bmi: [FHIRObservation]
   viralLoad: [FHIRObservation]

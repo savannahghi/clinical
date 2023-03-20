@@ -27,3 +27,9 @@ enum ResourceType {
   Condition
   MedicationStatement
 }
+
+enum AllergyIntoleranceReactionSeverityEnum {
+  mild
+  moderate
+  severe
+}

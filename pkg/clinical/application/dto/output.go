@@ -53,3 +53,14 @@ type HealthTimeline struct {
 	Timeline   []TimelineResource `json:"timeline"`
 	TotalCount int                `json:"totalCount"`
 }
+
+// AllergyIntolerance represents an allergy intolerance containing minimal FHIR resources
+type AllergyIntolerance struct {
+	ID              string                                 `json:"id"`
+	PatientID       string                                 `json:"patientID"`
+	EncounterID     string                                 `json:"encounterID"`
+	OnsetDateTime   scalarutils.DateTime                   `json:"onsetDateTime"`
+	Severity        AllergyIntoleranceReactionSeverityEnum `json:"severity"`
+	SubstanceCode   string                                 `json:"substanceCode"`
+	SubstanceSystem string                                 `json:"substanceSystem"`
+}

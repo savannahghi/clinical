@@ -19,7 +19,7 @@ func NewFakeClinicalMock() *FakeClinical {
 		MockGetMedicalDataFn: func(ctx context.Context, patientID string) (*domain.MedicalData, error) {
 			return &domain.MedicalData{
 				Regimen:   []*domain.FHIRMedicationStatement{},
-				Allergies: []*domain.FHIRAllergyIntolerance{},
+				Allergies: []*dto.AllergyIntolerance{},
 				Weight:    []*domain.FHIRObservation{},
 				BMI:       []*domain.FHIRObservation{},
 				ViralLoad: []*domain.FHIRObservation{},
