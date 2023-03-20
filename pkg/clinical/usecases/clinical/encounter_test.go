@@ -109,3 +109,70 @@ func TestUseCasesClinicalImpl_StartEncounter(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_EndEncounter(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx         context.Context
+		encounterID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully end encounter",
+			args: args{
+				ctx:         ctx,
+				encounterID: uuid.New().String(),
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Missing encounter ID",
+			args: args{
+				ctx: ctx,
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to end encounter",
+			args: args{
+				ctx:         ctx,
+				encounterID: uuid.New().String(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Fail to end encounter" {
+				fakeFHIR.MockEndEncounterFn = func(ctx context.Context, encounterID string) (bool, error) {
+					return false, fmt.Errorf("failed to update encounter")
+				}
+			}
+
+			got, err := u.EndEncounter(tt.args.ctx, tt.args.encounterID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.EndEncounter() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("UseCasesClinicalImpl.EndEncounter() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

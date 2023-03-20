@@ -34,7 +34,7 @@ type Repository struct {
 }
 
 // NewFHIRRepository initializes a FHIR repository
-func NewFHIRRepository(ctx context.Context, hsv *healthcare.Service, projectID, datasetID, datasetLocation, fhirStoreID string) *Repository {
+func NewFHIRRepository(_ context.Context, hsv *healthcare.Service, projectID, datasetID, datasetLocation, fhirStoreID string) *Repository {
 	return &Repository{
 		healthcareService: hsv,
 		projectID:         projectID,

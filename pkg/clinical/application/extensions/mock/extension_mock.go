@@ -140,9 +140,9 @@ func (b *FakeBaseExtension) ErrorMap(err error) map[string]string {
 
 // WriteJSONResponse is a mock implementation of WriteJSONResponse method
 func (b *FakeBaseExtension) WriteJSONResponse(
-	w http.ResponseWriter,
-	source interface{},
-	status int,
+	_ http.ResponseWriter,
+	_ interface{},
+	_ int,
 ) {
 }
 

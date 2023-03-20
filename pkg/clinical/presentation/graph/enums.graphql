@@ -4,3 +4,19 @@ enum EpisodeOfCareStatusEnum {
   finished
   cancelled
 }
+
+enum EncounterStatusEnum {
+  planned
+  arrived
+  triaged
+  in_progress
+  onleave
+  finished
+  cancelled
+  entered_in_error
+  unknown
+}
+
+enum EncounterClass {
+  ambulatory
+}

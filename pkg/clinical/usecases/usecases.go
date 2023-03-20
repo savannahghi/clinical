@@ -28,6 +28,7 @@ type Clinical interface {
 	CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error
 
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
+	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 }
 
 // Interactor is an implementation of the usecases interface

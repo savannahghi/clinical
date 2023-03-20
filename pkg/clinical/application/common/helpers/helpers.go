@@ -367,7 +367,7 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 // ContactsToContactPoint translates phone and email contacts to
 // FHIR contact points
 func ContactsToContactPoint(
-	ctx context.Context,
+	_ context.Context,
 	phones []*domain.PhoneNumberInput,
 	emails []*domain.EmailInput,
 	firestoreClient *firestore.Client,
@@ -423,7 +423,7 @@ func ContactsToContactPoint(
 // ValidateEmail returns an error if the supplied string does not have a
 // valid format or resolvable host
 func ValidateEmail(
-	email string, optIn bool, firestoreClient *firestore.Client) error {
+	email string, _ bool, _ *firestore.Client) error {
 	if !govalidator.IsEmail(email) {
 		return fmt.Errorf("invalid email format")
 	}

@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -25,6 +26,8 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 	encounterClassVersion := "2018-08-12"
 	encounterClassDisplay := string(dto.EncounterClassAmbulatory)
 	encounterClassUserSelected := false
+	now := time.Now()
+	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
 
 	episodeReference := fmt.Sprintf("EpisodeOfCare/%s", *episodeOfCare.Resource.ID)
 	encounterPayload := domain.FHIREncounterInput{
@@ -53,6 +56,9 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 			Type:      episodeOfCare.Resource.ManagingOrganization.Type,
 			Display:   episodeOfCare.Resource.ManagingOrganization.Display,
 		},
+		Period: &domain.FHIRPeriodInput{
+			Start: startTime,
+		},
 	}
 
 	tags, err := c.GetTenantMetaTags(ctx)
@@ -70,4 +76,18 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 	}
 
 	return *encounter.Resource.ID, nil
+}
+
+// EndEncounter marks an encounter as finished and updates the endtime field
+func (c *UseCasesClinicalImpl) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
+	if encounterID == "" {
+		return false, fmt.Errorf("an encounterID is required")
+	}
+
+	ok, err := c.infrastructure.FHIR.EndEncounter(ctx, encounterID)
+	if err != nil {
+		return false, err
+	}
+
+	return ok, nil
 }
