@@ -6,8 +6,6 @@ package graph
 
 import (
 	"context"
-
-	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 )
 
 // StartEncounter is the resolver for the startEncounter field.
@@ -16,7 +14,8 @@ func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string)
 	return r.usecases.Clinical.StartEncounter(ctx, episodeID)
 }
 
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
-
-type mutationResolver struct{ *Resolver }
+// EndEncounter is the resolver for the endEncounter field.
+func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.EndEncounter(ctx, encounterID)
+}

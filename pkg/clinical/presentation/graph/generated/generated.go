@@ -48,6 +48,14 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Encounter struct {
+		Class           func(childComplexity int) int
+		EpisodeOfCareID func(childComplexity int) int
+		ID              func(childComplexity int) int
+		PatientID       func(childComplexity int) int
+		Status          func(childComplexity int) int
+	}
+
 	EpisodeOfCare struct {
 		ID        func(childComplexity int) int
 		PatientID func(childComplexity int) int
@@ -513,6 +521,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateEpisodeOfCare    func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
 		CreateFHIROrganization func(childComplexity int, input domain.FHIROrganizationInput) int
+		EndEncounter           func(childComplexity int, encounterID string) int
 		EndEpisodeOfCare       func(childComplexity int, id string) int
 		StartEncounter         func(childComplexity int, episodeID string) int
 	}
@@ -535,10 +544,11 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	StartEncounter(ctx context.Context, episodeID string) (string, error)
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	CreateEpisodeOfCare(ctx context.Context, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
 	EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
+	StartEncounter(ctx context.Context, episodeID string) (string, error)
+	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
@@ -560,6 +570,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Encounter.class":
+		if e.complexity.Encounter.Class == nil {
+			break
+		}
+
+		return e.complexity.Encounter.Class(childComplexity), true
+
+	case "Encounter.episodeOfCareID":
+		if e.complexity.Encounter.EpisodeOfCareID == nil {
+			break
+		}
+
+		return e.complexity.Encounter.EpisodeOfCareID(childComplexity), true
+
+	case "Encounter.id":
+		if e.complexity.Encounter.ID == nil {
+			break
+		}
+
+		return e.complexity.Encounter.ID(childComplexity), true
+
+	case "Encounter.patientID":
+		if e.complexity.Encounter.PatientID == nil {
+			break
+		}
+
+		return e.complexity.Encounter.PatientID(childComplexity), true
+
+	case "Encounter.status":
+		if e.complexity.Encounter.Status == nil {
+			break
+		}
+
+		return e.complexity.Encounter.Status(childComplexity), true
 
 	case "EpisodeOfCare.id":
 		if e.complexity.EpisodeOfCare.ID == nil {
@@ -2790,6 +2835,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateFHIROrganization(childComplexity, args["input"].(domain.FHIROrganizationInput)), true
 
+	case "Mutation.endEncounter":
+		if e.complexity.Mutation.EndEncounter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_endEncounter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EndEncounter(childComplexity, args["encounterID"].(string)), true
+
 	case "Mutation.endEpisodeOfCare":
 		if e.complexity.Mutation.EndEpisodeOfCare == nil {
 			break
@@ -2995,8 +3052,9 @@ extend type Mutation {
   endEpisodeOfCare(id: ID!): EpisodeOfCare
 }
 `, BuiltIn: false},
-	{Name: "../encounter.graphql", Input: `type Mutation {
+	{Name: "../encounter.graphql", Input: `extend type Mutation {
   startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -3004,6 +3062,22 @@ extend type Mutation {
   active
   finished
   cancelled
+}
+
+enum EncounterStatusEnum {
+  planned
+  arrived
+  triaged
+  in_progress
+  onleave
+  finished
+  cancelled
+  entered_in_error
+  unknown
+}
+
+enum EncounterClass {
+  ambulatory
 }
 `, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
@@ -3059,7 +3133,16 @@ type EpisodeOfCare {
   id: ID!
   status: EpisodeOfCareStatusEnum!
   patientID: String!
-}`, BuiltIn: false},
+}
+
+type Encounter {
+  id: String
+  class: EncounterClass
+  episodeOfCareID: String
+  status: EncounterStatusEnum
+  patientID: String
+}
+`, BuiltIn: false},
 	{Name: "../fhir/AllergyIntolerance.graphql", Input: `"""
 AllergyIntoleranceTypeEnum is a FHIR enum
 """
@@ -6180,6 +6263,21 @@ func (ec *executionContext) field_Mutation_createFHIROrganization_args(ctx conte
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_endEncounter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["encounterID"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_endEpisodeOfCare_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -6307,6 +6405,211 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _Encounter_id(ctx context.Context, field graphql.CollectedField, obj *dto.Encounter) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Encounter_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Encounter_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Encounter",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Encounter_class(ctx context.Context, field graphql.CollectedField, obj *dto.Encounter) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Encounter_class(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Class, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.EncounterClass)
+	fc.Result = res
+	return ec.marshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Encounter_class(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Encounter",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type EncounterClass does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Encounter_episodeOfCareID(ctx context.Context, field graphql.CollectedField, obj *dto.Encounter) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Encounter_episodeOfCareID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EpisodeOfCareID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Encounter_episodeOfCareID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Encounter",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Encounter_status(ctx context.Context, field graphql.CollectedField, obj *dto.Encounter) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Encounter_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.EncounterStatusEnum)
+	fc.Result = res
+	return ec.marshalOEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Encounter_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Encounter",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type EncounterStatusEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Encounter_patientID(ctx context.Context, field graphql.CollectedField, obj *dto.Encounter) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Encounter_patientID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PatientID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Encounter_patientID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Encounter",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _EpisodeOfCare_id(ctx context.Context, field graphql.CollectedField, obj *dto.EpisodeOfCare) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EpisodeOfCare_id(ctx, field)
@@ -21679,60 +21982,6 @@ func (ec *executionContext) fieldContext_MedicationIngredient_Strength(ctx conte
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_startEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_startEncounter(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().StartEncounter(rctx, fc.Args["episodeID"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_startEncounter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_startEncounter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createFHIROrganization(ctx, field)
 	if err != nil {
@@ -21903,6 +22152,114 @@ func (ec *executionContext) fieldContext_Mutation_endEpisodeOfCare(ctx context.C
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_endEpisodeOfCare_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_startEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_startEncounter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().StartEncounter(rctx, fc.Args["episodeID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_startEncounter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_startEncounter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_endEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_endEncounter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().EndEncounter(rctx, fc.Args["encounterID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_endEncounter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_endEncounter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -27093,6 +27450,47 @@ func (ec *executionContext) unmarshalInputMedicationIngredientInput(ctx context.
 
 // region    **************************** object.gotpl ****************************
 
+var encounterImplementors = []string{"Encounter"}
+
+func (ec *executionContext) _Encounter(ctx context.Context, sel ast.SelectionSet, obj *dto.Encounter) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, encounterImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Encounter")
+		case "id":
+
+			out.Values[i] = ec._Encounter_id(ctx, field, obj)
+
+		case "class":
+
+			out.Values[i] = ec._Encounter_class(ctx, field, obj)
+
+		case "episodeOfCareID":
+
+			out.Values[i] = ec._Encounter_episodeOfCareID(ctx, field, obj)
+
+		case "status":
+
+			out.Values[i] = ec._Encounter_status(ctx, field, obj)
+
+		case "patientID":
+
+			out.Values[i] = ec._Encounter_patientID(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var episodeOfCareImplementors = []string{"EpisodeOfCare"}
 
 func (ec *executionContext) _EpisodeOfCare(ctx context.Context, sel ast.SelectionSet, obj *dto.EpisodeOfCare) graphql.Marshaler {
@@ -29526,12 +29924,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "startEncounter":
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_startEncounter(ctx, field)
-			})
-
 		case "createFHIROrganization":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -29548,6 +29940,18 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_endEpisodeOfCare(ctx, field)
+			})
+
+		case "startEncounter":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_startEncounter(ctx, field)
+			})
+
+		case "endEncounter":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_endEncounter(ctx, field)
 			})
 
 		default:
@@ -31175,6 +31579,28 @@ func (ec *executionContext) marshalODurationComparatorEnum2ᚖgithubᚗcomᚋsav
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) unmarshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx context.Context, v interface{}) (dto.EncounterClass, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.EncounterClass(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx context.Context, sel ast.SelectionSet, v dto.EncounterClass) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	return res
+}
+
+func (ec *executionContext) unmarshalOEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx context.Context, v interface{}) (dto.EncounterStatusEnum, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.EncounterStatusEnum(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.EncounterStatusEnum) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	return res
 }
 
 func (ec *executionContext) marshalOEpisodeOfCare2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v *dto.EpisodeOfCare) graphql.Marshaler {

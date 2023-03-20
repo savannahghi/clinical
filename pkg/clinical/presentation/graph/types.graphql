@@ -17,3 +17,11 @@ type EpisodeOfCare {
   status: EpisodeOfCareStatusEnum!
   patientID: String!
 }
+
+type Encounter {
+  id: String
+  class: EncounterClass
+  episodeOfCareID: String
+  status: EncounterStatusEnum
+  patientID: String
+}

@@ -1,3 +1,4 @@
-type Mutation {
+extend type Mutation {
   startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
 }

@@ -121,7 +121,7 @@ func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx 
 
 // ContactsToContactPointInput translates phone and email contacts to
 // FHIR contact points
-func (c *UseCasesClinicalImpl) ContactsToContactPointInput(ctx context.Context, phones []*domain.PhoneNumberInput, emails []*domain.EmailInput) ([]*domain.FHIRContactPointInput, error) {
+func (c *UseCasesClinicalImpl) ContactsToContactPointInput(_ context.Context, phones []*domain.PhoneNumberInput, emails []*domain.EmailInput) ([]*domain.FHIRContactPointInput, error) {
 	if phones == nil && emails == nil {
 		return nil, nil
 	}
