@@ -8,6 +8,7 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -333,19 +334,19 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 	type args struct {
 		ctx   context.Context
-		input domain.HealthTimelineInput
+		input dto.HealthTimelineInput
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *domain.HealthTimeline
+		want    *dto.HealthTimeline
 		wantErr bool
 	}{
 		{
 			name: "Happy case: patient timeline",
 			args: args{
 				ctx: context.Background(),
-				input: domain.HealthTimelineInput{
+				input: dto.HealthTimelineInput{
 					PatientID: gofakeit.UUID(),
 					Offset:    0,
 					Limit:     20,
@@ -357,7 +358,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 			name: "Sad case: patient timeline invalid date",
 			args: args{
 				ctx: context.Background(),
-				input: domain.HealthTimelineInput{
+				input: dto.HealthTimelineInput{
 					PatientID: gofakeit.UUID(),
 					Offset:    0,
 					Limit:     20,
@@ -369,7 +370,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 			name: "Sad case: invalid patient id",
 			args: args{
 				ctx: context.Background(),
-				input: domain.HealthTimelineInput{
+				input: dto.HealthTimelineInput{
 					PatientID: "invalid",
 					Offset:    0,
 					Limit:     20,

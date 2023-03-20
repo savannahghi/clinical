@@ -47,3 +47,12 @@ const (
 	// Also referred to as outpatient - For now we'll start with outpatient only
 	EncounterClassAmbulatory EncounterClass = "ambulatory"
 )
+
+type ResourceType string
+
+const (
+	ResourceTypeAllergyIntolerance  ResourceType = "AllergyIntolerance"
+	ResourceTypeObservation         ResourceType = "Observation"
+	ResourceTypeCondition           ResourceType = "Condition"
+	ResourceTypeMedicationStatement ResourceType = "MedicationStatement"
+)

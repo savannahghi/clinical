@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/savannahghi/scalarutils"
+
 // TenantIdentifiers models the json object used to store some of the tenant identifiers
 type TenantIdentifiers struct {
 	OrganizationID string `json:"organizationID,omitempty"`
@@ -27,4 +29,27 @@ type Encounter struct {
 	Class           EncounterClass      `json:"class,omitempty"`
 	PatientID       string              `json:"patientID,omitempty"`
 	EpisodeOfCareID string              `json:"episodeOfCareID,omitempty"`
+}
+
+// HealthTimelineInput is the input for fetching a patient's health timeline
+type HealthTimelineInput struct {
+	PatientID string `json:"patientID"`
+	Offset    int    `json:"offset"`
+	Limit     int    `json:"limit"`
+}
+
+// TimelineResource represents a FHIR timeline resource
+type TimelineResource struct {
+	ID           string           `json:"id"`
+	ResourceType ResourceType     `json:"resourceType"`
+	Name         string           `json:"name"`
+	Value        string           `json:"value"`
+	Status       string           `json:"status"`
+	Date         scalarutils.Date `json:"date"`
+}
+
+// HealthTimeline represents a health timeline containing various FHIR resources
+type HealthTimeline struct {
+	Timeline   []TimelineResource `json:"timeline"`
+	TotalCount int                `json:"totalCount"`
 }

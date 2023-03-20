@@ -8,11 +8,11 @@ import (
 	linq "github.com/ahmetb/go-linq/v3"
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
-	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/converterandformatter"
+	"github.com/savannahghi/scalarutils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -30,13 +30,13 @@ func NewUseCasesClinicalImpl(infra infrastructure.Infrastructure) *UseCasesClini
 
 // PatientTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
-func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID string) ([]map[string]interface{}, error) {
+func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID string) ([]dto.TimelineResource, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
 	}
 
-	timeline := []map[string]interface{}{}
+	timeline := []dto.TimelineResource{}
 	wg := &sync.WaitGroup{}
 	mut := &sync.Mutex{}
 
@@ -64,23 +64,37 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			rMap, err := converterandformatter.StructToMap(edge.Node)
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				log.Errorf("AllergyIntolerance edge struct to map error: %v", err)
-
-				return
-			}
-
-			if rMap == nil {
+			if edge.Node.ID == nil {
 				continue
 			}
 
-			rMap["resourceType"] = "AllergyIntolerance"
-			rMap["timelineDate"] = rMap["recordedDate"]
+			if edge.Node.Code == nil {
+				continue
+			}
+
+			if edge.Node.Reaction == nil && len(edge.Node.Reaction) < 1 {
+				continue
+			}
+
+			if edge.Node.Reaction[0].Manifestation == nil && len(edge.Node.Reaction[0].Manifestation) < 1 {
+				continue
+			}
+
+			if edge.Node.RecordedDate == nil {
+				continue
+			}
+
+			timelineResource := dto.TimelineResource{
+				ID:           *edge.Node.ID,
+				ResourceType: dto.ResourceTypeAllergyIntolerance,
+				Name:         edge.Node.Code.Text,
+				Value:        edge.Node.Reaction[0].Manifestation[0].Text,
+				Status:       edge.Node.ClinicalStatus.Text,
+				Date:         *edge.Node.RecordedDate,
+			}
 
 			mut.Lock()
-			timeline = append(timeline, rMap)
+			timeline = append(timeline, timelineResource)
 			mut.Unlock()
 		}
 	}
@@ -101,23 +115,39 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			rMap, err := converterandformatter.StructToMap(edge.Node)
+			if edge.Node.ID == nil {
+				continue
+			}
+
+			if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+				continue
+			}
+
+			if edge.Node.EffectiveDateTime == nil {
+				continue
+			}
+
+			instant := edge.Node.EffectiveDateTime.AsTime()
+			date, err := scalarutils.NewDate(instant.Day(), int(instant.Month()), instant.Year())
+
 			if err != nil {
 				utils.ReportErrorToSentry(err)
-				log.Errorf("Observation edge struct to map error: %v", err)
+				log.Errorf("date conversion error: %v", err)
 
 				return
 			}
 
-			if rMap == nil {
-				continue
+			timelineResource := dto.TimelineResource{
+				ID:           *edge.Node.ID,
+				ResourceType: dto.ResourceTypeObservation,
+				Name:         edge.Node.Code.Text,
+				Value:        edge.Node.Code.Coding[0].Display,
+				Status:       string(*edge.Node.Status),
+				Date:         *date,
 			}
 
-			rMap["resourceType"] = "Observation"
-			rMap["timelineDate"] = rMap["effectiveInstant"]
-
 			mut.Lock()
-			timeline = append(timeline, rMap)
+			timeline = append(timeline, timelineResource)
 			mut.Unlock()
 		}
 	}
@@ -138,23 +168,47 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			rMap, err := converterandformatter.StructToMap(edge.Node)
+			if edge.Node.ID == nil {
+				continue
+			}
+
+			if edge.Node.MedicationCodeableConcept == nil {
+				continue
+			}
+
+			if edge.Node.MedicationCodeableConcept.Coding == nil && len(edge.Node.MedicationCodeableConcept.Coding) < 1 {
+				continue
+			}
+
+			if edge.Node.Status == nil {
+				continue
+			}
+
+			if edge.Node.EffectiveDateTime == nil {
+				continue
+			}
+
+			instant := edge.Node.EffectiveDateTime.AsTime()
+			date, err := scalarutils.NewDate(instant.Day(), int(instant.Month()), instant.Year())
+
 			if err != nil {
 				utils.ReportErrorToSentry(err)
-				log.Errorf("MedicationStatement edge struct to map error: %v", err)
+				log.Errorf("date conversion error: %v", err)
 
 				return
 			}
 
-			if rMap == nil {
-				continue
+			timelineResource := dto.TimelineResource{
+				ID:           *edge.Node.ID,
+				ResourceType: dto.ResourceTypeMedicationStatement,
+				Name:         edge.Node.Subject.Display,
+				Value:        edge.Node.MedicationCodeableConcept.Coding[0].Display,
+				Status:       string(*edge.Node.Status),
+				Date:         *date,
 			}
 
-			rMap["resourceType"] = "MedicationStatement"
-			rMap["timelineDate"] = rMap["effectiveDateTime"]
-
 			mut.Lock()
-			timeline = append(timeline, rMap)
+			timeline = append(timeline, timelineResource)
 			mut.Unlock()
 		}
 	}
@@ -303,34 +357,22 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 
 // PatientHealthTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
 // The timeline consists of Allergies, Observations, Medication statement and Test results
-func (c *UseCasesClinicalImpl) PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error) {
+func (c *UseCasesClinicalImpl) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	records, err := c.PatientTimeline(ctx, input.PatientID)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, fmt.Errorf("cannot retrieve patient timeline error: %w", err)
 	}
 
-	data := &domain.HealthTimeline{}
-	timeline := []map[string]interface{}{}
+	data := &dto.HealthTimeline{}
+	timeline := []dto.TimelineResource{}
 
 	sortFunc := func(i, j interface{}) bool {
-		itemI := i.(map[string]interface{})
+		itemI := i.(dto.TimelineResource)
+		timeI := itemI.Date.AsTime()
 
-		dateStringI, ok := itemI["timelineDate"].(string)
-		if !ok {
-			return false
-		}
-
-		timeI := helpers.ParseDate(dateStringI)
-
-		itemJ := j.(map[string]interface{})
-
-		dateStringJ, ok := itemJ["timelineDate"].(string)
-		if !ok {
-			return false
-		}
-
-		timeJ := helpers.ParseDate(dateStringJ)
+		itemJ := j.(dto.TimelineResource)
+		timeJ := itemJ.Date.AsTime()
 
 		return timeI.After(timeJ)
 	}
