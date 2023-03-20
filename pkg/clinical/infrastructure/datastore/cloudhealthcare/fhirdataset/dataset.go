@@ -398,7 +398,7 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string, resour
 }
 
 // SearchFHIRResource ...
-func (fr Repository) SearchFHIRResource(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+func (fr Repository) SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
@@ -408,11 +408,14 @@ func (fr Repository) SearchFHIRResource(resourceType string, params map[string]i
 	for k, v := range params {
 		val, ok := v.(string)
 		if !ok {
-			return nil, fmt.Errorf("the search/filter params should all be sent as strings")
+			return nil, fmt.Errorf("the search/filter param: %s should all be sent as strings", k)
 		}
 
 		urlParams.Add(k, val)
 	}
+
+	urlParams.Add("_tag", fmt.Sprintf("http://mycarehub/tenant-identification/organisation|%s", tenant.OrganizationID))
+	urlParams.Add("_tag", fmt.Sprintf("http://mycarehub/tenant-identification/facility|%s", tenant.FacilityID))
 
 	path := "_search"
 

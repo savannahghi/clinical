@@ -105,7 +105,12 @@ func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patien
 
 	patientReference := fmt.Sprintf("Patient/%s", patientID)
 
-	encounter, err := c.infrastructure.FHIR.Encounters(ctx, patientReference, nil)
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	encounter, err := c.infrastructure.FHIR.SearchPatientEncounters(ctx, patientReference, nil, *identifiers)
 	if err != nil {
 		return nil, err
 	}

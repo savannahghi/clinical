@@ -13,13 +13,13 @@ import (
 
 // Validators defines the methods used to validate the various identifiers that the api expects
 type Validators interface {
-	FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
+	GetFHIROrganization(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
 }
 
 // OrganisationValidator verifies that the provided organisation exists in clinical
 // to ensure the request comes from a known/registered organisation
 func OrganisationValidator(v Validators, identifier string) error {
-	_, err := v.FindOrganizationByID(context.Background(), identifier)
+	_, err := v.GetFHIROrganization(context.Background(), identifier)
 	if err != nil {
 		return fmt.Errorf("failed to find provided organisation")
 	}

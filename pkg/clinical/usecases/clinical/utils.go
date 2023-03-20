@@ -20,12 +20,12 @@ func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	organisation, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, identifiers.OrganizationID)
+	organisation, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, identifiers.OrganizationID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find tenant organisation: %w", err)
 	}
 
-	facility, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, identifiers.FacilityID)
+	facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, identifiers.FacilityID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find tenant organisation: %w", err)
 	}
@@ -62,6 +62,11 @@ func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.
 func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context.Context, patientInput domain.SimplePatientRegistrationInput) (bool, error) {
 	exists := false
 
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return false, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
 	for _, phone := range patientInput.PhoneNumbers {
 		phoneNumber := &phone.Msisdn
 
@@ -70,7 +75,7 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 			return false, fmt.Errorf("can't normalize contact: %w", err)
 		}
 
-		patient, err := c.infrastructure.FHIR.SearchFHIRPatient(ctx, *search)
+		patient, err := c.infrastructure.FHIR.SearchFHIRPatient(ctx, *search, *identifiers)
 		if err != nil {
 			return false, fmt.Errorf("unable to find patient by phonenumber: %s", *phoneNumber)
 		}

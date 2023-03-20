@@ -66,7 +66,7 @@ func TestUseCasesClinicalImpl_GetTenantMetaTags(t *testing.T) {
 			}
 
 			if tt.name == "sad case: error retrieving organisation" {
-				Fakefhir.MockFindOrganizationByIDFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+				Fakefhir.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("failed to find organization")
 				}
 			}
