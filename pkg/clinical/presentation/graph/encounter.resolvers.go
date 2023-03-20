@@ -6,6 +6,8 @@ package graph
 
 import (
 	"context"
+
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 )
 
 // StartEncounter is the resolver for the startEncounter field.
@@ -18,4 +20,10 @@ func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string)
 func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
 	r.CheckDependencies()
 	return r.usecases.Clinical.EndEncounter(ctx, encounterID)
+}
+
+// ListPatientEncounters is the resolver for the listPatientEncounters field.
+func (r *queryResolver) ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.ListPatientEncounters(ctx, patientID)
 }

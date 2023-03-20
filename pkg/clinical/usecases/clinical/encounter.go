@@ -91,3 +91,42 @@ func (c *UseCasesClinicalImpl) EndEncounter(ctx context.Context, encounterID str
 
 	return ok, nil
 }
+
+// ListPatientEncounters lists all the encounters that a patient has been part of
+func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error) {
+	if patientID == "" {
+		return nil, fmt.Errorf("a patient ID is required")
+	}
+
+	_, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
+	if err != nil {
+		return nil, err
+	}
+
+	patientReference := fmt.Sprintf("Patient/%s", patientID)
+
+	encounter, err := c.infrastructure.FHIR.Encounters(ctx, patientReference, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapFHIREncounterToEncounterDTO(encounter), nil
+}
+
+func mapFHIREncounterToEncounterDTO(fhirEncounters []*domain.FHIREncounter) []*dto.Encounter {
+	var encounters []*dto.Encounter
+
+	for _, fhirEncounter := range fhirEncounters {
+		encounter := &dto.Encounter{
+			ID:              *fhirEncounter.ID,
+			Status:          dto.EncounterStatusEnum(fhirEncounter.Status),
+			Class:           dto.EncounterClass(fhirEncounter.Class.Display),
+			PatientID:       *fhirEncounter.Subject.ID,
+			EpisodeOfCareID: *fhirEncounter.EpisodeOfCare[0].ID,
+		}
+
+		encounters = append(encounters, encounter)
+	}
+
+	return encounters
+}

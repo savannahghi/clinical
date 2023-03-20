@@ -29,6 +29,7 @@ type Clinical interface {
 
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
+	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
 }
 
 // Interactor is an implementation of the usecases interface

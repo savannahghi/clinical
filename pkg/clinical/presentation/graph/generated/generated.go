@@ -535,6 +535,7 @@ type ComplexityRoot struct {
 	Query struct {
 		EpisodeOfCare         func(childComplexity int, id string) int
 		GetMedicalData        func(childComplexity int, patientID string) int
+		ListPatientEncounters func(childComplexity int, patientID string) int
 		PatientHealthTimeline func(childComplexity int, input dto.HealthTimelineInput) int
 		__resolve__service    func(childComplexity int) int
 	}
@@ -564,6 +565,7 @@ type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 	EpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
+	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
 }
 
 type executableSchema struct {
@@ -2919,6 +2921,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetMedicalData(childComplexity, args["patientID"].(string)), true
 
+	case "Query.listPatientEncounters":
+		if e.complexity.Query.ListPatientEncounters == nil {
+			break
+		}
+
+		args, err := ec.field_Query_listPatientEncounters_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ListPatientEncounters(childComplexity, args["patientID"].(string)), true
+
 	case "Query.patientHealthTimeline":
 		if e.complexity.Query.PatientHealthTimeline == nil {
 			break
@@ -3107,6 +3121,11 @@ extend type Mutation {
 	{Name: "../encounter.graphql", Input: `extend type Mutation {
   startEncounter(episodeID: String!): String!
   endEncounter(encounterID: String!): Boolean!
+}
+
+extend type Query {
+  # TODO: Pagination
+  listPatientEncounters(patientID: String!): [Encounter!]!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -6407,6 +6426,21 @@ func (ec *executionContext) field_Query_episodeOfCare_args(ctx context.Context, 
 }
 
 func (ec *executionContext) field_Query_getMedicalData_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_listPatientEncounters_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -22628,6 +22662,73 @@ func (ec *executionContext) fieldContext_Query_episodeOfCare(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_listPatientEncounters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_listPatientEncounters(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ListPatientEncounters(rctx, fc.Args["patientID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*dto.Encounter)
+	fc.Result = res
+	return ec.marshalNEncounter2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_listPatientEncounters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Encounter_id(ctx, field)
+			case "class":
+				return ec.fieldContext_Encounter_class(ctx, field)
+			case "episodeOfCareID":
+				return ec.fieldContext_Encounter_episodeOfCareID(ctx, field)
+			case "status":
+				return ec.fieldContext_Encounter_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Encounter_patientID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Encounter", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_listPatientEncounters_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query__service(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query__service(ctx, field)
 	if err != nil {
@@ -30434,6 +30535,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "listPatientEncounters":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_listPatientEncounters(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "_service":
 			field := field
 
@@ -30914,6 +31038,60 @@ func (ec *executionContext) unmarshalNDateTime2githubᚗcomᚋsavannahghiᚋscal
 
 func (ec *executionContext) marshalNDateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, sel ast.SelectionSet, v scalarutils.DateTime) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) marshalNEncounter2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterᚄ(ctx context.Context, sel ast.SelectionSet, v []*dto.Encounter) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx context.Context, sel ast.SelectionSet, v *dto.Encounter) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Encounter(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNEpisodeOfCareInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCareInput(ctx context.Context, v interface{}) (dto.EpisodeOfCareInput, error) {

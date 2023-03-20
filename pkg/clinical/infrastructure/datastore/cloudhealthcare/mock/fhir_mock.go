@@ -244,7 +244,24 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockEncountersFn: func(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum) ([]*domain.FHIREncounter, error) {
-			return []*domain.FHIREncounter{}, nil
+			encounterID := uuid.New().String()
+			patientID := uuid.New().String()
+			episodeID := uuid.New().String()
+			return []*domain.FHIREncounter{
+				{
+					ID:     &encounterID,
+					Status: "finished",
+					Class: domain.FHIRCoding{
+						Display: "ambulatory",
+					},
+					Subject: &domain.FHIRReference{
+						ID: &patientID,
+					},
+					EpisodeOfCare: []*domain.FHIRReference{{
+						ID: &episodeID,
+					}},
+				},
+			}, nil
 		},
 		MockSearchFHIREpisodeOfCareFn: func(ctx context.Context, params map[string]interface{}) (*domain.FHIREpisodeOfCareRelayConnection, error) {
 			PatientRef := "Patient/1"
