@@ -31,6 +31,16 @@ func (c *UseCasesClinicalImpl) RecordHeight(ctx context.Context, input dto.Obser
 	return heightObservation, nil
 }
 
+// RecordWeight records a patient's weight
+func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return weightObservation, nil
+}
+
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {
 	err := input.Validate()
 	if err != nil {
