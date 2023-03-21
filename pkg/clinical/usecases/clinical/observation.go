@@ -21,6 +21,16 @@ func (c *UseCasesClinicalImpl) RecordTemperature(ctx context.Context, input dto.
 	return temperatureObservation, nil
 }
 
+// RecordHeight records a patient's height and saves it to fhir
+func (c *UseCasesClinicalImpl) RecordHeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	heightObservation, err := c.RecordObservation(ctx, input, common.HeightCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return heightObservation, nil
+}
+
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {
 	err := input.Validate()
 	if err != nil {
