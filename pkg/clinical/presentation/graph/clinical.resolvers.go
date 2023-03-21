@@ -94,7 +94,7 @@ func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.Hea
 }
 
 // GetMedicalData is the resolver for the getMedicalData field.
-func (r *queryResolver) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
+func (r *queryResolver) GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error) {
 	r.CheckDependencies()
 
 	return r.usecases.GetMedicalData(ctx, patientID)

@@ -71,3 +71,11 @@ const (
 	ObservationStatusFinal     ObservationStatus = "final"
 	ObservationStatusCancelled ObservationStatus = "cancelled"
 )
+
+type MedicationStatementStatusEnum string
+
+const (
+	MedicationStatementStatusEnumActive   MedicationStatementStatusEnum = "active"
+	MedicationStatementStatusEnumInActive MedicationStatementStatusEnum = "inactive"
+	MedicationStatementStatusEnumUnknown  MedicationStatementStatusEnum = "unknown"
+)

@@ -4,21 +4,20 @@ import (
 	"context"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
-	"github.com/savannahghi/clinical/pkg/clinical/domain"
 )
 
 // FakeClinical ....
 type FakeClinical struct {
-	MockGetMedicalDataFn      func(ctx context.Context, patientID string) (*domain.MedicalData, error)
+	MockGetMedicalDataFn      func(ctx context.Context, patientID string) (*dto.MedicalData, error)
 	MockCreatePubsubPatientFn func(ctx context.Context, payload dto.CreatePatientPubSubMessage) error
 }
 
 // NewFakeClinicalMock ...
 func NewFakeClinicalMock() *FakeClinical {
 	return &FakeClinical{
-		MockGetMedicalDataFn: func(ctx context.Context, patientID string) (*domain.MedicalData, error) {
-			return &domain.MedicalData{
-				Regimen:   []*domain.FHIRMedicationStatement{},
+		MockGetMedicalDataFn: func(ctx context.Context, patientID string) (*dto.MedicalData, error) {
+			return &dto.MedicalData{
+				Regimen:   []*dto.MedicationStatement{},
 				Allergies: []*dto.AllergyIntolerance{},
 				Weight:    []*dto.Observation{},
 				BMI:       []*dto.Observation{},
@@ -33,7 +32,7 @@ func NewFakeClinicalMock() *FakeClinical {
 }
 
 // GetMedicalData ...
-func (f *FakeClinical) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
+func (f *FakeClinical) GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error) {
 	return f.MockGetMedicalDataFn(ctx, patientID)
 }
 

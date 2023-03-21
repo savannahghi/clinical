@@ -198,71 +198,6 @@ type ComplexityRoot struct {
 		Value    func(childComplexity int) int
 	}
 
-	FHIRMedication struct {
-		Amount       func(childComplexity int) int
-		Batch        func(childComplexity int) int
-		Code         func(childComplexity int) int
-		Form         func(childComplexity int) int
-		ID           func(childComplexity int) int
-		Identifier   func(childComplexity int) int
-		Ingredient   func(childComplexity int) int
-		Manufacturer func(childComplexity int) int
-		Status       func(childComplexity int) int
-		Text         func(childComplexity int) int
-	}
-
-	FHIRMedicationRelayConnection struct {
-		Edges    func(childComplexity int) int
-		PageInfo func(childComplexity int) int
-	}
-
-	FHIRMedicationRelayEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
-	}
-
-	FHIRMedicationRelayPayload struct {
-		Resource func(childComplexity int) int
-	}
-
-	FHIRMedicationStatement struct {
-		BasedOn                   func(childComplexity int) int
-		Category                  func(childComplexity int) int
-		Context                   func(childComplexity int) int
-		DateAsserted              func(childComplexity int) int
-		DerivedFrom               func(childComplexity int) int
-		Dosage                    func(childComplexity int) int
-		EffectiveDateTime         func(childComplexity int) int
-		EffectivePeriod           func(childComplexity int) int
-		ID                        func(childComplexity int) int
-		Identifier                func(childComplexity int) int
-		InformationSource         func(childComplexity int) int
-		MedicationCodeableConcept func(childComplexity int) int
-		MedicationReference       func(childComplexity int) int
-		Note                      func(childComplexity int) int
-		PartOf                    func(childComplexity int) int
-		ReasonCode                func(childComplexity int) int
-		ReasonReference           func(childComplexity int) int
-		Status                    func(childComplexity int) int
-		StatusReason              func(childComplexity int) int
-		Subject                   func(childComplexity int) int
-		Text                      func(childComplexity int) int
-	}
-
-	FHIRMedicationStatementRelayConnection struct {
-		Edges    func(childComplexity int) int
-		PageInfo func(childComplexity int) int
-	}
-
-	FHIRMedicationStatementRelayEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
-	}
-
-	FHIRMedicationStatementRelayPayload struct {
-		Resource func(childComplexity int) int
-	}
-
 	FHIRNarrative struct {
 		Div    func(childComplexity int) int
 		ID     func(childComplexity int) int
@@ -382,16 +317,16 @@ type ComplexityRoot struct {
 		Weight    func(childComplexity int) int
 	}
 
-	MedicationBatch struct {
-		ExpirationDate func(childComplexity int) int
-		LotNumber      func(childComplexity int) int
+	Medication struct {
+		Code func(childComplexity int) int
+		Name func(childComplexity int) int
 	}
 
-	MedicationIngredient struct {
-		IsActive           func(childComplexity int) int
-		ItemCodelabConcept func(childComplexity int) int
-		ItemReference      func(childComplexity int) int
-		Strength           func(childComplexity int) int
+	MedicationStatement struct {
+		ID         func(childComplexity int) int
+		Medication func(childComplexity int) int
+		PatientID  func(childComplexity int) int
+		Status     func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -461,7 +396,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
-	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
+	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
 	EpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
 }
@@ -1209,293 +1144,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FHIRIdentifier.Value(childComplexity), true
 
-	case "FHIRMedication.Amount":
-		if e.complexity.FHIRMedication.Amount == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Amount(childComplexity), true
-
-	case "FHIRMedication.Batch":
-		if e.complexity.FHIRMedication.Batch == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Batch(childComplexity), true
-
-	case "FHIRMedication.Code":
-		if e.complexity.FHIRMedication.Code == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Code(childComplexity), true
-
-	case "FHIRMedication.Form":
-		if e.complexity.FHIRMedication.Form == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Form(childComplexity), true
-
-	case "FHIRMedication.ID":
-		if e.complexity.FHIRMedication.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.ID(childComplexity), true
-
-	case "FHIRMedication.Identifier":
-		if e.complexity.FHIRMedication.Identifier == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Identifier(childComplexity), true
-
-	case "FHIRMedication.Ingredient":
-		if e.complexity.FHIRMedication.Ingredient == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Ingredient(childComplexity), true
-
-	case "FHIRMedication.Manufacturer":
-		if e.complexity.FHIRMedication.Manufacturer == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Manufacturer(childComplexity), true
-
-	case "FHIRMedication.Status":
-		if e.complexity.FHIRMedication.Status == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Status(childComplexity), true
-
-	case "FHIRMedication.Text":
-		if e.complexity.FHIRMedication.Text == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedication.Text(childComplexity), true
-
-	case "FHIRMedicationRelayConnection.edges":
-		if e.complexity.FHIRMedicationRelayConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationRelayConnection.Edges(childComplexity), true
-
-	case "FHIRMedicationRelayConnection.pageInfo":
-		if e.complexity.FHIRMedicationRelayConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationRelayConnection.PageInfo(childComplexity), true
-
-	case "FHIRMedicationRelayEdge.cursor":
-		if e.complexity.FHIRMedicationRelayEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationRelayEdge.Cursor(childComplexity), true
-
-	case "FHIRMedicationRelayEdge.node":
-		if e.complexity.FHIRMedicationRelayEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationRelayEdge.Node(childComplexity), true
-
-	case "FHIRMedicationRelayPayload.resource":
-		if e.complexity.FHIRMedicationRelayPayload.Resource == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationRelayPayload.Resource(childComplexity), true
-
-	case "FHIRMedicationStatement.BasedOn":
-		if e.complexity.FHIRMedicationStatement.BasedOn == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.BasedOn(childComplexity), true
-
-	case "FHIRMedicationStatement.Category":
-		if e.complexity.FHIRMedicationStatement.Category == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Category(childComplexity), true
-
-	case "FHIRMedicationStatement.Context":
-		if e.complexity.FHIRMedicationStatement.Context == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Context(childComplexity), true
-
-	case "FHIRMedicationStatement.DateAsserted":
-		if e.complexity.FHIRMedicationStatement.DateAsserted == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.DateAsserted(childComplexity), true
-
-	case "FHIRMedicationStatement.DerivedFrom":
-		if e.complexity.FHIRMedicationStatement.DerivedFrom == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.DerivedFrom(childComplexity), true
-
-	case "FHIRMedicationStatement.Dosage":
-		if e.complexity.FHIRMedicationStatement.Dosage == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Dosage(childComplexity), true
-
-	case "FHIRMedicationStatement.EffectiveDateTime":
-		if e.complexity.FHIRMedicationStatement.EffectiveDateTime == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.EffectiveDateTime(childComplexity), true
-
-	case "FHIRMedicationStatement.EffectivePeriod":
-		if e.complexity.FHIRMedicationStatement.EffectivePeriod == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.EffectivePeriod(childComplexity), true
-
-	case "FHIRMedicationStatement.ID":
-		if e.complexity.FHIRMedicationStatement.ID == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.ID(childComplexity), true
-
-	case "FHIRMedicationStatement.Identifier":
-		if e.complexity.FHIRMedicationStatement.Identifier == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Identifier(childComplexity), true
-
-	case "FHIRMedicationStatement.InformationSource":
-		if e.complexity.FHIRMedicationStatement.InformationSource == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.InformationSource(childComplexity), true
-
-	case "FHIRMedicationStatement.MedicationCodeableConcept":
-		if e.complexity.FHIRMedicationStatement.MedicationCodeableConcept == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.MedicationCodeableConcept(childComplexity), true
-
-	case "FHIRMedicationStatement.MedicationReference":
-		if e.complexity.FHIRMedicationStatement.MedicationReference == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.MedicationReference(childComplexity), true
-
-	case "FHIRMedicationStatement.Note":
-		if e.complexity.FHIRMedicationStatement.Note == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Note(childComplexity), true
-
-	case "FHIRMedicationStatement.PartOf":
-		if e.complexity.FHIRMedicationStatement.PartOf == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.PartOf(childComplexity), true
-
-	case "FHIRMedicationStatement.ReasonCode":
-		if e.complexity.FHIRMedicationStatement.ReasonCode == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.ReasonCode(childComplexity), true
-
-	case "FHIRMedicationStatement.ReasonReference":
-		if e.complexity.FHIRMedicationStatement.ReasonReference == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.ReasonReference(childComplexity), true
-
-	case "FHIRMedicationStatement.Status":
-		if e.complexity.FHIRMedicationStatement.Status == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Status(childComplexity), true
-
-	case "FHIRMedicationStatement.StatusReason":
-		if e.complexity.FHIRMedicationStatement.StatusReason == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.StatusReason(childComplexity), true
-
-	case "FHIRMedicationStatement.Subject":
-		if e.complexity.FHIRMedicationStatement.Subject == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Subject(childComplexity), true
-
-	case "FHIRMedicationStatement.Text":
-		if e.complexity.FHIRMedicationStatement.Text == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatement.Text(childComplexity), true
-
-	case "FHIRMedicationStatementRelayConnection.edges":
-		if e.complexity.FHIRMedicationStatementRelayConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatementRelayConnection.Edges(childComplexity), true
-
-	case "FHIRMedicationStatementRelayConnection.pageInfo":
-		if e.complexity.FHIRMedicationStatementRelayConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatementRelayConnection.PageInfo(childComplexity), true
-
-	case "FHIRMedicationStatementRelayEdge.cursor":
-		if e.complexity.FHIRMedicationStatementRelayEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatementRelayEdge.Cursor(childComplexity), true
-
-	case "FHIRMedicationStatementRelayEdge.node":
-		if e.complexity.FHIRMedicationStatementRelayEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatementRelayEdge.Node(childComplexity), true
-
-	case "FHIRMedicationStatementRelayPayload.resource":
-		if e.complexity.FHIRMedicationStatementRelayPayload.Resource == nil {
-			break
-		}
-
-		return e.complexity.FHIRMedicationStatementRelayPayload.Resource(childComplexity), true
-
 	case "FHIRNarrative.Div":
 		if e.complexity.FHIRNarrative.Div == nil {
 			break
@@ -2014,47 +1662,47 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MedicalData.Weight(childComplexity), true
 
-	case "MedicationBatch.ExpirationDate":
-		if e.complexity.MedicationBatch.ExpirationDate == nil {
+	case "Medication.code":
+		if e.complexity.Medication.Code == nil {
 			break
 		}
 
-		return e.complexity.MedicationBatch.ExpirationDate(childComplexity), true
+		return e.complexity.Medication.Code(childComplexity), true
 
-	case "MedicationBatch.LotNumber":
-		if e.complexity.MedicationBatch.LotNumber == nil {
+	case "Medication.name":
+		if e.complexity.Medication.Name == nil {
 			break
 		}
 
-		return e.complexity.MedicationBatch.LotNumber(childComplexity), true
+		return e.complexity.Medication.Name(childComplexity), true
 
-	case "MedicationIngredient.IsActive":
-		if e.complexity.MedicationIngredient.IsActive == nil {
+	case "MedicationStatement.id":
+		if e.complexity.MedicationStatement.ID == nil {
 			break
 		}
 
-		return e.complexity.MedicationIngredient.IsActive(childComplexity), true
+		return e.complexity.MedicationStatement.ID(childComplexity), true
 
-	case "MedicationIngredient.ItemCodelabConcept":
-		if e.complexity.MedicationIngredient.ItemCodelabConcept == nil {
+	case "MedicationStatement.medication":
+		if e.complexity.MedicationStatement.Medication == nil {
 			break
 		}
 
-		return e.complexity.MedicationIngredient.ItemCodelabConcept(childComplexity), true
+		return e.complexity.MedicationStatement.Medication(childComplexity), true
 
-	case "MedicationIngredient.ItemReference":
-		if e.complexity.MedicationIngredient.ItemReference == nil {
+	case "MedicationStatement.patientID":
+		if e.complexity.MedicationStatement.PatientID == nil {
 			break
 		}
 
-		return e.complexity.MedicationIngredient.ItemReference(childComplexity), true
+		return e.complexity.MedicationStatement.PatientID(childComplexity), true
 
-	case "MedicationIngredient.Strength":
-		if e.complexity.MedicationIngredient.Strength == nil {
+	case "MedicationStatement.status":
+		if e.complexity.MedicationStatement.Status == nil {
 			break
 		}
 
-		return e.complexity.MedicationIngredient.Strength(childComplexity), true
+		return e.complexity.MedicationStatement.Status(childComplexity), true
 
 	case "Mutation.createEpisodeOfCare":
 		if e.complexity.Mutation.CreateEpisodeOfCare == nil {
@@ -2381,8 +2029,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputFHIRDurationInput,
 		ec.unmarshalInputFHIRHumanNameInput,
 		ec.unmarshalInputFHIRIdentifierInput,
-		ec.unmarshalInputFHIRMedicationInput,
-		ec.unmarshalInputFHIRMedicationStatementInput,
 		ec.unmarshalInputFHIRNarrativeInput,
 		ec.unmarshalInputFHIROrganizationInput,
 		ec.unmarshalInputFHIRPeriodInput,
@@ -2394,8 +2040,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputFHIRTimingInput,
 		ec.unmarshalInputFHIRTimingRepeatInput,
 		ec.unmarshalInputHealthTimelineInput,
-		ec.unmarshalInputMedicationBatchInput,
-		ec.unmarshalInputMedicationIngredientInput,
 		ec.unmarshalInputObservationInput,
 	)
 	first := true
@@ -2530,7 +2174,12 @@ enum ObservationStatus {
   final
   cancelled
 }
-`, BuiltIn: false},
+
+enum MedicationStatementStatusEnum {
+  active
+  inactive
+  unknown
+}`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
 scalar Time
@@ -2592,8 +2241,23 @@ type Observation {
   value: String!
 }
 
+type Medication {
+  name: String!
+  code: String!
+}
+
+type MedicationStatement {
+  id: ID!
+
+  status: MedicationStatementStatusEnum
+
+  medication: Medication!
+
+  patientID: String
+}
+
 type MedicalData {
-  regimen: [FHIRMedicationStatement]
+  regimen: [MedicationStatement]
   allergies: [AllergyIntolerance]
   weight: [Observation]
   bmi: [Observation]
@@ -2630,262 +2294,6 @@ type Encounter {
 }
 
 
-`, BuiltIn: false},
-	{Name: "../fhir/Medication.graphql", Input: `"""
-MedicationStatusEnum
-"""
-enum MedicationStatusEnum {
-  active
-  inactive
-  entered_in_error # ` + "`" + `original: entered-in-error` + "`" + `
-}
-
-"""
-FHIRMedicationInput
-"""
-input FHIRMedicationInput {
-  ID: ID
-
-  Text: FHIRNarrativeInput
-
-  Identifier: [FHIRIdentifierInput]
-
-  Code: FHIRCodeableConceptInput
-
-  Status: MedicationStatusEnum
-
-  Manufacturer: FHIROrganizationInput
-
-  Form: FHIRCodeableConceptInput
-
-  Amount: FHIRRatioInput
-
-  Ingredient: [MedicationIngredientInput]
-
-  Batch: MedicationBatchInput
-}
-
-"""
-MedicationBatchInput
-"""
-input MedicationBatchInput {
-  LotNumber: String
-
-  ExpirationDate: Date
-}
-
-"""
-MedicationIngredientInput
-"""
-input MedicationIngredientInput {
-  ItemCodelabConcept: FHIRCodeableConceptInput
-
-  ItemReference: FHIRReferenceInput
-
-  IsActive: Boolean
-
-  Strength: FHIRRatioInput
-}
-
-"""
-FHIRMedication
-"""
-type FHIRMedication {
-  ID: ID
-
-  Text: FHIRNarrative
-
-  Identifier: [FHIRIdentifier]
-
-  Code: FHIRCodeableConcept
-
-  Status: MedicationStatusEnum
-
-  Manufacturer: FHIROrganization
-
-  Form: FHIRCodeableConcept
-
-  Amount: FHIRRatio
-
-  Ingredient: [MedicationIngredient]
-
-  Batch: MedicationBatch
-}
-
-"""
-MedicationBatch
-"""
-type MedicationBatch {
-  LotNumber: String
-
-  ExpirationDate: Date
-}
-
-"""
-MedicationIngredient
-"""
-type MedicationIngredient {
-  ItemCodelabConcept: FHIRCodeableConcept
-
-  ItemReference: FHIRReference
-
-  IsActive: Boolean
-
-  Strength: FHIRRatio
-}
-
-"""
-FHIRMedicationRelayConnection is a Relay connection for MedicationStatement
-"""
-type FHIRMedicationRelayConnection {
-  edges: [FHIRMedicationRelayEdge]
-  pageInfo: PageInfo
-}
-
-"""
-FHIRMedicationRelayEdge is a Relay edge for Medication
-"""
-type FHIRMedicationRelayEdge {
-  cursor: String
-  node: FHIRMedication
-}
-
-"""
-FHIRMedicationRelayPayload is used to return single instances of Medication
-"""
-type FHIRMedicationRelayPayload {
-  resource: FHIRMedication
-}
-`, BuiltIn: false},
-	{Name: "../fhir/MedicationStatement.graphql", Input: `"""
-MedicationStatementStatusEnum is a FHIR enum
-"""
-enum MedicationStatementStatusEnum {
-  active
-  inactive
-  entered_in_error # ` + "`" + `original: entered-in-error` + "`" + `
-  intended
-  stopped
-  on_hold # ` + "`" + `original: on-hold` + "`" + `
-  unknown
-  not_taken # ` + "`" + `original: not-taken` + "`" + `
-}
-
-"""
-FHIRMedicationStatementInput: input for medication statement
-"""
-input FHIRMedicationStatementInput {
-  ID: ID
-
-  Text: FHIRNarrativeInput
-
-  Identifier: [FHIRIdentifierInput]
-
-  BasedOn: [FHIRReferenceInput]
-
-  PartOf: [FHIRReferenceInput]
-
-  Status: MedicationStatementStatusEnum
-
-  StatusReason: [FHIRCodeableConceptInput]
-
-  Category: FHIRCodeableConceptInput
-
-  MedicationCodeableConcept: FHIRCodeableConceptInput
-
-  MedicationReference: FHIRMedicationInput
-
-  Subject: FHIRReferenceInput
-
-  Context: FHIRReferenceInput
-
-  EffectiveDateTime: Date
-
-  EffectivePeriod: FHIRPeriodInput
-
-  DateAsserted: Date
-
-  InformationSource: FHIRReferenceInput
-
-  DerivedFrom: [FHIRReferenceInput]
-
-  ReasonCode: [FHIRCodeableConceptInput]
-
-  ReasonReference: [FHIRReferenceInput]
-
-  Note: [FHIRAnnotationInput]
-
-  Dosage: [FHIRDosageInput]
-}
-
-"""
-FHIRMedicationStatement definition: A record of a medication that is being consumed by a patient. A MedicationStatement may indicate that the patient may be taking the medication now or in the past or in the future.
-"""
-type FHIRMedicationStatement {
-  ID: ID
-
-  Text: FHIRNarrative
-
-  Identifier: [FHIRIdentifier]
-
-  BasedOn: [FHIRReference]
-
-  PartOf: [FHIRReference]
-
-  Status: MedicationStatementStatusEnum
-
-  StatusReason: [FHIRCodeableConcept]
-
-  Category: FHIRCodeableConcept
-
-  MedicationCodeableConcept: FHIRCodeableConcept
-
-  MedicationReference: FHIRMedication
-
-  Subject: FHIRReference
-
-  Context: FHIRReference
-
-  EffectiveDateTime: Date
-
-  EffectivePeriod: FHIRPeriod
-
-  DateAsserted: Date
-
-  InformationSource: FHIRReference
-
-  DerivedFrom: [FHIRReference]
-
-  ReasonCode: [FHIRCodeableConcept]
-
-  ReasonReference: [FHIRReference]
-
-  Note: [FHIRAnnotation]
-
-  Dosage: [FHIRDosage]
-}
-"""
-FHIRMedicationStatementRelayConnection is a Relay connection for MedicationStatement
-"""
-type FHIRMedicationStatementRelayConnection {
-  edges: [FHIRMedicationStatementRelayEdge]
-  pageInfo: PageInfo!
-}
-
-"""
-FHIRMedicationStatementRelayEdge is a Relay edge for MedicationStatement
-"""
-type FHIRMedicationStatementRelayEdge {
-  cursor: String
-  node: FHIRMedicationStatement
-}
-
-"""
-FHIRMedicationStatementRelayPayload is used to return single instances of MedicationStatement
-"""
-type FHIRMedicationStatementRelayPayload {
-  resource: FHIRMedicationStatement
-}
 `, BuiltIn: false},
 	{Name: "../fhir/Organization.graphql", Input: `"""
 FHIROrganizationInput: input for Organization
@@ -9561,2142 +8969,6 @@ func (ec *executionContext) fieldContext_FHIRIdentifier_Assigner(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _FHIRMedication_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_ID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_ID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Text(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Text(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRNarrative)
-	fc.Result = res
-	return ec.marshalOFHIRNarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrative(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRNarrative_ID(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRNarrative_Status(ctx, field)
-			case "Div":
-				return ec.fieldContext_FHIRNarrative_Div(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRNarrative", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Identifier(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Identifier(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Identifier, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRIdentifier)
-	fc.Result = res
-	return ec.marshalOFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifier(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Identifier(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRIdentifier_ID(ctx, field)
-			case "Use":
-				return ec.fieldContext_FHIRIdentifier_Use(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRIdentifier_Type(ctx, field)
-			case "System":
-				return ec.fieldContext_FHIRIdentifier_System(ctx, field)
-			case "Value":
-				return ec.fieldContext_FHIRIdentifier_Value(ctx, field)
-			case "Period":
-				return ec.fieldContext_FHIRIdentifier_Period(ctx, field)
-			case "Assigner":
-				return ec.fieldContext_FHIRIdentifier_Assigner(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRIdentifier", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Code(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Code(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Code, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Status(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Status(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Status, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(domain.MedicationStatusEnum)
-	fc.Result = res
-	return ec.marshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type MedicationStatusEnum does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Manufacturer(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Manufacturer(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Manufacturer, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIROrganization)
-	fc.Result = res
-	return ec.marshalOFHIROrganization2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganization(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Manufacturer(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIROrganization_ID(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIROrganization_Identifier(ctx, field)
-			case "Active":
-				return ec.fieldContext_FHIROrganization_Active(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIROrganization_Type(ctx, field)
-			case "Name":
-				return ec.fieldContext_FHIROrganization_Name(ctx, field)
-			case "Alias":
-				return ec.fieldContext_FHIROrganization_Alias(ctx, field)
-			case "Telecom":
-				return ec.fieldContext_FHIROrganization_Telecom(ctx, field)
-			case "Address":
-				return ec.fieldContext_FHIROrganization_Address(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIROrganization", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Form(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Form(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Form, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Form(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Amount(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Amount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Amount, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRRatio)
-	fc.Result = res
-	return ec.marshalOFHIRRatio2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatio(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Amount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRRatio_ID(ctx, field)
-			case "Numerator":
-				return ec.fieldContext_FHIRRatio_Numerator(ctx, field)
-			case "Denominator":
-				return ec.fieldContext_FHIRRatio_Denominator(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRRatio", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Ingredient(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Ingredient(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Ingredient, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.MedicationIngredient)
-	fc.Result = res
-	return ec.marshalOMedicationIngredient2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Ingredient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ItemCodelabConcept":
-				return ec.fieldContext_MedicationIngredient_ItemCodelabConcept(ctx, field)
-			case "ItemReference":
-				return ec.fieldContext_MedicationIngredient_ItemReference(ctx, field)
-			case "IsActive":
-				return ec.fieldContext_MedicationIngredient_IsActive(ctx, field)
-			case "Strength":
-				return ec.fieldContext_MedicationIngredient_Strength(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MedicationIngredient", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedication_Batch(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedication) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedication_Batch(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Batch, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.MedicationBatch)
-	fc.Result = res
-	return ec.marshalOMedicationBatch2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatch(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedication_Batch(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedication",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "LotNumber":
-				return ec.fieldContext_MedicationBatch_LotNumber(ctx, field)
-			case "ExpirationDate":
-				return ec.fieldContext_MedicationBatch_ExpirationDate(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MedicationBatch", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationRelayConnection_edges(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationRelayConnection_edges(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRMedicationRelayEdge)
-	fc.Result = res
-	return ec.marshalOFHIRMedicationRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationRelayConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationRelayConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "cursor":
-				return ec.fieldContext_FHIRMedicationRelayEdge_cursor(ctx, field)
-			case "node":
-				return ec.fieldContext_FHIRMedicationRelayEdge_node(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedicationRelayEdge", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationRelayConnection_pageInfo(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*firebasetools.PageInfo)
-	fc.Result = res
-	return ec.marshalOPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationRelayConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "hasNextPage":
-				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
-			case "hasPreviousPage":
-				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationRelayEdge_cursor(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationRelayEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationRelayEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationRelayEdge_node(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRMedication)
-	fc.Result = res
-	return ec.marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationRelayEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationRelayEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRMedication_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRMedication_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRMedication_Identifier(ctx, field)
-			case "Code":
-				return ec.fieldContext_FHIRMedication_Code(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRMedication_Status(ctx, field)
-			case "Manufacturer":
-				return ec.fieldContext_FHIRMedication_Manufacturer(ctx, field)
-			case "Form":
-				return ec.fieldContext_FHIRMedication_Form(ctx, field)
-			case "Amount":
-				return ec.fieldContext_FHIRMedication_Amount(ctx, field)
-			case "Ingredient":
-				return ec.fieldContext_FHIRMedication_Ingredient(ctx, field)
-			case "Batch":
-				return ec.fieldContext_FHIRMedication_Batch(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedication", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationRelayPayload_resource(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationRelayPayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationRelayPayload_resource(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Resource, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRMedication)
-	fc.Result = res
-	return ec.marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationRelayPayload_resource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationRelayPayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRMedication_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRMedication_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRMedication_Identifier(ctx, field)
-			case "Code":
-				return ec.fieldContext_FHIRMedication_Code(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRMedication_Status(ctx, field)
-			case "Manufacturer":
-				return ec.fieldContext_FHIRMedication_Manufacturer(ctx, field)
-			case "Form":
-				return ec.fieldContext_FHIRMedication_Form(ctx, field)
-			case "Amount":
-				return ec.fieldContext_FHIRMedication_Amount(ctx, field)
-			case "Ingredient":
-				return ec.fieldContext_FHIRMedication_Ingredient(ctx, field)
-			case "Batch":
-				return ec.fieldContext_FHIRMedication_Batch(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedication", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_ID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_ID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Text(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Text(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRNarrative)
-	fc.Result = res
-	return ec.marshalOFHIRNarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrative(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRNarrative_ID(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRNarrative_Status(ctx, field)
-			case "Div":
-				return ec.fieldContext_FHIRNarrative_Div(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRNarrative", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Identifier(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Identifier(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Identifier, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRIdentifier)
-	fc.Result = res
-	return ec.marshalOFHIRIdentifier2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifier(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Identifier(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRIdentifier_ID(ctx, field)
-			case "Use":
-				return ec.fieldContext_FHIRIdentifier_Use(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRIdentifier_Type(ctx, field)
-			case "System":
-				return ec.fieldContext_FHIRIdentifier_System(ctx, field)
-			case "Value":
-				return ec.fieldContext_FHIRIdentifier_Value(ctx, field)
-			case "Period":
-				return ec.fieldContext_FHIRIdentifier_Period(ctx, field)
-			case "Assigner":
-				return ec.fieldContext_FHIRIdentifier_Assigner(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRIdentifier", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_BasedOn(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_BasedOn(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BasedOn, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_BasedOn(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_PartOf(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_PartOf(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PartOf, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_PartOf(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Status(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Status(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Status, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.MedicationStatementStatusEnum)
-	fc.Result = res
-	return ec.marshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type MedicationStatementStatusEnum does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_StatusReason(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_StatusReason(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.StatusReason, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_StatusReason(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Category(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Category(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Category, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Category(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_MedicationCodeableConcept(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_MedicationCodeableConcept(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.MedicationCodeableConcept, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_MedicationCodeableConcept(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_MedicationReference(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_MedicationReference(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.MedicationReference, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRMedication)
-	fc.Result = res
-	return ec.marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_MedicationReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRMedication_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRMedication_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRMedication_Identifier(ctx, field)
-			case "Code":
-				return ec.fieldContext_FHIRMedication_Code(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRMedication_Status(ctx, field)
-			case "Manufacturer":
-				return ec.fieldContext_FHIRMedication_Manufacturer(ctx, field)
-			case "Form":
-				return ec.fieldContext_FHIRMedication_Form(ctx, field)
-			case "Amount":
-				return ec.fieldContext_FHIRMedication_Amount(ctx, field)
-			case "Ingredient":
-				return ec.fieldContext_FHIRMedication_Ingredient(ctx, field)
-			case "Batch":
-				return ec.fieldContext_FHIRMedication_Batch(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedication", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Subject(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Subject(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Subject, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Subject(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Context(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Context(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Context, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Context(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_EffectiveDateTime(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_EffectiveDateTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.EffectiveDateTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*scalarutils.Date)
-	fc.Result = res
-	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_EffectiveDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Date does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_EffectivePeriod(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_EffectivePeriod(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.EffectivePeriod, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRPeriod)
-	fc.Result = res
-	return ec.marshalOFHIRPeriod2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRPeriod(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_EffectivePeriod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRPeriod_ID(ctx, field)
-			case "Start":
-				return ec.fieldContext_FHIRPeriod_Start(ctx, field)
-			case "End":
-				return ec.fieldContext_FHIRPeriod_End(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRPeriod", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_DateAsserted(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_DateAsserted(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DateAsserted, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*scalarutils.Date)
-	fc.Result = res
-	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_DateAsserted(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Date does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_InformationSource(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_InformationSource(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.InformationSource, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_InformationSource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_DerivedFrom(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_DerivedFrom(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DerivedFrom, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_DerivedFrom(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_ReasonCode(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_ReasonCode(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ReasonCode, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_ReasonCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_ReasonReference(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_ReasonReference(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ReasonReference, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_ReasonReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Note(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Note(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Note, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRAnnotation)
-	fc.Result = res
-	return ec.marshalOFHIRAnnotation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotation(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Note(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRAnnotation_ID(ctx, field)
-			case "AuthorReference":
-				return ec.fieldContext_FHIRAnnotation_AuthorReference(ctx, field)
-			case "AuthorString":
-				return ec.fieldContext_FHIRAnnotation_AuthorString(ctx, field)
-			case "Time":
-				return ec.fieldContext_FHIRAnnotation_Time(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRAnnotation_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRAnnotation", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatement_Dosage(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatement) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatement_Dosage(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Dosage, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRDosage)
-	fc.Result = res
-	return ec.marshalOFHIRDosage2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosage(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatement_Dosage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatement",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRDosage_ID(ctx, field)
-			case "Sequence":
-				return ec.fieldContext_FHIRDosage_Sequence(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRDosage_Text(ctx, field)
-			case "AdditionalInstruction":
-				return ec.fieldContext_FHIRDosage_AdditionalInstruction(ctx, field)
-			case "PatientInstruction":
-				return ec.fieldContext_FHIRDosage_PatientInstruction(ctx, field)
-			case "Timing":
-				return ec.fieldContext_FHIRDosage_Timing(ctx, field)
-			case "AsNeededBoolean":
-				return ec.fieldContext_FHIRDosage_AsNeededBoolean(ctx, field)
-			case "AsNeededCodeableConcept":
-				return ec.fieldContext_FHIRDosage_AsNeededCodeableConcept(ctx, field)
-			case "Site":
-				return ec.fieldContext_FHIRDosage_Site(ctx, field)
-			case "Route":
-				return ec.fieldContext_FHIRDosage_Route(ctx, field)
-			case "Method":
-				return ec.fieldContext_FHIRDosage_Method(ctx, field)
-			case "DoseAndRate":
-				return ec.fieldContext_FHIRDosage_DoseAndRate(ctx, field)
-			case "MaxDosePerPeriod":
-				return ec.fieldContext_FHIRDosage_MaxDosePerPeriod(ctx, field)
-			case "MaxDosePerAdministration":
-				return ec.fieldContext_FHIRDosage_MaxDosePerAdministration(ctx, field)
-			case "MaxDosePerLifetime":
-				return ec.fieldContext_FHIRDosage_MaxDosePerLifetime(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRDosage", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayConnection_edges(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatementRelayConnection_edges(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*domain.FHIRMedicationStatementRelayEdge)
-	fc.Result = res
-	return ec.marshalOFHIRMedicationStatementRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatementRelayConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatementRelayConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "cursor":
-				return ec.fieldContext_FHIRMedicationStatementRelayEdge_cursor(ctx, field)
-			case "node":
-				return ec.fieldContext_FHIRMedicationStatementRelayEdge_node(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedicationStatementRelayEdge", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatementRelayConnection_pageInfo(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*firebasetools.PageInfo)
-	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatementRelayConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatementRelayConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "hasNextPage":
-				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
-			case "hasPreviousPage":
-				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatementRelayEdge_cursor(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatementRelayEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatementRelayEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayEdge_node(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatementRelayEdge_node(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRMedicationStatement)
-	fc.Result = res
-	return ec.marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatementRelayEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatementRelayEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRMedicationStatement_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRMedicationStatement_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRMedicationStatement_Identifier(ctx, field)
-			case "BasedOn":
-				return ec.fieldContext_FHIRMedicationStatement_BasedOn(ctx, field)
-			case "PartOf":
-				return ec.fieldContext_FHIRMedicationStatement_PartOf(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRMedicationStatement_Status(ctx, field)
-			case "StatusReason":
-				return ec.fieldContext_FHIRMedicationStatement_StatusReason(ctx, field)
-			case "Category":
-				return ec.fieldContext_FHIRMedicationStatement_Category(ctx, field)
-			case "MedicationCodeableConcept":
-				return ec.fieldContext_FHIRMedicationStatement_MedicationCodeableConcept(ctx, field)
-			case "MedicationReference":
-				return ec.fieldContext_FHIRMedicationStatement_MedicationReference(ctx, field)
-			case "Subject":
-				return ec.fieldContext_FHIRMedicationStatement_Subject(ctx, field)
-			case "Context":
-				return ec.fieldContext_FHIRMedicationStatement_Context(ctx, field)
-			case "EffectiveDateTime":
-				return ec.fieldContext_FHIRMedicationStatement_EffectiveDateTime(ctx, field)
-			case "EffectivePeriod":
-				return ec.fieldContext_FHIRMedicationStatement_EffectivePeriod(ctx, field)
-			case "DateAsserted":
-				return ec.fieldContext_FHIRMedicationStatement_DateAsserted(ctx, field)
-			case "InformationSource":
-				return ec.fieldContext_FHIRMedicationStatement_InformationSource(ctx, field)
-			case "DerivedFrom":
-				return ec.fieldContext_FHIRMedicationStatement_DerivedFrom(ctx, field)
-			case "ReasonCode":
-				return ec.fieldContext_FHIRMedicationStatement_ReasonCode(ctx, field)
-			case "ReasonReference":
-				return ec.fieldContext_FHIRMedicationStatement_ReasonReference(ctx, field)
-			case "Note":
-				return ec.fieldContext_FHIRMedicationStatement_Note(ctx, field)
-			case "Dosage":
-				return ec.fieldContext_FHIRMedicationStatement_Dosage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedicationStatement", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayPayload_resource(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRMedicationStatementRelayPayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FHIRMedicationStatementRelayPayload_resource(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Resource, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRMedicationStatement)
-	fc.Result = res
-	return ec.marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FHIRMedicationStatementRelayPayload_resource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FHIRMedicationStatementRelayPayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRMedicationStatement_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRMedicationStatement_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRMedicationStatement_Identifier(ctx, field)
-			case "BasedOn":
-				return ec.fieldContext_FHIRMedicationStatement_BasedOn(ctx, field)
-			case "PartOf":
-				return ec.fieldContext_FHIRMedicationStatement_PartOf(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRMedicationStatement_Status(ctx, field)
-			case "StatusReason":
-				return ec.fieldContext_FHIRMedicationStatement_StatusReason(ctx, field)
-			case "Category":
-				return ec.fieldContext_FHIRMedicationStatement_Category(ctx, field)
-			case "MedicationCodeableConcept":
-				return ec.fieldContext_FHIRMedicationStatement_MedicationCodeableConcept(ctx, field)
-			case "MedicationReference":
-				return ec.fieldContext_FHIRMedicationStatement_MedicationReference(ctx, field)
-			case "Subject":
-				return ec.fieldContext_FHIRMedicationStatement_Subject(ctx, field)
-			case "Context":
-				return ec.fieldContext_FHIRMedicationStatement_Context(ctx, field)
-			case "EffectiveDateTime":
-				return ec.fieldContext_FHIRMedicationStatement_EffectiveDateTime(ctx, field)
-			case "EffectivePeriod":
-				return ec.fieldContext_FHIRMedicationStatement_EffectivePeriod(ctx, field)
-			case "DateAsserted":
-				return ec.fieldContext_FHIRMedicationStatement_DateAsserted(ctx, field)
-			case "InformationSource":
-				return ec.fieldContext_FHIRMedicationStatement_InformationSource(ctx, field)
-			case "DerivedFrom":
-				return ec.fieldContext_FHIRMedicationStatement_DerivedFrom(ctx, field)
-			case "ReasonCode":
-				return ec.fieldContext_FHIRMedicationStatement_ReasonCode(ctx, field)
-			case "ReasonReference":
-				return ec.fieldContext_FHIRMedicationStatement_ReasonReference(ctx, field)
-			case "Note":
-				return ec.fieldContext_FHIRMedicationStatement_Note(ctx, field)
-			case "Dosage":
-				return ec.fieldContext_FHIRMedicationStatement_Dosage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedicationStatement", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _FHIRNarrative_ID(ctx context.Context, field graphql.CollectedField, obj *domain.FHIRNarrative) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_FHIRNarrative_ID(ctx, field)
 	if err != nil {
@@ -14814,7 +12086,7 @@ func (ec *executionContext) fieldContext_HealthTimeline_totalCount(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _MedicalData_regimen(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+func (ec *executionContext) _MedicalData_regimen(ctx context.Context, field graphql.CollectedField, obj *dto.MedicalData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MedicalData_regimen(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -14837,9 +12109,9 @@ func (ec *executionContext) _MedicalData_regimen(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*domain.FHIRMedicationStatement)
+	res := resTmp.([]*dto.MedicationStatement)
 	fc.Result = res
-	return ec.marshalOFHIRMedicationStatement2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, field.Selections, res)
+	return ec.marshalOMedicationStatement2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatement(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MedicalData_regimen(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14850,56 +12122,22 @@ func (ec *executionContext) fieldContext_MedicalData_regimen(ctx context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRMedicationStatement_ID(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRMedicationStatement_Text(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRMedicationStatement_Identifier(ctx, field)
-			case "BasedOn":
-				return ec.fieldContext_FHIRMedicationStatement_BasedOn(ctx, field)
-			case "PartOf":
-				return ec.fieldContext_FHIRMedicationStatement_PartOf(ctx, field)
-			case "Status":
-				return ec.fieldContext_FHIRMedicationStatement_Status(ctx, field)
-			case "StatusReason":
-				return ec.fieldContext_FHIRMedicationStatement_StatusReason(ctx, field)
-			case "Category":
-				return ec.fieldContext_FHIRMedicationStatement_Category(ctx, field)
-			case "MedicationCodeableConcept":
-				return ec.fieldContext_FHIRMedicationStatement_MedicationCodeableConcept(ctx, field)
-			case "MedicationReference":
-				return ec.fieldContext_FHIRMedicationStatement_MedicationReference(ctx, field)
-			case "Subject":
-				return ec.fieldContext_FHIRMedicationStatement_Subject(ctx, field)
-			case "Context":
-				return ec.fieldContext_FHIRMedicationStatement_Context(ctx, field)
-			case "EffectiveDateTime":
-				return ec.fieldContext_FHIRMedicationStatement_EffectiveDateTime(ctx, field)
-			case "EffectivePeriod":
-				return ec.fieldContext_FHIRMedicationStatement_EffectivePeriod(ctx, field)
-			case "DateAsserted":
-				return ec.fieldContext_FHIRMedicationStatement_DateAsserted(ctx, field)
-			case "InformationSource":
-				return ec.fieldContext_FHIRMedicationStatement_InformationSource(ctx, field)
-			case "DerivedFrom":
-				return ec.fieldContext_FHIRMedicationStatement_DerivedFrom(ctx, field)
-			case "ReasonCode":
-				return ec.fieldContext_FHIRMedicationStatement_ReasonCode(ctx, field)
-			case "ReasonReference":
-				return ec.fieldContext_FHIRMedicationStatement_ReasonReference(ctx, field)
-			case "Note":
-				return ec.fieldContext_FHIRMedicationStatement_Note(ctx, field)
-			case "Dosage":
-				return ec.fieldContext_FHIRMedicationStatement_Dosage(ctx, field)
+			case "id":
+				return ec.fieldContext_MedicationStatement_id(ctx, field)
+			case "status":
+				return ec.fieldContext_MedicationStatement_status(ctx, field)
+			case "medication":
+				return ec.fieldContext_MedicationStatement_medication(ctx, field)
+			case "patientID":
+				return ec.fieldContext_MedicationStatement_patientID(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRMedicationStatement", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type MedicationStatement", field.Name)
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _MedicalData_allergies(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+func (ec *executionContext) _MedicalData_allergies(ctx context.Context, field graphql.CollectedField, obj *dto.MedicalData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MedicalData_allergies(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -14956,7 +12194,7 @@ func (ec *executionContext) fieldContext_MedicalData_allergies(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _MedicalData_weight(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+func (ec *executionContext) _MedicalData_weight(ctx context.Context, field graphql.CollectedField, obj *dto.MedicalData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MedicalData_weight(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -15011,7 +12249,7 @@ func (ec *executionContext) fieldContext_MedicalData_weight(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _MedicalData_bmi(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+func (ec *executionContext) _MedicalData_bmi(ctx context.Context, field graphql.CollectedField, obj *dto.MedicalData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MedicalData_bmi(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -15066,7 +12304,7 @@ func (ec *executionContext) fieldContext_MedicalData_bmi(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _MedicalData_viralLoad(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+func (ec *executionContext) _MedicalData_viralLoad(ctx context.Context, field graphql.CollectedField, obj *dto.MedicalData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MedicalData_viralLoad(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -15121,7 +12359,7 @@ func (ec *executionContext) fieldContext_MedicalData_viralLoad(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _MedicalData_cd4Count(ctx context.Context, field graphql.CollectedField, obj *domain.MedicalData) (ret graphql.Marshaler) {
+func (ec *executionContext) _MedicalData_cd4Count(ctx context.Context, field graphql.CollectedField, obj *dto.MedicalData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MedicalData_cd4Count(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -15176,8 +12414,8 @@ func (ec *executionContext) fieldContext_MedicalData_cd4Count(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _MedicationBatch_LotNumber(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationBatch) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MedicationBatch_LotNumber(ctx, field)
+func (ec *executionContext) _Medication_name(ctx context.Context, field graphql.CollectedField, obj *dto.Medication) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Medication_name(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -15190,7 +12428,230 @@ func (ec *executionContext) _MedicationBatch_LotNumber(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.LotNumber, nil
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Medication_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Medication",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Medication_code(ctx context.Context, field graphql.CollectedField, obj *dto.Medication) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Medication_code(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Medication_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Medication",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MedicationStatement_id(ctx context.Context, field graphql.CollectedField, obj *dto.MedicationStatement) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MedicationStatement_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MedicationStatement_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MedicationStatement",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MedicationStatement_status(ctx context.Context, field graphql.CollectedField, obj *dto.MedicationStatement) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MedicationStatement_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.MedicationStatementStatusEnum)
+	fc.Result = res
+	return ec.marshalOMedicationStatementStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatementStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MedicationStatement_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MedicationStatement",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type MedicationStatementStatusEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MedicationStatement_medication(ctx context.Context, field graphql.CollectedField, obj *dto.MedicationStatement) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MedicationStatement_medication(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Medication, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(dto.Medication)
+	fc.Result = res
+	return ec.marshalNMedication2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedication(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MedicationStatement_medication(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MedicationStatement",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_Medication_name(ctx, field)
+			case "code":
+				return ec.fieldContext_Medication_code(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Medication", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MedicationStatement_patientID(ctx context.Context, field graphql.CollectedField, obj *dto.MedicationStatement) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MedicationStatement_patientID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PatientID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15204,247 +12665,14 @@ func (ec *executionContext) _MedicationBatch_LotNumber(ctx context.Context, fiel
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_MedicationBatch_LotNumber(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_MedicationStatement_patientID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "MedicationBatch",
+		Object:     "MedicationStatement",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _MedicationBatch_ExpirationDate(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationBatch) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MedicationBatch_ExpirationDate(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ExpirationDate, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*scalarutils.Date)
-	fc.Result = res
-	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_MedicationBatch_ExpirationDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "MedicationBatch",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Date does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _MedicationIngredient_ItemCodelabConcept(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MedicationIngredient_ItemCodelabConcept(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ItemCodelabConcept, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRCodeableConcept)
-	fc.Result = res
-	return ec.marshalOFHIRCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_MedicationIngredient_ItemCodelabConcept(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "MedicationIngredient",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRCodeableConcept_ID(ctx, field)
-			case "Coding":
-				return ec.fieldContext_FHIRCodeableConcept_Coding(ctx, field)
-			case "Text":
-				return ec.fieldContext_FHIRCodeableConcept_Text(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRCodeableConcept", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _MedicationIngredient_ItemReference(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MedicationIngredient_ItemReference(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ItemReference, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRReference)
-	fc.Result = res
-	return ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_MedicationIngredient_ItemReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "MedicationIngredient",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRReference_ID(ctx, field)
-			case "Reference":
-				return ec.fieldContext_FHIRReference_Reference(ctx, field)
-			case "Type":
-				return ec.fieldContext_FHIRReference_Type(ctx, field)
-			case "Identifier":
-				return ec.fieldContext_FHIRReference_Identifier(ctx, field)
-			case "Display":
-				return ec.fieldContext_FHIRReference_Display(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRReference", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _MedicationIngredient_IsActive(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MedicationIngredient_IsActive(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.IsActive, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_MedicationIngredient_IsActive(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "MedicationIngredient",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _MedicationIngredient_Strength(ctx context.Context, field graphql.CollectedField, obj *domain.MedicationIngredient) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MedicationIngredient_Strength(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Strength, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIRRatio)
-	fc.Result = res
-	return ec.marshalOFHIRRatio2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatio(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_MedicationIngredient_Strength(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "MedicationIngredient",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "ID":
-				return ec.fieldContext_FHIRRatio_ID(ctx, field)
-			case "Numerator":
-				return ec.fieldContext_FHIRRatio_Numerator(ctx, field)
-			case "Denominator":
-				return ec.fieldContext_FHIRRatio_Denominator(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIRRatio", field.Name)
 		},
 	}
 	return fc, nil
@@ -16658,9 +13886,9 @@ func (ec *executionContext) _Query_getMedicalData(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*domain.MedicalData)
+	res := resTmp.(*dto.MedicalData)
 	fc.Result = res
-	return ec.marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicalData(ctx, field.Selections, res)
+	return ec.marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicalData(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getMedicalData(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20056,294 +17284,6 @@ func (ec *executionContext) unmarshalInputFHIRIdentifierInput(ctx context.Contex
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFHIRMedicationInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationInput, error) {
-	var it domain.FHIRMedicationInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"ID", "Text", "Identifier", "Code", "Status", "Manufacturer", "Form", "Amount", "Ingredient", "Batch"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Text":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
-			it.Text, err = ec.unmarshalOFHIRNarrativeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrativeInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Identifier":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
-			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifierInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Code":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
-			it.Code, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Status":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
-			it.Status, err = ec.unmarshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Manufacturer":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Manufacturer"))
-			it.Manufacturer, err = ec.unmarshalOFHIROrganizationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Form":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Form"))
-			it.Form, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Amount":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Amount"))
-			it.Amount, err = ec.unmarshalOFHIRRatioInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatioInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Ingredient":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Ingredient"))
-			it.Ingredient, err = ec.unmarshalOMedicationIngredientInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Batch":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Batch"))
-			it.Batch, err = ec.unmarshalOMedicationBatchInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatchInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFHIRMedicationStatementInput(ctx context.Context, obj interface{}) (domain.FHIRMedicationStatementInput, error) {
-	var it domain.FHIRMedicationStatementInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"ID", "Text", "Identifier", "BasedOn", "PartOf", "Status", "StatusReason", "Category", "MedicationCodeableConcept", "MedicationReference", "Subject", "Context", "EffectiveDateTime", "EffectivePeriod", "DateAsserted", "InformationSource", "DerivedFrom", "ReasonCode", "ReasonReference", "Note", "Dosage"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "ID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Text":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
-			it.Text, err = ec.unmarshalOFHIRNarrativeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrativeInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Identifier":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Identifier"))
-			it.Identifier, err = ec.unmarshalOFHIRIdentifierInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRIdentifierInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "BasedOn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BasedOn"))
-			it.BasedOn, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "PartOf":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PartOf"))
-			it.PartOf, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Status":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
-			it.Status, err = ec.unmarshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "StatusReason":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("StatusReason"))
-			it.StatusReason, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Category":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
-			it.Category, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "MedicationCodeableConcept":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MedicationCodeableConcept"))
-			it.MedicationCodeableConcept, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "MedicationReference":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("MedicationReference"))
-			it.MedicationReference, err = ec.unmarshalOFHIRMedicationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Subject":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Subject"))
-			it.Subject, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Context":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Context"))
-			it.Context, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "EffectiveDateTime":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectiveDateTime"))
-			it.EffectiveDateTime, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "EffectivePeriod":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EffectivePeriod"))
-			it.EffectivePeriod, err = ec.unmarshalOFHIRPeriodInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRPeriodInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "DateAsserted":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DateAsserted"))
-			it.DateAsserted, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "InformationSource":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InformationSource"))
-			it.InformationSource, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "DerivedFrom":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DerivedFrom"))
-			it.DerivedFrom, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ReasonCode":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonCode"))
-			it.ReasonCode, err = ec.unmarshalOFHIRCodeableConceptInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ReasonReference":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReasonReference"))
-			it.ReasonReference, err = ec.unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Note":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Note"))
-			it.Note, err = ec.unmarshalOFHIRAnnotationInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotationInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Dosage":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Dosage"))
-			it.Dosage, err = ec.unmarshalOFHIRDosageInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosageInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputFHIRNarrativeInput(ctx context.Context, obj interface{}) (domain.FHIRNarrativeInput, error) {
 	var it domain.FHIRNarrativeInput
 	asMap := map[string]interface{}{}
@@ -21067,94 +18007,6 @@ func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Contex
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
 			it.Limit, err = ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputMedicationBatchInput(ctx context.Context, obj interface{}) (domain.MedicationBatchInput, error) {
-	var it domain.MedicationBatchInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"LotNumber", "ExpirationDate"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "LotNumber":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LotNumber"))
-			it.LotNumber, err = ec.unmarshalOString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ExpirationDate":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExpirationDate"))
-			it.ExpirationDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputMedicationIngredientInput(ctx context.Context, obj interface{}) (domain.MedicationIngredientInput, error) {
-	var it domain.MedicationIngredientInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"ItemCodelabConcept", "ItemReference", "IsActive", "Strength"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "ItemCodelabConcept":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ItemCodelabConcept"))
-			it.ItemCodelabConcept, err = ec.unmarshalOFHIRCodeableConceptInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConceptInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ItemReference":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ItemReference"))
-			it.ItemReference, err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "IsActive":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsActive"))
-			it.IsActive, err = ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Strength":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Strength"))
-			it.Strength, err = ec.unmarshalOFHIRRatioInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRRatioInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -21998,341 +18850,6 @@ func (ec *executionContext) _FHIRIdentifier(ctx context.Context, sel ast.Selecti
 	return out
 }
 
-var fHIRMedicationImplementors = []string{"FHIRMedication"}
-
-func (ec *executionContext) _FHIRMedication(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedication) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedication")
-		case "ID":
-
-			out.Values[i] = ec._FHIRMedication_ID(ctx, field, obj)
-
-		case "Text":
-
-			out.Values[i] = ec._FHIRMedication_Text(ctx, field, obj)
-
-		case "Identifier":
-
-			out.Values[i] = ec._FHIRMedication_Identifier(ctx, field, obj)
-
-		case "Code":
-
-			out.Values[i] = ec._FHIRMedication_Code(ctx, field, obj)
-
-		case "Status":
-
-			out.Values[i] = ec._FHIRMedication_Status(ctx, field, obj)
-
-		case "Manufacturer":
-
-			out.Values[i] = ec._FHIRMedication_Manufacturer(ctx, field, obj)
-
-		case "Form":
-
-			out.Values[i] = ec._FHIRMedication_Form(ctx, field, obj)
-
-		case "Amount":
-
-			out.Values[i] = ec._FHIRMedication_Amount(ctx, field, obj)
-
-		case "Ingredient":
-
-			out.Values[i] = ec._FHIRMedication_Ingredient(ctx, field, obj)
-
-		case "Batch":
-
-			out.Values[i] = ec._FHIRMedication_Batch(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMedicationRelayConnectionImplementors = []string{"FHIRMedicationRelayConnection"}
-
-func (ec *executionContext) _FHIRMedicationRelayConnection(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationRelayConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationRelayConnectionImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedicationRelayConnection")
-		case "edges":
-
-			out.Values[i] = ec._FHIRMedicationRelayConnection_edges(ctx, field, obj)
-
-		case "pageInfo":
-
-			out.Values[i] = ec._FHIRMedicationRelayConnection_pageInfo(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMedicationRelayEdgeImplementors = []string{"FHIRMedicationRelayEdge"}
-
-func (ec *executionContext) _FHIRMedicationRelayEdge(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationRelayEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationRelayEdgeImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedicationRelayEdge")
-		case "cursor":
-
-			out.Values[i] = ec._FHIRMedicationRelayEdge_cursor(ctx, field, obj)
-
-		case "node":
-
-			out.Values[i] = ec._FHIRMedicationRelayEdge_node(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMedicationRelayPayloadImplementors = []string{"FHIRMedicationRelayPayload"}
-
-func (ec *executionContext) _FHIRMedicationRelayPayload(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationRelayPayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationRelayPayloadImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedicationRelayPayload")
-		case "resource":
-
-			out.Values[i] = ec._FHIRMedicationRelayPayload_resource(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMedicationStatementImplementors = []string{"FHIRMedicationStatement"}
-
-func (ec *executionContext) _FHIRMedicationStatement(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatement) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedicationStatement")
-		case "ID":
-
-			out.Values[i] = ec._FHIRMedicationStatement_ID(ctx, field, obj)
-
-		case "Text":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Text(ctx, field, obj)
-
-		case "Identifier":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Identifier(ctx, field, obj)
-
-		case "BasedOn":
-
-			out.Values[i] = ec._FHIRMedicationStatement_BasedOn(ctx, field, obj)
-
-		case "PartOf":
-
-			out.Values[i] = ec._FHIRMedicationStatement_PartOf(ctx, field, obj)
-
-		case "Status":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Status(ctx, field, obj)
-
-		case "StatusReason":
-
-			out.Values[i] = ec._FHIRMedicationStatement_StatusReason(ctx, field, obj)
-
-		case "Category":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Category(ctx, field, obj)
-
-		case "MedicationCodeableConcept":
-
-			out.Values[i] = ec._FHIRMedicationStatement_MedicationCodeableConcept(ctx, field, obj)
-
-		case "MedicationReference":
-
-			out.Values[i] = ec._FHIRMedicationStatement_MedicationReference(ctx, field, obj)
-
-		case "Subject":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Subject(ctx, field, obj)
-
-		case "Context":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Context(ctx, field, obj)
-
-		case "EffectiveDateTime":
-
-			out.Values[i] = ec._FHIRMedicationStatement_EffectiveDateTime(ctx, field, obj)
-
-		case "EffectivePeriod":
-
-			out.Values[i] = ec._FHIRMedicationStatement_EffectivePeriod(ctx, field, obj)
-
-		case "DateAsserted":
-
-			out.Values[i] = ec._FHIRMedicationStatement_DateAsserted(ctx, field, obj)
-
-		case "InformationSource":
-
-			out.Values[i] = ec._FHIRMedicationStatement_InformationSource(ctx, field, obj)
-
-		case "DerivedFrom":
-
-			out.Values[i] = ec._FHIRMedicationStatement_DerivedFrom(ctx, field, obj)
-
-		case "ReasonCode":
-
-			out.Values[i] = ec._FHIRMedicationStatement_ReasonCode(ctx, field, obj)
-
-		case "ReasonReference":
-
-			out.Values[i] = ec._FHIRMedicationStatement_ReasonReference(ctx, field, obj)
-
-		case "Note":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Note(ctx, field, obj)
-
-		case "Dosage":
-
-			out.Values[i] = ec._FHIRMedicationStatement_Dosage(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMedicationStatementRelayConnectionImplementors = []string{"FHIRMedicationStatementRelayConnection"}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayConnection(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatementRelayConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementRelayConnectionImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedicationStatementRelayConnection")
-		case "edges":
-
-			out.Values[i] = ec._FHIRMedicationStatementRelayConnection_edges(ctx, field, obj)
-
-		case "pageInfo":
-
-			out.Values[i] = ec._FHIRMedicationStatementRelayConnection_pageInfo(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMedicationStatementRelayEdgeImplementors = []string{"FHIRMedicationStatementRelayEdge"}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayEdge(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatementRelayEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementRelayEdgeImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedicationStatementRelayEdge")
-		case "cursor":
-
-			out.Values[i] = ec._FHIRMedicationStatementRelayEdge_cursor(ctx, field, obj)
-
-		case "node":
-
-			out.Values[i] = ec._FHIRMedicationStatementRelayEdge_node(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var fHIRMedicationStatementRelayPayloadImplementors = []string{"FHIRMedicationStatementRelayPayload"}
-
-func (ec *executionContext) _FHIRMedicationStatementRelayPayload(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRMedicationStatementRelayPayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, fHIRMedicationStatementRelayPayloadImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FHIRMedicationStatementRelayPayload")
-		case "resource":
-
-			out.Values[i] = ec._FHIRMedicationStatementRelayPayload_resource(ctx, field, obj)
-
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var fHIRNarrativeImplementors = []string{"FHIRNarrative"}
 
 func (ec *executionContext) _FHIRNarrative(ctx context.Context, sel ast.SelectionSet, obj *domain.FHIRNarrative) graphql.Marshaler {
@@ -22952,7 +19469,7 @@ func (ec *executionContext) _HealthTimeline(ctx context.Context, sel ast.Selecti
 
 var medicalDataImplementors = []string{"MedicalData"}
 
-func (ec *executionContext) _MedicalData(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicalData) graphql.Marshaler {
+func (ec *executionContext) _MedicalData(ctx context.Context, sel ast.SelectionSet, obj *dto.MedicalData) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, medicalDataImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
@@ -22995,24 +19512,30 @@ func (ec *executionContext) _MedicalData(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
-var medicationBatchImplementors = []string{"MedicationBatch"}
+var medicationImplementors = []string{"Medication"}
 
-func (ec *executionContext) _MedicationBatch(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicationBatch) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, medicationBatchImplementors)
+func (ec *executionContext) _Medication(ctx context.Context, sel ast.SelectionSet, obj *dto.Medication) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, medicationImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("MedicationBatch")
-		case "LotNumber":
+			out.Values[i] = graphql.MarshalString("Medication")
+		case "name":
 
-			out.Values[i] = ec._MedicationBatch_LotNumber(ctx, field, obj)
+			out.Values[i] = ec._Medication_name(ctx, field, obj)
 
-		case "ExpirationDate":
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "code":
 
-			out.Values[i] = ec._MedicationBatch_ExpirationDate(ctx, field, obj)
+			out.Values[i] = ec._Medication_code(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23024,31 +19547,37 @@ func (ec *executionContext) _MedicationBatch(ctx context.Context, sel ast.Select
 	return out
 }
 
-var medicationIngredientImplementors = []string{"MedicationIngredient"}
+var medicationStatementImplementors = []string{"MedicationStatement"}
 
-func (ec *executionContext) _MedicationIngredient(ctx context.Context, sel ast.SelectionSet, obj *domain.MedicationIngredient) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, medicationIngredientImplementors)
+func (ec *executionContext) _MedicationStatement(ctx context.Context, sel ast.SelectionSet, obj *dto.MedicationStatement) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, medicationStatementImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("MedicationIngredient")
-		case "ItemCodelabConcept":
+			out.Values[i] = graphql.MarshalString("MedicationStatement")
+		case "id":
 
-			out.Values[i] = ec._MedicationIngredient_ItemCodelabConcept(ctx, field, obj)
+			out.Values[i] = ec._MedicationStatement_id(ctx, field, obj)
 
-		case "ItemReference":
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "status":
 
-			out.Values[i] = ec._MedicationIngredient_ItemReference(ctx, field, obj)
+			out.Values[i] = ec._MedicationStatement_status(ctx, field, obj)
 
-		case "IsActive":
+		case "medication":
 
-			out.Values[i] = ec._MedicationIngredient_IsActive(ctx, field, obj)
+			out.Values[i] = ec._MedicationStatement_medication(ctx, field, obj)
 
-		case "Strength":
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "patientID":
 
-			out.Values[i] = ec._MedicationIngredient_Strength(ctx, field, obj)
+			out.Values[i] = ec._MedicationStatement_patientID(ctx, field, obj)
 
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -24165,6 +20694,10 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) marshalNMedication2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedication(ctx context.Context, sel ast.SelectionSet, v dto.Medication) graphql.Marshaler {
+	return ec._Medication(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNObservation2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx context.Context, sel ast.SelectionSet, v dto.Observation) graphql.Marshaler {
 	return ec._Observation(ctx, sel, &v)
 }
@@ -24788,22 +21321,6 @@ func (ec *executionContext) marshalODate2githubᚗcomᚋsavannahghiᚋscalarutil
 	return v
 }
 
-func (ec *executionContext) unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (*scalarutils.Date, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(scalarutils.Date)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Date) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
 func (ec *executionContext) unmarshalODateTime2ᚕᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx context.Context, v interface{}) ([]*scalarutils.DateTime, error) {
 	if v == nil {
 		return nil, nil
@@ -24989,82 +21506,6 @@ func (ec *executionContext) unmarshalOFHIRAddressInput2ᚖgithubᚗcomᚋsavanna
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOFHIRAnnotation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotation(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRAnnotation) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRAnnotation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotation(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRAnnotation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotation(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRAnnotation) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRAnnotation(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotationInput(ctx context.Context, v interface{}) ([]*domain.FHIRAnnotationInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*domain.FHIRAnnotationInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRAnnotationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotationInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOFHIRAnnotationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRAnnotationInput(ctx context.Context, v interface{}) (*domain.FHIRAnnotationInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRAnnotationInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalOFHIRCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRCodeableConcept(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRCodeableConcept) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -25217,54 +21658,6 @@ func (ec *executionContext) unmarshalOFHIRContactPointInput2ᚖgithubᚗcomᚋsa
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOFHIRDosage2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosage(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRDosage) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRDosage2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosage(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRDosage2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosage(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRDosage) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRDosage(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalOFHIRDosageDoseandrate2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosageDoseandrate(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRDosageDoseandrate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -25338,34 +21731,6 @@ func (ec *executionContext) unmarshalOFHIRDosageDoseandrateInput2ᚖgithubᚗcom
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFHIRDosageDoseandrateInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOFHIRDosageInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosageInput(ctx context.Context, v interface{}) ([]*domain.FHIRDosageInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*domain.FHIRDosageInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRDosageInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosageInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOFHIRDosageInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRDosageInput(ctx context.Context, v interface{}) (*domain.FHIRDosageInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRDosageInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -25460,193 +21825,11 @@ func (ec *executionContext) unmarshalOFHIRIdentifierInput2ᚖgithubᚗcomᚋsava
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOFHIRMedication2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedication(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedication) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRMedication(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRMedicationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationInput(ctx context.Context, v interface{}) (*domain.FHIRMedicationInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRMedicationInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOFHIRMedicationRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRMedicationRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRMedicationRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRMedicationRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationRelayEdge(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRMedicationRelayEdge(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRMedicationStatement2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRMedicationStatement) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatement(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationStatement) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRMedicationStatement(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRMedicationStatementRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRMedicationStatementRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRMedicationStatementRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOFHIRMedicationStatementRelayEdge2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRMedicationStatementRelayEdge(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRMedicationStatementRelayEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRMedicationStatementRelayEdge(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFHIRNarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrative(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRNarrative) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FHIRNarrative(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRNarrativeInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRNarrativeInput(ctx context.Context, v interface{}) (*domain.FHIRNarrativeInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIRNarrativeInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalOFHIROrganization2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganization(ctx context.Context, sel ast.SelectionSet, v *domain.FHIROrganization) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._FHIROrganization(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIROrganizationInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx context.Context, v interface{}) (*domain.FHIROrganizationInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFHIROrganizationInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOFHIROrganizationRelayEdge2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationRelayEdge(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIROrganizationRelayEdge) graphql.Marshaler {
@@ -25762,72 +21945,11 @@ func (ec *executionContext) unmarshalOFHIRRatioInput2ᚖgithubᚗcomᚋsavannahg
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOFHIRReference2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx context.Context, sel ast.SelectionSet, v []*domain.FHIRReference) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
 func (ec *executionContext) marshalOFHIRReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReference(ctx context.Context, sel ast.SelectionSet, v *domain.FHIRReference) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._FHIRReference(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFHIRReferenceInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx context.Context, v interface{}) ([]*domain.FHIRReferenceInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*domain.FHIRReferenceInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
 }
 
 func (ec *executionContext) unmarshalOFHIRReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRReferenceInput(ctx context.Context, v interface{}) (*domain.FHIRReferenceInput, error) {
@@ -25948,29 +22070,14 @@ func (ec *executionContext) marshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋsca
 	return v
 }
 
-func (ec *executionContext) marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicalData(ctx context.Context, sel ast.SelectionSet, v *domain.MedicalData) graphql.Marshaler {
+func (ec *executionContext) marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicalData(ctx context.Context, sel ast.SelectionSet, v *dto.MedicalData) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MedicalData(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMedicationBatch2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatch(ctx context.Context, sel ast.SelectionSet, v *domain.MedicationBatch) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._MedicationBatch(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOMedicationBatchInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationBatchInput(ctx context.Context, v interface{}) (*domain.MedicationBatchInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputMedicationBatchInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOMedicationIngredient2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx context.Context, sel ast.SelectionSet, v []*domain.MedicationIngredient) graphql.Marshaler {
+func (ec *executionContext) marshalOMedicationStatement2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatement(ctx context.Context, sel ast.SelectionSet, v []*dto.MedicationStatement) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -25997,7 +22104,7 @@ func (ec *executionContext) marshalOMedicationIngredient2ᚕᚖgithubᚗcomᚋsa
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMedicationIngredient2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx, sel, v[i])
+			ret[i] = ec.marshalOMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatement(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -26011,65 +22118,22 @@ func (ec *executionContext) marshalOMedicationIngredient2ᚕᚖgithubᚗcomᚋsa
 	return ret
 }
 
-func (ec *executionContext) marshalOMedicationIngredient2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredient(ctx context.Context, sel ast.SelectionSet, v *domain.MedicationIngredient) graphql.Marshaler {
+func (ec *executionContext) marshalOMedicationStatement2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatement(ctx context.Context, sel ast.SelectionSet, v *dto.MedicationStatement) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._MedicationIngredient(ctx, sel, v)
+	return ec._MedicationStatement(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMedicationIngredientInput2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx context.Context, v interface{}) ([]*domain.MedicationIngredientInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*domain.MedicationIngredientInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOMedicationIngredientInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOMedicationIngredientInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationIngredientInput(ctx context.Context, v interface{}) (*domain.MedicationIngredientInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputMedicationIngredientInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx context.Context, v interface{}) (*domain.MedicationStatementStatusEnum, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(domain.MedicationStatementStatusEnum)
-	err := res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalOMedicationStatementStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatementStatusEnum(ctx context.Context, v interface{}) (dto.MedicationStatementStatusEnum, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.MedicationStatementStatusEnum(tmp)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMedicationStatementStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatementStatusEnum(ctx context.Context, sel ast.SelectionSet, v *domain.MedicationStatementStatusEnum) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx context.Context, v interface{}) (domain.MedicationStatusEnum, error) {
-	var res domain.MedicationStatusEnum
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOMedicationStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐMedicationStatusEnum(ctx context.Context, sel ast.SelectionSet, v domain.MedicationStatusEnum) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalOMedicationStatementStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatementStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.MedicationStatementStatusEnum) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	return res
 }
 
 func (ec *executionContext) unmarshalONarrativeStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐNarrativeStatusEnum(ctx context.Context, v interface{}) (*domain.NarrativeStatusEnum, error) {
@@ -26134,13 +22198,6 @@ func (ec *executionContext) marshalOObservation2ᚖgithubᚗcomᚋsavannahghiᚋ
 		return graphql.Null
 	}
 	return ec._Observation(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOPageInfo2ᚖgithubᚗcomᚋsavannahghiᚋfirebasetoolsᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *firebasetools.PageInfo) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._PageInfo(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOPositiveInt2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

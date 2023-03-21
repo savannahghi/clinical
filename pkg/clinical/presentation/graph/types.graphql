@@ -17,8 +17,23 @@ type Observation {
   value: String!
 }
 
+type Medication {
+  name: String!
+  code: String!
+}
+
+type MedicationStatement {
+  id: ID!
+
+  status: MedicationStatementStatusEnum
+
+  medication: Medication!
+
+  patientID: String
+}
+
 type MedicalData {
-  regimen: [FHIRMedicationStatement]
+  regimen: [MedicationStatement]
   allergies: [AllergyIntolerance]
   weight: [Observation]
   bmi: [Observation]

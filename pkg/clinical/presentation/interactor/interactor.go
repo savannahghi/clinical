@@ -13,7 +13,7 @@ import (
 type Clinical interface {
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
-	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
+	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
 }
 
 // Usecases is an interface that combines of all usescases

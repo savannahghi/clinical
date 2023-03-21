@@ -3,17 +3,12 @@ package clinical
 import (
 	"context"
 	"fmt"
-	"sync"
 
-	linq "github.com/ahmetb/go-linq/v3"
-	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
-	"github.com/savannahghi/scalarutils"
-	log "github.com/sirupsen/logrus"
 )
 
 // UseCasesClinicalImpl represents the patient usecase implementation
@@ -28,218 +23,11 @@ func NewUseCasesClinicalImpl(infra infrastructure.Infrastructure) *UseCasesClini
 	}
 }
 
-// PatientTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
-// The timeline consists of Allergies, Observations, Medication statement and Test results
-func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID string) ([]dto.TimelineResource, error) {
-	_, err := uuid.Parse(patientID)
-	if err != nil {
-		return nil, fmt.Errorf("invalid patient id: %s", patientID)
-	}
-
-	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
-	}
-
-	timeline := []dto.TimelineResource{}
-	wg := &sync.WaitGroup{}
-	mut := &sync.Mutex{}
-
-	patientFilterParams := map[string]interface{}{
-		"patient": fmt.Sprintf("Patient/%v", patientID),
-	}
-
-	// timelineResourceFunc is a go routine that fetches particular FHIR resource and
-	// adds it to the timeline
-	type timelineResourceFunc func(wg *sync.WaitGroup, mut *sync.Mutex)
-
-	allergyIntoleranceResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
-		defer wg.Done()
-
-		conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, patientFilterParams, *identifiers)
-		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("AllergyIntolerance search error: %v", err)
-
-			return
-		}
-
-		for _, edge := range conn.Edges {
-			if edge.Node == nil {
-				continue
-			}
-
-			if edge.Node.ID == nil {
-				continue
-			}
-
-			if edge.Node.Code == nil {
-				continue
-			}
-
-			if edge.Node.Reaction == nil && len(edge.Node.Reaction) < 1 {
-				continue
-			}
-
-			if edge.Node.Reaction[0].Manifestation == nil && len(edge.Node.Reaction[0].Manifestation) < 1 {
-				continue
-			}
-
-			if edge.Node.RecordedDate == nil {
-				continue
-			}
-
-			timelineResource := dto.TimelineResource{
-				ID:           *edge.Node.ID,
-				ResourceType: dto.ResourceTypeAllergyIntolerance,
-				Name:         edge.Node.Code.Text,
-				Value:        edge.Node.Reaction[0].Manifestation[0].Text,
-				Status:       edge.Node.ClinicalStatus.Text,
-				Date:         *edge.Node.RecordedDate,
-			}
-
-			mut.Lock()
-			timeline = append(timeline, timelineResource)
-			mut.Unlock()
-		}
-	}
-
-	observationResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
-		defer wg.Done()
-
-		conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, patientFilterParams, *identifiers)
-		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("Observation search error: %v", err)
-
-			return
-		}
-
-		for _, edge := range conn.Edges {
-			if edge.Node == nil {
-				continue
-			}
-
-			if edge.Node.ID == nil {
-				continue
-			}
-
-			if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
-				continue
-			}
-
-			if edge.Node.EffectiveDateTime == nil {
-				continue
-			}
-
-			instant := edge.Node.EffectiveDateTime.AsTime()
-			date, err := scalarutils.NewDate(instant.Day(), int(instant.Month()), instant.Year())
-
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				log.Errorf("date conversion error: %v", err)
-
-				return
-			}
-
-			timelineResource := dto.TimelineResource{
-				ID:           *edge.Node.ID,
-				ResourceType: dto.ResourceTypeObservation,
-				Name:         edge.Node.Code.Text,
-				Value:        edge.Node.Code.Coding[0].Display,
-				Status:       string(*edge.Node.Status),
-				Date:         *date,
-			}
-
-			mut.Lock()
-			timeline = append(timeline, timelineResource)
-			mut.Unlock()
-		}
-	}
-
-	medicationStatementResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
-		defer wg.Done()
-
-		conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, patientFilterParams, *identifiers)
-		if err != nil {
-			utils.ReportErrorToSentry(err)
-			log.Errorf("MedicationStatement search error: %v", err)
-
-			return
-		}
-
-		for _, edge := range conn.Edges {
-			if edge.Node == nil {
-				continue
-			}
-
-			if edge.Node.ID == nil {
-				continue
-			}
-
-			if edge.Node.MedicationCodeableConcept == nil {
-				continue
-			}
-
-			if edge.Node.MedicationCodeableConcept.Coding == nil && len(edge.Node.MedicationCodeableConcept.Coding) < 1 {
-				continue
-			}
-
-			if edge.Node.Status == nil {
-				continue
-			}
-
-			if edge.Node.EffectiveDateTime == nil {
-				continue
-			}
-
-			instant := edge.Node.EffectiveDateTime.AsTime()
-			date, err := scalarutils.NewDate(instant.Day(), int(instant.Month()), instant.Year())
-
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				log.Errorf("date conversion error: %v", err)
-
-				return
-			}
-
-			timelineResource := dto.TimelineResource{
-				ID:           *edge.Node.ID,
-				ResourceType: dto.ResourceTypeMedicationStatement,
-				Name:         edge.Node.Subject.Display,
-				Value:        edge.Node.MedicationCodeableConcept.Coding[0].Display,
-				Status:       string(*edge.Node.Status),
-				Date:         *date,
-			}
-
-			mut.Lock()
-			timeline = append(timeline, timelineResource)
-			mut.Unlock()
-		}
-	}
-
-	resources := []timelineResourceFunc{
-		allergyIntoleranceResourceFunc,
-		observationResourceFunc,
-		medicationStatementResourceFunc,
-	}
-
-	for _, resource := range resources {
-		wg.Add(1)
-
-		go resource(wg, mut)
-	}
-
-	wg.Wait()
-
-	return timeline, nil
-}
-
 // GetMedicalData returns a limited subset of specific medical data that for a specific patient
 // These include: Allergies, Viral Load, Body Mass Index, Weight, CD4 Count using their respective OCL CIEL Terminology
 // For each category the latest three records are fetched
-func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error) {
-	data := &domain.MedicalData{}
+func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error) {
+	data := &dto.MedicalData{}
 
 	filterParams := map[string]interface{}{
 		"patient": fmt.Sprintf("Patient/%v", patientID),
@@ -275,7 +63,27 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				data.Regimen = append(data.Regimen, edge.Node)
+				if edge.Node.ID == nil {
+					continue
+				}
+
+				if edge.Node.Status == nil {
+					continue
+				}
+
+				if edge.Node.MedicationCodeableConcept.Coding == nil {
+					continue
+				}
+
+				if len(edge.Node.MedicationCodeableConcept.Coding) < 1 {
+					continue
+				}
+
+				if edge.Node.Subject.ID == nil {
+					continue
+				}
+
+				data.Regimen = append(data.Regimen, mapFHIRMedicationStatementToMedicationStatementDTO(edge.Node))
 			}
 		case "AllergyIntolerance":
 			conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, filterParams, *identifiers)
@@ -313,16 +121,15 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+				if edge.Node.Code.Coding == nil {
+					continue
+				}
+
+				if len(edge.Node.Code.Coding) < 1 {
 					continue
 				}
 
 				data.Allergies = append(data.Allergies, mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(edge.Node))
-			}
-
-			if err != nil {
-				utils.ReportErrorToSentry(fmt.Errorf("failed to convert substance code to int: %w", err))
-				return nil, fmt.Errorf("failed to convert substance code to int: %w", err)
 			}
 
 		case "Weight":
@@ -339,7 +146,11 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+				if edge.Node.Code.Coding == nil {
+					continue
+				}
+
+				if len(edge.Node.Code.Coding) < 1 {
 					continue
 				}
 
@@ -364,7 +175,11 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+				if edge.Node.Code.Coding == nil {
+					continue
+				}
+
+				if len(edge.Node.Code.Coding) < 1 {
 					continue
 				}
 
@@ -389,7 +204,11 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+				if edge.Node.Code.Coding == nil {
+					continue
+				}
+
+				if len(edge.Node.Code.Coding) < 1 {
 					continue
 				}
 
@@ -414,7 +233,11 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+				if edge.Node.Code.Coding == nil {
+					continue
+				}
+
+				if len(edge.Node.Code.Coding) < 1 {
 					continue
 				}
 
@@ -428,6 +251,18 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 	}
 
 	return data, nil
+}
+
+func mapFHIRMedicationStatementToMedicationStatementDTO(fhirAllergyIntolerance *domain.FHIRMedicationStatement) *dto.MedicationStatement {
+	return &dto.MedicationStatement{
+		ID:     *fhirAllergyIntolerance.ID,
+		Status: dto.MedicationStatementStatusEnum(*fhirAllergyIntolerance.Status),
+		Medication: dto.Medication{
+			Name: fhirAllergyIntolerance.MedicationCodeableConcept.Coding[0].Display,
+			Code: string(fhirAllergyIntolerance.MedicationCodeableConcept.Coding[0].Code),
+		},
+		PatientID: *fhirAllergyIntolerance.Subject.ID,
+	}
 }
 
 func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *domain.FHIRAllergyIntolerance) *dto.AllergyIntolerance {
@@ -497,36 +332,6 @@ func mapFHIRObservationToObservationDTO(fhirObservation *domain.FHIRObservation)
 		PatientID:   *fhirObservation.Subject.ID,
 		EncounterID: *fhirObservation.Encounter.ID,
 	}
-}
-
-// PatientHealthTimeline return's the patient's historical timeline sorted in descending order i.e when it was first recorded
-// The timeline consists of Allergies, Observations, Medication statement and Test results
-func (c *UseCasesClinicalImpl) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
-	records, err := c.PatientTimeline(ctx, input.PatientID)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("cannot retrieve patient timeline error: %w", err)
-	}
-
-	data := &dto.HealthTimeline{}
-	timeline := []dto.TimelineResource{}
-
-	sortFunc := func(i, j interface{}) bool {
-		itemI := i.(dto.TimelineResource)
-		timeI := itemI.Date.AsTime()
-
-		itemJ := j.(dto.TimelineResource)
-		timeJ := itemJ.Date.AsTime()
-
-		return timeI.After(timeJ)
-	}
-
-	linq.From(records).Sort(sortFunc).Skip(input.Offset).Take(input.Limit).ToSlice(&timeline)
-
-	data.TotalCount = len(records)
-	data.Timeline = timeline
-
-	return data, nil
 }
 
 // CreateFHIROrganization creates a FHIROrganization instance
