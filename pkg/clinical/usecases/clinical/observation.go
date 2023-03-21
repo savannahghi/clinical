@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
@@ -12,7 +13,7 @@ import (
 
 // RecordTemperature is used to record a patient's temperature and saves it as a FHIR observation
 func (c *UseCasesClinicalImpl) RecordTemperature(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	temperatureObservation, err := c.RecordObservation(ctx, input, "5088")
+	temperatureObservation, err := c.RecordObservation(ctx, input, common.TemperatureCIELTerminologyCode)
 	if err != nil {
 		return nil, err
 	}
