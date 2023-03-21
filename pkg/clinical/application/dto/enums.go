@@ -79,3 +79,30 @@ const (
 	MedicationStatementStatusEnumInActive MedicationStatementStatusEnum = "inactive"
 	MedicationStatementStatusEnumUnknown  MedicationStatementStatusEnum = "unknown"
 )
+
+type IdentifierType string
+
+const (
+	IdentifierTypeNationalID IdentifierType = "NATIONAL_ID"
+	IdentifierTypePassport   IdentifierType = "PASSPORT"
+	IdentifierTypeAlienID    IdentifierType = "ALIEN_ID"
+	IdentifierTypeCCCNumber  IdentifierType = "CCC_NUMBER"
+)
+
+type ContactType string
+
+const (
+	ContactTypePhoneNumber ContactType = "PHONE_NUMBER"
+)
+
+// Gender is a FHIR enum
+type Gender string
+
+const (
+	// GenderMale ...
+	GenderMale Gender = "male"
+	// GenderFemale ...
+	GenderFemale Gender = "female"
+	// GenderOther ...
+	GenderOther Gender = "other"
+)

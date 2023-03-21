@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/go-playground/validator"
+import (
+	"github.com/go-playground/validator"
+	"github.com/savannahghi/scalarutils"
+)
 
 type OrganizationIdentifier struct {
 	Type  OrganizationIdentifierType `json:"type,omitempty"`
@@ -30,4 +33,24 @@ func (o ObservationInput) Validate() error {
 	err := v.Struct(o)
 
 	return err
+}
+
+type PatientInput struct {
+	FirstName   string            `json:"firstName"`
+	LastName    string            `json:"lastName"`
+	OtherNames  *string           `json:"otherNames"`
+	BirthDate   scalarutils.Date  `json:"birthDate"`
+	Gender      Gender            `json:"gender"`
+	Identifiers []IdentifierInput `json:"identifiers"`
+	Contacts    []ContactInput    `json:"contacts"`
+}
+
+type IdentifierInput struct {
+	Type  IdentifierType `json:"type"`
+	Value string         `json:"value"`
+}
+
+type ContactInput struct {
+	Type  ContactType `json:"type"`
+	Value string      `json:"value"`
 }

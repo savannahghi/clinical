@@ -5,11 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const (
-	// MaxClinicalRecordPageSize is the maximum number of encounters we can show on a timeline
-	MaxClinicalRecordPageSize = 50
-)
-
 // BaseExtension is an interface that represents some methods in base
 // The `onboarding` service has a dependency on `base` library.
 // Our first step to making some functions are testable is to remove the base dependency.

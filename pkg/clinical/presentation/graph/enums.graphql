@@ -44,3 +44,20 @@ enum MedicationStatementStatusEnum {
   inactive
   unknown
 }
+
+enum Gender {
+  male
+  female
+  other
+}
+
+enum IdentifierType {
+  NATIONAL_ID
+  PASSPORT
+  ALIEN_ID
+  CCC_NUMBER
+}
+
+enum ContactType {
+  PHONE_NUMBER
+}

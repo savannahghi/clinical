@@ -1339,9 +1339,6 @@ func (fh *StoreImpl) CreateFHIRPatient(_ context.Context, input domain.FHIRPatie
 
 	output := &domain.PatientPayload{
 		PatientRecord: resource,
-		// The patient is newly created so we can assume they have no open episodes
-		HasOpenEpisodes: false,
-		OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
 	}
 
 	return output, nil

@@ -27,6 +27,8 @@ type Clinical interface {
 	CreatePubsubTestResult(ctx context.Context, data dto.CreatePatientTestResultPubSubMessage) error
 	CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error
 
+	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
+
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)

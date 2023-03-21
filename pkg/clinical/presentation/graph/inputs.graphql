@@ -14,3 +14,23 @@ input ObservationInput {
   encounterID: String!
   value: String!
 }
+
+input PatientInput {
+  firstName: String!
+  lastName: String
+  otherNames: String
+  birthDate: Date!
+  gender: Gender!
+  identifiers: [IdentifierInput!]!
+  contacts: [ContactInput!]!
+}
+
+input IdentifierInput {
+  type: IdentifierType!
+  value: String!
+}
+
+input ContactInput {
+  type: ContactType!
+  value: String!
+}

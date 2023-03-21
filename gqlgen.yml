@@ -19,10 +19,10 @@ resolver:
   dir: pkg/clinical/presentation/graph
 
 autobind:
+  - "github.com/savannahghi/clinical/pkg/clinical/application/dto"
   - "github.com/savannahghi/scalarutils"
   - "github.com/savannahghi/enumutils"
   - "github.com/savannahghi/firebasetools"
-  - "github.com/savannahghi/clinical/pkg/clinical/application/dto"
   - "github.com/savannahghi/clinical/pkg/clinical/domain"
   - "github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
   - "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"

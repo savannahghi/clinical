@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
+	"github.com/savannahghi/scalarutils"
+
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
@@ -343,4 +346,114 @@ func (c *UseCasesClinicalImpl) CreateFHIROrganization(ctx context.Context, input
 	}
 
 	return organizationRelayPayload, nil
+}
+
+// CreatePatient creates a new patient
+func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
+	facilityID, err := extensions.GetFacilityIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, facilityID)
+	if err != nil {
+		return nil, err
+	}
+
+	nameInput := &domain.NameInput{
+		FirstName:  input.FirstName,
+		LastName:   input.LastName,
+		OtherNames: input.OtherNames,
+	}
+
+	phoneNumbers := []*domain.PhoneNumberInput{}
+
+	for _, contact := range input.Contacts {
+		if contact.Type == dto.ContactTypePhoneNumber {
+			number := &domain.PhoneNumberInput{
+				Msisdn: contact.Value,
+			}
+			phoneNumbers = append(phoneNumbers, number)
+		}
+	}
+
+	documents := []*domain.IdentificationDocument{}
+
+	for _, identifier := range input.Identifiers {
+		doc := &domain.IdentificationDocument{
+			DocumentType:   domain.IDDocumentType(identifier.Type),
+			DocumentNumber: identifier.Value,
+		}
+
+		documents = append(documents, doc)
+	}
+
+	registrationInput := domain.SimplePatientRegistrationInput{
+		Names:                   []*domain.NameInput{nameInput},
+		BirthDate:               input.BirthDate,
+		PhoneNumbers:            phoneNumbers,
+		Gender:                  string(input.Gender),
+		Active:                  true,
+		IdentificationDocuments: documents,
+	}
+
+	exists, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, registrationInput)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, fmt.Errorf("unable to check patient existence: %w", err)
+	}
+
+	if exists {
+		return nil, fmt.Errorf("patient with phone number already exists")
+	}
+
+	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, registrationInput)
+	if err != nil {
+		return nil, err
+	}
+
+	orgRef := fmt.Sprintf("Organization/%s", *facility.Resource.ID)
+	orgType := scalarutils.URI("Organization")
+
+	patientInput.ManagingOrganization = &domain.FHIRReferenceInput{
+		ID:        facility.Resource.ID,
+		Reference: &orgRef,
+		Display:   *facility.Resource.Name,
+		Type:      &orgType,
+	}
+
+	tags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	patientInput.Meta = domain.FHIRMetaInput{
+		Tag: tags,
+	}
+
+	patient, err := c.infrastructure.FHIR.CreateFHIRPatient(ctx, *patientInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapFHIRPatientToPatientDTO(patient.PatientRecord), nil
+}
+
+func mapFHIRPatientToPatientDTO(patient *domain.FHIRPatient) *dto.Patient {
+	numbers := []string{}
+
+	for _, phone := range patient.Telecom {
+		if *phone.System == domain.ContactPointSystemEnumPhone {
+			numbers = append(numbers, *phone.Value)
+		}
+	}
+
+	return &dto.Patient{
+		ID:          *patient.ID,
+		Active:      *patient.Active,
+		Name:        patient.Name[0].Text,
+		PhoneNumber: numbers,
+		Gender:      dto.Gender(patient.Gender.String()),
+		BirthDate:   *patient.BirthDate,
+	}
 }

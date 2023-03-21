@@ -36,8 +36,6 @@ const (
 	IDIdentifierSystem     = "healthcloud.iddocument"
 	MSISDNIdentifierSystem = "healthcloud.msisdn"
 	DefaultVersion         = "0.0.1"
-	DefaultPhotoTitle      = "Patient Photo"
-	DefaultPhotoFilename   = "photo.jpg"
 )
 
 // ComposeOneHealthEpisodeOfCare is used to create an episode of care
