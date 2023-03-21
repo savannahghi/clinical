@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/go-playground/validator"
+
 type OrganizationIdentifier struct {
 	Type  OrganizationIdentifierType `json:"type,omitempty"`
 	Value string                     `json:"value,omitempty"`
@@ -18,7 +20,14 @@ type EpisodeOfCareInput struct {
 
 // ObservationInput models the observation input
 type ObservationInput struct {
-	Status      ObservationStatus `json:"status,omitempty"`
-	EncounterID string            `json:"encounterID,omitempty"`
-	Value       string            `json:"value,omitempty"`
+	Status      ObservationStatus `json:"status,omitempty" validate:"required"`
+	EncounterID string            `json:"encounterID,omitempty" validate:"required"`
+	Value       string            `json:"value,omitempty" validate:"required"`
+}
+
+func (o ObservationInput) Validate() error {
+	v := validator.New()
+	err := v.Struct(o)
+
+	return err
 }

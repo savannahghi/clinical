@@ -1,9 +1,0 @@
-extend type Mutation {
-  startEncounter(episodeID: String!): String!
-  endEncounter(encounterID: String!): Boolean!
-}
-
-extend type Query {
-  # TODO: Pagination
-  listPatientEncounters(patientID: String!): [Encounter!]!
-}

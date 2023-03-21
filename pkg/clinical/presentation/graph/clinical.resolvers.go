@@ -32,6 +32,24 @@ func (r *mutationResolver) EndEpisodeOfCare(ctx context.Context, id string) (*dt
 	panic(fmt.Errorf("not implemented: EndEpisodeOfCare - endEpisodeOfCare"))
 }
 
+// StartEncounter is the resolver for the startEncounter field.
+func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string) (string, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.StartEncounter(ctx, episodeID)
+}
+
+// EndEncounter is the resolver for the endEncounter field.
+func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.EndEncounter(ctx, encounterID)
+}
+
+// RecordTemperature is the resolver for the recordTemperature field.
+func (r *mutationResolver) RecordTemperature(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.RecordTemperature(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
@@ -49,6 +67,12 @@ func (r *queryResolver) GetMedicalData(ctx context.Context, patientID string) (*
 // EpisodeOfCare is the resolver for the episodeOfCare field.
 func (r *queryResolver) EpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
 	panic(fmt.Errorf("not implemented: EpisodeOfCare - episodeOfCare"))
+}
+
+// ListPatientEncounters is the resolver for the listPatientEncounters field.
+func (r *queryResolver) ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.ListPatientEncounters(ctx, patientID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
