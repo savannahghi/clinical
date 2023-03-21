@@ -33,6 +33,7 @@ type Clinical interface {
 
 	RecordTemperature(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordHeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error)
 }
 
