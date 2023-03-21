@@ -41,6 +41,16 @@ func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.Obser
 	return weightObservation, nil
 }
 
+// RecordRespiratoryRate records a patient's respiratory rate
+func (c *UseCasesClinicalImpl) RecordRespiratoryRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	respiratoryRateObservation, err := c.RecordObservation(ctx, input, common.RespiratoryRateCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return respiratoryRateObservation, nil
+}
+
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {
 	err := input.Validate()
 	if err != nil {
