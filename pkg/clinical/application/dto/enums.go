@@ -64,3 +64,10 @@ const (
 	AllergyIntoleranceReactionSeverityEnumModerate AllergyIntoleranceReactionSeverityEnum = "moderate"
 	AllergyIntoleranceReactionSeverityEnumSevere   AllergyIntoleranceReactionSeverityEnum = "severe"
 )
+
+type ObservationStatus string
+
+const (
+	ObservationStatusFinal     ObservationStatus = "final"
+	ObservationStatusCancelled ObservationStatus = "cancelled"
+)

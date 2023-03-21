@@ -1,6 +1,8 @@
 package dto
 
-import "github.com/savannahghi/scalarutils"
+import (
+	"github.com/savannahghi/scalarutils"
+)
 
 // TenantIdentifiers models the json object used to store some of the tenant identifiers
 type TenantIdentifiers struct {
@@ -63,4 +65,12 @@ type AllergyIntolerance struct {
 	Severity        AllergyIntoleranceReactionSeverityEnum `json:"severity"`
 	SubstanceCode   string                                 `json:"substanceCode"`
 	SubstanceSystem string                                 `json:"substanceSystem"`
+}
+
+type Observation struct {
+	ID          string            `json:"id,omitempty"`
+	Status      ObservationStatus `json:"status,omitempty"`
+	PatientID   string            `json:"patientID,omitempty"`
+	EncounterID string            `json:"encounterID,omitempty"`
+	Value       string            `json:"value,omitempty"`
 }

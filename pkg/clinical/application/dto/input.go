@@ -15,3 +15,10 @@ type EpisodeOfCareInput struct {
 	Status    EpisodeOfCareStatusEnum `json:"status"`
 	PatientID string                  `json:"patientID"`
 }
+
+// ObservationInput models the observation input
+type ObservationInput struct {
+	Status      ObservationStatus `json:"status,omitempty"`
+	EncounterID string            `json:"encounterID,omitempty"`
+	Value       string            `json:"value,omitempty"`
+}
