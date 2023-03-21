@@ -33,3 +33,8 @@ enum AllergyIntoleranceReactionSeverityEnum {
   moderate
   severe
 }
+
+enum ObservationStatus {
+  final
+  cancelled
+}

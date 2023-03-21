@@ -44,3 +44,11 @@ type Encounter {
   status: EncounterStatusEnum
   patientID: String
 }
+
+type Observation {
+  id: String!
+  status: ObservationStatus!
+  patientID: String!
+  encounterID: String!
+  value: String!
+}
