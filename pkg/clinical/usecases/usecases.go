@@ -32,6 +32,7 @@ type Clinical interface {
 	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
 
 	RecordTemperature(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordHeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error)
 }
 

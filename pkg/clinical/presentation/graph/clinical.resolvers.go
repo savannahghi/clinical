@@ -50,6 +50,12 @@ func (r *mutationResolver) RecordTemperature(ctx context.Context, input dto.Obse
 	return r.usecases.Clinical.RecordTemperature(ctx, input)
 }
 
+// RecordHeight is the resolver for the recordHeight field.
+func (r *mutationResolver) RecordHeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.RecordHeight(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()

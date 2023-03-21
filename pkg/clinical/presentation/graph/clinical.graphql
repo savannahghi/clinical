@@ -23,4 +23,5 @@ extend type Mutation {
 
   # Observation
   recordTemperature(input: ObservationInput!): Observation!
+  recordHeight(input: ObservationInput!): Observation!
 }
