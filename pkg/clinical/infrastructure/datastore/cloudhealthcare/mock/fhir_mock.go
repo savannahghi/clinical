@@ -2,6 +2,7 @@ package mock
 
 import (
 	"context"
+	"time"
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
@@ -382,6 +383,7 @@ func NewFHIRMock() *FHIRMock {
 					ServiceType:   &domain.FHIRCodeableConcept{},
 					Priority:      &domain.FHIRCodeableConcept{},
 					Subject: &domain.FHIRReference{
+						ID:        &UUID,
 						Reference: &PatientRef,
 					},
 					EpisodeOfCare:   []*domain.FHIRReference{},
@@ -455,7 +457,69 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRObservationRelayConnection{}, nil
 		},
 		MockCreateFHIRObservationFn: func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
-			return &domain.FHIRObservationRelayPayload{}, nil
+			uuid := uuid.New().String()
+			finalStatus := domain.ObservationStatusEnumFinal
+			return &domain.FHIRObservationRelayPayload{
+				Resource: &domain.FHIRObservation{
+					ID:         new(string),
+					Text:       &domain.FHIRNarrative{},
+					Identifier: []*domain.FHIRIdentifier{},
+					BasedOn:    []*domain.FHIRReference{},
+					PartOf:     []*domain.FHIRReference{},
+					Category:   []*domain.FHIRCodeableConcept{},
+					Code: domain.FHIRCodeableConcept{
+						ID: new(string),
+						Coding: []*domain.FHIRCoding{
+							{
+								ID:           new(string),
+								Version:      new(string),
+								Code:         "",
+								Display:      "Vital",
+								UserSelected: new(bool),
+							},
+						},
+						Text: "",
+					},
+					Subject: &domain.FHIRReference{
+						ID: &uuid,
+					},
+					Status: &finalStatus,
+					Focus:  []*domain.FHIRReference{},
+					Encounter: &domain.FHIRReference{
+						ID: &uuid,
+					},
+					EffectiveDateTime:    &scalarutils.Date{},
+					EffectivePeriod:      &domain.FHIRPeriod{},
+					EffectiveTiming:      &domain.FHIRTiming{},
+					Performer:            []*domain.FHIRReference{},
+					ValueQuantity:        &domain.FHIRQuantity{},
+					ValueCodeableConcept: (*scalarutils.Code)(&uuid),
+					ValueString:          new(string),
+					ValueBoolean:         new(bool),
+					ValueInteger:         new(string),
+					ValueRange:           &domain.FHIRRange{},
+					ValueRatio:           &domain.FHIRRatio{},
+					ValueSampledData: &domain.FHIRSampledData{
+						ID: &uuid,
+					},
+					ValueTime:        &time.Time{},
+					ValueDateTime:    &scalarutils.Date{},
+					ValuePeriod:      &domain.FHIRPeriod{},
+					DataAbsentReason: &domain.FHIRCodeableConcept{},
+					Interpretation:   []*domain.FHIRCodeableConcept{},
+					Note:             []*domain.FHIRAnnotation{},
+					BodySite:         &domain.FHIRCodeableConcept{},
+					Method:           &domain.FHIRCodeableConcept{},
+					Specimen:         &domain.FHIRReference{},
+					Device:           &domain.FHIRReference{},
+					ReferenceRange:   []*domain.FHIRObservationReferencerange{},
+					HasMember:        []*domain.FHIRReference{},
+					DerivedFrom:      []*domain.FHIRReference{},
+					Component:        []*domain.FHIRObservationComponent{},
+					Meta:             &domain.FHIRMeta{},
+					Extension:        []*domain.FHIRExtension{},
+				},
+			}, nil
 		},
 		MockDeleteFHIRObservationFn: func(ctx context.Context, id string) (bool, error) {
 			return true, nil
