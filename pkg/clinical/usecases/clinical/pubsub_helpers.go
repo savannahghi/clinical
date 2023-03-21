@@ -86,7 +86,7 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, input.OrganizationID)
+		organization, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.OrganizationID)
 		if err != nil {
 			// Should not fail if organization is not found
 			log.Printf("the error is: %v", err)
@@ -275,7 +275,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		organization, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.OrganizationID) // rename organization response
 		if err != nil {
 			// Should not fail if the organization is not found
 			log.Printf("the error is: %v", err)
@@ -352,7 +352,7 @@ func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Conte
 	}
 
 	if input.OrganizationID != "" {
-		organization, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, input.OrganizationID) // rename organization response
+		organization, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.OrganizationID) // rename organization response
 		if err != nil {
 			log.Printf("the error is: %v", err)
 		}

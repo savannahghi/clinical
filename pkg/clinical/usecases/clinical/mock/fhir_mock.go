@@ -8,19 +8,19 @@ import (
 
 // FHIRUsecaseMock struct implements mocks of FHIR methods.
 type FHIRUsecaseMock struct {
-	MockFindOrganizationByIDFn func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error)
+	MockGetFHIROrganizationFn func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error)
 }
 
 // NewFHIRUsecaseMock initializes a new instance of FHIR mock
 func NewFHIRUsecaseMock() *FHIRUsecaseMock {
 	return &FHIRUsecaseMock{
-		MockFindOrganizationByIDFn: func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+		MockGetFHIROrganizationFn: func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 			return &domain.FHIROrganizationRelayPayload{}, nil
 		},
 	}
 }
 
-// FindOrganizationByID is a mock implementation of FindOrganizationByID method
-func (fh *FHIRUsecaseMock) FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error) {
-	return fh.MockFindOrganizationByIDFn(ctx, organizationID)
+// GetFHIROrganization is a mock implementation of GetFHIROrganization method
+func (fh *FHIRUsecaseMock) GetFHIROrganization(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error) {
+	return fh.MockGetFHIROrganizationFn(ctx, organizationID)
 }

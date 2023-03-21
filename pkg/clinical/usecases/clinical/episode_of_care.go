@@ -26,7 +26,7 @@ func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, input dt
 		Period: common.DefaultPeriodInput(),
 	}
 
-	facility, err := c.infrastructure.FHIR.FindOrganizationByID(ctx, facilityID)
+	facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, facilityID)
 	if err != nil {
 		return nil, err
 	}
@@ -54,6 +54,30 @@ func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, input dt
 		Reference: &patientRef,
 		Display:   patient.Resource.Name[0].Text,
 		Type:      &patientType,
+	}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	// search for the episode of care before creating new one.
+	episodeOfCareSearchParams := map[string]interface{}{
+		"patient":      patientRef,
+		"status":       string(domain.EpisodeOfCareStatusEnumActive),
+		"organization": orgRef,
+		"_sort":        "date",
+		"_count":       "1",
+	}
+
+	episodeOfCarePayload, err := c.infrastructure.FHIR.SearchFHIREpisodeOfCare(ctx, episodeOfCareSearchParams, *identifiers)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get patients episodes of care: %w", err)
+	}
+
+	// don't create a new episode if there is an ongoing one
+	if len(episodeOfCarePayload.Edges) >= 1 {
+		return nil, fmt.Errorf("an active episode of care already exists")
 	}
 
 	tags, err := c.GetTenantMetaTags(ctx)

@@ -36,6 +36,11 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
 	}
 
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
 	timeline := []dto.TimelineResource{}
 	wg := &sync.WaitGroup{}
 	mut := &sync.Mutex{}
@@ -51,7 +56,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 	allergyIntoleranceResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, patientFilterParams)
+		conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, patientFilterParams, *identifiers)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("AllergyIntolerance search error: %v", err)
@@ -102,7 +107,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 	observationResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, patientFilterParams)
+		conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, patientFilterParams, *identifiers)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("Observation search error: %v", err)
@@ -155,7 +160,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 	medicationStatementResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, patientFilterParams)
+		conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, patientFilterParams, *identifiers)
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("MedicationStatement search error: %v", err)
@@ -251,10 +256,15 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		"CD4Count",
 	}
 
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
 	for _, field := range fields {
 		switch field {
 		case "Regimen":
-			conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, filterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, filterParams, *identifiers)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -268,7 +278,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				data.Regimen = append(data.Regimen, edge.Node)
 			}
 		case "AllergyIntolerance":
-			conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, filterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, filterParams, *identifiers)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -318,7 +328,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "Weight":
 			filterParams["code"] = common.WeightCIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -335,7 +345,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "BMI":
 			filterParams["code"] = common.BMICIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -352,7 +362,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "ViralLoad":
 			filterParams["code"] = common.ViralLoadCIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -369,7 +379,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "CD4Count":
 			filterParams["code"] = common.CD4CountCIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)

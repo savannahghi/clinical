@@ -111,8 +111,16 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "happy case: create an episode of care" {
+				fakeFHIR.MockSearchFHIREpisodeOfCareFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIREpisodeOfCareRelayConnection, error) {
+					return &domain.FHIREpisodeOfCareRelayConnection{
+						Edges: []*domain.FHIREpisodeOfCareRelayEdge{},
+					}, nil
+				}
+			}
+
 			if tt.name == "sad case: error fetching facility" {
-				fakeFHIR.MockFindOrganizationByIDFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("failed to find organization")
 				}
 			}

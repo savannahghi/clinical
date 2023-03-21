@@ -180,5 +180,4 @@ type FHIREpisodeofcareStatushistoryInput struct {
 // episodes of care
 type EpisodeOfCarePayload struct {
 	EpisodeOfCare *FHIREpisodeOfCare `json:"episodeOfCare"`
-	TotalVisits   int                `json:"totalVisits"`
 }
