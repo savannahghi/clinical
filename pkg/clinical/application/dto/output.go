@@ -72,5 +72,6 @@ type Observation struct {
 	Status      ObservationStatus `json:"status,omitempty"`
 	PatientID   string            `json:"patientID,omitempty"`
 	EncounterID string            `json:"encounterID,omitempty"`
+	Name        string            `json:"name,omitempty"`
 	Value       string            `json:"value,omitempty"`
 }

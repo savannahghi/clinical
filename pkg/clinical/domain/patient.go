@@ -324,8 +324,8 @@ func (pl *PatientLink) SetID(id string) {
 type MedicalData struct {
 	Regimen   []*FHIRMedicationStatement
 	Allergies []*dto.AllergyIntolerance
-	Weight    []*FHIRObservation
-	BMI       []*FHIRObservation
-	ViralLoad []*FHIRObservation
-	CD4Count  []*FHIRObservation
+	Weight    []*dto.Observation
+	BMI       []*dto.Observation
+	ViralLoad []*dto.Observation
+	CD4Count  []*dto.Observation
 }
