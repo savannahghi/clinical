@@ -339,7 +339,15 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				data.Weight = append(data.Weight, edge.Node)
+				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+					continue
+				}
+
+				if edge.Node.Status == nil {
+					continue
+				}
+
+				data.Weight = append(data.Weight, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 
 		case "BMI":
@@ -356,7 +364,15 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				data.BMI = append(data.BMI, edge.Node)
+				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+					continue
+				}
+
+				if edge.Node.Status == nil {
+					continue
+				}
+
+				data.BMI = append(data.BMI, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 
 		case "ViralLoad":
@@ -373,7 +389,15 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				data.ViralLoad = append(data.ViralLoad, edge.Node)
+				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+					continue
+				}
+
+				if edge.Node.Status == nil {
+					continue
+				}
+
+				data.ViralLoad = append(data.ViralLoad, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 
 		case "CD4Count":
@@ -390,13 +414,22 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				data.CD4Count = append(data.CD4Count, edge.Node)
+				if edge.Node.Code.Coding == nil && len(edge.Node.Code.Coding) < 1 {
+					continue
+				}
+
+				if edge.Node.Status == nil {
+					continue
+				}
+
+				data.CD4Count = append(data.CD4Count, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 		}
 	}
 
 	return data, nil
 }
+
 func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *domain.FHIRAllergyIntolerance) *dto.AllergyIntolerance {
 	return &dto.AllergyIntolerance{
 		ID:              *fhirAllergyIntolerance.ID,
@@ -406,6 +439,63 @@ func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *do
 		Severity:        dto.AllergyIntoleranceReactionSeverityEnum(fhirAllergyIntolerance.Criticality),
 		SubstanceCode:   string(fhirAllergyIntolerance.Code.Coding[0].Code),
 		SubstanceSystem: string(*fhirAllergyIntolerance.Code.Coding[0].System),
+	}
+}
+
+func mapFHIRObservationToObservationDTO(fhirObservation *domain.FHIRObservation) *dto.Observation {
+	var value string
+
+	if fhirObservation.ValueQuantity != nil {
+		value = fmt.Sprintf("%v %v", fhirObservation.ValueQuantity.Value, fhirObservation.ValueQuantity.Unit)
+	}
+
+	if fhirObservation.ValueCodeableConcept != nil {
+		value = fmt.Sprintf("%v", *fhirObservation.ValueCodeableConcept)
+	}
+
+	if fhirObservation.ValueString != nil {
+		value = fmt.Sprintf("%v", *fhirObservation.ValueString)
+	}
+
+	if fhirObservation.ValueBoolean != nil {
+		value = fmt.Sprintf("%v", *fhirObservation.ValueBoolean)
+	}
+
+	if fhirObservation.ValueInteger != nil {
+		value = fmt.Sprintf("%v", *fhirObservation.ValueInteger)
+	}
+
+	if fhirObservation.ValueRange != nil {
+		value = fmt.Sprintf("%v %v - %v %v", fhirObservation.ValueRange.High.Value, fhirObservation.ValueRange.High.Unit, fhirObservation.ValueRange.Low.Value, fhirObservation.ValueRange.Low.Unit)
+	}
+
+	if fhirObservation.ValueRatio != nil {
+		value = fmt.Sprintf("%v %v : %v %v", fhirObservation.ValueRatio.Numerator.Value, fhirObservation.ValueRatio.Numerator.Unit, fhirObservation.ValueRatio.Denominator.Value, fhirObservation.ValueRatio.Denominator.Unit)
+	}
+
+	if fhirObservation.ValueSampledData != nil {
+		value = fmt.Sprintf("%v", *fhirObservation.ValueSampledData.ID)
+	}
+
+	if fhirObservation.ValueTime != nil {
+		value = fmt.Sprintf("%v", *fhirObservation.ValueTime)
+	}
+
+	if fhirObservation.ValueDateTime != nil {
+		value = fmt.Sprintf("%v", *fhirObservation.ValueDateTime)
+	}
+
+	if fhirObservation.ValuePeriod != nil {
+		value = fmt.Sprintf("%v - %v", fhirObservation.ValuePeriod.Start, fhirObservation.ValuePeriod.End)
+	}
+
+	return &dto.Observation{
+		ID:          *fhirObservation.ID,
+		Status:      dto.ObservationStatus(*fhirObservation.Status),
+		Name:        fhirObservation.Code.Coding[0].Display,
+		Value:       value,
+		PatientID:   *fhirObservation.Subject.ID,
+		EncounterID: *fhirObservation.Encounter.ID,
 	}
 }
 
