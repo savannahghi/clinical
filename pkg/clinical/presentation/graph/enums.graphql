@@ -38,3 +38,9 @@ enum ObservationStatus {
   final
   cancelled
 }
+
+enum MedicationStatementStatusEnum {
+  active
+  inactive
+  unknown
+}

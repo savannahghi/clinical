@@ -3,7 +3,6 @@ package domain
 import (
 	"time"
 
-	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 )
@@ -318,14 +317,4 @@ func (pl *PatientLink) GetID() string {
 // SetID sets the patient links' id
 func (pl *PatientLink) SetID(id string) {
 	pl.ID = id
-}
-
-// MedicalData is a collection of medical data of specific category
-type MedicalData struct {
-	Regimen   []*FHIRMedicationStatement
-	Allergies []*dto.AllergyIntolerance
-	Weight    []*dto.Observation
-	BMI       []*dto.Observation
-	ViralLoad []*dto.Observation
-	CD4Count  []*dto.Observation
 }

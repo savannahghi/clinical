@@ -67,6 +67,7 @@ type AllergyIntolerance struct {
 	SubstanceSystem string                                 `json:"substanceSystem"`
 }
 
+// Observation is a minimal representation of a fhir Observation
 type Observation struct {
 	ID          string            `json:"id,omitempty"`
 	Status      ObservationStatus `json:"status,omitempty"`
@@ -74,4 +75,28 @@ type Observation struct {
 	EncounterID string            `json:"encounterID,omitempty"`
 	Name        string            `json:"name,omitempty"`
 	Value       string            `json:"value,omitempty"`
+}
+
+// Medication is a minimal representation of a fhir Medication
+type Medication struct {
+	Name string `json:"name"`
+	Code string `json:"code"`
+}
+
+// MedicationStatement is a minimal representation of a fhir MedicationStatement
+type MedicationStatement struct {
+	ID         string                        `json:"id"`
+	Status     MedicationStatementStatusEnum `json:"status"`
+	Medication Medication                    `json:"medication"`
+	PatientID  string                        `json:"patientID"`
+}
+
+// MedicalData is a minimal representation of a fhir MedicalData
+type MedicalData struct {
+	Regimen   []*MedicationStatement
+	Allergies []*AllergyIntolerance
+	Weight    []*Observation
+	BMI       []*Observation
+	ViralLoad []*Observation
+	CD4Count  []*Observation
 }
