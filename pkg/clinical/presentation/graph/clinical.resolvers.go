@@ -62,6 +62,12 @@ func (r *mutationResolver) RecordWeight(ctx context.Context, input dto.Observati
 	return r.usecases.Clinical.RecordWeight(ctx, input)
 }
 
+// RecordRespiratoryRate is the resolver for the recordRespiratoryRate field.
+func (r *mutationResolver) RecordRespiratoryRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.RecordRespiratoryRate(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
