@@ -6,8 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
@@ -29,7 +27,8 @@ func (r *mutationResolver) CreateEpisodeOfCare(ctx context.Context, episodeOfCar
 
 // EndEpisodeOfCare is the resolver for the endEpisodeOfCare field.
 func (r *mutationResolver) EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
-	panic(fmt.Errorf("not implemented: EndEpisodeOfCare - endEpisodeOfCare"))
+	r.CheckDependencies()
+	return r.usecases.EndEpisodeOfCare(ctx, id)
 }
 
 // StartEncounter is the resolver for the startEncounter field.
@@ -107,9 +106,10 @@ func (r *queryResolver) GetMedicalData(ctx context.Context, patientID string) (*
 	return r.usecases.GetMedicalData(ctx, patientID)
 }
 
-// EpisodeOfCare is the resolver for the episodeOfCare field.
-func (r *queryResolver) EpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
-	panic(fmt.Errorf("not implemented: EpisodeOfCare - episodeOfCare"))
+// GetEpisodeOfCare is the resolver for the getEpisodeOfCare field.
+func (r *queryResolver) GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
+	r.CheckDependencies()
+	return r.usecases.GetEpisodeOfCare(ctx, id)
 }
 
 // ListPatientEncounters is the resolver for the listPatientEncounters field.

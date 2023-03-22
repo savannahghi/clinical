@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/labstack/gommon/log"
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -476,7 +475,7 @@ func (fh *StoreImpl) EndEncounter(
 
 // EndEpisode ends an episode of care by patching it's status to "finished"
 func (fh *StoreImpl) EndEpisode(
-	ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (bool, error) {
+	ctx context.Context, episodeID string) (bool, error) {
 	episodePayload, err := fh.GetFHIREpisodeOfCare(ctx, episodeID)
 	if err != nil {
 		return false, fmt.Errorf("unable to get episode with ID %s: %w", episodeID, err)
@@ -487,21 +486,6 @@ func (fh *StoreImpl) EndEpisode(
 		startTime = episodePayload.Resource.Period.Start
 	}
 
-	// Close all encounters in this visit
-
-	encounterConn, err := fh.SearchEpisodeEncounter(ctx, episodeID, tenant)
-	if err != nil {
-		return false, fmt.Errorf("unable to search episode encounter %w", err)
-	}
-
-	for _, edge := range encounterConn.Edges {
-		_, err = fh.EndEncounter(ctx, *edge.Node.ID)
-		if err != nil {
-			log.Printf("unable to end encounter %s", *edge.Node.ID)
-
-			continue
-		}
-	}
 	// // workaround for odd date comparison behavior on the Google Cloud Healthcare API
 	// the end time must be at least 24 hours after the start time
 	// so: if the time now is less than 24 hours after start, set the end to be

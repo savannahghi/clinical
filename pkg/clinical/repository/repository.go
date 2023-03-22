@@ -44,7 +44,7 @@ type FHIREpisodeOfCare interface {
 	UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
 	HasOpenEpisode(ctx context.Context, patient domain.FHIRPatient, tenant dto.TenantIdentifiers) (bool, error)
 	OpenEpisodes(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers) ([]*domain.FHIREpisodeOfCare, error)
-	EndEpisode(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (bool, error)
+	EndEpisode(ctx context.Context, episodeID string) (bool, error)
 	GetActiveEpisode(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (*domain.FHIREpisodeOfCare, error)
 }
 type FHIRObservation interface {

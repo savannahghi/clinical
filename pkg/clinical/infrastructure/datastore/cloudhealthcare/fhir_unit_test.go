@@ -3761,7 +3761,6 @@ func TestStoreImpl_EndEpisode(t *testing.T) {
 	type args struct {
 		ctx       context.Context
 		episodeID string
-		tenant    dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3877,7 +3876,7 @@ func TestStoreImpl_EndEpisode(t *testing.T) {
 				}
 			}
 
-			got, err := fh.EndEpisode(tt.args.ctx, tt.args.episodeID, tt.args.tenant)
+			got, err := fh.EndEpisode(tt.args.ctx, tt.args.episodeID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.EndEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return

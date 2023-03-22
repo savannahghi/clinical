@@ -3,7 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
-
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
@@ -95,6 +95,57 @@ func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, input dt
 	}
 
 	return mapFHIREpisodeToEpisodeDTO(*episode.EpisodeOfCare), nil
+}
+
+func (c *UseCasesClinicalImpl) EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid episode of care id: %s", id)
+	}
+
+	episode, err := c.infrastructure.FHIR.GetFHIREpisodeOfCare(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get episode of care: %w", err)
+	}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	// Close all encounters in this visit
+	encounterConn, err := c.infrastructure.FHIR.SearchEpisodeEncounter(ctx, id, *identifiers)
+	if err != nil {
+		return nil, fmt.Errorf("unable to search episode encounter %w", err)
+	}
+
+	for _, edge := range encounterConn.Edges {
+		_, err = c.infrastructure.FHIR.EndEncounter(ctx, *edge.Node.ID)
+		if err != nil {
+			return nil, fmt.Errorf("unable to end encounter %s: err: %w", *edge.Node.ID, err)
+		}
+	}
+
+	_, err = c.infrastructure.FHIR.EndEpisode(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("unable to end episode of care: %w", err)
+	}
+
+	return mapFHIREpisodeToEpisodeDTO(*episode.Resource), nil
+}
+
+func (c *UseCasesClinicalImpl) GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid episode of care id: %s", id)
+	}
+
+	episode, err := c.infrastructure.FHIR.GetFHIREpisodeOfCare(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get episode of care: %w", err)
+	}
+
+	return mapFHIREpisodeToEpisodeDTO(*episode.Resource), nil
 }
 
 func mapFHIREpisodeToEpisodeDTO(episode domain.FHIREpisodeOfCare) *dto.EpisodeOfCare {

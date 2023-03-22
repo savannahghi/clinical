@@ -15,6 +15,8 @@ type Clinical interface {
 	RegisterFacility(ctx context.Context, input dto.OrganizationInput) (*dto.Organization, error)
 
 	CreateEpisodeOfCare(ctx context.Context, input dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
+	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
+	EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)

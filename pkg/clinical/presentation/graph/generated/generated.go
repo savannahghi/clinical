@@ -369,7 +369,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		EpisodeOfCare         func(childComplexity int, id string) int
+		GetEpisodeOfCare      func(childComplexity int, id string) int
 		GetMedicalData        func(childComplexity int, patientID string) int
 		ListPatientEncounters func(childComplexity int, patientID string) int
 		PatientHealthTimeline func(childComplexity int, input dto.HealthTimelineInput) int
@@ -408,7 +408,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
-	EpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
+	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
 }
 
@@ -1969,17 +1969,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Patient.PhoneNumber(childComplexity), true
 
-	case "Query.episodeOfCare":
-		if e.complexity.Query.EpisodeOfCare == nil {
+	case "Query.getEpisodeOfCare":
+		if e.complexity.Query.GetEpisodeOfCare == nil {
 			break
 		}
 
-		args, err := ec.field_Query_episodeOfCare_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getEpisodeOfCare_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.EpisodeOfCare(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetEpisodeOfCare(childComplexity, args["id"].(string)), true
 
 	case "Query.getMedicalData":
 		if e.complexity.Query.GetMedicalData == nil {
@@ -2173,7 +2173,7 @@ var sources = []*ast.Source{
   patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
   getMedicalData(patientID: String!): MedicalData
 
-  episodeOfCare(id: ID!): EpisodeOfCare
+  getEpisodeOfCare(id: ID!): EpisodeOfCare
 
   # Encounter
   listPatientEncounters(patientID: String!): [Encounter!]!
@@ -4454,7 +4454,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_episodeOfCare_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getEpisodeOfCare_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -14389,8 +14389,8 @@ func (ec *executionContext) fieldContext_Query_getMedicalData(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_episodeOfCare(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_episodeOfCare(ctx, field)
+func (ec *executionContext) _Query_getEpisodeOfCare(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getEpisodeOfCare(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -14403,7 +14403,7 @@ func (ec *executionContext) _Query_episodeOfCare(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().EpisodeOfCare(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetEpisodeOfCare(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14417,7 +14417,7 @@ func (ec *executionContext) _Query_episodeOfCare(ctx context.Context, field grap
 	return ec.marshalOEpisodeOfCare2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCare(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_episodeOfCare(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getEpisodeOfCare(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -14442,7 +14442,7 @@ func (ec *executionContext) fieldContext_Query_episodeOfCare(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_episodeOfCare_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getEpisodeOfCare_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -20559,7 +20559,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "episodeOfCare":
+		case "getEpisodeOfCare":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20568,7 +20568,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_episodeOfCare(ctx, field)
+				res = ec._Query_getEpisodeOfCare(ctx, field)
 				return res
 			}
 

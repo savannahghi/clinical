@@ -155,3 +155,191 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_EndEpisodeOfCare(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: end episode of care",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: invalid episode of care id",
+			args: args{
+				ctx: context.Background(),
+				id:  "",
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error retrieving episode of care",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get tenant identifiers",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to search encounters",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to end encounter",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to end episode of care",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "sad case: error retrieving episode of care" {
+				fakeFHIR.MockGetFHIREpisodeOfCareFn = func(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get episode of care")
+				}
+			}
+
+			if tt.name == "sad case: fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "sad case: fail to search encounters" {
+				fakeFHIR.MockSearchEpisodeEncounterFn = func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers) (*domain.FHIREncounterRelayConnection, error) {
+					return nil, fmt.Errorf("error searching for encounters")
+				}
+			}
+
+			if tt.name == "sad case: fail to end encounter" {
+				fakeFHIR.MockEndEncounterFn = func(ctx context.Context, encounterID string) (bool, error) {
+					return false, fmt.Errorf("failed to end encounter")
+				}
+			}
+
+			if tt.name == "sad case: fail to end episode of care" {
+				fakeFHIR.MockEndEpisodeFn = func(ctx context.Context, episodeID string) (bool, error) {
+					return false, fmt.Errorf("error ending episode")
+				}
+			}
+
+			got, err := c.EndEpisodeOfCare(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("EndEpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a value to be returned, got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetEpisodeOfCare(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: get episode of care",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: invalid episode of care id",
+			args: args{
+				ctx: context.Background(),
+				id:  "bonoko",
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get episode of care",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "sad case: fail to get episode of care" {
+				fakeFHIR.MockGetFHIREpisodeOfCareFn = func(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get episode of care")
+				}
+			}
+
+			got, err := c.GetEpisodeOfCare(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetEpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a value to be returned, got: %v", got)
+				return
+			}
+		})
+	}
+}
