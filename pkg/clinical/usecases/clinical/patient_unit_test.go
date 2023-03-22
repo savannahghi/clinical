@@ -1256,3 +1256,312 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 	}
 
 }
+
+func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
+
+	type args struct {
+		ctx   context.Context
+		input dto.PatientInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: register a patient",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "0700000000",
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: patient already exists",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "0700000000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: error searching for patient",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "0700000000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: invalid phone number",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "070000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get tenant tags",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "0700000000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to create patient",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "0700000000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: no facility id in context",
+			args: args{
+				ctx: context.Background(),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "0700000000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to find facility",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					LastName:  gofakeit.Name(),
+					BirthDate: scalarutils.Date{
+						Year:  1997,
+						Month: 12,
+						Day:   12,
+					},
+					Gender: dto.GenderFemale,
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "0700000000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "sad case: patient already exists" {
+				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
+					return &domain.PatientConnection{
+						Edges: []*domain.PatientEdge{
+							{
+								Node: &domain.FHIRPatient{},
+							},
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "sad case: error searching for patient" {
+				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
+					return nil, fmt.Errorf("failed to search for patient")
+				}
+			}
+
+			if tt.name == "sad case: fail to get tenant tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "sad case: fail to create patient" {
+				fakeFHIR.MockCreateFHIRPatientFn = func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
+					return nil, fmt.Errorf("failed to create patient")
+				}
+			}
+
+			if tt.name == "sad case: fail to find facility" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to find facility")
+				}
+			}
+
+			got, err := c.CreatePatient(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreatePatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if tt.wantErr && got != nil {
+				t.Errorf("expected patient to be nil for %v", tt.name)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected patients not to be nil for %v", tt.name)
+				return
+			}
+		})
+	}
+}

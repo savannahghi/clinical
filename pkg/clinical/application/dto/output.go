@@ -100,3 +100,12 @@ type MedicalData struct {
 	ViralLoad []*Observation
 	CD4Count  []*Observation
 }
+
+type Patient struct {
+	ID          string           `json:"id"`
+	Active      bool             `json:"active"`
+	Name        string           `json:"name"`
+	PhoneNumber []string         `json:"phoneNumber"`
+	Gender      Gender           `json:"gender"`
+	BirthDate   scalarutils.Date `json:"birthDate"`
+}

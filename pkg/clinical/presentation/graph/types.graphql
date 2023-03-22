@@ -69,4 +69,11 @@ type Encounter {
   patientID: String
 }
 
-
+type Patient {
+  id: ID!
+  active: Boolean!
+  name: String!
+  phoneNumber: [String!]!
+  gender: Gender!
+  birthDate: Date
+}

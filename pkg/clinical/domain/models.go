@@ -199,9 +199,7 @@ func (p FHIRPatient) IsEntity() {}
 // PatientPayload is used to return patient records and ancillary data after
 // mutations.
 type PatientPayload struct {
-	PatientRecord   *FHIRPatient         `json:"patientRecord,omitempty"`
-	HasOpenEpisodes bool                 `json:"hasOpenEpisodes,omitempty"`
-	OpenEpisodes    []*FHIREpisodeOfCare `json:"openEpisodes,omitempty"`
+	PatientRecord *FHIRPatient `json:"patientRecord,omitempty"`
 }
 
 // RetirePatientInput is used to retire patient records.

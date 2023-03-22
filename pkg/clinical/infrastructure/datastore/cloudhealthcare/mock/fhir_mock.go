@@ -567,13 +567,19 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRMedicationRelayPayload{}, nil
 		},
 		MockCreateFHIRPatientFn: func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
+			male := domain.PatientGenderEnumMale
 			return &domain.PatientPayload{
 				PatientRecord: &domain.FHIRPatient{
-					ID:                   new(string),
-					Text:                 &domain.FHIRNarrative{},
-					Identifier:           []*domain.FHIRIdentifier{},
-					Active:               new(bool),
-					Name:                 []*domain.FHIRHumanName{},
+					ID:         new(string),
+					Text:       &domain.FHIRNarrative{},
+					Gender:     &male,
+					Identifier: []*domain.FHIRIdentifier{},
+					Active:     new(bool),
+					Name: []*domain.FHIRHumanName{
+						{
+							Text: gofakeit.Name(),
+						},
+					},
 					Telecom:              []*domain.FHIRContactPoint{},
 					BirthDate:            &scalarutils.Date{},
 					DeceasedBoolean:      new(bool),
@@ -589,8 +595,6 @@ func NewFHIRMock() *FHIRMock {
 					ManagingOrganization: &domain.FHIRReference{},
 					Link:                 []*domain.FHIRPatientLink{},
 				},
-				HasOpenEpisodes: false,
-				OpenEpisodes:    []*domain.FHIREpisodeOfCare{},
 			}, nil
 		},
 		MockPatchFHIRPatientFn: func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error) {

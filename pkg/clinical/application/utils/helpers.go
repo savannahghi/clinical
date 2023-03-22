@@ -23,9 +23,6 @@ const (
 	// OrganizationIDContextKey is the key used to add an organizationID to the context
 	OrganizationIDContextKey = ContextKey("OrganizationID")
 
-	// ProgramIDContextKey is the key used to add a program to the context
-	ProgramIDContextKey = ContextKey("ProgramID")
-
 	// FacilityIDContextKey is the key used to add a facility to the context
 	FacilityIDContextKey = ContextKey("FacilityID")
 )

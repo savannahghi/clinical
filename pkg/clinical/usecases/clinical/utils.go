@@ -80,7 +80,7 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 			return false, fmt.Errorf("unable to find patient by phonenumber: %s", *phoneNumber)
 		}
 
-		if len(patient.Edges) > 1 {
+		if len(patient.Edges) >= 1 {
 			exists = true
 			break
 		}

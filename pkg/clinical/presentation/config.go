@@ -44,22 +44,6 @@ var ClinicalAllowedOrigins = []string{
 	"https://clinical-prod.bewell.co.ke",
 }
 
-// ClinicalAllowedHeaders is a list of CORS allowed headers for the clinical
-// service
-var ClinicalAllowedHeaders = []string{
-	"Accept",
-	"Accept-Charset",
-	"Accept-Language",
-	"Accept-Encoding",
-	"Origin",
-	"Host",
-	"User-Agent",
-	"Content-Length",
-	"Content-Type",
-	"Authorization",
-	"X-Authorization",
-}
-
 var (
 	authServerEndpoint = serverutils.MustGetEnvVar("AUTHSERVER_ENDPOINT")
 	clientID           = serverutils.MustGetEnvVar("CLIENT_ID")
