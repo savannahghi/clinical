@@ -47,6 +47,7 @@ type Clinical interface {
 	GetPatientObservations(ctx context.Context, patientID string, observationCode string) ([]*dto.Observation, error)
 	GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 	GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
+	GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 }
 
 // Interactor is an implementation of the usecases interface
