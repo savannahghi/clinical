@@ -185,6 +185,9 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 
 	tenants := v1.Group("/tenants")
 	tenants.POST("", handlers.RegisterTenant)
+
+	facilities := v1.Group("/facilities")
+	facilities.POST("", handlers.RegisterFacility)
 }
 
 // GQLHandler sets up a GraphQL resolver

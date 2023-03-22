@@ -132,24 +132,22 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to check patient existence" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
 					return nil, fmt.Errorf("fail to get a user")
 				}
 			}
 
 			if tt.name == "Sad Case - Patient already exists" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string) (*domain.PatientConnection, error) {
+				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
 					return &domain.PatientConnection{
 						Edges: []*domain.PatientEdge{
 							{
-								Cursor:          "",
-								Node:            &domain.FHIRPatient{},
-								HasOpenEpisodes: false,
+								Cursor: "",
+								Node:   &domain.FHIRPatient{},
 							},
 							{
-								Cursor:          "",
-								Node:            &domain.FHIRPatient{},
-								HasOpenEpisodes: false,
+								Cursor: "",
+								Node:   &domain.FHIRPatient{},
 							},
 						},
 						PageInfo: &firebasetools.PageInfo{},
@@ -408,7 +406,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to find organisation using org ID" {
-				fakeFHIR.MockFindOrganizationByIDFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("failed to find org by ID")
 				}
 			}
@@ -551,7 +549,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to get organisation" {
-				fakeFHIR.MockFindOrganizationByIDFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("failed to find org by ID")
 				}
 			}
@@ -713,7 +711,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to get organisation" {
-				fakeFHIR.MockFindOrganizationByIDFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("failed to find org by ID")
 				}
 			}

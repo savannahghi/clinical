@@ -54,6 +54,21 @@ const (
 	// WeightCIELTerminologyCode is the terminology code for weight
 	WeightCIELTerminologyCode = "5089"
 
+	// HeightCIELTerminologyCode is the terminology code height
+	HeightCIELTerminologyCode = "5090"
+
+	// TemperatureCIELTerminologyCode is the terminology code for temperature
+	TemperatureCIELTerminologyCode = "5088"
+
+	// RespiratoryRateCIELTerminologyCode is the terminology code for respiratory rate
+	RespiratoryRateCIELTerminologyCode = "5242"
+
+	// PulseCIELTerminologyCode is the terminology code for pulse
+	PulseCIELTerminologyCode = "5087"
+
+	// BloodPressureCIELTerminologyCode is the terminology code for blood pressure
+	BloodPressureCIELTerminologyCode = "5085"
+
 	// BMICIELTerminologyCode is the terminology code for Body Mass Index
 	BMICIELTerminologyCode = "1342"
 

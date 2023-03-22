@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	FHIR "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	"github.com/savannahghi/converterandformatter"
@@ -25,6 +26,7 @@ func TestStoreImpl_SearchFHIRObservation(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -58,12 +60,12 @@ func TestStoreImpl_SearchFHIRObservation(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "sad case: search resource error" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search fhir resource")
 				}
 			}
 
-			got, err := fh.SearchFHIRObservation(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIRObservation(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRObservation() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -217,14 +219,6 @@ func TestStoreImpl_GetFHIRPatient(t *testing.T) {
 			},
 			wantErr: true,
 		},
-		{
-			name: "sad case: error searching active episode",
-			args: args{
-				ctx: context.Background(),
-				id:  uuid.NewString(),
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -251,7 +245,7 @@ func TestStoreImpl_GetFHIRPatient(t *testing.T) {
 					return nil
 				}
 
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					episode := domain.FHIREpisodeOfCare{
 						Period: &domain.FHIRPeriod{
 							Start: "2020-09-24T18:02:38.661033Z",
@@ -273,31 +267,6 @@ func TestStoreImpl_GetFHIRPatient(t *testing.T) {
 			if tt.name == "sad case: error retrieving fhir resource" {
 				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
 					return fmt.Errorf("failed to get resource")
-				}
-			}
-
-			if tt.name == "sad case: error searching active episode" {
-				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
-					id := gofakeit.UUID()
-					patient := &domain.FHIRPatient{
-						ID: &id,
-					}
-
-					bs, err := json.Marshal(patient)
-					if err != nil {
-						return err
-					}
-
-					err = json.Unmarshal(bs, resource)
-					if err != nil {
-						return err
-					}
-
-					return nil
-				}
-
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
-					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
@@ -717,6 +686,7 @@ func TestStoreImpl_SearchFHIRMedicationStatement(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -750,12 +720,12 @@ func TestStoreImpl_SearchFHIRMedicationStatement(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "sad case: search resource error" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search")
 				}
 			}
 
-			got, err := fh.SearchFHIRMedicationStatement(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIRMedicationStatement(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRMedicationStatement() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -907,6 +877,7 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 	type args struct {
 		ctx          context.Context
 		searchParams string
+		tenant       dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -929,14 +900,6 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 			},
 			wantErr: true,
 		},
-		{
-			name: "sad case: search episode error",
-			args: args{
-				ctx:          context.Background(),
-				searchParams: gofakeit.UUID(),
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -944,7 +907,7 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "happy case: search patient" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					var payload map[string]interface{}
 
 					switch resourceType {
@@ -982,7 +945,7 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: search patient error" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					var payload map[string]interface{}
 
 					switch resourceType {
@@ -1011,32 +974,7 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 				}
 			}
 
-			if tt.name == "sad case: search episode error" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
-					var payload map[string]interface{}
-
-					switch resourceType {
-					case "Patient":
-						patient, err := fakePatient()
-						if err != nil {
-							return nil, err
-						}
-
-						payload, err = converterandformatter.StructToMap(patient)
-						if err != nil {
-							return nil, err
-						}
-					case "EpisodeOfCare":
-						return nil, fmt.Errorf("failed to find episode")
-					}
-
-					return []map[string]interface{}{
-						payload,
-					}, nil
-				}
-			}
-
-			got, err := fh.SearchFHIRPatient(tt.args.ctx, tt.args.searchParams)
+			got, err := fh.SearchFHIRPatient(tt.args.ctx, tt.args.searchParams, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1681,7 +1619,7 @@ func TestStoreImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 	}
 }
 
-func TestStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
+func TestStoreImpl_GetFHIROrganization_Unittest(t *testing.T) {
 
 	type args struct {
 		ctx            context.Context
@@ -1730,9 +1668,9 @@ func TestStoreImpl_FindOrganizationByID_Unittest(t *testing.T) {
 				}
 			}
 
-			got, err := fh.FindOrganizationByID(tt.args.ctx, tt.args.organizationID)
+			got, err := fh.GetFHIROrganization(tt.args.ctx, tt.args.organizationID)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("FHIRUseCaseImpl.FindOrganizationByID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("FHIRUseCaseImpl.GetFHIROrganization() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if tt.wantErr && got != nil {
@@ -2290,6 +2228,7 @@ func TestStoreImpl_SearchFHIRServiceRequest(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2321,12 +2260,12 @@ func TestStoreImpl_SearchFHIRServiceRequest(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a service request" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
-			got, err := fh.SearchFHIRServiceRequest(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIRServiceRequest(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRServiceRequest() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2344,6 +2283,7 @@ func TestStoreImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2375,12 +2315,12 @@ func TestStoreImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search an allergy intolerance" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
-			got, err := fh.SearchFHIRAllergyIntolerance(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIRAllergyIntolerance(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2398,6 +2338,7 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2429,12 +2370,12 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a composition" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
-			got, err := fh.SearchFHIRComposition(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIRComposition(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRComposition() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2452,6 +2393,7 @@ func TestStoreImpl_SearchFHIRCondition(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2483,12 +2425,12 @@ func TestStoreImpl_SearchFHIRCondition(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a condition" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
-			got, err := fh.SearchFHIRCondition(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIRCondition(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRCondition() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2506,6 +2448,7 @@ func TestStoreImpl_SearchFHIREncounter(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2537,12 +2480,12 @@ func TestStoreImpl_SearchFHIREncounter(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search an encounter" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
-			got, err := fh.SearchFHIREncounter(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIREncounter(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIREncounter() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2560,6 +2503,7 @@ func TestStoreImpl_SearchFHIRMedicationRequest(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2591,12 +2535,12 @@ func TestStoreImpl_SearchFHIRMedicationRequest(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a medication request" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
-			got, err := fh.SearchFHIRMedicationRequest(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIRMedicationRequest(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2777,12 +2721,13 @@ func TestStoreImpl_DeleteFHIRMedicationRequest(t *testing.T) {
 	}
 }
 
-func TestStoreImpl_Encounters(t *testing.T) {
+func TestStoreImpl_SearchPatientEncounters(t *testing.T) {
 	status := domain.EncounterStatusEnumPlanned
 	type args struct {
 		ctx              context.Context
 		patientReference string
 		status           *domain.EncounterStatusEnum
+		tenant           dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2822,12 +2767,12 @@ func TestStoreImpl_Encounters(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
-			got, err := fh.Encounters(tt.args.ctx, tt.args.patientReference, tt.args.status)
+			got, err := fh.SearchPatientEncounters(tt.args.ctx, tt.args.patientReference, tt.args.status, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.Encounters() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2845,6 +2790,7 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -2878,12 +2824,12 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
-			got, err := fh.SearchFHIREpisodeOfCare(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIREpisodeOfCare(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIREpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2903,7 +2849,7 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 	OrgRef := "Organization/"
 	type args struct {
 		ctx     context.Context
-		episode domain.FHIREpisodeOfCare
+		episode domain.FHIREpisodeOfCareInput
 	}
 	tests := []struct {
 		name    string
@@ -2914,13 +2860,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			name: "Happy case: create episode of care",
 			args: args{
 				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
+				episode: domain.FHIREpisodeOfCareInput{
 					ID:     &UUID,
 					Status: &status,
-					Patient: &domain.FHIRReference{
+					Patient: &domain.FHIRReferenceInput{
 						Reference: &PatientRef,
 					},
-					ManagingOrganization: &domain.FHIRReference{
+					ManagingOrganization: &domain.FHIRReferenceInput{
 						Reference: &OrgRef,
 					},
 				},
@@ -2931,13 +2877,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			name: "Happy case: create episode of care, episode does not exist",
 			args: args{
 				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
+				episode: domain.FHIREpisodeOfCareInput{
 					ID:     &UUID,
 					Status: &status,
-					Patient: &domain.FHIRReference{
+					Patient: &domain.FHIRReferenceInput{
 						Reference: &PatientRef,
 					},
-					ManagingOrganization: &domain.FHIRReference{
+					ManagingOrganization: &domain.FHIRReferenceInput{
 						Reference: &OrgRef,
 					},
 				},
@@ -2945,33 +2891,16 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad case: failed to search FHIR episode of care",
-			args: args{
-				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
-					ID:     &UUID,
-					Status: &status,
-					Patient: &domain.FHIRReference{
-						Reference: &PatientRef,
-					},
-					ManagingOrganization: &domain.FHIRReference{
-						Reference: &OrgRef,
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
 			name: "Sad case: failed to create FHIR resource",
 			args: args{
 				ctx: context.Background(),
-				episode: domain.FHIREpisodeOfCare{
+				episode: domain.FHIREpisodeOfCareInput{
 					ID:     &UUID,
 					Status: &status,
-					Patient: &domain.FHIRReference{
+					Patient: &domain.FHIRReferenceInput{
 						Reference: &PatientRef,
 					},
-					ManagingOrganization: &domain.FHIRReference{
+					ManagingOrganization: &domain.FHIRReferenceInput{
 						Reference: &OrgRef,
 					},
 				},
@@ -2985,19 +2914,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Happy case: create episode of care, episode does not exist" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, nil
 				}
 			}
 
-			if tt.name == "Sad case: failed to search FHIR episode of care" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
-					return nil, fmt.Errorf("an error occurred")
-				}
-			}
-
 			if tt.name == "Sad case: failed to create FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, nil
 				}
 				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
@@ -3022,6 +2945,7 @@ func TestStoreImpl_SearchFHIROrganization(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params map[string]interface{}
+		tenant dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3055,11 +2979,11 @@ func TestStoreImpl_SearchFHIROrganization(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR organisation" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
-			got, err := fh.SearchFHIROrganization(tt.args.ctx, tt.args.params)
+			got, err := fh.SearchFHIROrganization(tt.args.ctx, tt.args.params, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIROrganization() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3076,6 +3000,7 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 	type args struct {
 		ctx          context.Context
 		searchParams map[string]interface{}
+		tenant       dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3115,12 +3040,12 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
-			got, err := fh.SearchEpisodesByParam(tt.args.ctx, tt.args.searchParams)
+			got, err := fh.SearchEpisodesByParam(tt.args.ctx, tt.args.searchParams, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchEpisodesByParam() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3137,6 +3062,7 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 	type args struct {
 		ctx              context.Context
 		patientReference string
+		tenant           dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3166,12 +3092,12 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
-			got, err := fh.OpenEpisodes(tt.args.ctx, tt.args.patientReference)
+			got, err := fh.OpenEpisodes(tt.args.ctx, tt.args.patientReference, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.OpenEpisodes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3189,6 +3115,7 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		patient domain.FHIRPatient
+		tenant  dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3225,12 +3152,12 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
-			got, err := fh.HasOpenEpisode(tt.args.ctx, tt.args.patient)
+			got, err := fh.HasOpenEpisode(tt.args.ctx, tt.args.patient, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.HasOpenEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3246,6 +3173,7 @@ func TestStoreImpl_SearchEpisodeEncounter(t *testing.T) {
 	type args struct {
 		ctx              context.Context
 		episodeReference string
+		tenant           dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3275,11 +3203,11 @@ func TestStoreImpl_SearchEpisodeEncounter(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
-			got, err := fh.SearchEpisodeEncounter(tt.args.ctx, tt.args.episodeReference)
+			got, err := fh.SearchEpisodeEncounter(tt.args.ctx, tt.args.episodeReference, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchEpisodeEncounter() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3296,6 +3224,7 @@ func TestStoreImpl_GetActiveEpisode(t *testing.T) {
 	type args struct {
 		ctx       context.Context
 		episodeID string
+		tenant    dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3333,17 +3262,17 @@ func TestStoreImpl_GetActiveEpisode(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
 			if tt.name == "Sad case: empty FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 					return []map[string]interface{}{}, nil
 				}
 			}
-			got, err := fh.GetActiveEpisode(tt.args.ctx, tt.args.episodeID)
+			got, err := fh.GetActiveEpisode(tt.args.ctx, tt.args.episodeID, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.GetActiveEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3832,6 +3761,7 @@ func TestStoreImpl_EndEpisode(t *testing.T) {
 	type args struct {
 		ctx       context.Context
 		episodeID string
+		tenant    dto.TenantIdentifiers
 	}
 	tests := []struct {
 		name    string
@@ -3947,7 +3877,7 @@ func TestStoreImpl_EndEpisode(t *testing.T) {
 				}
 			}
 
-			got, err := fh.EndEpisode(tt.args.ctx, tt.args.episodeID)
+			got, err := fh.EndEpisode(tt.args.ctx, tt.args.episodeID, tt.args.tenant)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.EndEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return

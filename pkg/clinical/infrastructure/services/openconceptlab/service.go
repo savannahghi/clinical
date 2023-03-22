@@ -81,7 +81,7 @@ func (s Service) MakeRequest(method string, path string, params url.Values, body
 // The URL that is composed follows this pattern: GET /orgs/:org/sources/:source/[:sourceVersion/]concepts/:concept/
 // e.g GET /orgs/WHO/sources/ICD-10-2010/concepts/A15.1/?includeInverseMappings=true
 func (s Service) GetConcept(
-	ctx context.Context, org string, source string, concept string,
+	_ context.Context, org string, source string, concept string,
 	includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error) {
 	s.enforcePreconditions()
 
@@ -120,7 +120,7 @@ func (s Service) GetConcept(
 // The URL that is composed follows this pattern: GET /orgs/:org/sources/:source/[:sourceVersion/]concepts/
 // e.g GET /orgs/PEPFAR-Test7/sources/MER/concepts/?conceptClass="Symptom"+OR+"Diagnosis"
 func (s Service) ListConcepts(
-	ctx context.Context, org string, source string, verbose bool, q *string,
+	_ context.Context, org string, source string, verbose bool, q *string,
 	sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 	locale *string, includeRetired *bool,
 	includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error) {

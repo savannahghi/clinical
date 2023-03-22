@@ -8,6 +8,7 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -77,16 +78,16 @@ func TestUsecaseImpl_CreateFHIROrganization_Unittest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-			Fakefhir := fakeFHIRMock.NewFHIRMock()
-			FakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakefhir := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakefhir, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case" {
-				Fakefhir.MockCreateFHIROrganizationFn = func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+				fakefhir.MockCreateFHIROrganizationFn = func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("Error creating fhir organization")
 				}
 			}
@@ -212,13 +213,13 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 					return &domain.FHIRAllergyIntoleranceRelayConnection{}, fmt.Errorf("failed to search allergy")
 				}
 			}
 
 			if tt.name == "Happy Case - Successfully get allergy intolerance" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 					return &domain.FHIRAllergyIntoleranceRelayConnection{
 						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
 							{
@@ -232,7 +233,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get allergy intolerance - nil node" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 					return &domain.FHIRAllergyIntoleranceRelayConnection{
 						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
 							{
@@ -245,13 +246,13 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search observation" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					return &domain.FHIRObservationRelayConnection{}, fmt.Errorf("failed to get observation")
 				}
 			}
 
 			if tt.name == "Happy Case - Successfully get observation" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					return &domain.FHIRObservationRelayConnection{
 						Edges: []*domain.FHIRObservationRelayEdge{
 							{
@@ -265,7 +266,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get observation - nil node" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					return &domain.FHIRObservationRelayConnection{
 						Edges: []*domain.FHIRObservationRelayEdge{
 							{
@@ -278,13 +279,13 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search medication statement" {
-				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					return &domain.FHIRMedicationStatementRelayConnection{}, fmt.Errorf("failed to get medication statement")
 				}
 			}
 
 			if tt.name == "Happy Case - Successfully get medication statement" {
-				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					return &domain.FHIRMedicationStatementRelayConnection{
 						Edges: []*domain.FHIRMedicationStatementRelayEdge{
 							{
@@ -298,7 +299,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search medication statement - nil node" {
-				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					return &domain.FHIRMedicationStatementRelayConnection{
 						Edges: []*domain.FHIRMedicationStatementRelayEdge{
 							{
@@ -333,19 +334,19 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 	type args struct {
 		ctx   context.Context
-		input domain.HealthTimelineInput
+		input dto.HealthTimelineInput
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *domain.HealthTimeline
+		want    *dto.HealthTimeline
 		wantErr bool
 	}{
 		{
 			name: "Happy case: patient timeline",
 			args: args{
 				ctx: context.Background(),
-				input: domain.HealthTimelineInput{
+				input: dto.HealthTimelineInput{
 					PatientID: gofakeit.UUID(),
 					Offset:    0,
 					Limit:     20,
@@ -357,7 +358,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 			name: "Sad case: patient timeline invalid date",
 			args: args{
 				ctx: context.Background(),
-				input: domain.HealthTimelineInput{
+				input: dto.HealthTimelineInput{
 					PatientID: gofakeit.UUID(),
 					Offset:    0,
 					Limit:     20,
@@ -369,7 +370,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 			name: "Sad case: invalid patient id",
 			args: args{
 				ctx: context.Background(),
-				input: domain.HealthTimelineInput{
+				input: dto.HealthTimelineInput{
 					PatientID: "invalid",
 					Offset:    0,
 					Limit:     20,
@@ -380,16 +381,16 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-			Fakefhir := fakeFHIRMock.NewFHIRMock()
-			FakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakefhir := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakefhir, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Happy case: patient timeline" {
-				Fakefhir.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakefhir.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 					return &domain.FHIRAllergyIntoleranceRelayConnection{
 						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
 							{
@@ -457,7 +458,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 					}, nil
 				}
 
-				Fakefhir.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+				fakefhir.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					return &domain.FHIRMedicationStatementRelayConnection{
 						Edges: []*domain.FHIRMedicationStatementRelayEdge{
 							{
@@ -515,7 +516,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 					}, nil
 				}
 
-				Fakefhir.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakefhir.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
 
 					return &domain.FHIRObservationRelayConnection{
@@ -539,7 +540,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 			}
 
 			if tt.name == "Sad case: patient timeline invalid date" {
-				Fakefhir.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakefhir.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					instant := scalarutils.Instant("")
 
 					return &domain.FHIRObservationRelayConnection{
@@ -718,13 +719,13 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to search medication statement" {
-				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					return nil, fmt.Errorf("failed to search medication statement")
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search medication statement - nil node" {
-				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					return &domain.FHIRMedicationStatementRelayConnection{
 						Edges: []*domain.FHIRMedicationStatementRelayEdge{
 							{
@@ -737,7 +738,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Happy Case - Successfully search medication statement" {
-				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRMedicationStatementRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					return &domain.FHIRMedicationStatementRelayConnection{
 						Edges: []*domain.FHIRMedicationStatementRelayEdge{
 							{
@@ -751,13 +752,13 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 					return nil, fmt.Errorf("failed to search allergy intolerance")
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil node" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 					return &domain.FHIRAllergyIntoleranceRelayConnection{
 						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
 							{
@@ -770,7 +771,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Happy Case - Successfully search allergy intolerance" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 					return &domain.FHIRAllergyIntoleranceRelayConnection{
 						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
 							{
@@ -784,7 +785,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search weight" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					if params["code"] == common.WeightCIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
@@ -802,7 +803,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search BMI" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					if params["code"] == common.BMICIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
@@ -820,7 +821,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search viralLoad" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					if params["code"] == common.ViralLoadCIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
@@ -838,7 +839,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search cd4Count" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					if params["code"] == common.CD4CountCIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
@@ -856,7 +857,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil node" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					return &domain.FHIRObservationRelayConnection{
 						Edges: []*domain.FHIRObservationRelayEdge{
 							{
@@ -869,7 +870,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Happy Case - Successfully search observation" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					return &domain.FHIRObservationRelayConnection{
 						Edges: []*domain.FHIRObservationRelayEdge{
 							{

@@ -1,0 +1,40 @@
+enum EpisodeOfCareStatusEnum {
+  planned
+  active
+  finished
+  cancelled
+}
+
+enum EncounterStatusEnum {
+  planned
+  arrived
+  triaged
+  in_progress
+  onleave
+  finished
+  cancelled
+  entered_in_error
+  unknown
+}
+
+enum EncounterClass {
+  ambulatory
+}
+
+enum ResourceType {
+  AllergyIntolerance
+  Observation
+  Condition
+  MedicationStatement
+}
+
+enum AllergyIntoleranceReactionSeverityEnum {
+  mild
+  moderate
+  severe
+}
+
+enum ObservationStatus {
+  final
+  cancelled
+}

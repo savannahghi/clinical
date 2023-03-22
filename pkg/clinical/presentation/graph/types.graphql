@@ -1,13 +1,57 @@
+type AllergyIntolerance {
+  id: ID!
+  patientID: String!
+  encounterID: String
+  onsetDateTime: DateTime!
+  severity: AllergyIntoleranceReactionSeverityEnum
+  substanceCode: String!
+  substanceSystem: String
+}
+
+type Observation {
+  id: String!
+  status: ObservationStatus!
+  patientID: String!
+  encounterID: String!
+  name: String!
+  value: String!
+}
+
 type MedicalData {
   regimen: [FHIRMedicationStatement]
-  allergies: [FHIRAllergyIntolerance]
-  weight: [FHIRObservation]
-  bmi: [FHIRObservation]
-  viralLoad: [FHIRObservation]
-  cd4Count: [FHIRObservation]
+  allergies: [AllergyIntolerance]
+  weight: [Observation]
+  bmi: [Observation]
+  viralLoad: [Observation]
+  cd4Count: [Observation]
+}
+
+type TimelineResource {
+  id: ID!
+  resourceType: ResourceType
+  name: String
+  value: String
+  status: String
+  date: Date
 }
 
 type HealthTimeline {
-  timeline: [Map]
+  timeline: [TimelineResource]
   totalCount: Int!
 }
+
+type EpisodeOfCare {
+  id: ID!
+  status: EpisodeOfCareStatusEnum!
+  patientID: String!
+}
+
+type Encounter {
+  id: String
+  class: EncounterClass
+  episodeOfCareID: String
+  status: EncounterStatusEnum
+  patientID: String
+}
+
+

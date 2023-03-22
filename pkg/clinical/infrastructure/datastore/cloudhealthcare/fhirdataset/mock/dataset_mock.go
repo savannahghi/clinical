@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 )
 
 // FakeFHIRRepository is a mock FHIR repository
@@ -14,7 +16,7 @@ type FakeFHIRRepository struct {
 	MockUpdateFHIRResourceFn    func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
 	MockGetFHIRPatientAllDataFn func(fhirResourceID string) ([]byte, error)
 	MockGetFHIRResourceFn       func(resourceType, fhirResourceID string, resource interface{}) error
-	MockSearchFHIRResourceFn    func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error)
+	MockSearchFHIRResourceFn    func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error)
 }
 
 // NewFakeFHIRRepositoryMock initializes a new FakeFHIRRepositoryMock
@@ -42,7 +44,7 @@ func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 		MockGetFHIRResourceFn: func(resourceType, fhirResourceID string, resource interface{}) error {
 			return nil
 		},
-		MockSearchFHIRResourceFn: func(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
+		MockSearchFHIRResourceFn: func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
 			n := map[string]interface{}{"given": []string{"John"}, "family": []string{"Doe"}}
 			p := map[string]interface{}{
 				"resourceType": "Patient/",
@@ -100,6 +102,6 @@ func (f *FakeFHIRRepository) GetFHIRResource(resourceType, fhirResourceID string
 }
 
 // SearchFHIRResource ...
-func (f *FakeFHIRRepository) SearchFHIRResource(resourceType string, params map[string]interface{}) ([]map[string]interface{}, error) {
-	return f.MockSearchFHIRResourceFn(resourceType, params)
+func (f *FakeFHIRRepository) SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+	return f.MockSearchFHIRResourceFn(resourceType, params, tenant)
 }

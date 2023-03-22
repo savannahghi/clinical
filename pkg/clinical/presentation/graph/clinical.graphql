@@ -1,0 +1,32 @@
+extend type Query {
+  patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
+  getMedicalData(patientID: String!): MedicalData
+
+  episodeOfCare(id: ID!): EpisodeOfCare
+
+  # Encounter
+  listPatientEncounters(patientID: String!): [Encounter!]!
+}
+
+extend type Mutation {
+  createFHIROrganization(
+    input: FHIROrganizationInput!
+  ): FHIROrganizationRelayPayload!
+
+  # EpisodeOfCare
+  createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
+  endEpisodeOfCare(id: ID!): EpisodeOfCare
+
+  # Encounter
+  startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
+
+  # Observation
+  recordTemperature(input: ObservationInput!): Observation!
+  recordHeight(input: ObservationInput!): Observation!
+  recordWeight(input: ObservationInput!): Observation!
+  recordRespiratoryRate(input: ObservationInput!): Observation!
+  recordPulseRate(input: ObservationInput!): Observation!
+  recordBloodPressure(input: ObservationInput!): Observation!
+  recordBMI(input: ObservationInput!): Observation!
+}

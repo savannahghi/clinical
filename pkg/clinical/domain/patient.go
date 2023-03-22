@@ -3,6 +3,7 @@ package domain
 import (
 	"time"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 )
@@ -272,15 +273,13 @@ type FHIRPatientRelayEdge struct {
 
 // FHIRPatientRelayPayload is used to return single instances of Patient
 type FHIRPatientRelayPayload struct {
-	Resource        *FHIRPatient `json:"resource,omitempty"`
-	HasOpenEpisodes bool         `json:"hasOpenEpisodes,omitempty"`
+	Resource *FHIRPatient `json:"resource,omitempty"`
 }
 
 // PatientEdge is a Relay style edge for listings of FHIR patient records.
 type PatientEdge struct {
-	Cursor          string       `json:"cursor"`
-	Node            *FHIRPatient `json:"node"`
-	HasOpenEpisodes bool         `json:"hasOpenEpisodes"`
+	Cursor string       `json:"cursor"`
+	Node   *FHIRPatient `json:"node"`
 }
 
 // PatientConnection is a Relay style connection for use in listings of FHIR
@@ -324,9 +323,9 @@ func (pl *PatientLink) SetID(id string) {
 // MedicalData is a collection of medical data of specific category
 type MedicalData struct {
 	Regimen   []*FHIRMedicationStatement
-	Allergies []*FHIRAllergyIntolerance
-	Weight    []*FHIRObservation
-	BMI       []*FHIRObservation
-	ViralLoad []*FHIRObservation
-	CD4Count  []*FHIRObservation
+	Allergies []*dto.AllergyIntolerance
+	Weight    []*dto.Observation
+	BMI       []*dto.Observation
+	ViralLoad []*dto.Observation
+	CD4Count  []*dto.Observation
 }

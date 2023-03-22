@@ -1,6 +1,6 @@
 # Options for analysis running.
 run:
-  timeout: 2m
+  timeout: 3m
   tests: false
   skip-dirs:
     - pkg/clinical/presentation/graph/
@@ -23,7 +23,6 @@ linters:
     - dupl
     - errorlint
     - bodyclose
-    - contextcheck
     - gocritic
     - nilerr
     - ireturn

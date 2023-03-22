@@ -3,6 +3,7 @@ package interactor
 import (
 	"context"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
@@ -11,7 +12,7 @@ import (
 // UseCasesClinical represents all the patient business logic
 type Clinical interface {
 	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
-	PatientHealthTimeline(ctx context.Context, input domain.HealthTimelineInput) (*domain.HealthTimeline, error)
+	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*domain.MedicalData, error)
 }
 

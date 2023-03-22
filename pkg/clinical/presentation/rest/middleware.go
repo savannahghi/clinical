@@ -13,13 +13,13 @@ import (
 
 // Validators defines the methods used to validate the various identifiers that the api expects
 type Validators interface {
-	FindOrganizationByID(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
+	GetFHIROrganization(ctx context.Context, organizationID string) (*domain.FHIROrganizationRelayPayload, error)
 }
 
 // OrganisationValidator verifies that the provided organisation exists in clinical
 // to ensure the request comes from a known/registered organisation
 func OrganisationValidator(v Validators, identifier string) error {
-	_, err := v.FindOrganizationByID(context.Background(), identifier)
+	_, err := v.GetFHIROrganization(context.Background(), identifier)
 	if err != nil {
 		return fmt.Errorf("failed to find provided organisation")
 	}
@@ -60,11 +60,15 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 	return func(c *gin.Context) {
 		headers := []TenantIdentifier{
 			{
-				HeaderKey:     "OrganizationID",
+				HeaderKey:     "Clinical-Organization-ID",
 				ContextKey:    utils.OrganizationIDContextKey,
 				ValidatorFunc: OrganisationValidator,
 			},
-			// TODO: Add more headers here as needed e.g FacilityID, ProgramID
+			{
+				HeaderKey:     "Clinical-Facility-ID",
+				ContextKey:    utils.FacilityIDContextKey,
+				ValidatorFunc: OrganisationValidator,
+			},
 		}
 
 		for _, header := range headers {
@@ -79,6 +83,7 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 
 			err := header.ValidatorFunc(validator, headerValue)
 			if err != nil {
+				err := fmt.Errorf("invalid `%s` header value: %s", header.HeaderKey, headerValue)
 				handleError(c.Writer, err)
 				c.Abort()
 
@@ -86,6 +91,8 @@ func TenantIdentifierExtractionMiddleware(validator Validators) gin.HandlerFunc 
 			}
 
 			c.Set(string(header.ContextKey), headerValue)
+
+			c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), header.ContextKey, headerValue))
 		}
 
 		c.Next()

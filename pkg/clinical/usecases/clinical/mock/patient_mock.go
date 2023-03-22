@@ -19,11 +19,11 @@ func NewFakeClinicalMock() *FakeClinical {
 		MockGetMedicalDataFn: func(ctx context.Context, patientID string) (*domain.MedicalData, error) {
 			return &domain.MedicalData{
 				Regimen:   []*domain.FHIRMedicationStatement{},
-				Allergies: []*domain.FHIRAllergyIntolerance{},
-				Weight:    []*domain.FHIRObservation{},
-				BMI:       []*domain.FHIRObservation{},
-				ViralLoad: []*domain.FHIRObservation{},
-				CD4Count:  []*domain.FHIRObservation{},
+				Allergies: []*dto.AllergyIntolerance{},
+				Weight:    []*dto.Observation{},
+				BMI:       []*dto.Observation{},
+				ViralLoad: []*dto.Observation{},
+				CD4Count:  []*dto.Observation{},
 			}, nil
 		},
 		MockCreatePubsubPatientFn: func(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
