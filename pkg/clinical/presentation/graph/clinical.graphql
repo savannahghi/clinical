@@ -2,7 +2,7 @@ extend type Query {
   patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
   getMedicalData(patientID: String!): MedicalData
 
-  episodeOfCare(id: ID!): EpisodeOfCare
+  getEpisodeOfCare(id: ID!): EpisodeOfCare
 
   # Encounter
   listPatientEncounters(patientID: String!): [Encounter!]!

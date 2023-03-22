@@ -36,7 +36,7 @@ type FHIRMock struct {
 	MockUpgradeEpisodeFn                func(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error)
 	MockSearchEpisodeEncounterFn        func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers) (*domain.FHIREncounterRelayConnection, error)
 	MockEndEncounterFn                  func(ctx context.Context, encounterID string) (bool, error)
-	MockEndEpisodeFn                    func(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (bool, error)
+	MockEndEpisodeFn                    func(ctx context.Context, episodeID string) (bool, error)
 	MockGetActiveEpisodeFn              func(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (*domain.FHIREpisodeOfCare, error)
 	MockSearchFHIRServiceRequestFn      func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRServiceRequestRelayConnection, error)
 	MockCreateFHIRServiceRequestFn      func(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
@@ -223,15 +223,18 @@ func NewFHIRMock() *FHIRMock {
 			UUID := uuid.New().String()
 			PatientRef := "Patient/1"
 			OrgRef := "Organization/1"
+			st := domain.EpisodeOfCareStatusEnumActive
 			return &domain.FHIREpisodeOfCareRelayPayload{
 				Resource: &domain.FHIREpisodeOfCare{
 					ID:            &UUID,
+					Status:        &st,
 					Text:          &domain.FHIRNarrative{},
 					Identifier:    []*domain.FHIRIdentifier{},
 					StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
 					Type:          []*domain.FHIRCodeableConcept{},
 					Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
 					Patient: &domain.FHIRReference{
+						ID:        &UUID,
 						Reference: &PatientRef,
 					},
 					ManagingOrganization: &domain.FHIRReference{
@@ -303,12 +306,21 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.EpisodeOfCarePayload{}, nil
 		},
 		MockSearchEpisodeEncounterFn: func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers) (*domain.FHIREncounterRelayConnection, error) {
-			return &domain.FHIREncounterRelayConnection{}, nil
+			id := gofakeit.UUID()
+			return &domain.FHIREncounterRelayConnection{
+				Edges: []*domain.FHIREncounterRelayEdge{
+					{
+						Node: &domain.FHIREncounter{
+							ID: &id,
+						},
+					},
+				},
+			}, nil
 		},
 		MockEndEncounterFn: func(ctx context.Context, encounterID string) (bool, error) {
 			return true, nil
 		},
-		MockEndEpisodeFn: func(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (bool, error) {
+		MockEndEpisodeFn: func(ctx context.Context, episodeID string) (bool, error) {
 			return true, nil
 		},
 		MockGetActiveEpisodeFn: func(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (*domain.FHIREpisodeOfCare, error) {
@@ -722,8 +734,8 @@ func (fh *FHIRMock) EndEncounter(ctx context.Context, encounterID string) (bool,
 }
 
 // EndEpisode is a mock implementation of EndEpisode method
-func (fh *FHIRMock) EndEpisode(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers) (bool, error) {
-	return fh.MockEndEpisodeFn(ctx, episodeID, tenant)
+func (fh *FHIRMock) EndEpisode(ctx context.Context, episodeID string) (bool, error) {
+	return fh.MockEndEpisodeFn(ctx, episodeID)
 }
 
 // GetActiveEpisode is a mock implementation of GetActiveEpisode method
