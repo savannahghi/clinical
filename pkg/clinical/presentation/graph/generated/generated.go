@@ -400,6 +400,7 @@ type ComplexityRoot struct {
 		EndEncounter           func(childComplexity int, encounterID string) int
 		EndEpisodeOfCare       func(childComplexity int, id string) int
 		RecordBloodPressure    func(childComplexity int, input dto.ObservationInput) int
+		RecordBmi              func(childComplexity int, input dto.ObservationInput) int
 		RecordHeight           func(childComplexity int, input dto.ObservationInput) int
 		RecordPulseRate        func(childComplexity int, input dto.ObservationInput) int
 		RecordRespiratoryRate  func(childComplexity int, input dto.ObservationInput) int
@@ -456,6 +457,7 @@ type MutationResolver interface {
 	RecordRespiratoryRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordPulseRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordBmi(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -2114,6 +2116,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RecordBloodPressure(childComplexity, args["input"].(dto.ObservationInput)), true
 
+	case "Mutation.recordBMI":
+		if e.complexity.Mutation.RecordBmi == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordBMI_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordBmi(childComplexity, args["input"].(dto.ObservationInput)), true
+
 	case "Mutation.recordHeight":
 		if e.complexity.Mutation.RecordHeight == nil {
 			break
@@ -2473,6 +2487,7 @@ extend type Mutation {
   recordRespiratoryRate(input: ObservationInput!): Observation!
   recordPulseRate(input: ObservationInput!): Observation!
   recordBloodPressure(input: ObservationInput!): Observation!
+  recordBMI(input: ObservationInput!): Observation!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -4763,6 +4778,21 @@ func (ec *executionContext) field_Mutation_endEpisodeOfCare_args(ctx context.Con
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recordBMI_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.ObservationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -16123,6 +16153,75 @@ func (ec *executionContext) fieldContext_Mutation_recordBloodPressure(ctx contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_recordBMI(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordBMI(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecordBmi(rctx, fc.Args["input"].(dto.ObservationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recordBMI(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recordBMI_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Observation_id(ctx context.Context, field graphql.CollectedField, obj *dto.Observation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Observation_id(ctx, field)
 	if err != nil {
@@ -23069,6 +23168,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_recordBloodPressure(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "recordBMI":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recordBMI(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {

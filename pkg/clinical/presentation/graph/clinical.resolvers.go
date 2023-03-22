@@ -80,6 +80,12 @@ func (r *mutationResolver) RecordBloodPressure(ctx context.Context, input dto.Ob
 	return r.usecases.Clinical.RecordBloodPressure(ctx, input)
 }
 
+// RecordBmi is the resolver for the recordBMI field.
+func (r *mutationResolver) RecordBmi(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.RecordBMI(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
