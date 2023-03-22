@@ -61,6 +61,18 @@ func (c *UseCasesClinicalImpl) RecordPulseRate(ctx context.Context, input dto.Ob
 	return pulseRateObservation, nil
 }
 
+// RecordBloodPressure records a patient's blood pressure
+func (c *UseCasesClinicalImpl) RecordBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	bloodPressureObservation, err := c.RecordObservation(ctx, input, common.BloodPressureCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return bloodPressureObservation, nil
+}
+
+// RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
+// A concept ID is also passed so that we can get the concept code of the passed observation
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {
 	err := input.Validate()
 	if err != nil {

@@ -27,4 +27,5 @@ extend type Mutation {
   recordWeight(input: ObservationInput!): Observation!
   recordRespiratoryRate(input: ObservationInput!): Observation!
   recordPulseRate(input: ObservationInput!): Observation!
+  recordBloodPressure(input: ObservationInput!): Observation!
 }

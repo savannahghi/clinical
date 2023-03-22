@@ -66,6 +66,9 @@ const (
 	// PulseCIELTerminologyCode is the terminology code for pulse
 	PulseCIELTerminologyCode = "5087"
 
+	// BloodPressureCIELTerminologyCode is the terminology code for blood pressure
+	BloodPressureCIELTerminologyCode = "5085"
+
 	// BMICIELTerminologyCode is the terminology code for Body Mass Index
 	BMICIELTerminologyCode = "1342"
 

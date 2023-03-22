@@ -36,6 +36,7 @@ type Clinical interface {
 	RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordRespiratoryRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordPulseRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error)
 }
 
