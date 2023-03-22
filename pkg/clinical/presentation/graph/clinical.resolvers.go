@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
@@ -116,6 +117,12 @@ func (r *queryResolver) GetEpisodeOfCare(ctx context.Context, id string) (*dto.E
 func (r *queryResolver) ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error) {
 	r.CheckDependencies()
 	return r.usecases.Clinical.ListPatientEncounters(ctx, patientID)
+}
+
+// GetPatientTemperatureEntries is the resolver for the getPatientTemperatureEntries field.
+func (r *queryResolver) GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientTemperatureEntries(ctx, patientID)
 }
 
 // Mutation returns generated.MutationResolver implementation.

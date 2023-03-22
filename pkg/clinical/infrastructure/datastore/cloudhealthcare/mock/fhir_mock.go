@@ -68,6 +68,7 @@ type FHIRMock struct {
 	MockPatchFHIRPatientFn              func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
 	MockUpdateFHIREpisodeOfCareFn       func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
 	MockSearchFHIRPatientFn             func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error)
+	MockSearchPatientObservationsFn     func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -466,7 +467,26 @@ func NewFHIRMock() *FHIRMock {
 			return true, nil
 		},
 		MockSearchFHIRObservationFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
-			return &domain.FHIRObservationRelayConnection{}, nil
+			uuid := uuid.New().String()
+			finalStatus := domain.ObservationStatusEnumFinal
+			return &domain.FHIRObservationRelayConnection{
+				Edges: []*domain.FHIRObservationRelayEdge{
+					{
+						Cursor: new(string),
+						Node: &domain.FHIRObservation{
+							ID:     &uuid,
+							Status: &finalStatus,
+							Subject: &domain.FHIRReference{
+								ID: &uuid,
+							},
+							Encounter: &domain.FHIRReference{
+								ID: &uuid,
+							},
+						},
+					},
+				},
+				PageInfo: &firebasetools.PageInfo{},
+			}, nil
 		},
 		MockCreateFHIRObservationFn: func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
 			uuid := uuid.New().String()
@@ -654,6 +674,33 @@ func NewFHIRMock() *FHIRMock {
 				Edges:    []*domain.PatientEdge{},
 				PageInfo: &firebasetools.PageInfo{},
 			}, nil
+		},
+		MockSearchPatientObservationsFn: func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+			uuid := uuid.New().String()
+			finalStatus := domain.ObservationStatusEnumFinal
+			return []*domain.FHIRObservation{{
+				ID:     &uuid,
+				Status: &finalStatus,
+				Subject: &domain.FHIRReference{
+					ID: &uuid,
+				},
+				Encounter: &domain.FHIRReference{
+					ID: &uuid,
+				},
+				Code: domain.FHIRCodeableConcept{
+					ID: new(string),
+					Coding: []*domain.FHIRCoding{
+						{
+							ID:           new(string),
+							Version:      new(string),
+							Code:         "",
+							Display:      "Vital",
+							UserSelected: new(bool),
+						},
+					},
+					Text: "",
+				},
+			}}, nil
 		},
 	}
 }
@@ -901,4 +948,9 @@ func (fh *FHIRMock) UpdateFHIREpisodeOfCare(ctx context.Context, fhirResourceID 
 // SearchFHIRPatient mocks the implementation of searching a FHIR patient
 func (fh *FHIRMock) SearchFHIRPatient(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
 	return fh.MockSearchFHIRPatientFn(ctx, searchParams, tenant)
+}
+
+// SearchPatientObservations mocks the implementation of searching patient observations
+func (fh *FHIRMock) SearchPatientObservations(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+	return fh.MockSearchPatientObservationsFn(ctx, patientReference, conceptID, tenant)
 }

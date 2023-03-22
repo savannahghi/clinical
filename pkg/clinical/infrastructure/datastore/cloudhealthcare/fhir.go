@@ -62,6 +62,44 @@ func NewFHIRStoreImpl(
 	}
 }
 
+// SearchPatientObservations fetches all observations that belong to a specific patient
+func (fh StoreImpl) SearchPatientObservations(
+	_ context.Context,
+	patientReference string,
+	observationCode string,
+	tenant dto.TenantIdentifiers,
+) ([]*domain.FHIRObservation, error) {
+	params := map[string]interface{}{
+		"patient": patientReference,
+		"code":    observationCode,
+	}
+
+	observations, err := fh.Dataset.SearchFHIRResource(observationResourceType, params, tenant)
+	if err != nil {
+		return nil, err
+	}
+
+	output := []*domain.FHIRObservation{}
+
+	for _, obs := range observations {
+		var observation domain.FHIRObservation
+
+		resourceBs, err := json.Marshal(obs)
+		if err != nil {
+			return nil, fmt.Errorf("unable to marshal resource to JSON: %w", err)
+		}
+
+		err = json.Unmarshal(resourceBs, &observation)
+		if err != nil {
+			return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
+		}
+
+		output = append(output, &observation)
+	}
+
+	return output, nil
+}
+
 // Encounters returns encounters that belong to the indicated patient.
 //
 // The patientReference should be a [string] in the format "Patient/<patient resource ID>".

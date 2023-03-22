@@ -1271,3 +1271,155 @@ func TestUseCasesClinicalImpl_RecordBMI(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx             context.Context
+		patientID       string
+		observationCode string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - successfully get patient observations",
+			args: args{
+				ctx:             ctx,
+				patientID:       uuid.New().String(),
+				observationCode: "1234",
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid patient ID",
+			args: args{
+				ctx:             ctx,
+				observationCode: "1234",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient",
+			args: args{
+				ctx:             ctx,
+				patientID:       uuid.New().String(),
+				observationCode: "1234",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:             ctx,
+				patientID:       uuid.New().String(),
+				observationCode: "1234",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to search patient observations",
+			args: args{
+				ctx:             ctx,
+				patientID:       uuid.New().String(),
+				observationCode: "1234",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - fail to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to search patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+					return nil, fmt.Errorf("failed to search patient observations")
+				}
+			}
+
+			got, err := u.GetPatientObservations(tt.args.ctx, tt.args.patientID, tt.args.observationCode)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully get patient temperature entries",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid patient ID",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientTemperatureEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}
