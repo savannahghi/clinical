@@ -1331,203 +1331,6 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			},
 			wantErr: true,
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-			fakeFHIR := fakeFHIRMock.NewFHIRMock()
-			fakeOCL := fakeOCLMock.NewFakeOCLMock()
-			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
-
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
-			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
-
-			if tt.name == "Sad Case - fail to get patient" {
-				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-					return nil, fmt.Errorf("failed to get patient")
-				}
-			}
-
-			if tt.name == "Sad Case - fail to get tenant identifiers" {
-				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
-					return nil, fmt.Errorf("failed to get tenant identifiers")
-				}
-			}
-
-			if tt.name == "Sad Case - fail to search patient observations" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
-					return nil, fmt.Errorf("failed to search patient observations")
-				}
-			}
-
-			got, err := u.GetPatientObservations(tt.args.ctx, tt.args.patientID, tt.args.observationCode)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("UseCasesClinicalImpl.GetPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !tt.wantErr {
-				if got == nil {
-					t.Errorf("expected a response but got %v", got)
-					return
-				}
-			}
-		})
-	}
-}
-
-func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
-	ctx := context.Background()
-	type args struct {
-		ctx       context.Context
-		patientID string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "Happy Case - Successfully get patient temperature entries",
-			args: args{
-				ctx:       ctx,
-				patientID: uuid.New().String(),
-			},
-			wantErr: false,
-		},
-		{
-			name: "Sad Case - Invalid patient ID",
-			args: args{
-				ctx: ctx,
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-			fakeFHIR := fakeFHIRMock.NewFHIRMock()
-			fakeOCL := fakeOCLMock.NewFakeOCLMock()
-			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
-
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
-			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
-
-			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("UseCasesClinicalImpl.GetPatientTemperatureEntries() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !tt.wantErr {
-				if got == nil {
-					t.Errorf("expected a response but got %v", got)
-					return
-				}
-			}
-		})
-	}
-}
-
-func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
-	ctx := context.Background()
-	type args struct {
-		ctx       context.Context
-		patientID string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "Happy Case - Successfully get patient blood pressure entries",
-			args: args{
-				ctx:       ctx,
-				patientID: uuid.New().String(),
-			},
-			wantErr: false,
-		},
-		{
-			name: "Sad Case - Invalid patient ID",
-			args: args{
-				ctx: ctx,
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-			fakeFHIR := fakeFHIRMock.NewFHIRMock()
-			fakeOCL := fakeOCLMock.NewFakeOCLMock()
-			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
-
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
-			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
-
-			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("UseCasesClinicalImpl.GetPatientBloodPressureEntries() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !tt.wantErr {
-				if got == nil {
-					t.Errorf("expected a response but got %v", got)
-					return
-				}
-			}
-		})
-	}
-}
-
-func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
-	type args struct {
-		ctx       context.Context
-		patientID string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "Happy case: get patient height",
-			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
-			},
-			wantErr: false,
-		},
-		{
-			name: "Sad case: invalid patient id",
-			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.BS(),
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad case: empty patient id",
-			args: args{
-				ctx: context.Background(),
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad case: failed to get tenant identifiers",
-			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad case: failed to search observation",
-			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
-			},
-			wantErr: true,
-		},
 		{
 			name: "Sad Case - Fail to search observation - nil subject",
 			args: args{
@@ -1569,17 +1372,23 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
-			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			if tt.name == "Sad case: failed to get tenant identifiers" {
-				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
-					return nil, fmt.Errorf("an error occurred")
+			if tt.name == "Sad Case - fail to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
 				}
 			}
 
-			if tt.name == "Sad case: failed to search observation" {
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to search patient observations" {
 				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
-					return nil, fmt.Errorf("an error occurred")
+					return nil, fmt.Errorf("failed to search patient observations")
 				}
 			}
 
@@ -1908,9 +1717,211 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 				}
 			}
 
+			got, err := u.GetPatientObservations(tt.args.ctx, tt.args.patientID, tt.args.observationCode)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully get patient temperature entries",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid patient ID",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientTemperatureEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully get patient blood pressure entries",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid patient ID",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientBloodPressureEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient height",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid patient id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
 			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientHeightEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient pulse rate",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid patient id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			_, err := c.GetPatientPulseRateEntries(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientPulseRateEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
