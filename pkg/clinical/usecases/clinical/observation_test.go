@@ -2031,3 +2031,49 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient pulse rate",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid patient id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			_, err := c.GetPatientWeightEntries(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientWeightEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
