@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
+	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
@@ -14,6 +16,7 @@ import (
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/scalarutils"
 )
 
 func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
@@ -1471,6 +1474,444 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 					t.Errorf("expected a response but got %v", got)
 					return
 				}
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient height",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid patient id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: empty patient id",
+			args: args{
+				ctx: context.Background(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: failed to get tenant identifiers",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: failed to search observation",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to search observation - nil subject",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to search observation - nil subject id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to search observation - nil encounter",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to search observation - nil encounter id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: failed to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad case: failed to search observation" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Happy case: get patient height" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return []*domain.FHIRObservation{
+						{
+							ID:     new(string),
+							Status: (*domain.ObservationStatusEnum)(&status),
+							Code: domain.FHIRCodeableConcept{
+								ID: new(string),
+								Coding: []*domain.FHIRCoding{{
+									Display: gofakeit.BS(),
+								}},
+							},
+							Subject: &domain.FHIRReference{
+								ID: new(string),
+							},
+							Encounter: &domain.FHIRReference{
+								ID: new(string),
+							},
+							ValueQuantity: &domain.FHIRQuantity{
+								Value: 100,
+								Unit:  "cm",
+							},
+							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+							ValueString:          new(string),
+							ValueBoolean:         new(bool),
+							ValueInteger:         new(string),
+							ValueRange: &domain.FHIRRange{
+								Low: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								High: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueRatio: &domain.FHIRRatio{
+								Numerator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								Denominator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueSampledData: &domain.FHIRSampledData{
+								ID: &UUID,
+							},
+							ValueTime: &time.Time{},
+							ValueDateTime: &scalarutils.Date{
+								Year:  2000,
+								Month: 1,
+								Day:   1,
+							},
+							ValuePeriod: &domain.FHIRPeriod{
+								Start: scalarutils.DateTime(time.Wednesday.String()),
+								End:   scalarutils.DateTime(time.Thursday.String()),
+							},
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search observation - nil subject" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return []*domain.FHIRObservation{
+						{
+							ID:     new(string),
+							Status: (*domain.ObservationStatusEnum)(&status),
+							Code: domain.FHIRCodeableConcept{
+								ID: new(string),
+								Coding: []*domain.FHIRCoding{{
+									Display: gofakeit.BS(),
+								}},
+							},
+							Encounter: &domain.FHIRReference{
+								ID: new(string),
+							},
+							ValueQuantity: &domain.FHIRQuantity{
+								Value: 100,
+								Unit:  "cm",
+							},
+							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+							ValueString:          new(string),
+							ValueBoolean:         new(bool),
+							ValueInteger:         new(string),
+							ValueRange: &domain.FHIRRange{
+								Low: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								High: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueRatio: &domain.FHIRRatio{
+								Numerator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								Denominator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueSampledData: &domain.FHIRSampledData{
+								ID: &UUID,
+							},
+							ValueTime: &time.Time{},
+							ValueDateTime: &scalarutils.Date{
+								Year:  2000,
+								Month: 1,
+								Day:   1,
+							},
+							ValuePeriod: &domain.FHIRPeriod{
+								Start: scalarutils.DateTime(time.Wednesday.String()),
+								End:   scalarutils.DateTime(time.Thursday.String()),
+							},
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search observation - nil subject id" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return []*domain.FHIRObservation{
+						{
+							ID:     new(string),
+							Status: (*domain.ObservationStatusEnum)(&status),
+							Code: domain.FHIRCodeableConcept{
+								ID: new(string),
+								Coding: []*domain.FHIRCoding{{
+									Display: gofakeit.BS(),
+								}},
+							},
+							Subject: &domain.FHIRReference{},
+							Encounter: &domain.FHIRReference{
+								ID: new(string),
+							},
+							ValueQuantity: &domain.FHIRQuantity{
+								Value: 100,
+								Unit:  "cm",
+							},
+							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+							ValueString:          new(string),
+							ValueBoolean:         new(bool),
+							ValueInteger:         new(string),
+							ValueRange: &domain.FHIRRange{
+								Low: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								High: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueRatio: &domain.FHIRRatio{
+								Numerator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								Denominator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueSampledData: &domain.FHIRSampledData{
+								ID: &UUID,
+							},
+							ValueTime: &time.Time{},
+							ValueDateTime: &scalarutils.Date{
+								Year:  2000,
+								Month: 1,
+								Day:   1,
+							},
+							ValuePeriod: &domain.FHIRPeriod{
+								Start: scalarutils.DateTime(time.Wednesday.String()),
+								End:   scalarutils.DateTime(time.Thursday.String()),
+							},
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search observation - nil encounter" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return []*domain.FHIRObservation{
+						{
+							ID:     new(string),
+							Status: (*domain.ObservationStatusEnum)(&status),
+							Code: domain.FHIRCodeableConcept{
+								ID: new(string),
+								Coding: []*domain.FHIRCoding{{
+									Display: gofakeit.BS(),
+								}},
+							},
+							Subject: &domain.FHIRReference{
+								ID: new(string),
+							},
+							ValueQuantity: &domain.FHIRQuantity{
+								Value: 100,
+								Unit:  "cm",
+							},
+							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+							ValueString:          new(string),
+							ValueBoolean:         new(bool),
+							ValueInteger:         new(string),
+							ValueRange: &domain.FHIRRange{
+								Low: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								High: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueRatio: &domain.FHIRRatio{
+								Numerator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								Denominator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueSampledData: &domain.FHIRSampledData{
+								ID: &UUID,
+							},
+							ValueTime: &time.Time{},
+							ValueDateTime: &scalarutils.Date{
+								Year:  2000,
+								Month: 1,
+								Day:   1,
+							},
+							ValuePeriod: &domain.FHIRPeriod{
+								Start: scalarutils.DateTime(time.Wednesday.String()),
+								End:   scalarutils.DateTime(time.Thursday.String()),
+							},
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search observation - nil encounter id" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return []*domain.FHIRObservation{
+						{
+							ID:     new(string),
+							Status: (*domain.ObservationStatusEnum)(&status),
+							Code: domain.FHIRCodeableConcept{
+								ID: new(string),
+								Coding: []*domain.FHIRCoding{{
+									Display: gofakeit.BS(),
+								}},
+							},
+							Subject: &domain.FHIRReference{
+								ID: new(string),
+							},
+							Encounter: &domain.FHIRReference{},
+							ValueQuantity: &domain.FHIRQuantity{
+								Value: 100,
+								Unit:  "cm",
+							},
+							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+							ValueString:          new(string),
+							ValueBoolean:         new(bool),
+							ValueInteger:         new(string),
+							ValueRange: &domain.FHIRRange{
+								Low: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								High: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueRatio: &domain.FHIRRatio{
+								Numerator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								Denominator: domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+							},
+							ValueSampledData: &domain.FHIRSampledData{
+								ID: &UUID,
+							},
+							ValueTime: &time.Time{},
+							ValueDateTime: &scalarutils.Date{
+								Year:  2000,
+								Month: 1,
+								Day:   1,
+							},
+							ValuePeriod: &domain.FHIRPeriod{
+								Start: scalarutils.DateTime(time.Wednesday.String()),
+								End:   scalarutils.DateTime(time.Thursday.String()),
+							},
+						},
+					}, nil
+				}
+			}
+
+			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientHeightEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
 		})
 	}

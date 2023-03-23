@@ -334,6 +334,38 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Sad Case - Fail to search observation - nil subject",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to search observation - nil subject id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to search observation - nil encounter",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to search observation - nil encounter id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
 			name: "Sad Case - Fail to search weight",
 			args: args{
 				ctx:       context.Background(),
@@ -1110,8 +1142,75 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 											Display: gofakeit.BS(),
 										}},
 									},
-									Subject: &domain.FHIRReference{
+									Encounter: &domain.FHIRReference{
 										ID: new(string),
+									},
+									ValueQuantity: &domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+									ValueString:          new(string),
+									ValueBoolean:         new(bool),
+									ValueInteger:         new(string),
+									ValueRange: &domain.FHIRRange{
+										Low: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										High: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueRatio: &domain.FHIRRatio{
+										Numerator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										Denominator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueSampledData: &domain.FHIRSampledData{
+										ID: &UUID,
+									},
+									ValueTime: &time.Time{},
+									ValueDateTime: &scalarutils.Date{
+										Year:  2000,
+										Month: 1,
+										Day:   1,
+									},
+									ValuePeriod: &domain.FHIRPeriod{
+										Start: scalarutils.DateTime(time.Wednesday.String()),
+										End:   scalarutils.DateTime(time.Thursday.String()),
+									},
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search observation - nil subject" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									ID:     new(string),
+									Status: (*domain.ObservationStatusEnum)(&status),
+									Code: domain.FHIRCodeableConcept{
+										ID: new(string),
+										Coding: []*domain.FHIRCoding{{
+											Display: gofakeit.BS(),
+										}},
 									},
 									Encounter: &domain.FHIRReference{
 										ID: new(string),
@@ -1165,6 +1264,217 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 				}
 			}
 
+			if tt.name == "Sad Case - Fail to search observation - nil subject id" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									ID:     new(string),
+									Status: (*domain.ObservationStatusEnum)(&status),
+									Code: domain.FHIRCodeableConcept{
+										ID: new(string),
+										Coding: []*domain.FHIRCoding{{
+											Display: gofakeit.BS(),
+										}},
+									},
+									Subject: &domain.FHIRReference{},
+									Encounter: &domain.FHIRReference{
+										ID: new(string),
+									},
+									ValueQuantity: &domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+									ValueString:          new(string),
+									ValueBoolean:         new(bool),
+									ValueInteger:         new(string),
+									ValueRange: &domain.FHIRRange{
+										Low: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										High: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueRatio: &domain.FHIRRatio{
+										Numerator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										Denominator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueSampledData: &domain.FHIRSampledData{
+										ID: &UUID,
+									},
+									ValueTime: &time.Time{},
+									ValueDateTime: &scalarutils.Date{
+										Year:  2000,
+										Month: 1,
+										Day:   1,
+									},
+									ValuePeriod: &domain.FHIRPeriod{
+										Start: scalarutils.DateTime(time.Wednesday.String()),
+										End:   scalarutils.DateTime(time.Thursday.String()),
+									},
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search observation - nil encounter" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									ID:     new(string),
+									Status: (*domain.ObservationStatusEnum)(&status),
+									Code: domain.FHIRCodeableConcept{
+										ID: new(string),
+										Coding: []*domain.FHIRCoding{{
+											Display: gofakeit.BS(),
+										}},
+									},
+									Subject: &domain.FHIRReference{
+										ID: new(string),
+									},
+									ValueQuantity: &domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+									ValueString:          new(string),
+									ValueBoolean:         new(bool),
+									ValueInteger:         new(string),
+									ValueRange: &domain.FHIRRange{
+										Low: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										High: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueRatio: &domain.FHIRRatio{
+										Numerator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										Denominator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueSampledData: &domain.FHIRSampledData{
+										ID: &UUID,
+									},
+									ValueTime: &time.Time{},
+									ValueDateTime: &scalarutils.Date{
+										Year:  2000,
+										Month: 1,
+										Day:   1,
+									},
+									ValuePeriod: &domain.FHIRPeriod{
+										Start: scalarutils.DateTime(time.Wednesday.String()),
+										End:   scalarutils.DateTime(time.Thursday.String()),
+									},
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search observation - nil status" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
+					status := dto.ObservationStatusFinal
+					valueConcept := "222"
+					UUID := gofakeit.UUID()
+					return &domain.FHIRObservationRelayConnection{
+						Edges: []*domain.FHIRObservationRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIRObservation{
+									ID:     new(string),
+									Status: (*domain.ObservationStatusEnum)(&status),
+									Code: domain.FHIRCodeableConcept{
+										ID: new(string),
+										Coding: []*domain.FHIRCoding{{
+											Display: gofakeit.BS(),
+										}},
+									},
+									Subject: &domain.FHIRReference{
+										ID: new(string),
+									},
+									Encounter: &domain.FHIRReference{},
+									ValueQuantity: &domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+									ValueString:          new(string),
+									ValueBoolean:         new(bool),
+									ValueInteger:         new(string),
+									ValueRange: &domain.FHIRRange{
+										Low: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										High: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueRatio: &domain.FHIRRatio{
+										Numerator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+										Denominator: domain.FHIRQuantity{
+											Value: 100,
+											Unit:  "cm",
+										},
+									},
+									ValueSampledData: &domain.FHIRSampledData{
+										ID: &UUID,
+									},
+									ValueTime: &time.Time{},
+									ValueDateTime: &scalarutils.Date{
+										Year:  2000,
+										Month: 1,
+										Day:   1,
+									},
+									ValuePeriod: &domain.FHIRPeriod{
+										Start: scalarutils.DateTime(time.Wednesday.String()),
+										End:   scalarutils.DateTime(time.Thursday.String()),
+									},
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
 			if tt.name == "Sad Case - Fail to search weight" {
 				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
 					if params["code"] == common.WeightCIELTerminologyCode {

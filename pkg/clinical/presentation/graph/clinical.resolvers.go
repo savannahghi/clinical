@@ -131,6 +131,11 @@ func (r *queryResolver) GetPatientBloodPressureEntries(ctx context.Context, pati
 	panic(fmt.Errorf("not implemented: GetPatientBloodPressureEntries - getPatientBloodPressureEntries"))
 }
 
+// GetPatientHeightEntries is the resolver for the getPatientHeightEntries field.
+func (r *queryResolver) GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	return r.usecases.Clinical.GetPatientHeightEntries(ctx, patientID)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

@@ -145,23 +145,9 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 			}
 
 			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
+				if !hasNilInObservation(edge) {
+					data.Weight = append(data.Weight, mapFHIRObservationToObservationDTO(edge.Node))
 				}
-
-				if edge.Node.Code.Coding == nil {
-					continue
-				}
-
-				if len(edge.Node.Code.Coding) < 1 {
-					continue
-				}
-
-				if edge.Node.Status == nil {
-					continue
-				}
-
-				data.Weight = append(data.Weight, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 
 		case "BMI":
@@ -174,23 +160,9 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 			}
 
 			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
+				if !hasNilInObservation(edge) {
+					data.BMI = append(data.BMI, mapFHIRObservationToObservationDTO(edge.Node))
 				}
-
-				if edge.Node.Code.Coding == nil {
-					continue
-				}
-
-				if len(edge.Node.Code.Coding) < 1 {
-					continue
-				}
-
-				if edge.Node.Status == nil {
-					continue
-				}
-
-				data.BMI = append(data.BMI, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 
 		case "ViralLoad":
@@ -203,23 +175,9 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 			}
 
 			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
+				if !hasNilInObservation(edge) {
+					data.ViralLoad = append(data.ViralLoad, mapFHIRObservationToObservationDTO(edge.Node))
 				}
-
-				if edge.Node.Code.Coding == nil {
-					continue
-				}
-
-				if len(edge.Node.Code.Coding) < 1 {
-					continue
-				}
-
-				if edge.Node.Status == nil {
-					continue
-				}
-
-				data.ViralLoad = append(data.ViralLoad, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 
 		case "CD4Count":
@@ -232,28 +190,46 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 			}
 
 			for _, edge := range conn.Edges {
-				if edge.Node == nil {
-					continue
+				if !hasNilInObservation(edge) {
+					data.CD4Count = append(data.CD4Count, mapFHIRObservationToObservationDTO(edge.Node))
 				}
-
-				if edge.Node.Code.Coding == nil {
-					continue
-				}
-
-				if len(edge.Node.Code.Coding) < 1 {
-					continue
-				}
-
-				if edge.Node.Status == nil {
-					continue
-				}
-
-				data.CD4Count = append(data.CD4Count, mapFHIRObservationToObservationDTO(edge.Node))
 			}
 		}
 	}
 
 	return data, nil
+}
+
+func hasNilInObservation(observation *domain.FHIRObservationRelayEdge) bool {
+	if observation.Node == nil {
+		return true
+	}
+
+	if observation.Node.Code.Coding == nil {
+		return true
+	}
+
+	if len(observation.Node.Code.Coding) < 1 {
+		return true
+	}
+
+	if observation.Node.Subject == nil {
+		return true
+	}
+
+	if observation.Node.Subject.ID == nil {
+		return true
+	}
+
+	if observation.Node.Encounter == nil {
+		return true
+	}
+
+	if observation.Node.Encounter.ID == nil {
+		return true
+	}
+
+	return false
 }
 
 func mapFHIRMedicationStatementToMedicationStatementDTO(fhirAllergyIntolerance *domain.FHIRMedicationStatement) *dto.MedicationStatement {

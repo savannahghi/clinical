@@ -37,6 +37,11 @@ func (c *UseCasesClinicalImpl) RecordHeight(ctx context.Context, input dto.Obser
 	return heightObservation, nil
 }
 
+// GetPatientHeightEntries gets the height records of a patient
+func (c *UseCasesClinicalImpl) GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	return c.GetPatientObservations(ctx, patientID, common.HeightCIELTerminologyCode)
+}
+
 // RecordWeight records a patient's weight
 func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode)
@@ -199,6 +204,22 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 	}
 
 	for _, obs := range patientObs {
+		if obs.Subject == nil {
+			continue
+		}
+
+		if obs.Subject.ID == nil {
+			continue
+		}
+
+		if obs.Encounter == nil {
+			continue
+		}
+
+		if obs.Encounter.ID == nil {
+			continue
+		}
+
 		observations = append(observations, mapFHIRObservationToObservationDTO(obs))
 	}
 
