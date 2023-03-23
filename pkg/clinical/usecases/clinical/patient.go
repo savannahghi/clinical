@@ -244,16 +244,24 @@ func mapFHIRMedicationStatementToMedicationStatementDTO(fhirAllergyIntolerance *
 	}
 }
 
-func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *domain.FHIRAllergyIntolerance) *dto.AllergyIntolerance {
-	return &dto.AllergyIntolerance{
-		ID:              *fhirAllergyIntolerance.ID,
-		PatientID:       *fhirAllergyIntolerance.Patient.ID,
-		EncounterID:     *fhirAllergyIntolerance.Encounter.ID,
-		OnsetDateTime:   fhirAllergyIntolerance.OnsetPeriod.Start,
-		Severity:        dto.AllergyIntoleranceReactionSeverityEnum(fhirAllergyIntolerance.Criticality),
-		SubstanceCode:   string(fhirAllergyIntolerance.Code.Coding[0].Code),
-		SubstanceSystem: string(*fhirAllergyIntolerance.Code.Coding[0].System),
+func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *domain.FHIRAllergyIntolerance) *dto.Allergy {
+	allergyIntolerance := &dto.Allergy{
+		ID:          *fhirAllergyIntolerance.ID,
+		PatientID:   *fhirAllergyIntolerance.Patient.ID,
+		EncounterID: *fhirAllergyIntolerance.Encounter.ID,
+		Code:        string(fhirAllergyIntolerance.Code.Coding[0].Code),
+		System:      string(*fhirAllergyIntolerance.Code.Coding[0].System),
 	}
+
+	if fhirAllergyIntolerance.OnsetPeriod != nil {
+		allergyIntolerance.OnsetDateTime = fhirAllergyIntolerance.OnsetPeriod.Start
+	}
+
+	if fhirAllergyIntolerance.Reaction != nil {
+		allergyIntolerance.Reaction.Severity = dto.AllergyIntoleranceReactionSeverityEnum(*fhirAllergyIntolerance.Reaction[0].Severity)
+	}
+
+	return allergyIntolerance
 }
 
 func mapFHIRObservationToObservationDTO(fhirObservation *domain.FHIRObservation) *dto.Observation {

@@ -45,3 +45,16 @@ input ConditionInput {
   onsetDate: Date
   note: String
 }
+
+input AllergyInput {
+  code: String!
+  system: String
+  encounterID: String!
+  reaction: ReactionInput
+}
+
+input ReactionInput {
+  code: String
+  system: String
+  severity: AllergyIntoleranceReactionSeverityEnum
+}

@@ -1,11 +1,15 @@
-type AllergyIntolerance {
-  id: ID!
-  patientID: String!
-  encounterID: String
-  onsetDateTime: DateTime!
+type Allergy {
+  id: ID
+  code: String!
+  system: String
+  encounterID: String!
+  reaction: Reaction
+}
+
+type Reaction {
+  code: String
+  system: String
   severity: AllergyIntoleranceReactionSeverityEnum
-  substanceCode: String!
-  substanceSystem: String
 }
 
 type Observation {
@@ -34,7 +38,7 @@ type MedicationStatement {
 
 type MedicalData {
   regimen: [MedicationStatement]
-  allergies: [AllergyIntolerance]
+  allergies: [Allergy ]
   weight: [Observation]
   bmi: [Observation]
   viralLoad: [Observation]

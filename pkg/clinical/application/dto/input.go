@@ -65,3 +65,27 @@ type ConditionInput struct {
 	Note        string            `json:"note"`
 	OnsetDate   *scalarutils.Date `json:"onsetDate"`
 }
+
+// AllergyInput models the allergy input
+type AllergyInput struct {
+	PatientID   string         `json:"patientID"`
+	Code        string         `json:"code" validate:"required"`
+	System      string         `json:"system" validate:"required"`
+	EncounterID string         `json:"encounterID" validate:"required,uuid4"`
+	Reaction    *ReactionInput `json:"reaction"`
+}
+
+// Validate ensures the input is valid
+func (o AllergyInput) Validate() error {
+	v := validator.New()
+	err := v.Struct(o)
+
+	return err
+}
+
+// ReactionInput models the reaction input
+type ReactionInput struct {
+	Code     string                                 `json:"code"`
+	System   string                                 `json:"system"`
+	Severity AllergyIntoleranceReactionSeverityEnum `json:"severity"`
+}

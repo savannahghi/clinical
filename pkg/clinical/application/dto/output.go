@@ -56,15 +56,22 @@ type HealthTimeline struct {
 	TotalCount int                `json:"totalCount"`
 }
 
-// AllergyIntolerance represents an allergy intolerance containing minimal FHIR resources
-type AllergyIntolerance struct {
-	ID              string                                 `json:"id"`
-	PatientID       string                                 `json:"patientID"`
-	EncounterID     string                                 `json:"encounterID"`
-	OnsetDateTime   scalarutils.DateTime                   `json:"onsetDateTime"`
-	Severity        AllergyIntoleranceReactionSeverityEnum `json:"severity"`
-	SubstanceCode   string                                 `json:"substanceCode"`
-	SubstanceSystem string                                 `json:"substanceSystem"`
+// Allergy represents an allergy containing minimal FHIR resources
+type Allergy struct {
+	ID            string               `json:"ID"`
+	PatientID     string               `json:"patientID"`
+	Code          string               `json:"code"`
+	System        string               `json:"system"`
+	OnsetDateTime scalarutils.DateTime `json:"onsetDateTime,omitempty"`
+	EncounterID   string               `json:"encounterID"`
+	Reaction      Reaction             `json:"reaction"`
+}
+
+// Reaction represents a reaction containing minimal FHIR resources
+type Reaction struct {
+	Code     string                                 `json:"code"`
+	System   string                                 `json:"system"`
+	Severity AllergyIntoleranceReactionSeverityEnum `json:"severity"`
 }
 
 // Observation is a minimal representation of a fhir Observation
@@ -94,7 +101,7 @@ type MedicationStatement struct {
 // MedicalData is a minimal representation of a fhir MedicalData
 type MedicalData struct {
 	Regimen   []*MedicationStatement
-	Allergies []*AllergyIntolerance
+	Allergies []*Allergy
 	Weight    []*Observation
 	BMI       []*Observation
 	ViralLoad []*Observation
