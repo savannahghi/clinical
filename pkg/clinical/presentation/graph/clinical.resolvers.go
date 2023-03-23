@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -128,12 +127,19 @@ func (r *queryResolver) GetPatientTemperatureEntries(ctx context.Context, patien
 
 // GetPatientBloodPressureEntries is the resolver for the getPatientBloodPressureEntries field.
 func (r *queryResolver) GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	panic(fmt.Errorf("not implemented: GetPatientBloodPressureEntries - getPatientBloodPressureEntries"))
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientBloodPressureEntries(ctx, patientID)
 }
 
 // GetPatientHeightEntries is the resolver for the getPatientHeightEntries field.
 func (r *queryResolver) GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
 	return r.usecases.Clinical.GetPatientHeightEntries(ctx, patientID)
+}
+
+// GetPatientRespiratoryRateEntries is the resolver for the getPatientRespiratoryRateEntries field.
+func (r *queryResolver) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientRespiratoryRateEntries(ctx, patientID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
