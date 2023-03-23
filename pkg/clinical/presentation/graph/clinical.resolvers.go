@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -151,6 +152,11 @@ func (r *queryResolver) GetPatientPulseRateEntries(ctx context.Context, patientI
 func (r *queryResolver) GetPatientBMIEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
 	r.CheckDependencies()
 	return r.usecases.Clinical.GetPatientBMIEntries(ctx, patientID)
+}
+
+// GetPatientWeightEntries is the resolver for the getPatientWeightEntries field.
+func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	panic(fmt.Errorf("not implemented: GetPatientWeightEntries - getPatientWeightEntries"))
 }
 
 // Mutation returns generated.MutationResolver implementation.
