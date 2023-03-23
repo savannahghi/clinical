@@ -51,6 +51,7 @@ type FHIRObservation interface {
 	SearchFHIRObservation(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error)
 	CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
 	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
+	SearchPatientObservations(ctx context.Context, patientReference, observationCode string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error)
 }
 type FHIRAllergyIntolerance interface {
 	SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error)

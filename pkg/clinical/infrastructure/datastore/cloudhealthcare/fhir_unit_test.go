@@ -3887,3 +3887,59 @@ func TestStoreImpl_EndEpisode(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_SearchPatientObservations(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx              context.Context
+		patientReference string
+		observationCode  string
+		tenant           dto.TenantIdentifiers
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully search patient observation",
+			args: args{
+				ctx:              ctx,
+				patientReference: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+				observationCode:  "5088",
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - fail to search fhir resource",
+			args: args{
+				ctx:              ctx,
+				patientReference: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+				observationCode:  "5088",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad Case - fail to search fhir resource" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+					return nil, fmt.Errorf("failed to search observation resource")
+				}
+			}
+
+			got, err := fh.SearchPatientObservations(tt.args.ctx, tt.args.patientReference, tt.args.observationCode, tt.args.tenant)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected response not to be nil for %v", tt.name)
+				return
+			}
+		})
+	}
+}

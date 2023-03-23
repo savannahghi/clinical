@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -19,6 +20,11 @@ func (c *UseCasesClinicalImpl) RecordTemperature(ctx context.Context, input dto.
 	}
 
 	return temperatureObservation, nil
+}
+
+// GetPatientTemperatureEntries returns all the temperature entries for a patient, they are automatically sorted in chronological order
+func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	return c.GetPatientObservations(ctx, patientID, common.TemperatureCIELTerminologyCode)
 }
 
 // RecordHeight records a patient's height and saves it to fhir
@@ -159,4 +165,37 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 	}
 
 	return mapFHIRObservationToObservationDTO(fhirObservation.Resource), nil
+}
+
+// GetPatientObservations is a helper function used to fetch patient's observations based off the passed CIEL
+// terminology code. The observations will be sorted in a chronological error
+func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patientID string, observationCode string) ([]*dto.Observation, error) {
+	_, err := uuid.Parse(patientID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid patient id: %s", patientID)
+	}
+
+	_, err = c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
+	if err != nil {
+		return nil, err
+	}
+
+	patientReference := fmt.Sprintf("Patient/%s", patientID)
+	observations := []*dto.Observation{}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	patientObs, err := c.infrastructure.FHIR.SearchPatientObservations(ctx, patientReference, observationCode, *identifiers)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, obs := range patientObs {
+		observations = append(observations, mapFHIRObservationToObservationDTO(obs))
+	}
+
+	return observations, nil
 }

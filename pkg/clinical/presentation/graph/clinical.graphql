@@ -6,6 +6,9 @@ extend type Query {
 
   # Encounter
   listPatientEncounters(patientID: String!): [Encounter!]!
+
+  # Observation
+  getPatientTemperatureEntries(patientID: String!): [Observation!]
 }
 
 extend type Mutation {
