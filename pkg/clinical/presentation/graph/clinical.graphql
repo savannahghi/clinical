@@ -11,6 +11,7 @@ extend type Query {
   getPatientTemperatureEntries(patientID: String!): [Observation!]
   getPatientBloodPressureEntries(patientID: String!): [Observation!]
   getPatientHeightEntries(patientID: String!): [Observation!]
+  getPatientRespiratoryRateEntries(patientID: String!): [Observation!]
 }
 
 extend type Mutation {
