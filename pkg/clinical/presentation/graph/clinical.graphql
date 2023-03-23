@@ -9,6 +9,7 @@ extend type Query {
 
   # Observation
   getPatientTemperatureEntries(patientID: String!): [Observation!]
+  getPatientBloodPressureEntries(patientID: String!): [Observation!]
 }
 
 extend type Mutation {
@@ -35,5 +36,4 @@ extend type Mutation {
 
   # Patient
   createPatient(input: PatientInput!): Patient!
-
 }
