@@ -59,6 +59,19 @@ type ComplexityRoot struct {
 		SubstanceSystem func(childComplexity int) int
 	}
 
+	Condition struct {
+		Code         func(childComplexity int) int
+		EncounterID  func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		Note         func(childComplexity int) int
+		OnsetDate    func(childComplexity int) int
+		PatientID    func(childComplexity int) int
+		RecordedDate func(childComplexity int) int
+		Status       func(childComplexity int) int
+		System       func(childComplexity int) int
+	}
+
 	Encounter struct {
 		Class           func(childComplexity int) int
 		EpisodeOfCareID func(childComplexity int) int
@@ -330,19 +343,19 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateEpisodeOfCare    func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
-		CreateFHIROrganization func(childComplexity int, input domain.FHIROrganizationInput) int
-		CreatePatient          func(childComplexity int, input dto.PatientInput) int
-		EndEncounter           func(childComplexity int, encounterID string) int
-		EndEpisodeOfCare       func(childComplexity int, id string) int
-		RecordBloodPressure    func(childComplexity int, input dto.ObservationInput) int
-		RecordBmi              func(childComplexity int, input dto.ObservationInput) int
-		RecordHeight           func(childComplexity int, input dto.ObservationInput) int
-		RecordPulseRate        func(childComplexity int, input dto.ObservationInput) int
-		RecordRespiratoryRate  func(childComplexity int, input dto.ObservationInput) int
-		RecordTemperature      func(childComplexity int, input dto.ObservationInput) int
-		RecordWeight           func(childComplexity int, input dto.ObservationInput) int
-		StartEncounter         func(childComplexity int, episodeID string) int
+		CreateCondition       func(childComplexity int, input dto.ConditionInput) int
+		CreateEpisodeOfCare   func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
+		CreatePatient         func(childComplexity int, input dto.PatientInput) int
+		EndEncounter          func(childComplexity int, encounterID string) int
+		EndEpisodeOfCare      func(childComplexity int, id string) int
+		RecordBloodPressure   func(childComplexity int, input dto.ObservationInput) int
+		RecordBmi             func(childComplexity int, input dto.ObservationInput) int
+		RecordHeight          func(childComplexity int, input dto.ObservationInput) int
+		RecordPulseRate       func(childComplexity int, input dto.ObservationInput) int
+		RecordRespiratoryRate func(childComplexity int, input dto.ObservationInput) int
+		RecordTemperature     func(childComplexity int, input dto.ObservationInput) int
+		RecordWeight          func(childComplexity int, input dto.ObservationInput) int
+		StartEncounter        func(childComplexity int, episodeID string) int
 	}
 
 	Observation struct {
@@ -398,7 +411,6 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	CreateEpisodeOfCare(ctx context.Context, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
 	EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
@@ -411,6 +423,7 @@ type MutationResolver interface {
 	RecordBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordBmi(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
+	CreateCondition(ctx context.Context, input dto.ConditionInput) (*dto.Condition, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -489,6 +502,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AllergyIntolerance.SubstanceSystem(childComplexity), true
+
+	case "Condition.code":
+		if e.complexity.Condition.Code == nil {
+			break
+		}
+
+		return e.complexity.Condition.Code(childComplexity), true
+
+	case "Condition.encounterID":
+		if e.complexity.Condition.EncounterID == nil {
+			break
+		}
+
+		return e.complexity.Condition.EncounterID(childComplexity), true
+
+	case "Condition.id":
+		if e.complexity.Condition.ID == nil {
+			break
+		}
+
+		return e.complexity.Condition.ID(childComplexity), true
+
+	case "Condition.name":
+		if e.complexity.Condition.Name == nil {
+			break
+		}
+
+		return e.complexity.Condition.Name(childComplexity), true
+
+	case "Condition.note":
+		if e.complexity.Condition.Note == nil {
+			break
+		}
+
+		return e.complexity.Condition.Note(childComplexity), true
+
+	case "Condition.onsetDate":
+		if e.complexity.Condition.OnsetDate == nil {
+			break
+		}
+
+		return e.complexity.Condition.OnsetDate(childComplexity), true
+
+	case "Condition.patientID":
+		if e.complexity.Condition.PatientID == nil {
+			break
+		}
+
+		return e.complexity.Condition.PatientID(childComplexity), true
+
+	case "Condition.recordedDate":
+		if e.complexity.Condition.RecordedDate == nil {
+			break
+		}
+
+		return e.complexity.Condition.RecordedDate(childComplexity), true
+
+	case "Condition.status":
+		if e.complexity.Condition.Status == nil {
+			break
+		}
+
+		return e.complexity.Condition.Status(childComplexity), true
+
+	case "Condition.system":
+		if e.complexity.Condition.System == nil {
+			break
+		}
+
+		return e.complexity.Condition.System(childComplexity), true
 
 	case "Encounter.class":
 		if e.complexity.Encounter.Class == nil {
@@ -1729,6 +1812,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MedicationStatement.Status(childComplexity), true
 
+	case "Mutation.createCondition":
+		if e.complexity.Mutation.CreateCondition == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createCondition_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateCondition(childComplexity, args["input"].(dto.ConditionInput)), true
+
 	case "Mutation.createEpisodeOfCare":
 		if e.complexity.Mutation.CreateEpisodeOfCare == nil {
 			break
@@ -1740,18 +1835,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateEpisodeOfCare(childComplexity, args["episodeOfCare"].(dto.EpisodeOfCareInput)), true
-
-	case "Mutation.createFHIROrganization":
-		if e.complexity.Mutation.CreateFHIROrganization == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createFHIROrganization_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateFHIROrganization(childComplexity, args["input"].(domain.FHIROrganizationInput)), true
 
 	case "Mutation.createPatient":
 		if e.complexity.Mutation.CreatePatient == nil {
@@ -2179,6 +2262,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputConditionInput,
 		ec.unmarshalInputContactInput,
 		ec.unmarshalInputEpisodeOfCareInput,
 		ec.unmarshalInputFHIRAddressInput,
@@ -2287,10 +2371,6 @@ var sources = []*ast.Source{
 }
 
 extend type Mutation {
-  createFHIROrganization(
-    input: FHIROrganizationInput!
-  ): FHIROrganizationRelayPayload!
-
   # EpisodeOfCare
   createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
   endEpisodeOfCare(id: ID!): EpisodeOfCare
@@ -2310,6 +2390,9 @@ extend type Mutation {
 
   # Patient
   createPatient(input: PatientInput!): Patient!
+
+#  Conditions
+  createCondition(input: ConditionInput!): Condition!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -2374,6 +2457,12 @@ enum IdentifierType {
 
 enum ContactType {
   PHONE_NUMBER
+}
+
+enum ConditionStatus {
+  active
+  inactive
+  resolved
 }`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
@@ -2435,6 +2524,17 @@ input IdentifierInput {
 input ContactInput {
   type: ContactType!
   value: String!
+}
+
+input ConditionInput {
+  code: String!
+  system: String!
+  status: ConditionStatus!
+  patientID: String!
+  encounterID: String!
+
+  onsetDate: Date
+  note: String
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type AllergyIntolerance {
   id: ID!
@@ -2514,6 +2614,21 @@ type Patient {
   phoneNumber: [String!]!
   gender: Gender!
   birthDate: Date
+}
+
+type Condition {
+  id: ID
+  status: ConditionStatus
+  name: String
+  code: String!
+  system: String!
+
+  onsetDate: Date
+  recordedDate: Date
+  note: String
+
+  patientID: String
+  encounterID: String
 }
 `, BuiltIn: false},
 	{Name: "../fhir/Organization.graphql", Input: `"""
@@ -4350,6 +4465,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) field_Mutation_createCondition_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.ConditionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNConditionInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createEpisodeOfCare_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4362,21 +4492,6 @@ func (ec *executionContext) field_Mutation_createEpisodeOfCare_args(ctx context.
 		}
 	}
 	args["episodeOfCare"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_createFHIROrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 domain.FHIROrganizationInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNFHIROrganizationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -5052,6 +5167,422 @@ func (ec *executionContext) _AllergyIntolerance_substanceSystem(ctx context.Cont
 func (ec *executionContext) fieldContext_AllergyIntolerance_substanceSystem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AllergyIntolerance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_id(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_status(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.ConditionStatus)
+	fc.Result = res
+	return ec.marshalOConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ConditionStatus does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_name(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_code(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_code(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_system(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_system(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.System, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_system(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_onsetDate(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_onsetDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OnsetDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_onsetDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Date does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_recordedDate(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_recordedDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RecordedDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_recordedDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Date does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_note(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_note(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Note, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_note(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_patientID(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_patientID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PatientID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_patientID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Condition_encounterID(ctx context.Context, field graphql.CollectedField, obj *dto.Condition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Condition_encounterID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EncounterID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Condition_encounterID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Condition",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -13019,65 +13550,6 @@ func (ec *executionContext) fieldContext_MedicationStatement_patientID(ctx conte
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createFHIROrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createFHIROrganization(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateFHIROrganization(rctx, fc.Args["input"].(domain.FHIROrganizationInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*domain.FHIROrganizationRelayPayload)
-	fc.Result = res
-	return ec.marshalNFHIROrganizationRelayPayload2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationRelayPayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_createFHIROrganization(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "resource":
-				return ec.fieldContext_FHIROrganizationRelayPayload_resource(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FHIROrganizationRelayPayload", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createFHIROrganization_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createEpisodeOfCare(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createEpisodeOfCare(ctx, field)
 	if err != nil {
@@ -13854,6 +14326,83 @@ func (ec *executionContext) fieldContext_Mutation_createPatient(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createPatient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createCondition(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createCondition(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateCondition(rctx, fc.Args["input"].(dto.ConditionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Condition)
+	fc.Result = res
+	return ec.marshalNCondition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createCondition(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Condition_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Condition_status(ctx, field)
+			case "name":
+				return ec.fieldContext_Condition_name(ctx, field)
+			case "code":
+				return ec.fieldContext_Condition_code(ctx, field)
+			case "system":
+				return ec.fieldContext_Condition_system(ctx, field)
+			case "onsetDate":
+				return ec.fieldContext_Condition_onsetDate(ctx, field)
+			case "recordedDate":
+				return ec.fieldContext_Condition_recordedDate(ctx, field)
+			case "note":
+				return ec.fieldContext_Condition_note(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Condition_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Condition_encounterID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Condition", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createCondition_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -17429,6 +17978,82 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputConditionInput(ctx context.Context, obj interface{}) (dto.ConditionInput, error) {
+	var it dto.ConditionInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"code", "system", "status", "patientID", "encounterID", "onsetDate", "note"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "code":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
+			it.Code, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "system":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("system"))
+			it.System, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			it.Status, err = ec.unmarshalNConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "encounterID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+			it.EncounterID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "onsetDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("onsetDate"))
+			it.OnsetDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "note":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
+			it.Note, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputContactInput(ctx context.Context, obj interface{}) (dto.ContactInput, error) {
 	var it dto.ContactInput
 	asMap := map[string]interface{}{}
@@ -19410,6 +20035,73 @@ func (ec *executionContext) _AllergyIntolerance(ctx context.Context, sel ast.Sel
 	return out
 }
 
+var conditionImplementors = []string{"Condition"}
+
+func (ec *executionContext) _Condition(ctx context.Context, sel ast.SelectionSet, obj *dto.Condition) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, conditionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Condition")
+		case "id":
+
+			out.Values[i] = ec._Condition_id(ctx, field, obj)
+
+		case "status":
+
+			out.Values[i] = ec._Condition_status(ctx, field, obj)
+
+		case "name":
+
+			out.Values[i] = ec._Condition_name(ctx, field, obj)
+
+		case "code":
+
+			out.Values[i] = ec._Condition_code(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "system":
+
+			out.Values[i] = ec._Condition_system(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "onsetDate":
+
+			out.Values[i] = ec._Condition_onsetDate(ctx, field, obj)
+
+		case "recordedDate":
+
+			out.Values[i] = ec._Condition_recordedDate(ctx, field, obj)
+
+		case "note":
+
+			out.Values[i] = ec._Condition_note(ctx, field, obj)
+
+		case "patientID":
+
+			out.Values[i] = ec._Condition_patientID(ctx, field, obj)
+
+		case "encounterID":
+
+			out.Values[i] = ec._Condition_encounterID(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var encounterImplementors = []string{"Encounter"}
 
 func (ec *executionContext) _Encounter(ctx context.Context, sel ast.SelectionSet, obj *dto.Encounter) graphql.Marshaler {
@@ -20890,15 +21582,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "createFHIROrganization":
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createFHIROrganization(ctx, field)
-			})
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "createEpisodeOfCare":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -20996,6 +21679,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createPatient(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createCondition":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createCondition(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -21877,6 +22569,41 @@ func (ec *executionContext) marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutil
 	return v
 }
 
+func (ec *executionContext) marshalNCondition2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx context.Context, sel ast.SelectionSet, v dto.Condition) graphql.Marshaler {
+	return ec._Condition(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNCondition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx context.Context, sel ast.SelectionSet, v *dto.Condition) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Condition(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNConditionInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionInput(ctx context.Context, v interface{}) (dto.ConditionInput, error) {
+	res, err := ec.unmarshalInputConditionInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx context.Context, v interface{}) (dto.ConditionStatus, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.ConditionStatus(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx context.Context, sel ast.SelectionSet, v dto.ConditionStatus) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNContactInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInput(ctx context.Context, v interface{}) (dto.ContactInput, error) {
 	res, err := ec.unmarshalInputContactInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -22103,25 +22830,6 @@ func (ec *executionContext) marshalNFHIROrganization2ᚖgithubᚗcomᚋsavannahg
 		return graphql.Null
 	}
 	return ec._FHIROrganization(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNFHIROrganizationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationInput(ctx context.Context, v interface{}) (domain.FHIROrganizationInput, error) {
-	res, err := ec.unmarshalInputFHIROrganizationInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNFHIROrganizationRelayPayload2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationRelayPayload(ctx context.Context, sel ast.SelectionSet, v domain.FHIROrganizationRelayPayload) graphql.Marshaler {
-	return ec._FHIROrganizationRelayPayload(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNFHIROrganizationRelayPayload2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIROrganizationRelayPayload(ctx context.Context, sel ast.SelectionSet, v *domain.FHIROrganizationRelayPayload) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._FHIROrganizationRelayPayload(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNFHIRQuantity2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐFHIRQuantity(ctx context.Context, sel ast.SelectionSet, v domain.FHIRQuantity) graphql.Marshaler {
@@ -22890,6 +23598,17 @@ func (ec *executionContext) marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalaru
 	return v
 }
 
+func (ec *executionContext) unmarshalOConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx context.Context, v interface{}) (dto.ConditionStatus, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.ConditionStatus(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx context.Context, sel ast.SelectionSet, v dto.ConditionStatus) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	return res
+}
+
 func (ec *executionContext) unmarshalOContactPointSystemEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐContactPointSystemEnum(ctx context.Context, v interface{}) (*domain.ContactPointSystemEnum, error) {
 	if v == nil {
 		return nil, nil
@@ -22929,6 +23648,22 @@ func (ec *executionContext) unmarshalODate2githubᚗcomᚋsavannahghiᚋscalarut
 }
 
 func (ec *executionContext) marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v scalarutils.Date) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (*scalarutils.Date, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.Date)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Date) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
 	return v
 }
 
@@ -23599,6 +24334,16 @@ func (ec *executionContext) unmarshalOFHIRTimingRepeatInput2ᚖgithubᚗcomᚋsa
 	}
 	res, err := ec.unmarshalInputFHIRTimingRepeatInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalID(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalID(v)
+	return res
 }
 
 func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

@@ -313,17 +313,6 @@ func mapFHIRObservationToObservationDTO(fhirObservation *domain.FHIRObservation)
 	}
 }
 
-// CreateFHIROrganization creates a FHIROrganization instance
-func (c *UseCasesClinicalImpl) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
-	organizationRelayPayload, err := c.infrastructure.FHIR.CreateFHIROrganization(ctx, input)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
-	return organizationRelayPayload, nil
-}
-
 // CreatePatient creates a new patient
 func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	facilityID, err := extensions.GetFacilityIDFromContext(ctx)

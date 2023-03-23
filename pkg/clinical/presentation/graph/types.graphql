@@ -77,3 +77,18 @@ type Patient {
   gender: Gender!
   birthDate: Date
 }
+
+type Condition {
+  id: ID
+  status: ConditionStatus
+  name: String
+  code: String!
+  system: String!
+
+  onsetDate: Date
+  recordedDate: Date
+  note: String
+
+  patientID: String
+  encounterID: String
+}

@@ -105,35 +105,51 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockCreateFHIRConditionFn: func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
 			UUID := uuid.New().String()
+			statusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+			status := "active"
+			note := scalarutils.Markdown("Fever Fever")
+			noteTime := time.Now()
+			uri := scalarutils.URI("1234567")
+
 			return &domain.FHIRConditionRelayPayload{
 				Resource: &domain.FHIRCondition{
-					ID:                 &UUID,
-					Text:               &domain.FHIRNarrative{},
-					Identifier:         []*domain.FHIRIdentifier{},
-					ClinicalStatus:     &domain.FHIRCodeableConcept{},
-					VerificationStatus: &domain.FHIRCodeableConcept{},
-					Category:           []*domain.FHIRCodeableConcept{},
-					Severity:           &domain.FHIRCodeableConcept{},
-					Code:               &domain.FHIRCodeableConcept{},
-					BodySite:           []*domain.FHIRCodeableConcept{},
-					Subject:            &domain.FHIRReference{},
-					Encounter:          &domain.FHIRReference{},
-					OnsetDateTime:      &scalarutils.Date{},
-					OnsetAge:           &domain.FHIRAge{},
-					OnsetPeriod:        &domain.FHIRPeriod{},
-					OnsetRange:         &domain.FHIRRange{},
-					OnsetString:        new(string),
-					AbatementDateTime:  &scalarutils.Date{},
-					AbatementAge:       &domain.FHIRAge{},
-					AbatementPeriod:    &domain.FHIRPeriod{},
-					AbatementRange:     &domain.FHIRRange{},
-					AbatementString:    new(string),
-					RecordedDate:       &scalarutils.Date{},
-					Recorder:           &domain.FHIRReference{},
-					Asserter:           &domain.FHIRReference{},
-					Stage:              []*domain.FHIRConditionStage{},
-					Evidence:           []*domain.FHIRConditionEvidence{},
-					Note:               []*domain.FHIRAnnotation{},
+					ID:         &UUID,
+					Text:       &domain.FHIRNarrative{},
+					Identifier: []*domain.FHIRIdentifier{},
+					ClinicalStatus: &domain.FHIRCodeableConcept{
+						Coding: []*domain.FHIRCoding{
+							{
+								System:  &statusSystem,
+								Code:    scalarutils.Code(string(status)),
+								Display: string(status),
+							},
+						},
+						Text: string(status),
+					},
+					Code: &domain.FHIRCodeableConcept{
+						Coding: []*domain.FHIRCoding{
+							{
+								System:  &uri,
+								Code:    scalarutils.Code("1234"),
+								Display: "1234",
+							},
+						},
+						Text: "1234",
+					},
+					OnsetDateTime: &scalarutils.Date{},
+					RecordedDate:  &scalarutils.Date{},
+					Note: []*domain.FHIRAnnotation{
+						{
+							Time: &noteTime,
+							Text: &note,
+						},
+					},
+					Subject: &domain.FHIRReference{
+						ID: &UUID,
+					},
+					Encounter: &domain.FHIRReference{
+						ID: &UUID,
+					},
 				},
 			}, nil
 		},

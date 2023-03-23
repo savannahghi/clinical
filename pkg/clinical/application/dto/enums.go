@@ -106,3 +106,12 @@ const (
 	// GenderOther ...
 	GenderOther Gender = "other"
 )
+
+// ConditionStatus represents status of a FHIR condition
+type ConditionStatus string
+
+const (
+	ConditionStatusActive   ConditionStatus = "active"
+	ConditionStatusInactive ConditionStatus = "inactive"
+	ConditionStatusResolved ConditionStatus = "resolved"
+)

@@ -54,3 +54,14 @@ type ContactInput struct {
 	Type  ContactType `json:"type"`
 	Value string      `json:"value"`
 }
+
+// ConditionInput represents input for creating a FHIR condition
+type ConditionInput struct {
+	Code        string            `json:"condition"`
+	System      string            `json:"system"`
+	Status      ConditionStatus   `json:"status"`
+	PatientID   string            `json:"patientID"`
+	EncounterID string            `json:"encounterID"`
+	Note        string            `json:"note"`
+	OnsetDate   *scalarutils.Date `json:"onsetDate"`
+}
