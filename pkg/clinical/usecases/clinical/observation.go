@@ -77,6 +77,11 @@ func (c *UseCasesClinicalImpl) RecordPulseRate(ctx context.Context, input dto.Ob
 	return pulseRateObservation, nil
 }
 
+// GetPatientPulseRateEntries gets the pulse rate records of a patient
+func (c *UseCasesClinicalImpl) GetPatientPulseRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	return c.GetPatientObservations(ctx, patientID, common.PulseCIELTerminologyCode)
+}
+
 // RecordBloodPressure records a patient's blood pressure
 func (c *UseCasesClinicalImpl) RecordBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	bloodPressureObservation, err := c.RecordObservation(ctx, input, common.BloodPressureCIELTerminologyCode)
