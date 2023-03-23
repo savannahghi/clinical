@@ -77,6 +77,11 @@ func (c *UseCasesClinicalImpl) RecordBloodPressure(ctx context.Context, input dt
 	return bloodPressureObservation, nil
 }
 
+// GetPatientBloodPressureEntries retrieves all blood pressure entries for a patient
+func (c *UseCasesClinicalImpl) GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	return c.GetPatientObservations(ctx, patientID, common.BloodPressureCIELTerminologyCode)
+}
+
 // RecordBMI records a patient's BMI
 func (c *UseCasesClinicalImpl) RecordBMI(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	bmiObservation, err := c.RecordObservation(ctx, input, common.BMICIELTerminologyCode)
