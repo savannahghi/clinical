@@ -147,6 +147,12 @@ func (r *queryResolver) GetPatientPulseRateEntries(ctx context.Context, patientI
 	return r.usecases.Clinical.GetPatientPulseRateEntries(ctx, patientID)
 }
 
+// GetPatientBMIEntries is the resolver for the getPatientBMIEntries field.
+func (r *queryResolver) GetPatientBMIEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientBMIEntries(ctx, patientID)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
