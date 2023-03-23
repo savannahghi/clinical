@@ -107,6 +107,11 @@ func (c *UseCasesClinicalImpl) RecordBMI(ctx context.Context, input dto.Observat
 	return bmiObservation, nil
 }
 
+// GetPatientBMIEntries retrieves all BMI entries for a patient
+func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+	return c.GetPatientObservations(ctx, patientID, common.BMICIELTerminologyCode)
+}
+
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
 // A concept ID is also passed so that we can get the concept code of the passed observation
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {
