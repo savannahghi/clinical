@@ -61,3 +61,9 @@ enum IdentifierType {
 enum ContactType {
   PHONE_NUMBER
 }
+
+enum ConditionStatus {
+  active
+  inactive
+  resolved
+}

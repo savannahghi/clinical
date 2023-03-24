@@ -35,6 +35,29 @@ func (c *UseCasesClinicalImpl) getCIELConcept(ctx context.Context, conceptID str
 	return concept, nil
 }
 
+func (c *UseCasesClinicalImpl) getICD10Concept(ctx context.Context, conceptID string) (*domain.Concept, error) {
+	response, err := c.infrastructure.OpenConceptLab.GetConcept(
+		ctx,
+		"WHO",
+		"ICD-10-WHO",
+		conceptID,
+		false,
+		false,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var concept *domain.Concept
+
+	err = mapstructure.Decode(response, &concept)
+	if err != nil {
+		return nil, err
+	}
+
+	return concept, nil
+}
+
 // ComposeVitalsInput composes a vitals observation from data received
 func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto.CreateVitalSignPubSubMessage) (*domain.FHIRObservationInput, error) {
 	vitalsConcept, err := c.getCIELConcept(ctx, *input.ConceptID)

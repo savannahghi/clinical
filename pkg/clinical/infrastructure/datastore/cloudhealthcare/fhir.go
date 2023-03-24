@@ -208,7 +208,7 @@ func (fh StoreImpl) CreateFHIRCondition(_ context.Context, input domain.FHIRCond
 
 	err = fh.Dataset.CreateFHIRResource(conditionResourceType, payload, resource)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create/update %s resource: %w", conditionResourceType, err)
+		return nil, fmt.Errorf("unable to create %s resource: %w", conditionResourceType, err)
 	}
 
 	output := &domain.FHIRConditionRelayPayload{

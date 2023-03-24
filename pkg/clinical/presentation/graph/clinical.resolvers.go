@@ -9,16 +9,8 @@ import (
 	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
-	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 )
-
-// CreateFHIROrganization is the resolver for the createFHIROrganization field.
-func (r *mutationResolver) CreateFHIROrganization(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
-	r.CheckDependencies()
-
-	return r.usecases.CreateFHIROrganization(ctx, input)
-}
 
 // CreateEpisodeOfCare is the resolver for the createEpisodeOfCare field.
 func (r *mutationResolver) CreateEpisodeOfCare(ctx context.Context, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error) {
@@ -92,6 +84,12 @@ func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientI
 	r.CheckDependencies()
 
 	return r.usecases.CreatePatient(ctx, input)
+}
+
+// CreateCondition is the resolver for the createCondition field.
+func (r *mutationResolver) CreateCondition(ctx context.Context, input dto.ConditionInput) (*dto.Condition, error) {
+	r.CheckDependencies()
+	return r.usecases.CreateCondition(ctx, input)
 }
 
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.

@@ -34,3 +34,14 @@ input ContactInput {
   type: ContactType!
   value: String!
 }
+
+input ConditionInput {
+  code: String!
+  system: String!
+  status: ConditionStatus!
+  patientID: String!
+  encounterID: String!
+
+  onsetDate: Date
+  note: String
+}

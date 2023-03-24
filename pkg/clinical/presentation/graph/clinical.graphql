@@ -18,10 +18,6 @@ extend type Query {
 }
 
 extend type Mutation {
-  createFHIROrganization(
-    input: FHIROrganizationInput!
-  ): FHIROrganizationRelayPayload!
-
   # EpisodeOfCare
   createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
   endEpisodeOfCare(id: ID!): EpisodeOfCare
@@ -41,4 +37,7 @@ extend type Mutation {
 
   # Patient
   createPatient(input: PatientInput!): Patient!
+
+#  Conditions
+  createCondition(input: ConditionInput!): Condition!
 }
