@@ -50,11 +50,12 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Allergy struct {
-		Code        func(childComplexity int) int
-		EncounterID func(childComplexity int) int
-		ID          func(childComplexity int) int
-		Reaction    func(childComplexity int) int
-		System      func(childComplexity int) int
+		Code              func(childComplexity int) int
+		EncounterID       func(childComplexity int) int
+		ID                func(childComplexity int) int
+		Reaction          func(childComplexity int) int
+		System            func(childComplexity int) int
+		TerminologySource func(childComplexity int) int
 	}
 
 	Condition struct {
@@ -496,6 +497,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Allergy.System(childComplexity), true
+
+	case "Allergy.terminologySource":
+		if e.complexity.Allergy.TerminologySource == nil {
+			break
+		}
+
+		return e.complexity.Allergy.TerminologySource(childComplexity), true
 
 	case "Condition.code":
 		if e.complexity.Condition.Code == nil {
@@ -2510,6 +2518,13 @@ enum ConditionStatus {
   active
   inactive
   resolved
+}
+
+enum TerminologySource {
+	ICD10
+	CIEL
+	SNOMED_CT
+	LOINC
 }`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
@@ -2585,7 +2600,7 @@ input ConditionInput {
 
 input AllergyInput {
   code: String!
-  system: String
+  terminologySource: TerminologySource!
   encounterID: String!
   reaction: ReactionInput
 }
@@ -2599,6 +2614,7 @@ input ReactionInput {
   id: ID
   code: String!
   system: String
+  terminologySource: TerminologySource
   encounterID: String!
   reaction: Reaction
 }
@@ -5092,6 +5108,47 @@ func (ec *executionContext) fieldContext_Allergy_system(ctx context.Context, fie
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Allergy_terminologySource(ctx context.Context, field graphql.CollectedField, obj *dto.Allergy) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Allergy_terminologySource(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TerminologySource, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.TerminologySource)
+	fc.Result = res
+	return ec.marshalOTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Allergy_terminologySource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Allergy",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type TerminologySource does not have child fields")
 		},
 	}
 	return fc, nil
@@ -13064,6 +13121,8 @@ func (ec *executionContext) fieldContext_MedicalData_allergies(ctx context.Conte
 				return ec.fieldContext_Allergy_code(ctx, field)
 			case "system":
 				return ec.fieldContext_Allergy_system(ctx, field)
+			case "terminologySource":
+				return ec.fieldContext_Allergy_terminologySource(ctx, field)
 			case "encounterID":
 				return ec.fieldContext_Allergy_encounterID(ctx, field)
 			case "reaction":
@@ -14460,6 +14519,8 @@ func (ec *executionContext) fieldContext_Mutation_createAllergyIntolerance(ctx c
 				return ec.fieldContext_Allergy_code(ctx, field)
 			case "system":
 				return ec.fieldContext_Allergy_system(ctx, field)
+			case "terminologySource":
+				return ec.fieldContext_Allergy_terminologySource(ctx, field)
 			case "encounterID":
 				return ec.fieldContext_Allergy_encounterID(ctx, field)
 			case "reaction":
@@ -18258,7 +18319,7 @@ func (ec *executionContext) unmarshalInputAllergyInput(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"code", "system", "encounterID", "reaction"}
+	fieldsInOrder := [...]string{"code", "terminologySource", "encounterID", "reaction"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -18273,11 +18334,11 @@ func (ec *executionContext) unmarshalInputAllergyInput(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
-		case "system":
+		case "terminologySource":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("system"))
-			it.System, err = ec.unmarshalOString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("terminologySource"))
+			it.TerminologySource, err = ec.unmarshalNTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -20359,6 +20420,10 @@ func (ec *executionContext) _Allergy(ctx context.Context, sel ast.SelectionSet, 
 		case "system":
 
 			out.Values[i] = ec._Allergy_system(ctx, field, obj)
+
+		case "terminologySource":
+
+			out.Values[i] = ec._Allergy_terminologySource(ctx, field, obj)
 
 		case "encounterID":
 
@@ -23567,6 +23632,22 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
+func (ec *executionContext) unmarshalNTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, v interface{}) (dto.TerminologySource, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.TerminologySource(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, sel ast.SelectionSet, v dto.TerminologySource) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, v interface{}) (scalarutils.URI, error) {
 	var res scalarutils.URI
 	err := res.UnmarshalGQL(v)
@@ -25203,6 +25284,17 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, v interface{}) (dto.TerminologySource, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.TerminologySource(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, sel ast.SelectionSet, v dto.TerminologySource) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
 	return res
 }
 

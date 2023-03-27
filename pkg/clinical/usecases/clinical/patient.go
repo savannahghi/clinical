@@ -257,8 +257,23 @@ func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *do
 		allergyIntolerance.OnsetDateTime = fhirAllergyIntolerance.OnsetPeriod.Start
 	}
 
-	if fhirAllergyIntolerance.Reaction != nil {
-		allergyIntolerance.Reaction.Severity = dto.AllergyIntoleranceReactionSeverityEnum(*fhirAllergyIntolerance.Reaction[0].Severity)
+	if len(fhirAllergyIntolerance.Reaction) > 0 {
+		reaction := fhirAllergyIntolerance.Reaction[0]
+		if reaction.Severity != nil {
+			allergyIntolerance.Reaction.Severity = dto.AllergyIntoleranceReactionSeverityEnum(*reaction.Severity)
+		}
+
+		if len(reaction.Manifestation) > 0 {
+			manifestation := reaction.Manifestation[0]
+			if len(manifestation.Coding) > 0 {
+				coding := manifestation.Coding[0]
+				if coding.System != nil {
+					allergyIntolerance.Reaction.System = string(*coding.System)
+				}
+
+				allergyIntolerance.Reaction.Code = string(coding.Code)
+			}
+		}
 	}
 
 	return allergyIntolerance

@@ -845,3 +845,106 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_getConcept(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		source    dto.TerminologySource
+		conceptID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Sad case: failed to get icd10 concept",
+			args: args{
+				ctx:       context.Background(),
+				source:    dto.TerminologySourceICD10,
+				conceptID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: failed to get ciel concept",
+			args: args{
+				ctx:       context.Background(),
+				source:    dto.TerminologySourceCIEL,
+				conceptID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+
+		{
+			name: "Sad case: failed to get snomed concept",
+			args: args{
+				ctx:       context.Background(),
+				source:    dto.TerminologySourceSNOMEDCT,
+				conceptID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+
+		{
+			name: "Sad case: failed to get loinc concept",
+			args: args{
+				ctx:       context.Background(),
+				source:    dto.TerminologySourceLOINC,
+				conceptID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+
+		{
+			name: "Sad case: invalid concept source",
+			args: args{
+				ctx:       context.Background(),
+				source:    dto.TerminologySource("invalid"),
+				conceptID: gofakeit.BS(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: failed to get icd10 concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad case: failed to get ciel concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad case: failed to get snomed concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad case: failed to get loinc concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := c.GetConcept(tt.args.ctx, tt.args.source, tt.args.conceptID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.getConcept() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

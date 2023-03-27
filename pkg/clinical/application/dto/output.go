@@ -58,13 +58,14 @@ type HealthTimeline struct {
 
 // Allergy represents an allergy containing minimal FHIR resources
 type Allergy struct {
-	ID            string               `json:"ID"`
-	PatientID     string               `json:"patientID"`
-	Code          string               `json:"code"`
-	System        string               `json:"system"`
-	OnsetDateTime scalarutils.DateTime `json:"onsetDateTime,omitempty"`
-	EncounterID   string               `json:"encounterID"`
-	Reaction      Reaction             `json:"reaction"`
+	ID                string               `json:"ID"`
+	PatientID         string               `json:"patientID"`
+	Code              string               `json:"code"`
+	System            string               `json:"system"`
+	TerminologySource TerminologySource    `json:"terminologySource"`
+	OnsetDateTime     scalarutils.DateTime `json:"onsetDateTime,omitempty"`
+	EncounterID       string               `json:"encounterID"`
+	Reaction          Reaction             `json:"reaction"`
 }
 
 // Reaction represents a reaction containing minimal FHIR resources

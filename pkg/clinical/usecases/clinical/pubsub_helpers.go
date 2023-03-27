@@ -12,34 +12,38 @@ import (
 	"github.com/savannahghi/scalarutils"
 )
 
-func (c *UseCasesClinicalImpl) getCIELConcept(ctx context.Context, conceptID string) (*domain.Concept, error) {
-	response, err := c.infrastructure.OpenConceptLab.GetConcept(
-		ctx,
-		"CIEL",
-		"CIEL",
-		conceptID,
-		false,
-		false,
+// GetConcept is a helper function that returns a concept associated the terminology source passed
+func (c *UseCasesClinicalImpl) GetConcept(ctx context.Context, terminologySource dto.TerminologySource, conceptID string) (*domain.Concept, error) {
+	var (
+		organisation string
+		source       string
 	)
-	if err != nil {
-		return nil, err
+
+	switch terminologySource {
+	case dto.TerminologySourceICD10:
+		organisation = "WHO"
+		source = "ICD-10-WHO"
+
+	case dto.TerminologySourceCIEL:
+		organisation = "CIEL"
+		source = "CIEL"
+
+	case dto.TerminologySourceLOINC:
+		organisation = "Regenstrief"
+		source = "LOINC"
+
+	case dto.TerminologySourceSNOMEDCT:
+		organisation = "Sofya"
+		source = "SNOMED-CT"
+
+	default:
+		return nil, fmt.Errorf("terminology source %v not supported", source)
 	}
 
-	var concept *domain.Concept
-
-	err = mapstructure.Decode(response, &concept)
-	if err != nil {
-		return nil, err
-	}
-
-	return concept, nil
-}
-
-func (c *UseCasesClinicalImpl) getICD10Concept(ctx context.Context, conceptID string) (*domain.Concept, error) {
 	response, err := c.infrastructure.OpenConceptLab.GetConcept(
 		ctx,
-		"WHO",
-		"ICD-10-WHO",
+		organisation,
+		source,
 		conceptID,
 		false,
 		false,
@@ -60,7 +64,7 @@ func (c *UseCasesClinicalImpl) getICD10Concept(ctx context.Context, conceptID st
 
 // ComposeVitalsInput composes a vitals observation from data received
 func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto.CreateVitalSignPubSubMessage) (*domain.FHIRObservationInput, error) {
-	vitalsConcept, err := c.getCIELConcept(ctx, *input.ConceptID)
+	vitalsConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +183,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 		Display:   patientName,
 	}
 
-	allergenConcept, err := c.getCIELConcept(ctx, *input.ConceptID)
+	allergenConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -204,12 +208,12 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 	// if no reaction use unknown
 	var manifestationConcept *domain.Concept
 	if input.Reaction.ConceptID != nil {
-		manifestationConcept, err = c.getCIELConcept(ctx, *input.Reaction.ConceptID)
+		manifestationConcept, err = c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.Reaction.ConceptID)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		manifestationConcept, err = c.getCIELConcept(ctx, unknownConceptID)
+		manifestationConcept, err = c.GetConcept(ctx, dto.TerminologySourceCIEL, unknownConceptID)
 		if err != nil {
 			return nil, err
 		}
@@ -230,7 +234,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 	reaction.Manifestation = append(reaction.Manifestation, manifestation)
 
 	if input.Severity.ConceptID != nil {
-		severityConcept, err := c.getCIELConcept(ctx, *input.Severity.ConceptID)
+		severityConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.Severity.ConceptID)
 		if err != nil {
 			return nil, err
 		}
@@ -255,7 +259,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 
 	patientName = *patient.Resource.Name[0].Given[0]
 
-	observationConcept, err := c.getCIELConcept(ctx, *input.ConceptID)
+	observationConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
@@ -321,12 +325,12 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 
 // ComposeMedicationStatementInput composes a medication statement input from received data
 func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Context, input dto.CreateMedicationPubSubMessage) (*domain.FHIRMedicationStatementInput, error) {
-	medicationConcept, err := c.getCIELConcept(ctx, *input.ConceptID)
+	medicationConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.ConceptID)
 	if err != nil {
 		return nil, err
 	}
 
-	drugConcept, err := c.getCIELConcept(ctx, *input.Drug.ConceptID)
+	drugConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.Drug.ConceptID)
 	if err != nil {
 		return nil, err
 	}

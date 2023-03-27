@@ -26,7 +26,7 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 		return nil, err
 	}
 
-	allergyConcept, err := c.getCIELConcept(ctx, input.Code)
+	allergyConcept, err := c.GetConcept(ctx, input.TerminologySource, input.Code)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 	}
 
 	if input.Reaction != nil {
-		manifestationConcept, err := c.getCIELConcept(ctx, input.Reaction.Code)
+		manifestationConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, input.Reaction.Code)
 		if err != nil {
 			return nil, err
 		}
@@ -112,5 +112,8 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 		return nil, err
 	}
 
-	return mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(allergyIntolerance.Resource), nil
+	allergyIntoleranceObj := mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(allergyIntolerance.Resource)
+	allergyIntoleranceObj.TerminologySource = input.TerminologySource
+
+	return allergyIntoleranceObj, nil
 }
