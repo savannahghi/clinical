@@ -4,6 +4,9 @@ extend type Query {
 
   getEpisodeOfCare(id: ID!): EpisodeOfCare
 
+  # Conditions
+  listPatientConditions(patientID: ID!): [Condition!]!
+
   # Encounter
   listPatientEncounters(patientID: String!): [Encounter!]!
 

@@ -391,7 +391,50 @@ func NewFHIRMock() *FHIRMock {
 			return true, nil
 		},
 		MockSearchFHIRConditionFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRConditionRelayConnection, error) {
-			return &domain.FHIRConditionRelayConnection{}, nil
+			id := gofakeit.UUID()
+			statusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+			status := "inactive"
+			uri := scalarutils.URI("1234567345")
+
+			return &domain.FHIRConditionRelayConnection{
+				Edges: []*domain.FHIRConditionRelayEdge{
+					{
+						Node: &domain.FHIRCondition{
+							ID:         &id,
+							Text:       &domain.FHIRNarrative{},
+							Identifier: []*domain.FHIRIdentifier{},
+							ClinicalStatus: &domain.FHIRCodeableConcept{
+								Coding: []*domain.FHIRCoding{
+									{
+										System:  &statusSystem,
+										Code:    scalarutils.Code(string(status)),
+										Display: string(status),
+									},
+								},
+								Text: string(status),
+							},
+							Code: &domain.FHIRCodeableConcept{
+								Coding: []*domain.FHIRCoding{
+									{
+										System:  &uri,
+										Code:    scalarutils.Code("1234"),
+										Display: "1234567",
+									},
+								},
+								Text: "1234",
+							},
+							OnsetDateTime: &scalarutils.Date{},
+							RecordedDate:  &scalarutils.Date{},
+							Subject: &domain.FHIRReference{
+								ID: &id,
+							},
+							Encounter: &domain.FHIRReference{
+								ID: &id,
+							},
+						},
+					},
+				},
+			}, nil
 		},
 		MockUpdateFHIRConditionFn: func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
 			return &domain.FHIRConditionRelayPayload{}, nil

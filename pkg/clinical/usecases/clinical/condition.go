@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
@@ -91,21 +92,6 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		}
 	}
 
-	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, input.PatientID)
-	if err != nil {
-		return nil, err
-	}
-
-	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
-	patientType := scalarutils.URI("Patient")
-
-	conditionInput.Subject = &domain.FHIRReferenceInput{
-		ID:        patient.Resource.ID,
-		Reference: &patientRef,
-		Display:   patient.Resource.Name[0].Text,
-		Type:      &patientType,
-	}
-
 	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, input.EncounterID)
 	if err != nil {
 		return nil, err
@@ -123,6 +109,21 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		Reference: &encounterRef,
 		Display:   *encounter.Resource.ID,
 		Type:      &encounterType,
+	}
+
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
+	patientType := scalarutils.URI("Patient")
+
+	conditionInput.Subject = &domain.FHIRReferenceInput{
+		ID:        patient.Resource.ID,
+		Reference: &patientRef,
+		Display:   patient.Resource.Name[0].Text,
+		Type:      &patientType,
 	}
 
 	tags, err := c.GetTenantMetaTags(ctx)
@@ -163,4 +164,43 @@ func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Conditi
 	}
 
 	return &output
+}
+
+// ListPatientConditions lists a patients conditions
+// TODO: pagination
+func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patientID string) ([]*dto.Condition, error) {
+	_, err := uuid.Parse(patientID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid patient id: %s", patientID)
+	}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
+	if err != nil {
+		return nil, err
+	}
+
+	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
+	params := map[string]interface{}{
+		"subject": patientRef,
+		"_sort":   "date",
+	}
+
+	conditionsResponse, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, params, *identifiers)
+	if err != nil {
+		return nil, err
+	}
+
+	conditions := []*dto.Condition{}
+
+	for _, edge := range conditionsResponse.Edges {
+		condition := mapFHIRConditionToConditionDTO(*edge.Node)
+		conditions = append(conditions, condition)
+	}
+
+	return conditions, nil
 }
