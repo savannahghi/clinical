@@ -39,7 +39,6 @@ input ConditionInput {
   code: String!
   system: String!
   status: ConditionStatus!
-  patientID: String!
   encounterID: String!
 
   onsetDate: Date

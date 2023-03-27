@@ -238,9 +238,8 @@ type FHIRConditionStageInput struct {
 
 // FHIRConditionRelayConnection is a Relay connection for Condition
 type FHIRConditionRelayConnection struct {
-	Edges []*FHIRConditionRelayEdge `json:"edges,omitempty"`
-
-	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
+	Edges    []*FHIRConditionRelayEdge `json:"edges,omitempty"`
+	PageInfo *firebasetools.PageInfo   `json:"pageInfo,omitempty"`
 }
 
 // FHIRConditionRelayEdge is a Relay edge for Condition

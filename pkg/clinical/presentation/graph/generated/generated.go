@@ -390,6 +390,7 @@ type ComplexityRoot struct {
 		GetPatientRespiratoryRateEntries func(childComplexity int, patientID string) int
 		GetPatientTemperatureEntries     func(childComplexity int, patientID string) int
 		GetPatientWeightEntries          func(childComplexity int, patientID string) int
+		ListPatientConditions            func(childComplexity int, patientID string) int
 		ListPatientEncounters            func(childComplexity int, patientID string) int
 		PatientHealthTimeline            func(childComplexity int, input dto.HealthTimelineInput) int
 		__resolve__service               func(childComplexity int) int
@@ -435,6 +436,7 @@ type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
 	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
+	ListPatientConditions(ctx context.Context, patientID string) ([]*dto.Condition, error)
 	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
 	GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 	GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
@@ -2178,6 +2180,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetPatientWeightEntries(childComplexity, args["patientID"].(string)), true
 
+	case "Query.listPatientConditions":
+		if e.complexity.Query.ListPatientConditions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_listPatientConditions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ListPatientConditions(childComplexity, args["patientID"].(string)), true
+
 	case "Query.listPatientEncounters":
 		if e.complexity.Query.ListPatientEncounters == nil {
 			break
@@ -2384,6 +2398,9 @@ var sources = []*ast.Source{
 
   getEpisodeOfCare(id: ID!): EpisodeOfCare
 
+  # Conditions
+  listPatientConditions(patientID: ID!): [Condition!]!
+
   # Encounter
   listPatientEncounters(patientID: String!): [Encounter!]!
 
@@ -2560,7 +2577,6 @@ input ConditionInput {
   code: String!
   system: String!
   status: ConditionStatus!
-  patientID: String!
   encounterID: String!
 
   onsetDate: Date
@@ -4864,6 +4880,21 @@ func (ec *executionContext) field_Query_getPatientWeightEntries_args(ctx context
 	if tmp, ok := rawArgs["patientID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_listPatientConditions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -15251,6 +15282,83 @@ func (ec *executionContext) fieldContext_Query_getEpisodeOfCare(ctx context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_listPatientConditions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_listPatientConditions(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ListPatientConditions(rctx, fc.Args["patientID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*dto.Condition)
+	fc.Result = res
+	return ec.marshalNCondition2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_listPatientConditions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Condition_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Condition_status(ctx, field)
+			case "name":
+				return ec.fieldContext_Condition_name(ctx, field)
+			case "code":
+				return ec.fieldContext_Condition_code(ctx, field)
+			case "system":
+				return ec.fieldContext_Condition_system(ctx, field)
+			case "onsetDate":
+				return ec.fieldContext_Condition_onsetDate(ctx, field)
+			case "recordedDate":
+				return ec.fieldContext_Condition_recordedDate(ctx, field)
+			case "note":
+				return ec.fieldContext_Condition_note(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Condition_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Condition_encounterID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Condition", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_listPatientConditions_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_listPatientEncounters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_listPatientEncounters(ctx, field)
 	if err != nil {
@@ -18202,7 +18310,7 @@ func (ec *executionContext) unmarshalInputConditionInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"code", "system", "status", "patientID", "encounterID", "onsetDate", "note"}
+	fieldsInOrder := [...]string{"code", "system", "status", "encounterID", "onsetDate", "note"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -18230,14 +18338,6 @@ func (ec *executionContext) unmarshalInputConditionInput(ctx context.Context, ob
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
 			it.Status, err = ec.unmarshalNConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "patientID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
-			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -22197,6 +22297,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "listPatientConditions":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_listPatientConditions(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "listPatientEncounters":
 			field := field
 
@@ -22862,6 +22985,50 @@ func (ec *executionContext) marshalNCode2githubᚗcomᚋsavannahghiᚋscalarutil
 
 func (ec *executionContext) marshalNCondition2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx context.Context, sel ast.SelectionSet, v dto.Condition) graphql.Marshaler {
 	return ec._Condition(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNCondition2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionᚄ(ctx context.Context, sel ast.SelectionSet, v []*dto.Condition) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNCondition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalNCondition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx context.Context, sel ast.SelectionSet, v *dto.Condition) graphql.Marshaler {

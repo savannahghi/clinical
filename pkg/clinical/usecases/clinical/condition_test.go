@@ -35,7 +35,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					PatientID:   gofakeit.UUID(),
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -55,7 +54,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					PatientID:   gofakeit.UUID(),
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -75,7 +73,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					PatientID:   gofakeit.UUID(),
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -95,7 +92,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					PatientID:   gofakeit.UUID(),
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -115,7 +111,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					PatientID:   gofakeit.UUID(),
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -135,7 +130,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					PatientID:   gofakeit.UUID(),
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -155,7 +149,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					PatientID:   gofakeit.UUID(),
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -225,6 +218,99 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 				return
 			}
 
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a value to be returned, got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_ListPatientConditions(t *testing.T) {
+
+	type args struct {
+		ctx       context.Context
+		patientID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: list conditions",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: invalid patient id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: "invalid",
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get identifiers",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get patient",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to search condition",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "sad case: fail to get identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get identifiers")
+				}
+			}
+
+			if tt.name == "sad case: fail to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+
+			if tt.name == "sad case: fail to search condition" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRConditionRelayConnection, error) {
+					return nil, fmt.Errorf("failed to find condition")
+				}
+			}
+
+			got, err := c.ListPatientConditions(tt.args.ctx, tt.args.patientID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ListPatientConditions() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 			if !tt.wantErr && got == nil {
 				t.Errorf("expected a value to be returned, got: %v", got)
 				return
