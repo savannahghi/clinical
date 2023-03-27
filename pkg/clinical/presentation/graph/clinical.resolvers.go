@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
@@ -92,6 +91,11 @@ func (r *mutationResolver) CreateCondition(ctx context.Context, input dto.Condit
 	return r.usecases.CreateCondition(ctx, input)
 }
 
+// CreateAllergyIntolerance is the resolver for the createAllergyIntolerance field.
+func (r *mutationResolver) CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error) {
+	return r.usecases.CreateAllergyIntolerance(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
@@ -154,7 +158,7 @@ func (r *queryResolver) GetPatientBMIEntries(ctx context.Context, patientID stri
 
 // GetPatientWeightEntries is the resolver for the getPatientWeightEntries field.
 func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	panic(fmt.Errorf("not implemented: GetPatientWeightEntries - getPatientWeightEntries"))
+	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
