@@ -254,3 +254,55 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_SearchAllergy(t *testing.T) {
+	type args struct {
+		ctx  context.Context
+		name string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []*dto.Allergy
+		wantErr bool
+	}{
+		{
+			name: "Happy case: search for an allergy",
+			args: args{
+				ctx:  context.Background(),
+				name: "Peanuts",
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to search for an allergy",
+			args: args{
+				ctx:  context.Background(),
+				name: "test",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to search for an allergy" {
+				fakeOCL.MockListConceptsFn = func(ctx context.Context, org, source string, verbose bool, q, sortAsc, sortDesc, conceptClass, dataType, locale *string, includeRetired, includeMappings, includeInverseMappings *bool) ([]*domain.Concept, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			_, err := c.SearchAllergy(tt.args.ctx, tt.args.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.SearchAllergy() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

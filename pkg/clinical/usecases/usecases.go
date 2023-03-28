@@ -55,6 +55,7 @@ type Clinical interface {
 	GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
+	SearchAllergy(ctx context.Context, name string) ([]*dto.Terminology, error)
 }
 
 // Interactor is an implementation of the usecases interface
