@@ -137,7 +137,7 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 	patientID := encounter.Resource.Subject.ID
 	patientReference := fmt.Sprintf("Patient/%s", *patientID)
 
-	vitalsConcept, err := c.getCIELConcept(ctx, vitalSignConceptID)
+	vitalsConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, vitalSignConceptID)
 	if err != nil {
 		return nil, err
 	}

@@ -3,11 +3,13 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/google/uuid"
+
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
-	"time"
 )
 
 // CreateCondition creates a new conditions
@@ -19,7 +21,7 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		return nil, err
 	}
 
-	conditionConcept, err := c.getICD10Concept(ctx, input.Code)
+	conditionConcept, err := c.GetConcept(ctx, dto.TerminologySourceICD10, input.Code)
 	if err != nil {
 		return nil, err
 	}

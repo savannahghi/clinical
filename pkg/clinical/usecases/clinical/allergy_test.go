@@ -32,10 +32,10 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.AllergyInput{
-					PatientID:   gofakeit.UUID(),
-					Code:        "100",
-					System:      gofakeit.BS(),
-					EncounterID: gofakeit.UUID(),
+					PatientID:         gofakeit.UUID(),
+					Code:              "C12345",
+					TerminologySource: dto.TerminologySourceCIEL,
+					EncounterID:       gofakeit.UUID(),
 					Reaction: &dto.ReactionInput{
 						Code:     "2000",
 						System:   gofakeit.BS(),
@@ -50,23 +50,38 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.AllergyInput{
-					PatientID:   gofakeit.UUID(),
-					Code:        "100",
-					System:      gofakeit.BS(),
-					EncounterID: gofakeit.UUID(),
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceLOINC,
+					EncounterID:       gofakeit.UUID(),
 				},
 			},
 			wantErr: false,
 		},
+
+		{
+			name: "Sad case: unsupported concept source",
+			args: args{
+				ctx: context.Background(),
+				input: dto.AllergyInput{
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySource("invalid"),
+					EncounterID:       gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
+
 		{
 			name: "Sad case: failed to create allergy intolerance",
 			args: args{
 				ctx: context.Background(),
 				input: dto.AllergyInput{
-					PatientID:   gofakeit.UUID(),
-					Code:        "100",
-					System:      gofakeit.BS(),
-					EncounterID: gofakeit.UUID(),
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceCIEL,
+					EncounterID:       gofakeit.UUID(),
 					Reaction: &dto.ReactionInput{
 						Code:     "2000",
 						System:   gofakeit.BS(),
@@ -82,9 +97,9 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.AllergyInput{
-					PatientID: gofakeit.UUID(),
-					Code:      "100",
-					System:    gofakeit.BS(),
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceCIEL,
 					Reaction: &dto.ReactionInput{
 						Code:     "2000",
 						System:   gofakeit.BS(),
@@ -100,10 +115,10 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.AllergyInput{
-					PatientID:   gofakeit.UUID(),
-					Code:        "100",
-					System:      gofakeit.BS(),
-					EncounterID: gofakeit.UUID(),
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceCIEL,
+					EncounterID:       gofakeit.UUID(),
 					Reaction: &dto.ReactionInput{
 						Code:     "2000",
 						System:   gofakeit.BS(),
@@ -118,10 +133,10 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.AllergyInput{
-					PatientID:   gofakeit.UUID(),
-					Code:        "100",
-					System:      gofakeit.BS(),
-					EncounterID: gofakeit.UUID(),
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceCIEL,
+					EncounterID:       gofakeit.UUID(),
 					Reaction: &dto.ReactionInput{
 						Code:     "2000",
 						System:   gofakeit.BS(),
@@ -145,6 +160,8 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			if tt.name == "Happy case: create allergy intolerance" {
 				system := gofakeit.URL()
 				UUID := gofakeit.UUID()
+				mildSeverity := domain.AllergyIntoleranceReactionSeverityEnumMild
+
 				fakeFHIR.MockCreateFHIRAllergyIntoleranceFn = func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 					return &domain.FHIRAllergyIntoleranceRelayPayload{
 						Resource: &domain.FHIRAllergyIntolerance{
@@ -164,6 +181,21 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 							},
 							Encounter: &domain.FHIRReference{
 								ID: &UUID,
+							},
+							Reaction: []*domain.FHIRAllergyintoleranceReaction{
+								{
+									Severity: &mildSeverity,
+									Manifestation: []*domain.FHIRCodeableConcept{
+										{
+											Coding: []*domain.FHIRCoding{
+												{
+													System: (*scalarutils.URI)(&system),
+													Code:   scalarutils.Code(gofakeit.BS()),
+												},
+											},
+										},
+									},
+								},
 							},
 						},
 					}, nil

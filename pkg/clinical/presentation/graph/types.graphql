@@ -2,6 +2,7 @@ type Allergy {
   id: ID
   code: String!
   system: String
+  terminologySource: TerminologySource
   encounterID: String!
   reaction: Reaction
 }

@@ -115,3 +115,13 @@ const (
 	ConditionStatusInactive ConditionStatus = "inactive"
 	ConditionStatusResolved ConditionStatus = "resolved"
 )
+
+// TerminologySource represents various concept sources
+type TerminologySource string
+
+const (
+	TerminologySourceICD10    TerminologySource = "ICD10"
+	TerminologySourceCIEL     TerminologySource = "CIEL"
+	TerminologySourceSNOMEDCT TerminologySource = "SNOMED_CT"
+	TerminologySourceLOINC    TerminologySource = "LOINC"
+)

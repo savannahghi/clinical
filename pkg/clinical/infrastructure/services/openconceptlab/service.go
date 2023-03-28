@@ -113,6 +113,10 @@ func (s Service) GetConcept(
 			"unable to marshal OCL get concept response %s to JSON: %w", string(data), err)
 	}
 
+	if output["id"] == "" {
+		return nil, fmt.Errorf("failed to get %v concept with id %v", source, concept)
+	}
+
 	return output, nil
 }
 

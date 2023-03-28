@@ -67,11 +67,11 @@ type ConditionInput struct {
 
 // AllergyInput models the allergy input
 type AllergyInput struct {
-	PatientID   string         `json:"patientID"`
-	Code        string         `json:"code" validate:"required"`
-	System      string         `json:"system" validate:"required"`
-	EncounterID string         `json:"encounterID" validate:"required,uuid4"`
-	Reaction    *ReactionInput `json:"reaction"`
+	PatientID         string            `json:"patientID"`
+	Code              string            `json:"code" validate:"required"`
+	TerminologySource TerminologySource `json:"terminologySource" validate:"required"`
+	EncounterID       string            `json:"encounterID" validate:"required,uuid4"`
+	Reaction          *ReactionInput    `json:"reaction"`
 }
 
 // Validate ensures the input is valid

@@ -67,3 +67,10 @@ enum ConditionStatus {
   inactive
   resolved
 }
+
+enum TerminologySource {
+	ICD10
+	CIEL
+	SNOMED_CT
+	LOINC
+}
