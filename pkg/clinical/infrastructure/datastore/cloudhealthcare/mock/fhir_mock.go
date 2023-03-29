@@ -15,7 +15,7 @@ import (
 // FHIRMock struct implements mocks of FHIR methods.
 type FHIRMock struct {
 	MockCreateEpisodeOfCareFn    func(ctx context.Context, episode domain.FHIREpisodeOfCareInput) (*domain.EpisodeOfCarePayload, error)
-	MockSearchFHIRConditionFn    func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRConditionRelayConnection, error)
+	MockSearchFHIRConditionFn    func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error)
 	MockCreateFHIRConditionFn    func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	MockCreateFHIROrganizationFn func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error)
 	MockSearchFHIROrganizationFn func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIROrganizationRelayConnection, error)
@@ -439,50 +439,50 @@ func NewFHIRMock() *FHIRMock {
 		MockDeleteFHIRCompositionFn: func(ctx context.Context, id string) (bool, error) {
 			return true, nil
 		},
-		MockSearchFHIRConditionFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRConditionRelayConnection, error) {
+		MockSearchFHIRConditionFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
 			id := gofakeit.UUID()
 			statusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
 			status := "inactive"
 			uri := scalarutils.URI("1234567345")
 
-			return &domain.FHIRConditionRelayConnection{
-				Edges: []*domain.FHIRConditionRelayEdge{
-					{
-						Node: &domain.FHIRCondition{
-							ID:         &id,
-							Text:       &domain.FHIRNarrative{},
-							Identifier: []*domain.FHIRIdentifier{},
-							ClinicalStatus: &domain.FHIRCodeableConcept{
-								Coding: []*domain.FHIRCoding{
-									{
-										System:  &statusSystem,
-										Code:    scalarutils.Code(string(status)),
-										Display: string(status),
-									},
-								},
-								Text: string(status),
-							},
-							Code: &domain.FHIRCodeableConcept{
-								Coding: []*domain.FHIRCoding{
-									{
-										System:  &uri,
-										Code:    scalarutils.Code("1234"),
-										Display: "1234567",
-									},
-								},
-								Text: "1234",
-							},
-							OnsetDateTime: &scalarutils.Date{},
-							RecordedDate:  &scalarutils.Date{},
-							Subject: &domain.FHIRReference{
-								ID: &id,
-							},
-							Encounter: &domain.FHIRReference{
-								ID: &id,
-							},
+			condition := domain.FHIRCondition{
+				ID:         &id,
+				Text:       &domain.FHIRNarrative{},
+				Identifier: []*domain.FHIRIdentifier{},
+				ClinicalStatus: &domain.FHIRCodeableConcept{
+					Coding: []*domain.FHIRCoding{
+						{
+							System:  &statusSystem,
+							Code:    scalarutils.Code(string(status)),
+							Display: string(status),
 						},
 					},
+					Text: string(status),
 				},
+				Code: &domain.FHIRCodeableConcept{
+					Coding: []*domain.FHIRCoding{
+						{
+							System:  &uri,
+							Code:    scalarutils.Code("1234"),
+							Display: "1234567",
+						},
+					},
+					Text: "1234",
+				},
+				OnsetDateTime: &scalarutils.Date{},
+				RecordedDate:  &scalarutils.Date{},
+				Subject: &domain.FHIRReference{
+					ID: &id,
+				},
+				Encounter: &domain.FHIRReference{
+					ID: &id,
+				},
+			}
+
+			return &domain.PagedFHIRCondition{
+				Conditions:      []domain.FHIRCondition{condition},
+				HasNextPage:     false,
+				HasPreviousPage: false,
 			}, nil
 		},
 		MockUpdateFHIRConditionFn: func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
@@ -944,8 +944,8 @@ func (fh *FHIRMock) DeleteFHIRComposition(ctx context.Context, id string) (bool,
 }
 
 // SearchFHIRCondition is a mock implementation of SearchFHIRCondition method
-func (fh *FHIRMock) SearchFHIRCondition(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRConditionRelayConnection, error) {
-	return fh.MockSearchFHIRConditionFn(ctx, params, tenant)
+func (fh *FHIRMock) SearchFHIRCondition(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+	return fh.MockSearchFHIRConditionFn(ctx, params, tenant, pagination)
 }
 
 // UpdateFHIRCondition is a mock implementation of UpdateFHIRCondition method

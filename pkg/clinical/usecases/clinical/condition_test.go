@@ -230,8 +230,9 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 func TestUseCasesClinicalImpl_ListPatientConditions(t *testing.T) {
 
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -241,40 +242,45 @@ func TestUseCasesClinicalImpl_ListPatientConditions(t *testing.T) {
 		{
 			name: "happy case: list conditions",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
 			},
 			wantErr: false,
 		},
 		{
 			name: "sad case: invalid patient id",
 			args: args{
-				ctx:       context.Background(),
-				patientID: "invalid",
+				ctx:        context.Background(),
+				patientID:  "invalid",
+				pagination: dto.Pagination{},
 			},
 			wantErr: true,
 		},
 		{
 			name: "sad case: fail to get identifiers",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
 			},
 			wantErr: true,
 		},
 		{
 			name: "sad case: fail to get patient",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
 			},
 			wantErr: true,
 		},
 		{
 			name: "sad case: fail to search condition",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
 			},
 			wantErr: true,
 		},
@@ -302,12 +308,12 @@ func TestUseCasesClinicalImpl_ListPatientConditions(t *testing.T) {
 			}
 
 			if tt.name == "sad case: fail to search condition" {
-				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRConditionRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
 					return nil, fmt.Errorf("failed to find condition")
 				}
 			}
 
-			got, err := c.ListPatientConditions(tt.args.ctx, tt.args.patientID)
+			got, err := c.ListPatientConditions(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ListPatientConditions() error = %v, wantErr %v", err, tt.wantErr)
 				return

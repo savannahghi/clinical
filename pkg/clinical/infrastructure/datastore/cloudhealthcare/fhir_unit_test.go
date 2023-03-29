@@ -60,7 +60,7 @@ func TestStoreImpl_SearchFHIRObservation(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "sad case: search resource error" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search fhir resource")
 				}
 			}
@@ -245,7 +245,7 @@ func TestStoreImpl_GetFHIRPatient(t *testing.T) {
 					return nil
 				}
 
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					episode := domain.FHIREpisodeOfCare{
 						Period: &domain.FHIRPeriod{
 							Start: "2020-09-24T18:02:38.661033Z",
@@ -258,8 +258,10 @@ func TestStoreImpl_GetFHIRPatient(t *testing.T) {
 						return nil, err
 					}
 
-					return []map[string]interface{}{
-						payload,
+					return &domain.PagedFHIRResource{
+						Resources: []map[string]interface{}{
+							payload,
+						},
 					}, nil
 				}
 			}
@@ -720,7 +722,7 @@ func TestStoreImpl_SearchFHIRMedicationStatement(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "sad case: search resource error" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search")
 				}
 			}
@@ -907,7 +909,7 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "happy case: search patient" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					var payload map[string]interface{}
 
 					switch resourceType {
@@ -938,14 +940,16 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 						payload = p
 					}
 
-					return []map[string]interface{}{
-						payload,
+					return &domain.PagedFHIRResource{
+						Resources: []map[string]interface{}{
+							payload,
+						},
 					}, nil
 				}
 			}
 
 			if tt.name == "sad case: search patient error" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					var payload map[string]interface{}
 
 					switch resourceType {
@@ -968,8 +972,10 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 						payload = p
 					}
 
-					return []map[string]interface{}{
-						payload,
+					return &domain.PagedFHIRResource{
+						Resources: []map[string]interface{}{
+							payload,
+						},
 					}, nil
 				}
 			}
@@ -2260,7 +2266,7 @@ func TestStoreImpl_SearchFHIRServiceRequest(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a service request" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
@@ -2315,7 +2321,7 @@ func TestStoreImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search an allergy intolerance" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
@@ -2370,7 +2376,7 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a composition" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
@@ -2391,14 +2397,15 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 func TestStoreImpl_SearchFHIRCondition(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *domain.FHIRConditionRelayConnection
+		want    *domain.PagedFHIRCondition
 		wantErr bool
 	}{
 		{
@@ -2408,13 +2415,15 @@ func TestStoreImpl_SearchFHIRCondition(t *testing.T) {
 				params: map[string]interface{}{
 					"id": "1234",
 				},
+				pagination: dto.Pagination{},
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - fail to search a condition",
 			args: args{
-				ctx: ctx,
+				ctx:        ctx,
+				pagination: dto.Pagination{},
 			},
 			wantErr: true,
 		},
@@ -2425,12 +2434,12 @@ func TestStoreImpl_SearchFHIRCondition(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a condition" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
 
-			got, err := fh.SearchFHIRCondition(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIRCondition(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRCondition() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2480,7 +2489,7 @@ func TestStoreImpl_SearchFHIREncounter(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search an encounter" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
@@ -2535,7 +2544,7 @@ func TestStoreImpl_SearchFHIRMedicationRequest(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search a medication request" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search resource")
 				}
 			}
@@ -2767,7 +2776,7 @@ func TestStoreImpl_SearchPatientEncounters(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -2824,7 +2833,7 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -2914,13 +2923,13 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Happy case: create episode of care, episode does not exist" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, nil
 				}
 			}
 
 			if tt.name == "Sad case: failed to create FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, nil
 				}
 				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
@@ -2979,7 +2988,7 @@ func TestStoreImpl_SearchFHIROrganization(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR organisation" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -3040,7 +3049,7 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -3092,7 +3101,7 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -3152,7 +3161,7 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -3203,7 +3212,7 @@ func TestStoreImpl_SearchEpisodeEncounter(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -3262,14 +3271,16 @@ func TestStoreImpl_GetActiveEpisode(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad case: failed to search FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
 			if tt.name == "Sad case: empty FHIR resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
-					return []map[string]interface{}{}, nil
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return &domain.PagedFHIRResource{
+						Resources: []map[string]interface{}{},
+					}, nil
 				}
 			}
 			got, err := fh.GetActiveEpisode(tt.args.ctx, tt.args.episodeID, tt.args.tenant)
@@ -3926,7 +3937,7 @@ func TestStoreImpl_SearchPatientObservations(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "Sad Case - fail to search fhir resource" {
-				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to search observation resource")
 				}
 			}

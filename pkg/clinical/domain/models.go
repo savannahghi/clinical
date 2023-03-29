@@ -502,3 +502,13 @@ func MaritalStatusDisplay(val MaritalStatus) string {
 		return "unknown"
 	}
 }
+
+// PagedFHIRResource is a universal model for fetching FHIR resources with PageInfo details
+type PagedFHIRResource struct {
+	Resources       []map[string]interface{}
+	HasNextPage     bool
+	NextCursor      string
+	HasPreviousPage bool
+	PreviousCursor  string
+	TotalCount      int
+}
