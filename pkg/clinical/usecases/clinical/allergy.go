@@ -2,8 +2,10 @@ package clinical
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
@@ -107,6 +109,15 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 		}}
 	}
 
+	tags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	allergyIntoleranceInput.Meta = domain.FHIRMetaInput{
+		Tag: tags,
+	}
+
 	allergyIntolerance, err := c.infrastructure.FHIR.CreateFHIRAllergyIntolerance(ctx, allergyIntoleranceInput)
 	if err != nil {
 		return nil, err
@@ -137,4 +148,21 @@ func (c *UseCasesClinicalImpl) SearchAllergy(ctx context.Context, name string) (
 	}
 
 	return terminologies, nil
+}
+
+// GetAllergyIntolerance fetches all the allergy intolerance from FHIR by allergy intolerance ID
+func (c *UseCasesClinicalImpl) GetAllergyIntolerance(ctx context.Context, id string) (*dto.Allergy, error) {
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid allergy intolerance id: %s", id)
+	}
+
+	allergyIntolerance, err := c.infrastructure.FHIR.GetFHIRAllergyIntolerance(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to search for allergy intolerance: %w", err)
+	}
+
+	intolerance := mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(allergyIntolerance.Resource)
+
+	return intolerance, nil
 }

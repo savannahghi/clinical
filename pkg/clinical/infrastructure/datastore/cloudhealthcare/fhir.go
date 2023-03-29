@@ -288,6 +288,20 @@ func (fh StoreImpl) GetFHIROrganization(_ context.Context, organizationID string
 	}, nil
 }
 
+// GetFHIRAllergyIntolerance fetches the allergy from FHIR repository using its id
+func (fh StoreImpl) GetFHIRAllergyIntolerance(_ context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+	allergyIntoleranace := &domain.FHIRAllergyIntolerance{}
+
+	err := fh.Dataset.GetFHIRResource(allergyIntoleranceResourceType, id, allergyIntoleranace)
+	if err != nil {
+		return nil, err
+	}
+
+	return &domain.FHIRAllergyIntoleranceRelayPayload{
+		Resource: allergyIntoleranace,
+	}, nil
+}
+
 // SearchEpisodesByParam search episodes by params
 func (fh StoreImpl) SearchEpisodesByParam(_ context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers) ([]*domain.FHIREpisodeOfCare, error) {
 	resources, err := fh.Dataset.SearchFHIRResource(episodeOfCareResourceType, searchParams, tenant)

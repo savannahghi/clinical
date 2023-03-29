@@ -21,6 +21,7 @@ extend type Query {
 
   # Allergy
    searchAllergyTerminology(name: String!): [Terminology]
+   getAllergyIntolerance(id: ID!): Allergy!
 }
 
 extend type Mutation {

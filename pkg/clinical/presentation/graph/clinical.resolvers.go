@@ -174,6 +174,13 @@ func (r *queryResolver) SearchAllergyTerminology(ctx context.Context, name strin
 	return r.usecases.SearchAllergy(ctx, name)
 }
 
+// GetAllergyIntolerance is the resolver for the getAllergyIntolerance field.
+func (r *queryResolver) GetAllergyIntolerance(ctx context.Context, id string) (*dto.Allergy, error) {
+	r.CheckDependencies()
+
+	return r.usecases.GetAllergyIntolerance(ctx, id)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

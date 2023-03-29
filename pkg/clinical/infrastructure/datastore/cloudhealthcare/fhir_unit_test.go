@@ -3943,3 +3943,50 @@ func TestStoreImpl_SearchPatientObservations(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_GetFHIRAllergyIntolerance(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get allergy intolerance by ID",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to get allergy intolerance by ID",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to get allergy intolerance by ID" {
+				fakeDataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					return fmt.Errorf("error")
+				}
+			}
+
+			_, err := fh.GetFHIRAllergyIntolerance(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.GetFHIRAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
