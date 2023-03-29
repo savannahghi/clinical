@@ -18,6 +18,9 @@ extend type Query {
   getPatientPulseRateEntries(patientID: String!): [Observation!]
   getPatientBMIEntries(patientID: String!): [Observation!]
   getPatientWeightEntries(patientID: String!): [Observation!]
+
+  # Allergy
+   searchAllergyTerminology(name: String!): [Terminology]
 }
 
 extend type Mutation {

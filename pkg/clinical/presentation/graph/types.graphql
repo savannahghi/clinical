@@ -39,7 +39,7 @@ type MedicationStatement {
 
 type MedicalData {
   regimen: [MedicationStatement]
-  allergies: [Allergy ]
+  allergies: [Allergy]
   weight: [Observation]
   bmi: [Observation]
   viralLoad: [Observation]
@@ -96,4 +96,10 @@ type Condition {
 
   patientID: String
   encounterID: String
+}
+
+type Terminology {
+  code: String!
+  system: TerminologySource!
+  name: String!
 }

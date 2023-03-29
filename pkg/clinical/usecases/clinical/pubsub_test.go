@@ -418,7 +418,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to get ciel concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
@@ -561,7 +561,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to get ciel concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
@@ -723,7 +723,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to get ciel concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
@@ -834,7 +834,7 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to get ciel concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
@@ -917,25 +917,25 @@ func TestUseCasesClinicalImpl_getConcept(t *testing.T) {
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: failed to get icd10 concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
 			if tt.name == "Sad case: failed to get ciel concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
 			if tt.name == "Sad case: failed to get snomed concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
 			if tt.name == "Sad case: failed to get loinc concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}

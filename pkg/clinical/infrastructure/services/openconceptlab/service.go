@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/serverutils"
 )
 
@@ -82,7 +84,7 @@ func (s Service) MakeRequest(method string, path string, params url.Values, body
 // e.g GET /orgs/WHO/sources/ICD-10-2010/concepts/A15.1/?includeInverseMappings=true
 func (s Service) GetConcept(
 	_ context.Context, org string, source string, concept string,
-	includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error) {
+	includeMappings bool, includeInverseMappings bool) (*domain.Concept, error) {
 	s.enforcePreconditions()
 
 	path := fmt.Sprintf("orgs/%s/sources/%s/concepts/%s", org, source, concept)
@@ -117,7 +119,14 @@ func (s Service) GetConcept(
 		return nil, fmt.Errorf("failed to get %v concept with id %v", source, concept)
 	}
 
-	return output, nil
+	var terminologyConcept *domain.Concept
+
+	err = mapstructure.Decode(output, &terminologyConcept)
+	if err != nil {
+		return nil, err
+	}
+
+	return terminologyConcept, nil
 }
 
 // ListConcepts searches for matching concepts on OpenConceptLab
@@ -127,7 +136,7 @@ func (s Service) ListConcepts(
 	_ context.Context, org string, source string, verbose bool, q *string,
 	sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 	locale *string, includeRetired *bool,
-	includeMappings *bool, includeInverseMappings *bool) ([]map[string]interface{}, error) {
+	includeMappings *bool, includeInverseMappings *bool) ([]*domain.Concept, error) {
 	s.enforcePreconditions()
 
 	path := fmt.Sprintf("orgs/%s/sources/%s/concepts", org, source)
@@ -182,18 +191,31 @@ func (s Service) ListConcepts(
 
 	defer resp.Body.Close()
 
-	output := []map[string]interface{}{}
+	terminologyConcepts := []map[string]interface{}{}
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read OCL API response body: %w", err)
 	}
 
-	err = json.Unmarshal(data, &output)
+	err = json.Unmarshal(data, &terminologyConcepts)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"unable to marshal OCL get concept response %s to JSON: %w", string(data), err)
 	}
 
-	return output, nil
+	var concepts []*domain.Concept
+
+	for _, terminologyConcept := range terminologyConcepts {
+		var concept *domain.Concept
+
+		err := mapstructure.Decode(terminologyConcept, &concept)
+		if err != nil {
+			return nil, err
+		}
+
+		concepts = append(concepts, concept)
+	}
+
+	return concepts, nil
 }

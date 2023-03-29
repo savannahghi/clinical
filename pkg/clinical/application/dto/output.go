@@ -134,3 +134,10 @@ type Condition struct {
 	PatientID   string `json:"patientID"`
 	EncounterID string `json:"encounterID"`
 }
+
+// Terminology models the OCL terminology output
+type Terminology struct {
+	Code   string            `json:"code"`
+	System TerminologySource `json:"system"`
+	Name   string            `json:"name"`
+}

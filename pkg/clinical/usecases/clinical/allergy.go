@@ -117,3 +117,24 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 
 	return allergyIntoleranceObj, nil
 }
+
+// SearchAllergy is used to retrieve allergy from OCL
+func (c *UseCasesClinicalImpl) SearchAllergy(ctx context.Context, name string) ([]*dto.Terminology, error) {
+	concepts, err := c.infrastructure.OpenConceptLab.
+		ListConcepts(ctx, string(dto.TerminologySourceCIEL), string(dto.TerminologySourceCIEL), true, &name, nil, nil, nil, nil, nil, nil, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var terminologies []*dto.Terminology
+
+	for _, concept := range concepts {
+		terminologies = append(terminologies, &dto.Terminology{
+			Code:   concept.ID,
+			System: dto.TerminologySource(concept.Source),
+			Name:   concept.DisplayName,
+		})
+	}
+
+	return terminologies, nil
+}

@@ -164,7 +164,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}
@@ -318,7 +318,7 @@ func TestUseCasesClinicalImpl_RecordTemperature(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}
@@ -472,7 +472,7 @@ func TestUseCasesClinicalImpl_RecordHeight(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}
@@ -627,7 +627,7 @@ func TestUseCasesClinicalImpl_RecordWeight(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}
@@ -781,7 +781,7 @@ func TestUseCasesClinicalImpl_RecordRespiratoryRate(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}
@@ -935,7 +935,7 @@ func TestUseCasesClinicalImpl_RecordPulseRate(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}
@@ -1089,7 +1089,7 @@ func TestUseCasesClinicalImpl_RecordBloodPressure(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}
@@ -1243,7 +1243,7 @@ func TestUseCasesClinicalImpl_RecordBMI(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get CIEL concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("fail to get concept")
 				}
 			}

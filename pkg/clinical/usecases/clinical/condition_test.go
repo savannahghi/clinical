@@ -3,6 +3,8 @@ package clinical_test
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
@@ -13,7 +15,6 @@ import (
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/scalarutils"
-	"testing"
 )
 
 func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
@@ -172,7 +173,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "sad case: error fetching concept" {
-				fakeOCL.MockGetConceptFn = func(ctx context.Context, org string, source string, concept string, includeMappings bool, includeInverseMappings bool) (map[string]interface{}, error) {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org string, source string, concept string, includeMappings bool, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
