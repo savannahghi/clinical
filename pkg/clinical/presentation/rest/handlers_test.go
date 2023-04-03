@@ -24,6 +24,7 @@ import (
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
 )
@@ -165,6 +166,16 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 		},
 		{
 			name: "happy case: publish create results message",
+			args: args{
+				url:        "/pubsub",
+				httpMethod: http.MethodPost,
+				body:       nil,
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "happy case: publish tenant message",
 			args: args{
 				url:        "/pubsub",
 				httpMethod: http.MethodPost,
@@ -508,6 +519,31 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 				fakeExt.MockGetPubSubTopicFn = func(m *pubsubtools.PubSubPayload) (string, error) {
 					return utils.AddPubSubNamespace(common.TestResultTopicName, common.ClinicalServiceName), nil
+				}
+			}
+
+			if tt.name == "happy case: publish tenant message" {
+				message := dto.OrganizationInput{
+					Name:        gofakeit.BeerName(),
+					PhoneNumber: interserviceclient.TestUserPhoneNumber,
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  dto.OrganizationIdentifierType("MCHProgram"),
+							Value: gofakeit.UUID(),
+						},
+					},
+				}
+				data, _ := json.Marshal(message)
+				fakeExt.MockVerifyPubSubJWTAndDecodePayloadFn = func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
+					return &pubsubtools.PubSubPayload{
+						Message: pubsubtools.PubSubMessage{
+							Data: data,
+						},
+					}, nil
+				}
+
+				fakeExt.MockGetPubSubTopicFn = func(m *pubsubtools.PubSubPayload) (string, error) {
+					return utils.AddPubSubNamespace(common.TenantTopicName, common.ClinicalServiceName), nil
 				}
 			}
 

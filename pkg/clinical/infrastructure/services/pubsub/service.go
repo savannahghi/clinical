@@ -81,6 +81,7 @@ func (ps ServicePubSubMessaging) TopicIDs() []string {
 		ps.AddPubSubNamespace(common.TestResultTopicName, common.ClinicalServiceName),
 		ps.AddPubSubNamespace(common.TestOrderTopicName, common.ClinicalServiceName),
 		ps.AddPubSubNamespace(common.OrganizationTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.TenantTopicName, common.ClinicalServiceName),
 	}
 }
 

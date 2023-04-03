@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	getUserProfile      = "internal/user-profile/%s"
-	addFHIRIDToProfile  = "internal/add-fhir-id"
-	addFHIRIDToFacility = "internal/facilities"
+	getUserProfile        = "internal/user-profile/%s"
+	addFHIRIDToProfile    = "internal/add-fhir-id"
+	addFHIRIDToFacility   = "internal/facilities"
+	updateProgramTenantID = "internal/program"
 )
 
 // ServiceMyCareHubImpl represents mycarehub usecases
@@ -145,6 +146,32 @@ func (s ServiceMyCareHubImpl) AddFHIRIDToFacility(
 			err,
 			resp.StatusCode,
 		)
+	}
+
+	return nil
+}
+
+// UpdateProgramFHIRTenantID makes an isc call and updates mycarehub's tenant id in a certain program
+func (s ServiceMyCareHubImpl) UpdateProgramFHIRTenantID(ctx context.Context, programID string, tenantID string) error {
+	type requestPayload struct {
+		ProgramID    string `json:"programID"`
+		FHIRTenantID string `json:"fhirTenantID"`
+	}
+
+	resp, err := s.MyCareHubClient.MakeRequest(
+		ctx,
+		http.MethodPost,
+		updateProgramTenantID,
+		&requestPayload{ProgramID: programID, FHIRTenantID: tenantID},
+	)
+	if err != nil {
+		return fmt.Errorf("failed to make a request to mycarehub service: %w", err)
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to update program tenant ID : %w, with status code %v", err, resp.StatusCode)
 	}
 
 	return nil

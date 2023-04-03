@@ -29,6 +29,7 @@ type Clinical interface {
 	CreatePubsubAllergyIntolerance(ctx context.Context, data dto.CreatePatientAllergyPubSubMessage) error
 	CreatePubsubTestResult(ctx context.Context, data dto.CreatePatientTestResultPubSubMessage) error
 	CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error
+	CreatePubsubTenant(ctx context.Context, data dto.OrganizationInput) error
 
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 

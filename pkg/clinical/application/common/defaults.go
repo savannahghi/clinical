@@ -38,6 +38,9 @@ const (
 	// OrganizationTopicName is the topic where organization(facility) details are published to
 	OrganizationTopicName = "organization.create"
 
+	// TenantTopicName is the topic where program is registered in clinical as a tenant
+	TenantTopicName = "mycarehub.tenant.create"
+
 	// MedicalDataCount is the count of medical records
 	MedicalDataCount = "3"
 
