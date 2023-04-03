@@ -146,6 +146,24 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad case: fail to get tags",
+			args: args{
+				ctx: nil,
+				input: dto.AllergyInput{
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceCIEL,
+					EncounterID:       gofakeit.UUID(),
+					Reaction: &dto.ReactionInput{
+						Code:     "2000",
+						System:   gofakeit.BS(),
+						Severity: "fatal",
+					},
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -246,6 +264,11 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
+			if tt.name == "Sad case: fail to get tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tags")
+				}
+			}
 			_, err := c.CreateAllergyIntolerance(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreateAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
@@ -301,6 +324,66 @@ func TestUseCasesClinicalImpl_SearchAllergy(t *testing.T) {
 			_, err := c.SearchAllergy(tt.args.ctx, tt.args.name)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.SearchAllergy() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetAllergyIntolerance(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get allergy intolerance",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid uuid",
+			args: args{
+				ctx: context.Background(),
+				id:  "1",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get allergy intolerance",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to get allergy intolerance" {
+				fakeFHIR.MockGetFHIRAllergyIntoleranceFn = func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+					return nil, fmt.Errorf("error")
+				}
+			}
+
+			_, err := c.GetAllergyIntolerance(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

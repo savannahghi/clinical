@@ -52,6 +52,7 @@ require (
 	cloud.google.com/go/trace v1.8.0 // indirect
 	contrib.go.opencensus.io/exporter/stackdriver v0.13.11 // indirect
 	firebase.google.com/go v3.13.0+incompatible // indirect
+	github.com/766b/go-outliner v0.0.0-20180511142203-fc6edecdadd7 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/aws/aws-sdk-go v1.44.208 // indirect
 	github.com/bytedance/sonic v1.8.3 // indirect

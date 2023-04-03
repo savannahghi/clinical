@@ -69,6 +69,7 @@ type FHIRMock struct {
 	MockUpdateFHIREpisodeOfCareFn       func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
 	MockSearchFHIRPatientFn             func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error)
 	MockSearchPatientObservationsFn     func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error)
+	MockGetFHIRAllergyIntoleranceFn     func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -351,6 +352,54 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockSearchFHIRAllergyIntoleranceFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 			return &domain.FHIRAllergyIntoleranceRelayConnection{}, nil
+		},
+		MockGetFHIRAllergyIntoleranceFn: func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+			UID := uuid.NewString()
+			system := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+			return &domain.FHIRAllergyIntoleranceRelayPayload{
+				Resource: &domain.FHIRAllergyIntolerance{
+					ID:         &UID,
+					Text:       &domain.FHIRNarrative{},
+					Identifier: []*domain.FHIRIdentifier{},
+					ClinicalStatus: domain.FHIRCodeableConcept{
+						ID:     &UID,
+						Coding: []*domain.FHIRCoding{},
+						Text:   "test",
+					},
+					VerificationStatus: domain.FHIRCodeableConcept{},
+					Category:           []*domain.AllergyIntoleranceCategoryEnum{},
+					Criticality:        "",
+					Code: &domain.FHIRCodeableConcept{
+						ID: &UID,
+						Coding: []*domain.FHIRCoding{
+							{
+								ID:     &UID,
+								System: &system,
+								Code:   scalarutils.Code("1234"),
+							},
+						},
+						Text: "",
+					},
+					Patient: &domain.FHIRReference{
+						ID: &UID,
+					},
+					Encounter: &domain.FHIRReference{
+						ID: &UID,
+					},
+					OnsetDateTime: &scalarutils.Date{},
+					OnsetAge:      &domain.FHIRAge{},
+					OnsetPeriod:   &domain.FHIRPeriod{},
+					OnsetRange:    &domain.FHIRRange{},
+					OnsetString:   new(string),
+					RecordedDate:  &scalarutils.Date{},
+					Recorder:      &domain.FHIRReference{},
+					Asserter:      &domain.FHIRReference{},
+					Note:          []*domain.FHIRAnnotation{},
+					Reaction:      []*domain.FHIRAllergyintoleranceReaction{},
+					Meta:          &domain.FHIRMeta{},
+					Extension:     []*domain.FHIRExtension{},
+				},
+			}, nil
 		},
 		MockCreateFHIRAllergyIntoleranceFn: func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 			return &domain.FHIRAllergyIntoleranceRelayPayload{
@@ -1012,4 +1061,9 @@ func (fh *FHIRMock) SearchFHIRPatient(ctx context.Context, searchParams string, 
 // SearchPatientObservations mocks the implementation of searching patient observations
 func (fh *FHIRMock) SearchPatientObservations(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
 	return fh.MockSearchPatientObservationsFn(ctx, patientReference, conceptID, tenant)
+}
+
+// GetFHIRAllergyIntolerance mocks the implementation of getting a resource by its ID
+func (fh *FHIRMock) GetFHIRAllergyIntolerance(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+	return fh.MockGetFHIRAllergyIntoleranceFn(ctx, id)
 }
