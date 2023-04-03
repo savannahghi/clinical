@@ -6,8 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 )
@@ -118,8 +116,9 @@ func (r *queryResolver) GetEpisodeOfCare(ctx context.Context, id string) (*dto.E
 }
 
 // ListPatientConditions is the resolver for the listPatientConditions field.
-func (r *queryResolver) ListPatientConditions(ctx context.Context, patientID string) ([]*dto.Condition, error) {
-	panic(fmt.Errorf("not implemented: ListPatientConditions - listPatientConditions"))
+func (r *queryResolver) ListPatientConditions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ConditionConnection, error) {
+	r.CheckDependencies()
+	return r.usecases.ListPatientConditions(ctx, patientID, pagination)
 }
 
 // ListPatientEncounters is the resolver for the listPatientEncounters field.
@@ -167,15 +166,15 @@ func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID s
 	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID)
 }
 
-// SearchAllergyTerminology is the resolver for the searchAllergyTerminology field.
-func (r *queryResolver) SearchAllergyTerminology(ctx context.Context, name string) ([]*dto.Terminology, error) {
+// SearchAllergy is the resolver for the searchAllergy field.
+func (r *queryResolver) SearchAllergy(ctx context.Context, name string) ([]*dto.Terminology, error) {
 	r.CheckDependencies()
 
 	return r.usecases.SearchAllergy(ctx, name)
 }
 
-// GetAllergyIntolerance is the resolver for the getAllergyIntolerance field.
-func (r *queryResolver) GetAllergyIntolerance(ctx context.Context, id string) (*dto.Allergy, error) {
+// GetAllergy is the resolver for the getAllergy field.
+func (r *queryResolver) GetAllergy(ctx context.Context, id string) (*dto.Allergy, error) {
 	r.CheckDependencies()
 
 	return r.usecases.GetAllergyIntolerance(ctx, id)

@@ -1,53 +1,53 @@
 extend type Query {
-  patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
-  getMedicalData(patientID: String!): MedicalData
+    patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
+    getMedicalData(patientID: String!): MedicalData
 
-  getEpisodeOfCare(id: ID!): EpisodeOfCare
+    getEpisodeOfCare(id: ID!): EpisodeOfCare
 
-  # Conditions
-  listPatientConditions(patientID: ID!): [Condition!]!
+    # Conditions
+    listPatientConditions(patientID: ID!, pagination:Pagination!): ConditionConnection
 
-  # Encounter
-  listPatientEncounters(patientID: String!): [Encounter!]!
+    # Encounter
+    listPatientEncounters(patientID: String!): [Encounter!]!
 
-  # Observation
-  getPatientTemperatureEntries(patientID: String!): [Observation!]
-  getPatientBloodPressureEntries(patientID: String!): [Observation!]
-  getPatientHeightEntries(patientID: String!): [Observation!]
-  getPatientRespiratoryRateEntries(patientID: String!): [Observation!]
-  getPatientPulseRateEntries(patientID: String!): [Observation!]
-  getPatientBMIEntries(patientID: String!): [Observation!]
-  getPatientWeightEntries(patientID: String!): [Observation!]
+    # Observation
+    getPatientTemperatureEntries(patientID: String!): [Observation!]
+    getPatientBloodPressureEntries(patientID: String!): [Observation!]
+    getPatientHeightEntries(patientID: String!): [Observation!]
+    getPatientRespiratoryRateEntries(patientID: String!): [Observation!]
+    getPatientPulseRateEntries(patientID: String!): [Observation!]
+    getPatientBMIEntries(patientID: String!): [Observation!]
+    getPatientWeightEntries(patientID: String!): [Observation!]
 
-  # Allergy
-   searchAllergyTerminology(name: String!): [Terminology]
-   getAllergyIntolerance(id: ID!): Allergy!
+    # Allergy
+    searchAllergy(name: String!): [Terminology]
+    getAllergy(id: ID!): Allergy!
 }
 
 extend type Mutation {
-  # EpisodeOfCare
-  createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
-  endEpisodeOfCare(id: ID!): EpisodeOfCare
+    # EpisodeOfCare
+    createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
+    endEpisodeOfCare(id: ID!): EpisodeOfCare
 
-  # Encounter
-  startEncounter(episodeID: String!): String!
-  endEncounter(encounterID: String!): Boolean!
+    # Encounter
+    startEncounter(episodeID: String!): String!
+    endEncounter(encounterID: String!): Boolean!
 
-  # Observation
-  recordTemperature(input: ObservationInput!): Observation!
-  recordHeight(input: ObservationInput!): Observation!
-  recordWeight(input: ObservationInput!): Observation!
-  recordRespiratoryRate(input: ObservationInput!): Observation!
-  recordPulseRate(input: ObservationInput!): Observation!
-  recordBloodPressure(input: ObservationInput!): Observation!
-  recordBMI(input: ObservationInput!): Observation!
+    # Observation
+    recordTemperature(input: ObservationInput!): Observation!
+    recordHeight(input: ObservationInput!): Observation!
+    recordWeight(input: ObservationInput!): Observation!
+    recordRespiratoryRate(input: ObservationInput!): Observation!
+    recordPulseRate(input: ObservationInput!): Observation!
+    recordBloodPressure(input: ObservationInput!): Observation!
+    recordBMI(input: ObservationInput!): Observation!
 
-  # Patient
-  createPatient(input: PatientInput!): Patient!
+    # Patient
+    createPatient(input: PatientInput!): Patient!
 
-#  Conditions
-  createCondition(input: ConditionInput!): Condition!
+    #  Conditions
+    createCondition(input: ConditionInput!): Condition!
 
-  # Allergy Intolerance
-  createAllergyIntolerance(input: AllergyInput!): Allergy
+    # Allergy Intolerance
+    createAllergyIntolerance(input: AllergyInput!): Allergy
 }

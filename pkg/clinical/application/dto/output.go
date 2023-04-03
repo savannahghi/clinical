@@ -118,23 +118,6 @@ type Patient struct {
 	BirthDate   scalarutils.Date `json:"birthDate"`
 }
 
-// Condition represents a FHIR condition
-type Condition struct {
-	ID     string          `json:"id"`
-	Status ConditionStatus `json:"status"`
-	Name   string          `json:"condition"`
-	Code   string          `json:"code"`
-	System string          `json:"system"`
-
-	OnsetDate    scalarutils.Date `json:"onsetDate"`
-	RecordedDate scalarutils.Date `json:"recordedDate"`
-
-	Note string `json:"note"`
-
-	PatientID   string `json:"patientID"`
-	EncounterID string `json:"encounterID"`
-}
-
 // Terminology models the OCL terminology output
 type Terminology struct {
 	Code   string            `json:"code"`

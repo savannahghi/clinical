@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 )
 
@@ -236,17 +235,14 @@ type FHIRConditionStageInput struct {
 	Type *FHIRCodeableConceptInput `json:"type,omitempty"`
 }
 
-// FHIRConditionRelayConnection is a Relay connection for Condition
-type FHIRConditionRelayConnection struct {
-	Edges    []*FHIRConditionRelayEdge `json:"edges,omitempty"`
-	PageInfo *firebasetools.PageInfo   `json:"pageInfo,omitempty"`
-}
-
-// FHIRConditionRelayEdge is a Relay edge for Condition
-type FHIRConditionRelayEdge struct {
-	Cursor *string `json:"cursor,omitempty"`
-
-	Node *FHIRCondition `json:"node,omitempty"`
+// PagedFHIRCondition ...
+type PagedFHIRCondition struct {
+	Conditions      []FHIRCondition
+	HasNextPage     bool
+	NextCursor      string
+	HasPreviousPage bool
+	PreviousCursor  string
+	TotalCount      int
 }
 
 // FHIRConditionRelayPayload is used to return single instances of Condition

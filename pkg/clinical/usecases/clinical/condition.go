@@ -170,10 +170,15 @@ func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Conditi
 
 // ListPatientConditions lists a patients conditions
 // TODO: pagination
-func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patientID string) ([]*dto.Condition, error) {
+func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ConditionConnection, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
+	}
+
+	err = pagination.Validate()
+	if err != nil {
+		return nil, err
 	}
 
 	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
@@ -192,17 +197,26 @@ func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patient
 		"_sort":   "date",
 	}
 
-	conditionsResponse, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, params, *identifiers)
+	conditionsResponse, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, params, *identifiers, pagination)
 	if err != nil {
 		return nil, err
 	}
 
-	conditions := []*dto.Condition{}
+	conditions := []dto.Condition{}
 
-	for _, edge := range conditionsResponse.Edges {
-		condition := mapFHIRConditionToConditionDTO(*edge.Node)
-		conditions = append(conditions, condition)
+	for _, resource := range conditionsResponse.Conditions {
+		condition := mapFHIRConditionToConditionDTO(resource)
+		conditions = append(conditions, *condition)
 	}
 
-	return conditions, nil
+	pageInfo := dto.PageInfo{
+		HasNextPage:     conditionsResponse.HasNextPage,
+		EndCursor:       &conditionsResponse.NextCursor,
+		HasPreviousPage: conditionsResponse.HasPreviousPage,
+		StartCursor:     &conditionsResponse.PreviousCursor,
+	}
+
+	connection := dto.CreateConditionConnection(conditions, pageInfo, conditionsResponse.TotalCount)
+
+	return &connection, nil
 }

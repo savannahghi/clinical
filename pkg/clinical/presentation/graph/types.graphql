@@ -1,101 +1,131 @@
 type Allergy {
-  id: ID
-  code: String!
-  system: String
-  terminologySource: TerminologySource
-  encounterID: String!
-  reaction: Reaction
+    id: ID
+    code: String!
+    system: String
+    terminologySource: TerminologySource
+    encounterID: String!
+    reaction: Reaction
 }
 
 type Reaction {
-  code: String
-  system: String
-  severity: AllergyIntoleranceReactionSeverityEnum
+    code: String
+    system: String
+    severity: AllergyIntoleranceReactionSeverityEnum
 }
 
 type Observation {
-  id: String!
-  status: ObservationStatus!
-  patientID: String!
-  encounterID: String!
-  name: String!
-  value: String!
+    id: String!
+    status: ObservationStatus!
+    patientID: String!
+    encounterID: String!
+    name: String!
+    value: String!
 }
 
 type Medication {
-  name: String!
-  code: String!
+    name: String!
+    code: String!
 }
 
 type MedicationStatement {
-  id: ID!
+    id: ID!
 
-  status: MedicationStatementStatusEnum
+    status: MedicationStatementStatusEnum
 
-  medication: Medication!
+    medication: Medication!
 
-  patientID: String
+    patientID: String
 }
 
 type MedicalData {
-  regimen: [MedicationStatement]
-  allergies: [Allergy]
-  weight: [Observation]
-  bmi: [Observation]
-  viralLoad: [Observation]
-  cd4Count: [Observation]
+    regimen: [MedicationStatement]
+    allergies: [Allergy ]
+    weight: [Observation]
+    bmi: [Observation]
+    viralLoad: [Observation]
+    cd4Count: [Observation]
 }
 
 type TimelineResource {
-  id: ID!
-  resourceType: ResourceType
-  name: String
-  value: String
-  status: String
-  date: Date
+    id: ID!
+    resourceType: ResourceType
+    name: String
+    value: String
+    status: String
+    date: Date
 }
 
 type HealthTimeline {
-  timeline: [TimelineResource]
-  totalCount: Int!
+    timeline: [TimelineResource]
+    totalCount: Int!
 }
 
 type EpisodeOfCare {
-  id: ID!
-  status: EpisodeOfCareStatusEnum!
-  patientID: String!
+    id: ID!
+    status: EpisodeOfCareStatusEnum!
+    patientID: String!
 }
 
 type Encounter {
-  id: String
-  class: EncounterClass
-  episodeOfCareID: String
-  status: EncounterStatusEnum
-  patientID: String
+    id: String
+    class: EncounterClass
+    episodeOfCareID: String
+    status: EncounterStatusEnum
+    patientID: String
 }
 
 type Patient {
-  id: ID!
-  active: Boolean!
-  name: String!
-  phoneNumber: [String!]!
-  gender: Gender!
-  birthDate: Date
+    id: ID!
+    active: Boolean!
+    name: String!
+    phoneNumber: [String!]!
+    gender: Gender!
+    birthDate: Date
 }
 
 type Condition {
-  id: ID
-  status: ConditionStatus
-  name: String
-  code: String!
-  system: String!
+    id: ID
+    status: ConditionStatus
+    name: String
+    code: String!
+    system: String!
 
-  onsetDate: Date
-  recordedDate: Date
-  note: String
+    onsetDate: Date
+    recordedDate: Date
+    note: String
 
-  patientID: String
-  encounterID: String
+    patientID: String
+    encounterID: String
+}
+
+
+type ConditionEdge {
+    node:  Condition
+    cursor: String
+}
+
+
+type PageInfo {
+    hasNextPage: Boolean
+    startCursor: String
+
+    hasPreviousPage: Boolean
+    endCursor:       String
+}
+
+
+type ConditionConnection {
+    totalCount: Int
+    edges:      [ConditionEdge]
+    pageInfo:   PageInfo
+}
+
+input Pagination {
+    first: Int
+    after: String
+
+    last:   Int
+    before: String
 }
 
 type Terminology {

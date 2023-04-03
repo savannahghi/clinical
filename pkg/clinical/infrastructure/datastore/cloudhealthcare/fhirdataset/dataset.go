@@ -5,10 +5,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -398,9 +400,14 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string, resour
 }
 
 // SearchFHIRResource ...
-func (fr Repository) SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers) ([]map[string]interface{}, error) {
+func (fr Repository) SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
+	}
+
+	params["_count"] = strconv.Itoa(*pagination.First)
+	if pagination.After != "" {
+		params["_page_token"] = pagination.After
 	}
 
 	urlParams := url.Values{}
@@ -459,9 +466,20 @@ func (fr Repository) SearchFHIRResource(resourceType string, params map[string]i
 		return nil, fmt.Errorf("server error: the type value is not 'searchset' as expected")
 	}
 
+	response := domain.PagedFHIRResource{
+		Resources:       []map[string]interface{}{},
+		HasNextPage:     false,
+		NextCursor:      "",
+		HasPreviousPage: false,
+		PreviousCursor:  "",
+		TotalCount:      0,
+	}
+
+	response.TotalCount = int(respMap["total"].(float64))
+
 	respEntries := respMap["entry"]
 	if respEntries == nil {
-		return []map[string]interface{}{}, nil
+		return &response, nil
 	}
 
 	entries, ok := respEntries.([]interface{})
@@ -469,8 +487,6 @@ func (fr Repository) SearchFHIRResource(resourceType string, params map[string]i
 		return nil, fmt.Errorf(
 			"server error: entries is not a list of maps, it is: %T", respEntries)
 	}
-
-	results := []map[string]interface{}{}
 
 	for _, en := range entries {
 		entry, ok := en.(map[string]interface{})
@@ -489,15 +505,49 @@ func (fr Repository) SearchFHIRResource(resourceType string, params map[string]i
 
 		resource, ok := entry["resource"].(map[string]interface{})
 		if !ok {
-			{
-				return nil, fmt.Errorf("server error: result entry %#v is not a map", entry["resource"])
-			}
+			return nil, fmt.Errorf("server error: result entry %#v is not a map", entry["resource"])
 		}
 
-		results = append(results, resource)
+		response.Resources = append(response.Resources, resource)
 	}
 
-	return results, nil
+	linksEntries := respMap["link"]
+	if linksEntries == nil {
+		return &response, nil
+	}
+
+	links, ok := linksEntries.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf(
+			"server error: entries is not a list of maps, it is: %T", linksEntries)
+	}
+
+	for _, en := range links {
+		link, ok := en.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf(
+				"server error: expected each link to be map, they are %T instead", en)
+		}
+
+		if link["relation"].(string) == "next" {
+			u, err := url.Parse(link["url"].(string))
+			if err != nil {
+				return nil, fmt.Errorf("server error: cannot parse url in link: %w", err)
+			}
+
+			params, err := url.ParseQuery(u.RawQuery)
+			if err != nil {
+				return nil, fmt.Errorf("server error: cannot parse url params in link: %w", err)
+			}
+
+			cursor := params["_page_token"][0]
+
+			response.HasNextPage = true
+			response.NextCursor = cursor
+		}
+	}
+
+	return &response, nil
 }
 
 // POSTRequest is used to manually compose POST requests to the FHIR service

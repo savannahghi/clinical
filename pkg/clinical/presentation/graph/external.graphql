@@ -19,7 +19,3 @@ scalar URI
 scalar UUID
 scalar XHTML
 
-extend type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-}
