@@ -172,6 +172,29 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 			return
 		}
 
+	case utils.AddPubSubNamespace(common.TenantTopicName, common.ClinicalServiceName):
+		var data dto.OrganizationInput
+
+		err := json.Unmarshal(message.Message.Data, &data)
+		if err != nil {
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+
+			return
+		}
+
+		err = p.usecases.CreatePubsubTenant(ctx, data)
+		if err != nil {
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+
+			return
+		}
+
 	case utils.AddPubSubNamespace(common.TestResultTopicName, common.ClinicalServiceName):
 		var data dto.CreatePatientTestResultPubSubMessage
 

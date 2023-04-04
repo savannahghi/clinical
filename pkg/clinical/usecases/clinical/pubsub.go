@@ -75,6 +75,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 	return nil
 }
 
+// CreatePubsubOrganization creates a FHIR organisation resource
 func (c *UseCasesClinicalImpl) CreatePubsubOrganization(ctx context.Context, data dto.CreateFacilityPubSubMessage) error {
 	use := domain.ContactPointUseEnumWork
 	rank := int64(1)
@@ -107,6 +108,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubOrganization(ctx context.Context, dat
 	return nil
 }
 
+// CreatePubsubVitals creates FHIR observation vitals.
 func (c *UseCasesClinicalImpl) CreatePubsubVitals(ctx context.Context, data dto.CreateVitalSignPubSubMessage) error {
 	input, err := c.ComposeVitalsInput(ctx, data)
 	if err != nil {
@@ -121,6 +123,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubVitals(ctx context.Context, data dto.
 	return nil
 }
 
+// CreatePubsubAllergyIntolerance creates FHIR allergy intolerance
 func (c *UseCasesClinicalImpl) CreatePubsubAllergyIntolerance(ctx context.Context, data dto.CreatePatientAllergyPubSubMessage) error {
 	input, err := c.ComposeAllergyIntoleranceInput(ctx, data)
 	if err != nil {
@@ -135,6 +138,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubAllergyIntolerance(ctx context.Contex
 	return nil
 }
 
+// CreatePubsubTestResult creates a test result as an observation
 func (c *UseCasesClinicalImpl) CreatePubsubTestResult(ctx context.Context, data dto.CreatePatientTestResultPubSubMessage) error {
 	input, err := c.ComposeTestResultInput(ctx, data)
 	if err != nil {
@@ -149,6 +153,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubTestResult(ctx context.Context, data 
 	return nil
 }
 
+// CreatePubsubMedicationStatement creates a FHIR medication statement
 func (c *UseCasesClinicalImpl) CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error {
 	input, err := c.ComposeMedicationStatementInput(ctx, data)
 	if err != nil {
@@ -156,6 +161,25 @@ func (c *UseCasesClinicalImpl) CreatePubsubMedicationStatement(ctx context.Conte
 	}
 
 	_, err = c.infrastructure.FHIR.CreateFHIRMedicationStatement(ctx, *input)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreatePubsubTenant registers a tenant in this service
+func (c *UseCasesClinicalImpl) CreatePubsubTenant(ctx context.Context, data dto.OrganizationInput) error {
+	if data.Identifiers[0].Type != dto.OrganizationIdentifierType("MCHProgram") {
+		return fmt.Errorf("invalid identifier type %v", data.Identifiers[0].Type)
+	}
+
+	organization, err := c.RegisterTenant(ctx, data)
+	if err != nil {
+		return err
+	}
+
+	err = c.infrastructure.MyCareHub.UpdateProgramFHIRTenantID(ctx, data.Identifiers[0].Value, organization.ID)
 	if err != nil {
 		return err
 	}

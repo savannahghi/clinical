@@ -67,6 +67,8 @@ type IServiceMyCareHub interface {
 		fhirID string,
 		facilityID string,
 	) error
+
+	UpdateProgramFHIRTenantID(ctx context.Context, programID string, tenantID string) error
 }
 
 // Infrastructure ...

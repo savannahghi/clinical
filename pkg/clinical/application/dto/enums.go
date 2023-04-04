@@ -5,6 +5,7 @@ type OrganizationIdentifierType string
 const (
 	SladeCode OrganizationIdentifierType = "SladeCode"
 	MFLCode   OrganizationIdentifierType = "MFLCode"
+	ProgramID OrganizationIdentifierType = "MCHProgram"
 	Other     OrganizationIdentifierType = "Other"
 )
 

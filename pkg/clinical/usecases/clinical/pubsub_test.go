@@ -948,3 +948,93 @@ func TestUseCasesClinicalImpl_getConcept(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_CreatePubsubTenant(t *testing.T) {
+	type args struct {
+		ctx  context.Context
+		data dto.OrganizationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: create tenant",
+			args: args{
+				ctx: nil,
+				data: dto.OrganizationInput{
+					Name:        "test",
+					PhoneNumber: "test",
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  "MCHProgram",
+							Value: gofakeit.UUID(),
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create tenant",
+			args: args{
+				ctx: nil,
+				data: dto.OrganizationInput{
+					Name:        "test",
+					PhoneNumber: "test",
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  "other",
+							Value: gofakeit.UUID(),
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to update fhir patient id",
+			args: args{
+				ctx: nil,
+				data: dto.OrganizationInput{
+					Name:        "test",
+					PhoneNumber: "test",
+					Identifiers: []dto.OrganizationIdentifier{
+						{
+							Type:  "MCHProgram",
+							Value: gofakeit.UUID(),
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to create tenant" {
+				fakeFHIR.MockCreateFHIROrganizationFn = func(ctx context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("error")
+				}
+			}
+
+			if tt.name == "Sad case: unable to update fhir patient id" {
+				fakeMCH.MockUpdateProgramFHIRTenantIDFn = func(ctx context.Context, programID, tenantID string) error {
+					return fmt.Errorf("error")
+				}
+			}
+			if err := c.CreatePubsubTenant(tt.args.ctx, tt.args.data); (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.CreatePubsubTenant() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

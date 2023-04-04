@@ -328,3 +328,97 @@ func TestServiceMyCareHubImpl_AddFHIRIDToFacility(t *testing.T) {
 		})
 	}
 }
+
+func TestServiceMyCareHubImpl_UpdateProgramFHIRTenantID(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		programID string
+		tenantID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: update program tenant id",
+			args: args{
+				ctx:       context.Background(),
+				programID: gofakeit.UUID(),
+				tenantID:  gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case: failed to make request",
+			args: args{
+				ctx:       context.Background(),
+				programID: gofakeit.UUID(),
+				tenantID:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to update program tenant id",
+			args: args{
+				ctx:       context.Background(),
+				programID: gofakeit.UUID(),
+				tenantID:  gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeISC := extMock.NewFakeISCExtensionMock()
+			s := ServiceMyCareHubImpl{
+				MyCareHubClient: fakeISC,
+			}
+
+			if tt.name == "Happy case: update program tenant id" {
+				fakeISC.MockMakeRequestFn = func(ctx context.Context, method, path string, body interface{}) (*http.Response, error) {
+					requestBody := struct {
+						ProgramID    string `json:"programID"`
+						FHIRTenantID string `json:"fhirTenantID"`
+					}{
+						ProgramID:    tt.args.programID,
+						FHIRTenantID: tt.args.tenantID,
+					}
+
+					jsonBody, err := json.Marshal(requestBody)
+					if err != nil {
+						return nil, err
+					}
+					return &http.Response{
+						Status:     "200",
+						StatusCode: 200,
+						Body:       io.NopCloser(bytes.NewReader(jsonBody)),
+					}, nil
+				}
+			}
+			if tt.name == "Sad Case: failed to make request" {
+				fakeISC.MockMakeRequestFn = func(ctx context.Context, method, path string, body interface{}) (*http.Response, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad case: unable to update program tenant id" {
+				fakeISC.MockMakeRequestFn = func(ctx context.Context, method, path string, body interface{}) (*http.Response, error) {
+					jsonBody, err := json.Marshal(map[string]interface{}{"error": "error"})
+					if err != nil {
+						return nil, err
+					}
+					return &http.Response{
+						Status:     "400",
+						StatusCode: 400,
+						Body:       io.NopCloser(bytes.NewReader(jsonBody)),
+					}, nil
+				}
+			}
+
+			if err := s.UpdateProgramFHIRTenantID(tt.args.ctx, tt.args.programID, tt.args.tenantID); (err != nil) != tt.wantErr {
+				t.Errorf("ServiceMyCareHubImpl.UpdateProgramFHIRTenantID() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

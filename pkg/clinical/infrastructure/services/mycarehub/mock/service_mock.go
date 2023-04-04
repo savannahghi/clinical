@@ -22,6 +22,8 @@ type FakeMyCareHubService struct {
 		fhirID string,
 		facilityID string,
 	) error
+
+	MockUpdateProgramFHIRTenantIDFn func(ctx context.Context, programID string, tenantID string) error
 }
 
 // NewFakeMyCareHubServiceMock initializes a new instance of mycarehub mock
@@ -62,6 +64,9 @@ func NewFakeMyCareHubServiceMock() *FakeMyCareHubService {
 		) error {
 			return nil
 		},
+		MockUpdateProgramFHIRTenantIDFn: func(ctx context.Context, programID, tenantID string) error {
+			return nil
+		},
 	}
 }
 
@@ -89,4 +94,9 @@ func (s *FakeMyCareHubService) AddFHIRIDToFacility(
 	facilityID string,
 ) error {
 	return s.MockAddFHIRIDToFacilityFn(ctx, fhirID, facilityID)
+}
+
+// UpdateProgramFHIRTenantID amocks the update of program mycarehub's program fhir tenant id
+func (s *FakeMyCareHubService) UpdateProgramFHIRTenantID(ctx context.Context, programID string, tenantID string) error {
+	return s.MockUpdateProgramFHIRTenantIDFn(ctx, programID, tenantID)
 }
