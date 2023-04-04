@@ -5,13 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/serverutils"
@@ -401,13 +402,20 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string, resour
 
 // SearchFHIRResource ...
 func (fr Repository) SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+	err := pagination.Validate()
+	if err != nil {
+		return nil, err
+	}
+
 	if params == nil {
 		return nil, fmt.Errorf("can't search with nil params")
 	}
 
-	params["_count"] = strconv.Itoa(*pagination.First)
-	if pagination.After != "" {
-		params["_page_token"] = pagination.After
+	if !pagination.Skip {
+		params["_count"] = strconv.Itoa(*pagination.First)
+		if pagination.After != "" {
+			params["_page_token"] = pagination.After
+		}
 	}
 
 	urlParams := url.Values{}

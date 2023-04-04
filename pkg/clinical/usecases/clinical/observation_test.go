@@ -1387,13 +1387,13 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to search patient observations" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to search patient observations")
 				}
 			}
 
 			if tt.name == "Happy case: get patient height" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
@@ -1460,7 +1460,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil subject" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
@@ -1524,7 +1524,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil subject id" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
@@ -1589,7 +1589,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil encounter" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
@@ -1653,7 +1653,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil encounter id" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()

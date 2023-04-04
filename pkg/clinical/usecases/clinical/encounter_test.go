@@ -237,7 +237,7 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get patient encounters" {
-				fakeFHIR.MockSearchPatientEncountersFn = func(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum, tenant dto.TenantIdentifiers) ([]*domain.FHIREncounter, error) {
+				fakeFHIR.MockSearchPatientEncountersFn = func(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIREncounter, error) {
 					return nil, fmt.Errorf("failed to search patient encounters")
 				}
 			}

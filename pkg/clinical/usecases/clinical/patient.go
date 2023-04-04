@@ -55,7 +55,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 	for _, field := range fields {
 		switch field {
 		case "Regimen":
-			conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, filterParams, *identifiers)
+			conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, filterParams, *identifiers, dto.Pagination{Skip: true})
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -89,7 +89,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				data.Regimen = append(data.Regimen, mapFHIRMedicationStatementToMedicationStatementDTO(edge.Node))
 			}
 		case "AllergyIntolerance":
-			conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, filterParams, *identifiers)
+			conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, filterParams, *identifiers, dto.Pagination{Skip: true})
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -138,7 +138,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "Weight":
 			filterParams["code"] = common.WeightCIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers, dto.Pagination{Skip: true})
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -153,7 +153,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "BMI":
 			filterParams["code"] = common.BMICIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers, dto.Pagination{Skip: true})
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -168,7 +168,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "ViralLoad":
 			filterParams["code"] = common.ViralLoadCIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers, dto.Pagination{Skip: true})
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)
@@ -183,7 +183,7 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 		case "CD4Count":
 			filterParams["code"] = common.CD4CountCIELTerminologyCode
 
-			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers)
+			conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, filterParams, *identifiers, dto.Pagination{Skip: true})
 			if err != nil {
 				utils.ReportErrorToSentry(err)
 				return nil, fmt.Errorf("%s search error: %w", field, err)

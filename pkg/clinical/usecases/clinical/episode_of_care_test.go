@@ -112,7 +112,7 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "happy case: create an episode of care" {
-				fakeFHIR.MockSearchFHIREpisodeOfCareFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIREpisodeOfCareRelayConnection, error) {
+				fakeFHIR.MockSearchFHIREpisodeOfCareFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCareRelayConnection, error) {
 					return &domain.FHIREpisodeOfCareRelayConnection{
 						Edges: []*domain.FHIREpisodeOfCareRelayEdge{},
 					}, nil
@@ -247,7 +247,7 @@ func TestUseCasesClinicalImpl_EndEpisodeOfCare(t *testing.T) {
 			}
 
 			if tt.name == "sad case: fail to search encounters" {
-				fakeFHIR.MockSearchEpisodeEncounterFn = func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers) (*domain.FHIREncounterRelayConnection, error) {
+				fakeFHIR.MockSearchEpisodeEncounterFn = func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREncounterRelayConnection, error) {
 					return nil, fmt.Errorf("error searching for encounters")
 				}
 			}

@@ -24,9 +24,10 @@ import (
 func TestStoreImpl_SearchFHIRObservation(t *testing.T) {
 
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -65,7 +66,7 @@ func TestStoreImpl_SearchFHIRObservation(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIRObservation(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIRObservation(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRObservation() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -686,9 +687,10 @@ func TestStoreImpl_UpdateFHIREpisodeOfCare(t *testing.T) {
 
 func TestStoreImpl_SearchFHIRMedicationStatement(t *testing.T) {
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -727,7 +729,7 @@ func TestStoreImpl_SearchFHIRMedicationStatement(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIRMedicationStatement(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIRMedicationStatement(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRMedicationStatement() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -880,6 +882,7 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 		ctx          context.Context
 		searchParams string
 		tenant       dto.TenantIdentifiers
+		pagination   dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -980,7 +983,7 @@ func TestStoreImpl_SearchFHIRPatient(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIRPatient(tt.args.ctx, tt.args.searchParams, tt.args.tenant)
+			got, err := fh.SearchFHIRPatient(tt.args.ctx, tt.args.searchParams, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2232,9 +2235,10 @@ func TestStoreImpl_SearchFHIRServiceRequest(t *testing.T) {
 	ctx := context.Background()
 
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2271,7 +2275,7 @@ func TestStoreImpl_SearchFHIRServiceRequest(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIRServiceRequest(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIRServiceRequest(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRServiceRequest() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2287,9 +2291,10 @@ func TestStoreImpl_SearchFHIRServiceRequest(t *testing.T) {
 func TestStoreImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2326,7 +2331,7 @@ func TestStoreImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIRAllergyIntolerance(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIRAllergyIntolerance(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2342,9 +2347,10 @@ func TestStoreImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2381,7 +2387,7 @@ func TestStoreImpl_SearchFHIRComposition(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIRComposition(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIRComposition(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRComposition() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2455,9 +2461,10 @@ func TestStoreImpl_SearchFHIRCondition(t *testing.T) {
 func TestStoreImpl_SearchFHIREncounter(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2494,7 +2501,7 @@ func TestStoreImpl_SearchFHIREncounter(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIREncounter(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIREncounter(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIREncounter() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2510,9 +2517,10 @@ func TestStoreImpl_SearchFHIREncounter(t *testing.T) {
 func TestStoreImpl_SearchFHIRMedicationRequest(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2549,7 +2557,7 @@ func TestStoreImpl_SearchFHIRMedicationRequest(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIRMedicationRequest(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIRMedicationRequest(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIRMedicationRequest() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2737,6 +2745,7 @@ func TestStoreImpl_SearchPatientEncounters(t *testing.T) {
 		patientReference string
 		status           *domain.EncounterStatusEnum
 		tenant           dto.TenantIdentifiers
+		pagination       dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2781,7 +2790,7 @@ func TestStoreImpl_SearchPatientEncounters(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchPatientEncounters(tt.args.ctx, tt.args.patientReference, tt.args.status, tt.args.tenant)
+			got, err := fh.SearchPatientEncounters(tt.args.ctx, tt.args.patientReference, tt.args.status, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.Encounters() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2797,9 +2806,10 @@ func TestStoreImpl_SearchPatientEncounters(t *testing.T) {
 
 func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2838,7 +2848,7 @@ func TestStoreImpl_SearchFHIREpisodeOfCare(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchFHIREpisodeOfCare(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIREpisodeOfCare(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIREpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2952,9 +2962,10 @@ func TestStoreImpl_CreateEpisodeOfCare(t *testing.T) {
 
 func TestStoreImpl_SearchFHIROrganization(t *testing.T) {
 	type args struct {
-		ctx    context.Context
-		params map[string]interface{}
-		tenant dto.TenantIdentifiers
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2992,7 +3003,7 @@ func TestStoreImpl_SearchFHIROrganization(t *testing.T) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
-			got, err := fh.SearchFHIROrganization(tt.args.ctx, tt.args.params, tt.args.tenant)
+			got, err := fh.SearchFHIROrganization(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchFHIROrganization() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3010,6 +3021,7 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 		ctx          context.Context
 		searchParams map[string]interface{}
 		tenant       dto.TenantIdentifiers
+		pagination   dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -3054,7 +3066,7 @@ func TestStoreImpl_SearchEpisodesByParam(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchEpisodesByParam(tt.args.ctx, tt.args.searchParams, tt.args.tenant)
+			got, err := fh.SearchEpisodesByParam(tt.args.ctx, tt.args.searchParams, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchEpisodesByParam() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3072,6 +3084,7 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 		ctx              context.Context
 		patientReference string
 		tenant           dto.TenantIdentifiers
+		pagination       dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -3106,7 +3119,7 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 				}
 			}
 
-			got, err := fh.OpenEpisodes(tt.args.ctx, tt.args.patientReference, tt.args.tenant)
+			got, err := fh.OpenEpisodes(tt.args.ctx, tt.args.patientReference, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.OpenEpisodes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3122,9 +3135,10 @@ func TestStoreImpl_OpenEpisodes(t *testing.T) {
 func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 	UUID := gofakeit.UUID()
 	type args struct {
-		ctx     context.Context
-		patient domain.FHIRPatient
-		tenant  dto.TenantIdentifiers
+		ctx        context.Context
+		patient    domain.FHIRPatient
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -3166,7 +3180,7 @@ func TestStoreImpl_HasOpenEpisode(t *testing.T) {
 				}
 			}
 
-			got, err := fh.HasOpenEpisode(tt.args.ctx, tt.args.patient, tt.args.tenant)
+			got, err := fh.HasOpenEpisode(tt.args.ctx, tt.args.patient, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.HasOpenEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3183,6 +3197,7 @@ func TestStoreImpl_SearchEpisodeEncounter(t *testing.T) {
 		ctx              context.Context
 		episodeReference string
 		tenant           dto.TenantIdentifiers
+		pagination       dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -3216,7 +3231,7 @@ func TestStoreImpl_SearchEpisodeEncounter(t *testing.T) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
-			got, err := fh.SearchEpisodeEncounter(tt.args.ctx, tt.args.episodeReference, tt.args.tenant)
+			got, err := fh.SearchEpisodeEncounter(tt.args.ctx, tt.args.episodeReference, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchEpisodeEncounter() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3231,9 +3246,10 @@ func TestStoreImpl_SearchEpisodeEncounter(t *testing.T) {
 
 func TestStoreImpl_GetActiveEpisode(t *testing.T) {
 	type args struct {
-		ctx       context.Context
-		episodeID string
-		tenant    dto.TenantIdentifiers
+		ctx        context.Context
+		episodeID  string
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -3283,7 +3299,7 @@ func TestStoreImpl_GetActiveEpisode(t *testing.T) {
 					}, nil
 				}
 			}
-			got, err := fh.GetActiveEpisode(tt.args.ctx, tt.args.episodeID, tt.args.tenant)
+			got, err := fh.GetActiveEpisode(tt.args.ctx, tt.args.episodeID, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.GetActiveEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3906,6 +3922,7 @@ func TestStoreImpl_SearchPatientObservations(t *testing.T) {
 		patientReference string
 		observationCode  string
 		tenant           dto.TenantIdentifiers
+		pagination       dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -3942,7 +3959,7 @@ func TestStoreImpl_SearchPatientObservations(t *testing.T) {
 				}
 			}
 
-			got, err := fh.SearchPatientObservations(tt.args.ctx, tt.args.patientReference, tt.args.observationCode, tt.args.tenant)
+			got, err := fh.SearchPatientObservations(tt.args.ctx, tt.args.patientReference, tt.args.observationCode, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
 				return

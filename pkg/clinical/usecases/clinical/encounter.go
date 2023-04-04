@@ -110,7 +110,7 @@ func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patien
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	encounter, err := c.infrastructure.FHIR.SearchPatientEncounters(ctx, patientReference, nil, *identifiers)
+	encounter, err := c.infrastructure.FHIR.SearchPatientEncounters(ctx, patientReference, nil, *identifiers, dto.Pagination{})
 	if err != nil {
 		return nil, err
 	}

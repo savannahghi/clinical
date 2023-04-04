@@ -132,13 +132,13 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to check patient existence" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
+				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
 					return nil, fmt.Errorf("fail to get a user")
 				}
 			}
 
 			if tt.name == "Sad Case - Patient already exists" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
+				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
 					return &domain.PatientConnection{
 						Edges: []*domain.PatientEdge{
 							{

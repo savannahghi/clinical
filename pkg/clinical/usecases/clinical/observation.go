@@ -218,7 +218,7 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	patientObs, err := c.infrastructure.FHIR.SearchPatientObservations(ctx, patientReference, observationCode, *identifiers)
+	patientObs, err := c.infrastructure.FHIR.SearchPatientObservations(ctx, patientReference, observationCode, *identifiers, dto.Pagination{})
 	if err != nil {
 		return nil, err
 	}
