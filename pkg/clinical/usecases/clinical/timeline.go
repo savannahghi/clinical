@@ -41,7 +41,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 	allergyIntoleranceResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, patientFilterParams, *identifiers)
+		conn, err := c.infrastructure.FHIR.SearchFHIRAllergyIntolerance(ctx, patientFilterParams, *identifiers, dto.Pagination{Skip: true})
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("AllergyIntolerance search error: %v", err)
@@ -100,7 +100,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 	observationResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, patientFilterParams, *identifiers)
+		conn, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, patientFilterParams, *identifiers, dto.Pagination{Skip: true})
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("Observation search error: %v", err)
@@ -161,7 +161,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 	medicationStatementResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
 		defer wg.Done()
 
-		conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, patientFilterParams, *identifiers)
+		conn, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, patientFilterParams, *identifiers, dto.Pagination{Skip: true})
 		if err != nil {
 			utils.ReportErrorToSentry(err)
 			log.Errorf("MedicationStatement search error: %v", err)

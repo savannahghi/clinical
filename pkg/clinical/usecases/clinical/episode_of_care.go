@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -70,7 +71,7 @@ func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, input dt
 		"_count":       "1",
 	}
 
-	episodeOfCarePayload, err := c.infrastructure.FHIR.SearchFHIREpisodeOfCare(ctx, episodeOfCareSearchParams, *identifiers)
+	episodeOfCarePayload, err := c.infrastructure.FHIR.SearchFHIREpisodeOfCare(ctx, episodeOfCareSearchParams, *identifiers, dto.Pagination{})
 	if err != nil {
 		return nil, fmt.Errorf("unable to get patients episodes of care: %w", err)
 	}
@@ -114,7 +115,7 @@ func (c *UseCasesClinicalImpl) EndEpisodeOfCare(ctx context.Context, id string) 
 	}
 
 	// Close all encounters in this visit
-	encounterConn, err := c.infrastructure.FHIR.SearchEpisodeEncounter(ctx, id, *identifiers)
+	encounterConn, err := c.infrastructure.FHIR.SearchEpisodeEncounter(ctx, id, *identifiers, dto.Pagination{})
 	if err != nil {
 		return nil, fmt.Errorf("unable to search episode encounter %w", err)
 	}

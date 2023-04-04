@@ -24,6 +24,10 @@ type Pagination struct {
 	// Backward pagination arguments
 	Last   *int   `json:"last"`
 	Before string `json:"before"`
+
+	// A flag to indicate whether to ignore the pagination parameters
+	// i.e the implementer will not be done with pagination
+	Skip bool
 }
 
 func (p *Pagination) Validate() error {

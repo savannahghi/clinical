@@ -6,6 +6,7 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/converterandformatter"
@@ -75,7 +76,7 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 			return false, fmt.Errorf("can't normalize contact: %w", err)
 		}
 
-		patient, err := c.infrastructure.FHIR.SearchFHIRPatient(ctx, *search, *identifiers)
+		patient, err := c.infrastructure.FHIR.SearchFHIRPatient(ctx, *search, *identifiers, dto.Pagination{})
 		if err != nil {
 			return false, fmt.Errorf("unable to find patient by phonenumber: %s", *phoneNumber)
 		}

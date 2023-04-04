@@ -68,13 +68,14 @@ func (fh StoreImpl) SearchPatientObservations(
 	patientReference string,
 	observationCode string,
 	tenant dto.TenantIdentifiers,
+	pagination dto.Pagination,
 ) ([]*domain.FHIRObservation, error) {
 	params := map[string]interface{}{
 		"patient": patientReference,
 		"code":    observationCode,
 	}
 
-	observations, err := fh.Dataset.SearchFHIRResource(observationResourceType, params, tenant, dto.Pagination{})
+	observations, err := fh.Dataset.SearchFHIRResource(observationResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -108,6 +109,7 @@ func (fh StoreImpl) SearchPatientEncounters(
 	patientReference string,
 	status *domain.EncounterStatusEnum,
 	tenant dto.TenantIdentifiers,
+	pagination dto.Pagination,
 ) ([]*domain.FHIREncounter, error) {
 	params := map[string]interface{}{
 		"patient": patientReference,
@@ -116,7 +118,7 @@ func (fh StoreImpl) SearchPatientEncounters(
 		params["status:exact"] = status.String()
 	}
 
-	resources, err := fh.Dataset.SearchFHIRResource(encounterResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(encounterResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -143,10 +145,10 @@ func (fh StoreImpl) SearchPatientEncounters(
 }
 
 // SearchFHIREpisodeOfCare provides a search API for FHIREpisodeOfCare
-func (fh StoreImpl) SearchFHIREpisodeOfCare(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIREpisodeOfCareRelayConnection, error) {
+func (fh StoreImpl) SearchFHIREpisodeOfCare(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCareRelayConnection, error) {
 	output := domain.FHIREpisodeOfCareRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(episodeOfCareResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(episodeOfCareResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -240,10 +242,10 @@ func (fh StoreImpl) CreateFHIROrganization(_ context.Context, input domain.FHIRO
 }
 
 // SearchFHIROrganization provides a search API for FHIROrganization
-func (fh StoreImpl) SearchFHIROrganization(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIROrganizationRelayConnection, error) {
+func (fh StoreImpl) SearchFHIROrganization(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIROrganizationRelayConnection, error) {
 	output := domain.FHIROrganizationRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(organizationResource, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(organizationResource, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -303,8 +305,8 @@ func (fh StoreImpl) GetFHIRAllergyIntolerance(_ context.Context, id string) (*do
 }
 
 // SearchEpisodesByParam search episodes by params
-func (fh StoreImpl) SearchEpisodesByParam(_ context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers) ([]*domain.FHIREpisodeOfCare, error) {
-	resources, err := fh.Dataset.SearchFHIRResource(episodeOfCareResourceType, searchParams, tenant, dto.Pagination{})
+func (fh StoreImpl) SearchEpisodesByParam(_ context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIREpisodeOfCare, error) {
+	resources, err := fh.Dataset.SearchFHIRResource(episodeOfCareResourceType, searchParams, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -347,13 +349,13 @@ func (fh StoreImpl) SearchEpisodesByParam(_ context.Context, searchParams map[st
 }
 
 // OpenEpisodes returns the IDs of a patient's open episodes
-func (fh StoreImpl) OpenEpisodes(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers) ([]*domain.FHIREpisodeOfCare, error) {
+func (fh StoreImpl) OpenEpisodes(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIREpisodeOfCare, error) {
 	params := map[string]interface{}{
 		"status:exact": domain.EpisodeOfCareStatusEnumActive.String(),
 		"patient":      patientReference,
 	}
 
-	return fh.SearchEpisodesByParam(ctx, params, tenant)
+	return fh.SearchEpisodesByParam(ctx, params, tenant, pagination)
 }
 
 // HasOpenEpisode determines if a patient has an open episode
@@ -361,10 +363,11 @@ func (fh StoreImpl) HasOpenEpisode(
 	ctx context.Context,
 	patient domain.FHIRPatient,
 	tenant dto.TenantIdentifiers,
+	pagination dto.Pagination,
 ) (bool, error) {
 	patientReference := fmt.Sprintf("Patient/%s", *patient.ID)
 
-	episodes, err := fh.OpenEpisodes(ctx, patientReference, tenant)
+	episodes, err := fh.OpenEpisodes(ctx, patientReference, tenant, pagination)
 	if err != nil {
 		return false, err
 	}
@@ -475,13 +478,14 @@ func (fh StoreImpl) SearchEpisodeEncounter(
 	ctx context.Context,
 	episodeReference string,
 	tenant dto.TenantIdentifiers,
+	pagination dto.Pagination,
 ) (*domain.FHIREncounterRelayConnection, error) {
 	episodeRef := fmt.Sprintf("Episode/%s", episodeReference)
 	encounterFilterParams := map[string]interface{}{
 		"episodeOfCare": episodeRef,
 		"status":        "in_progress",
 	}
-	encounterConn, err := fh.SearchFHIREncounter(ctx, encounterFilterParams, tenant)
+	encounterConn, err := fh.SearchFHIREncounter(ctx, encounterFilterParams, tenant, pagination)
 
 	if err != nil {
 		return nil, fmt.Errorf("unable to search encounter: %w", err)
@@ -567,13 +571,13 @@ func (fh StoreImpl) EndEpisode(
 }
 
 // GetActiveEpisode returns any ACTIVE episode that has to the indicated ID
-func (fh StoreImpl) GetActiveEpisode(_ context.Context, episodeID string, tenant dto.TenantIdentifiers) (*domain.FHIREpisodeOfCare, error) {
+func (fh StoreImpl) GetActiveEpisode(_ context.Context, episodeID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCare, error) {
 	params := map[string]interface{}{
 		"status:exact": domain.EpisodeOfCareStatusEnumActive.String(),
 		"_id":          episodeID,
 	}
 
-	resources, err := fh.Dataset.SearchFHIRResource(episodeOfCareResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(episodeOfCareResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -599,10 +603,10 @@ func (fh StoreImpl) GetActiveEpisode(_ context.Context, episodeID string, tenant
 }
 
 // SearchFHIRServiceRequest provides a search API for FHIRServiceRequest
-func (fh StoreImpl) SearchFHIRServiceRequest(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRServiceRequestRelayConnection, error) {
+func (fh StoreImpl) SearchFHIRServiceRequest(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRServiceRequestRelayConnection, error) {
 	output := domain.FHIRServiceRequestRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(serviceRequestResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(serviceRequestResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -651,10 +655,10 @@ func (fh StoreImpl) CreateFHIRServiceRequest(_ context.Context, input domain.FHI
 }
 
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
-func (fh StoreImpl) SearchFHIRAllergyIntolerance(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+func (fh StoreImpl) SearchFHIRAllergyIntolerance(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
 	output := domain.FHIRAllergyIntoleranceRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(allergyIntoleranceResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(allergyIntoleranceResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -729,10 +733,10 @@ func (fh StoreImpl) UpdateFHIRAllergyIntolerance(_ context.Context, input domain
 }
 
 // SearchFHIRComposition provides a search API for FHIRComposition
-func (fh StoreImpl) SearchFHIRComposition(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRCompositionRelayConnection, error) {
+func (fh StoreImpl) SearchFHIRComposition(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRCompositionRelayConnection, error) {
 	output := domain.FHIRCompositionRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(compositionResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(compositionResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -898,10 +902,10 @@ func (fh StoreImpl) GetFHIREncounter(_ context.Context, id string) (*domain.FHIR
 }
 
 // SearchFHIREncounter provides a search API for FHIREncounter
-func (fh StoreImpl) SearchFHIREncounter(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIREncounterRelayConnection, error) {
+func (fh StoreImpl) SearchFHIREncounter(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREncounterRelayConnection, error) {
 	output := domain.FHIREncounterRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(encounterResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(encounterResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -929,10 +933,10 @@ func (fh StoreImpl) SearchFHIREncounter(_ context.Context, params map[string]int
 }
 
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
-func (fh StoreImpl) SearchFHIRMedicationRequest(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationRequestRelayConnection, error) {
+func (fh StoreImpl) SearchFHIRMedicationRequest(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationRequestRelayConnection, error) {
 	output := domain.FHIRMedicationRequestRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(medicationRequestResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(medicationRequestResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -1020,10 +1024,10 @@ func (fh StoreImpl) DeleteFHIRMedicationRequest(_ context.Context, id string) (b
 }
 
 // SearchFHIRObservation provides a search API for FHIRObservation
-func (fh StoreImpl) SearchFHIRObservation(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRObservationRelayConnection, error) {
+func (fh StoreImpl) SearchFHIRObservation(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
 	output := domain.FHIRObservationRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(observationResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(observationResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -1334,10 +1338,10 @@ func (fh StoreImpl) CreateFHIRMedication(_ context.Context, input domain.FHIRMed
 }
 
 // SearchFHIRMedicationStatement used to search for a fhir medication statement
-func (fh StoreImpl) SearchFHIRMedicationStatement(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers) (*domain.FHIRMedicationStatementRelayConnection, error) {
+func (fh StoreImpl) SearchFHIRMedicationStatement(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationStatementRelayConnection, error) {
 	output := domain.FHIRMedicationStatementRelayConnection{}
 
-	resources, err := fh.Dataset.SearchFHIRResource(medicationStatementResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(medicationStatementResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -1414,12 +1418,12 @@ func (fh StoreImpl) UpdateFHIREpisodeOfCare(_ context.Context, fhirResourceID st
 }
 
 // SearchFHIRPatient searches for a FHIR patient
-func (fh StoreImpl) SearchFHIRPatient(_ context.Context, searchParams string, tenant dto.TenantIdentifiers) (*domain.PatientConnection, error) {
+func (fh StoreImpl) SearchFHIRPatient(_ context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
 	params := map[string]interface{}{
 		"_content": searchParams,
 	}
 
-	resources, err := fh.Dataset.SearchFHIRResource(patientResourceType, params, tenant, dto.Pagination{})
+	resources, err := fh.Dataset.SearchFHIRResource(patientResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}
