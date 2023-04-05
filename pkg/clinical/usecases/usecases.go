@@ -23,12 +23,12 @@ type Clinical interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
 
-	CreatePubsubPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error
-	CreatePubsubOrganization(ctx context.Context, payload dto.CreateFacilityPubSubMessage) error
-	CreatePubsubVitals(ctx context.Context, data dto.CreateVitalSignPubSubMessage) error
-	CreatePubsubAllergyIntolerance(ctx context.Context, data dto.CreatePatientAllergyPubSubMessage) error
-	CreatePubsubTestResult(ctx context.Context, data dto.CreatePatientTestResultPubSubMessage) error
-	CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error
+	CreatePubsubPatient(ctx context.Context, payload dto.PatientPubSubMessage) error
+	CreatePubsubOrganization(ctx context.Context, payload dto.FacilityPubSubMessage) error
+	CreatePubsubVitals(ctx context.Context, data dto.VitalSignPubSubMessage) error
+	CreatePubsubAllergyIntolerance(ctx context.Context, data dto.PatientAllergyPubSubMessage) error
+	CreatePubsubTestResult(ctx context.Context, data dto.PatientTestResultPubSubMessage) error
+	CreatePubsubMedicationStatement(ctx context.Context, data dto.MedicationPubSubMessage) error
 	CreatePubsubTenant(ctx context.Context, data dto.OrganizationInput) error
 
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)

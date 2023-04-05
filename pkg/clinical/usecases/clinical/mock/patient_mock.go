@@ -9,7 +9,7 @@ import (
 // FakeClinical ....
 type FakeClinical struct {
 	MockGetMedicalDataFn      func(ctx context.Context, patientID string) (*dto.MedicalData, error)
-	MockCreatePubsubPatientFn func(ctx context.Context, payload dto.CreatePatientPubSubMessage) error
+	MockCreatePubsubPatientFn func(ctx context.Context, payload dto.PatientPubSubMessage) error
 }
 
 // NewFakeClinicalMock ...
@@ -25,7 +25,7 @@ func NewFakeClinicalMock() *FakeClinical {
 				CD4Count:  []*dto.Observation{},
 			}, nil
 		},
-		MockCreatePubsubPatientFn: func(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
+		MockCreatePubsubPatientFn: func(ctx context.Context, payload dto.PatientPubSubMessage) error {
 			return nil
 		},
 	}
@@ -37,6 +37,6 @@ func (f *FakeClinical) GetMedicalData(ctx context.Context, patientID string) (*d
 }
 
 // CreatePubsubPatient mocks the implementation os creating a user using pubsub
-func (f *FakeClinical) CreatePubsubPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
+func (f *FakeClinical) CreatePubsubPatient(ctx context.Context, payload dto.PatientPubSubMessage) error {
 	return f.MockCreatePubsubPatientFn(ctx, payload)
 }

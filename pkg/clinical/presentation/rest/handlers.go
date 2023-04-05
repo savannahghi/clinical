@@ -58,7 +58,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 
 	switch topicID {
 	case utils.AddPubSubNamespace(common.CreatePatientTopic, common.ClinicalServiceName):
-		var data dto.CreatePatientPubSubMessage
+		var data dto.PatientPubSubMessage
 
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
@@ -81,7 +81,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		}
 
 	case utils.AddPubSubNamespace(common.OrganizationTopicName, common.ClinicalServiceName):
-		var data dto.CreateFacilityPubSubMessage
+		var data dto.FacilityPubSubMessage
 
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
@@ -104,7 +104,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		}
 
 	case utils.AddPubSubNamespace(common.VitalsTopicName, common.ClinicalServiceName):
-		var data dto.CreateVitalSignPubSubMessage
+		var data dto.VitalSignPubSubMessage
 
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
@@ -127,7 +127,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		}
 
 	case utils.AddPubSubNamespace(common.AllergyTopicName, common.ClinicalServiceName):
-		var data dto.CreatePatientAllergyPubSubMessage
+		var data dto.PatientAllergyPubSubMessage
 
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
@@ -150,7 +150,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		}
 
 	case utils.AddPubSubNamespace(common.MedicationTopicName, common.ClinicalServiceName):
-		var data dto.CreateMedicationPubSubMessage
+		var data dto.MedicationPubSubMessage
 
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {
@@ -196,7 +196,7 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		}
 
 	case utils.AddPubSubNamespace(common.TestResultTopicName, common.ClinicalServiceName):
-		var data dto.CreatePatientTestResultPubSubMessage
+		var data dto.PatientTestResultPubSubMessage
 
 		err := json.Unmarshal(message.Message.Data, &data)
 		if err != nil {

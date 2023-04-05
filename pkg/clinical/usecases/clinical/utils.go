@@ -21,12 +21,18 @@ func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	organisation, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, identifiers.OrganizationID)
+	return c.CreateTenantMetaTags(ctx, identifiers.OrganizationID, identifiers.FacilityID)
+}
+
+// GetTenantMetaTags is a helper to create tags that are used to identify which tenant a resource belongs to
+// and are saved in a resources `Meta` attribute
+func (c *UseCasesClinicalImpl) CreateTenantMetaTags(ctx context.Context, organisationID, facilityID string) ([]domain.FHIRCodingInput, error) {
+	organisation, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, organisationID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find tenant organisation: %w", err)
 	}
 
-	facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, identifiers.FacilityID)
+	facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, facilityID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find tenant organisation: %w", err)
 	}
@@ -43,14 +49,14 @@ func (c *UseCasesClinicalImpl) GetTenantMetaTags(ctx context.Context) ([]domain.
 		{
 			System:       &organisationTagSystem,
 			Version:      &organisationTagVersion,
-			Code:         scalarutils.Code(identifiers.OrganizationID),
+			Code:         scalarutils.Code(*organisation.Resource.ID),
 			Display:      *organisation.Resource.Name,
 			UserSelected: &userSelected,
 		},
 		{
 			System:       &facilityTagSystem,
 			Version:      &facilityTagVersion,
-			Code:         scalarutils.Code(identifiers.FacilityID),
+			Code:         scalarutils.Code(*facility.Resource.ID),
 			Display:      *facility.Resource.Name,
 			UserSelected: &userSelected,
 		},
@@ -91,7 +97,6 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 }
 
 // SimplePatientRegistrationInputToPatientInput transforms a patient input into
-// a
 func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx context.Context, input domain.SimplePatientRegistrationInput) (*domain.FHIRPatientInput, error) {
 	contacts, err := c.ContactsToContactPointInput(ctx, input.PhoneNumbers, input.Emails)
 	if err != nil {

@@ -5,9 +5,9 @@ import "time"
 // This file will be used to hold the payload for data that has been published to
 // different pubsub topics
 
-// CreatePatientPubSubMessage models the payload that is published to the `patient.create`
+// PatientPubSubMessage models the payload that is published to the `patient.create`
 // topic
-type CreatePatientPubSubMessage struct {
+type PatientPubSubMessage struct {
 	ID                string     `json:"id"`
 	Active            bool       `json:"active"`
 	ClientType        string     `json:"client_type"`
@@ -21,11 +21,14 @@ type CreatePatientPubSubMessage struct {
 	CurrentFacilityID string     `json:"current_facility"`
 	CHV               string     `json:"chv"`
 	Caregiver         string     `json:"caregiver"`
+
+	OrganizationID string `json:"organizationID"`
+	FacilityID     string `jsoon:"facilityID"`
 }
 
-// CreateFacilityPubSubMessage models the details of healthcare facilities that are on myCareHub platform.
+// FacilityPubSubMessage models the details of healthcare facilities that are on myCareHub platform.
 // This will be used to create a FHIR organization
-type CreateFacilityPubSubMessage struct {
+type FacilityPubSubMessage struct {
 	ID          *string `json:"id"`
 	Name        string  `json:"name"`
 	Code        int     `json:"code"`
@@ -35,25 +38,31 @@ type CreateFacilityPubSubMessage struct {
 	Description string  `json:"description"`
 }
 
-// CreateVitalSignPubSubMessage models the details that will be posted to the vitals pub/sub topic
-type CreateVitalSignPubSubMessage struct {
-	PatientID      string    `json:"patientID"`
-	OrganizationID string    `json:"organizationID"`
-	Name           string    `json:"name"`
-	ConceptID      *string   `json:"conceptId"`
-	Value          string    `json:"value"`
-	Date           time.Time `json:"date"`
+// VitalSignPubSubMessage models the details that will be posted to the vitals pub/sub topic
+type VitalSignPubSubMessage struct {
+	Name      string    `json:"name"`
+	ConceptID *string   `json:"conceptId"`
+	Value     string    `json:"value"`
+	Date      time.Time `json:"date"`
+
+	PatientID string `json:"patientID"`
+
+	OrganizationID string `json:"organizationID"`
+	FacilityID     string `jsoon:"facilityID"`
 }
 
-// CreatePatientAllergyPubSubMessage contains allergy details for a patient
-type CreatePatientAllergyPubSubMessage struct {
-	PatientID      string          `json:"patientID"`
-	OrganizationID string          `json:"organizationID"`
-	Name           string          `json:"name"`
-	ConceptID      *string         `json:"conceptID"`
-	Date           time.Time       `json:"date"`
-	Reaction       AllergyReaction `json:"reaction"`
-	Severity       AllergySeverity `json:"severity"`
+// PatientAllergyPubSubMessage contains allergy details for a patient
+type PatientAllergyPubSubMessage struct {
+	Name      string          `json:"name"`
+	ConceptID *string         `json:"conceptID"`
+	Date      time.Time       `json:"date"`
+	Reaction  AllergyReaction `json:"reaction"`
+	Severity  AllergySeverity `json:"severity"`
+
+	PatientID string `json:"patientID"`
+
+	OrganizationID string `json:"organizationID"`
+	FacilityID     string `jsoon:"facilityID"`
 }
 
 // AllergyReaction ...
@@ -68,16 +77,18 @@ type AllergySeverity struct {
 	ConceptID *string `json:"conceptID"`
 }
 
-// CreateMedicationPubSubMessage contains details for medication that a patient/client is prescribed or using
-type CreateMedicationPubSubMessage struct {
-	PatientID      string `json:"patientID"`
-	OrganizationID string `json:"organizationID"`
-
+// MedicationPubSubMessage contains details for medication that a patient/client is prescribed or using
+type MedicationPubSubMessage struct {
 	Name      string          `json:"medication"`
 	ConceptID *string         `json:"conceptId"`
 	Date      time.Time       `json:"date"`
 	Value     string          `json:"value"`
 	Drug      *MedicationDrug `json:"drug"`
+
+	PatientID string `json:"patientID"`
+
+	OrganizationID string `json:"organizationID"`
+	FacilityID     string `jsoon:"facilityID"`
 }
 
 // MedicationDrug ...
@@ -85,14 +96,17 @@ type MedicationDrug struct {
 	ConceptID *string `json:"conceptId"`
 }
 
-// CreatePatientTestResultPubSubMessage models details that are published to the test results topic
-type CreatePatientTestResultPubSubMessage struct {
-	PatientID      string     `json:"patientID"`
-	OrganizationID string     `json:"organizationID"`
-	Name           string     `json:"name"`
-	ConceptID      *string    `json:"conceptId"`
-	Date           time.Time  `json:"date"`
-	Result         TestResult `json:"result"`
+// PatientTestResultPubSubMessage models details that are published to the test results topic
+type PatientTestResultPubSubMessage struct {
+	Name      string     `json:"name"`
+	ConceptID *string    `json:"conceptId"`
+	Date      time.Time  `json:"date"`
+	Result    TestResult `json:"result"`
+
+	PatientID string `json:"patientID"`
+
+	OrganizationID string `json:"organizationID"`
+	FacilityID     string `jsoon:"facilityID"`
 }
 
 // TestResult ...

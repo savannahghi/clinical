@@ -235,7 +235,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 			usecases := usecases.NewUsecasesInteractor(infra)
 
 			if tt.name == "happy case: publish create patient message" {
-				msg := dto.CreatePatientPubSubMessage{
+				msg := dto.PatientPubSubMessage{
 					ID:                gofakeit.UUID(),
 					Active:            true,
 					UserID:            gofakeit.UUID(),
@@ -256,7 +256,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 			}
 
 			if tt.name == "sad case: publish create patient message" {
-				msg := dto.CreatePatientPubSubMessage{
+				msg := dto.PatientPubSubMessage{
 					ID:                gofakeit.UUID(),
 					Active:            true,
 					UserID:            gofakeit.UUID(),
@@ -282,7 +282,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "happy case: publish create organization message" {
 				id := gofakeit.UUID()
-				msg := dto.CreateFacilityPubSubMessage{
+				msg := dto.FacilityPubSubMessage{
 					ID:          &id,
 					Name:        gofakeit.Company(),
 					Code:        100,
@@ -307,7 +307,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "sad case: publish create organization message" {
 				id := gofakeit.UUID()
-				msg := dto.CreateFacilityPubSubMessage{
+				msg := dto.FacilityPubSubMessage{
 					ID:          &id,
 					Name:        gofakeit.Company(),
 					Code:        100,
@@ -336,7 +336,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "happy case: publish create vitals message" {
 				concept := "1234"
-				msg := dto.CreateVitalSignPubSubMessage{
+				msg := dto.VitalSignPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
@@ -360,7 +360,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "sad case: publish create vitals message" {
 				concept := "1234"
-				msg := dto.CreateVitalSignPubSubMessage{
+				msg := dto.VitalSignPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
@@ -388,7 +388,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "happy case: publish create allergy message" {
 				concept := "1234"
-				msg := dto.CreatePatientAllergyPubSubMessage{
+				msg := dto.PatientAllergyPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
@@ -413,7 +413,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "sad case: publish create allergy message" {
 				concept := "1234"
-				msg := dto.CreatePatientAllergyPubSubMessage{
+				msg := dto.PatientAllergyPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
@@ -442,7 +442,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "happy case: publish create medication message" {
 				concept := "1234"
-				msg := dto.CreateMedicationPubSubMessage{
+				msg := dto.MedicationPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
@@ -469,7 +469,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "sad case: publish create medication message" {
 				concept := "1234"
-				msg := dto.CreateMedicationPubSubMessage{
+				msg := dto.MedicationPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
@@ -500,7 +500,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "happy case: publish create results message" {
 				concept := "1234"
-				msg := dto.CreatePatientTestResultPubSubMessage{
+				msg := dto.PatientTestResultPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
@@ -549,7 +549,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "sad case: publish create results message" {
 				concept := "1234"
-				msg := dto.CreatePatientTestResultPubSubMessage{
+				msg := dto.PatientTestResultPubSubMessage{
 					PatientID:      gofakeit.UUID(),
 					OrganizationID: gofakeit.UUID(),
 					Name:           gofakeit.Name(),
