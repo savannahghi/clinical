@@ -63,7 +63,7 @@ func (c *UseCasesClinicalImpl) GetConcept(ctx context.Context, terminologySource
 }
 
 // ComposeVitalsInput composes a vitals observation from data received
-func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto.CreateVitalSignPubSubMessage) (*domain.FHIRObservationInput, error) {
+func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto.VitalSignPubSubMessage) (*domain.FHIRObservationInput, error) {
 	vitalsConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.ConceptID)
 	if err != nil {
 		return nil, err
@@ -134,7 +134,7 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 }
 
 // ComposeAllergyIntoleranceInput composes an allergy intolerance input from the data received
-func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Context, input dto.CreatePatientAllergyPubSubMessage) (*domain.FHIRAllergyIntoleranceInput, error) {
+func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Context, input dto.PatientAllergyPubSubMessage) (*domain.FHIRAllergyIntoleranceInput, error) {
 	allergyType := domain.AllergyIntoleranceTypeEnumAllergy
 	allergyCategory := domain.AllergyIntoleranceCategoryEnumMedication
 	allergy := &domain.FHIRAllergyIntoleranceInput{
@@ -249,7 +249,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 }
 
 // ComposeTestResultInput composes a test result input from data received
-func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input dto.CreatePatientTestResultPubSubMessage) (*domain.FHIRObservationInput, error) {
+func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input dto.PatientTestResultPubSubMessage) (*domain.FHIRObservationInput, error) {
 	var patientName string
 
 	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, input.PatientID)
@@ -324,7 +324,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 }
 
 // ComposeMedicationStatementInput composes a medication statement input from received data
-func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Context, input dto.CreateMedicationPubSubMessage) (*domain.FHIRMedicationStatementInput, error) {
+func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Context, input dto.MedicationPubSubMessage) (*domain.FHIRMedicationStatementInput, error) {
 	medicationConcept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, *input.ConceptID)
 	if err != nil {
 		return nil, err

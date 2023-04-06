@@ -20,7 +20,7 @@ var (
 )
 
 // CreateFHIRPatient creates a patient on FHIR store
-func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload dto.CreatePatientPubSubMessage) error {
+func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload dto.PatientPubSubMessage) error {
 	profile, err := c.infrastructure.MyCareHub.UserProfile(ctx, payload.UserID)
 	if err != nil {
 		return err
@@ -61,6 +61,15 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 
 	patientInput.Identifier = append(patientInput.Identifier, common.DefaultIdentifier())
 
+	tags, err := c.CreateTenantMetaTags(ctx, payload.OrganizationID, payload.FacilityID)
+	if err != nil {
+		return err
+	}
+
+	patientInput.Meta = domain.FHIRMetaInput{
+		Tag: tags,
+	}
+
 	patient, err := c.infrastructure.FHIR.CreateFHIRPatient(ctx, *patientInput)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
@@ -76,7 +85,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 }
 
 // CreatePubsubOrganization creates a FHIR organisation resource
-func (c *UseCasesClinicalImpl) CreatePubsubOrganization(ctx context.Context, data dto.CreateFacilityPubSubMessage) error {
+func (c *UseCasesClinicalImpl) CreatePubsubOrganization(ctx context.Context, data dto.FacilityPubSubMessage) error {
 	use := domain.ContactPointUseEnumWork
 	rank := int64(1)
 	phoneSystem := domain.ContactPointSystemEnumPhone
@@ -109,10 +118,19 @@ func (c *UseCasesClinicalImpl) CreatePubsubOrganization(ctx context.Context, dat
 }
 
 // CreatePubsubVitals creates FHIR observation vitals.
-func (c *UseCasesClinicalImpl) CreatePubsubVitals(ctx context.Context, data dto.CreateVitalSignPubSubMessage) error {
+func (c *UseCasesClinicalImpl) CreatePubsubVitals(ctx context.Context, data dto.VitalSignPubSubMessage) error {
 	input, err := c.ComposeVitalsInput(ctx, data)
 	if err != nil {
 		return err
+	}
+
+	tags, err := c.CreateTenantMetaTags(ctx, data.OrganizationID, data.FacilityID)
+	if err != nil {
+		return err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tags,
 	}
 
 	_, err = c.infrastructure.FHIR.CreateFHIRObservation(ctx, *input)
@@ -124,10 +142,19 @@ func (c *UseCasesClinicalImpl) CreatePubsubVitals(ctx context.Context, data dto.
 }
 
 // CreatePubsubAllergyIntolerance creates FHIR allergy intolerance
-func (c *UseCasesClinicalImpl) CreatePubsubAllergyIntolerance(ctx context.Context, data dto.CreatePatientAllergyPubSubMessage) error {
+func (c *UseCasesClinicalImpl) CreatePubsubAllergyIntolerance(ctx context.Context, data dto.PatientAllergyPubSubMessage) error {
 	input, err := c.ComposeAllergyIntoleranceInput(ctx, data)
 	if err != nil {
 		return err
+	}
+
+	tags, err := c.CreateTenantMetaTags(ctx, data.OrganizationID, data.FacilityID)
+	if err != nil {
+		return err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tags,
 	}
 
 	_, err = c.infrastructure.FHIR.CreateFHIRAllergyIntolerance(ctx, *input)
@@ -139,10 +166,19 @@ func (c *UseCasesClinicalImpl) CreatePubsubAllergyIntolerance(ctx context.Contex
 }
 
 // CreatePubsubTestResult creates a test result as an observation
-func (c *UseCasesClinicalImpl) CreatePubsubTestResult(ctx context.Context, data dto.CreatePatientTestResultPubSubMessage) error {
+func (c *UseCasesClinicalImpl) CreatePubsubTestResult(ctx context.Context, data dto.PatientTestResultPubSubMessage) error {
 	input, err := c.ComposeTestResultInput(ctx, data)
 	if err != nil {
 		return err
+	}
+
+	tags, err := c.CreateTenantMetaTags(ctx, data.OrganizationID, data.FacilityID)
+	if err != nil {
+		return err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tags,
 	}
 
 	_, err = c.infrastructure.FHIR.CreateFHIRObservation(ctx, *input)
@@ -154,10 +190,19 @@ func (c *UseCasesClinicalImpl) CreatePubsubTestResult(ctx context.Context, data 
 }
 
 // CreatePubsubMedicationStatement creates a FHIR medication statement
-func (c *UseCasesClinicalImpl) CreatePubsubMedicationStatement(ctx context.Context, data dto.CreateMedicationPubSubMessage) error {
+func (c *UseCasesClinicalImpl) CreatePubsubMedicationStatement(ctx context.Context, data dto.MedicationPubSubMessage) error {
 	input, err := c.ComposeMedicationStatementInput(ctx, data)
 	if err != nil {
 		return err
+	}
+
+	tags, err := c.CreateTenantMetaTags(ctx, data.OrganizationID, data.FacilityID)
+	if err != nil {
+		return err
+	}
+
+	input.Meta = domain.FHIRMetaInput{
+		Tag: tags,
 	}
 
 	_, err = c.infrastructure.FHIR.CreateFHIRMedicationStatement(ctx, *input)

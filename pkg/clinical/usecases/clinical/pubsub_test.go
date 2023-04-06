@@ -23,7 +23,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
 		ctx     context.Context
-		payload dto.CreatePatientPubSubMessage
+		payload dto.PatientPubSubMessage
 	}
 	tests := []struct {
 		name    string
@@ -34,7 +34,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			name: "Happy Case - Successfully create pubsub patient",
 			args: args{
 				ctx: ctx,
-				payload: dto.CreatePatientPubSubMessage{
+				payload: dto.PatientPubSubMessage{
 					ID:         uuid.New().String(),
 					Active:     true,
 					Counselled: false,
@@ -46,7 +46,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			name: "Sad Case - Fail to get user profile",
 			args: args{
 				ctx: ctx,
-				payload: dto.CreatePatientPubSubMessage{
+				payload: dto.PatientPubSubMessage{
 					ID:         uuid.New().String(),
 					Active:     true,
 					Counselled: false,
@@ -58,7 +58,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			name: "Sad Case - Fail to check patient existence",
 			args: args{
 				ctx: ctx,
-				payload: dto.CreatePatientPubSubMessage{
+				payload: dto.PatientPubSubMessage{
 					ID:         uuid.New().String(),
 					Active:     true,
 					Counselled: false,
@@ -70,7 +70,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			name: "Sad Case - Patient already exists",
 			args: args{
 				ctx: ctx,
-				payload: dto.CreatePatientPubSubMessage{
+				payload: dto.PatientPubSubMessage{
 					ID:         uuid.New().String(),
 					Active:     true,
 					Counselled: false,
@@ -82,7 +82,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			name: "Sad Case - Fail to create patient",
 			args: args{
 				ctx: ctx,
-				payload: dto.CreatePatientPubSubMessage{
+				payload: dto.PatientPubSubMessage{
 					ID:         uuid.New().String(),
 					Active:     true,
 					Counselled: false,
@@ -94,7 +94,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			name: "Sad Case - Fail to add FHIR ID to profile",
 			args: args{
 				ctx: ctx,
-				payload: dto.CreatePatientPubSubMessage{
+				payload: dto.PatientPubSubMessage{
 					ID:         uuid.New().String(),
 					Active:     true,
 					Counselled: false,
@@ -106,7 +106,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			name: "Sad Case - invalid patient input",
 			args: args{
 				ctx: ctx,
-				payload: dto.CreatePatientPubSubMessage{
+				payload: dto.PatientPubSubMessage{
 					ID:         uuid.New().String(),
 					Active:     true,
 					Counselled: false,
@@ -202,7 +202,7 @@ func TestUseCasesClinicalImpl_CreatePubsubOrganization(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
 		ctx  context.Context
-		data dto.CreateFacilityPubSubMessage
+		data dto.FacilityPubSubMessage
 	}
 	tests := []struct {
 		name    string
@@ -213,7 +213,7 @@ func TestUseCasesClinicalImpl_CreatePubsubOrganization(t *testing.T) {
 			name: "Happy Case - Successfully create pubsub organization",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateFacilityPubSubMessage{
+				data: dto.FacilityPubSubMessage{
 					ID:          new(string),
 					Name:        "Test Facility",
 					Code:        0,
@@ -229,7 +229,7 @@ func TestUseCasesClinicalImpl_CreatePubsubOrganization(t *testing.T) {
 			name: "Sad Case - Fail to create pubsub organization",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateFacilityPubSubMessage{
+				data: dto.FacilityPubSubMessage{
 					ID:          new(string),
 					Name:        "Test Facility",
 					Code:        0,
@@ -245,7 +245,7 @@ func TestUseCasesClinicalImpl_CreatePubsubOrganization(t *testing.T) {
 			name: "Sad Case - Fail to add fhir id to facility",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateFacilityPubSubMessage{
+				data: dto.FacilityPubSubMessage{
 					ID:          new(string),
 					Name:        "Test Facility",
 					Code:        0,
@@ -291,7 +291,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
 		ctx  context.Context
-		data dto.CreateVitalSignPubSubMessage
+		data dto.VitalSignPubSubMessage
 	}
 	tests := []struct {
 		name    string
@@ -302,7 +302,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			name: "Happy Case - Successfully create pubsub vitals",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateVitalSignPubSubMessage{
+				data: dto.VitalSignPubSubMessage{
 					PatientID:      uuid.NewString(),
 					OrganizationID: "",
 					Name:           "",
@@ -317,7 +317,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			name: "Happy Case - Successfully create pubsub vitals - available organizationID",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateVitalSignPubSubMessage{
+				data: dto.VitalSignPubSubMessage{
 					PatientID:      uuid.NewString(),
 					OrganizationID: uuid.NewString(),
 					Name:           "",
@@ -332,7 +332,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			name: "Sad Case - Fail to find patient",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateVitalSignPubSubMessage{
+				data: dto.VitalSignPubSubMessage{
 					PatientID:      uuid.NewString(),
 					OrganizationID: uuid.NewString(),
 					Name:           "",
@@ -347,7 +347,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			name: "Sad Case - Fail to find organisation using org ID",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateVitalSignPubSubMessage{
+				data: dto.VitalSignPubSubMessage{
 					PatientID:      uuid.NewString(),
 					OrganizationID: uuid.NewString(),
 					Name:           "",
@@ -356,13 +356,13 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 					Date:           time.Time{},
 				},
 			},
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name: "Sad Case - Fail to create observation",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateVitalSignPubSubMessage{
+				data: dto.VitalSignPubSubMessage{
 					PatientID:      uuid.NewString(),
 					OrganizationID: uuid.NewString(),
 					Name:           "",
@@ -377,7 +377,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			name: "Sad Case - fail to get ciel concept",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateVitalSignPubSubMessage{
+				data: dto.VitalSignPubSubMessage{
 					PatientID:      uuid.NewString(),
 					OrganizationID: uuid.NewString(),
 					Name:           "",
@@ -434,7 +434,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
 		ctx  context.Context
-		data dto.CreatePatientTestResultPubSubMessage
+		data dto.PatientTestResultPubSubMessage
 	}
 	tests := []struct {
 		name    string
@@ -445,7 +445,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			name: "Happy Case - Successfully create test result",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientTestResultPubSubMessage{
+				data: dto.PatientTestResultPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: "",
 					Name:           "",
@@ -460,7 +460,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			name: "Happy Case - Successfully create test result - with organisation ID",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientTestResultPubSubMessage{
+				data: dto.PatientTestResultPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -475,7 +475,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			name: "Sad Case - fail to get fhir patient",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientTestResultPubSubMessage{
+				data: dto.PatientTestResultPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: "",
 					Name:           "",
@@ -490,7 +490,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			name: "Sad Case - fail to get organisation",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientTestResultPubSubMessage{
+				data: dto.PatientTestResultPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -499,13 +499,13 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 					Result:         dto.TestResult{},
 				},
 			},
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name: "Sad Case - fail to create observation",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientTestResultPubSubMessage{
+				data: dto.PatientTestResultPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -520,7 +520,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			name: "Sad Case - fail to get ciel concept",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientTestResultPubSubMessage{
+				data: dto.PatientTestResultPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -578,7 +578,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 	conceptID := "12345"
 	type args struct {
 		ctx  context.Context
-		data dto.CreateMedicationPubSubMessage
+		data dto.MedicationPubSubMessage
 	}
 	tests := []struct {
 		name    string
@@ -589,7 +589,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			name: "Happy Case - Successfully create medication statement",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateMedicationPubSubMessage{
+				data: dto.MedicationPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: "",
 					Name:           "",
@@ -607,7 +607,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			name: "Happy Case - Successfully create medication statement - with organisation ID",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateMedicationPubSubMessage{
+				data: dto.MedicationPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -625,7 +625,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			name: "Sad Case - Fail to get patient",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateMedicationPubSubMessage{
+				data: dto.MedicationPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -643,7 +643,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			name: "Sad Case - fail to get organisation",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateMedicationPubSubMessage{
+				data: dto.MedicationPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -655,13 +655,13 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 					},
 				},
 			},
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name: "Sad Case - fail to get medication statement",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateMedicationPubSubMessage{
+				data: dto.MedicationPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -679,7 +679,7 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			name: "Sad Case - fail to get ciel concept",
 			args: args{
 				ctx: ctx,
-				data: dto.CreateMedicationPubSubMessage{
+				data: dto.MedicationPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: uuid.New().String(),
 					Name:           "",
@@ -739,7 +739,7 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
 		ctx  context.Context
-		data dto.CreatePatientAllergyPubSubMessage
+		data dto.PatientAllergyPubSubMessage
 	}
 	tests := []struct {
 		name    string
@@ -750,7 +750,7 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			name: "Happy Case - Successfully create allergy intolerance",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientAllergyPubSubMessage{
+				data: dto.PatientAllergyPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: "",
 					Name:           "",
@@ -766,7 +766,7 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			name: "Sad Case - Fail to get user profile",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientAllergyPubSubMessage{
+				data: dto.PatientAllergyPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: "",
 					Name:           "",
@@ -782,7 +782,7 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			name: "Sad Case - Fail to create allergy intolerance",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientAllergyPubSubMessage{
+				data: dto.PatientAllergyPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: "",
 					Name:           "",
@@ -798,7 +798,7 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			name: "Sad Case - fail to get ciel concept",
 			args: args{
 				ctx: ctx,
-				data: dto.CreatePatientAllergyPubSubMessage{
+				data: dto.PatientAllergyPubSubMessage{
 					PatientID:      uuid.New().String(),
 					OrganizationID: "",
 					Name:           "",
