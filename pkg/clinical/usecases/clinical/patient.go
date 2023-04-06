@@ -95,44 +95,40 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				return nil, fmt.Errorf("%s search error: %w", field, err)
 			}
 
-			for _, edge := range conn.Edges {
-				if edge.Node == nil {
+			for _, edge := range conn.Allergies {
+				if edge.ID == nil {
 					continue
 				}
 
-				if edge.Node.ID == nil {
+				if edge.Patient == nil {
 					continue
 				}
 
-				if edge.Node.Patient == nil {
+				if edge.Patient.ID == nil {
 					continue
 				}
 
-				if edge.Node.Patient.ID == nil {
+				if edge.Encounter == nil {
 					continue
 				}
 
-				if edge.Node.Encounter == nil {
+				if edge.Encounter.ID == nil {
 					continue
 				}
 
-				if edge.Node.Encounter.ID == nil {
+				if edge.Code == nil {
 					continue
 				}
 
-				if edge.Node.Code == nil {
+				if edge.Code.Coding == nil {
 					continue
 				}
 
-				if edge.Node.Code.Coding == nil {
+				if len(edge.Code.Coding) < 1 {
 					continue
 				}
 
-				if len(edge.Node.Code.Coding) < 1 {
-					continue
-				}
-
-				data.Allergies = append(data.Allergies, mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(edge.Node))
+				data.Allergies = append(data.Allergies, mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(edge))
 			}
 
 		case "Weight":
@@ -244,7 +240,7 @@ func mapFHIRMedicationStatementToMedicationStatementDTO(fhirAllergyIntolerance *
 	}
 }
 
-func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance *domain.FHIRAllergyIntolerance) *dto.Allergy {
+func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance domain.FHIRAllergyIntolerance) *dto.Allergy {
 	allergyIntolerance := &dto.Allergy{
 		ID:          *fhirAllergyIntolerance.ID,
 		PatientID:   *fhirAllergyIntolerance.Patient.ID,

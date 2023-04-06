@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 )
 
@@ -206,19 +205,17 @@ type FHIRAllergyintoleranceReactionInput struct {
 	Note []*FHIRAnnotationInput `json:"note,omitempty"`
 }
 
-// FHIRAllergyIntoleranceRelayConnection is a Relay connection for AllergyIntolerance
-type FHIRAllergyIntoleranceRelayConnection struct {
-	Edges    []*FHIRAllergyIntoleranceRelayEdge `json:"edges,omitempty"`
-	PageInfo *firebasetools.PageInfo            `json:"pageInfo,omitempty"`
-}
-
-// FHIRAllergyIntoleranceRelayEdge is a Relay edge for AllergyIntolerance
-type FHIRAllergyIntoleranceRelayEdge struct {
-	Cursor *string                 `json:"cursor,omitempty"`
-	Node   *FHIRAllergyIntolerance `json:"node,omitempty"`
-}
-
 // FHIRAllergyIntoleranceRelayPayload is used to return single instances of AllergyIntolerance
 type FHIRAllergyIntoleranceRelayPayload struct {
 	Resource *FHIRAllergyIntolerance `json:"resource,omitempty"`
+}
+
+// PagedFHIRAllergy is an allergy's paginaton dataclass
+type PagedFHIRAllergy struct {
+	Allergies       []FHIRAllergyIntolerance
+	HasNextPage     bool
+	NextCursor      string
+	HasPreviousPage bool
+	PreviousCursor  string
+	TotalCount      int
 }

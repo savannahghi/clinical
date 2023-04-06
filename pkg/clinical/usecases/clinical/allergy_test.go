@@ -2,6 +2,7 @@ package clinical_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -384,6 +385,93 @@ func TestUseCasesClinicalImpl_GetAllergyIntolerance(t *testing.T) {
 			_, err := c.GetAllergyIntolerance(tt.args.ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetPatientAllergies(t *testing.T) {
+	testInt := 5
+	type args struct {
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get allergy patient intolerances",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &testInt,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid uuid",
+			args: args{
+				ctx:       context.Background(),
+				patientID: "1",
+				pagination: &dto.Pagination{
+					First: &testInt,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient allergy intolerances",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &testInt,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get meta tags",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &testInt,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to get patient allergy intolerances" {
+				fakeFHIR.MockSearchPatientAllergyIntoleranceFn = func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					return nil, errors.New("unable to get patient allergy intolerance")
+				}
+			}
+			if tt.name == "Sad case: unable to get meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, errors.New("unable to get meta tags")
+				}
+			}
+
+			_, err := c.ListPatientAllergies(tt.args.ctx, tt.args.patientID, *tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientAllergies() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

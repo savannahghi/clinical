@@ -655,12 +655,19 @@ func (fh StoreImpl) CreateFHIRServiceRequest(_ context.Context, input domain.FHI
 }
 
 // SearchFHIRAllergyIntolerance provides a search API for FHIRAllergyIntolerance
-func (fh StoreImpl) SearchFHIRAllergyIntolerance(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-	output := domain.FHIRAllergyIntoleranceRelayConnection{}
-
+func (fh StoreImpl) SearchFHIRAllergyIntolerance(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 	resources, err := fh.Dataset.SearchFHIRResource(allergyIntoleranceResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
+	}
+
+	output := domain.PagedFHIRAllergy{
+		Allergies:       []domain.FHIRAllergyIntolerance{},
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
 	}
 
 	for _, result := range resources.Resources {
@@ -677,9 +684,7 @@ func (fh StoreImpl) SearchFHIRAllergyIntolerance(_ context.Context, params map[s
 				"server error: Unable to unmarshal %s: %w", allergyIntoleranceResourceType, err)
 		}
 
-		output.Edges = append(output.Edges, &domain.FHIRAllergyIntoleranceRelayEdge{
-			Node: &resource,
-		})
+		output.Allergies = append(output.Allergies, resource)
 	}
 
 	return &output, nil
@@ -857,6 +862,46 @@ func (fh StoreImpl) SearchFHIRCondition(_ context.Context, params map[string]int
 	}
 
 	return &output, nil
+}
+
+// SearchPatientAllergyIntolerance searches for a patient's FHIR allergy intolerance using patient ID
+func (fh StoreImpl) SearchPatientAllergyIntolerance(_ context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+	params := map[string]interface{}{
+		"patient": patientReference,
+	}
+
+	resources, err := fh.Dataset.SearchFHIRResource(allergyIntoleranceResourceType, params, tenant, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	allergyOutput := domain.PagedFHIRAllergy{
+		Allergies:       []domain.FHIRAllergyIntolerance{},
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
+	}
+
+	for _, resource := range resources.Resources {
+		var allergyIntolerance domain.FHIRAllergyIntolerance
+
+		resourceBs, err := json.Marshal(resource)
+		if err != nil {
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
+		}
+
+		err = json.Unmarshal(resourceBs, &allergyIntolerance)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"server error: Unable to unmarshal %s: %w", allergyIntoleranceResourceType, err)
+		}
+
+		allergyOutput.Allergies = append(allergyOutput.Allergies, allergyIntolerance)
+	}
+
+	return &allergyOutput, nil
 }
 
 // UpdateFHIRCondition updates a FHIRCondition instance

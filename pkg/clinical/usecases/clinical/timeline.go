@@ -49,46 +49,42 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 			return
 		}
 
-		for _, edge := range conn.Edges {
-			if edge.Node == nil {
+		for _, edge := range conn.Allergies {
+			if edge.ID == nil {
 				continue
 			}
 
-			if edge.Node.ID == nil {
+			if edge.Code == nil {
 				continue
 			}
 
-			if edge.Node.Code == nil {
+			if edge.Reaction == nil {
 				continue
 			}
 
-			if edge.Node.Reaction == nil {
+			if len(edge.Reaction) < 1 {
 				continue
 			}
 
-			if len(edge.Node.Reaction) < 1 {
+			if edge.Reaction[0].Manifestation == nil {
 				continue
 			}
 
-			if edge.Node.Reaction[0].Manifestation == nil {
+			if len(edge.Reaction[0].Manifestation) < 1 {
 				continue
 			}
 
-			if len(edge.Node.Reaction[0].Manifestation) < 1 {
-				continue
-			}
-
-			if edge.Node.RecordedDate == nil {
+			if edge.RecordedDate == nil {
 				continue
 			}
 
 			timelineResource := dto.TimelineResource{
-				ID:           *edge.Node.ID,
+				ID:           *edge.ID,
 				ResourceType: dto.ResourceTypeAllergyIntolerance,
-				Name:         edge.Node.Code.Text,
-				Value:        edge.Node.Reaction[0].Manifestation[0].Text,
-				Status:       edge.Node.ClinicalStatus.Text,
-				Date:         *edge.Node.RecordedDate,
+				Name:         edge.Code.Text,
+				Value:        edge.Reaction[0].Manifestation[0].Text,
+				Status:       edge.ClinicalStatus.Text,
+				Date:         *edge.RecordedDate,
 			}
 
 			mut.Lock()
