@@ -12,10 +12,10 @@ const (
 type EpisodeOfCareStatusEnum string
 
 const (
-	EpisodeOfCareStatusEnumPlanned   EpisodeOfCareStatusEnum = "planned"
-	EpisodeOfCareStatusEnumActive    EpisodeOfCareStatusEnum = "active"
-	EpisodeOfCareStatusEnumFinished  EpisodeOfCareStatusEnum = "finished"
-	EpisodeOfCareStatusEnumCancelled EpisodeOfCareStatusEnum = "cancelled"
+	EpisodeOfCareStatusEnumPlanned   EpisodeOfCareStatusEnum = "PLANNED"
+	EpisodeOfCareStatusEnumActive    EpisodeOfCareStatusEnum = "ACTIVE"
+	EpisodeOfCareStatusEnumFinished  EpisodeOfCareStatusEnum = "FINISHED"
+	EpisodeOfCareStatusEnumCancelled EpisodeOfCareStatusEnum = "CANCELLED"
 )
 
 // EncounterStatusEnum is a FHIR enum
@@ -23,30 +23,24 @@ type EncounterStatusEnum string
 
 const (
 	// EncounterStatusEnumPlanned ...
-	EncounterStatusEnumPlanned EncounterStatusEnum = "planned"
+	EncounterStatusEnumPlanned EncounterStatusEnum = "PLANNED"
 	// EncounterStatusEnumArrived ...
-	EncounterStatusEnumArrived EncounterStatusEnum = "arrived"
+	EncounterStatusEnumArrived EncounterStatusEnum = "ARRIVED"
 	// EncounterStatusEnumTriaged ...
-	EncounterStatusEnumTriaged EncounterStatusEnum = "triaged"
+	EncounterStatusEnumTriaged EncounterStatusEnum = "TRIAGED"
 	// EncounterStatusEnumInProgress ...
-	EncounterStatusEnumInProgress EncounterStatusEnum = "in_progress"
-	// EncounterStatusEnumOnleave ...
-	EncounterStatusEnumOnleave EncounterStatusEnum = "onleave"
+	EncounterStatusEnumInProgress EncounterStatusEnum = "IN_PROGRESS"
 	// EncounterStatusEnumFinished ...
-	EncounterStatusEnumFinished EncounterStatusEnum = "finished"
+	EncounterStatusEnumFinished EncounterStatusEnum = "FINISHED"
 	// EncounterStatusEnumCancelled ...
-	EncounterStatusEnumCancelled EncounterStatusEnum = "cancelled"
-	// EncounterStatusEnumEnteredInError ...
-	EncounterStatusEnumEnteredInError EncounterStatusEnum = "entered_in_error"
-	// EncounterStatusEnumUnknown ...
-	EncounterStatusEnumUnknown EncounterStatusEnum = "unknown"
+	EncounterStatusEnumCancelled EncounterStatusEnum = "CANCELLED"
 )
 
 type EncounterClass string
 
 const (
 	// Also referred to as outpatient - For now we'll start with outpatient only
-	EncounterClassAmbulatory EncounterClass = "ambulatory"
+	EncounterClassAmbulatory EncounterClass = "AMBULATORY"
 )
 
 type ResourceType string
@@ -61,24 +55,24 @@ const (
 type AllergyIntoleranceReactionSeverityEnum string
 
 const (
-	AllergyIntoleranceReactionSeverityEnumMild     AllergyIntoleranceReactionSeverityEnum = "mild"
-	AllergyIntoleranceReactionSeverityEnumModerate AllergyIntoleranceReactionSeverityEnum = "moderate"
-	AllergyIntoleranceReactionSeverityEnumSevere   AllergyIntoleranceReactionSeverityEnum = "severe"
+	AllergyIntoleranceReactionSeverityEnumMild     AllergyIntoleranceReactionSeverityEnum = "MILD"
+	AllergyIntoleranceReactionSeverityEnumModerate AllergyIntoleranceReactionSeverityEnum = "MODERATE"
+	AllergyIntoleranceReactionSeverityEnumSevere   AllergyIntoleranceReactionSeverityEnum = "SEVERE"
 )
 
 type ObservationStatus string
 
 const (
-	ObservationStatusFinal     ObservationStatus = "final"
-	ObservationStatusCancelled ObservationStatus = "cancelled"
+	ObservationStatusFinal     ObservationStatus = "FINAL"
+	ObservationStatusCancelled ObservationStatus = "CANCELLED"
 )
 
 type MedicationStatementStatusEnum string
 
 const (
-	MedicationStatementStatusEnumActive   MedicationStatementStatusEnum = "active"
-	MedicationStatementStatusEnumInActive MedicationStatementStatusEnum = "inactive"
-	MedicationStatementStatusEnumUnknown  MedicationStatementStatusEnum = "unknown"
+	MedicationStatementStatusEnumActive   MedicationStatementStatusEnum = "ACTIVE"
+	MedicationStatementStatusEnumInActive MedicationStatementStatusEnum = "INACTIVE"
+	MedicationStatementStatusEnumUnknown  MedicationStatementStatusEnum = "UNKNOWN"
 )
 
 type IdentifierType string
@@ -112,9 +106,9 @@ const (
 type ConditionStatus string
 
 const (
-	ConditionStatusActive   ConditionStatus = "active"
-	ConditionStatusInactive ConditionStatus = "inactive"
-	ConditionStatusResolved ConditionStatus = "resolved"
+	ConditionStatusActive   ConditionStatus = "ACTIVE"
+	ConditionStatusInactive ConditionStatus = "INACTIVE"
+	ConditionStatusResolved ConditionStatus = "RESOLVED"
 )
 
 // TerminologySource represents various concept sources

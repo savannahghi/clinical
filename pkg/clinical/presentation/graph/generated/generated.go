@@ -1233,26 +1233,23 @@ extend type Mutation {
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
-  planned
-  active
-  finished
-  cancelled
+  PLANNED
+  ACTIVE
+  FINISHED
+  CANCELLED
 }
 
 enum EncounterStatusEnum {
-  planned
-  arrived
-  triaged
-  in_progress
-  onleave
-  finished
-  cancelled
-  entered_in_error
-  unknown
+  PLANNED
+  ARRIVED
+  TRIAGED
+  IN_PROGRESS
+  FINISHED
+  CANCELLED
 }
 
 enum EncounterClass {
-  ambulatory
+  AMBULATORY
 }
 
 enum ResourceType {
@@ -1263,20 +1260,20 @@ enum ResourceType {
 }
 
 enum AllergyIntoleranceReactionSeverityEnum {
-  mild
-  moderate
-  severe
+  MILD
+  MODERATE
+  SEVERE
 }
 
 enum ObservationStatus {
-  final
-  cancelled
+  FINAL
+  CANCELLED
 }
 
 enum MedicationStatementStatusEnum {
-  active
-  inactive
-  unknown
+  ACTIVE
+  INACTIVE
+  UNKNOWN
 }
 
 enum Gender {
@@ -1297,9 +1294,9 @@ enum ContactType {
 }
 
 enum ConditionStatus {
-  active
-  inactive
-  resolved
+  ACTIVE
+  INACTIVE
+  RESOLVED
 }
 
 enum TerminologySource {

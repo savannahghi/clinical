@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 )
