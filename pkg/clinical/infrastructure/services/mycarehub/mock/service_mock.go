@@ -2,16 +2,10 @@ package mock
 
 import (
 	"context"
-	"time"
-
-	"github.com/brianvoe/gofakeit"
-	"github.com/savannahghi/clinical/pkg/clinical/domain"
 )
 
 // FakeMyCareHubService is an mock of the MyCareHub service
 type FakeMyCareHubService struct {
-	MockUserProfileFn func(ctx context.Context, userID string) (*domain.User, error)
-
 	MockAddFHIRIDToPatientProfileFn func(
 		ctx context.Context,
 		fhirID string,
@@ -29,27 +23,6 @@ type FakeMyCareHubService struct {
 // NewFakeMyCareHubServiceMock initializes a new instance of mycarehub mock
 func NewFakeMyCareHubServiceMock() *FakeMyCareHubService {
 	return &FakeMyCareHubService{
-		MockUserProfileFn: func(ctx context.Context, userID string) (*domain.User, error) {
-			dob := time.Now()
-			return &domain.User{
-				ID:       new(string),
-				Username: gofakeit.Username(),
-				UserType: "STAFF",
-				Name:     gofakeit.Name(),
-				Gender:   "MALE",
-				Active:   false,
-				Flavour:  "PRO",
-				Avatar:   "",
-				Contacts: &domain.Contact{
-					ID:           new(string),
-					ContactType:  "PHONE",
-					ContactValue: gofakeit.PhoneFormatted(),
-					Active:       true,
-					OptedIn:      true,
-				},
-				DateOfBirth: &dob,
-			}, nil
-		},
 		MockAddFHIRIDToPatientProfileFn: func(
 			ctx context.Context,
 			fhirID string,
@@ -68,14 +41,6 @@ func NewFakeMyCareHubServiceMock() *FakeMyCareHubService {
 			return nil
 		},
 	}
-}
-
-// UserProfile gets the profile of the user with the indicated ID
-func (s *FakeMyCareHubService) UserProfile(
-	ctx context.Context,
-	userID string,
-) (*domain.User, error) {
-	return s.MockUserProfileFn(ctx, userID)
 }
 
 // AddFHIRIDToPatientProfile adds a FHIR ID to a patient

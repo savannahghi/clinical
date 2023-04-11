@@ -16,7 +16,6 @@ import (
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
-	"github.com/savannahghi/firebasetools"
 )
 
 func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
@@ -35,57 +34,33 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			args: args{
 				ctx: ctx,
 				payload: dto.PatientPubSubMessage{
-					ID:         uuid.New().String(),
-					Active:     true,
-					Counselled: false,
+					UserID:         gofakeit.UUID(),
+					ClientID:       gofakeit.UUID(),
+					Name:           gofakeit.Name(),
+					DateOfBirth:    time.Now(),
+					Gender:         "male",
+					Active:         true,
+					PhoneNumber:    gofakeit.Phone(),
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
 				},
 			},
 			wantErr: false,
-		},
-		{
-			name: "Sad Case - Fail to get user profile",
-			args: args{
-				ctx: ctx,
-				payload: dto.PatientPubSubMessage{
-					ID:         uuid.New().String(),
-					Active:     true,
-					Counselled: false,
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad Case - Fail to check patient existence",
-			args: args{
-				ctx: ctx,
-				payload: dto.PatientPubSubMessage{
-					ID:         uuid.New().String(),
-					Active:     true,
-					Counselled: false,
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad Case - Patient already exists",
-			args: args{
-				ctx: ctx,
-				payload: dto.PatientPubSubMessage{
-					ID:         uuid.New().String(),
-					Active:     true,
-					Counselled: false,
-				},
-			},
-			wantErr: true,
 		},
 		{
 			name: "Sad Case - Fail to create patient",
 			args: args{
 				ctx: ctx,
 				payload: dto.PatientPubSubMessage{
-					ID:         uuid.New().String(),
-					Active:     true,
-					Counselled: false,
+					UserID:         gofakeit.UUID(),
+					ClientID:       gofakeit.UUID(),
+					Name:           gofakeit.Name(),
+					DateOfBirth:    time.Now(),
+					Gender:         "male",
+					Active:         true,
+					PhoneNumber:    gofakeit.Phone(),
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
 				},
 			},
 			wantErr: true,
@@ -95,21 +70,15 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			args: args{
 				ctx: ctx,
 				payload: dto.PatientPubSubMessage{
-					ID:         uuid.New().String(),
-					Active:     true,
-					Counselled: false,
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad Case - invalid patient input",
-			args: args{
-				ctx: ctx,
-				payload: dto.PatientPubSubMessage{
-					ID:         uuid.New().String(),
-					Active:     true,
-					Counselled: false,
+					UserID:         gofakeit.UUID(),
+					ClientID:       gofakeit.UUID(),
+					Name:           gofakeit.Name(),
+					DateOfBirth:    time.Now(),
+					Gender:         "male",
+					Active:         true,
+					PhoneNumber:    gofakeit.Phone(),
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
 				},
 			},
 			wantErr: true,
@@ -125,36 +94,6 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			if tt.name == "Sad Case - Fail to get user profile" {
-				fakeMCH.MockUserProfileFn = func(ctx context.Context, userID string) (*domain.User, error) {
-					return nil, fmt.Errorf("failed to get user profile")
-				}
-			}
-
-			if tt.name == "Sad Case - Fail to check patient existence" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
-					return nil, fmt.Errorf("fail to get a user")
-				}
-			}
-
-			if tt.name == "Sad Case - Patient already exists" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
-					return &domain.PatientConnection{
-						Edges: []*domain.PatientEdge{
-							{
-								Cursor: "",
-								Node:   &domain.FHIRPatient{},
-							},
-							{
-								Cursor: "",
-								Node:   &domain.FHIRPatient{},
-							},
-						},
-						PageInfo: &firebasetools.PageInfo{},
-					}, nil
-				}
-			}
-
 			if tt.name == "Sad Case - Fail to create patient" {
 				fakeFHIR.MockCreateFHIRPatientFn = func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
 					return nil, fmt.Errorf("failed to create patient")
@@ -166,31 +105,6 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 					return fmt.Errorf("failed to add fhir ID to profile")
 				}
 			}
-
-			if tt.name == "Sad Case - invalid patient input" {
-				fakeMCH.MockUserProfileFn = func(ctx context.Context, userID string) (*domain.User, error) {
-					dob := time.Now()
-					return &domain.User{
-						ID:       new(string),
-						Username: gofakeit.Username(),
-						UserType: "STAFF",
-						Name:     gofakeit.Name(),
-						Gender:   "MALE",
-						Active:   false,
-						Flavour:  "PRO",
-						Avatar:   "",
-						Contacts: &domain.Contact{
-							ID:           new(string),
-							ContactType:  "PHONE",
-							ContactValue: "gofakeit.PhoneFormatted()",
-							Active:       true,
-							OptedIn:      true,
-						},
-						DateOfBirth: &dob,
-					}, nil
-				}
-			}
-
 			if err := u.CreatePubsubPatient(tt.args.ctx, tt.args.payload); (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreatePubsubPatient() error = %v, wantErr %v", err, tt.wantErr)
 			}

@@ -236,10 +236,15 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "happy case: publish create patient message" {
 				msg := dto.PatientPubSubMessage{
-					ID:                gofakeit.UUID(),
-					Active:            true,
-					UserID:            gofakeit.UUID(),
-					CurrentFacilityID: gofakeit.UUID(),
+					UserID:         gofakeit.UUID(),
+					ClientID:       gofakeit.UUID(),
+					Name:           gofakeit.Name(),
+					DateOfBirth:    time.Now(),
+					Gender:         "male",
+					Active:         true,
+					PhoneNumber:    gofakeit.Phone(),
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
 				}
 				data, _ := json.Marshal(msg)
 				fakeExt.MockVerifyPubSubJWTAndDecodePayloadFn = func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
@@ -257,10 +262,15 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 
 			if tt.name == "sad case: publish create patient message" {
 				msg := dto.PatientPubSubMessage{
-					ID:                gofakeit.UUID(),
-					Active:            true,
-					UserID:            gofakeit.UUID(),
-					CurrentFacilityID: gofakeit.UUID(),
+					UserID:         gofakeit.UUID(),
+					ClientID:       gofakeit.UUID(),
+					Name:           gofakeit.Name(),
+					DateOfBirth:    time.Now(),
+					Gender:         "male",
+					Active:         true,
+					PhoneNumber:    gofakeit.Phone(),
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
 				}
 				data, _ := json.Marshal(msg)
 				fakeExt.MockVerifyPubSubJWTAndDecodePayloadFn = func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {

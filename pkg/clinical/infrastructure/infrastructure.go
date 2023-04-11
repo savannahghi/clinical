@@ -51,11 +51,6 @@ type BaseExtension interface {
 
 // IServiceMyCareHub represents mycarehub usecases
 type IServiceMyCareHub interface {
-	UserProfile(
-		ctx context.Context,
-		userID string,
-	) (*domain.User, error)
-
 	AddFHIRIDToPatientProfile(
 		ctx context.Context,
 		fhirID string,
