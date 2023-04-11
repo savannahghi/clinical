@@ -1244,11 +1244,8 @@ enum EncounterStatusEnum {
   arrived
   triaged
   in_progress
-  onleave
   finished
   cancelled
-  entered_in_error
-  unknown
 }
 
 enum EncounterClass {
