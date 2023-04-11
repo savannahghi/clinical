@@ -21,34 +21,18 @@ var (
 
 // CreateFHIRPatient creates a patient on FHIR store
 func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload dto.PatientPubSubMessage) error {
-	profile, err := c.infrastructure.MyCareHub.UserProfile(ctx, payload.UserID)
-	if err != nil {
-		return err
-	}
-
-	year, month, day := profile.DateOfBirth.Date()
-	patientName := strings.Split(profile.Name, " ")
+	year, month, day := payload.DateOfBirth.Date()
+	patientName := strings.Split(payload.Name, " ")
 	registrationInput := domain.SimplePatientRegistrationInput{
-		ID:    *profile.ID,
 		Names: []*domain.NameInput{{FirstName: patientName[0], LastName: patientName[1]}},
 		BirthDate: scalarutils.Date{
 			Year:  year,
 			Month: int(month),
 			Day:   day,
 		},
-		PhoneNumbers: []*domain.PhoneNumberInput{{Msisdn: profile.Contacts.ContactValue, CommunicationOptIn: true}},
-		Gender:       string(profile.Gender),
-		Active:       profile.Active,
-	}
-
-	exists, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, registrationInput)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return fmt.Errorf("unable to check patient existence")
-	}
-
-	if exists {
-		return fmt.Errorf("patient with phone number already exists")
+		PhoneNumbers: []*domain.PhoneNumberInput{{Msisdn: payload.PhoneNumber, CommunicationOptIn: false}},
+		Gender:       string(payload.Gender),
+		Active:       payload.Active,
 	}
 
 	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, registrationInput)
@@ -60,6 +44,51 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 	patientInput.ID = &newID
 
 	patientInput.Identifier = append(patientInput.Identifier, common.DefaultIdentifier())
+
+	clientSystem := scalarutils.URI("mycarehub.client.id")
+	userSelected := false
+
+	clientIdentifier := &domain.FHIRIdentifierInput{
+		Use:   domain.IdentifierUseEnumOfficial,
+		Value: payload.ClientID,
+		Type: domain.FHIRCodeableConceptInput{
+			Text: payload.ClientID,
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:       &clientSystem,
+					Code:         scalarutils.Code(payload.ClientID),
+					Display:      payload.ClientID,
+					UserSelected: &userSelected,
+				},
+			},
+		},
+		System: &clientSystem,
+		Period: common.DefaultPeriodInput(),
+	}
+
+	patientInput.Identifier = append(patientInput.Identifier, clientIdentifier)
+
+	userSystem := scalarutils.URI("mycarehub.user.id")
+
+	userIdentifier := &domain.FHIRIdentifierInput{
+		Use:   domain.IdentifierUseEnumOfficial,
+		Value: payload.UserID,
+		Type: domain.FHIRCodeableConceptInput{
+			Text: payload.UserID,
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:       &userSystem,
+					Code:         scalarutils.Code(payload.UserID),
+					Display:      payload.UserID,
+					UserSelected: &userSelected,
+				},
+			},
+		},
+		System: &userSystem,
+		Period: common.DefaultPeriodInput(),
+	}
+
+	patientInput.Identifier = append(patientInput.Identifier, userIdentifier)
 
 	tags, err := c.CreateTenantMetaTags(ctx, payload.OrganizationID, payload.FacilityID)
 	if err != nil {
@@ -76,7 +105,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 		return err
 	}
 
-	err = c.infrastructure.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, payload.ID)
+	err = c.infrastructure.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, payload.ClientID)
 	if err != nil {
 		return err
 	}
