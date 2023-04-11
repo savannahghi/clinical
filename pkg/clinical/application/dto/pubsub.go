@@ -23,7 +23,7 @@ type PatientPubSubMessage struct {
 	Caregiver         string     `json:"caregiver"`
 
 	OrganizationID string `json:"organizationID"`
-	FacilityID     string `jsoon:"facilityID"`
+	FacilityID     string `json:"facilityID"`
 }
 
 // FacilityPubSubMessage models the details of healthcare facilities that are on myCareHub platform.
@@ -48,7 +48,7 @@ type VitalSignPubSubMessage struct {
 	PatientID string `json:"patientID"`
 
 	OrganizationID string `json:"organizationID"`
-	FacilityID     string `jsoon:"facilityID"`
+	FacilityID     string `json:"facilityID"`
 }
 
 // PatientAllergyPubSubMessage contains allergy details for a patient
@@ -62,7 +62,7 @@ type PatientAllergyPubSubMessage struct {
 	PatientID string `json:"patientID"`
 
 	OrganizationID string `json:"organizationID"`
-	FacilityID     string `jsoon:"facilityID"`
+	FacilityID     string `json:"facilityID"`
 }
 
 // AllergyReaction ...
@@ -88,7 +88,7 @@ type MedicationPubSubMessage struct {
 	PatientID string `json:"patientID"`
 
 	OrganizationID string `json:"organizationID"`
-	FacilityID     string `jsoon:"facilityID"`
+	FacilityID     string `json:"facilityID"`
 }
 
 // MedicationDrug ...
@@ -106,7 +106,7 @@ type PatientTestResultPubSubMessage struct {
 	PatientID string `json:"patientID"`
 
 	OrganizationID string `json:"organizationID"`
-	FacilityID     string `jsoon:"facilityID"`
+	FacilityID     string `json:"facilityID"`
 }
 
 // TestResult ...
