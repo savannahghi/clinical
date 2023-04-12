@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -13,7 +12,7 @@ import (
 // InitializeInterServiceClient initializes an external service in the correct environment given its name
 func InitializeInterServiceClient(serviceName string) *interserviceclient.InterServiceClient {
 	//os file and parse it to go type
-	file, err := ioutil.ReadFile(filepath.Clean(interserviceclient.PathToDepsFile()))
+	file, err := os.ReadFile(filepath.Clean(interserviceclient.PathToDepsFile()))
 	if err != nil {
 		log.Errorf("error occurred while opening deps file %v", err)
 		os.Exit(1)

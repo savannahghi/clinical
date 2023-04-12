@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
@@ -79,7 +79,7 @@ func (s ServiceMyCareHubImpl) UserProfile(
 		)
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"failed to read data returned by mycarehub service: %w",
