@@ -171,7 +171,7 @@ func (s ServiceMyCareHubImpl) UpdateProgramFHIRTenantID(ctx context.Context, pro
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to update program tenant ID : %w, with status code %v", err, resp.StatusCode)
+		return fmt.Errorf("failed to update program %v with tenant ID %v, with status code %v", programID, tenantID, resp.StatusCode)
 	}
 
 	return nil

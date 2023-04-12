@@ -1,12 +1,12 @@
 staging:
   - depName: mycarehub
-    depRootDomain: https://mycarehub-staging.savannahghi.org
+    depRootDomain: https://mycarehub-multitenant-staging.savannahghi.org
 demo:
   - depName: mycarehub
-    depRootDomain: https://mycarehub-demo.savannahghi.org
+    depRootDomain: https://mycarehub-multitenant-staging.savannahghi.org
 testing:
   - depName: mycarehub
-    depRootDomain: https://mycarehub-testing.savannahghi.org
+    depRootDomain: https://mycarehub-multitenant-staging.savannahghi.org
 production:
   - depName: mycarehub
-    depRootDomain: https://mycarehub-prod.savannahghi.org
+    depRootDomain: https://mycarehub-multitenant-staging.savannahghi.org
