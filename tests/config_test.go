@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -34,7 +34,7 @@ const ( // Repo the env to identify which repo to use
 	instantFormat      = "2006-01-02T15:04:05.999-07:00"
 )
 
-/// these are set up once in TestMain and used by all the acceptance tests in
+// / these are set up once in TestMain and used by all the acceptance tests in
 // this package
 var (
 	srv              *http.Server
@@ -586,7 +586,7 @@ func getTestFHIRMedicationRequestID(ctx context.Context, encounterID string) (st
 		return "", fmt.Errorf("request error: %s", err)
 	}
 
-	dataResponse, err := ioutil.ReadAll(resp.Body)
+	dataResponse, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("can't read request body: %s", err)
 	}

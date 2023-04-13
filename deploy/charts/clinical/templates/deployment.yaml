@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "clinical.fullname" . }}
+  labels:
+    {{- include "clinical.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "clinical.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "clinical.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.app.container.image }}
+          imagePullPolicy: {{ .Values.app.container.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          env:
+            - name: PORT
+              value: {{ .Values.service.port | quote }}
+
+            - name: GOOGLE_CLOUD_PROJECT
+              value: {{ .Values.app.container.env.googleCloudProject | quote }}
+
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: {{ .Values.app.container.env.googleApplicationCredentialsSecret.filePath }}
+              
+            - name: FIREBASE_WEB_API_KEY
+              value:  {{ .Values.app.container.env.firebaseWebApiKey | quote }}
+
+            - name: JWT_KEY
+              value: {{ .Values.app.container.env.jwtKey | quote }}
+
+            - name: GOOGLE_PROJECT_NUMBER
+              value: {{ .Values.app.container.env.googleProjectNumber | quote }}
+
+            - name: ENVIRONMENT
+              value: {{ .Values.app.container.env.environment | quote }}
+
+            - name: SENTRY_DSN
+              value: {{ .Values.app.container.env.sentryDSN | quote }}
+
+            - name: ROOT_COLLECTION_SUFFIX
+              value: {{ .Values.app.container.env.rootCollectionSuffix | quote }}
+
+            - name: CLOUD_HEALTH_PUBSUB_TOPIC
+              value: {{ .Values.app.container.env.cloudHealthPubsubTopic | quote }}
+
+            - name: CLOUD_HEALTH_DATASET_ID
+              value: {{ .Values.app.container.env.cloudHealthDatasetID | quote }}
+
+            - name: CLOUD_HEALTH_FHIRSTORE_ID
+              value: {{ .Values.app.container.env.cloudHealthFHIRStoreID | quote }}
+
+            - name: OPENCONCEPTLAB_TOKEN
+              value: {{ .Values.app.container.env.openConceptLabToken | quote }}
+
+            - name: SERVICE_HOST
+              value: {{ .Values.app.container.env.serviceHost | quote }}
+
+            - name: OPENCONCEPTLAB_API_URL
+              value: {{ .Values.app.container.env.openConceptAPIUrl | quote }}
+
+            - name: SAVANNAH_ADMIN_EMAIL
+              value: {{ .Values.app.container.env.savannahAdminEmail | quote }}
+
+          volumeMounts:
+          - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+            mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}
+            readOnly: true
+  
+      volumes:
+        - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+          secret:
+            secretName: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+    
