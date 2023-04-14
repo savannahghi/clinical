@@ -4,10 +4,43 @@ on:
   push:
     branches:
       - develop-v2
-    
+
+env:
+  GKE_ZONE: europe-west1-b
+  GKE_PROJECT: sghi-307909
+  TEST_CLUSTER_NAME: sghi-apps
+  DOCKER_IMAGE_TAG: eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:${{  github.sha }}
+  NAMESPACE: ${{ secrets.NAMESPACE }}
+  APP_REPLICA_COUNT: ${{ secrets.APP_REPLICA_COUNT }}
+  PORT: ${{ secrets.PORT }}
+  GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+  FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
+  ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+  SERVICE_HOST: ${{ secrets.SERVICE_HOST }}
+  GOOGLE_PROJECT_NUMBER: ${{ secrets.GOOGLE_PROJECT_NUMBER }}
+  ROOT_COLLECTION_SUFFIX: ${{ secrets.ROOT_COLLECTION_SUFFIX }}
+  CLOUD_HEALTH_PUBSUB_TOPIC: ${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}
+  CLOUD_HEALTH_DATASET_ID: ${{ secrets.CLOUD_HEALTH_DATASET_ID }}
+  CLOUD_HEALTH_DATASET_LOCATION: ${{ secrets.CLOUD_HEALTH_DATASET_LOCATION }}
+  OPENCONCEPTLAB_TOKEN: ${{ secrets.OPENCONCEPTLAB_TOKEN }}
+  OPENCONCEPTLAB_API_URL: ${{ secrets.OPENCONCEPTLAB_API_URL }}
+  JWT_KEY: ${{ secrets.JWT_KEY }}
+  CLOUD_HEALTH_FHIRSTORE_ID: ${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}
+  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+  SAVANNAH_ADMIN_EMAIL: ${{ secrets.SAVANNAH_ADMIN_EMAIL }}
+  APP_DOMAIN: ${{ secrets.APP_DOMAIN }}
+  APP_NAME: ${{ secrets.APP_NAME }}
+  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+  AUTHSERVER_ENDPOINT: ${{ secrets.AUTHSERVER_ENDPOINT }}
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
+  AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+  GRANT_TYPE: ${{ secrets.GRANT_TYPE }}
+
 jobs:
   deploy_to_multitenant_staging:
-    name: Deploy multitenant staging server to google cloud run
+    name: Deploy multitenant staging server to google kubernetes engine
     runs-on: ubuntu-latest
     environment:
       name: multitenant-staging
@@ -31,33 +64,17 @@ jobs:
           docker build -t eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:$GITHUB_SHA .
           docker push eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:$GITHUB_SHA
       
-      - name: Deploy to Google Cloud Run
-        uses: 'google-github-actions/deploy-cloudrun@v0'
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
         with:
-          service: ${{ secrets.SERVICE_NAME }}
-          region: 'europe-west1'
-          image: 'eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:${{  github.sha }}'
-          env_vars: |
-            GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}
-            FIREBASE_WEB_API_KEY=${{ secrets.FIREBASE_WEB_API_KEY }}
-            JWT_KEY=${{ secrets.JWT_KEY }}
-            ENVIRONMENT=${{ secrets.ENVIRONMENT }}
-            GOOGLE_PROJECT_NUMBER=${{ secrets.GOOGLE_PROJECT_NUMBER }}
-            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
-            ROOT_COLLECTION_SUFFIX=${{ secrets.ROOT_COLLECTION_SUFFIX }}
-            CLOUD_HEALTH_PUBSUB_TOPIC=${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}
-            CLOUD_HEALTH_DATASET_ID=${{ secrets.CLOUD_HEALTH_DATASET_ID }}
-            CLOUD_HEALTH_FHIRSTORE_ID=${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}
-            CLOUD_HEALTH_DATASET_LOCATION=${{ secrets.CLOUD_HEALTH_DATASET_LOCATION }}
-            OPENCONCEPTLAB_TOKEN=${{ secrets.OPENCONCEPTLAB_TOKEN }}
-            SERVICE_HOST=${{ secrets.SERVICE_HOST }}
-            OPENCONCEPTLAB_API_URL=${{ secrets.OPENCONCEPTLAB_API_URL }}
-            SAVANNAH_ADMIN_EMAIL=${{ secrets.SAVANNAH_ADMIN_EMAIL }}
-            AUTHSERVER_ENDPOINT=${{ secrets.AUTHSERVER_ENDPOINT }}
-            CLIENT_ID=${{ secrets.CLIENT_ID }}
-            CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
-            AUTH_USERNAME=${{ secrets.AUTH_USERNAME }}
-            AUTH_PASSWORD=${{ secrets.AUTH_PASSWORD }}
-            GRANT_TYPE=${{ secrets.GRANT_TYPE }}
-    
+          cluster_name: ${{ env.TEST_CLUSTER_NAME }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+ 
+      - name: Deploy to Google Kubernetes engine
+        shell: bash
+        run: cd deploy/ && cat deploy.sh && sh deploy.sh
       
