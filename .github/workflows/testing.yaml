@@ -6,8 +6,6 @@ on:
       - alpha
 
 env:
-  # Schema Registry CLI command version
-  CLI_VERSION: v0.0.2
   GKE_ZONE: europe-west1-b
   GKE_PROJECT: sghi-307909
   TEST_CLUSTER_NAME: sghi-apps
