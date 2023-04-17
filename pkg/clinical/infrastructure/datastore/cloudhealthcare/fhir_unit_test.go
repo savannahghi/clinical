@@ -3,6 +3,7 @@ package fhir_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"testing"
 	"time"
@@ -2299,7 +2300,7 @@ func TestStoreImpl_SearchFHIRAllergyIntolerance(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *domain.FHIRAllergyIntoleranceRelayConnection
+		want    *domain.PagedFHIRAllergy
 		wantErr bool
 	}{
 		{
@@ -4013,6 +4014,66 @@ func TestStoreImpl_GetFHIRAllergyIntolerance(t *testing.T) {
 			_, err := fh.GetFHIRAllergyIntolerance(tt.args.ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.GetFHIRAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_SearchPatientAllergyIntolerance(t *testing.T) {
+	patientReference := fmt.Sprintf("Patient/%s", gofakeit.UUID())
+	type args struct {
+		ctx              context.Context
+		patientReference string
+		tenant           dto.TenantIdentifiers
+		pagination       dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: search allergy intolerance",
+			args: args{
+				ctx:              context.Background(),
+				patientReference: patientReference,
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to search allergy intolerance",
+			args: args{
+				ctx:              context.Background(),
+				patientReference: patientReference,
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to search allergy intolerance" {
+				fakeDataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, errors.New("some error")
+				}
+			}
+
+			_, err := fh.SearchPatientAllergyIntolerance(tt.args.ctx, tt.args.patientReference, tt.args.tenant, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchPatientAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

@@ -123,7 +123,7 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 		return nil, err
 	}
 
-	allergyIntoleranceObj := mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(allergyIntolerance.Resource)
+	allergyIntoleranceObj := mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(*allergyIntolerance.Resource)
 	allergyIntoleranceObj.TerminologySource = input.TerminologySource
 
 	return allergyIntoleranceObj, nil
@@ -162,7 +162,49 @@ func (c *UseCasesClinicalImpl) GetAllergyIntolerance(ctx context.Context, id str
 		return nil, fmt.Errorf("failed to search for allergy intolerance: %w", err)
 	}
 
-	intolerance := mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(allergyIntolerance.Resource)
+	intolerance := mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(*allergyIntolerance.Resource)
 
 	return intolerance, nil
+}
+
+// ListPatientAllergies is used to list all allergies associated with a specific patient
+func (c *UseCasesClinicalImpl) ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error) {
+	_, err := uuid.Parse(patientID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid patient id: %s", patientID)
+	}
+
+	err = pagination.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	patientReference := fmt.Sprintf("Patient/%s", patientID)
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	allergyResponses, err := c.infrastructure.FHIR.SearchPatientAllergyIntolerance(ctx, patientReference, *identifiers, dto.Pagination{})
+	if err != nil {
+		return nil, err
+	}
+
+	patientAllergyIntolerances := []*dto.Allergy{}
+
+	for _, allergyResponse := range allergyResponses.Allergies {
+		patientAllergyIntolerances = append(patientAllergyIntolerances, mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(allergyResponse))
+	}
+
+	pageInfo := dto.PageInfo{
+		HasNextPage:     allergyResponses.HasNextPage,
+		EndCursor:       &allergyResponses.NextCursor,
+		HasPreviousPage: allergyResponses.HasPreviousPage,
+		StartCursor:     &allergyResponses.PreviousCursor,
+	}
+
+	connection := dto.CreateAllergyConnection(patientAllergyIntolerances, pageInfo, allergyResponses.TotalCount)
+
+	return &connection, nil
 }

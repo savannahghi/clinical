@@ -133,3 +133,14 @@ type Terminology {
   system: TerminologySource!
   name: String!
 }
+
+type AllergyEdge {
+    node:  Allergy
+    cursor: String
+}
+
+type AllergyConnection {
+    totalCount: Int
+    edges:      [AllergyEdge]
+    pageInfo:   PageInfo
+}

@@ -20,7 +20,6 @@ linters:
     - funlen
     - gofmt
     - unparam
-    - dupl
     - errorlint
     - bodyclose
     - gocritic

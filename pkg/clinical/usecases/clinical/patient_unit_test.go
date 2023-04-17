@@ -499,57 +499,62 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					return nil, fmt.Errorf("failed to search allergy intolerance")
 				}
 			}
 
 			if tt.name == "Happy Case - Successfully search allergy intolerance" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
 					system := gofakeit.URL()
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								ID: new(string),
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: &domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{
-											{
-												Code:    scalarutils.Code(code),
-												Display: gofakeit.BS(),
-												System:  (*scalarutils.URI)(&system),
-											},
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
 										},
 									},
-									Patient: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil node" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
+								ID: new(string),
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
@@ -557,254 +562,294 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil node id" {
 				code := "123"
 				system := gofakeit.URL()
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
-									Code: &domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{
-											{
-												Code:    scalarutils.Code(code),
-												Display: gofakeit.BS(),
-												System:  (*scalarutils.URI)(&system),
-											},
+								Code: &domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
 										},
 									},
-									Patient: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil patient" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
 					system := gofakeit.URL()
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: &domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{
-											{
-												Code:    scalarutils.Code(code),
-												Display: gofakeit.BS(),
-												System:  (*scalarutils.URI)(&system),
-											},
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
 										},
 									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil patient id" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
 					system := gofakeit.URL()
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: &domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{
-											{
-												Code:    scalarutils.Code(code),
-												Display: gofakeit.BS(),
-												System:  (*scalarutils.URI)(&system),
-											},
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
 										},
 									},
-									Patient: &domain.FHIRReference{},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil encounter" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
 					system := gofakeit.URL()
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: &domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{
-											{
-												Code:    scalarutils.Code(code),
-												Display: gofakeit.BS(),
-												System:  (*scalarutils.URI)(&system),
-											},
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
 										},
 									},
-									Patient: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil encounter id" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
 					system := gofakeit.URL()
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: &domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{
-											{
-												Code:    scalarutils.Code(code),
-												Display: gofakeit.BS(),
-												System:  (*scalarutils.URI)(&system),
-											},
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
 										},
 									},
-									Patient: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil code" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					code := "123"
+					system := gofakeit.URL()
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Patient: &domain.FHIRReference{
-										ID: new(string),
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
+										},
 									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search allergy intolerance - nil coding" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					code := "123"
+					system := gofakeit.URL()
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: &domain.FHIRCodeableConcept{
-										ID: new(string),
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
+										},
 									},
-									Patient: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 			if tt.name == "Sad Case - Fail to search allergy intolerance - empty coding" {
-				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRAllergyIntoleranceRelayConnection, error) {
-					return &domain.FHIRAllergyIntoleranceRelayConnection{
-						Edges: []*domain.FHIRAllergyIntoleranceRelayEdge{
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					code := "123"
+					system := gofakeit.URL()
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRAllergyIntolerance{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: &domain.FHIRCodeableConcept{
-										ID:     new(string),
-										Coding: []*domain.FHIRCoding{},
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
+										},
 									},
-									Patient: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									OnsetPeriod: &domain.FHIRPeriod{
-										Start: "2000-01-01",
-									},
+								},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
