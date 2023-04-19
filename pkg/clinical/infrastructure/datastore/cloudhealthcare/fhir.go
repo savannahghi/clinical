@@ -110,7 +110,7 @@ func (fh StoreImpl) SearchPatientEncounters(
 	status *domain.EncounterStatusEnum,
 	tenant dto.TenantIdentifiers,
 	pagination dto.Pagination,
-) ([]*domain.FHIREncounter, error) {
+) (*domain.PagedFHIREncounter, error) {
 	params := map[string]interface{}{
 		"patient": patientReference,
 	}
@@ -123,7 +123,14 @@ func (fh StoreImpl) SearchPatientEncounters(
 		return nil, err
 	}
 
-	output := []*domain.FHIREncounter{}
+	encounterOutput := domain.PagedFHIREncounter{
+		Encounters:      []domain.FHIREncounter{},
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
+	}
 
 	for _, resource := range resources.Resources {
 		var encounter domain.FHIREncounter
@@ -138,10 +145,10 @@ func (fh StoreImpl) SearchPatientEncounters(
 			return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
 		}
 
-		output = append(output, &encounter)
+		encounterOutput.Encounters = append(encounterOutput.Encounters, encounter)
 	}
 
-	return output, nil
+	return &encounterOutput, nil
 }
 
 // SearchFHIREpisodeOfCare provides a search API for FHIREpisodeOfCare
@@ -479,7 +486,7 @@ func (fh StoreImpl) SearchEpisodeEncounter(
 	episodeReference string,
 	tenant dto.TenantIdentifiers,
 	pagination dto.Pagination,
-) (*domain.FHIREncounterRelayConnection, error) {
+) (*domain.PagedFHIREncounter, error) {
 	episodeRef := fmt.Sprintf("Episode/%s", episodeReference)
 	encounterFilterParams := map[string]interface{}{
 		"episodeOfCare": episodeRef,
@@ -947,12 +954,19 @@ func (fh StoreImpl) GetFHIREncounter(_ context.Context, id string) (*domain.FHIR
 }
 
 // SearchFHIREncounter provides a search API for FHIREncounter
-func (fh StoreImpl) SearchFHIREncounter(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREncounterRelayConnection, error) {
-	output := domain.FHIREncounterRelayConnection{}
-
+func (fh StoreImpl) SearchFHIREncounter(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error) {
 	resources, err := fh.Dataset.SearchFHIRResource(encounterResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
+	}
+
+	encounterOutput := domain.PagedFHIREncounter{
+		Encounters:      []domain.FHIREncounter{},
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
 	}
 
 	for _, result := range resources.Resources {
@@ -969,12 +983,10 @@ func (fh StoreImpl) SearchFHIREncounter(_ context.Context, params map[string]int
 				"server error: Unable to unmarshal %s: %w", encounterResourceType, err)
 		}
 
-		output.Edges = append(output.Edges, &domain.FHIREncounterRelayEdge{
-			Node: &resource,
-		})
+		encounterOutput.Encounters = append(encounterOutput.Encounters, resource)
 	}
 
-	return &output, nil
+	return &encounterOutput, nil
 }
 
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest

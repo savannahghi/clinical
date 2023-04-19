@@ -123,9 +123,10 @@ func (r *queryResolver) ListPatientConditions(ctx context.Context, patientID str
 }
 
 // ListPatientEncounters is the resolver for the listPatientEncounters field.
-func (r *queryResolver) ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error) {
+func (r *queryResolver) ListPatientEncounters(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.EncounterConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.ListPatientEncounters(ctx, patientID)
+
+	return r.usecases.Clinical.ListPatientEncounters(ctx, patientID, &pagination)
 }
 
 // GetPatientTemperatureEntries is the resolver for the getPatientTemperatureEntries field.

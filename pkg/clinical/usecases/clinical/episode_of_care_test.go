@@ -247,7 +247,7 @@ func TestUseCasesClinicalImpl_EndEpisodeOfCare(t *testing.T) {
 			}
 
 			if tt.name == "sad case: fail to search encounters" {
-				fakeFHIR.MockSearchEpisodeEncounterFn = func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREncounterRelayConnection, error) {
+				fakeFHIR.MockSearchEpisodeEncounterFn = func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error) {
 					return nil, fmt.Errorf("error searching for encounters")
 				}
 			}

@@ -57,3 +57,11 @@ input ReactionInput {
   system: String
   severity: AllergyIntoleranceReactionSeverityEnum
 }
+
+input Pagination {
+    first: Int
+    after: String
+
+    last:   Int
+    before: String
+}

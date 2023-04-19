@@ -98,6 +98,17 @@ type ComplexityRoot struct {
 		Status          func(childComplexity int) int
 	}
 
+	EncounterConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	EncounterEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	EpisodeOfCare struct {
 		ID        func(childComplexity int) int
 		PatientID func(childComplexity int) int
@@ -185,7 +196,7 @@ type ComplexityRoot struct {
 		GetPatientWeightEntries          func(childComplexity int, patientID string) int
 		ListPatientAllergies             func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientConditions            func(childComplexity int, patientID string, pagination dto.Pagination) int
-		ListPatientEncounters            func(childComplexity int, patientID string) int
+		ListPatientEncounters            func(childComplexity int, patientID string, pagination dto.Pagination) int
 		PatientHealthTimeline            func(childComplexity int, input dto.HealthTimelineInput) int
 		SearchAllergy                    func(childComplexity int, name string) int
 		__resolve__service               func(childComplexity int) int
@@ -238,7 +249,7 @@ type QueryResolver interface {
 	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
 	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	ListPatientConditions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ConditionConnection, error)
-	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
+	ListPatientEncounters(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.EncounterConnection, error)
 	GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 	GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 	GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
@@ -482,6 +493,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Encounter.Status(childComplexity), true
+
+	case "EncounterConnection.edges":
+		if e.complexity.EncounterConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.EncounterConnection.Edges(childComplexity), true
+
+	case "EncounterConnection.pageInfo":
+		if e.complexity.EncounterConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.EncounterConnection.PageInfo(childComplexity), true
+
+	case "EncounterConnection.totalCount":
+		if e.complexity.EncounterConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.EncounterConnection.TotalCount(childComplexity), true
+
+	case "EncounterEdge.cursor":
+		if e.complexity.EncounterEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.EncounterEdge.Cursor(childComplexity), true
+
+	case "EncounterEdge.node":
+		if e.complexity.EncounterEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.EncounterEdge.Node(childComplexity), true
 
 	case "EpisodeOfCare.id":
 		if e.complexity.EpisodeOfCare.ID == nil {
@@ -1036,7 +1082,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ListPatientEncounters(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.ListPatientEncounters(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.patientHealthTimeline":
 		if e.complexity.Query.PatientHealthTimeline == nil {
@@ -1248,7 +1294,7 @@ var sources = []*ast.Source{
     listPatientConditions(patientID: ID!, pagination:Pagination!): ConditionConnection
 
     # Encounter
-    listPatientEncounters(patientID: String!): [Encounter!]!
+    listPatientEncounters(patientID: String!, pagination: Pagination!): EncounterConnection
 
     # Observation
     getPatientTemperatureEntries(patientID: String!): [Observation!]
@@ -1446,6 +1492,14 @@ input ReactionInput {
   code: String
   system: String
   severity: AllergyIntoleranceReactionSeverityEnum
+}
+
+input Pagination {
+    first: Int
+    after: String
+
+    last:   Int
+    before: String
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
     id: ID
@@ -1569,14 +1623,6 @@ type ConditionConnection {
     pageInfo:   PageInfo
 }
 
-input Pagination {
-    first: Int
-    after: String
-
-    last:   Int
-    before: String
-}
-
 type Terminology {
   code: String!
   system: TerminologySource!
@@ -1591,6 +1637,17 @@ type AllergyEdge {
 type AllergyConnection {
     totalCount: Int
     edges:      [AllergyEdge]
+    pageInfo:   PageInfo
+}
+
+type EncounterEdge {
+    node:  Encounter
+    cursor: String
+}
+
+type EncounterConnection {
+    totalCount: Int
+    edges:      [EncounterEdge]
     pageInfo:   PageInfo
 }
 `, BuiltIn: false},
@@ -2055,6 +2112,15 @@ func (ec *executionContext) field_Query_listPatientEncounters_args(ctx context.C
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -3475,6 +3541,239 @@ func (ec *executionContext) _Encounter_patientID(ctx context.Context, field grap
 func (ec *executionContext) fieldContext_Encounter_patientID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Encounter",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterConnection_edges(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.EncounterEdge)
+	fc.Result = res
+	return ec.marshalOEncounterEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_EncounterEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_EncounterEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type EncounterEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.PageInfo)
+	fc.Result = res
+	return ec.marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterEdge_node(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Encounter)
+	fc.Result = res
+	return ec.marshalOEncounter2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Encounter_id(ctx, field)
+			case "class":
+				return ec.fieldContext_Encounter_class(ctx, field)
+			case "episodeOfCareID":
+				return ec.fieldContext_Encounter_episodeOfCareID(ctx, field)
+			case "status":
+				return ec.fieldContext_Encounter_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Encounter_patientID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Encounter", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterEdge",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -6181,21 +6480,18 @@ func (ec *executionContext) _Query_listPatientEncounters(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ListPatientEncounters(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().ListPatientEncounters(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Encounter)
+	res := resTmp.(*dto.EncounterConnection)
 	fc.Result = res
-	return ec.marshalNEncounter2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterᚄ(ctx, field.Selections, res)
+	return ec.marshalOEncounterConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_listPatientEncounters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6206,18 +6502,14 @@ func (ec *executionContext) fieldContext_Query_listPatientEncounters(ctx context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Encounter_id(ctx, field)
-			case "class":
-				return ec.fieldContext_Encounter_class(ctx, field)
-			case "episodeOfCareID":
-				return ec.fieldContext_Encounter_episodeOfCareID(ctx, field)
-			case "status":
-				return ec.fieldContext_Encounter_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Encounter_patientID(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_EncounterConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_EncounterConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_EncounterConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Encounter", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type EncounterConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -10159,6 +10451,68 @@ func (ec *executionContext) _Encounter(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
+var encounterConnectionImplementors = []string{"EncounterConnection"}
+
+func (ec *executionContext) _EncounterConnection(ctx context.Context, sel ast.SelectionSet, obj *dto.EncounterConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, encounterConnectionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("EncounterConnection")
+		case "totalCount":
+
+			out.Values[i] = ec._EncounterConnection_totalCount(ctx, field, obj)
+
+		case "edges":
+
+			out.Values[i] = ec._EncounterConnection_edges(ctx, field, obj)
+
+		case "pageInfo":
+
+			out.Values[i] = ec._EncounterConnection_pageInfo(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var encounterEdgeImplementors = []string{"EncounterEdge"}
+
+func (ec *executionContext) _EncounterEdge(ctx context.Context, sel ast.SelectionSet, obj *dto.EncounterEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, encounterEdgeImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("EncounterEdge")
+		case "node":
+
+			out.Values[i] = ec._EncounterEdge_node(ctx, field, obj)
+
+		case "cursor":
+
+			out.Values[i] = ec._EncounterEdge_cursor(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var episodeOfCareImplementors = []string{"EpisodeOfCare"}
 
 func (ec *executionContext) _EpisodeOfCare(ctx context.Context, sel ast.SelectionSet, obj *dto.EpisodeOfCare) graphql.Marshaler {
@@ -10775,9 +11129,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_listPatientEncounters(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
 				return res
 			}
 
@@ -11620,60 +11971,6 @@ func (ec *executionContext) marshalNDate2githubᚗcomᚋsavannahghiᚋscalarutil
 	return v
 }
 
-func (ec *executionContext) marshalNEncounter2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterᚄ(ctx context.Context, sel ast.SelectionSet, v []*dto.Encounter) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx context.Context, sel ast.SelectionSet, v *dto.Encounter) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Encounter(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNEpisodeOfCareInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCareInput(ctx context.Context, v interface{}) (dto.EpisodeOfCareInput, error) {
 	res, err := ec.unmarshalInputEpisodeOfCareInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -12430,6 +12727,10 @@ func (ec *executionContext) marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalaru
 	return v
 }
 
+func (ec *executionContext) marshalOEncounter2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx context.Context, sel ast.SelectionSet, v dto.Encounter) graphql.Marshaler {
+	return ec._Encounter(ctx, sel, &v)
+}
+
 func (ec *executionContext) unmarshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx context.Context, v interface{}) (dto.EncounterClass, error) {
 	tmp, err := graphql.UnmarshalString(v)
 	res := dto.EncounterClass(tmp)
@@ -12439,6 +12740,58 @@ func (ec *executionContext) unmarshalOEncounterClass2githubᚗcomᚋsavannahghi�
 func (ec *executionContext) marshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx context.Context, sel ast.SelectionSet, v dto.EncounterClass) graphql.Marshaler {
 	res := graphql.MarshalString(string(v))
 	return res
+}
+
+func (ec *executionContext) marshalOEncounterConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterConnection(ctx context.Context, sel ast.SelectionSet, v *dto.EncounterConnection) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._EncounterConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOEncounterEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterEdge(ctx context.Context, sel ast.SelectionSet, v dto.EncounterEdge) graphql.Marshaler {
+	return ec._EncounterEdge(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOEncounterEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterEdge(ctx context.Context, sel ast.SelectionSet, v []dto.EncounterEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOEncounterEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx context.Context, v interface{}) (dto.EncounterStatusEnum, error) {

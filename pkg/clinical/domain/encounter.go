@@ -398,3 +398,13 @@ type FHIREncounterRelayEdge struct {
 type FHIREncounterRelayPayload struct {
 	Resource *FHIREncounter `json:"resource,omitempty"`
 }
+
+// PagedFHIREncounter is an encounter's paginaton dataclass
+type PagedFHIREncounter struct {
+	Encounters      []FHIREncounter
+	HasNextPage     bool
+	NextCursor      string
+	HasPreviousPage bool
+	PreviousCursor  string
+	TotalCount      int
+}

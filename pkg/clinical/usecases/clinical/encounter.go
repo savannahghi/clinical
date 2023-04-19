@@ -93,12 +93,17 @@ func (c *UseCasesClinicalImpl) EndEncounter(ctx context.Context, encounterID str
 }
 
 // ListPatientEncounters lists all the encounters that a patient has been part of
-func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error) {
+func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.EncounterConnection, error) {
 	if patientID == "" {
 		return nil, fmt.Errorf("a patient ID is required")
 	}
 
-	_, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
+	err := pagination.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
 	if err != nil {
 		return nil, err
 	}
@@ -110,15 +115,26 @@ func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patien
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	encounter, err := c.infrastructure.FHIR.SearchPatientEncounters(ctx, patientReference, nil, *identifiers, dto.Pagination{})
+	encounterResponses, err := c.infrastructure.FHIR.SearchPatientEncounters(ctx, patientReference, nil, *identifiers, *pagination)
 	if err != nil {
 		return nil, err
 	}
 
-	return mapFHIREncounterToEncounterDTO(encounter), nil
+	encounters := mapFHIREncounterToEncounterDTO(encounterResponses.Encounters)
+
+	pagedInfo := dto.PageInfo{
+		HasNextPage:     encounterResponses.HasNextPage,
+		EndCursor:       &encounterResponses.NextCursor,
+		HasPreviousPage: encounterResponses.HasPreviousPage,
+		StartCursor:     &encounterResponses.PreviousCursor,
+	}
+
+	connection := dto.CreateEncounterConnection(encounters, pagedInfo, encounterResponses.TotalCount)
+
+	return &connection, nil
 }
 
-func mapFHIREncounterToEncounterDTO(fhirEncounters []*domain.FHIREncounter) []*dto.Encounter {
+func mapFHIREncounterToEncounterDTO(fhirEncounters []domain.FHIREncounter) []*dto.Encounter {
 	var encounters []*dto.Encounter
 
 	for _, fhirEncounter := range fhirEncounters {
@@ -126,8 +142,11 @@ func mapFHIREncounterToEncounterDTO(fhirEncounters []*domain.FHIREncounter) []*d
 			ID:              *fhirEncounter.ID,
 			Status:          dto.EncounterStatusEnum(fhirEncounter.Status),
 			Class:           dto.EncounterClass(fhirEncounter.Class.Display),
-			PatientID:       *fhirEncounter.Subject.ID,
 			EpisodeOfCareID: *fhirEncounter.EpisodeOfCare[0].ID,
+		}
+
+		if fhirEncounter.Subject.ID != nil {
+			encounter.PatientID = *fhirEncounter.Subject.ID
 		}
 
 		encounters = append(encounters, encounter)

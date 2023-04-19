@@ -24,15 +24,6 @@ type EpisodeOfCare struct {
 	PatientID string                  `json:"patientID"`
 }
 
-// Encounter definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
-type Encounter struct {
-	ID              string              `json:"id,omitempty"`
-	Status          EncounterStatusEnum `json:"status,omitempty"`
-	Class           EncounterClass      `json:"class,omitempty"`
-	PatientID       string              `json:"patientID,omitempty"`
-	EpisodeOfCareID string              `json:"episodeOfCareID,omitempty"`
-}
-
 // HealthTimelineInput is the input for fetching a patient's health timeline
 type HealthTimelineInput struct {
 	PatientID string `json:"patientID"`

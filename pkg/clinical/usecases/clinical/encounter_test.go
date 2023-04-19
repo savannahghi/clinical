@@ -179,9 +179,11 @@ func TestUseCasesClinicalImpl_EndEncounter(t *testing.T) {
 
 func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 	ctx := context.Background()
+	first := 3
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -193,6 +195,10 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			args: args{
 				ctx:       ctx,
 				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+					Skip:  false,
+				},
 			},
 			wantErr: false,
 		},
@@ -200,6 +206,10 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			name: "Sad Case - Missing patient ID",
 			args: args{
 				ctx: ctx,
+				pagination: &dto.Pagination{
+					First: &first,
+					Skip:  false,
+				},
 			},
 			wantErr: true,
 		},
@@ -208,6 +218,10 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			args: args{
 				ctx:       ctx,
 				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+					Skip:  false,
+				},
 			},
 			wantErr: true,
 		},
@@ -216,6 +230,22 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			args: args{
 				ctx:       ctx,
 				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+					Skip:  false,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - invalid pagination",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+					Last:  &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -237,12 +267,12 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to get patient encounters" {
-				fakeFHIR.MockSearchPatientEncountersFn = func(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIREncounter, error) {
-					return nil, fmt.Errorf("failed to search patient encounters")
+				fakeFHIR.MockSearchPatientEncountersFn = func(ctx context.Context, patientReference string, status *domain.EncounterStatusEnum, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error) {
+					return nil, fmt.Errorf("error searching for encounters")
 				}
 			}
 
-			got, err := u.ListPatientEncounters(tt.args.ctx, tt.args.patientID)
+			got, err := u.ListPatientEncounters(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.ListPatientEncounters() error = %v, wantErr %v", err, tt.wantErr)
 				return
