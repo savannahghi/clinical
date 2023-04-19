@@ -27,7 +27,7 @@ type Pagination struct {
 
 	// A flag to indicate whether to ignore the pagination parameters
 	// i.e the implementer will not be done with pagination
-	Skip bool
+	Skip bool `json:"skip"`
 }
 
 func (p *Pagination) Validate() error {

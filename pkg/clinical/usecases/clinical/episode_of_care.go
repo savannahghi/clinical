@@ -120,10 +120,10 @@ func (c *UseCasesClinicalImpl) EndEpisodeOfCare(ctx context.Context, id string) 
 		return nil, fmt.Errorf("unable to search episode encounter %w", err)
 	}
 
-	for _, edge := range encounterConn.Edges {
-		_, err = c.infrastructure.FHIR.EndEncounter(ctx, *edge.Node.ID)
+	for _, edge := range encounterConn.Encounters {
+		_, err = c.infrastructure.FHIR.EndEncounter(ctx, *edge.ID)
 		if err != nil {
-			return nil, fmt.Errorf("unable to end encounter %s: err: %w", *edge.Node.ID, err)
+			return nil, fmt.Errorf("unable to end encounter %s: err: %w", *edge.ID, err)
 		}
 	}
 

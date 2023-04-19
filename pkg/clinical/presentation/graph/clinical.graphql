@@ -8,7 +8,7 @@ extend type Query {
     listPatientConditions(patientID: ID!, pagination:Pagination!): ConditionConnection
 
     # Encounter
-    listPatientEncounters(patientID: String!): [Encounter!]!
+    listPatientEncounters(patientID: String!, pagination: Pagination!): EncounterConnection
 
     # Observation
     getPatientTemperatureEntries(patientID: String!): [Observation!]

@@ -186,7 +186,7 @@ func (c *UseCasesClinicalImpl) ListPatientAllergies(ctx context.Context, patient
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	allergyResponses, err := c.infrastructure.FHIR.SearchPatientAllergyIntolerance(ctx, patientReference, *identifiers, dto.Pagination{})
+	allergyResponses, err := c.infrastructure.FHIR.SearchPatientAllergyIntolerance(ctx, patientReference, *identifiers, pagination)
 	if err != nil {
 		return nil, err
 	}

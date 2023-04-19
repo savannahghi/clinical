@@ -120,14 +120,6 @@ type ConditionConnection {
     pageInfo:   PageInfo
 }
 
-input Pagination {
-    first: Int
-    after: String
-
-    last:   Int
-    before: String
-}
-
 type Terminology {
   code: String!
   system: TerminologySource!
@@ -142,5 +134,16 @@ type AllergyEdge {
 type AllergyConnection {
     totalCount: Int
     edges:      [AllergyEdge]
+    pageInfo:   PageInfo
+}
+
+type EncounterEdge {
+    node:  Encounter
+    cursor: String
+}
+
+type EncounterConnection {
+    totalCount: Int
+    edges:      [EncounterEdge]
     pageInfo:   PageInfo
 }

@@ -35,7 +35,7 @@ type Clinical interface {
 
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
-	ListPatientEncounters(ctx context.Context, patientID string) ([]*dto.Encounter, error)
+	ListPatientEncounters(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.EncounterConnection, error)
 
 	RecordTemperature(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordHeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
