@@ -460,8 +460,8 @@ github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/rwtodd/Go.Sed v0.0.0-20210816025313-55464686f9ef/go.mod h1:8AEUvGVi2uQ5b24BIhcr0GCcpd/RNAFWaN2CJFrWIIQ=
 github.com/ryanuber/columnize v2.1.0+incompatible/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
-github.com/savannahghi/authutils v0.0.9 h1:G2v2LMJYoaNyLJY39cW4DrHRJMeg+JlGZ7Gzn7sihII=
-github.com/savannahghi/authutils v0.0.9/go.mod h1:msRa8zWvgf9r3/eZB+cV6Fol76C0pZ+IUt5YGb53dwc=
+github.com/savannahghi/authutils v0.0.10 h1:FgrTsqZ+v9OMYVtB32zmfAnnR1iL9FIHNPRTgXLVJcc=
+github.com/savannahghi/authutils v0.0.10/go.mod h1:msRa8zWvgf9r3/eZB+cV6Fol76C0pZ+IUt5YGb53dwc=
 github.com/savannahghi/converterandformatter v0.0.3/go.mod h1:0o7yieYU10WabPqKuqj+5QL52eTL1eGElxjb+A68bbA=
 github.com/savannahghi/converterandformatter v0.0.10/go.mod h1:DNqyfHojHOrll1/l6Y9UUSl97/TBiB08zcRWjaXbXRM=
 github.com/savannahghi/converterandformatter v0.0.11 h1:N9UPNhabmrxKAnM4E68qrP6/urijMBr0/1EzSWPX3C4=

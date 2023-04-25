@@ -109,6 +109,15 @@ spec:
             - name: GRANT_TYPE
               value: {{ .Values.app.container.env.grantType | quote }}
 
+            - name: MYCAREHUB_CLIENT_ID
+              value: {{ .Values.app.container.env.mycarehubClientID | quote }}
+
+            - name: MYCAREHUB_CLIENT_SECRET
+              value: {{ .Values.app.container.env.mycarehubClientSecret | quote}}
+
+            - name: MYCAREHUB_INTROSPECT_URL
+              value: {{ .Values.app.container.env.mycarehubIntrospectURL | quote }}
+
           volumeMounts:
           - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
             mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}
