@@ -73,7 +73,7 @@ func TestServicePubSubMessaging_AddPubSubNamespace(t *testing.T) {
 				common.ClinicalServiceName,
 				topicName,
 				environment,
-				common.TopicVersion,
+				pubsubmessaging.TopicVersion,
 			),
 			wantErr: false,
 		},

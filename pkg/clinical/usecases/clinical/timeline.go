@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"sync"
 
 	linq "github.com/ahmetb/go-linq/v3"
@@ -125,11 +126,11 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			if edge.Node.EffectiveDateTime == nil {
+			if edge.Node.EffectiveInstant == nil {
 				continue
 			}
 
-			instant := edge.Node.EffectiveDateTime.AsTime()
+			instant := helpers.ParseDate(string(*edge.Node.EffectiveInstant))
 			date, err := scalarutils.NewDate(instant.Day(), int(instant.Month()), instant.Year())
 
 			if err != nil {
