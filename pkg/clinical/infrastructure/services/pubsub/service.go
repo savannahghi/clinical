@@ -16,6 +16,8 @@ const (
 
 	// TestTopicName is a topic that is used for testing purposes
 	TestTopicName = "pubsub.testing.topic"
+
+	TopicVersion = "v2"
 )
 
 // BaseExtension is an interface that represents some methods in base
@@ -66,7 +68,7 @@ func (ps ServicePubSubMessaging) AddPubSubNamespace(topicName, serviceName strin
 		serviceName,
 		topicName,
 		environment,
-		common.TopicVersion,
+		TopicVersion,
 	)
 }
 
@@ -102,7 +104,7 @@ func (ps ServicePubSubMessaging) PublishToPubsub(
 		topicID,
 		environment,
 		common.ClinicalServiceName,
-		common.TopicVersion,
+		TopicVersion,
 		payload,
 	)
 }

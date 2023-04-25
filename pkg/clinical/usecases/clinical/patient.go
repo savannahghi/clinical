@@ -108,14 +108,6 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
-				if edge.Encounter == nil {
-					continue
-				}
-
-				if edge.Encounter.ID == nil {
-					continue
-				}
-
 				if edge.Code == nil {
 					continue
 				}
@@ -217,14 +209,6 @@ func hasNilInObservation(observation *domain.FHIRObservationRelayEdge) bool {
 		return true
 	}
 
-	if observation.Node.Encounter == nil {
-		return true
-	}
-
-	if observation.Node.Encounter.ID == nil {
-		return true
-	}
-
 	return false
 }
 
@@ -242,11 +226,14 @@ func mapFHIRMedicationStatementToMedicationStatementDTO(fhirAllergyIntolerance *
 
 func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance domain.FHIRAllergyIntolerance) *dto.Allergy {
 	allergyIntolerance := &dto.Allergy{
-		ID:          *fhirAllergyIntolerance.ID,
-		PatientID:   *fhirAllergyIntolerance.Patient.ID,
-		EncounterID: *fhirAllergyIntolerance.Encounter.ID,
-		Code:        string(fhirAllergyIntolerance.Code.Coding[0].Code),
-		System:      string(*fhirAllergyIntolerance.Code.Coding[0].System),
+		ID:        *fhirAllergyIntolerance.ID,
+		PatientID: *fhirAllergyIntolerance.Patient.ID,
+		Code:      string(fhirAllergyIntolerance.Code.Coding[0].Code),
+		System:    string(*fhirAllergyIntolerance.Code.Coding[0].System),
+	}
+
+	if fhirAllergyIntolerance.Encounter != nil && fhirAllergyIntolerance.Encounter.ID != nil {
+		allergyIntolerance.EncounterID = *fhirAllergyIntolerance.Encounter.ID
 	}
 
 	if fhirAllergyIntolerance.OnsetPeriod != nil {
@@ -322,14 +309,19 @@ func mapFHIRObservationToObservationDTO(fhirObservation *domain.FHIRObservation)
 		value = fmt.Sprintf("%v - %v", fhirObservation.ValuePeriod.Start, fhirObservation.ValuePeriod.End)
 	}
 
-	return &dto.Observation{
-		ID:          *fhirObservation.ID,
-		Status:      dto.ObservationStatus(*fhirObservation.Status),
-		Name:        fhirObservation.Code.Coding[0].Display,
-		Value:       value,
-		PatientID:   *fhirObservation.Subject.ID,
-		EncounterID: *fhirObservation.Encounter.ID,
+	obs := &dto.Observation{
+		ID:        *fhirObservation.ID,
+		Status:    dto.ObservationStatus(*fhirObservation.Status),
+		Name:      fhirObservation.Code.Coding[0].Display,
+		Value:     value,
+		PatientID: *fhirObservation.Subject.ID,
 	}
+
+	if fhirObservation.Encounter != nil && fhirObservation.Encounter.ID != nil {
+		obs.EncounterID = *fhirObservation.Encounter.ID
+	}
+
+	return obs
 }
 
 // CreatePatient creates a new patient
