@@ -45,6 +45,9 @@ helm upgrade \
     --set app.container.env.authUsername="${AUTH_USERNAME}"\
     --set app.container.env.authPassword="${AUTH_PASSWORD}"\
     --set app.container.env.grantType="${GRANT_TYPE}"\
+    --set app.container.env.mycarehubClientID="${MYCAREHUB_CLIENT_ID}"\
+    --set app.container.env.mycarehubClientSecret="${MYCAREHUB_CLIENT_SECRET}"\
+    --set app.container.env.mycarehubIntrospectURL="${MYCAREHUB_INTROSPECT_URL}"\
     --set networking.issuer.name="letsencrypt-prod"\
     --set networking.issuer.privateKeySecretRef="letsencrypt-prod"\
     --set networking.ingress.host="${APP_DOMAIN}"\

@@ -12,7 +12,7 @@ import (
 
 const (
 	// TopicVersion defines the topic version. That standard one is `v1`
-	TopicVersion = "v1"
+	TopicVersion = "v2"
 )
 
 // ContextKey is a custom type used as a key value when adding IDs to the context

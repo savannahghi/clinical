@@ -18,7 +18,7 @@ require (
 	github.com/labstack/gommon v0.4.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/rs/xid v1.4.0
-	github.com/savannahghi/authutils v0.0.9
+	github.com/savannahghi/authutils v0.0.10
 	github.com/savannahghi/converterandformatter v0.0.11
 	github.com/savannahghi/enumutils v0.0.3
 	github.com/savannahghi/errorcodeutil v0.0.6

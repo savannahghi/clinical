@@ -78,7 +78,7 @@ func TestAddPubSubNamespace(t *testing.T) {
 				topicName:   "test",
 				serviceName: "service",
 			},
-			want: "service-test-staging-v1",
+			want: "service-test-staging-v2",
 		},
 	}
 	for _, tt := range tests {

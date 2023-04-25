@@ -152,7 +152,7 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 	handlers := rest.NewPresentationHandlers(usecases, infra.BaseExtension)
 
 	graphQL := r.Group("/graphql")
-	graphQL.Use(authutils.SladeAuthenticationGinMiddleware(*authclient))
+	graphQL.Use(rest.AuthenticationGinMiddleware(*authclient))
 	graphQL.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
 	graphQL.Any("", GQLHandler(usecases))
 
@@ -163,7 +163,7 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 	r.POST("/pubsub", handlers.ReceivePubSubPushMessage)
 
 	apis := r.Group("/api")
-	apis.Use(authutils.SladeAuthenticationGinMiddleware(*authclient))
+	apis.Use(rest.AuthenticationGinMiddleware(*authclient))
 
 	v1 := apis.Group("/v1")
 

@@ -37,6 +37,9 @@ env:
   AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
   AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
   GRANT_TYPE: ${{ secrets.GRANT_TYPE }}
+  MYCAREHUB_CLIENT_ID: ${{ secrets.MYCAREHUB_CLIENT_ID }}
+  MYCAREHUB_CLIENT_SECRET: ${{ secrets.MYCAREHUB_CLIENT_SECRET }}
+  MYCAREHUB_INTROSPECT_URL: ${{ secrets.MYCAREHUB_INTROSPECT_URL }}
 
 jobs:
   deploy_to_multitenant_staging:
