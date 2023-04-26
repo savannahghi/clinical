@@ -108,6 +108,7 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 	patientReference := fmt.Sprintf("Patient/%v", patient.Resource.ID)
 	patientName := *patient.Resource.Name[0].Given[0]
 	observation.Subject = &domain.FHIRReferenceInput{
+		ID:        patient.Resource.ID,
 		Reference: &patientReference,
 		Display:   patientName,
 	}
@@ -179,6 +180,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 	patientName := *patient.Resource.Name[0].Given[0]
 
 	allergy.Patient = &domain.FHIRReferenceInput{
+		ID:        patient.Resource.ID,
 		Reference: &subjectReference,
 		Display:   patientName,
 	}
@@ -296,6 +298,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 		ValueString:      &input.Result.Name,
 		EffectiveInstant: &instant,
 		Subject: &domain.FHIRReferenceInput{
+			ID:        patient.Resource.ID,
 			Reference: &subjectReference,
 			Display:   patientName,
 		},
@@ -374,6 +377,7 @@ func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Conte
 	patientReference := fmt.Sprintf("Patient/%v", patient.Resource.ID)
 	patientName := *patient.Resource.Name[0].Given[0]
 	medicationStatement.Subject = &domain.FHIRReferenceInput{
+		ID:        patient.Resource.ID,
 		Reference: &patientReference,
 		Display:   patientName,
 	}
