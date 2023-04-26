@@ -26,7 +26,7 @@ type Pagination struct {
 	Before string `json:"before"`
 
 	// A flag to indicate whether to ignore the pagination parameters
-	// i.e the implementer will not be done with pagination
+	// i.e the implementer will not perform/do pagination if this flag is true
 	Skip bool `json:"skip"`
 }
 

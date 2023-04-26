@@ -198,7 +198,7 @@ type ComplexityRoot struct {
 		ListPatientConditions            func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientEncounters            func(childComplexity int, patientID string, pagination dto.Pagination) int
 		PatientHealthTimeline            func(childComplexity int, input dto.HealthTimelineInput) int
-		SearchAllergy                    func(childComplexity int, name string) int
+		SearchAllergy                    func(childComplexity int, name string, pagination dto.Pagination) int
 		__resolve__service               func(childComplexity int) int
 	}
 
@@ -212,6 +212,17 @@ type ComplexityRoot struct {
 		Code   func(childComplexity int) int
 		Name   func(childComplexity int) int
 		System func(childComplexity int) int
+	}
+
+	TerminologyConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	TerminologyEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	TimelineResource struct {
@@ -257,7 +268,7 @@ type QueryResolver interface {
 	GetPatientPulseRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 	GetPatientBMIEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 	GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
-	SearchAllergy(ctx context.Context, name string) ([]*dto.Terminology, error)
+	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)
 	GetAllergy(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
 }
@@ -1106,7 +1117,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.SearchAllergy(childComplexity, args["name"].(string)), true
+		return e.complexity.Query.SearchAllergy(childComplexity, args["name"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query._service":
 		if e.complexity.Query.__resolve__service == nil {
@@ -1156,6 +1167,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Terminology.System(childComplexity), true
+
+	case "TerminologyConnection.edges":
+		if e.complexity.TerminologyConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.TerminologyConnection.Edges(childComplexity), true
+
+	case "TerminologyConnection.pageInfo":
+		if e.complexity.TerminologyConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.TerminologyConnection.PageInfo(childComplexity), true
+
+	case "TerminologyConnection.totalCount":
+		if e.complexity.TerminologyConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.TerminologyConnection.TotalCount(childComplexity), true
+
+	case "TerminologyEdge.cursor":
+		if e.complexity.TerminologyEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.TerminologyEdge.Cursor(childComplexity), true
+
+	case "TerminologyEdge.node":
+		if e.complexity.TerminologyEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.TerminologyEdge.Node(childComplexity), true
 
 	case "TimelineResource.date":
 		if e.complexity.TimelineResource.Date == nil {
@@ -1306,7 +1352,7 @@ var sources = []*ast.Source{
     getPatientWeightEntries(patientID: String!): [Observation!]
 
     # Allergy
-    searchAllergy(name: String!): [Terminology]
+    searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
     getAllergy(id: ID!): Allergy!
     listPatientAllergies(patientID: ID!, pagination:Pagination!): AllergyConnection
 }
@@ -1500,7 +1546,8 @@ input Pagination {
 
     last:   Int
     before: String
-}`, BuiltIn: false},
+}
+`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
     id: ID
     code: String!
@@ -1649,6 +1696,17 @@ type EncounterConnection {
     totalCount: Int
     edges:      [EncounterEdge]
     pageInfo:   PageInfo
+}
+
+type TerminologyEdge {
+    node:  Terminology
+    cursor: String
+}
+
+type TerminologyConnection {
+    totalCount: Int
+    edges: [TerminologyEdge]
+    pageInfo: PageInfo
 }
 `, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
@@ -2151,6 +2209,15 @@ func (ec *executionContext) field_Query_searchAllergy_args(ctx context.Context, 
 		}
 	}
 	args["name"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -7002,7 +7069,7 @@ func (ec *executionContext) _Query_searchAllergy(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SearchAllergy(rctx, fc.Args["name"].(string))
+		return ec.resolvers.Query().SearchAllergy(rctx, fc.Args["name"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7011,9 +7078,9 @@ func (ec *executionContext) _Query_searchAllergy(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Terminology)
+	res := resTmp.(*dto.TerminologyConnection)
 	fc.Result = res
-	return ec.marshalOTerminology2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminology(ctx, field.Selections, res)
+	return ec.marshalOTerminologyConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologyConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_searchAllergy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7024,14 +7091,14 @@ func (ec *executionContext) fieldContext_Query_searchAllergy(ctx context.Context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "code":
-				return ec.fieldContext_Terminology_code(ctx, field)
-			case "system":
-				return ec.fieldContext_Terminology_system(ctx, field)
-			case "name":
-				return ec.fieldContext_Terminology_name(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_TerminologyConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_TerminologyConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_TerminologyConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Terminology", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type TerminologyConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -7599,6 +7666,235 @@ func (ec *executionContext) _Terminology_name(ctx context.Context, field graphql
 func (ec *executionContext) fieldContext_Terminology_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Terminology",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TerminologyConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *dto.TerminologyConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TerminologyConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TerminologyConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TerminologyConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TerminologyConnection_edges(ctx context.Context, field graphql.CollectedField, obj *dto.TerminologyConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TerminologyConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.TerminologyEdge)
+	fc.Result = res
+	return ec.marshalOTerminologyEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologyEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TerminologyConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TerminologyConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_TerminologyEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_TerminologyEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TerminologyEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TerminologyConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *dto.TerminologyConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TerminologyConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.PageInfo)
+	fc.Result = res
+	return ec.marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TerminologyConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TerminologyConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TerminologyEdge_node(ctx context.Context, field graphql.CollectedField, obj *dto.TerminologyEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TerminologyEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Terminology)
+	fc.Result = res
+	return ec.marshalOTerminology2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminology(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TerminologyEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TerminologyEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "code":
+				return ec.fieldContext_Terminology_code(ctx, field)
+			case "system":
+				return ec.fieldContext_Terminology_system(ctx, field)
+			case "name":
+				return ec.fieldContext_Terminology_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Terminology", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TerminologyEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *dto.TerminologyEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TerminologyEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TerminologyEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TerminologyEdge",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -11463,6 +11759,68 @@ func (ec *executionContext) _Terminology(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var terminologyConnectionImplementors = []string{"TerminologyConnection"}
+
+func (ec *executionContext) _TerminologyConnection(ctx context.Context, sel ast.SelectionSet, obj *dto.TerminologyConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, terminologyConnectionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TerminologyConnection")
+		case "totalCount":
+
+			out.Values[i] = ec._TerminologyConnection_totalCount(ctx, field, obj)
+
+		case "edges":
+
+			out.Values[i] = ec._TerminologyConnection_edges(ctx, field, obj)
+
+		case "pageInfo":
+
+			out.Values[i] = ec._TerminologyConnection_pageInfo(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var terminologyEdgeImplementors = []string{"TerminologyEdge"}
+
+func (ec *executionContext) _TerminologyEdge(ctx context.Context, sel ast.SelectionSet, obj *dto.TerminologyEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, terminologyEdgeImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TerminologyEdge")
+		case "node":
+
+			out.Values[i] = ec._TerminologyEdge_node(ctx, field, obj)
+
+		case "cursor":
+
+			out.Values[i] = ec._TerminologyEdge_cursor(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var timelineResourceImplementors = []string{"TimelineResource"}
 
 func (ec *executionContext) _TimelineResource(ctx context.Context, sel ast.SelectionSet, obj *dto.TimelineResource) graphql.Marshaler {
@@ -13062,7 +13420,22 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalOTerminology2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminology(ctx context.Context, sel ast.SelectionSet, v []*dto.Terminology) graphql.Marshaler {
+func (ec *executionContext) marshalOTerminology2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminology(ctx context.Context, sel ast.SelectionSet, v dto.Terminology) graphql.Marshaler {
+	return ec._Terminology(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOTerminologyConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologyConnection(ctx context.Context, sel ast.SelectionSet, v *dto.TerminologyConnection) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TerminologyConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOTerminologyEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologyEdge(ctx context.Context, sel ast.SelectionSet, v dto.TerminologyEdge) graphql.Marshaler {
+	return ec._TerminologyEdge(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOTerminologyEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologyEdge(ctx context.Context, sel ast.SelectionSet, v []dto.TerminologyEdge) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -13089,7 +13462,7 @@ func (ec *executionContext) marshalOTerminology2ᚕᚖgithubᚗcomᚋsavannahghi
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTerminology2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminology(ctx, sel, v[i])
+			ret[i] = ec.marshalOTerminologyEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologyEdge(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -13101,13 +13474,6 @@ func (ec *executionContext) marshalOTerminology2ᚕᚖgithubᚗcomᚋsavannahghi
 	wg.Wait()
 
 	return ret
-}
-
-func (ec *executionContext) marshalOTerminology2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminology(ctx context.Context, sel ast.SelectionSet, v *dto.Terminology) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Terminology(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, v interface{}) (dto.TerminologySource, error) {

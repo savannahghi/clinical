@@ -86,3 +86,16 @@ type Terminology struct {
 	System TerminologySource `json:"system"`
 	Name   string            `json:"name"`
 }
+
+// TerminologyEdge is a terminology edge
+type TerminologyEdge struct {
+	Node   Terminology
+	Cursor string
+}
+
+// TerminologyConnection is the terminology connection
+type TerminologyConnection struct {
+	TotalCount int               `json:"totalCount,omitempty"`
+	Edges      []TerminologyEdge `json:"edges,omitempty"`
+	PageInfo   PageInfo          `json:"pageInfo,omitempty"`
+}
