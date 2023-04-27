@@ -69,7 +69,7 @@ func (fh StoreImpl) SearchPatientObservations(
 	observationCode string,
 	tenant dto.TenantIdentifiers,
 	pagination dto.Pagination,
-) ([]*domain.FHIRObservation, error) {
+) (*domain.PagedFHIRObservations, error) {
 	params := map[string]interface{}{
 		"patient": patientReference,
 		"code":    observationCode,
@@ -80,7 +80,14 @@ func (fh StoreImpl) SearchPatientObservations(
 		return nil, err
 	}
 
-	output := []*domain.FHIRObservation{}
+	observationOutput := domain.PagedFHIRObservations{
+		Observations:    []domain.FHIRObservation{},
+		HasNextPage:     observations.HasNextPage,
+		NextCursor:      observations.NextCursor,
+		HasPreviousPage: observations.HasPreviousPage,
+		PreviousCursor:  observations.PreviousCursor,
+		TotalCount:      observations.TotalCount,
+	}
 
 	for _, obs := range observations.Resources {
 		var observation domain.FHIRObservation
@@ -95,10 +102,10 @@ func (fh StoreImpl) SearchPatientObservations(
 			return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
 		}
 
-		output = append(output, &observation)
+		observationOutput.Observations = append(observationOutput.Observations, observation)
 	}
 
-	return output, nil
+	return &observationOutput, nil
 }
 
 // Encounters returns encounters that belong to the indicated patient.
@@ -1081,12 +1088,19 @@ func (fh StoreImpl) DeleteFHIRMedicationRequest(_ context.Context, id string) (b
 }
 
 // SearchFHIRObservation provides a search API for FHIRObservation
-func (fh StoreImpl) SearchFHIRObservation(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
-	output := domain.FHIRObservationRelayConnection{}
-
+func (fh StoreImpl) SearchFHIRObservation(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 	resources, err := fh.Dataset.SearchFHIRResource(observationResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
+	}
+
+	observationOutput := domain.PagedFHIRObservations{
+		Observations:    []domain.FHIRObservation{},
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
 	}
 
 	for _, result := range resources.Resources {
@@ -1103,16 +1117,14 @@ func (fh StoreImpl) SearchFHIRObservation(_ context.Context, params map[string]i
 				"server error: Unable to unmarshal %s: %w", observationResourceType, err)
 		}
 
-		output.Edges = append(output.Edges, &domain.FHIRObservationRelayEdge{
-			Node: &resource,
-		})
+		observationOutput.Observations = append(observationOutput.Observations, resource)
 	}
 
-	return &output, nil
+	return &observationOutput, nil
 }
 
 // CreateFHIRObservation creates a FHIRObservation instance
-func (fh StoreImpl) CreateFHIRObservation(_ context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+func (fh StoreImpl) CreateFHIRObservation(_ context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", observationResourceType, err)
@@ -1125,11 +1137,7 @@ func (fh StoreImpl) CreateFHIRObservation(_ context.Context, input domain.FHIROb
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", observationResourceType, err)
 	}
 
-	output := &domain.FHIRObservationRelayPayload{
-		Resource: resource,
-	}
-
-	return output, nil
+	return resource, nil
 }
 
 // DeleteFHIRObservation deletes the FHIRObservation identified by the passed ID

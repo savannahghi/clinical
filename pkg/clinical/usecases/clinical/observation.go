@@ -23,8 +23,8 @@ func (c *UseCasesClinicalImpl) RecordTemperature(ctx context.Context, input dto.
 }
 
 // GetPatientTemperatureEntries returns all the temperature entries for a patient, they are automatically sorted in chronological order
-func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return c.GetPatientObservations(ctx, patientID, common.TemperatureCIELTerminologyCode)
+func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.TemperatureCIELTerminologyCode, pagination)
 }
 
 // RecordHeight records a patient's height and saves it to fhir
@@ -38,8 +38,8 @@ func (c *UseCasesClinicalImpl) RecordHeight(ctx context.Context, input dto.Obser
 }
 
 // GetPatientHeightEntries gets the height records of a patient
-func (c *UseCasesClinicalImpl) GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return c.GetPatientObservations(ctx, patientID, common.HeightCIELTerminologyCode)
+func (c *UseCasesClinicalImpl) GetPatientHeightEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.HeightCIELTerminologyCode, pagination)
 }
 
 // RecordWeight records a patient's weight
@@ -53,8 +53,8 @@ func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.Obser
 }
 
 // GetPatientWeightEntries gets the weight records of a patient
-func (c *UseCasesClinicalImpl) GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return c.GetPatientObservations(ctx, patientID, common.WeightCIELTerminologyCode)
+func (c *UseCasesClinicalImpl) GetPatientWeightEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.WeightCIELTerminologyCode, pagination)
 }
 
 // RecordRespiratoryRate records a patient's respiratory rate
@@ -68,8 +68,8 @@ func (c *UseCasesClinicalImpl) RecordRespiratoryRate(ctx context.Context, input 
 }
 
 // GetPatientRespiratoryRateEntries gets a patient's respiratory rate entries
-func (c *UseCasesClinicalImpl) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return c.GetPatientObservations(ctx, patientID, common.RespiratoryRateCIELTerminologyCode)
+func (c *UseCasesClinicalImpl) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.RespiratoryRateCIELTerminologyCode, pagination)
 }
 
 // RecordPulseRate records a patient's pulse rate
@@ -83,8 +83,8 @@ func (c *UseCasesClinicalImpl) RecordPulseRate(ctx context.Context, input dto.Ob
 }
 
 // GetPatientPulseRateEntries gets the pulse rate records of a patient
-func (c *UseCasesClinicalImpl) GetPatientPulseRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return c.GetPatientObservations(ctx, patientID, common.PulseCIELTerminologyCode)
+func (c *UseCasesClinicalImpl) GetPatientPulseRateEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.PulseCIELTerminologyCode, pagination)
 }
 
 // RecordBloodPressure records a patient's blood pressure
@@ -98,8 +98,8 @@ func (c *UseCasesClinicalImpl) RecordBloodPressure(ctx context.Context, input dt
 }
 
 // GetPatientBloodPressureEntries retrieves all blood pressure entries for a patient
-func (c *UseCasesClinicalImpl) GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return c.GetPatientObservations(ctx, patientID, common.BloodPressureCIELTerminologyCode)
+func (c *UseCasesClinicalImpl) GetPatientBloodPressureEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.BloodPressureCIELTerminologyCode, pagination)
 }
 
 // RecordBMI records a patient's BMI
@@ -113,8 +113,8 @@ func (c *UseCasesClinicalImpl) RecordBMI(ctx context.Context, input dto.Observat
 }
 
 // GetPatientBMIEntries retrieves all BMI entries for a patient
-func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return c.GetPatientObservations(ctx, patientID, common.BMICIELTerminologyCode)
+func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.BMICIELTerminologyCode, pagination)
 }
 
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
@@ -194,12 +194,12 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 		return nil, err
 	}
 
-	return mapFHIRObservationToObservationDTO(fhirObservation.Resource), nil
+	return mapFHIRObservationToObservationDTO(*fhirObservation), nil
 }
 
-// GetPatientObservations is a helper function used to fetch patient's observations based off the passed CIEL
+// GetPatientObservations is a helper function used to fetch patient's observations based on the passed CIEL
 // terminology code. The observations will be sorted in a chronological error
-func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patientID string, observationCode string) ([]*dto.Observation, error) {
+func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patientID string, observationCode string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
@@ -218,12 +218,12 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	patientObs, err := c.infrastructure.FHIR.SearchPatientObservations(ctx, patientReference, observationCode, *identifiers, dto.Pagination{})
+	patientObs, err := c.infrastructure.FHIR.SearchPatientObservations(ctx, patientReference, observationCode, *identifiers, *pagination)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, obs := range patientObs {
+	for _, obs := range patientObs.Observations {
 		if obs.Subject == nil {
 			continue
 		}
@@ -243,5 +243,14 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 		observations = append(observations, mapFHIRObservationToObservationDTO(obs))
 	}
 
-	return observations, nil
+	pageInfo := dto.PageInfo{
+		HasNextPage:     patientObs.HasNextPage,
+		EndCursor:       &patientObs.NextCursor,
+		HasPreviousPage: patientObs.HasPreviousPage,
+		StartCursor:     &patientObs.PreviousCursor,
+	}
+
+	connection := dto.CreateObservationConnection(observations, pageInfo, patientObs.TotalCount)
+
+	return &connection, nil
 }

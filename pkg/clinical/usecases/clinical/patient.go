@@ -132,9 +132,9 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				return nil, fmt.Errorf("%s search error: %w", field, err)
 			}
 
-			for _, edge := range conn.Edges {
-				if !hasNilInObservation(edge) {
-					data.Weight = append(data.Weight, mapFHIRObservationToObservationDTO(edge.Node))
+			for _, observation := range conn.Observations {
+				if !hasNilInObservation(observation) {
+					data.Weight = append(data.Weight, mapFHIRObservationToObservationDTO(observation))
 				}
 			}
 
@@ -147,9 +147,9 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				return nil, fmt.Errorf("%s search error: %w", field, err)
 			}
 
-			for _, edge := range conn.Edges {
-				if !hasNilInObservation(edge) {
-					data.BMI = append(data.BMI, mapFHIRObservationToObservationDTO(edge.Node))
+			for _, observation := range conn.Observations {
+				if !hasNilInObservation(observation) {
+					data.BMI = append(data.BMI, mapFHIRObservationToObservationDTO(observation))
 				}
 			}
 
@@ -162,9 +162,9 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				return nil, fmt.Errorf("%s search error: %w", field, err)
 			}
 
-			for _, edge := range conn.Edges {
-				if !hasNilInObservation(edge) {
-					data.ViralLoad = append(data.ViralLoad, mapFHIRObservationToObservationDTO(edge.Node))
+			for _, observation := range conn.Observations {
+				if !hasNilInObservation(observation) {
+					data.ViralLoad = append(data.ViralLoad, mapFHIRObservationToObservationDTO(observation))
 				}
 			}
 
@@ -177,9 +177,9 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 				return nil, fmt.Errorf("%s search error: %w", field, err)
 			}
 
-			for _, edge := range conn.Edges {
-				if !hasNilInObservation(edge) {
-					data.CD4Count = append(data.CD4Count, mapFHIRObservationToObservationDTO(edge.Node))
+			for _, observation := range conn.Observations {
+				if !hasNilInObservation(observation) {
+					data.CD4Count = append(data.CD4Count, mapFHIRObservationToObservationDTO(observation))
 				}
 			}
 		}
@@ -188,24 +188,24 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 	return data, nil
 }
 
-func hasNilInObservation(observation *domain.FHIRObservationRelayEdge) bool {
-	if observation.Node == nil {
+func hasNilInObservation(observation domain.FHIRObservation) bool {
+	if observation.ID == nil {
 		return true
 	}
 
-	if observation.Node.Code.Coding == nil {
+	if observation.Code.Coding == nil {
 		return true
 	}
 
-	if len(observation.Node.Code.Coding) < 1 {
+	if len(observation.Code.Coding) < 1 {
 		return true
 	}
 
-	if observation.Node.Subject == nil {
+	if observation.Subject == nil {
 		return true
 	}
 
-	if observation.Node.Subject.ID == nil {
+	if observation.Subject.ID == nil {
 		return true
 	}
 
@@ -262,7 +262,7 @@ func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance dom
 	return allergyIntolerance
 }
 
-func mapFHIRObservationToObservationDTO(fhirObservation *domain.FHIRObservation) *dto.Observation {
+func mapFHIRObservationToObservationDTO(fhirObservation domain.FHIRObservation) *dto.Observation {
 	var value string
 
 	if fhirObservation.ValueQuantity != nil {

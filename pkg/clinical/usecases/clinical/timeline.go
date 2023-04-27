@@ -3,8 +3,9 @@ package clinical
 import (
 	"context"
 	"fmt"
-	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"sync"
+
+	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 
 	linq "github.com/ahmetb/go-linq/v3"
 	"github.com/google/uuid"
@@ -105,32 +106,28 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 			return
 		}
 
-		for _, edge := range conn.Edges {
-			if edge.Node == nil {
+		for _, edge := range conn.Observations {
+			if edge.ID == nil {
 				continue
 			}
 
-			if edge.Node.ID == nil {
+			if edge.Code.Coding == nil {
 				continue
 			}
 
-			if edge.Node.Code.Coding == nil {
+			if len(edge.Code.Coding) < 1 {
 				continue
 			}
 
-			if len(edge.Node.Code.Coding) < 1 {
+			if edge.Status == nil {
 				continue
 			}
 
-			if edge.Node.Status == nil {
+			if edge.EffectiveInstant == nil {
 				continue
 			}
 
-			if edge.Node.EffectiveInstant == nil {
-				continue
-			}
-
-			instant := helpers.ParseDate(string(*edge.Node.EffectiveInstant))
+			instant := helpers.ParseDate(string(*edge.EffectiveInstant))
 			date, err := scalarutils.NewDate(instant.Day(), int(instant.Month()), instant.Year())
 
 			if err != nil {
@@ -141,11 +138,11 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 			}
 
 			timelineResource := dto.TimelineResource{
-				ID:           *edge.Node.ID,
+				ID:           *edge.ID,
 				ResourceType: dto.ResourceTypeObservation,
-				Name:         edge.Node.Code.Text,
-				Value:        edge.Node.Code.Coding[0].Display,
-				Status:       string(*edge.Node.Status),
+				Name:         edge.Code.Text,
+				Value:        edge.Code.Coding[0].Display,
+				Status:       string(*edge.Status),
 				Date:         *date,
 			}
 

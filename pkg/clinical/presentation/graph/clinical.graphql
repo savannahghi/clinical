@@ -11,13 +11,13 @@ extend type Query {
     listPatientEncounters(patientID: String!, pagination: Pagination!): EncounterConnection
 
     # Observation
-    getPatientTemperatureEntries(patientID: String!): [Observation!]
-    getPatientBloodPressureEntries(patientID: String!): [Observation!]
-    getPatientHeightEntries(patientID: String!): [Observation!]
-    getPatientRespiratoryRateEntries(patientID: String!): [Observation!]
-    getPatientPulseRateEntries(patientID: String!): [Observation!]
-    getPatientBMIEntries(patientID: String!): [Observation!]
-    getPatientWeightEntries(patientID: String!): [Observation!]
+    getPatientTemperatureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientBloodPressureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientHeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientRespiratoryRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientPulseRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientBMIEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientWeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
 
     # Allergy
     searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection

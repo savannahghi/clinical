@@ -55,8 +55,8 @@ type FHIRMock struct {
 	MockCreateFHIRMedicationRequestFn     func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
 	MockUpdateFHIRMedicationRequestFn     func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
 	MockDeleteFHIRMedicationRequestFn     func(ctx context.Context, id string) (bool, error)
-	MockSearchFHIRObservationFn           func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error)
-	MockCreateFHIRObservationFn           func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
+	MockSearchFHIRObservationFn           func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
+	MockCreateFHIRObservationFn           func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error)
 	MockDeleteFHIRObservationFn           func(ctx context.Context, id string) (bool, error)
 	MockGetFHIRPatientFn                  func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
 	MockDeleteFHIRPatientFn               func(ctx context.Context, id string) (bool, error)
@@ -69,7 +69,7 @@ type FHIRMock struct {
 	MockPatchFHIRPatientFn                func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
 	MockUpdateFHIREpisodeOfCareFn         func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
 	MockSearchFHIRPatientFn               func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error)
-	MockSearchPatientObservationsFn       func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error)
+	MockSearchPatientObservationsFn       func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
 	MockGetFHIRAllergyIntoleranceFn       func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 	MockSearchPatientAllergyIntoleranceFn func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error)
 }
@@ -716,91 +716,90 @@ func NewFHIRMock() *FHIRMock {
 		MockDeleteFHIRMedicationRequestFn: func(ctx context.Context, id string) (bool, error) {
 			return true, nil
 		},
-		MockSearchFHIRObservationFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+		MockSearchFHIRObservationFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 			uuid := uuid.New().String()
 			finalStatus := domain.ObservationStatusEnumFinal
-			return &domain.FHIRObservationRelayConnection{
-				Edges: []*domain.FHIRObservationRelayEdge{
+			return &domain.PagedFHIRObservations{
+				Observations: []domain.FHIRObservation{
 					{
-						Cursor: new(string),
-						Node: &domain.FHIRObservation{
-							ID:     &uuid,
-							Status: &finalStatus,
-							Subject: &domain.FHIRReference{
-								ID: &uuid,
-							},
-							Encounter: &domain.FHIRReference{
-								ID: &uuid,
-							},
+						ID:     &uuid,
+						Status: &finalStatus,
+						Subject: &domain.FHIRReference{
+							ID: &uuid,
+						},
+						Encounter: &domain.FHIRReference{
+							ID: &uuid,
 						},
 					},
 				},
-				PageInfo: &firebasetools.PageInfo{},
+				HasNextPage:     false,
+				NextCursor:      "",
+				HasPreviousPage: false,
+				PreviousCursor:  "",
+				TotalCount:      0,
 			}, nil
 		},
-		MockCreateFHIRObservationFn: func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+		MockCreateFHIRObservationFn: func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 			uuid := uuid.New().String()
 			finalStatus := domain.ObservationStatusEnumFinal
-			return &domain.FHIRObservationRelayPayload{
-				Resource: &domain.FHIRObservation{
-					ID:         new(string),
-					Text:       &domain.FHIRNarrative{},
-					Identifier: []*domain.FHIRIdentifier{},
-					BasedOn:    []*domain.FHIRReference{},
-					PartOf:     []*domain.FHIRReference{},
-					Category:   []*domain.FHIRCodeableConcept{},
-					Code: domain.FHIRCodeableConcept{
-						ID: new(string),
-						Coding: []*domain.FHIRCoding{
-							{
-								ID:           new(string),
-								Version:      new(string),
-								Code:         "",
-								Display:      "Vital",
-								UserSelected: new(bool),
-							},
+			return &domain.FHIRObservation{
+				ID:         new(string),
+				Text:       &domain.FHIRNarrative{},
+				Identifier: []*domain.FHIRIdentifier{},
+				BasedOn:    []*domain.FHIRReference{},
+				PartOf:     []*domain.FHIRReference{},
+				Category:   []*domain.FHIRCodeableConcept{},
+				Code: domain.FHIRCodeableConcept{
+					ID: new(string),
+					Coding: []*domain.FHIRCoding{
+						{
+							ID:           new(string),
+							Version:      new(string),
+							Code:         "",
+							Display:      "Vital",
+							UserSelected: new(bool),
 						},
-						Text: "",
 					},
-					Subject: &domain.FHIRReference{
-						ID: &uuid,
-					},
-					Status: &finalStatus,
-					Focus:  []*domain.FHIRReference{},
-					Encounter: &domain.FHIRReference{
-						ID: &uuid,
-					},
-					EffectiveDateTime:    &scalarutils.Date{},
-					EffectivePeriod:      &domain.FHIRPeriod{},
-					EffectiveTiming:      &domain.FHIRTiming{},
-					Performer:            []*domain.FHIRReference{},
-					ValueQuantity:        &domain.FHIRQuantity{},
-					ValueCodeableConcept: (*scalarutils.Code)(&uuid),
-					ValueString:          new(string),
-					ValueBoolean:         new(bool),
-					ValueInteger:         new(string),
-					ValueRange:           &domain.FHIRRange{},
-					ValueRatio:           &domain.FHIRRatio{},
-					ValueSampledData: &domain.FHIRSampledData{
-						ID: &uuid,
-					},
-					ValueTime:        &time.Time{},
-					ValueDateTime:    &scalarutils.Date{},
-					ValuePeriod:      &domain.FHIRPeriod{},
-					DataAbsentReason: &domain.FHIRCodeableConcept{},
-					Interpretation:   []*domain.FHIRCodeableConcept{},
-					Note:             []*domain.FHIRAnnotation{},
-					BodySite:         &domain.FHIRCodeableConcept{},
-					Method:           &domain.FHIRCodeableConcept{},
-					Specimen:         &domain.FHIRReference{},
-					Device:           &domain.FHIRReference{},
-					ReferenceRange:   []*domain.FHIRObservationReferencerange{},
-					HasMember:        []*domain.FHIRReference{},
-					DerivedFrom:      []*domain.FHIRReference{},
-					Component:        []*domain.FHIRObservationComponent{},
-					Meta:             &domain.FHIRMeta{},
-					Extension:        []*domain.FHIRExtension{},
+					Text: "",
 				},
+				Subject: &domain.FHIRReference{
+					ID: &uuid,
+				},
+				Status: &finalStatus,
+				Focus:  []*domain.FHIRReference{},
+				Encounter: &domain.FHIRReference{
+					ID: &uuid,
+				},
+				EffectiveDateTime:    &scalarutils.Date{},
+				EffectivePeriod:      &domain.FHIRPeriod{},
+				EffectiveTiming:      &domain.FHIRTiming{},
+				Performer:            []*domain.FHIRReference{},
+				ValueQuantity:        &domain.FHIRQuantity{},
+				ValueCodeableConcept: (*scalarutils.Code)(&uuid),
+				ValueString:          new(string),
+				ValueBoolean:         new(bool),
+				ValueInteger:         new(string),
+				ValueRange:           &domain.FHIRRange{},
+				ValueRatio:           &domain.FHIRRatio{},
+				ValueSampledData: &domain.FHIRSampledData{
+					ID: &uuid,
+				},
+				ValueTime:        &time.Time{},
+				ValueDateTime:    &scalarutils.Date{},
+				ValuePeriod:      &domain.FHIRPeriod{},
+				DataAbsentReason: &domain.FHIRCodeableConcept{},
+				Interpretation:   []*domain.FHIRCodeableConcept{},
+				Note:             []*domain.FHIRAnnotation{},
+				BodySite:         &domain.FHIRCodeableConcept{},
+				Method:           &domain.FHIRCodeableConcept{},
+				Specimen:         &domain.FHIRReference{},
+				Device:           &domain.FHIRReference{},
+				ReferenceRange:   []*domain.FHIRObservationReferencerange{},
+				HasMember:        []*domain.FHIRReference{},
+				DerivedFrom:      []*domain.FHIRReference{},
+				Component:        []*domain.FHIRObservationComponent{},
+				Meta:             &domain.FHIRMeta{},
+				Extension:        []*domain.FHIRExtension{},
 			}, nil
 		},
 		MockDeleteFHIRObservationFn: func(ctx context.Context, id string) (bool, error) {
@@ -925,32 +924,41 @@ func NewFHIRMock() *FHIRMock {
 				PageInfo: &firebasetools.PageInfo{},
 			}, nil
 		},
-		MockSearchPatientObservationsFn: func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+		MockSearchPatientObservationsFn: func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 			uuid := uuid.New().String()
 			finalStatus := domain.ObservationStatusEnumFinal
-			return []*domain.FHIRObservation{{
-				ID:     &uuid,
-				Status: &finalStatus,
-				Subject: &domain.FHIRReference{
-					ID: &uuid,
-				},
-				Encounter: &domain.FHIRReference{
-					ID: &uuid,
-				},
-				Code: domain.FHIRCodeableConcept{
-					ID: new(string),
-					Coding: []*domain.FHIRCoding{
-						{
-							ID:           new(string),
-							Version:      new(string),
-							Code:         "",
-							Display:      "Vital",
-							UserSelected: new(bool),
+			return &domain.PagedFHIRObservations{
+				Observations: []domain.FHIRObservation{
+					{
+						ID:     &uuid,
+						Status: &finalStatus,
+						Subject: &domain.FHIRReference{
+							ID: &uuid,
+						},
+						Encounter: &domain.FHIRReference{
+							ID: &uuid,
+						},
+						Code: domain.FHIRCodeableConcept{
+							ID: new(string),
+							Coding: []*domain.FHIRCoding{
+								{
+									ID:           new(string),
+									Version:      new(string),
+									Code:         "",
+									Display:      "Vital",
+									UserSelected: new(bool),
+								},
+							},
+							Text: "",
 						},
 					},
-					Text: "",
 				},
-			}}, nil
+				HasNextPage:     true,
+				NextCursor:      "",
+				HasPreviousPage: true,
+				PreviousCursor:  "",
+				TotalCount:      0,
+			}, nil
 		},
 	}
 }
@@ -1126,12 +1134,12 @@ func (fh *FHIRMock) DeleteFHIRMedicationRequest(ctx context.Context, id string) 
 }
 
 // SearchFHIRObservation is a mock implementation of SearchFHIRObservation method
-func (fh *FHIRMock) SearchFHIRObservation(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+func (fh *FHIRMock) SearchFHIRObservation(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 	return fh.MockSearchFHIRObservationFn(ctx, params, tenant, pagination)
 }
 
 // CreateFHIRObservation is a mock implementation of CreateFHIRObservation method
-func (fh *FHIRMock) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+func (fh *FHIRMock) CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 	return fh.MockCreateFHIRObservationFn(ctx, input)
 }
 
@@ -1201,7 +1209,7 @@ func (fh *FHIRMock) SearchFHIRPatient(ctx context.Context, searchParams string, 
 }
 
 // SearchPatientObservations mocks the implementation of searching patient observations
-func (fh *FHIRMock) SearchPatientObservations(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+func (fh *FHIRMock) SearchPatientObservations(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 	return fh.MockSearchPatientObservationsFn(ctx, patientReference, conceptID, tenant, pagination)
 }
 
