@@ -7,6 +7,7 @@ type Allergy struct {
 	ID                string               `json:"ID"`
 	PatientID         string               `json:"patientID"`
 	Code              string               `json:"code"`
+	Name              string               `json:"name"`
 	System            string               `json:"system"`
 	TerminologySource TerminologySource    `json:"terminologySource"`
 	OnsetDateTime     scalarutils.DateTime `json:"onsetDateTime,omitempty"`
@@ -17,6 +18,7 @@ type Allergy struct {
 // Reaction represents a reaction containing minimal FHIR resources
 type Reaction struct {
 	Code     string                                 `json:"code"`
+	Name     string                                 `json:"name"`
 	System   string                                 `json:"system"`
 	Severity AllergyIntoleranceReactionSeverityEnum `json:"severity"`
 }

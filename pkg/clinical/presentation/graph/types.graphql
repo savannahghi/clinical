@@ -1,6 +1,7 @@
 type Allergy {
     id: ID
     code: String!
+    name: String
     system: String
     terminologySource: TerminologySource
     encounterID: String!
@@ -9,6 +10,7 @@ type Allergy {
 
 type Reaction {
     code: String
+    name: String
     system: String
     severity: AllergyIntoleranceReactionSeverityEnum
 }

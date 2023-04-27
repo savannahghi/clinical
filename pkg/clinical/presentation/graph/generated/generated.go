@@ -50,6 +50,7 @@ type ComplexityRoot struct {
 		Code              func(childComplexity int) int
 		EncounterID       func(childComplexity int) int
 		ID                func(childComplexity int) int
+		Name              func(childComplexity int) int
 		Reaction          func(childComplexity int) int
 		System            func(childComplexity int) int
 		TerminologySource func(childComplexity int) int
@@ -215,6 +216,7 @@ type ComplexityRoot struct {
 
 	Reaction struct {
 		Code     func(childComplexity int) int
+		Name     func(childComplexity int) int
 		Severity func(childComplexity int) int
 		System   func(childComplexity int) int
 	}
@@ -319,6 +321,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Allergy.ID(childComplexity), true
+
+	case "Allergy.name":
+		if e.complexity.Allergy.Name == nil {
+			break
+		}
+
+		return e.complexity.Allergy.Name(childComplexity), true
 
 	case "Allergy.reaction":
 		if e.complexity.Allergy.Reaction == nil {
@@ -1179,6 +1188,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Reaction.Code(childComplexity), true
 
+	case "Reaction.name":
+		if e.complexity.Reaction.Name == nil {
+			break
+		}
+
+		return e.complexity.Reaction.Name(childComplexity), true
+
 	case "Reaction.severity":
 		if e.complexity.Reaction.Severity == nil {
 			break
@@ -1597,6 +1613,7 @@ input Pagination {
 	{Name: "../types.graphql", Input: `type Allergy {
     id: ID
     code: String!
+    name: String
     system: String
     terminologySource: TerminologySource
     encounterID: String!
@@ -1605,6 +1622,7 @@ input Pagination {
 
 type Reaction {
     code: String
+    name: String
     system: String
     severity: AllergyIntoleranceReactionSeverityEnum
 }
@@ -2464,6 +2482,47 @@ func (ec *executionContext) fieldContext_Allergy_code(ctx context.Context, field
 	return fc, nil
 }
 
+func (ec *executionContext) _Allergy_name(ctx context.Context, field graphql.CollectedField, obj *dto.Allergy) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Allergy_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Allergy_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Allergy",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Allergy_system(ctx context.Context, field graphql.CollectedField, obj *dto.Allergy) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Allergy_system(ctx, field)
 	if err != nil {
@@ -2628,6 +2687,8 @@ func (ec *executionContext) fieldContext_Allergy_reaction(ctx context.Context, f
 			switch field.Name {
 			case "code":
 				return ec.fieldContext_Reaction_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Reaction_name(ctx, field)
 			case "system":
 				return ec.fieldContext_Reaction_system(ctx, field)
 			case "severity":
@@ -2818,6 +2879,8 @@ func (ec *executionContext) fieldContext_AllergyEdge_node(ctx context.Context, f
 				return ec.fieldContext_Allergy_id(ctx, field)
 			case "code":
 				return ec.fieldContext_Allergy_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Allergy_name(ctx, field)
 			case "system":
 				return ec.fieldContext_Allergy_system(ctx, field)
 			case "terminologySource":
@@ -4293,6 +4356,8 @@ func (ec *executionContext) fieldContext_MedicalData_allergies(ctx context.Conte
 				return ec.fieldContext_Allergy_id(ctx, field)
 			case "code":
 				return ec.fieldContext_Allergy_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Allergy_name(ctx, field)
 			case "system":
 				return ec.fieldContext_Allergy_system(ctx, field)
 			case "terminologySource":
@@ -5691,6 +5756,8 @@ func (ec *executionContext) fieldContext_Mutation_createAllergyIntolerance(ctx c
 				return ec.fieldContext_Allergy_id(ctx, field)
 			case "code":
 				return ec.fieldContext_Allergy_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Allergy_name(ctx, field)
 			case "system":
 				return ec.fieldContext_Allergy_system(ctx, field)
 			case "terminologySource":
@@ -7471,6 +7538,8 @@ func (ec *executionContext) fieldContext_Query_getAllergy(ctx context.Context, f
 				return ec.fieldContext_Allergy_id(ctx, field)
 			case "code":
 				return ec.fieldContext_Allergy_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Allergy_name(ctx, field)
 			case "system":
 				return ec.fieldContext_Allergy_system(ctx, field)
 			case "terminologySource":
@@ -7763,6 +7832,47 @@ func (ec *executionContext) _Reaction_code(ctx context.Context, field graphql.Co
 }
 
 func (ec *executionContext) fieldContext_Reaction_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Reaction",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Reaction_name(ctx context.Context, field graphql.CollectedField, obj *dto.Reaction) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Reaction_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Reaction_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Reaction",
 		Field:      field,
@@ -10798,6 +10908,10 @@ func (ec *executionContext) _Allergy(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "name":
+
+			out.Values[i] = ec._Allergy_name(ctx, field, obj)
+
 		case "system":
 
 			out.Values[i] = ec._Allergy_system(ctx, field, obj)
@@ -12072,6 +12186,10 @@ func (ec *executionContext) _Reaction(ctx context.Context, sel ast.SelectionSet,
 		case "code":
 
 			out.Values[i] = ec._Reaction_code(ctx, field, obj)
+
+		case "name":
+
+			out.Values[i] = ec._Reaction_name(ctx, field, obj)
 
 		case "system":
 

@@ -229,7 +229,8 @@ func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance dom
 		ID:        *fhirAllergyIntolerance.ID,
 		PatientID: *fhirAllergyIntolerance.Patient.ID,
 		Code:      string(fhirAllergyIntolerance.Code.Coding[0].Code),
-		System:    string(*fhirAllergyIntolerance.Code.Coding[0].System),
+		Name:      string(fhirAllergyIntolerance.Code.Coding[0].Display),
+		System:    string(fhirAllergyIntolerance.Code.Text),
 	}
 
 	if fhirAllergyIntolerance.Encounter != nil && fhirAllergyIntolerance.Encounter.ID != nil {
@@ -255,6 +256,7 @@ func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance dom
 				}
 
 				allergyIntolerance.Reaction.Code = string(coding.Code)
+				allergyIntolerance.Reaction.Name = string(coding.Display)
 			}
 		}
 	}
