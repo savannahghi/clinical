@@ -21,7 +21,7 @@ type ServiceOCL interface {
 		ctx context.Context, org string, source string, verbose bool, q *string,
 		sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 		locale *string, includeRetired *bool,
-		includeMappings *bool, includeInverseMappings *bool) ([]*domain.Concept, error)
+		includeMappings *bool, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error)
 	GetConcept(
 		ctx context.Context, org string, source string, concept string,
 		includeMappings bool, includeInverseMappings bool) (*domain.Concept, error)

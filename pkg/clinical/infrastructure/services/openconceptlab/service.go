@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/serverutils"
 )
@@ -136,13 +137,21 @@ func (s Service) ListConcepts(
 	_ context.Context, org string, source string, verbose bool, q *string,
 	sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 	locale *string, includeRetired *bool,
-	includeMappings *bool, includeInverseMappings *bool) ([]*domain.Concept, error) {
+	includeMappings *bool, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {
 	s.enforcePreconditions()
 
 	path := fmt.Sprintf("orgs/%s/sources/%s/concepts", org, source)
 
 	params := url.Values{}
 	params.Add("verbose", strconv.FormatBool(verbose))
+
+	if paginationInput.After != "" {
+		params.Add("page", paginationInput.After)
+	} else {
+		params.Add("page", "1")
+	}
+
+	params.Add("limit", strconv.Itoa(*paginationInput.First))
 
 	if q != nil {
 		params.Add("q", *q)
@@ -204,7 +213,38 @@ func (s Service) ListConcepts(
 			"unable to marshal OCL get concept response %s to JSON: %w", string(data), err)
 	}
 
-	var concepts []*domain.Concept
+	totalCount, err := strconv.Atoi(resp.Header.Get("num_found"))
+	if err != nil {
+		return nil, err
+	}
+
+	conceptsPage := &domain.ConceptPage{
+		Count: totalCount,
+	}
+
+	nextConcept := resp.Header.Get("next")
+
+	if nextConcept != "" {
+		params, err := url.ParseQuery(nextConcept)
+		if err != nil {
+			return nil, fmt.Errorf("server unable to parse url params: %w", err)
+		}
+
+		cursor := params["page"][0]
+		conceptsPage.Next = &cursor
+	}
+
+	previousConcept := resp.Header.Get("previous")
+
+	if previousConcept != "" {
+		params, err := url.ParseQuery(previousConcept)
+		if err != nil {
+			return nil, fmt.Errorf("server unable to parse url params: %w", err)
+		}
+
+		cursor := params["page"][0]
+		conceptsPage.Previous = &cursor
+	}
 
 	for _, terminologyConcept := range terminologyConcepts {
 		var concept *domain.Concept
@@ -214,8 +254,8 @@ func (s Service) ListConcepts(
 			return nil, err
 		}
 
-		concepts = append(concepts, concept)
+		conceptsPage.Results = append(conceptsPage.Results, concept)
 	}
 
-	return concepts, nil
+	return conceptsPage, nil
 }

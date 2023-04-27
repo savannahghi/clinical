@@ -280,14 +280,15 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_SearchAllergy(t *testing.T) {
+	first := 5
 	type args struct {
-		ctx  context.Context
-		name string
+		ctx        context.Context
+		name       string
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    []*dto.Allergy
 		wantErr bool
 	}{
 		{
@@ -295,6 +296,9 @@ func TestUseCasesClinicalImpl_SearchAllergy(t *testing.T) {
 			args: args{
 				ctx:  context.Background(),
 				name: "Peanuts",
+				pagination: dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -318,11 +322,11 @@ func TestUseCasesClinicalImpl_SearchAllergy(t *testing.T) {
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: unable to search for an allergy" {
-				fakeOCL.MockListConceptsFn = func(ctx context.Context, org, source string, verbose bool, q, sortAsc, sortDesc, conceptClass, dataType, locale *string, includeRetired, includeMappings, includeInverseMappings *bool) ([]*domain.Concept, error) {
+				fakeOCL.MockListConceptsFn = func(ctx context.Context, org, source string, verbose bool, q, sortAsc, sortDesc, conceptClass, dataType, locale *string, includeRetired, includeMappings, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
-			_, err := c.SearchAllergy(tt.args.ctx, tt.args.name)
+			_, err := c.SearchAllergy(tt.args.ctx, tt.args.name, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.SearchAllergy() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -130,24 +130,45 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 }
 
 // SearchAllergy is used to retrieve allergy from OCL
-func (c *UseCasesClinicalImpl) SearchAllergy(ctx context.Context, name string) ([]*dto.Terminology, error) {
-	concepts, err := c.infrastructure.OpenConceptLab.
-		ListConcepts(ctx, string(dto.TerminologySourceCIEL), string(dto.TerminologySourceCIEL), true, &name, nil, nil, nil, nil, nil, nil, nil, nil)
+func (c *UseCasesClinicalImpl) SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error) {
+	err := pagination.Validate()
 	if err != nil {
 		return nil, err
 	}
 
-	var terminologies []*dto.Terminology
+	conceptPage, err := c.infrastructure.OpenConceptLab.
+		ListConcepts(ctx, string(dto.TerminologySourceCIEL), string(dto.TerminologySourceCIEL), true, &name, nil, nil, nil, nil, nil, nil, nil, nil, &pagination)
+	if err != nil {
+		return nil, err
+	}
 
-	for _, concept := range concepts {
-		terminologies = append(terminologies, &dto.Terminology{
-			Code:   concept.ID,
-			System: dto.TerminologySource(concept.Source),
-			Name:   concept.DisplayName,
+	terminologyPage := &dto.TerminologyConnection{
+		TotalCount: conceptPage.Count,
+		Edges:      []dto.TerminologyEdge{},
+		PageInfo:   dto.PageInfo{},
+	}
+
+	if conceptPage.Next != nil {
+		terminologyPage.PageInfo.HasNextPage = true
+		terminologyPage.PageInfo.StartCursor = conceptPage.Next
+	}
+
+	if conceptPage.Previous != nil {
+		terminologyPage.PageInfo.HasPreviousPage = true
+		terminologyPage.PageInfo.EndCursor = conceptPage.Previous
+	}
+
+	for _, concept := range conceptPage.Results {
+		terminologyPage.Edges = append(terminologyPage.Edges, dto.TerminologyEdge{
+			Node: dto.Terminology{
+				Code:   concept.ID,
+				System: dto.TerminologySource(concept.Source),
+				Name:   concept.DisplayName,
+			},
 		})
 	}
 
-	return terminologies, nil
+	return terminologyPage, nil
 }
 
 // GetAllergyIntolerance fetches all the allergy intolerance from FHIR by allergy intolerance ID

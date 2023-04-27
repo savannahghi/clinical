@@ -169,10 +169,10 @@ func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID s
 }
 
 // SearchAllergy is the resolver for the searchAllergy field.
-func (r *queryResolver) SearchAllergy(ctx context.Context, name string) ([]*dto.Terminology, error) {
+func (r *queryResolver) SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error) {
 	r.CheckDependencies()
 
-	return r.usecases.SearchAllergy(ctx, name)
+	return r.usecases.SearchAllergy(ctx, name, pagination)
 }
 
 // GetAllergy is the resolver for the getAllergy field.

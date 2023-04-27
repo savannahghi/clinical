@@ -56,7 +56,7 @@ type Clinical interface {
 	GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
 
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
-	SearchAllergy(ctx context.Context, name string) ([]*dto.Terminology, error)
+	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)
 	GetAllergyIntolerance(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
 }

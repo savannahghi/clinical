@@ -25,3 +25,11 @@ type Concept struct {
 	VersionURL       string  `mapstructure:"version_url" json:"version_url"`
 	VersionsURL      string  `mapstructure:"versions_url" json:"versions_url"`
 }
+
+// ConceptPage models the output of ocl concepts with pagination
+type ConceptPage struct {
+	Count    int        `json:"count"`
+	Next     *string    `json:"next"`
+	Previous *string    `json:"previous"`
+	Results  []*Concept `json:"results"`
+}

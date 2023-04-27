@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 )
 
@@ -101,7 +102,9 @@ func toPointer[S any](s S) *S {
 }
 
 func TestService_ListConcepts(t *testing.T) {
-
+	limit := 10
+	next := "https://api.openconceptlab.org/orgs/CIEL/sources/CIEL/concepts/?limit=2&page=2&q=Eggs&verbose=true"
+	previous := "https://api.openconceptlab.org/orgs/CIEL/sources/CIEL/concepts/?limit=2&page=1&q=Eggs&verbose=true"
 	type args struct {
 		ctx                    context.Context
 		org                    string
@@ -116,6 +119,7 @@ func TestService_ListConcepts(t *testing.T) {
 		includeRetired         *bool
 		includeMappings        *bool
 		includeInverseMappings *bool
+		paginationInput        *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -138,6 +142,9 @@ func TestService_ListConcepts(t *testing.T) {
 				includeRetired:         toPointer(true),
 				includeMappings:        toPointer(true),
 				includeInverseMappings: toPointer(true),
+				paginationInput: &dto.Pagination{
+					First: &limit,
+				},
 			},
 			wantErr: false,
 		},
@@ -150,7 +157,7 @@ func TestService_ListConcepts(t *testing.T) {
 			if tt.name == "happy case: list concepts" {
 				httpmock.RegisterResponder(http.MethodGet, "/orgs/CIEL/sources/CIEL/concepts/",
 					func(req *http.Request) (*http.Response, error) {
-						return httpmock.NewJsonResponse(200, []map[string]interface{}{
+						response, err := httpmock.NewJsonResponse(200, []map[string]interface{}{
 							{
 								"concept_class":       "Diagnosis",
 								"datatype":            "N/A",
@@ -178,13 +185,18 @@ func TestService_ListConcepts(t *testing.T) {
 							},
 						})
 
+						response.Header.Set("num_found", "1")
+						response.Header.Set("next", next)
+						response.Header.Set("previous", previous)
+
+						return response, err
 					},
 				)
 			}
 
 			s := openconceptlab.NewServiceOCL()
 
-			got, err := s.ListConcepts(tt.args.ctx, tt.args.org, tt.args.source, tt.args.verbose, tt.args.q, tt.args.sortAsc, tt.args.sortDesc, tt.args.conceptClass, tt.args.dataType, tt.args.locale, tt.args.includeRetired, tt.args.includeMappings, tt.args.includeInverseMappings)
+			got, err := s.ListConcepts(tt.args.ctx, tt.args.org, tt.args.source, tt.args.verbose, tt.args.q, tt.args.sortAsc, tt.args.sortDesc, tt.args.conceptClass, tt.args.dataType, tt.args.locale, tt.args.includeRetired, tt.args.includeMappings, tt.args.includeInverseMappings, tt.args.paginationInput)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.ListConcepts() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -20,7 +20,7 @@ extend type Query {
     getPatientWeightEntries(patientID: String!): [Observation!]
 
     # Allergy
-    searchAllergy(name: String!): [Terminology]
+    searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
     getAllergy(id: ID!): Allergy!
     listPatientAllergies(patientID: ID!, pagination:Pagination!): AllergyConnection
 }

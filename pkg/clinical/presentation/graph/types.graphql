@@ -147,3 +147,14 @@ type EncounterConnection {
     edges:      [EncounterEdge]
     pageInfo:   PageInfo
 }
+
+type TerminologyEdge {
+    node:  Terminology
+    cursor: String
+}
+
+type TerminologyConnection {
+    totalCount: Int
+    edges: [TerminologyEdge]
+    pageInfo: PageInfo
+}
