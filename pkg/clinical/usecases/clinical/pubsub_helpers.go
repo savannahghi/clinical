@@ -37,7 +37,7 @@ func (c *UseCasesClinicalImpl) GetConcept(ctx context.Context, terminologySource
 		source = "SNOMED-CT"
 
 	default:
-		return nil, fmt.Errorf("terminology source %v not supported", source)
+		return nil, fmt.Errorf("terminology source %s not supported", source)
 	}
 
 	response, err := c.infrastructure.OpenConceptLab.GetConcept(
@@ -105,7 +105,7 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 		return nil, err
 	}
 
-	patientReference := fmt.Sprintf("Patient/%v", patient.Resource.ID)
+	patientReference := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
 	patientName := *patient.Resource.Name[0].Given[0]
 	observation.Subject = &domain.FHIRReferenceInput{
 		ID:        patient.Resource.ID,
@@ -113,18 +113,19 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 		Display:   patientName,
 	}
 
-	if input.OrganizationID != "" {
-		organization, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.OrganizationID)
+	if input.FacilityID != "" {
+		facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.FacilityID)
 		if err != nil {
-			// Should not fail if organization is not found
+			// Should not fail if facility is not found
 			log.Printf("the error is: %v", err)
 		}
 
-		if organization != nil {
-			performerReference := fmt.Sprintf("Organization/%v", input.OrganizationID)
+		if facility != nil {
+			performerReference := fmt.Sprintf("Organization/%s", *facility.Resource.ID)
 			referenceInput := &domain.FHIRReferenceInput{
+				ID:        facility.Resource.ID,
 				Reference: &performerReference,
-				Display:   *organization.Resource.Name,
+				Display:   *facility.Resource.Name,
 			}
 
 			observation.Performer = append(observation.Performer, referenceInput)
@@ -176,7 +177,7 @@ func (c *UseCasesClinicalImpl) ComposeAllergyIntoleranceInput(ctx context.Contex
 		return nil, err
 	}
 
-	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
+	subjectReference := fmt.Sprintf("Patient/%s", input.PatientID)
 	patientName := *patient.Resource.Name[0].Given[0]
 
 	allergy.Patient = &domain.FHIRReferenceInput{
@@ -267,7 +268,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 	}
 
 	system := "http://terminology.hl7.org/CodeSystem/observation-category"
-	subjectReference := fmt.Sprintf("Patient/%v", input.PatientID)
+	subjectReference := fmt.Sprintf("Patient/%s", input.PatientID)
 	status := domain.ObservationStatusEnumPreliminary
 	instant := scalarutils.Instant(input.Date.Format(time.RFC3339))
 
@@ -304,19 +305,20 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 		},
 	}
 
-	if input.OrganizationID != "" {
-		organization, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.OrganizationID) // rename organization response
+	if input.FacilityID != "" {
+		facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.FacilityID)
 		if err != nil {
-			// Should not fail if the organization is not found
+			// Should not fail if the facility is not found
 			log.Printf("the error is: %v", err)
 		}
 
-		if organization != nil {
-			performer := fmt.Sprintf("Organization/%v", input.OrganizationID)
+		if facility != nil {
+			performer := fmt.Sprintf("Organization/%s", *facility.Resource.ID)
 
 			referenceInput := &domain.FHIRReferenceInput{
+				ID:        facility.Resource.ID,
 				Reference: &performer,
-				Display:   *organization.Resource.Name,
+				Display:   *facility.Resource.Name,
 			}
 
 			observation.Performer = append(observation.Performer, referenceInput)
@@ -374,7 +376,7 @@ func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Conte
 		return nil, err
 	}
 
-	patientReference := fmt.Sprintf("Patient/%v", patient.Resource.ID)
+	patientReference := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
 	patientName := *patient.Resource.Name[0].Given[0]
 	medicationStatement.Subject = &domain.FHIRReferenceInput{
 		ID:        patient.Resource.ID,
@@ -382,18 +384,19 @@ func (c *UseCasesClinicalImpl) ComposeMedicationStatementInput(ctx context.Conte
 		Display:   patientName,
 	}
 
-	if input.OrganizationID != "" {
-		organization, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.OrganizationID) // rename organization response
+	if input.FacilityID != "" {
+		facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, input.FacilityID)
 		if err != nil {
 			log.Printf("the error is: %v", err)
 		}
 
-		if organization != nil {
-			informationSourceReference := fmt.Sprintf("Organization/%v", input.OrganizationID)
+		if facility != nil {
+			informationSourceReference := fmt.Sprintf("Organization/%s", *facility.Resource.ID)
 
 			reference := &domain.FHIRReferenceInput{
+				ID:        facility.Resource.ID,
 				Reference: &informationSourceReference,
-				Display:   *organization.Resource.Name,
+				Display:   *facility.Resource.Name,
 			}
 
 			medicationStatement.InformationSource = reference
