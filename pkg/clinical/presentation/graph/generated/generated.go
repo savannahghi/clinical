@@ -167,6 +167,17 @@ type ComplexityRoot struct {
 		Value       func(childComplexity int) int
 	}
 
+	ObservationConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ObservationEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	PageInfo struct {
 		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
@@ -187,13 +198,13 @@ type ComplexityRoot struct {
 		GetAllergy                       func(childComplexity int, id string) int
 		GetEpisodeOfCare                 func(childComplexity int, id string) int
 		GetMedicalData                   func(childComplexity int, patientID string) int
-		GetPatientBMIEntries             func(childComplexity int, patientID string) int
-		GetPatientBloodPressureEntries   func(childComplexity int, patientID string) int
-		GetPatientHeightEntries          func(childComplexity int, patientID string) int
-		GetPatientPulseRateEntries       func(childComplexity int, patientID string) int
-		GetPatientRespiratoryRateEntries func(childComplexity int, patientID string) int
-		GetPatientTemperatureEntries     func(childComplexity int, patientID string) int
-		GetPatientWeightEntries          func(childComplexity int, patientID string) int
+		GetPatientBMIEntries             func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientBloodPressureEntries   func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientHeightEntries          func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientPulseRateEntries       func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientRespiratoryRateEntries func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientTemperatureEntries     func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientWeightEntries          func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientAllergies             func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientConditions            func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientEncounters            func(childComplexity int, patientID string, pagination dto.Pagination) int
@@ -261,13 +272,13 @@ type QueryResolver interface {
 	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	ListPatientConditions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ConditionConnection, error)
 	ListPatientEncounters(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.EncounterConnection, error)
-	GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
-	GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
-	GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
-	GetPatientRespiratoryRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
-	GetPatientPulseRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
-	GetPatientBMIEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
-	GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error)
+	GetPatientTemperatureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBloodPressureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientHeightEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientPulseRateEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBMIEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientWeightEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
 	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)
 	GetAllergy(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
@@ -869,6 +880,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Observation.Value(childComplexity), true
 
+	case "ObservationConnection.edges":
+		if e.complexity.ObservationConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ObservationConnection.Edges(childComplexity), true
+
+	case "ObservationConnection.pageInfo":
+		if e.complexity.ObservationConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ObservationConnection.PageInfo(childComplexity), true
+
+	case "ObservationConnection.totalCount":
+		if e.complexity.ObservationConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ObservationConnection.TotalCount(childComplexity), true
+
+	case "ObservationEdge.cursor":
+		if e.complexity.ObservationEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ObservationEdge.Cursor(childComplexity), true
+
+	case "ObservationEdge.node":
+		if e.complexity.ObservationEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ObservationEdge.Node(childComplexity), true
+
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -985,7 +1031,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientBMIEntries(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.GetPatientBMIEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientBloodPressureEntries":
 		if e.complexity.Query.GetPatientBloodPressureEntries == nil {
@@ -997,7 +1043,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientBloodPressureEntries(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.GetPatientBloodPressureEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientHeightEntries":
 		if e.complexity.Query.GetPatientHeightEntries == nil {
@@ -1009,7 +1055,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientHeightEntries(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.GetPatientHeightEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientPulseRateEntries":
 		if e.complexity.Query.GetPatientPulseRateEntries == nil {
@@ -1021,7 +1067,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientPulseRateEntries(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.GetPatientPulseRateEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientRespiratoryRateEntries":
 		if e.complexity.Query.GetPatientRespiratoryRateEntries == nil {
@@ -1033,7 +1079,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientRespiratoryRateEntries(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.GetPatientRespiratoryRateEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientTemperatureEntries":
 		if e.complexity.Query.GetPatientTemperatureEntries == nil {
@@ -1045,7 +1091,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientTemperatureEntries(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.GetPatientTemperatureEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientWeightEntries":
 		if e.complexity.Query.GetPatientWeightEntries == nil {
@@ -1057,7 +1103,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientWeightEntries(childComplexity, args["patientID"].(string)), true
+		return e.complexity.Query.GetPatientWeightEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.listPatientAllergies":
 		if e.complexity.Query.ListPatientAllergies == nil {
@@ -1343,13 +1389,13 @@ var sources = []*ast.Source{
     listPatientEncounters(patientID: String!, pagination: Pagination!): EncounterConnection
 
     # Observation
-    getPatientTemperatureEntries(patientID: String!): [Observation!]
-    getPatientBloodPressureEntries(patientID: String!): [Observation!]
-    getPatientHeightEntries(patientID: String!): [Observation!]
-    getPatientRespiratoryRateEntries(patientID: String!): [Observation!]
-    getPatientPulseRateEntries(patientID: String!): [Observation!]
-    getPatientBMIEntries(patientID: String!): [Observation!]
-    getPatientWeightEntries(patientID: String!): [Observation!]
+    getPatientTemperatureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientBloodPressureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientHeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientRespiratoryRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientPulseRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientBMIEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientWeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
 
     # Allergy
     searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
@@ -1708,6 +1754,17 @@ type TerminologyConnection {
     edges: [TerminologyEdge]
     pageInfo: PageInfo
 }
+
+type ObservationEdge {
+    node: Observation
+    cursor: String
+}
+
+type ObservationConnection {
+    totalCount: Int
+    edges:      [ObservationEdge]
+    pageInfo:   PageInfo
+}
 `, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	scalar _Any
@@ -2017,6 +2074,15 @@ func (ec *executionContext) field_Query_getPatientBMIEntries_args(ctx context.Co
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -2032,6 +2098,15 @@ func (ec *executionContext) field_Query_getPatientBloodPressureEntries_args(ctx 
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -2047,6 +2122,15 @@ func (ec *executionContext) field_Query_getPatientHeightEntries_args(ctx context
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -2062,6 +2146,15 @@ func (ec *executionContext) field_Query_getPatientPulseRateEntries_args(ctx cont
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -2077,6 +2170,15 @@ func (ec *executionContext) field_Query_getPatientRespiratoryRateEntries_args(ct
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -2092,6 +2194,15 @@ func (ec *executionContext) field_Query_getPatientTemperatureEntries_args(ctx co
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -2107,6 +2218,15 @@ func (ec *executionContext) field_Query_getPatientWeightEntries_args(ctx context
 		}
 	}
 	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -5861,6 +5981,241 @@ func (ec *executionContext) fieldContext_Observation_value(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _ObservationConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *dto.ObservationConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ObservationConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ObservationConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ObservationConnection_edges(ctx context.Context, field graphql.CollectedField, obj *dto.ObservationConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ObservationConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.ObservationEdge)
+	fc.Result = res
+	return ec.marshalOObservationEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ObservationConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ObservationConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ObservationEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ObservationEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ObservationEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ObservationConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *dto.ObservationConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.PageInfo)
+	fc.Result = res
+	return ec.marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ObservationConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ObservationConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ObservationEdge_node(ctx context.Context, field graphql.CollectedField, obj *dto.ObservationEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ObservationEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Observation)
+	fc.Result = res
+	return ec.marshalOObservation2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ObservationEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ObservationEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ObservationEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *dto.ObservationEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ObservationEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ObservationEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ObservationEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *dto.PageInfo) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PageInfo_hasNextPage(ctx, field)
 	if err != nil {
@@ -6607,7 +6962,7 @@ func (ec *executionContext) _Query_getPatientTemperatureEntries(ctx context.Cont
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientTemperatureEntries(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().GetPatientTemperatureEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6616,9 +6971,9 @@ func (ec *executionContext) _Query_getPatientTemperatureEntries(ctx context.Cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Observation)
+	res := resTmp.(*dto.ObservationConnection)
 	fc.Result = res
-	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx, field.Selections, res)
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPatientTemperatureEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6629,20 +6984,14 @@ func (ec *executionContext) fieldContext_Query_getPatientTemperatureEntries(ctx 
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -6673,7 +7022,7 @@ func (ec *executionContext) _Query_getPatientBloodPressureEntries(ctx context.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientBloodPressureEntries(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().GetPatientBloodPressureEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6682,9 +7031,9 @@ func (ec *executionContext) _Query_getPatientBloodPressureEntries(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Observation)
+	res := resTmp.(*dto.ObservationConnection)
 	fc.Result = res
-	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx, field.Selections, res)
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPatientBloodPressureEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6695,20 +7044,14 @@ func (ec *executionContext) fieldContext_Query_getPatientBloodPressureEntries(ct
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -6739,7 +7082,7 @@ func (ec *executionContext) _Query_getPatientHeightEntries(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientHeightEntries(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().GetPatientHeightEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6748,9 +7091,9 @@ func (ec *executionContext) _Query_getPatientHeightEntries(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Observation)
+	res := resTmp.(*dto.ObservationConnection)
 	fc.Result = res
-	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx, field.Selections, res)
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPatientHeightEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6761,20 +7104,14 @@ func (ec *executionContext) fieldContext_Query_getPatientHeightEntries(ctx conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -6805,7 +7142,7 @@ func (ec *executionContext) _Query_getPatientRespiratoryRateEntries(ctx context.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientRespiratoryRateEntries(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().GetPatientRespiratoryRateEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6814,9 +7151,9 @@ func (ec *executionContext) _Query_getPatientRespiratoryRateEntries(ctx context.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Observation)
+	res := resTmp.(*dto.ObservationConnection)
 	fc.Result = res
-	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx, field.Selections, res)
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPatientRespiratoryRateEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6827,20 +7164,14 @@ func (ec *executionContext) fieldContext_Query_getPatientRespiratoryRateEntries(
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -6871,7 +7202,7 @@ func (ec *executionContext) _Query_getPatientPulseRateEntries(ctx context.Contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientPulseRateEntries(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().GetPatientPulseRateEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6880,9 +7211,9 @@ func (ec *executionContext) _Query_getPatientPulseRateEntries(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Observation)
+	res := resTmp.(*dto.ObservationConnection)
 	fc.Result = res
-	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx, field.Selections, res)
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPatientPulseRateEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6893,20 +7224,14 @@ func (ec *executionContext) fieldContext_Query_getPatientPulseRateEntries(ctx co
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -6937,7 +7262,7 @@ func (ec *executionContext) _Query_getPatientBMIEntries(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientBMIEntries(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().GetPatientBMIEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6946,9 +7271,9 @@ func (ec *executionContext) _Query_getPatientBMIEntries(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Observation)
+	res := resTmp.(*dto.ObservationConnection)
 	fc.Result = res
-	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx, field.Selections, res)
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPatientBMIEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6959,20 +7284,14 @@ func (ec *executionContext) fieldContext_Query_getPatientBMIEntries(ctx context.
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -7003,7 +7322,7 @@ func (ec *executionContext) _Query_getPatientWeightEntries(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientWeightEntries(rctx, fc.Args["patientID"].(string))
+		return ec.resolvers.Query().GetPatientWeightEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7012,9 +7331,9 @@ func (ec *executionContext) _Query_getPatientWeightEntries(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*dto.Observation)
+	res := resTmp.(*dto.ObservationConnection)
 	fc.Result = res
-	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx, field.Selections, res)
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPatientWeightEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7025,20 +7344,14 @@ func (ec *executionContext) fieldContext_Query_getPatientWeightEntries(ctx conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
 		},
 	}
 	defer func() {
@@ -11216,6 +11529,68 @@ func (ec *executionContext) _Observation(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var observationConnectionImplementors = []string{"ObservationConnection"}
+
+func (ec *executionContext) _ObservationConnection(ctx context.Context, sel ast.SelectionSet, obj *dto.ObservationConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, observationConnectionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ObservationConnection")
+		case "totalCount":
+
+			out.Values[i] = ec._ObservationConnection_totalCount(ctx, field, obj)
+
+		case "edges":
+
+			out.Values[i] = ec._ObservationConnection_edges(ctx, field, obj)
+
+		case "pageInfo":
+
+			out.Values[i] = ec._ObservationConnection_pageInfo(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var observationEdgeImplementors = []string{"ObservationEdge"}
+
+func (ec *executionContext) _ObservationEdge(ctx context.Context, sel ast.SelectionSet, obj *dto.ObservationEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, observationEdgeImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ObservationEdge")
+		case "node":
+
+			out.Values[i] = ec._ObservationEdge_node(ctx, field, obj)
+
+		case "cursor":
+
+			out.Values[i] = ec._ObservationEdge_cursor(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var pageInfoImplementors = []string{"PageInfo"}
 
 func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *dto.PageInfo) graphql.Marshaler {
@@ -13272,6 +13647,10 @@ func (ec *executionContext) marshalOMedicationStatementStatusEnum2githubᚗcom�
 	return res
 }
 
+func (ec *executionContext) marshalOObservation2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx context.Context, sel ast.SelectionSet, v dto.Observation) graphql.Marshaler {
+	return ec._Observation(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx context.Context, sel ast.SelectionSet, v []*dto.Observation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -13313,7 +13692,25 @@ func (ec *executionContext) marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghi
 	return ret
 }
 
-func (ec *executionContext) marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationᚄ(ctx context.Context, sel ast.SelectionSet, v []*dto.Observation) graphql.Marshaler {
+func (ec *executionContext) marshalOObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx context.Context, sel ast.SelectionSet, v *dto.Observation) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Observation(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx context.Context, sel ast.SelectionSet, v *dto.ObservationConnection) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ObservationConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOObservationEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationEdge(ctx context.Context, sel ast.SelectionSet, v dto.ObservationEdge) graphql.Marshaler {
+	return ec._ObservationEdge(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOObservationEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationEdge(ctx context.Context, sel ast.SelectionSet, v []dto.ObservationEdge) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -13340,7 +13737,7 @@ func (ec *executionContext) marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghi
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, sel, v[i])
+			ret[i] = ec.marshalOObservationEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationEdge(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -13351,20 +13748,7 @@ func (ec *executionContext) marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghi
 	}
 	wg.Wait()
 
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
 	return ret
-}
-
-func (ec *executionContext) marshalOObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx context.Context, sel ast.SelectionSet, v *dto.Observation) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Observation(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v dto.PageInfo) graphql.Marshaler {

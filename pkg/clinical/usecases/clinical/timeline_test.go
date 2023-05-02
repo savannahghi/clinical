@@ -135,14 +135,6 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad Case - Fail to get observation - nil node",
-			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
-			},
-			wantErr: false,
-		},
-		{
 			name: "Sad Case - Fail to get observation - nil node id",
 			args: args{
 				ctx:       context.Background(),
@@ -318,30 +310,31 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 					}, nil
 				}
 
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-										Text: gofakeit.BS(),
-									},
-									EffectiveDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+									Text: gofakeit.BS(),
+								},
+								EffectiveDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 
@@ -680,181 +673,174 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to search observation" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
-					return &domain.FHIRObservationRelayConnection{}, fmt.Errorf("failed to get observation")
-				}
-			}
-
-			if tt.name == "Sad Case - Fail to get observation - nil node" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
-							{
-								Cursor: new(string),
-							},
-						},
-						PageInfo: &firebasetools.PageInfo{},
-					}, nil
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return &domain.PagedFHIRObservations{}, fmt.Errorf("failed to get observation")
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to get observation - nil node id" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-										Text: gofakeit.BS(),
-									},
-									EffectiveDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+									Text: gofakeit.BS(),
+								},
+								EffectiveDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to get observation - nil coding" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										Text: gofakeit.BS(),
-									},
-									EffectiveDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									Text: gofakeit.BS(),
+								},
+								EffectiveDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to get observation - empty coding" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										Coding: []*domain.FHIRCoding{},
-										Text:   gofakeit.BS(),
-									},
-									EffectiveDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{},
+									Text:   gofakeit.BS(),
+								},
+								EffectiveDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to get observation - nil status" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID: new(string),
-									Code: domain.FHIRCodeableConcept{
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-										Text: gofakeit.BS(),
-									},
-									EffectiveDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
+								ID: new(string),
+								Code: domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+									Text: gofakeit.BS(),
+								},
+								EffectiveDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to get observation - nil date" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-										Text: gofakeit.BS(),
-									},
-									EffectiveDateTime: &scalarutils.Date{
-										Year:  20000,
-										Month: 1,
-										Day:   1,
-									},
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+									Text: gofakeit.BS(),
+								},
+								EffectiveDateTime: &scalarutils.Date{
+									Year:  20000,
+									Month: 1,
+									Day:   1,
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to get observation - invalid date" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-										Text: gofakeit.BS(),
-									},
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+									Text: gofakeit.BS(),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
@@ -1177,30 +1163,31 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 					}, nil
 				}
 
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-										Text: gofakeit.BS(),
-									},
-									EffectiveDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+									Text: gofakeit.BS(),
+								},
+								EffectiveDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 

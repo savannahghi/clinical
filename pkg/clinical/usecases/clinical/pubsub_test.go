@@ -326,7 +326,7 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -469,7 +469,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}

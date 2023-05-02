@@ -3,7 +3,6 @@ package domain
 import (
 	"time"
 
-	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
 )
 
@@ -407,21 +406,12 @@ type FHIRObservationReferencerangeInput struct {
 	Text *string `json:"text,omitempty"`
 }
 
-// FHIRObservationRelayConnection is a Relay connection for Observation
-type FHIRObservationRelayConnection struct {
-	Edges []*FHIRObservationRelayEdge `json:"edges,omitempty"`
-
-	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
-}
-
-// FHIRObservationRelayEdge is a Relay edge for Observation
-type FHIRObservationRelayEdge struct {
-	Cursor *string `json:"cursor,omitempty"`
-
-	Node *FHIRObservation `json:"node,omitempty"`
-}
-
-// FHIRObservationRelayPayload is used to return single instances of Observation
-type FHIRObservationRelayPayload struct {
-	Resource *FHIRObservation `json:"resource,omitempty"`
+// PagedFHIRAllergy is an allergy's paginaton dataclass
+type PagedFHIRObservations struct {
+	Observations    []FHIRObservation
+	HasNextPage     bool
+	NextCursor      string
+	HasPreviousPage bool
+	PreviousCursor  string
+	TotalCount      int
 }

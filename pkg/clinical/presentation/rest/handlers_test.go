@@ -391,7 +391,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 					return utils.AddPubSubNamespace(common.VitalsTopicName, common.ClinicalServiceName), nil
 				}
 
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -580,7 +580,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 					return utils.AddPubSubNamespace(common.TestResultTopicName, common.ClinicalServiceName), nil
 				}
 
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to crate observation")
 				}
 			}

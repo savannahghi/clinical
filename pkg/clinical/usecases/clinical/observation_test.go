@@ -176,7 +176,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -330,7 +330,7 @@ func TestUseCasesClinicalImpl_RecordTemperature(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -484,7 +484,7 @@ func TestUseCasesClinicalImpl_RecordHeight(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -639,7 +639,7 @@ func TestUseCasesClinicalImpl_RecordWeight(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -793,7 +793,7 @@ func TestUseCasesClinicalImpl_RecordRespiratoryRate(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -947,7 +947,7 @@ func TestUseCasesClinicalImpl_RecordPulseRate(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -1101,7 +1101,7 @@ func TestUseCasesClinicalImpl_RecordBloodPressure(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -1255,7 +1255,7 @@ func TestUseCasesClinicalImpl_RecordBMI(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to create observation" {
-				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error) {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 					return nil, fmt.Errorf("failed to create observation")
 				}
 			}
@@ -1276,11 +1276,13 @@ func TestUseCasesClinicalImpl_RecordBMI(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
+	first := 10
 	ctx := context.Background()
 	type args struct {
 		ctx             context.Context
 		patientID       string
 		observationCode string
+		pagination      *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -1293,6 +1295,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 				ctx:             ctx,
 				patientID:       uuid.New().String(),
 				observationCode: "1234",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1301,6 +1306,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			args: args{
 				ctx:             ctx,
 				observationCode: "1234",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1310,6 +1318,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 				ctx:             ctx,
 				patientID:       uuid.New().String(),
 				observationCode: "1234",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1319,6 +1330,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 				ctx:             ctx,
 				patientID:       uuid.New().String(),
 				observationCode: "1234",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1328,6 +1342,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 				ctx:             ctx,
 				patientID:       uuid.New().String(),
 				observationCode: "1234",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1336,6 +1353,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1344,6 +1364,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1352,6 +1375,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1360,6 +1386,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1387,337 +1416,372 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - fail to search patient observations" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					return nil, fmt.Errorf("failed to search patient observations")
 				}
 			}
 
 			if tt.name == "Happy case: get patient height" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return []*domain.FHIRObservation{
-						{
-							ID:     new(string),
-							Status: (*domain.ObservationStatusEnum)(&status),
-							Code: domain.FHIRCodeableConcept{
-								ID: new(string),
-								Coding: []*domain.FHIRCoding{{
-									Display: gofakeit.BS(),
-								}},
-							},
-							Subject: &domain.FHIRReference{
-								ID: new(string),
-							},
-							Encounter: &domain.FHIRReference{
-								ID: new(string),
-							},
-							ValueQuantity: &domain.FHIRQuantity{
-								Value: 100,
-								Unit:  "cm",
-							},
-							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-							ValueString:          new(string),
-							ValueBoolean:         new(bool),
-							ValueInteger:         new(string),
-							ValueRange: &domain.FHIRRange{
-								Low: domain.FHIRQuantity{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
+							{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
 									Value: 100,
 									Unit:  "cm",
 								},
-								High: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-							},
-							ValueRatio: &domain.FHIRRatio{
-								Numerator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-								Denominator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
 								},
-							},
-							ValueSampledData: &domain.FHIRSampledData{
-								ID: &UUID,
-							},
-							ValueTime: &time.Time{},
-							ValueDateTime: &scalarutils.Date{
-								Year:  2000,
-								Month: 1,
-								Day:   1,
-							},
-							ValuePeriod: &domain.FHIRPeriod{
-								Start: scalarutils.DateTime(time.Wednesday.String()),
-								End:   scalarutils.DateTime(time.Thursday.String()),
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
+								},
 							},
 						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil subject" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return []*domain.FHIRObservation{
-						{
-							ID:     new(string),
-							Status: (*domain.ObservationStatusEnum)(&status),
-							Code: domain.FHIRCodeableConcept{
-								ID: new(string),
-								Coding: []*domain.FHIRCoding{{
-									Display: gofakeit.BS(),
-								}},
-							},
-							Encounter: &domain.FHIRReference{
-								ID: new(string),
-							},
-							ValueQuantity: &domain.FHIRQuantity{
-								Value: 100,
-								Unit:  "cm",
-							},
-							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-							ValueString:          new(string),
-							ValueBoolean:         new(bool),
-							ValueInteger:         new(string),
-							ValueRange: &domain.FHIRRange{
-								Low: domain.FHIRQuantity{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
+							{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
 									Value: 100,
 									Unit:  "cm",
 								},
-								High: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-							},
-							ValueRatio: &domain.FHIRRatio{
-								Numerator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-								Denominator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
 								},
-							},
-							ValueSampledData: &domain.FHIRSampledData{
-								ID: &UUID,
-							},
-							ValueTime: &time.Time{},
-							ValueDateTime: &scalarutils.Date{
-								Year:  2000,
-								Month: 1,
-								Day:   1,
-							},
-							ValuePeriod: &domain.FHIRPeriod{
-								Start: scalarutils.DateTime(time.Wednesday.String()),
-								End:   scalarutils.DateTime(time.Thursday.String()),
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
+								},
 							},
 						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil subject id" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return []*domain.FHIRObservation{
-						{
-							ID:     new(string),
-							Status: (*domain.ObservationStatusEnum)(&status),
-							Code: domain.FHIRCodeableConcept{
-								ID: new(string),
-								Coding: []*domain.FHIRCoding{{
-									Display: gofakeit.BS(),
-								}},
-							},
-							Subject: &domain.FHIRReference{},
-							Encounter: &domain.FHIRReference{
-								ID: new(string),
-							},
-							ValueQuantity: &domain.FHIRQuantity{
-								Value: 100,
-								Unit:  "cm",
-							},
-							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-							ValueString:          new(string),
-							ValueBoolean:         new(bool),
-							ValueInteger:         new(string),
-							ValueRange: &domain.FHIRRange{
-								Low: domain.FHIRQuantity{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
+							{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
 									Value: 100,
 									Unit:  "cm",
 								},
-								High: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-							},
-							ValueRatio: &domain.FHIRRatio{
-								Numerator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-								Denominator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
 								},
-							},
-							ValueSampledData: &domain.FHIRSampledData{
-								ID: &UUID,
-							},
-							ValueTime: &time.Time{},
-							ValueDateTime: &scalarutils.Date{
-								Year:  2000,
-								Month: 1,
-								Day:   1,
-							},
-							ValuePeriod: &domain.FHIRPeriod{
-								Start: scalarutils.DateTime(time.Wednesday.String()),
-								End:   scalarutils.DateTime(time.Thursday.String()),
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
+								},
 							},
 						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil encounter" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return []*domain.FHIRObservation{
-						{
-							ID:     new(string),
-							Status: (*domain.ObservationStatusEnum)(&status),
-							Code: domain.FHIRCodeableConcept{
-								ID: new(string),
-								Coding: []*domain.FHIRCoding{{
-									Display: gofakeit.BS(),
-								}},
-							},
-							Subject: &domain.FHIRReference{
-								ID: new(string),
-							},
-							ValueQuantity: &domain.FHIRQuantity{
-								Value: 100,
-								Unit:  "cm",
-							},
-							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-							ValueString:          new(string),
-							ValueBoolean:         new(bool),
-							ValueInteger:         new(string),
-							ValueRange: &domain.FHIRRange{
-								Low: domain.FHIRQuantity{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
+							{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
 									Value: 100,
 									Unit:  "cm",
 								},
-								High: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-							},
-							ValueRatio: &domain.FHIRRatio{
-								Numerator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-								Denominator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
 								},
-							},
-							ValueSampledData: &domain.FHIRSampledData{
-								ID: &UUID,
-							},
-							ValueTime: &time.Time{},
-							ValueDateTime: &scalarutils.Date{
-								Year:  2000,
-								Month: 1,
-								Day:   1,
-							},
-							ValuePeriod: &domain.FHIRPeriod{
-								Start: scalarutils.DateTime(time.Wednesday.String()),
-								End:   scalarutils.DateTime(time.Thursday.String()),
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
+								},
 							},
 						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil encounter id" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error) {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return []*domain.FHIRObservation{
-						{
-							ID:     new(string),
-							Status: (*domain.ObservationStatusEnum)(&status),
-							Code: domain.FHIRCodeableConcept{
-								ID: new(string),
-								Coding: []*domain.FHIRCoding{{
-									Display: gofakeit.BS(),
-								}},
-							},
-							Subject: &domain.FHIRReference{
-								ID: new(string),
-							},
-							Encounter: &domain.FHIRReference{},
-							ValueQuantity: &domain.FHIRQuantity{
-								Value: 100,
-								Unit:  "cm",
-							},
-							ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-							ValueString:          new(string),
-							ValueBoolean:         new(bool),
-							ValueInteger:         new(string),
-							ValueRange: &domain.FHIRRange{
-								Low: domain.FHIRQuantity{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
+							{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{},
+								ValueQuantity: &domain.FHIRQuantity{
 									Value: 100,
 									Unit:  "cm",
 								},
-								High: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-							},
-							ValueRatio: &domain.FHIRRatio{
-								Numerator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
+									},
 								},
-								Denominator: domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
 								},
-							},
-							ValueSampledData: &domain.FHIRSampledData{
-								ID: &UUID,
-							},
-							ValueTime: &time.Time{},
-							ValueDateTime: &scalarutils.Date{
-								Year:  2000,
-								Month: 1,
-								Day:   1,
-							},
-							ValuePeriod: &domain.FHIRPeriod{
-								Start: scalarutils.DateTime(time.Wednesday.String()),
-								End:   scalarutils.DateTime(time.Thursday.String()),
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
+								},
 							},
 						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
-			got, err := u.GetPatientObservations(tt.args.ctx, tt.args.patientID, tt.args.observationCode)
+			got, err := u.GetPatientObservations(tt.args.ctx, tt.args.patientID, tt.args.observationCode, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1734,9 +1798,11 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 	ctx := context.Background()
+	first := 10
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -1748,6 +1814,9 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 			args: args{
 				ctx:       ctx,
 				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1755,6 +1824,9 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 			name: "Sad Case - Invalid patient ID",
 			args: args{
 				ctx: ctx,
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1769,7 +1841,7 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID)
+			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientTemperatureEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1786,9 +1858,11 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 	ctx := context.Background()
+	first := 10
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -1800,6 +1874,9 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 			args: args{
 				ctx:       ctx,
 				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1807,6 +1884,9 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 			name: "Sad Case - Invalid patient ID",
 			args: args{
 				ctx: ctx,
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1821,7 +1901,7 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID)
+			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientBloodPressureEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1837,9 +1917,11 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
+	first := 10
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -1851,6 +1933,9 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1859,6 +1944,9 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.BS(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1873,7 +1961,7 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID)
+			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientHeightEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1883,9 +1971,11 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
+	first := 10
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -1897,6 +1987,9 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1905,6 +1998,9 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.BS(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1919,7 +2015,7 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			_, err := c.GetPatientPulseRateEntries(tt.args.ctx, tt.args.patientID)
+			_, err := c.GetPatientPulseRateEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientPulseRateEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1930,9 +2026,11 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 	ctx := context.Background()
+	first := 10
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -1944,6 +2042,9 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 			args: args{
 				ctx:       ctx,
 				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -1951,6 +2052,9 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 			name: "Sad Case - Invalid patient ID",
 			args: args{
 				ctx: ctx,
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -1965,7 +2069,7 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			got, err := u.GetPatientRespiratoryRateEntries(tt.args.ctx, tt.args.patientID)
+			got, err := u.GetPatientRespiratoryRateEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientRespiratoryRateEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1981,10 +2085,12 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
+	first := 10
 	ctx := context.Background()
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -1996,6 +2102,9 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 			args: args{
 				ctx:       ctx,
 				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -2003,6 +2112,9 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 			name: "Sad Case - Invalid patient ID",
 			args: args{
 				ctx: ctx,
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -2017,7 +2129,7 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			got, err := u.GetPatientBMIEntries(tt.args.ctx, tt.args.patientID)
+			got, err := u.GetPatientBMIEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientBMIEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2033,9 +2145,11 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
+	first := 10
 	type args struct {
-		ctx       context.Context
-		patientID string
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -2047,6 +2161,9 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: false,
 		},
@@ -2055,6 +2172,9 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.BS(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
 			},
 			wantErr: true,
 		},
@@ -2069,7 +2189,7 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			_, err := c.GetPatientWeightEntries(tt.args.ctx, tt.args.patientID)
+			_, err := c.GetPatientWeightEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientWeightEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return

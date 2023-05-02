@@ -48,10 +48,10 @@ type FHIREpisodeOfCare interface {
 	GetActiveEpisode(ctx context.Context, episodeID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCare, error)
 }
 type FHIRObservation interface {
-	SearchFHIRObservation(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error)
-	CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservationRelayPayload, error)
+	SearchFHIRObservation(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
+	CreateFHIRObservation(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error)
 	DeleteFHIRObservation(ctx context.Context, id string) (bool, error)
-	SearchPatientObservations(ctx context.Context, patientReference, observationCode string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIRObservation, error)
+	SearchPatientObservations(ctx context.Context, patientReference, observationCode string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
 }
 type FHIRAllergyIntolerance interface {
 	SearchFHIRAllergyIntolerance(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error)

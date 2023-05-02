@@ -158,3 +158,14 @@ type TerminologyConnection {
     edges: [TerminologyEdge]
     pageInfo: PageInfo
 }
+
+type ObservationEdge {
+    node: Observation
+    cursor: String
+}
+
+type ObservationConnection {
+    totalCount: Int
+    edges:      [ObservationEdge]
+    pageInfo:   PageInfo
+}

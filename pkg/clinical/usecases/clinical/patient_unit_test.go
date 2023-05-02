@@ -212,14 +212,6 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad Case - Fail to search observation - nil node",
-			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
-			},
-			wantErr: false,
-		},
-		{
 			name: "Sad Case - Fail to search observation - nil coding",
 			args: args{
 				ctx:       context.Background(),
@@ -855,649 +847,640 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			}
 
 			if tt.name == "Happy Case - Successfully search observation" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-									},
-									Subject: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									ValueQuantity: &domain.FHIRQuantity{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
-					}, nil
-				}
-			}
-
-			if tt.name == "Sad Case - Fail to search observation - nil node" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
-							{
-								Cursor: new(string),
-							},
-						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil coding" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										ID: new(string),
-									},
-									Subject: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									ValueQuantity: &domain.FHIRQuantity{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - empty coding" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
 									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										ID:     new(string),
-										Coding: []*domain.FHIRCoding{},
-									},
-									Subject: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									ValueQuantity: &domain.FHIRQuantity{
+									Coding: []*domain.FHIRCoding{},
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil status" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
+								ID: new(string),
+								Code: domain.FHIRCodeableConcept{
 									ID: new(string),
-									Code: domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									ValueQuantity: &domain.FHIRQuantity{
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil subject" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-									},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									ValueQuantity: &domain.FHIRQuantity{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil subject id" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-									},
-									Subject: &domain.FHIRReference{},
-									Encounter: &domain.FHIRReference{
-										ID: new(string),
-									},
-									ValueQuantity: &domain.FHIRQuantity{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil encounter" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-									},
-									Subject: &domain.FHIRReference{
-										ID: new(string),
-									},
-									ValueQuantity: &domain.FHIRQuantity{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search observation - nil status" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
+					return &domain.PagedFHIRObservations{
+						Observations: []domain.FHIRObservation{
 							{
-								Cursor: new(string),
-								Node: &domain.FHIRObservation{
-									ID:     new(string),
-									Status: (*domain.ObservationStatusEnum)(&status),
-									Code: domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{{
-											Display: gofakeit.BS(),
-										}},
-									},
-									Subject: &domain.FHIRReference{
-										ID: new(string),
-									},
-									Encounter: &domain.FHIRReference{},
-									ValueQuantity: &domain.FHIRQuantity{
+								ID:     new(string),
+								Status: (*domain.ObservationStatusEnum)(&status),
+								Code: domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{{
+										Display: gofakeit.BS(),
+									}},
+								},
+								Subject: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{},
+								ValueQuantity: &domain.FHIRQuantity{
+									Value: 100,
+									Unit:  "cm",
+								},
+								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
+								ValueString:          new(string),
+								ValueBoolean:         new(bool),
+								ValueInteger:         new(string),
+								ValueRange: &domain.FHIRRange{
+									Low: domain.FHIRQuantity{
 										Value: 100,
 										Unit:  "cm",
 									},
-									ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-									ValueString:          new(string),
-									ValueBoolean:         new(bool),
-									ValueInteger:         new(string),
-									ValueRange: &domain.FHIRRange{
-										Low: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										High: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+									High: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueRatio: &domain.FHIRRatio{
-										Numerator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
-										Denominator: domain.FHIRQuantity{
-											Value: 100,
-											Unit:  "cm",
-										},
+								},
+								ValueRatio: &domain.FHIRRatio{
+									Numerator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueSampledData: &domain.FHIRSampledData{
-										ID: &UUID,
+									Denominator: domain.FHIRQuantity{
+										Value: 100,
+										Unit:  "cm",
 									},
-									ValueTime: &time.Time{},
-									ValueDateTime: &scalarutils.Date{
-										Year:  2000,
-										Month: 1,
-										Day:   1,
-									},
-									ValuePeriod: &domain.FHIRPeriod{
-										Start: scalarutils.DateTime(time.Wednesday.String()),
-										End:   scalarutils.DateTime(time.Thursday.String()),
-									},
+								},
+								ValueSampledData: &domain.FHIRSampledData{
+									ID: &UUID,
+								},
+								ValueTime: &time.Time{},
+								ValueDateTime: &scalarutils.Date{
+									Year:  2000,
+									Month: 1,
+									Day:   1,
+								},
+								ValuePeriod: &domain.FHIRPeriod{
+									Start: scalarutils.DateTime(time.Wednesday.String()),
+									End:   scalarutils.DateTime(time.Thursday.String()),
 								},
 							},
 						},
-						PageInfo: &firebasetools.PageInfo{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 			if tt.name == "Sad Case - Fail to search weight" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					if params["code"] == common.WeightCIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
 
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
-							{
-								Cursor: new(string),
-								Node:   &domain.FHIRObservation{},
-							},
-						},
-						PageInfo: &firebasetools.PageInfo{},
+					return &domain.PagedFHIRObservations{
+						Observations:    []domain.FHIRObservation{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search BMI" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					if params["code"] == common.BMICIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
 
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
-							{
-								Cursor: new(string),
-								Node:   &domain.FHIRObservation{},
-							},
-						},
-						PageInfo: &firebasetools.PageInfo{},
+					return &domain.PagedFHIRObservations{
+						Observations:    []domain.FHIRObservation{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search viralLoad" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					if params["code"] == common.ViralLoadCIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
 
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
-							{
-								Cursor: new(string),
-								Node:   &domain.FHIRObservation{},
-							},
-						},
-						PageInfo: &firebasetools.PageInfo{},
+					return &domain.PagedFHIRObservations{
+						Observations:    []domain.FHIRObservation{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
 
 			if tt.name == "Sad Case - Fail to search cd4Count" {
-				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRObservationRelayConnection, error) {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					if params["code"] == common.CD4CountCIELTerminologyCode {
 						return nil, fmt.Errorf("failed to search observation")
 					}
 
-					return &domain.FHIRObservationRelayConnection{
-						Edges: []*domain.FHIRObservationRelayEdge{
-							{
-								Cursor: new(string),
-								Node:   &domain.FHIRObservation{},
-							},
-						},
-						PageInfo: &firebasetools.PageInfo{},
+					return &domain.PagedFHIRObservations{
+						Observations:    []domain.FHIRObservation{},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}

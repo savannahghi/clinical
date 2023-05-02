@@ -130,42 +130,42 @@ func (r *queryResolver) ListPatientEncounters(ctx context.Context, patientID str
 }
 
 // GetPatientTemperatureEntries is the resolver for the getPatientTemperatureEntries field.
-func (r *queryResolver) GetPatientTemperatureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+func (r *queryResolver) GetPatientTemperatureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientTemperatureEntries(ctx, patientID)
+	return r.usecases.Clinical.GetPatientTemperatureEntries(ctx, patientID, &pagination)
 }
 
 // GetPatientBloodPressureEntries is the resolver for the getPatientBloodPressureEntries field.
-func (r *queryResolver) GetPatientBloodPressureEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+func (r *queryResolver) GetPatientBloodPressureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientBloodPressureEntries(ctx, patientID)
+	return r.usecases.Clinical.GetPatientBloodPressureEntries(ctx, patientID, &pagination)
 }
 
 // GetPatientHeightEntries is the resolver for the getPatientHeightEntries field.
-func (r *queryResolver) GetPatientHeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return r.usecases.Clinical.GetPatientHeightEntries(ctx, patientID)
+func (r *queryResolver) GetPatientHeightEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	return r.usecases.Clinical.GetPatientHeightEntries(ctx, patientID, &pagination)
 }
 
 // GetPatientRespiratoryRateEntries is the resolver for the getPatientRespiratoryRateEntries field.
-func (r *queryResolver) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+func (r *queryResolver) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientRespiratoryRateEntries(ctx, patientID)
+	return r.usecases.Clinical.GetPatientRespiratoryRateEntries(ctx, patientID, &pagination)
 }
 
 // GetPatientPulseRateEntries is the resolver for the GetPatientPulseRateEntries field.
-func (r *queryResolver) GetPatientPulseRateEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return r.usecases.Clinical.GetPatientPulseRateEntries(ctx, patientID)
+func (r *queryResolver) GetPatientPulseRateEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	return r.usecases.Clinical.GetPatientPulseRateEntries(ctx, patientID, &pagination)
 }
 
 // GetPatientBMIEntries is the resolver for the getPatientBMIEntries field.
-func (r *queryResolver) GetPatientBMIEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
+func (r *queryResolver) GetPatientBMIEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientBMIEntries(ctx, patientID)
+	return r.usecases.Clinical.GetPatientBMIEntries(ctx, patientID, &pagination)
 }
 
 // GetPatientWeightEntries is the resolver for the getPatientWeightEntries field.
-func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID string) ([]*dto.Observation, error) {
-	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID)
+func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID, &pagination)
 }
 
 // SearchAllergy is the resolver for the searchAllergy field.
