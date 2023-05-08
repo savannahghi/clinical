@@ -43,6 +43,7 @@ extend type Mutation {
     recordPulseRate(input: ObservationInput!): Observation!
     recordBloodPressure(input: ObservationInput!): Observation!
     recordBMI(input: ObservationInput!): Observation!
+    recordViralLoad(input: ObservationInput!): Observation!
 
     # Patient
     createPatient(input: PatientInput!): Patient!

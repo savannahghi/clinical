@@ -155,6 +155,7 @@ type ComplexityRoot struct {
 		RecordPulseRate          func(childComplexity int, input dto.ObservationInput) int
 		RecordRespiratoryRate    func(childComplexity int, input dto.ObservationInput) int
 		RecordTemperature        func(childComplexity int, input dto.ObservationInput) int
+		RecordViralLoad          func(childComplexity int, input dto.ObservationInput) int
 		RecordWeight             func(childComplexity int, input dto.ObservationInput) int
 		StartEncounter           func(childComplexity int, episodeID string) int
 	}
@@ -265,6 +266,7 @@ type MutationResolver interface {
 	RecordPulseRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordBmi(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordViralLoad(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 	CreateCondition(ctx context.Context, input dto.ConditionInput) (*dto.Condition, error)
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
@@ -824,6 +826,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RecordTemperature(childComplexity, args["input"].(dto.ObservationInput)), true
+
+	case "Mutation.recordViralLoad":
+		if e.complexity.Mutation.RecordViralLoad == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordViralLoad_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordViralLoad(childComplexity, args["input"].(dto.ObservationInput)), true
 
 	case "Mutation.recordWeight":
 		if e.complexity.Mutation.RecordWeight == nil {
@@ -1451,6 +1465,7 @@ extend type Mutation {
     recordPulseRate(input: ObservationInput!): Observation!
     recordBloodPressure(input: ObservationInput!): Observation!
     recordBMI(input: ObservationInput!): Observation!
+    recordViralLoad(input: ObservationInput!): Observation!
 
     # Patient
     createPatient(input: PatientInput!): Patient!
@@ -1991,6 +2006,21 @@ func (ec *executionContext) field_Mutation_recordRespiratoryRate_args(ctx contex
 }
 
 func (ec *executionContext) field_Mutation_recordTemperature_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.ObservationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recordViralLoad_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 dto.ObservationInput
@@ -5603,6 +5633,75 @@ func (ec *executionContext) fieldContext_Mutation_recordBMI(ctx context.Context,
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_recordBMI_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_recordViralLoad(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordViralLoad(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecordViralLoad(rctx, fc.Args["input"].(dto.ObservationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recordViralLoad(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recordViralLoad_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -11639,6 +11738,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_recordBMI(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "recordViralLoad":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recordViralLoad(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
