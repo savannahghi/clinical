@@ -52,6 +52,16 @@ func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.Obser
 	return weightObservation, nil
 }
 
+// RecordViralLoad records the patient viral load
+func (c *UseCasesClinicalImpl) RecordViralLoad(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	viralLoadObservation, err := c.RecordObservation(ctx, input, common.ViralLoadCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return viralLoadObservation, nil
+}
+
 // GetPatientWeightEntries gets the weight records of a patient
 func (c *UseCasesClinicalImpl) GetPatientWeightEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	return c.GetPatientObservations(ctx, patientID, common.WeightCIELTerminologyCode, pagination)
