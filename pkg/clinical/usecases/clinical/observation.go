@@ -57,6 +57,11 @@ func (c *UseCasesClinicalImpl) GetPatientWeightEntries(ctx context.Context, pati
 	return c.GetPatientObservations(ctx, patientID, common.WeightCIELTerminologyCode, pagination)
 }
 
+// GetPatientViralLoad gets the patient's viral load
+func (c *UseCasesClinicalImpl) GetPatientViralLoad(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.ViralLoadCIELTerminologyCode, pagination)
+}
+
 // RecordRespiratoryRate records a patient's respiratory rate
 func (c *UseCasesClinicalImpl) RecordRespiratoryRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	respiratoryRateObservation, err := c.RecordObservation(ctx, input, common.RespiratoryRateCIELTerminologyCode)

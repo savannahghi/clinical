@@ -18,6 +18,7 @@ extend type Query {
     getPatientPulseRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
     getPatientBMIEntries(patientID: String!, pagination: Pagination!): ObservationConnection
     getPatientWeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
+    getPatientViralLoad(patientID: ID!, pagination: Pagination!): ObservationConnection
 
     # Allergy
     searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
