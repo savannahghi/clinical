@@ -168,6 +168,13 @@ func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID s
 	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID, &pagination)
 }
 
+// GetPatientViralLoad is the resolver for the getPatientViralLoad field.
+func (r *queryResolver) GetPatientViralLoad(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	r.CheckDependencies()
+
+	return r.usecases.Clinical.GetPatientViralLoad(ctx, patientID, &pagination)
+}
+
 // SearchAllergy is the resolver for the searchAllergy field.
 func (r *queryResolver) SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error) {
 	r.CheckDependencies()
