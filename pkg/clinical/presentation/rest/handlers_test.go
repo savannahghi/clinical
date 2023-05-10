@@ -22,6 +22,7 @@ import (
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
+	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/interserviceclient"
@@ -231,7 +232,8 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			usecases := usecases.NewUsecasesInteractor(infra)
 
 			if tt.name == "happy case: publish create patient message" {

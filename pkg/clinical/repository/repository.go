@@ -21,6 +21,7 @@ type FHIR interface {
 	FHIRComposition
 	FHIRMedicationStatement
 	FHIRMedication
+	FHIRMedia
 }
 
 type FHIROrganization interface {
@@ -98,4 +99,8 @@ type FHIRMedicationStatement interface {
 
 type FHIRMedication interface {
 	CreateFHIRMedication(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error)
+}
+
+type FHIRMedia interface {
+	CreateFHIRMedia(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error)
 }

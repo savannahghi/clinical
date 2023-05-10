@@ -15,6 +15,7 @@ import (
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
+	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/scalarutils"
 )
@@ -144,7 +145,9 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -298,7 +301,9 @@ func TestUseCasesClinicalImpl_RecordTemperature(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -452,7 +457,9 @@ func TestUseCasesClinicalImpl_RecordHeight(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -607,7 +614,9 @@ func TestUseCasesClinicalImpl_RecordWeight(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -761,7 +770,9 @@ func TestUseCasesClinicalImpl_RecordRespiratoryRate(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -915,7 +926,9 @@ func TestUseCasesClinicalImpl_RecordPulseRate(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -1069,7 +1082,9 @@ func TestUseCasesClinicalImpl_RecordBloodPressure(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -1223,7 +1238,9 @@ func TestUseCasesClinicalImpl_RecordBMI(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -1400,7 +1417,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - fail to get patient" {
@@ -1838,7 +1857,9 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -1898,7 +1919,9 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -1958,7 +1981,9 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -2012,7 +2037,9 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			_, err := c.GetPatientPulseRateEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -2066,7 +2093,9 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := u.GetPatientRespiratoryRateEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -2126,7 +2155,9 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := u.GetPatientBMIEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -2186,7 +2217,9 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			_, err := c.GetPatientWeightEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -2241,7 +2274,9 @@ func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			_, err := c.GetPatientViralLoad(tt.args.ctx, tt.args.patientID, tt.args.pagination)
@@ -2355,7 +2390,9 @@ func TestUseCasesClinicalImpl_RecordViralLoad(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH)
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {

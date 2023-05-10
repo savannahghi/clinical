@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"io"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -61,6 +62,8 @@ type Clinical interface {
 	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)
 	GetAllergyIntolerance(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
+
+	UploadMedia(ctx context.Context, encounterID string, file io.Reader, contentType string) (*dto.MediaOutPut, error)
 }
 
 // Interactor is an implementation of the usecases interface

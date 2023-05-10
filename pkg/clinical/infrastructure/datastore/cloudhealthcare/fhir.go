@@ -34,6 +34,7 @@ const (
 	compositionResourceType         = "Composition"
 	medicationStatementResourceType = "MedicationStatement"
 	medicationResourceType          = "Medication"
+	mediaResourceType               = "Media"
 )
 
 // Dataset ...
@@ -1400,6 +1401,23 @@ func (fh StoreImpl) CreateFHIRMedication(_ context.Context, input domain.FHIRMed
 	}
 
 	return output, nil
+}
+
+// CreateFHIRMedia creates a FHIR media resource
+func (fh StoreImpl) CreateFHIRMedia(_ context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, err
+	}
+
+	resource := &domain.FHIRMedia{}
+
+	err = fh.Dataset.CreateFHIRResource(mediaResourceType, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create %s resource: %w", mediaResourceType, err)
+	}
+
+	return resource, nil
 }
 
 // SearchFHIRMedicationStatement used to search for a fhir medication statement

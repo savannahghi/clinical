@@ -3960,3 +3960,124 @@ func TestMedicationStatusEnum_MarshalGQL(t *testing.T) {
 		})
 	}
 }
+
+func TestMediaStatusEnum_IsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		e    MediaStatusEnum
+		want bool
+	}{
+		{
+			name: "Valid media status - completed",
+			e:    MediaStatusCompleted,
+			want: true,
+		},
+		{
+			name: "Invalid media status",
+			e:    "invalid",
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsValid(); got != tt.want {
+				t.Errorf("MediaStatusEnum.IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMediaStatusEnum_String(t *testing.T) {
+	tests := []struct {
+		name string
+		e    MediaStatusEnum
+		want string
+	}{
+		{
+			name: "Media status - completed",
+			e:    MediaStatusCompleted,
+			want: "completed",
+		},
+		{
+			name: "Media status - in-progress",
+			e:    MediaStatusInProgress,
+			want: "in-progress",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.String(); got != tt.want {
+				t.Errorf("MediaStatusEnum.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMediaStatusEnum_UnmarshalGQL(t *testing.T) {
+	value := MediaStatusCompleted
+	invalidType := MediaStatusEnum("invalid")
+	type args struct {
+		v interface{}
+	}
+	tests := []struct {
+		name    string
+		e       *MediaStatusEnum
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "valid type",
+			e:    &value,
+			args: args{
+				v: "completed",
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid type",
+			e:    &invalidType,
+			args: args{
+				v: "this is not a valid type",
+			},
+			wantErr: true,
+		},
+		{
+			name: "non string type",
+			e:    &invalidType,
+			args: args{
+				v: 1,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.e.UnmarshalGQL(tt.args.v); (err != nil) != tt.wantErr {
+				t.Errorf("MediaStatus.UnmarshalGQL() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestMediaStatusEnum_MarshalGQL(t *testing.T) {
+	tests := []struct {
+		name  string
+		e     MediaStatusEnum
+		wantW string
+	}{
+		{
+			name:  "completed",
+			e:     MediaStatusCompleted,
+			wantW: strconv.Quote("completed"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			tt.e.MarshalGQL(w)
+			if gotW := w.String(); gotW != tt.wantW {
+				t.Errorf("MediaStatusEnum.MarshalGQL() = %v, want %v", gotW, tt.wantW)
+			}
+		})
+	}
+}

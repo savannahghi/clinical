@@ -99,3 +99,12 @@ type TerminologyConnection struct {
 	Edges      []TerminologyEdge `json:"edges,omitempty"`
 	PageInfo   PageInfo          `json:"pageInfo,omitempty"`
 }
+
+// MediaOutPut is the output to show the results of the created media resource item
+type MediaOutPut struct {
+	PatientID   string `json:"patientID"`
+	PatientName string `json:"patientName"`
+	URL         string `json:"url"`
+	Name        string `json:"name"`
+	ContentType string `json:"contentType"`
+}

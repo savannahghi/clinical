@@ -1570,6 +1570,7 @@ scalar UnsignedInt
 scalar URI
 scalar UUID
 scalar XHTML
+scalar Upload
 
 `, BuiltIn: false},
 	{Name: "../inputs.graphql", Input: `input HealthTimelineInput {
@@ -1633,11 +1634,11 @@ input ReactionInput {
 }
 
 input Pagination {
-    first: Int
-    after: String
+  first: Int
+  after: String
 
-    last:   Int
-    before: String
+  last:   Int
+  before: String
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
