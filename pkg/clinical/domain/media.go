@@ -27,3 +27,13 @@ type FHIRMedia struct {
 	Content    *FHIRAttachmentInput `json:"content,omitempty"`
 	Meta       *FHIRMetaInput       `json:"meta,omitempty"`
 }
+
+// PagedFHIRMedia is a media's paginaton dataclass
+type PagedFHIRMedia struct {
+	Media           []FHIRMedia
+	HasNextPage     bool
+	NextCursor      string
+	HasPreviousPage bool
+	PreviousCursor  string
+	TotalCount      int
+}

@@ -73,6 +73,7 @@ type FHIRMock struct {
 	MockGetFHIRAllergyIntoleranceFn       func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 	MockSearchPatientAllergyIntoleranceFn func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error)
 	MockCreateFHIRMediaFn                 func(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error)
+	MockSearchPatientMediaFn              func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -205,6 +206,40 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockHasOpenEpisodeFn: func(ctx context.Context, patient domain.FHIRPatient, tenant dto.TenantIdentifiers, pagination dto.Pagination) (bool, error) {
 			return true, nil
+		},
+		MockSearchPatientMediaFn: func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error) {
+			UUID := uuid.New().String()
+			PatientRef := "Patient/1"
+			OrgRef := "Organization/1"
+			contentType := "video/mp4"
+			url := gofakeit.URL()
+			title := "test"
+			return &domain.PagedFHIRMedia{
+				Media: []domain.FHIRMedia{
+					{
+						ID: &UUID,
+						Subject: &domain.FHIRReferenceInput{
+							ID:        &UUID,
+							Reference: &PatientRef,
+						},
+						Operator: &domain.FHIRReferenceInput{
+							ID:        &UUID,
+							Reference: &OrgRef,
+						},
+						Content: &domain.FHIRAttachmentInput{
+							ID:          &UUID,
+							ContentType: (*scalarutils.Code)(&contentType),
+							URL:         (*scalarutils.URL)(&url),
+							Title:       &title,
+						},
+					},
+				},
+				HasNextPage:     true,
+				NextCursor:      "",
+				HasPreviousPage: true,
+				PreviousCursor:  "",
+				TotalCount:      10,
+			}, nil
 		},
 		MockOpenEpisodesFn: func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIREpisodeOfCare, error) {
 			UUID := uuid.New().String()
@@ -1242,4 +1277,9 @@ func (fh *FHIRMock) SearchPatientAllergyIntolerance(ctx context.Context, patient
 // SearchPatientAllergyIntolerance mocks the getting of patient allergies
 func (fh *FHIRMock) CreateFHIRMedia(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error) {
 	return fh.MockCreateFHIRMediaFn(ctx, input)
+}
+
+// SearchPatentMedia mocks the searching of patient media
+func (fh *FHIRMock) SearchPatientMedia(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error) {
+	return fh.MockSearchPatientMediaFn(ctx, patientReference, tenant, pagination)
 }

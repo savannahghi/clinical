@@ -103,4 +103,5 @@ type FHIRMedication interface {
 
 type FHIRMedia interface {
 	CreateFHIRMedia(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error)
+	SearchPatientMedia(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error)
 }

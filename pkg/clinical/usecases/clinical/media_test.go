@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
@@ -120,7 +121,7 @@ func TestUseCasesClinicalImpl_UploadMedia(t *testing.T) {
 				}
 			}
 			if tt.name == "sad case: unable to upload media" {
-				fakeUpload.MockUploadMediaFn = func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.MediaOutPut, error) {
+				fakeUpload.MockUploadMediaFn = func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
@@ -148,6 +149,100 @@ func TestUseCasesClinicalImpl_UploadMedia(t *testing.T) {
 			_, err := c.UploadMedia(tt.args.ctx, tt.args.encounterID, tt.args.file, tt.args.contentType)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.UploadMedia() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_ListPatientMedia(t *testing.T) {
+	first := 10
+	type args struct {
+		ctx        context.Context
+		patientID  string
+		pagination dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: list patient media",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+				pagination: dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to get tenant identifiers",
+			args: args{
+				ctx:       context.Background(),
+				patientID: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+				pagination: dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to list patient media",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+				pagination: dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: unable to get patient",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+				pagination: dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: unable to list patient media" {
+				fakeFHIR.MockSearchPatientMediaFn = func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "sad case: unable to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := c.ListPatientMedia(tt.args.ctx, tt.args.patientID, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.ListPatientMedia() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

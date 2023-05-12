@@ -100,11 +100,45 @@ type TerminologyConnection struct {
 	PageInfo   PageInfo          `json:"pageInfo,omitempty"`
 }
 
-// MediaOutPut is the output to show the results of the created media resource item
-type MediaOutPut struct {
-	PatientID   string `json:"patientID"`
-	PatientName string `json:"patientName"`
-	URL         string `json:"url"`
-	Name        string `json:"name"`
-	ContentType string `json:"contentType"`
+// Media is the output to show the results of the created media resource item
+type Media struct {
+	ID          string `json:"id,omitempty"`
+	PatientID   string `json:"patientID,omitempty"`
+	PatientName string `json:"patientName,omitempty"`
+	URL         string `json:"url,omitempty"`
+	Name        string `json:"name,omitempty"`
+	ContentType string `json:"contentType,omitempty"`
+}
+
+// MediaEdge is an media connection edge
+type MediaEdge struct {
+	Node   Media  `json:"node,omitempty"`
+	Cursor string `json:"cursor,omitempty"`
+}
+
+// MediaConnection is a media connection
+type MediaConnection struct {
+	TotalCount int         `json:"totalCount,omitempty"`
+	Edges      []MediaEdge `json:"edges,omitempty"`
+	PageInfo   PageInfo    `json:"pageInfo,omitempty"`
+}
+
+// CreateMediaConnection creates a connection that follows the GraphQl Cursor Connection Specification
+func CreateMediaConnection(mediaList []*Media, pageInfo PageInfo, total int) MediaConnection {
+	connection := MediaConnection{
+		TotalCount: total,
+		Edges:      []MediaEdge{},
+		PageInfo:   pageInfo,
+	}
+
+	for _, media := range mediaList {
+		edge := MediaEdge{
+			Node:   *media,
+			Cursor: media.ID,
+		}
+
+		connection.Edges = append(connection.Edges, edge)
+	}
+
+	return connection
 }
