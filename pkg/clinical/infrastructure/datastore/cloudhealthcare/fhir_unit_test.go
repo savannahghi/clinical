@@ -4079,3 +4079,59 @@ func TestStoreImpl_SearchPatientAllergyIntolerance(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_CreateFHIRMedia(t *testing.T) {
+	id := uuid.New().String()
+	type args struct {
+		ctx   context.Context
+		input domain.FHIRMedia
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: create FHIR media",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRMedia{
+					Subject: &domain.FHIRReferenceInput{
+						ID: &id,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create FHIR media",
+			args: args{
+				ctx: context.Background(),
+				input: domain.FHIRMedia{
+					Subject: &domain.FHIRReferenceInput{
+						ID: &id,
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to create FHIR media" {
+				fakeDataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error ocurred")
+				}
+			}
+
+			_, err := fh.CreateFHIRMedia(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRMedia() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

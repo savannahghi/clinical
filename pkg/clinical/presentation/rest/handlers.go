@@ -250,6 +250,7 @@ func (p PresentationHandlersImpl) RegisterTenant(c *gin.Context) {
 
 	c.JSON(http.StatusOK, organization)
 }
+
 func jsonErrorResponse(c *gin.Context, statusCode int, err error) {
 	c.AbortWithStatusJSON(statusCode, gin.H{"error": err.Error()})
 }
@@ -271,4 +272,42 @@ func (p PresentationHandlersImpl) RegisterFacility(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, organization)
+}
+
+// UploadMedia uploads media to GCS and stores the URL in FHIR attachment
+func (p PresentationHandlersImpl) UploadMedia(c *gin.Context) {
+	input := &dto.MediaInput{
+		EncounterID: c.Request.FormValue("encounterID"),
+		File:        c.Request.MultipartForm.File,
+	}
+
+	if err := c.Request.ParseMultipartForm(500 << 20); err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	var response []*dto.MediaOutPut
+
+	for _, fileHeaders := range input.File {
+		for _, fileHeader := range fileHeaders {
+			file, err := fileHeader.Open()
+			if err != nil {
+				jsonErrorResponse(c, http.StatusBadRequest, err)
+				return
+			}
+			defer file.Close()
+
+			contentType := fileHeader.Header.Get("Content-Type")
+
+			output, err := p.usecases.UploadMedia(c.Request.Context(), input.EncounterID, file, contentType)
+			if err != nil {
+				jsonErrorResponse(c, http.StatusInternalServerError, err)
+				return
+			}
+
+			response = append(response, output)
+		}
+	}
+
+	c.JSON(http.StatusOK, response)
 }

@@ -13,6 +13,7 @@ import (
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
+	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
@@ -55,8 +56,9 @@ func TestUseCasesClinicalImpl_GetTenantMetaTags(t *testing.T) {
 			Fakefhir := fakeFHIRMock.NewFHIRMock()
 			FakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH)
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "sad case: missing tenant org in context" {
@@ -181,8 +183,9 @@ func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 			Fakefhir := fakeFHIRMock.NewFHIRMock()
 			FakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH)
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := c.ContactsToContactPointInput(tt.args.ctx, tt.args.phones, tt.args.emails)
@@ -331,8 +334,9 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 			fhir := fakeFHIRMock.NewFHIRMock()
 			ocl := fakeOCLMock.NewFakeOCLMock()
 			mch := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(ext, fhir, ocl, mch)
+			infra := infrastructure.NewInfrastructureInteractor(ext, fhir, ocl, mch, fakeUpload)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := c.SimplePatientRegistrationInputToPatientInput(tt.args.ctx, tt.args.input)

@@ -72,6 +72,7 @@ type FHIRMock struct {
 	MockSearchPatientObservationsFn       func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
 	MockGetFHIRAllergyIntoleranceFn       func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 	MockSearchPatientAllergyIntoleranceFn func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error)
+	MockCreateFHIRMediaFn                 func(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -847,6 +848,21 @@ func NewFHIRMock() *FHIRMock {
 		MockCreateFHIRMedicationFn: func(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error) {
 			return &domain.FHIRMedicationRelayPayload{}, nil
 		},
+		MockCreateFHIRMediaFn: func(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error) {
+			id := uuid.New().String()
+			url := gofakeit.URL()
+			title := gofakeit.BeerName()
+			return &domain.FHIRMedia{
+				Status: "",
+				Subject: &domain.FHIRReferenceInput{
+					ID: &id,
+				},
+				Content: &domain.FHIRAttachmentInput{
+					URL:   (*scalarutils.URL)(&url),
+					Title: &title,
+				},
+			}, nil
+		},
 		MockCreateFHIRPatientFn: func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error) {
 			male := domain.PatientGenderEnumMale
 			return &domain.PatientPayload{
@@ -1221,4 +1237,9 @@ func (fh *FHIRMock) GetFHIRAllergyIntolerance(ctx context.Context, id string) (*
 // SearchPatientAllergyIntolerance mocks the getting of patient allergies
 func (fh *FHIRMock) SearchPatientAllergyIntolerance(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 	return fh.MockSearchPatientAllergyIntoleranceFn(ctx, patientReference, tenant, pagination)
+}
+
+// SearchPatientAllergyIntolerance mocks the getting of patient allergies
+func (fh *FHIRMock) CreateFHIRMedia(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error) {
+	return fh.MockCreateFHIRMediaFn(ctx, input)
 }

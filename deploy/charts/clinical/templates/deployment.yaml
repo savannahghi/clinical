@@ -118,6 +118,9 @@ spec:
             - name: MYCAREHUB_INTROSPECT_URL
               value: {{ .Values.app.container.env.mycarehubIntrospectURL | quote }}
 
+            - name: CLINICAL_BUCKET_NAME
+              value: {{ .Values.app.container.env.clinicalBucketName | quote }}
+
           volumeMounts:
           - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
             mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}

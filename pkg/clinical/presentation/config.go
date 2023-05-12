@@ -21,6 +21,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
@@ -88,8 +89,9 @@ func StartServer(
 	ocl := openconceptlab.NewServiceOCL()
 	myCareHubClient := common.NewInterServiceClient("mycarehub", baseExtension)
 	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient)
+	upload := upload.NewServiceUpload(ctx)
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub, upload)
 
 	_, err = pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient, baseExtension)
 	if err != nil {
@@ -172,6 +174,11 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 
 	facilities := v1.Group("/facilities")
 	facilities.POST("", handlers.RegisterFacility)
+
+	upload := v1.Group("/uploadMedia")
+	upload.Use(rest.AuthenticationGinMiddleware(*authclient))
+	upload.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
+	upload.POST("", handlers.UploadMedia)
 }
 
 // GQLHandler sets up a GraphQL resolver

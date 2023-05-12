@@ -8,6 +8,7 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/profileutils"
@@ -72,6 +73,7 @@ type Infrastructure struct {
 	OpenConceptLab ServiceOCL
 	BaseExtension  BaseExtension
 	MyCareHub      IServiceMyCareHub
+	Upload         upload.ServiceUpload
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
@@ -80,11 +82,13 @@ func NewInfrastructureInteractor(
 	fhir repository.FHIR,
 	openconceptlab ServiceOCL,
 	mycarehub IServiceMyCareHub,
+	upload upload.ServiceUpload,
 ) Infrastructure {
 	return Infrastructure{
 		fhir,
 		openconceptlab,
 		ext,
 		mycarehub,
+		upload,
 	}
 }

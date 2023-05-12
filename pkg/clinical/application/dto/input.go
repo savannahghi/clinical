@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"mime/multipart"
+
 	"github.com/go-playground/validator"
 	"github.com/savannahghi/scalarutils"
 )
@@ -87,4 +89,10 @@ type ReactionInput struct {
 	Code     string                                 `json:"code"`
 	System   string                                 `json:"system"`
 	Severity AllergyIntoleranceReactionSeverityEnum `json:"severity"`
+}
+
+// MediaInput models the dataclass to upload media to FHIR
+type MediaInput struct {
+	EncounterID string                             `json:"encounterID"`
+	File        map[string][]*multipart.FileHeader `form:"file" json:"file"`
 }

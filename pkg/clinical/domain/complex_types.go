@@ -2954,3 +2954,76 @@ func (e *MedicationStatusEnum) UnmarshalGQL(v interface{}) error {
 func (e MedicationStatusEnum) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
+// MediaStatusEnum is a FHIR enum
+type MediaStatusEnum string
+
+const (
+	// MediaStatusInProgress ...
+	MediaStatusInProgress MediaStatusEnum = "in-progress"
+
+	// MediaStatusNotDone ...
+	MediaStatusNotDone MediaStatusEnum = "not-done"
+
+	// MediaStatusEnumOnHold ...
+	MediaStatusOnHold MediaStatusEnum = "on-hold"
+
+	// MediaStatusEnumOfficial ...
+	MediaStatusStopped MediaStatusEnum = "stopped"
+
+	// MediaStatusCompleted ....
+	MediaStatusCompleted MediaStatusEnum = "completed"
+
+	// MediaStatusEnteredInError ...
+	MediaStatusEnteredInError MediaStatusEnum = "entered-in-error"
+
+	// MediaStatusUnknown ....
+	MediaStatusUnknown MediaStatusEnum = "unknown"
+)
+
+// AllMediaStatusEnum ...
+var AllMediaStatusEnum = []MediaStatusEnum{
+	MediaStatusInProgress,
+	MediaStatusNotDone,
+	MediaStatusOnHold,
+	MediaStatusStopped,
+	MediaStatusCompleted,
+	MediaStatusEnteredInError,
+	MediaStatusUnknown,
+}
+
+// IsValid ...
+func (e MediaStatusEnum) IsValid() bool {
+	switch e {
+	case MediaStatusInProgress, MediaStatusNotDone, MediaStatusOnHold,
+		MediaStatusStopped, MediaStatusCompleted, MediaStatusEnteredInError, MediaStatusUnknown:
+		return true
+	}
+
+	return false
+}
+
+// String ...
+func (e MediaStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *MediaStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = MediaStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Composition_AttesterModeEnum", str)
+	}
+
+	return nil
+}
+
+// MarshalGQL writes the composition attester mode to the supplied writer as a quoted string
+func (e MediaStatusEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
