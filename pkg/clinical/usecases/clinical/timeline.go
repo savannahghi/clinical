@@ -188,7 +188,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			if edge.Node.Subject == nil {
+			if edge.Node.Category == nil {
 				continue
 			}
 
@@ -209,7 +209,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 			timelineResource := dto.TimelineResource{
 				ID:           *edge.Node.ID,
 				ResourceType: dto.ResourceTypeMedicationStatement,
-				Name:         edge.Node.Subject.Display,
+				Name:         edge.Node.Category.Text,
 				Value:        edge.Node.MedicationCodeableConcept.Coding[0].Display,
 				Status:       string(*edge.Node.Status),
 				Date:         *date,

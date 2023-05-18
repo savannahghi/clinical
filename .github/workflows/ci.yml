@@ -78,6 +78,7 @@ jobs:
           go get github.com/ory/go-acc
           go install github.com/ory/go-acc
           go install github.com/axw/gocov/gocov
+          go get github.com/savannahghi/serverutils@v0.0.7
           
       
       - name: Run tests
