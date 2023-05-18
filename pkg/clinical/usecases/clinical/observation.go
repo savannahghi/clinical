@@ -247,14 +247,6 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 			continue
 		}
 
-		if obs.Encounter == nil {
-			continue
-		}
-
-		if obs.Encounter.ID == nil {
-			continue
-		}
-
 		observations = append(observations, mapFHIRObservationToObservationDTO(obs))
 	}
 
