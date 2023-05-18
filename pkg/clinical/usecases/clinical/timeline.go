@@ -141,7 +141,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				ID:           *edge.ID,
 				ResourceType: dto.ResourceTypeObservation,
 				Name:         edge.Code.Text,
-				Value:        edge.Code.Coding[0].Display,
+				Value:        *edge.ValueString,
 				Status:       string(*edge.Status),
 				Date:         *date,
 			}
