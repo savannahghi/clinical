@@ -13,7 +13,7 @@ import (
 
 // ServiceUpload holds the upload service methods
 type ServiceUpload interface {
-	UploadMedia(ctx context.Context, name string, file io.Reader, contentType string) (*dto.MediaOutPut, error)
+	UploadMedia(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error)
 }
 
 // ServiceUploadImpl represents upload service implementations
@@ -38,7 +38,7 @@ func NewServiceUpload(ctx context.Context) *ServiceUploadImpl {
 }
 
 // UploadMedia uploads media to GCS
-func (u *ServiceUploadImpl) UploadMedia(ctx context.Context, name string, file io.Reader, contentType string) (*dto.MediaOutPut, error) {
+func (u *ServiceUploadImpl) UploadMedia(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error) {
 	bucketName := serverutils.MustGetEnvVar("CLINICAL_BUCKET_NAME")
 
 	// Set the content type based on the request header
@@ -69,7 +69,7 @@ func (u *ServiceUploadImpl) UploadMedia(ctx context.Context, name string, file i
 		return nil, err
 	}
 
-	output := &dto.MediaOutPut{
+	output := &dto.Media{
 		URL:         url.MediaLink,
 		Name:        url.Name,
 		ContentType: url.ContentType,

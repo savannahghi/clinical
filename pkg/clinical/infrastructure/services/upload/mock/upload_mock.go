@@ -9,14 +9,14 @@ import (
 
 // FakeUpload is a mock of the fake upload
 type FakeUpload struct {
-	MockUploadMediaFn func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.MediaOutPut, error)
+	MockUploadMediaFn func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error)
 }
 
 // NewFakeUploadMock initializes a new instance of upload mock
 func NewFakeUploadMock() *FakeUpload {
 	return &FakeUpload{
-		MockUploadMediaFn: func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.MediaOutPut, error) {
-			return &dto.MediaOutPut{
+		MockUploadMediaFn: func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error) {
+			return &dto.Media{
 				URL: "https://google.com",
 			}, nil
 		},
@@ -24,6 +24,6 @@ func NewFakeUploadMock() *FakeUpload {
 }
 
 // UploadMedia is a mock implementation of uploading media to GCS
-func (u *FakeUpload) UploadMedia(ctx context.Context, name string, file io.Reader, contentType string) (*dto.MediaOutPut, error) {
+func (u *FakeUpload) UploadMedia(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error) {
 	return u.MockUploadMediaFn(ctx, name, file, contentType)
 }

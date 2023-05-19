@@ -159,6 +159,45 @@ func (fh StoreImpl) SearchPatientEncounters(
 	return &encounterOutput, nil
 }
 
+// SearchPatentMedia searches all the patients media resources
+func (fh StoreImpl) SearchPatientMedia(_ context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error) {
+	params := map[string]interface{}{
+		"patient": patientReference,
+	}
+
+	resources, err := fh.Dataset.SearchFHIRResource(mediaResourceType, params, tenant, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	mediaOutput := domain.PagedFHIRMedia{
+		Media:           []domain.FHIRMedia{},
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
+	}
+
+	for _, resource := range resources.Resources {
+		var media domain.FHIRMedia
+
+		resourceBs, err := json.Marshal(resource)
+		if err != nil {
+			return nil, fmt.Errorf("unable to marshal resource to JSON: %w", err)
+		}
+
+		err = json.Unmarshal(resourceBs, &media)
+		if err != nil {
+			return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
+		}
+
+		mediaOutput.Media = append(mediaOutput.Media, media)
+	}
+
+	return &mediaOutput, nil
+}
+
 // SearchFHIREpisodeOfCare provides a search API for FHIREpisodeOfCare
 func (fh StoreImpl) SearchFHIREpisodeOfCare(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCareRelayConnection, error) {
 	output := domain.FHIREpisodeOfCareRelayConnection{}

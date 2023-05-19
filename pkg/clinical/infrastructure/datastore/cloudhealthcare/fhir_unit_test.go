@@ -4135,3 +4135,67 @@ func TestStoreImpl_CreateFHIRMedia(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_SearchPatientMedia(t *testing.T) {
+	first := 1
+	type args struct {
+		ctx              context.Context
+		patientReference string
+		tenant           dto.TenantIdentifiers
+		pagination       dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: search patient media",
+			args: args{
+				ctx:              context.Background(),
+				patientReference: gofakeit.BeerIbu(),
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to search patient media",
+			args: args{
+				ctx:              context.Background(),
+				patientReference: gofakeit.BeerIbu(),
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to search patient media" {
+				fakeDataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, errors.New("unable to search patient media")
+				}
+			}
+
+			_, err := fh.SearchPatientMedia(tt.args.ctx, tt.args.patientReference, tt.args.tenant, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchPatentMedia() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

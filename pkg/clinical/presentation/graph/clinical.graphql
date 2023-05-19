@@ -24,6 +24,9 @@ extend type Query {
     searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
     getAllergy(id: ID!): Allergy!
     listPatientAllergies(patientID: ID!, pagination:Pagination!): AllergyConnection
+
+    # Media
+    listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
 }
 
 extend type Mutation {

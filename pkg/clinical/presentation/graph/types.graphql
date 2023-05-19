@@ -171,3 +171,21 @@ type ObservationConnection {
     edges:      [ObservationEdge]
     pageInfo:   PageInfo
 }
+
+type Media {
+    id: String!
+    name: String!
+    url: String!
+    contentType: String!
+}
+
+type MediaEdge {
+    node: Media
+    cursor: String
+}
+
+type MediaConnection {
+    totalCount: Int
+    edges: [MediaEdge]
+    pageInfo: PageInfo
+}

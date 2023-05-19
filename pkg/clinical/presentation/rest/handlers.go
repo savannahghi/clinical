@@ -286,7 +286,7 @@ func (p PresentationHandlersImpl) UploadMedia(c *gin.Context) {
 		return
 	}
 
-	var response []*dto.MediaOutPut
+	var response []*dto.Media
 
 	for _, fileHeaders := range input.File {
 		for _, fileHeader := range fileHeaders {

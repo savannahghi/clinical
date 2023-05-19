@@ -121,6 +121,24 @@ type ComplexityRoot struct {
 		TotalCount func(childComplexity int) int
 	}
 
+	Media struct {
+		ContentType func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		URL         func(childComplexity int) int
+	}
+
+	MediaConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	MediaEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	MedicalData struct {
 		Allergies func(childComplexity int) int
 		BMI       func(childComplexity int) int
@@ -211,6 +229,7 @@ type ComplexityRoot struct {
 		ListPatientAllergies             func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientConditions            func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientEncounters            func(childComplexity int, patientID string, pagination dto.Pagination) int
+		ListPatientMedia                 func(childComplexity int, patientID string, pagination dto.Pagination) int
 		PatientHealthTimeline            func(childComplexity int, input dto.HealthTimelineInput) int
 		SearchAllergy                    func(childComplexity int, name string, pagination dto.Pagination) int
 		__resolve__service               func(childComplexity int) int
@@ -288,6 +307,7 @@ type QueryResolver interface {
 	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)
 	GetAllergy(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
+	ListPatientMedia(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.MediaConnection, error)
 }
 
 type executableSchema struct {
@@ -598,6 +618,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.HealthTimeline.TotalCount(childComplexity), true
+
+	case "Media.contentType":
+		if e.complexity.Media.ContentType == nil {
+			break
+		}
+
+		return e.complexity.Media.ContentType(childComplexity), true
+
+	case "Media.id":
+		if e.complexity.Media.ID == nil {
+			break
+		}
+
+		return e.complexity.Media.ID(childComplexity), true
+
+	case "Media.name":
+		if e.complexity.Media.Name == nil {
+			break
+		}
+
+		return e.complexity.Media.Name(childComplexity), true
+
+	case "Media.url":
+		if e.complexity.Media.URL == nil {
+			break
+		}
+
+		return e.complexity.Media.URL(childComplexity), true
+
+	case "MediaConnection.edges":
+		if e.complexity.MediaConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.MediaConnection.Edges(childComplexity), true
+
+	case "MediaConnection.pageInfo":
+		if e.complexity.MediaConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.MediaConnection.PageInfo(childComplexity), true
+
+	case "MediaConnection.totalCount":
+		if e.complexity.MediaConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.MediaConnection.TotalCount(childComplexity), true
+
+	case "MediaEdge.cursor":
+		if e.complexity.MediaEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.MediaEdge.Cursor(childComplexity), true
+
+	case "MediaEdge.node":
+		if e.complexity.MediaEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.MediaEdge.Node(childComplexity), true
 
 	case "MedicalData.allergies":
 		if e.complexity.MedicalData.Allergies == nil {
@@ -1178,6 +1261,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ListPatientEncounters(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
+	case "Query.listPatientMedia":
+		if e.complexity.Query.ListPatientMedia == nil {
+			break
+		}
+
+		args, err := ec.field_Query_listPatientMedia_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ListPatientMedia(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
+
 	case "Query.patientHealthTimeline":
 		if e.complexity.Query.PatientHealthTimeline == nil {
 			break
@@ -1446,6 +1541,9 @@ var sources = []*ast.Source{
     searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
     getAllergy(id: ID!): Allergy!
     listPatientAllergies(patientID: ID!, pagination:Pagination!): AllergyConnection
+
+    # Media
+    listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
 }
 
 extend type Mutation {
@@ -1570,7 +1668,6 @@ scalar UnsignedInt
 scalar URI
 scalar UUID
 scalar XHTML
-scalar Upload
 
 `, BuiltIn: false},
 	{Name: "../inputs.graphql", Input: `input HealthTimelineInput {
@@ -1814,7 +1911,24 @@ type ObservationConnection {
     edges:      [ObservationEdge]
     pageInfo:   PageInfo
 }
-`, BuiltIn: false},
+
+type Media {
+    id: String!
+    name: String!
+    url: String!
+    contentType: String!
+}
+
+type MediaEdge {
+    node: Media
+    cursor: String
+}
+
+type MediaConnection {
+    totalCount: Int
+    edges: [MediaEdge]
+    pageInfo: PageInfo
+}`, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	scalar _Any
 	scalar _FieldSet
@@ -2373,6 +2487,30 @@ func (ec *executionContext) field_Query_listPatientEncounters_args(ctx context.C
 	if tmp, ok := rawArgs["patientID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_listPatientMedia_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4330,6 +4468,413 @@ func (ec *executionContext) fieldContext_HealthTimeline_totalCount(ctx context.C
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Media_id(ctx context.Context, field graphql.CollectedField, obj *dto.Media) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Media_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Media_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Media",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Media_name(ctx context.Context, field graphql.CollectedField, obj *dto.Media) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Media_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Media_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Media",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Media_url(ctx context.Context, field graphql.CollectedField, obj *dto.Media) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Media_url(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Media_url(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Media",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Media_contentType(ctx context.Context, field graphql.CollectedField, obj *dto.Media) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Media_contentType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContentType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Media_contentType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Media",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MediaConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *dto.MediaConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MediaConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MediaConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MediaConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MediaConnection_edges(ctx context.Context, field graphql.CollectedField, obj *dto.MediaConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MediaConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.MediaEdge)
+	fc.Result = res
+	return ec.marshalOMediaEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MediaConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MediaConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_MediaEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_MediaEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MediaEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MediaConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *dto.MediaConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MediaConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.PageInfo)
+	fc.Result = res
+	return ec.marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MediaConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MediaConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MediaEdge_node(ctx context.Context, field graphql.CollectedField, obj *dto.MediaEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MediaEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Media)
+	fc.Result = res
+	return ec.marshalOMedia2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedia(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MediaEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MediaEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Media_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Media_name(ctx, field)
+			case "url":
+				return ec.fieldContext_Media_url(ctx, field)
+			case "contentType":
+				return ec.fieldContext_Media_contentType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MediaEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *dto.MediaEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MediaEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MediaEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MediaEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7825,6 +8370,66 @@ func (ec *executionContext) fieldContext_Query_listPatientAllergies(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_listPatientMedia(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_listPatientMedia(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ListPatientMedia(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.MediaConnection)
+	fc.Result = res
+	return ec.marshalOMediaConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_listPatientMedia(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "totalCount":
+				return ec.fieldContext_MediaConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_MediaConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_MediaConnection_pageInfo(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MediaConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_listPatientMedia_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query__service(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query__service(ctx, field)
 	if err != nil {
@@ -10608,34 +11213,38 @@ func (ec *executionContext) unmarshalInputAllergyInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
-			it.Code, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Code = data
 		case "terminologySource":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("terminologySource"))
-			it.TerminologySource, err = ec.unmarshalNTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx, v)
+			data, err := ec.unmarshalNTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.TerminologySource = data
 		case "encounterID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
-			it.EncounterID, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.EncounterID = data
 		case "reaction":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reaction"))
-			it.Reaction, err = ec.unmarshalOReactionInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReactionInput(ctx, v)
+			data, err := ec.unmarshalOReactionInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReactionInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Reaction = data
 		}
 	}
 
@@ -10660,50 +11269,56 @@ func (ec *executionContext) unmarshalInputConditionInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
-			it.Code, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Code = data
 		case "system":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("system"))
-			it.System, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.System = data
 		case "status":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			it.Status, err = ec.unmarshalNConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx, v)
+			data, err := ec.unmarshalNConditionStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Status = data
 		case "encounterID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
-			it.EncounterID, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.EncounterID = data
 		case "onsetDate":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("onsetDate"))
-			it.OnsetDate, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
+			data, err := ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.OnsetDate = data
 		case "note":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
-			it.Note, err = ec.unmarshalOString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Note = data
 		}
 	}
 
@@ -10728,18 +11343,20 @@ func (ec *executionContext) unmarshalInputContactInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalNContactType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactType(ctx, v)
+			data, err := ec.unmarshalNContactType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactType(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Type = data
 		case "value":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-			it.Value, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Value = data
 		}
 	}
 
@@ -10764,18 +11381,20 @@ func (ec *executionContext) unmarshalInputEpisodeOfCareInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			it.Status, err = ec.unmarshalNEpisodeOfCareStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCareStatusEnum(ctx, v)
+			data, err := ec.unmarshalNEpisodeOfCareStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCareStatusEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Status = data
 		case "patientID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
-			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.PatientID = data
 		}
 	}
 
@@ -10800,26 +11419,29 @@ func (ec *executionContext) unmarshalInputHealthTimelineInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
-			it.PatientID, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.PatientID = data
 		case "offset":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
-			it.Offset, err = ec.unmarshalNInt2int(ctx, v)
+			data, err := ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Offset = data
 		case "limit":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
-			it.Limit, err = ec.unmarshalNInt2int(ctx, v)
+			data, err := ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Limit = data
 		}
 	}
 
@@ -10844,18 +11466,20 @@ func (ec *executionContext) unmarshalInputIdentifierInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalNIdentifierType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierType(ctx, v)
+			data, err := ec.unmarshalNIdentifierType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierType(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Type = data
 		case "value":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-			it.Value, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Value = data
 		}
 	}
 
@@ -10880,26 +11504,29 @@ func (ec *executionContext) unmarshalInputObservationInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			it.Status, err = ec.unmarshalNObservationStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationStatus(ctx, v)
+			data, err := ec.unmarshalNObservationStatus2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Status = data
 		case "encounterID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
-			it.EncounterID, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.EncounterID = data
 		case "value":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-			it.Value, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Value = data
 		}
 	}
 
@@ -10924,34 +11551,38 @@ func (ec *executionContext) unmarshalInputPagination(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-			it.First, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.First = data
 		case "after":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-			it.After, err = ec.unmarshalOString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.After = data
 		case "last":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-			it.Last, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Last = data
 		case "before":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-			it.Before, err = ec.unmarshalOString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Before = data
 		}
 	}
 
@@ -10976,58 +11607,65 @@ func (ec *executionContext) unmarshalInputPatientInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
-			it.FirstName, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.FirstName = data
 		case "lastName":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
-			it.LastName, err = ec.unmarshalOString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.LastName = data
 		case "otherNames":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("otherNames"))
-			it.OtherNames, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.OtherNames = data
 		case "birthDate":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthDate"))
-			it.BirthDate, err = ec.unmarshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
+			data, err := ec.unmarshalNDate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.BirthDate = data
 		case "gender":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gender"))
-			it.Gender, err = ec.unmarshalNGender2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐGender(ctx, v)
+			data, err := ec.unmarshalNGender2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐGender(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Gender = data
 		case "identifiers":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identifiers"))
-			it.Identifiers, err = ec.unmarshalNIdentifierInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInputᚄ(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Identifiers = data
 		case "contacts":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contacts"))
-			it.Contacts, err = ec.unmarshalNContactInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInputᚄ(ctx, v)
+			data, err := ec.unmarshalNContactInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Contacts = data
 		}
 	}
 
@@ -11052,26 +11690,29 @@ func (ec *executionContext) unmarshalInputReactionInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
-			it.Code, err = ec.unmarshalOString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Code = data
 		case "system":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("system"))
-			it.System, err = ec.unmarshalOString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.System = data
 		case "severity":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("severity"))
-			it.Severity, err = ec.unmarshalOAllergyIntoleranceReactionSeverityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntoleranceReactionSeverityEnum(ctx, v)
+			data, err := ec.unmarshalOAllergyIntoleranceReactionSeverityEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyIntoleranceReactionSeverityEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Severity = data
 		}
 	}
 
@@ -11498,6 +12139,117 @@ func (ec *executionContext) _HealthTimeline(ctx context.Context, sel ast.Selecti
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var mediaImplementors = []string{"Media"}
+
+func (ec *executionContext) _Media(ctx context.Context, sel ast.SelectionSet, obj *dto.Media) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mediaImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Media")
+		case "id":
+
+			out.Values[i] = ec._Media_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "name":
+
+			out.Values[i] = ec._Media_name(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "url":
+
+			out.Values[i] = ec._Media_url(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "contentType":
+
+			out.Values[i] = ec._Media_contentType(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var mediaConnectionImplementors = []string{"MediaConnection"}
+
+func (ec *executionContext) _MediaConnection(ctx context.Context, sel ast.SelectionSet, obj *dto.MediaConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mediaConnectionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MediaConnection")
+		case "totalCount":
+
+			out.Values[i] = ec._MediaConnection_totalCount(ctx, field, obj)
+
+		case "edges":
+
+			out.Values[i] = ec._MediaConnection_edges(ctx, field, obj)
+
+		case "pageInfo":
+
+			out.Values[i] = ec._MediaConnection_pageInfo(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var mediaEdgeImplementors = []string{"MediaEdge"}
+
+func (ec *executionContext) _MediaEdge(ctx context.Context, sel ast.SelectionSet, obj *dto.MediaEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mediaEdgeImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MediaEdge")
+		case "node":
+
+			out.Values[i] = ec._MediaEdge_node(ctx, field, obj)
+
+		case "cursor":
+
+			out.Values[i] = ec._MediaEdge_cursor(ctx, field, obj)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -12345,6 +13097,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_listPatientAllergies(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "listPatientMedia":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_listPatientMedia(ctx, field)
 				return res
 			}
 
@@ -13925,6 +14697,62 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	}
 	res := graphql.MarshalInt(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOMedia2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedia(ctx context.Context, sel ast.SelectionSet, v dto.Media) graphql.Marshaler {
+	return ec._Media(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOMediaConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaConnection(ctx context.Context, sel ast.SelectionSet, v *dto.MediaConnection) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MediaConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMediaEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaEdge(ctx context.Context, sel ast.SelectionSet, v dto.MediaEdge) graphql.Marshaler {
+	return ec._MediaEdge(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOMediaEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaEdge(ctx context.Context, sel ast.SelectionSet, v []dto.MediaEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOMediaEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicalData(ctx context.Context, sel ast.SelectionSet, v *dto.MedicalData) graphql.Marshaler {
