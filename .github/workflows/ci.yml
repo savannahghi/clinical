@@ -7,16 +7,13 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
-  FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
   ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
   SERVICE_HOST: ${{ secrets.SERVICE_HOST }}
   GOOGLE_PROJECT_NUMBER: ${{ secrets.GOOGLE_PROJECT_NUMBER }}
-  ROOT_COLLECTION_SUFFIX: ${{ secrets.ROOT_COLLECTION_SUFFIX }}
   CLOUD_HEALTH_PUBSUB_TOPIC: ${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}
   CLOUD_HEALTH_DATASET_ID: ${{ secrets.CLOUD_HEALTH_DATASET_ID }}
   OPENCONCEPTLAB_TOKEN: ${{ secrets.OPENCONCEPTLAB_TOKEN }}
   OPENCONCEPTLAB_API_URL: ${{ secrets.OPENCONCEPTLAB_API_URL }}
-  JWT_KEY: ${{ secrets.JWT_KEY }}
   CLOUD_HEALTH_FHIRSTORE_ID: ${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}
   CLOUD_HEALTH_DATASET_LOCATION: ${{ secrets.CLOUD_HEALTH_DATASET_LOCATION }}
   SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -31,7 +28,6 @@ env:
   MYCAREHUB_CLIENT_SECRET: ${{ secrets.MYCAREHUB_CLIENT_SECRET }}
   MYCAREHUB_INTROSPECT_URL: ${{ secrets.MYCAREHUB_INTROSPECT_URL }}
   CLINICAL_BUCKET_NAME: ${{ secrets.CLINICAL_BUCKET_NAME }}
-
 
 jobs:
   golangci:
@@ -65,7 +61,7 @@ jobs:
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
           service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           export_default_credentials: true
-      
+
       - name: Install Go
         uses: actions/setup-go@v4
         with:
@@ -79,10 +75,9 @@ jobs:
           go install github.com/ory/go-acc
           go install github.com/axw/gocov/gocov
           go get github.com/savannahghi/serverutils@v0.0.7
-          
-      
+
       - name: Run tests
-        run: |    
+        run: |
           go-acc -o coverage.txt --ignore generated,cmd,graph  ./... -- -timeout 60m
           grep -v "generated.go" coverage.txt | grep -v "_gen.go" | grep -v "_mock.go" | grep -v "*mock.go" | grep -v "mocks.go" | grep -v "*resolver*go" | grep -v "server.go" > coverage.out
           go tool cover -html=coverage.out -o coverage.html
