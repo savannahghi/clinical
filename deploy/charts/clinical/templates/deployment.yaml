@@ -49,12 +49,6 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: {{ .Values.app.container.env.googleApplicationCredentialsSecret.filePath }}
               
-            - name: FIREBASE_WEB_API_KEY
-              value:  {{ .Values.app.container.env.firebaseWebApiKey | quote }}
-
-            - name: JWT_KEY
-              value: {{ .Values.app.container.env.jwtKey | quote }}
-
             - name: GOOGLE_PROJECT_NUMBER
               value: {{ .Values.app.container.env.googleProjectNumber | quote }}
 
@@ -63,9 +57,6 @@ spec:
 
             - name: SENTRY_DSN
               value: {{ .Values.app.container.env.sentryDSN | quote }}
-
-            - name: ROOT_COLLECTION_SUFFIX
-              value: {{ .Values.app.container.env.rootCollectionSuffix | quote }}
 
             - name: CLOUD_HEALTH_PUBSUB_TOPIC
               value: {{ .Values.app.container.env.cloudHealthPubsubTopic | quote }}

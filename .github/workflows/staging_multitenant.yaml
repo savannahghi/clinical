@@ -1,30 +1,27 @@
 name: Staging Multitenant Deployment
 
-on: 
+on:
   push:
     branches:
       - develop-v2
 
 env:
-  GKE_ZONE: europe-west1-b
-  GKE_PROJECT: sghi-307909
-  TEST_CLUSTER_NAME: sghi-apps
+  GKE_ZONE: ${{ secrets.GKE_ZONE }}
+  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
   DOCKER_IMAGE_TAG: eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:${{  github.sha }}
   NAMESPACE: ${{ secrets.NAMESPACE }}
   APP_REPLICA_COUNT: ${{ secrets.APP_REPLICA_COUNT }}
   PORT: ${{ secrets.PORT }}
   GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
-  FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
   ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
   SERVICE_HOST: ${{ secrets.SERVICE_HOST }}
   GOOGLE_PROJECT_NUMBER: ${{ secrets.GOOGLE_PROJECT_NUMBER }}
-  ROOT_COLLECTION_SUFFIX: ${{ secrets.ROOT_COLLECTION_SUFFIX }}
   CLOUD_HEALTH_PUBSUB_TOPIC: ${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}
   CLOUD_HEALTH_DATASET_ID: ${{ secrets.CLOUD_HEALTH_DATASET_ID }}
   CLOUD_HEALTH_DATASET_LOCATION: ${{ secrets.CLOUD_HEALTH_DATASET_LOCATION }}
   OPENCONCEPTLAB_TOKEN: ${{ secrets.OPENCONCEPTLAB_TOKEN }}
   OPENCONCEPTLAB_API_URL: ${{ secrets.OPENCONCEPTLAB_API_URL }}
-  JWT_KEY: ${{ secrets.JWT_KEY }}
   CLOUD_HEALTH_FHIRSTORE_ID: ${{ secrets.CLOUD_HEALTH_FHIRSTORE_ID }}
   SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   SAVANNAH_ADMIN_EMAIL: ${{ secrets.SAVANNAH_ADMIN_EMAIL }}
@@ -53,8 +50,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v0'
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
         with:
           credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
@@ -62,23 +59,61 @@ jobs:
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-         gcloud --quiet auth configure-docker
+          gcloud --quiet auth configure-docker
       - name: Build and Push Image
         run: |-
           docker build -t eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:$GITHUB_SHA .
           docker push eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:$GITHUB_SHA
-      
+
       - name: Install Helm
         run: |
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
       - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
         with:
-          cluster_name: ${{ env.TEST_CLUSTER_NAME }}
+          cluster_name: ${{ env.CLUSTER_NAME }}
           location: ${{ env.GKE_ZONE }}
           credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
- 
+
       - name: Deploy to Google Kubernetes engine
         shell: bash
         run: cd deploy/ && cat deploy.sh && sh deploy.sh
-      
+
+  deploy_to_sil_aut:
+    name: Deploy sil copy clinical to google kubernetes engine
+    runs-on: ubuntu-latest
+    environment:
+      name: sil-uat
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+      - name: Build and Push Image
+        run: |-
+          docker build -t eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:$GITHUB_SHA .
+          docker push eu.gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ secrets.GCR_NAME }}:$GITHUB_SHA
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ env.CLUSTER_NAME }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - name: Deploy to Google Kubernetes engine
+        shell: bash
+        run: cd deploy/ && cat deploy.sh && sh deploy.sh
