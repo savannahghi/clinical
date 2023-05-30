@@ -175,7 +175,7 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 	facilities := v1.Group("/facilities")
 	facilities.POST("", handlers.RegisterFacility)
 
-	upload := v1.Group("/uploadMedia")
+	upload := v1.Group("/media")
 	upload.Use(rest.AuthenticationGinMiddleware(*authclient))
 	upload.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
 	upload.POST("", handlers.UploadMedia)

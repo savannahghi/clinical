@@ -1,59 +1,99 @@
 extend type Query {
-    patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
-    getMedicalData(patientID: String!): MedicalData
+  patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
+  getMedicalData(patientID: String!): MedicalData
 
-    getEpisodeOfCare(id: ID!): EpisodeOfCare
+  getEpisodeOfCare(id: ID!): EpisodeOfCare
 
-    # Conditions
-    listPatientConditions(patientID: ID!, pagination:Pagination!): ConditionConnection
+  # Conditions
+  listPatientConditions(
+    patientID: ID!
+    pagination: Pagination!
+  ): ConditionConnection
 
-    # Encounter
-    listPatientEncounters(patientID: String!, pagination: Pagination!): EncounterConnection
+  # Encounter
+  listPatientEncounters(
+    patientID: String!
+    pagination: Pagination!
+  ): EncounterConnection
 
-    # Observation
-    getPatientTemperatureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientBloodPressureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientHeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientRespiratoryRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientPulseRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientBMIEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientWeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientViralLoad(patientID: ID!, pagination: Pagination!): ObservationConnection
+  # Observation
+  getPatientTemperatureEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
 
-    # Allergy
-    searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
-    getAllergy(id: ID!): Allergy!
-    listPatientAllergies(patientID: ID!, pagination:Pagination!): AllergyConnection
+  getPatientBloodPressureEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
 
-    # Media
-    listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
+  getPatientHeightEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientRespiratoryRateEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientPulseRateEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientBMIEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientWeightEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientViralLoad(
+    patientID: ID!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  # Allergy
+  searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
+  getAllergy(id: ID!): Allergy!
+  listPatientAllergies(
+    patientID: ID!
+    pagination: Pagination!
+  ): AllergyConnection
+
+  # Media
+  listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
 }
 
 extend type Mutation {
-    # EpisodeOfCare
-    createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
-    endEpisodeOfCare(id: ID!): EpisodeOfCare
+  # EpisodeOfCare
+  createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
+  endEpisodeOfCare(id: ID!): EpisodeOfCare
 
-    # Encounter
-    startEncounter(episodeID: String!): String!
-    endEncounter(encounterID: String!): Boolean!
+  # Encounter
+  startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
 
-    # Observation
-    recordTemperature(input: ObservationInput!): Observation!
-    recordHeight(input: ObservationInput!): Observation!
-    recordWeight(input: ObservationInput!): Observation!
-    recordRespiratoryRate(input: ObservationInput!): Observation!
-    recordPulseRate(input: ObservationInput!): Observation!
-    recordBloodPressure(input: ObservationInput!): Observation!
-    recordBMI(input: ObservationInput!): Observation!
-    recordViralLoad(input: ObservationInput!): Observation!
+  # Observation
+  recordTemperature(input: ObservationInput!): Observation!
+  recordHeight(input: ObservationInput!): Observation!
+  recordWeight(input: ObservationInput!): Observation!
+  recordRespiratoryRate(input: ObservationInput!): Observation!
+  recordPulseRate(input: ObservationInput!): Observation!
+  recordBloodPressure(input: ObservationInput!): Observation!
+  recordBMI(input: ObservationInput!): Observation!
+  recordViralLoad(input: ObservationInput!): Observation!
 
-    # Patient
-    createPatient(input: PatientInput!): Patient!
+  # Patient
+  createPatient(input: PatientInput!): Patient!
 
-    #  Conditions
-    createCondition(input: ConditionInput!): Condition!
+  #  Conditions
+  createCondition(input: ConditionInput!): Condition!
 
-    # Allergy Intolerance
-    createAllergyIntolerance(input: AllergyInput!): Allergy
+  # Allergy Intolerance
+  createAllergyIntolerance(input: AllergyInput!): Allergy
 }
