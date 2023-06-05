@@ -105,7 +105,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 		return err
 	}
 
-	err = c.infrastructure.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, payload.ClientID)
+	err = c.infrastructure.MyCareHub.AddFHIRIDToPatientProfile(context.Background(), *patient.PatientRecord.ID, payload.ClientID)
 	if err != nil {
 		return err
 	}
