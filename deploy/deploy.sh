@@ -47,6 +47,7 @@ helm upgrade \
     --set app.container.env.mycarehubIntrospectURL="${MYCAREHUB_INTROSPECT_URL}"\
     --set app.container.env.clinicalBucketName="${CLINICAL_BUCKET_NAME}"\
     --set networking.issuer.name="letsencrypt-prod"\
+    --set app.container.env.jwtKey="${JWT_KEY}"\
     --set networking.issuer.privateKeySecretRef="letsencrypt-prod"\
     --set networking.ingress.host="${APP_DOMAIN}"\
     --wait \

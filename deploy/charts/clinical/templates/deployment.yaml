@@ -58,6 +58,9 @@ spec:
             - name: SENTRY_DSN
               value: {{ .Values.app.container.env.sentryDSN | quote }}
 
+            - name: JWT_KEY
+              value: {{ .Values.app.container.env.jwtKey | quote }}
+
             - name: CLOUD_HEALTH_PUBSUB_TOPIC
               value: {{ .Values.app.container.env.cloudHealthPubsubTopic | quote }}
 
