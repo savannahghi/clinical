@@ -12,6 +12,7 @@ env:
   PORT: ${{ secrets.PORT }}
   GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
   ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+  JWT_KEY: ${{ secrets.JWT_KEY }}
   SERVICE_HOST: ${{ secrets.SERVICE_HOST }}
   GOOGLE_PROJECT_NUMBER: ${{ secrets.GOOGLE_PROJECT_NUMBER }}
   CLOUD_HEALTH_PUBSUB_TOPIC: ${{ secrets.CLOUD_HEALTH_PUBSUB_TOPIC }}
@@ -86,7 +87,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main-v2'}}
     strategy:
       matrix:
-        environment: [multitenant-prod]
+        environment: [multitenant-prod, sil-prod]
 
     runs-on: ubuntu-latest
     environment:
