@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -34,7 +35,7 @@ func NewPresentationHandlers(usecases usecases.Interactor, extension BaseExtensi
 
 // ReceivePubSubPushMessage receives and processes a pubsub message
 func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
-	ctx := c.Request.Context()
+	ctx := context.Background()
 
 	message, err := p.baseExt.VerifyPubSubJWTAndDecodePayload(c.Writer, c.Request)
 	if err != nil {
