@@ -39,10 +39,10 @@ env:
 jobs:
   deploy_to_multitenant_staging:
     name: Deploy multitenant staging server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/develop-v2'}}
+    if: ${{ github.ref == 'refs/heads/log-create-patient'}}
     strategy:
       matrix:
-        environment: [multitenant-staging, sil-uat]
+        environment: [multitenant-staging]
 
     runs-on: ubuntu-latest
     environment:

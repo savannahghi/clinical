@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/google/uuid"
@@ -21,6 +22,7 @@ var (
 
 // CreateFHIRPatient creates a patient on FHIR store
 func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload dto.PatientPubSubMessage) error {
+	log.Println(payload)
 	year, month, day := payload.DateOfBirth.Date()
 	patientName := strings.Split(payload.Name, " ")
 	registrationInput := domain.SimplePatientRegistrationInput{
@@ -36,6 +38,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 	}
 
 	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, registrationInput)
+	log.Println(err)
 	if err != nil {
 		return err
 	}
@@ -91,6 +94,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 	patientInput.Identifier = append(patientInput.Identifier, userIdentifier)
 
 	tags, err := c.CreateTenantMetaTags(ctx, payload.OrganizationID, payload.FacilityID)
+	log.Println(err)
 	if err != nil {
 		return err
 	}
@@ -100,12 +104,14 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 	}
 
 	patient, err := c.infrastructure.FHIR.CreateFHIRPatient(ctx, *patientInput)
+	log.Println(err)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return err
 	}
 
 	err = c.infrastructure.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, payload.ClientID)
+	log.Println(err)
 	if err != nil {
 		return err
 	}
