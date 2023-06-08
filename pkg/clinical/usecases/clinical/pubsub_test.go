@@ -15,6 +15,7 @@ import (
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
+	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 )
@@ -91,10 +92,11 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to create patient" {
@@ -104,7 +106,7 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to add FHIR ID to profile" {
-				fakeMCH.MockAddFHIRIDToPatientProfileFn = func(ctx context.Context, fhirID, clientID string) error {
+				fakePubSub.MockNotifyPatientFHIRIDUpdatefn = func(ctx context.Context, data dto.UpdatePatientFHIRID) error {
 					return fmt.Errorf("failed to add fhir ID to profile")
 				}
 			}
@@ -181,10 +183,11 @@ func TestUseCasesClinicalImpl_CreatePubsubOrganization(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to create pubsub organization" {
@@ -194,7 +197,7 @@ func TestUseCasesClinicalImpl_CreatePubsubOrganization(t *testing.T) {
 			}
 
 			if tt.name == "Sad Case - Fail to add fhir id to facility" {
-				fakeMCH.MockAddFHIRIDToFacilityFn = func(ctx context.Context, fhirID, facilityID string) error {
+				fakePubSub.MockNotifyFacilityFHIRIDUpdatefn = func(ctx context.Context, data dto.UpdateFacilityFHIRID) error {
 					return fmt.Errorf("failed to add fhir ID to facility")
 				}
 			}
@@ -314,10 +317,11 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to find patient" {
@@ -459,10 +463,11 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - fail to get fhir patient" {
@@ -623,10 +628,11 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get patient" {
@@ -742,10 +748,11 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get user profile" {
@@ -839,10 +846,11 @@ func TestUseCasesClinicalImpl_getConcept(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: failed to get icd10 concept" {
@@ -946,10 +954,11 @@ func TestUseCasesClinicalImpl_CreatePubsubTenant(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: unable to create tenant" {
@@ -959,7 +968,7 @@ func TestUseCasesClinicalImpl_CreatePubsubTenant(t *testing.T) {
 			}
 
 			if tt.name == "Sad case: unable to update fhir patient id" {
-				fakeMCH.MockUpdateProgramFHIRTenantIDFn = func(ctx context.Context, programID, tenantID string) error {
+				fakePubSub.MockNotifyProgramFHIRIDUpdatefn = func(ctx context.Context, data dto.UpdateProgramFHIRID) error {
 					return fmt.Errorf("error")
 				}
 			}

@@ -105,7 +105,10 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 		return err
 	}
 
-	err = c.infrastructure.MyCareHub.AddFHIRIDToPatientProfile(ctx, *patient.PatientRecord.ID, payload.ClientID)
+	err = c.infrastructure.Pubsub.NotifyPatientFHIRIDUpdate(ctx, dto.UpdatePatientFHIRID{
+		FhirID:   *patient.PatientRecord.ID,
+		ClientID: payload.ClientID,
+	})
 	if err != nil {
 		return err
 	}
@@ -138,7 +141,10 @@ func (c *UseCasesClinicalImpl) CreatePubsubOrganization(ctx context.Context, dat
 		return err
 	}
 
-	err = c.infrastructure.MyCareHub.AddFHIRIDToFacility(ctx, *response.Resource.ID, *data.ID)
+	err = c.infrastructure.Pubsub.NotifyFacilityFHIRIDUpdate(ctx, dto.UpdateFacilityFHIRID{
+		FacilityID: *data.ID,
+		FhirID:     *response.Resource.ID,
+	})
 	if err != nil {
 		return err
 	}
@@ -253,7 +259,10 @@ func (c *UseCasesClinicalImpl) CreatePubsubTenant(ctx context.Context, data dto.
 		return err
 	}
 
-	err = c.infrastructure.MyCareHub.UpdateProgramFHIRTenantID(ctx, data.Identifiers[0].Value, organization.ID)
+	err = c.infrastructure.Pubsub.NotifyProgramFHIRIDUpdate(ctx, dto.UpdateProgramFHIRID{
+		ProgramID:    data.Identifiers[0].Value,
+		FHIRTenantID: organization.ID,
+	})
 	if err != nil {
 		return err
 	}

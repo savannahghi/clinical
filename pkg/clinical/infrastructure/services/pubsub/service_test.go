@@ -8,7 +8,6 @@ import (
 
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
-	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/serverutils"
 )
@@ -29,13 +28,9 @@ func InitializeTestPubSub(t *testing.T) (*pubsubmessaging.ServicePubSubMessaging
 		return nil, fmt.Errorf("unable to initialize pubsub client: %w", err)
 	}
 
-	// Initialize base (common) extension
-	baseExtension := extensions.NewBaseExtensionImpl()
-
 	pubSub, err := pubsubmessaging.NewServicePubSubMessaging(
 		ctx,
 		pubSubClient,
-		baseExtension,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize pubsub messaging service: %w", err)
@@ -118,9 +113,10 @@ func TestServicePubSubMessaging_PublishToPubsub(t *testing.T) {
 	}
 
 	type args struct {
-		ctx     context.Context
-		topicID string
-		payload []byte
+		ctx         context.Context
+		topicID     string
+		serviceName string
+		payload     []byte
 	}
 	tests := []struct {
 		name    string
@@ -158,7 +154,7 @@ func TestServicePubSubMessaging_PublishToPubsub(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := ps.PublishToPubsub(tt.args.ctx, tt.args.topicID, tt.args.payload); (err != nil) != tt.wantErr {
+			if err := ps.PublishToPubsub(tt.args.ctx, tt.args.topicID, tt.args.serviceName, tt.args.payload); (err != nil) != tt.wantErr {
 				t.Errorf("ServicePubSubMessaging.PublishToPubsub() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

@@ -13,6 +13,7 @@ import (
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
 	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
+	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 )
@@ -74,10 +75,11 @@ func TestUseCasesClinicalImpl_StartEncounter(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get episode of care" {
@@ -158,10 +160,11 @@ func TestUseCasesClinicalImpl_EndEncounter(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to end encounter" {
@@ -261,10 +264,11 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeMCH, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get fhir patient" {
