@@ -51,29 +51,11 @@ type BaseExtension interface {
 	GetPubSubTopic(m *pubsubtools.PubSubPayload) (string, error)
 }
 
-// IServiceMyCareHub represents mycarehub usecases
-type IServiceMyCareHub interface {
-	AddFHIRIDToPatientProfile(
-		ctx context.Context,
-		fhirID string,
-		clientID string,
-	) error
-
-	AddFHIRIDToFacility(
-		ctx context.Context,
-		fhirID string,
-		facilityID string,
-	) error
-
-	UpdateProgramFHIRTenantID(ctx context.Context, programID string, tenantID string) error
-}
-
 // Infrastructure ...
 type Infrastructure struct {
 	FHIR           repository.FHIR
 	OpenConceptLab ServiceOCL
 	BaseExtension  BaseExtension
-	MyCareHub      IServiceMyCareHub
 	Upload         upload.ServiceUpload
 	Pubsub         pubsubmessaging.ServicePubsub
 }
@@ -83,7 +65,6 @@ func NewInfrastructureInteractor(
 	ext BaseExtension,
 	fhir repository.FHIR,
 	openconceptlab ServiceOCL,
-	mycarehub IServiceMyCareHub,
 	upload upload.ServiceUpload,
 	pubsub pubsubmessaging.ServicePubsub,
 ) Infrastructure {
@@ -91,7 +72,6 @@ func NewInfrastructureInteractor(
 		fhir,
 		openconceptlab,
 		ext,
-		mycarehub,
 		upload,
 		pubsub,
 	}
