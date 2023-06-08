@@ -6,6 +6,7 @@ import (
 
 	"cloud.google.com/go/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
 )
@@ -18,31 +19,29 @@ const (
 	TestTopicName = "pubsub.testing.topic"
 
 	TopicVersion = "v2"
+
+	// MyCareHubServiceName defines the service where some of the topics have been created
+	MyCareHubServiceName = "mycarehub"
 )
 
-// BaseExtension is an interface that represents some methods in base
-// The `onboarding` service has a dependency on `base` library.
-// Our first step to making some functions are testable is to remove the base dependency.
-// This can be achieved with the below interface.
-type BaseExtension interface {
-	GetEnvVar(envName string) (string, error)
+type ServicePubsub interface {
+	NotifyPatientFHIRIDUpdate(ctx context.Context, data dto.UpdatePatientFHIRID) error
+	NotifyFacilityFHIRIDUpdate(ctx context.Context, data dto.UpdateFacilityFHIRID) error
+	NotifyProgramFHIRIDUpdate(ctx context.Context, data dto.UpdateProgramFHIRID) error
 }
 
 // ServicePubSubMessaging is used to send and receive pubsub notifications
 type ServicePubSubMessaging struct {
-	client  *pubsub.Client
-	baseExt BaseExtension
+	client *pubsub.Client
 }
 
 // NewServicePubSubMessaging returns a new instance of pubsub
 func NewServicePubSubMessaging(
 	ctx context.Context,
 	client *pubsub.Client,
-	baseExt BaseExtension,
 ) (*ServicePubSubMessaging, error) {
 	s := &ServicePubSubMessaging{
-		client:  client,
-		baseExt: baseExt,
+		client: client,
 	}
 
 	if err := s.EnsureTopicsExist(
@@ -90,7 +89,7 @@ func (ps ServicePubSubMessaging) TopicIDs() []string {
 // PublishToPubsub publishes a message to a specified topic
 func (ps ServicePubSubMessaging) PublishToPubsub(
 	ctx context.Context,
-	topicID string,
+	topicID, serviceName string,
 	payload []byte,
 ) error {
 	environment, err := serverutils.GetEnvVar(serverutils.GoogleCloudProjectIDEnvVarName)
@@ -103,7 +102,7 @@ func (ps ServicePubSubMessaging) PublishToPubsub(
 		ps.client,
 		topicID,
 		environment,
-		common.ClinicalServiceName,
+		serviceName,
 		TopicVersion,
 		payload,
 	)
@@ -127,7 +126,7 @@ func (ps ServicePubSubMessaging) EnsureTopicsExist(
 func (ps ServicePubSubMessaging) EnsureSubscriptionsExist(
 	ctx context.Context,
 ) error {
-	hostName, err := ps.baseExt.GetEnvVar(HostNameEnvVarName)
+	hostName, err := serverutils.GetEnvVar(HostNameEnvVarName)
 	if err != nil {
 		return err
 	}

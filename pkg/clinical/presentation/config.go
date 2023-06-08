@@ -91,12 +91,12 @@ func StartServer(
 	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient)
 	upload := upload.NewServiceUpload(ctx)
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub, upload)
-
-	_, err = pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient, baseExtension)
+	pubsubSvc, err := pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient)
 	if err != nil {
 		serverutils.LogStartupError(ctx, fmt.Errorf("failed to initialize pubsub messaging service: %w", err))
 	}
+
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub, upload, pubsubSvc)
 
 	authServerConfig := authutils.Config{
 		AuthServerEndpoint: authServerEndpoint,
