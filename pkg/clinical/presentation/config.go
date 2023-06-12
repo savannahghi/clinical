@@ -13,12 +13,10 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/authutils"
-	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
-	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload"
@@ -87,8 +85,7 @@ func StartServer(
 	repo := fhirdataset.NewFHIRRepository(ctx, hsv, project, datasetID, datasetLocation, fhirStoreID)
 	fhir := fhir.NewFHIRStoreImpl(repo)
 	ocl := openconceptlab.NewServiceOCL()
-	myCareHubClient := common.NewInterServiceClient("mycarehub", baseExtension)
-	mycarehub := mycarehub.NewServiceMyCareHub(myCareHubClient)
+
 	upload := upload.NewServiceUpload(ctx)
 
 	pubsubSvc, err := pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient)
@@ -96,7 +93,7 @@ func StartServer(
 		serverutils.LogStartupError(ctx, fmt.Errorf("failed to initialize pubsub messaging service: %w", err))
 	}
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, mycarehub, upload, pubsubSvc)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, upload, pubsubSvc)
 
 	authServerConfig := authutils.Config{
 		AuthServerEndpoint: authServerEndpoint,

@@ -11,7 +11,6 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
-	fakeMyCarehubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/mycarehub/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
@@ -56,11 +55,10 @@ func TestUseCasesClinicalImpl_GetTenantMetaTags(t *testing.T) {
 			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 			Fakefhir := fakeFHIRMock.NewFHIRMock()
 			FakeOCL := fakeOCLMock.NewFakeOCLMock()
-			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "sad case: missing tenant org in context" {
@@ -184,11 +182,10 @@ func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
 			Fakefhir := fakeFHIRMock.NewFHIRMock()
 			FakeOCL := fakeOCLMock.NewFakeOCLMock()
-			fakeMCH := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeMCH, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := c.ContactsToContactPointInput(tt.args.ctx, tt.args.phones, tt.args.emails)
@@ -336,11 +333,10 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 			ext := fakeExtMock.NewFakeBaseExtensionMock()
 			fhir := fakeFHIRMock.NewFHIRMock()
 			ocl := fakeOCLMock.NewFakeOCLMock()
-			mch := fakeMyCarehubMock.NewFakeMyCareHubServiceMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(ext, fhir, ocl, mch, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(ext, fhir, ocl, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := c.SimplePatientRegistrationInputToPatientInput(tt.args.ctx, tt.args.input)
