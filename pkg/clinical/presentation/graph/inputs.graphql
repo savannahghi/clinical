@@ -21,8 +21,8 @@ input PatientInput {
   otherNames: String
   birthDate: Date!
   gender: Gender!
-  identifiers: [IdentifierInput!]!
-  contacts: [ContactInput!]!
+  identifiers: [IdentifierInput!]
+  contacts: [ContactInput!]
 }
 
 input IdentifierInput {
