@@ -1516,63 +1516,103 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "../clinical.graphql", Input: `extend type Query {
-    patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
-    getMedicalData(patientID: String!): MedicalData
+  patientHealthTimeline(input: HealthTimelineInput!): HealthTimeline!
+  getMedicalData(patientID: String!): MedicalData
 
-    getEpisodeOfCare(id: ID!): EpisodeOfCare
+  getEpisodeOfCare(id: ID!): EpisodeOfCare
 
-    # Conditions
-    listPatientConditions(patientID: ID!, pagination:Pagination!): ConditionConnection
+  # Conditions
+  listPatientConditions(
+    patientID: ID!
+    pagination: Pagination!
+  ): ConditionConnection
 
-    # Encounter
-    listPatientEncounters(patientID: String!, pagination: Pagination!): EncounterConnection
+  # Encounter
+  listPatientEncounters(
+    patientID: String!
+    pagination: Pagination!
+  ): EncounterConnection
 
-    # Observation
-    getPatientTemperatureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientBloodPressureEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientHeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientRespiratoryRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientPulseRateEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientBMIEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientWeightEntries(patientID: String!, pagination: Pagination!): ObservationConnection
-    getPatientViralLoad(patientID: ID!, pagination: Pagination!): ObservationConnection
+  # Observation
+  getPatientTemperatureEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
 
-    # Allergy
-    searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
-    getAllergy(id: ID!): Allergy!
-    listPatientAllergies(patientID: ID!, pagination:Pagination!): AllergyConnection
+  getPatientBloodPressureEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
 
-    # Media
-    listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
+  getPatientHeightEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientRespiratoryRateEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientPulseRateEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientBMIEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientWeightEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  getPatientViralLoad(
+    patientID: ID!
+    pagination: Pagination!
+  ): ObservationConnection
+
+  # Allergy
+  searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
+  getAllergy(id: ID!): Allergy!
+  listPatientAllergies(
+    patientID: ID!
+    pagination: Pagination!
+  ): AllergyConnection
+
+  # Media
+  listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
 }
 
 extend type Mutation {
-    # EpisodeOfCare
-    createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
-    endEpisodeOfCare(id: ID!): EpisodeOfCare
+  # EpisodeOfCare
+  createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
+  endEpisodeOfCare(id: ID!): EpisodeOfCare
 
-    # Encounter
-    startEncounter(episodeID: String!): String!
-    endEncounter(encounterID: String!): Boolean!
+  # Encounter
+  startEncounter(episodeID: String!): String!
+  endEncounter(encounterID: String!): Boolean!
 
-    # Observation
-    recordTemperature(input: ObservationInput!): Observation!
-    recordHeight(input: ObservationInput!): Observation!
-    recordWeight(input: ObservationInput!): Observation!
-    recordRespiratoryRate(input: ObservationInput!): Observation!
-    recordPulseRate(input: ObservationInput!): Observation!
-    recordBloodPressure(input: ObservationInput!): Observation!
-    recordBMI(input: ObservationInput!): Observation!
-    recordViralLoad(input: ObservationInput!): Observation!
+  # Observation
+  recordTemperature(input: ObservationInput!): Observation!
+  recordHeight(input: ObservationInput!): Observation!
+  recordWeight(input: ObservationInput!): Observation!
+  recordRespiratoryRate(input: ObservationInput!): Observation!
+  recordPulseRate(input: ObservationInput!): Observation!
+  recordBloodPressure(input: ObservationInput!): Observation!
+  recordBMI(input: ObservationInput!): Observation!
+  recordViralLoad(input: ObservationInput!): Observation!
 
-    # Patient
-    createPatient(input: PatientInput!): Patient!
+  # Patient
+  createPatient(input: PatientInput!): Patient!
 
-    #  Conditions
-    createCondition(input: ConditionInput!): Condition!
+  #  Conditions
+  createCondition(input: ConditionInput!): Condition!
 
-    # Allergy Intolerance
-    createAllergyIntolerance(input: AllergyInput!): Allergy
+  # Allergy Intolerance
+  createAllergyIntolerance(input: AllergyInput!): Allergy
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -1693,8 +1733,8 @@ input PatientInput {
   otherNames: String
   birthDate: Date!
   gender: Gender!
-  identifiers: [IdentifierInput!]!
-  contacts: [ContactInput!]!
+  identifiers: [IdentifierInput!]
+  contacts: [ContactInput!]
 }
 
 input IdentifierInput {
@@ -1739,127 +1779,124 @@ input Pagination {
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
-    id: ID
-    code: String!
-    name: String
-    system: String
-    terminologySource: TerminologySource
-    encounterID: String!
-    reaction: Reaction
+  id: ID
+  code: String!
+  name: String
+  system: String
+  terminologySource: TerminologySource
+  encounterID: String!
+  reaction: Reaction
 }
 
 type Reaction {
-    code: String
-    name: String
-    system: String
-    severity: AllergyIntoleranceReactionSeverityEnum
+  code: String
+  name: String
+  system: String
+  severity: AllergyIntoleranceReactionSeverityEnum
 }
 
 type Observation {
-    id: String!
-    status: ObservationStatus!
-    patientID: String!
-    encounterID: String!
-    name: String!
-    value: String!
+  id: String!
+  status: ObservationStatus!
+  patientID: String!
+  encounterID: String!
+  name: String!
+  value: String!
 }
 
 type Medication {
-    name: String!
-    code: String!
+  name: String!
+  code: String!
 }
 
 type MedicationStatement {
-    id: ID!
+  id: ID!
 
-    status: MedicationStatementStatusEnum
+  status: MedicationStatementStatusEnum
 
-    medication: Medication!
+  medication: Medication!
 
-    patientID: String
+  patientID: String
 }
 
 type MedicalData {
-    regimen: [MedicationStatement]
-    allergies: [Allergy ]
-    weight: [Observation]
-    bmi: [Observation]
-    viralLoad: [Observation]
-    cd4Count: [Observation]
+  regimen: [MedicationStatement]
+  allergies: [Allergy]
+  weight: [Observation]
+  bmi: [Observation]
+  viralLoad: [Observation]
+  cd4Count: [Observation]
 }
 
 type TimelineResource {
-    id: ID!
-    resourceType: ResourceType
-    name: String
-    value: String
-    status: String
-    date: Date
+  id: ID!
+  resourceType: ResourceType
+  name: String
+  value: String
+  status: String
+  date: Date
 }
 
 type HealthTimeline {
-    timeline: [TimelineResource]
-    totalCount: Int!
+  timeline: [TimelineResource]
+  totalCount: Int!
 }
 
 type EpisodeOfCare {
-    id: ID!
-    status: EpisodeOfCareStatusEnum!
-    patientID: String!
+  id: ID!
+  status: EpisodeOfCareStatusEnum!
+  patientID: String!
 }
 
 type Encounter {
-    id: String
-    class: EncounterClass
-    episodeOfCareID: String
-    status: EncounterStatusEnum
-    patientID: String
+  id: String
+  class: EncounterClass
+  episodeOfCareID: String
+  status: EncounterStatusEnum
+  patientID: String
 }
 
 type Patient {
-    id: ID!
-    active: Boolean!
-    name: String!
-    phoneNumber: [String!]!
-    gender: Gender!
-    birthDate: Date
+  id: ID!
+  active: Boolean!
+  name: String!
+  phoneNumber: [String!]!
+  gender: Gender!
+  birthDate: Date
 }
 
 type Condition {
-    id: ID
-    status: ConditionStatus
-    name: String
-    code: String!
-    system: String!
+  id: ID
+  status: ConditionStatus
+  name: String
+  code: String!
+  system: String!
 
-    onsetDate: Date
-    recordedDate: Date
-    note: String
+  onsetDate: Date
+  recordedDate: Date
+  note: String
 
-    patientID: String
-    encounterID: String
+  patientID: String
+  encounterID: String
 }
-
 
 type ConditionEdge {
-    node:  Condition
-    cursor: String
+  node: Condition
+  cursor: String
 }
-
 
 type PageInfo {
-    hasNextPage: Boolean
-    startCursor: String
+  hasNextPage: Boolean
+  startCursor: String
 
-    hasPreviousPage: Boolean
-    endCursor:       String
+  hasPreviousPage: Boolean
+  endCursor: String
 }
 
-
 type ConditionConnection {
-    totalCount: Int
-    edges:      [ConditionEdge]
-    pageInfo:   PageInfo
+  totalCount: Int
+  edges: [ConditionEdge]
+  pageInfo: PageInfo
 }
 
 type Terminology {
@@ -1869,66 +1906,67 @@ type Terminology {
 }
 
 type AllergyEdge {
-    node:  Allergy
-    cursor: String
+  node: Allergy
+  cursor: String
 }
 
 type AllergyConnection {
-    totalCount: Int
-    edges:      [AllergyEdge]
-    pageInfo:   PageInfo
+  totalCount: Int
+  edges: [AllergyEdge]
+  pageInfo: PageInfo
 }
 
 type EncounterEdge {
-    node:  Encounter
-    cursor: String
+  node: Encounter
+  cursor: String
 }
 
 type EncounterConnection {
-    totalCount: Int
-    edges:      [EncounterEdge]
-    pageInfo:   PageInfo
+  totalCount: Int
+  edges: [EncounterEdge]
+  pageInfo: PageInfo
 }
 
 type TerminologyEdge {
-    node:  Terminology
-    cursor: String
+  node: Terminology
+  cursor: String
 }
 
 type TerminologyConnection {
-    totalCount: Int
-    edges: [TerminologyEdge]
-    pageInfo: PageInfo
+  totalCount: Int
+  edges: [TerminologyEdge]
+  pageInfo: PageInfo
 }
 
 type ObservationEdge {
-    node: Observation
-    cursor: String
+  node: Observation
+  cursor: String
 }
 
 type ObservationConnection {
-    totalCount: Int
-    edges:      [ObservationEdge]
-    pageInfo:   PageInfo
+  totalCount: Int
+  edges: [ObservationEdge]
+  pageInfo: PageInfo
 }
 
 type Media {
-    id: String!
-    name: String!
-    url: String!
-    contentType: String!
+  id: String!
+  name: String!
+  url: String!
+  contentType: String!
 }
 
 type MediaEdge {
-    node: Media
-    cursor: String
+  node: Media
+  cursor: String
 }
 
 type MediaConnection {
-    totalCount: Int
-    edges: [MediaEdge]
-    pageInfo: PageInfo
-}`, BuiltIn: false},
+  totalCount: Int
+  edges: [MediaEdge]
+  pageInfo: PageInfo
+}
+`, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	scalar _Any
 	scalar _FieldSet
@@ -11652,7 +11690,7 @@ func (ec *executionContext) unmarshalInputPatientInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identifiers"))
-			data, err := ec.unmarshalNIdentifierInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInputᚄ(ctx, v)
+			data, err := ec.unmarshalOIdentifierInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -11661,7 +11699,7 @@ func (ec *executionContext) unmarshalInputPatientInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contacts"))
-			data, err := ec.unmarshalNContactInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInputᚄ(ctx, v)
+			data, err := ec.unmarshalOContactInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -13779,23 +13817,6 @@ func (ec *executionContext) unmarshalNContactInput2githubᚗcomᚋsavannahghiᚋ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNContactInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInputᚄ(ctx context.Context, v interface{}) ([]dto.ContactInput, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]dto.ContactInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNContactInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
 func (ec *executionContext) unmarshalNContactType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactType(ctx context.Context, v interface{}) (dto.ContactType, error) {
 	tmp, err := graphql.UnmarshalString(v)
 	res := dto.ContactType(tmp)
@@ -13896,23 +13917,6 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 func (ec *executionContext) unmarshalNIdentifierInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInput(ctx context.Context, v interface{}) (dto.IdentifierInput, error) {
 	res, err := ec.unmarshalInputIdentifierInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNIdentifierInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInputᚄ(ctx context.Context, v interface{}) ([]dto.IdentifierInput, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]dto.IdentifierInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNIdentifierInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
 }
 
 func (ec *executionContext) unmarshalNIdentifierType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierType(ctx context.Context, v interface{}) (dto.IdentifierType, error) {
@@ -14552,6 +14556,26 @@ func (ec *executionContext) marshalOConditionStatus2githubᚗcomᚋsavannahghi�
 	return res
 }
 
+func (ec *executionContext) unmarshalOContactInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInputᚄ(ctx context.Context, v interface{}) ([]dto.ContactInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]dto.ContactInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNContactInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 func (ec *executionContext) unmarshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx context.Context, v interface{}) (scalarutils.Date, error) {
 	var res scalarutils.Date
 	err := res.UnmarshalGQL(v)
@@ -14671,6 +14695,26 @@ func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface
 func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalID(v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOIdentifierInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInputᚄ(ctx context.Context, v interface{}) ([]dto.IdentifierInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]dto.IdentifierInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNIdentifierInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {

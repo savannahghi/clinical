@@ -16,7 +16,6 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/jarcoal/httpmock v1.3.0
-	github.com/labstack/gommon v0.4.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/rs/xid v1.5.0
 	github.com/savannahghi/authutils v0.0.10
@@ -36,7 +35,6 @@ require (
 	github.com/vektah/gqlparser/v2 v2.5.1
 	golang.org/x/oauth2 v0.8.0
 	google.golang.org/api v0.122.0
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -84,7 +82,6 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/lithammer/shortuuid v3.0.0+incompatible // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -98,8 +95,6 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	github.com/urfave/cli/v2 v2.25.3 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
@@ -126,6 +121,7 @@ require (
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.55.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )
