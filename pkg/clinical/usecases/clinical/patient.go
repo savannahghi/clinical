@@ -375,16 +375,6 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input dto.Pati
 		IdentificationDocuments: documents,
 	}
 
-	exists, err := c.CheckPatientExistenceUsingPhoneNumber(ctx, registrationInput)
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, fmt.Errorf("unable to check patient existence: %w", err)
-	}
-
-	if exists {
-		return nil, fmt.Errorf("patient with phone number already exists")
-	}
-
 	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, registrationInput)
 	if err != nil {
 		return nil, err

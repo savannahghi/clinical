@@ -1549,64 +1549,6 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "sad case: patient already exists",
-			args: args{
-				ctx: addTenantIdentifierContext(context.Background()),
-				input: dto.PatientInput{
-					FirstName: gofakeit.Name(),
-					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
-						Year:  1997,
-						Month: 12,
-						Day:   12,
-					},
-					Gender: dto.GenderFemale,
-					Identifiers: []dto.IdentifierInput{
-						{
-							Type:  dto.IdentifierTypeNationalID,
-							Value: "12345678",
-						},
-					},
-					Contacts: []dto.ContactInput{
-						{
-							Type:  dto.ContactTypePhoneNumber,
-							Value: "0700000000",
-						},
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "sad case: error searching for patient",
-			args: args{
-				ctx: addTenantIdentifierContext(context.Background()),
-				input: dto.PatientInput{
-					FirstName: gofakeit.Name(),
-					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
-						Year:  1997,
-						Month: 12,
-						Day:   12,
-					},
-					Gender: dto.GenderFemale,
-					Identifiers: []dto.IdentifierInput{
-						{
-							Type:  dto.IdentifierTypeNationalID,
-							Value: "12345678",
-						},
-					},
-					Contacts: []dto.ContactInput{
-						{
-							Type:  dto.ContactTypePhoneNumber,
-							Value: "0700000000",
-						},
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
 			name: "sad case: invalid phone number",
 			args: args{
 				ctx: addTenantIdentifierContext(context.Background()),
@@ -1763,24 +1705,6 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
-
-			if tt.name == "sad case: patient already exists" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
-					return &domain.PatientConnection{
-						Edges: []*domain.PatientEdge{
-							{
-								Node: &domain.FHIRPatient{},
-							},
-						},
-					}, nil
-				}
-			}
-
-			if tt.name == "sad case: error searching for patient" {
-				fakeFHIR.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
-					return nil, fmt.Errorf("failed to search for patient")
-				}
-			}
 
 			if tt.name == "sad case: fail to get tenant tags" {
 				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
