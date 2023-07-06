@@ -33,6 +33,7 @@ type Clinical interface {
 	CreatePubsubTenant(ctx context.Context, data dto.OrganizationInput) error
 
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
+	DeletePatient(ctx context.Context, id string) (bool, error)
 
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)

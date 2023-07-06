@@ -407,6 +407,19 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input dto.Pati
 	return mapFHIRPatientToPatientDTO(patient.PatientRecord), nil
 }
 
+func (c *UseCasesClinicalImpl) DeletePatient(ctx context.Context, id string) (bool, error) {
+	if id == "" {
+		return false, fmt.Errorf("a patient ID is required")
+	}
+
+	ok, err := c.infrastructure.FHIR.DeleteFHIRPatient(ctx, id)
+	if err != nil {
+		return false, err
+	}
+
+	return ok, nil
+}
+
 func mapFHIRPatientToPatientDTO(patient *domain.FHIRPatient) *dto.Patient {
 	numbers := []string{}
 
