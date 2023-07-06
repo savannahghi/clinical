@@ -1319,6 +1319,9 @@ func (fh StoreImpl) DeleteFHIRPatient(_ context.Context, id string) (bool, error
 
 			continue
 
+		case organizationResource:
+			continue
+
 		case medicationRequestResourceType:
 			medicationRequests = append(
 				medicationRequests,
