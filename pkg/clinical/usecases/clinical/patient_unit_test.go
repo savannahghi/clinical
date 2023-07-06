@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
@@ -1738,6 +1739,76 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 			if !tt.wantErr && got == nil {
 				t.Errorf("expected patients not to be nil for %v", tt.name)
 				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_DeletePatient(t *testing.T) {
+	ctx := context.Background()
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully delete patient",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Missing patient ID",
+			args: args{
+				ctx: ctx,
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to delete patient",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+			},
+			want:    false,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Fail to delete patient" {
+				fakeFHIR.MockDeleteFHIRPatientFn = func(ctx context.Context, id string) (bool, error) {
+					return false, fmt.Errorf("failed to delete patient")
+				}
+			}
+
+			got, err := u.DeletePatient(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.DeletePatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("UseCasesClinicalImpl.DeletePatient() = %v, want %v", got, tt.want)
 			}
 		})
 	}

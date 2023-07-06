@@ -92,6 +92,12 @@ func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientI
 	return r.usecases.CreatePatient(ctx, input)
 }
 
+// DeletePatient is the resolver for the deletePatient field.
+func (r *mutationResolver) DeletePatient(ctx context.Context, id string) (bool, error) {
+	r.CheckDependencies()
+	return r.usecases.DeletePatient(ctx, id)
+}
+
 // CreateCondition is the resolver for the createCondition field.
 func (r *mutationResolver) CreateCondition(ctx context.Context, input dto.ConditionInput) (*dto.Condition, error) {
 	r.CheckDependencies()
