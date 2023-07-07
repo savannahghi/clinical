@@ -42,7 +42,7 @@ type Dataset interface {
 	GetFHIRResource(resourceType, fhirResourceID string, resource interface{}) error
 	CreateFHIRResource(resourceType string, payload map[string]interface{}, resource interface{}) error
 	DeleteFHIRResource(resourceType, fhirResourceID string) error
-	PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error
+	PatchFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
 	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
 	SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
 
@@ -1515,10 +1515,15 @@ func (fh StoreImpl) CreateFHIRPatient(_ context.Context, input domain.FHIRPatien
 }
 
 // PatchFHIRPatient is used to patch a patient resource
-func (fh StoreImpl) PatchFHIRPatient(_ context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error) {
+func (fh StoreImpl) PatchFHIRPatient(_ context.Context, id string, input domain.FHIRPatientInput) (*domain.FHIRPatient, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", patientResourceType, err)
+	}
+
 	resource := &domain.FHIRPatient{}
 
-	err := fh.Dataset.PatchFHIRResource(patientResourceType, id, params, resource)
+	err = fh.Dataset.PatchFHIRResource(patientResourceType, id, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to patch %s resource: %w", patientResourceType, err)
 	}

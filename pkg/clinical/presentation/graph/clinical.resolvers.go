@@ -88,8 +88,13 @@ func (r *mutationResolver) RecordViralLoad(ctx context.Context, input dto.Observ
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
-
 	return r.usecases.CreatePatient(ctx, input)
+}
+
+// PatchPatient is the resolver for the patchPatient field.
+func (r *mutationResolver) PatchPatient(ctx context.Context, id string, input dto.PatientInput) (*dto.Patient, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchPatient(ctx, id, input)
 }
 
 // DeletePatient is the resolver for the deletePatient field.

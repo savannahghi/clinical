@@ -3,8 +3,9 @@ package mock
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"time"
+
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 )
@@ -13,7 +14,7 @@ import (
 type FakeFHIRRepository struct {
 	MockCreateFHIRResourceFn    func(resourceType string, payload map[string]interface{}, resource interface{}) error
 	MockDeleteFHIRResourceFn    func(resourceType, fhirResourceID string) error
-	MockPatchFHIRResourceFn     func(resourceType, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error
+	MockPatchFHIRResourceFn     func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
 	MockUpdateFHIRResourceFn    func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
 	MockGetFHIRPatientAllDataFn func(fhirResourceID string) ([]byte, error)
 	MockGetFHIRResourceFn       func(resourceType, fhirResourceID string, resource interface{}) error
@@ -29,7 +30,7 @@ func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 		MockDeleteFHIRResourceFn: func(resourceType, fhirResourceID string) error {
 			return nil
 		},
-		MockPatchFHIRResourceFn: func(resourceType, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error {
+		MockPatchFHIRResourceFn: func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
 			return nil
 		},
 		MockUpdateFHIRResourceFn: func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
@@ -85,7 +86,7 @@ func (f *FakeFHIRRepository) DeleteFHIRResource(resourceType, fhirResourceID str
 }
 
 // PatchFHIRResource ...
-func (f *FakeFHIRRepository) PatchFHIRResource(resourceType, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error {
+func (f *FakeFHIRRepository) PatchFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
 	return f.MockPatchFHIRResourceFn(resourceType, fhirResourceID, payload, resource)
 }
 

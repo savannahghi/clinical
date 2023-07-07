@@ -41,7 +41,7 @@ type PatientInput struct {
 	FirstName   string            `json:"firstName"`
 	LastName    string            `json:"lastName"`
 	OtherNames  *string           `json:"otherNames"`
-	BirthDate   scalarutils.Date  `json:"birthDate"`
+	BirthDate   *scalarutils.Date `json:"birthDate,omitempty"`
 	Gender      Gender            `json:"gender"`
 	Identifiers []IdentifierInput `json:"identifiers"`
 	Contacts    []ContactInput    `json:"contacts"`

@@ -1527,7 +1527,7 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 				input: dto.PatientInput{
 					FirstName: gofakeit.Name(),
 					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  1997,
 						Month: 12,
 						Day:   12,
@@ -1556,7 +1556,7 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 				input: dto.PatientInput{
 					FirstName: gofakeit.Name(),
 					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  1997,
 						Month: 12,
 						Day:   12,
@@ -1585,7 +1585,7 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 				input: dto.PatientInput{
 					FirstName: gofakeit.Name(),
 					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  1997,
 						Month: 12,
 						Day:   12,
@@ -1614,7 +1614,7 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 				input: dto.PatientInput{
 					FirstName: gofakeit.Name(),
 					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  1997,
 						Month: 12,
 						Day:   12,
@@ -1643,7 +1643,7 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 				input: dto.PatientInput{
 					FirstName: gofakeit.Name(),
 					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  1997,
 						Month: 12,
 						Day:   12,
@@ -1672,7 +1672,7 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 				input: dto.PatientInput{
 					FirstName: gofakeit.Name(),
 					LastName:  gofakeit.Name(),
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  1997,
 						Month: 12,
 						Day:   12,
@@ -1744,6 +1744,130 @@ func TestUseCasesClinicalImpl_CreatePatient(t *testing.T) {
 	}
 }
 
+func TestUseCasesClinicalImpl_PatchPatient(t *testing.T) {
+	ctx := context.Background()
+
+	type args struct {
+		ctx   context.Context
+		id    string
+		input dto.PatientInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully patch a patient (single field)",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+				input: dto.PatientInput{
+					BirthDate: &scalarutils.Date{
+						Year:  2000,
+						Month: 6,
+						Day:   14,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Happy Case - Successfully patch a patient (multiple fields)",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+				input: dto.PatientInput{
+					FirstName: gofakeit.Name(),
+					Identifiers: []dto.IdentifierInput{
+						{
+							Type:  dto.IdentifierTypeNationalID,
+							Value: "12345678",
+						},
+					},
+					Gender: dto.GenderFemale,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Missing patient ID",
+			args: args{
+				ctx: ctx,
+				input: dto.PatientInput{
+					Gender: dto.GenderFemale,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Invalid phone number",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+				input: dto.PatientInput{
+					Contacts: []dto.ContactInput{
+						{
+							Type:  dto.ContactTypePhoneNumber,
+							Value: "070000",
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to patch patient",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+				input: dto.PatientInput{
+					BirthDate: &scalarutils.Date{
+						Year:  2000,
+						Month: 6,
+						Day:   14,
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Fail to patch patient" {
+				fakeFHIR.MockPatchFHIRPatientFn = func(ctx context.Context, id string, input domain.FHIRPatientInput) (*domain.FHIRPatient, error) {
+					return nil, fmt.Errorf("failed to patch patient")
+				}
+			}
+
+			got, err := u.PatchPatient(tt.args.ctx, tt.args.id, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PatchPatient() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if tt.wantErr && got != nil {
+				t.Errorf("Expected patient to be nil for %v", tt.name)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("Expected patient not to be nil for %v", tt.name)
+				return
+			}
+		})
+	}
+}
+
 func TestUseCasesClinicalImpl_DeletePatient(t *testing.T) {
 	ctx := context.Background()
 
@@ -1790,7 +1914,6 @@ func TestUseCasesClinicalImpl_DeletePatient(t *testing.T) {
 			fakeFHIR := fakeFHIRMock.NewFHIRMock()
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
-
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
