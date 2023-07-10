@@ -53,6 +53,9 @@ const (
 	// TemperatureCIELTerminologyCode is the terminology code for temperature
 	TemperatureCIELTerminologyCode = "5088"
 
+	// MUacCIELTerminologyCode is the terminology code for temperature
+	MuacCIELTerminologyCode = "1343"
+
 	// RespiratoryRateCIELTerminologyCode is the terminology code for respiratory rate
 	RespiratoryRateCIELTerminologyCode = "5242"
 

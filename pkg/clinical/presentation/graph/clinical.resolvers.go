@@ -85,6 +85,12 @@ func (r *mutationResolver) RecordViralLoad(ctx context.Context, input dto.Observ
 	return r.usecases.Clinical.RecordViralLoad(ctx, input)
 }
 
+// RecordMuac is the resolver for the recordMUAC field.
+func (r *mutationResolver) RecordMuac(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.RecordMuac(ctx, input)
+}
+
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
