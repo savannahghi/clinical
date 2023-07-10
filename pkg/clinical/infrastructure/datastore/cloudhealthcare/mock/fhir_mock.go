@@ -66,7 +66,7 @@ type FHIRMock struct {
 	MockCreateFHIRMedicationFn            func(ctx context.Context, input domain.FHIRMedicationInput) (*domain.FHIRMedicationRelayPayload, error)
 	MockSearchFHIRMedicationStatementFn   func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationStatementRelayConnection, error)
 	MockCreateFHIRPatientFn               func(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
-	MockPatchFHIRPatientFn                func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
+	MockPatchFHIRPatientFn                func(ctx context.Context, id string, input domain.FHIRPatientInput) (*domain.FHIRPatient, error)
 	MockUpdateFHIREpisodeOfCareFn         func(ctx context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error)
 	MockSearchFHIRPatientFn               func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error)
 	MockSearchPatientObservationsFn       func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
@@ -929,13 +929,19 @@ func NewFHIRMock() *FHIRMock {
 				},
 			}, nil
 		},
-		MockPatchFHIRPatientFn: func(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error) {
+		MockPatchFHIRPatientFn: func(ctx context.Context, id string, input domain.FHIRPatientInput) (*domain.FHIRPatient, error) {
+			male := domain.PatientGenderEnumMale
 			return &domain.FHIRPatient{
-				ID:                   new(string),
-				Text:                 &domain.FHIRNarrative{},
-				Identifier:           []*domain.FHIRIdentifier{},
-				Active:               new(bool),
-				Name:                 []*domain.FHIRHumanName{},
+				ID:         new(string),
+				Text:       &domain.FHIRNarrative{},
+				Gender:     &male,
+				Identifier: []*domain.FHIRIdentifier{},
+				Active:     new(bool),
+				Name: []*domain.FHIRHumanName{
+					{
+						Text: gofakeit.Name(),
+					},
+				},
 				Telecom:              []*domain.FHIRContactPoint{},
 				BirthDate:            &scalarutils.Date{},
 				DeceasedBoolean:      new(bool),
@@ -1245,8 +1251,8 @@ func (fh *FHIRMock) CreateFHIRPatient(ctx context.Context, input domain.FHIRPati
 }
 
 // PatchFHIRPatient mocks the implementation for patching a fhir patient
-func (fh *FHIRMock) PatchFHIRPatient(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error) {
-	return fh.MockPatchFHIRPatientFn(ctx, id, params)
+func (fh *FHIRMock) PatchFHIRPatient(ctx context.Context, id string, input domain.FHIRPatientInput) (*domain.FHIRPatient, error) {
+	return fh.MockPatchFHIRPatientFn(ctx, id, input)
 }
 
 // UpdateFHIREpisodeOfCare mocks the implementation of updating a FHIR episode of care

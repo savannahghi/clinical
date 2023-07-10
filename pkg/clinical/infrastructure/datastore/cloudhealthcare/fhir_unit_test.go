@@ -571,10 +571,11 @@ func TestStoreImpl_CreateFHIRPatient(t *testing.T) {
 func TestStoreImpl_PatchFHIRPatient(t *testing.T) {
 
 	type args struct {
-		ctx    context.Context
-		id     string
-		params []map[string]interface{}
+		ctx   context.Context
+		id    string
+		input domain.FHIRPatientInput
 	}
+	is_active := false
 	tests := []struct {
 		name    string
 		args    args
@@ -583,22 +584,18 @@ func TestStoreImpl_PatchFHIRPatient(t *testing.T) {
 		{
 			name: "happy case: patch patient",
 			args: args{
-				ctx: context.Background(),
-				id:  gofakeit.UUID(),
-				params: []map[string]interface{}{
-					{"wewe": "mzee"},
-				},
+				ctx:   context.Background(),
+				id:    gofakeit.UUID(),
+				input: domain.FHIRPatientInput{Active: &is_active},
 			},
 			wantErr: false,
 		},
 		{
 			name: "sad case: error patching resource",
 			args: args{
-				ctx: context.Background(),
-				id:  gofakeit.UUID(),
-				params: []map[string]interface{}{
-					{"wewe": "mzee"},
-				},
+				ctx:   context.Background(),
+				id:    gofakeit.UUID(),
+				input: domain.FHIRPatientInput{Active: &is_active},
 			},
 			wantErr: true,
 		},
@@ -609,12 +606,12 @@ func TestStoreImpl_PatchFHIRPatient(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "sad case: error patching resource" {
-				dataset.MockPatchFHIRResourceFn = func(resourceType string, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error {
+				dataset.MockPatchFHIRResourceFn = func(resourceType string, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
 					return fmt.Errorf("failed to patch resource")
 				}
 			}
 
-			got, err := fh.PatchFHIRPatient(tt.args.ctx, tt.args.id, tt.args.params)
+			got, err := fh.PatchFHIRPatient(tt.args.ctx, tt.args.id, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.PatchFHIRPatient() error = %v, wantErr %v", err, tt.wantErr)
 				return

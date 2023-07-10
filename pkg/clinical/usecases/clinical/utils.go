@@ -113,7 +113,7 @@ func (c *UseCasesClinicalImpl) SimplePatientRegistrationInputToPatientInput(ctx 
 	// fullPatientInput is to be filled up by processing the simple patient input
 	gender := domain.PatientGenderEnum(input.Gender)
 	patientInput := domain.FHIRPatientInput{
-		BirthDate: &input.BirthDate,
+		BirthDate: input.BirthDate,
 		Gender:    &gender,
 		Active:    &input.Active,
 	}

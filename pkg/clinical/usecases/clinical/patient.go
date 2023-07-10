@@ -407,6 +407,62 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input dto.Pati
 	return mapFHIRPatientToPatientDTO(patient.PatientRecord), nil
 }
 
+func (c *UseCasesClinicalImpl) PatchPatient(ctx context.Context, id string, input dto.PatientInput) (*dto.Patient, error) {
+	if id == "" {
+		return nil, fmt.Errorf("a patient ID is required")
+	}
+
+	registrationInput := domain.SimplePatientRegistrationInput{
+		Gender:    string(input.Gender),
+		BirthDate: input.BirthDate,
+	}
+
+	if input.FirstName != "" {
+		nameInput := &domain.NameInput{
+			FirstName:  input.FirstName,
+			LastName:   input.LastName,
+			OtherNames: input.OtherNames,
+		}
+		registrationInput.Names = append(registrationInput.Names, nameInput)
+	}
+
+	for _, contact := range input.Contacts {
+		if contact.Type == dto.ContactTypePhoneNumber {
+			number := &domain.PhoneNumberInput{
+				Msisdn: contact.Value,
+			}
+			registrationInput.PhoneNumbers = append(
+				registrationInput.PhoneNumbers,
+				number,
+			)
+		}
+	}
+
+	for _, identifier := range input.Identifiers {
+		doc := &domain.IdentificationDocument{
+			DocumentType:   domain.IDDocumentType(identifier.Type),
+			DocumentNumber: identifier.Value,
+		}
+
+		registrationInput.IdentificationDocuments = append(
+			registrationInput.IdentificationDocuments,
+			doc,
+		)
+	}
+
+	patientInput, err := c.SimplePatientRegistrationInputToPatientInput(ctx, registrationInput)
+	if err != nil {
+		return nil, err
+	}
+
+	patient, err := c.infrastructure.FHIR.PatchFHIRPatient(ctx, id, *patientInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapFHIRPatientToPatientDTO(patient), nil
+}
+
 func (c *UseCasesClinicalImpl) DeletePatient(ctx context.Context, id string) (bool, error) {
 	if id == "" {
 		return false, fmt.Errorf("a patient ID is required")

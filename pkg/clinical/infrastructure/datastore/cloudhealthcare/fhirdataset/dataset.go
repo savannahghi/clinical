@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -216,30 +217,48 @@ func (fr Repository) DeleteFHIRResource(resourceType, fhirResourceID string) err
 }
 
 // PatchFHIRResource patches a FHIR resource.
-// The payload is a JSON patch document that follows guidance on Patch from the
-// FHIR standard.
+// The payload is an instance of domain.FHIR<Resource>Input converted
+// to a map[string]interface{} e.g. domain.FHIRPatientInput
+//
+// This function first converts the payload to a JSON patch document
+// that follows guidance on Patch from the FHIR standard.
 // See:
 //
-//	payload := []map[string]interface{}{
+//	patches := []map[string]interface{}{
 //		{
 //			"op":    "replace",
-//			"path":  "/active",
-//			"value": active,
+//			"path":  "/<fieldName>",
+//			"value": newValue,
 //		},
 //	}
 //
 // See: https://www.hl7.org/fhir/http.html#patch
 func (fr Repository) PatchFHIRResource(
-	resourceType, fhirResourceID string, payload []map[string]interface{}, resource interface{}) error {
+	resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
 	fr.checkPreconditions()
 
 	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
+
+	patches := []map[string]interface{}{}
+
+	for key, value := range payload {
+		if !reflect.ValueOf(value).IsZero() {
+			patches = append(
+				patches,
+				map[string]interface{}{
+					"op":    "replace",
+					"path":  fmt.Sprintf("/%s", key),
+					"value": value,
+				},
+			)
+		}
+	}
 
 	if serverutils.IsDebug() {
 		log.Printf("FHIR Payload: %#v", payload)
 	}
 
-	jsonPayload, err := json.Marshal(payload)
+	jsonPayload, err := json.Marshal(patches)
 	if err != nil {
 		return fmt.Errorf("json.Encode: %w", err)
 	}

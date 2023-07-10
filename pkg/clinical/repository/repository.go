@@ -34,7 +34,7 @@ type FHIRPatient interface {
 	GetFHIRPatient(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
 	DeleteFHIRPatient(ctx context.Context, id string) (bool, error)
 	CreateFHIRPatient(ctx context.Context, input domain.FHIRPatientInput) (*domain.PatientPayload, error)
-	PatchFHIRPatient(ctx context.Context, id string, params []map[string]interface{}) (*domain.FHIRPatient, error)
+	PatchFHIRPatient(ctx context.Context, id string, input domain.FHIRPatientInput) (*domain.FHIRPatient, error)
 	SearchFHIRPatient(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error)
 }
 type FHIREpisodeOfCare interface {

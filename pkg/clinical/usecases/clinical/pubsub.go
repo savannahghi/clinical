@@ -25,7 +25,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 	patientName := strings.Split(payload.Name, " ")
 	registrationInput := domain.SimplePatientRegistrationInput{
 		Names: []*domain.NameInput{{FirstName: patientName[0], LastName: patientName[1]}},
-		BirthDate: scalarutils.Date{
+		BirthDate: &scalarutils.Date{
 			Year:  year,
 			Month: int(month),
 			Day:   day,

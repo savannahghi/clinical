@@ -231,7 +231,7 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 							DocumentNumber: gofakeit.SSN(),
 						},
 					},
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  2000,
 						Month: 10,
 						Day:   10,
@@ -289,7 +289,7 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 							DocumentNumber: gofakeit.SSN(),
 						},
 					},
-					BirthDate: scalarutils.Date{
+					BirthDate: &scalarutils.Date{
 						Year:  2000,
 						Month: 10,
 						Day:   10,

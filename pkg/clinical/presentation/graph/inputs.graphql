@@ -25,6 +25,16 @@ input PatientInput {
   contacts: [ContactInput!]
 }
 
+input PatchPatientInput {
+  firstName: String
+  lastName: String
+  otherNames: String
+  birthDate: Date
+  gender: Gender
+  identifiers: [IdentifierInput!]
+  contacts: [ContactInput!]
+}
+
 input IdentifierInput {
   type: IdentifierType!
   value: String!

@@ -83,7 +83,7 @@ type SimplePatientRegistrationInput struct {
 	ID                      string                    `json:"id,omitempty"`
 	Names                   []*NameInput              `json:"names,omitempty"`
 	IdentificationDocuments []*IdentificationDocument `json:"identificationDocuments,omitempty"`
-	BirthDate               scalarutils.Date          `json:"birthDate,omitempty"`
+	BirthDate               *scalarutils.Date         `json:"birthDate,omitempty"`
 	PhoneNumbers            []*PhoneNumberInput       `json:"phoneNumbers,omitempty"`
 	Photos                  []*PhotoInput             `json:"photos,omitempty"`
 	Emails                  []*EmailInput             `json:"emails,omitempty"`
