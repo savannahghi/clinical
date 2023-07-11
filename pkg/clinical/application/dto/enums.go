@@ -12,10 +12,11 @@ const (
 type EpisodeOfCareStatusEnum string
 
 const (
-	EpisodeOfCareStatusEnumPlanned   EpisodeOfCareStatusEnum = "PLANNED"
-	EpisodeOfCareStatusEnumActive    EpisodeOfCareStatusEnum = "ACTIVE"
-	EpisodeOfCareStatusEnumFinished  EpisodeOfCareStatusEnum = "FINISHED"
-	EpisodeOfCareStatusEnumCancelled EpisodeOfCareStatusEnum = "CANCELLED"
+	EpisodeOfCareStatusEnumPlanned        EpisodeOfCareStatusEnum = "PLANNED"
+	EpisodeOfCareStatusEnumActive         EpisodeOfCareStatusEnum = "ACTIVE"
+	EpisodeOfCareStatusEnumFinished       EpisodeOfCareStatusEnum = "FINISHED"
+	EpisodeOfCareStatusEnumCancelled      EpisodeOfCareStatusEnum = "CANCELLED"
+	EpisodeOfCareStatusEnumEnteredInError EpisodeOfCareStatusEnum = "ENTERED_IN_ERROR"
 )
 
 // EncounterStatusEnum is a FHIR enum

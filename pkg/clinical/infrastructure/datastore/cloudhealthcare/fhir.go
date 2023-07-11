@@ -1531,6 +1531,23 @@ func (fh StoreImpl) PatchFHIRPatient(_ context.Context, id string, input domain.
 	return resource, nil
 }
 
+// PatchFHIREpisodeOfCare patches a FHIR episode of care
+func (fh StoreImpl) PatchFHIREpisodeOfCare(_ context.Context, id string, input domain.FHIREpisodeOfCareInput) (*domain.FHIREpisodeOfCare, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", episodeOfCareResourceType, err)
+	}
+
+	resource := &domain.FHIREpisodeOfCare{}
+
+	err = fh.Dataset.PatchFHIRResource(episodeOfCareResourceType, id, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to patch %s resource: %w", episodeOfCareResourceType, err)
+	}
+
+	return resource, nil
+}
+
 // UpdateFHIREpisodeOfCare updates a fhir episode of care
 func (fh StoreImpl) UpdateFHIREpisodeOfCare(_ context.Context, fhirResourceID string, payload map[string]interface{}) (*domain.FHIREpisodeOfCare, error) {
 	if fhirResourceID == "" {

@@ -3,6 +3,8 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -10,6 +12,11 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
+)
+
+// constants and defaults
+const (
+	timeFormatStr = "2006-01-02T15:04:05+03:00"
 )
 
 // CreateEpisodeOfCare creates an episode of care. An Episode of Care represents a period of time during which a patient is under the care of a particular provider/facility.
@@ -96,6 +103,45 @@ func (c *UseCasesClinicalImpl) CreateEpisodeOfCare(ctx context.Context, input dt
 	}
 
 	return mapFHIREpisodeToEpisodeDTO(*episode.EpisodeOfCare), nil
+}
+
+func (c *UseCasesClinicalImpl) PatchEpisodeOfCare(ctx context.Context, id string, input dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error) {
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid episode of care id: %s", id)
+	}
+
+	status := domain.EpisodeOfCareStatusEnum(strings.ToLower(string(input.Status)))
+	episodeOfCareInput := &domain.FHIREpisodeOfCareInput{
+		Status: &status,
+	}
+
+	if status.IsFinal() {
+		episode, err := c.infrastructure.FHIR.GetFHIREpisodeOfCare(ctx, id)
+		if err != nil {
+			return nil, fmt.Errorf("unable to get episode with ID %s: %w", id, err)
+		}
+
+		var startTime scalarutils.DateTime
+		if episode.Resource.Period == nil {
+			startTime = scalarutils.DateTime(time.Now().Format(timeFormatStr))
+		} else {
+			startTime = episode.Resource.Period.Start
+		}
+
+		// workaround for odd date comparison behavior on the Google Cloud Healthcare API
+		end := time.Now().Add(time.Hour * 24)
+		endTime := scalarutils.DateTime(end.Format(timeFormatStr))
+
+		episodeOfCareInput.Period = &domain.FHIRPeriodInput{Start: startTime, End: endTime}
+	}
+
+	episode, err := c.infrastructure.FHIR.PatchFHIREpisodeOfCare(ctx, id, *episodeOfCareInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapFHIREpisodeToEpisodeDTO(*episode), nil
 }
 
 func (c *UseCasesClinicalImpl) EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error) {

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit"
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
@@ -151,6 +152,106 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 				t.Errorf("UseCasesClinicalImpl.CreateEpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a value to be returned, got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_PatchEpisodeOfCare(t *testing.T) {
+	ctx := context.Background()
+
+	type args struct {
+		ctx   context.Context
+		id    string
+		input dto.EpisodeOfCareInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Patch an episode of care",
+			args: args{
+				ctx: ctx,
+				id:  gofakeit.UUID(),
+				input: dto.EpisodeOfCareInput{
+					Status:    dto.EpisodeOfCareStatusEnumCancelled,
+					PatientID: gofakeit.UUID(),
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid episode of care ID",
+			args: args{
+				ctx: ctx,
+				id:  "123",
+				input: dto.EpisodeOfCareInput{
+					Status:    dto.EpisodeOfCareStatusEnumEnteredInError,
+					PatientID: gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Unable to get episode of care",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+				input: dto.EpisodeOfCareInput{
+					Status:    dto.EpisodeOfCareStatusEnumCancelled,
+					PatientID: gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Failed to patch episode of care",
+			args: args{
+				ctx: ctx,
+				id:  gofakeit.UUID(),
+				input: dto.EpisodeOfCareInput{
+					Status:    dto.EpisodeOfCareStatusEnumPlanned,
+					PatientID: gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Unable to get episode of care" {
+				fakeFHIR.MockGetFHIREpisodeOfCareFn = func(ctx context.Context, id string) (*domain.FHIREpisodeOfCareRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get episode of care")
+				}
+			}
+
+			if tt.name == "Sad Case - Failed to patch episode of care" {
+				fakeFHIR.MockPatchFHIREpisodeOfCareFn = func(ctx context.Context, id string, input domain.FHIREpisodeOfCareInput) (*domain.FHIREpisodeOfCare, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			got, err := c.PatchEpisodeOfCare(ctx, tt.args.id, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PatchEpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
 			if !tt.wantErr && got == nil {
 				t.Errorf("expected a value to be returned, got: %v", got)
 				return

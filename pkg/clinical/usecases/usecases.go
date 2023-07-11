@@ -16,6 +16,7 @@ type Clinical interface {
 
 	CreateEpisodeOfCare(ctx context.Context, input dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
 	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
+	PatchEpisodeOfCare(ctx context.Context, id string, input dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
 	EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 
 	CreateCondition(ctx context.Context, input dto.ConditionInput) (*dto.Condition, error)

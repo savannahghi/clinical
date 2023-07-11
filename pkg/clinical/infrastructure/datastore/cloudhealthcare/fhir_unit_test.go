@@ -624,6 +624,68 @@ func TestStoreImpl_PatchFHIRPatient(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_PatchFHIREpisodeOfCare(t *testing.T) {
+	ctx := context.Background()
+	cancelled := domain.EpisodeOfCareStatusEnumCancelled
+	active := domain.EpisodeOfCareStatusEnumActive
+
+	type args struct {
+		ctx   context.Context
+		id    string
+		input domain.FHIREpisodeOfCareInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully patch an episode of care",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+				input: domain.FHIREpisodeOfCareInput{
+					Status: &cancelled,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Unable to patch episode of care",
+			args: args{
+				ctx: ctx,
+				id:  uuid.New().String(),
+				input: domain.FHIREpisodeOfCareInput{
+					Status: &active,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad Case - Unable to patch episode of care" {
+				dataset.MockPatchFHIRResourceFn = func(resourceType string, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to patch resource")
+				}
+			}
+
+			got, err := fh.PatchFHIREpisodeOfCare(tt.args.ctx, tt.args.id, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.PatchFHIREpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
 func TestStoreImpl_UpdateFHIREpisodeOfCare(t *testing.T) {
 
 	type args struct {

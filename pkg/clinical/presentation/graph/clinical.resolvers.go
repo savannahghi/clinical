@@ -14,8 +14,13 @@ import (
 // CreateEpisodeOfCare is the resolver for the createEpisodeOfCare field.
 func (r *mutationResolver) CreateEpisodeOfCare(ctx context.Context, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error) {
 	r.CheckDependencies()
-
 	return r.usecases.CreateEpisodeOfCare(ctx, episodeOfCare)
+}
+
+// PatchEpisodeOfCare is the resolver for the patchEpisodeOfCare field.
+func (r *mutationResolver) PatchEpisodeOfCare(ctx context.Context, id string, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchEpisodeOfCare(ctx, id, episodeOfCare)
 }
 
 // EndEpisodeOfCare is the resolver for the endEpisodeOfCare field.
