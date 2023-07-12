@@ -32,6 +32,16 @@ func (c *UseCasesClinicalImpl) RecordMuac(ctx context.Context, input dto.Observa
 	return muacObservation, nil
 }
 
+// RecordOxygenSaturation is used to record a patient's oxygen saturation
+func (c *UseCasesClinicalImpl) RecordOxygenSaturation(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	oxygenSaturationObservation, err := c.RecordObservation(ctx, input, common.OxygenSaturationCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return oxygenSaturationObservation, nil
+}
+
 // GetPatientTemperatureEntries returns all the temperature entries for a patient, they are automatically sorted in chronological order
 func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	return c.GetPatientObservations(ctx, patientID, common.TemperatureCIELTerminologyCode, pagination)
