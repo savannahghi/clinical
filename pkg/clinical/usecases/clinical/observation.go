@@ -22,6 +22,16 @@ func (c *UseCasesClinicalImpl) RecordTemperature(ctx context.Context, input dto.
 	return temperatureObservation, nil
 }
 
+// RecordMuac is used to record a patient's Muac
+func (c *UseCasesClinicalImpl) RecordMuac(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	muacObservation, err := c.RecordObservation(ctx, input, common.MuacCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return muacObservation, nil
+}
+
 // GetPatientTemperatureEntries returns all the temperature entries for a patient, they are automatically sorted in chronological order
 func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	return c.GetPatientObservations(ctx, patientID, common.TemperatureCIELTerminologyCode, pagination)
