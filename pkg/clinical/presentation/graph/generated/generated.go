@@ -168,6 +168,7 @@ type ComplexityRoot struct {
 		DeletePatient            func(childComplexity int, id string) int
 		EndEncounter             func(childComplexity int, encounterID string) int
 		EndEpisodeOfCare         func(childComplexity int, id string) int
+		PatchEpisodeOfCare       func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
 		PatchPatient             func(childComplexity int, id string, input dto.PatientInput) int
 		RecordBloodPressure      func(childComplexity int, input dto.ObservationInput) int
 		RecordBmi                func(childComplexity int, input dto.ObservationInput) int
@@ -279,6 +280,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateEpisodeOfCare(ctx context.Context, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
+	PatchEpisodeOfCare(ctx context.Context, id string, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
 	EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
@@ -857,6 +859,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EndEpisodeOfCare(childComplexity, args["id"].(string)), true
+
+	case "Mutation.patchEpisodeOfCare":
+		if e.complexity.Mutation.PatchEpisodeOfCare == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_patchEpisodeOfCare_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PatchEpisodeOfCare(childComplexity, args["id"].(string), args["episodeOfCare"].(dto.EpisodeOfCareInput)), true
 
 	case "Mutation.patchPatient":
 		if e.complexity.Mutation.PatchPatient == nil {
@@ -1646,6 +1660,7 @@ var sources = []*ast.Source{
 extend type Mutation {
   # EpisodeOfCare
   createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
+  patchEpisodeOfCare(id: String!, episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare!
   endEpisodeOfCare(id: ID!): EpisodeOfCare
 
   # Encounter
@@ -2166,6 +2181,30 @@ func (ec *executionContext) field_Mutation_endEpisodeOfCare_args(ctx context.Con
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_patchEpisodeOfCare_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 dto.EpisodeOfCareInput
+	if tmp, ok := rawArgs["episodeOfCare"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("episodeOfCare"))
+		arg1, err = ec.unmarshalNEpisodeOfCareInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCareInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["episodeOfCare"] = arg1
 	return args, nil
 }
 
@@ -5704,6 +5743,69 @@ func (ec *executionContext) fieldContext_Mutation_createEpisodeOfCare(ctx contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createEpisodeOfCare_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_patchEpisodeOfCare(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchEpisodeOfCare(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().PatchEpisodeOfCare(rctx, fc.Args["id"].(string), fc.Args["episodeOfCare"].(dto.EpisodeOfCareInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.EpisodeOfCare)
+	fc.Result = res
+	return ec.marshalNEpisodeOfCare2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCare(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_patchEpisodeOfCare(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_EpisodeOfCare_id(ctx, field)
+			case "status":
+				return ec.fieldContext_EpisodeOfCare_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_EpisodeOfCare_patientID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type EpisodeOfCare", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_patchEpisodeOfCare_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -12932,6 +13034,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_createEpisodeOfCare(ctx, field)
 			})
 
+		case "patchEpisodeOfCare":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_patchEpisodeOfCare(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "endEpisodeOfCare":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -14368,6 +14479,20 @@ func (ec *executionContext) marshalNDate2ᚖgithubᚗcomᚋsavannahghiᚋscalaru
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalNEpisodeOfCare2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v dto.EpisodeOfCare) graphql.Marshaler {
+	return ec._EpisodeOfCare(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNEpisodeOfCare2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v *dto.EpisodeOfCare) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._EpisodeOfCare(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNEpisodeOfCareInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCareInput(ctx context.Context, v interface{}) (dto.EpisodeOfCareInput, error) {

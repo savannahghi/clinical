@@ -2467,6 +2467,16 @@ func (e EpisodeOfCareStatusEnum) IsValid() bool {
 	return false
 }
 
+// IsFinal ...
+func (e EpisodeOfCareStatusEnum) IsFinal() bool {
+	switch e {
+	case EpisodeOfCareStatusEnumFinished, EpisodeOfCareStatusEnumCancelled, EpisodeOfCareStatusEnumEnteredInError:
+		return true
+	}
+
+	return false
+}
+
 // String ...
 func (e EpisodeOfCareStatusEnum) String() string {
 	if e == EpisodeOfCareStatusEnumEnteredInError {
