@@ -32,14 +32,14 @@ func (c *UseCasesClinicalImpl) RecordMuac(ctx context.Context, input dto.Observa
 	return muacObservation, nil
 }
 
-// RecordSpo2 is used to record a patient's Spo2
-func (c *UseCasesClinicalImpl) RecordSpo2(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	spo2Observation, err := c.RecordObservation(ctx, input, common.Spoc2CIELTerminologyCode)
+// RecordOxygenSaturation is used to record a patient's oxygen saturation
+func (c *UseCasesClinicalImpl) RecordOxygenSaturation(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	oxygenSaturationObservation, err := c.RecordObservation(ctx, input, common.OxygenSaturationCIELTerminologyCode)
 	if err != nil {
 		return nil, err
 	}
 
-	return spo2Observation, nil
+	return oxygenSaturationObservation, nil
 }
 
 // GetPatientTemperatureEntries returns all the temperature entries for a patient, they are automatically sorted in chronological order

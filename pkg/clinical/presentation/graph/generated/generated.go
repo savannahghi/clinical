@@ -173,9 +173,9 @@ type ComplexityRoot struct {
 		RecordBmi                func(childComplexity int, input dto.ObservationInput) int
 		RecordHeight             func(childComplexity int, input dto.ObservationInput) int
 		RecordMuac               func(childComplexity int, input dto.ObservationInput) int
+		RecordOxygenSaturation   func(childComplexity int, input dto.ObservationInput) int
 		RecordPulseRate          func(childComplexity int, input dto.ObservationInput) int
 		RecordRespiratoryRate    func(childComplexity int, input dto.ObservationInput) int
-		RecordSpo2               func(childComplexity int, input dto.ObservationInput) int
 		RecordTemperature        func(childComplexity int, input dto.ObservationInput) int
 		RecordViralLoad          func(childComplexity int, input dto.ObservationInput) int
 		RecordWeight             func(childComplexity int, input dto.ObservationInput) int
@@ -291,7 +291,7 @@ type MutationResolver interface {
 	RecordBmi(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordViralLoad(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordMuac(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
-	RecordSpo2(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordOxygenSaturation(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 	PatchPatient(ctx context.Context, id string, input dto.PatientInput) (*dto.Patient, error)
 	DeletePatient(ctx context.Context, id string) (bool, error)
@@ -918,6 +918,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RecordMuac(childComplexity, args["input"].(dto.ObservationInput)), true
 
+	case "Mutation.recordOxygenSaturation":
+		if e.complexity.Mutation.RecordOxygenSaturation == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordOxygenSaturation_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordOxygenSaturation(childComplexity, args["input"].(dto.ObservationInput)), true
+
 	case "Mutation.recordPulseRate":
 		if e.complexity.Mutation.RecordPulseRate == nil {
 			break
@@ -941,18 +953,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RecordRespiratoryRate(childComplexity, args["input"].(dto.ObservationInput)), true
-
-	case "Mutation.recordSpo2":
-		if e.complexity.Mutation.RecordSpo2 == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_recordSpo2_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.RecordSpo2(childComplexity, args["input"].(dto.ObservationInput)), true
 
 	case "Mutation.recordTemperature":
 		if e.complexity.Mutation.RecordTemperature == nil {
@@ -1662,7 +1662,7 @@ extend type Mutation {
   recordBMI(input: ObservationInput!): Observation!
   recordViralLoad(input: ObservationInput!): Observation!
   recordMUAC(input: ObservationInput!): Observation!
-  recordSpo2(input: ObservationInput!): Observation!
+  recordOxygenSaturation(input: ObservationInput!): Observation!
 
   # Patient
   createPatient(input: PatientInput!): Patient!
@@ -2253,6 +2253,21 @@ func (ec *executionContext) field_Mutation_recordMUAC_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_recordOxygenSaturation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.ObservationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_recordPulseRate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2269,21 +2284,6 @@ func (ec *executionContext) field_Mutation_recordPulseRate_args(ctx context.Cont
 }
 
 func (ec *executionContext) field_Mutation_recordRespiratoryRate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 dto.ObservationInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_recordSpo2_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 dto.ObservationInput
@@ -6501,8 +6501,8 @@ func (ec *executionContext) fieldContext_Mutation_recordMUAC(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_recordSpo2(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_recordSpo2(ctx, field)
+func (ec *executionContext) _Mutation_recordOxygenSaturation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordOxygenSaturation(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6515,7 +6515,7 @@ func (ec *executionContext) _Mutation_recordSpo2(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RecordSpo2(rctx, fc.Args["input"].(dto.ObservationInput))
+		return ec.resolvers.Mutation().RecordOxygenSaturation(rctx, fc.Args["input"].(dto.ObservationInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6532,7 +6532,7 @@ func (ec *executionContext) _Mutation_recordSpo2(ctx context.Context, field grap
 	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_recordSpo2(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_recordOxygenSaturation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6563,7 +6563,7 @@ func (ec *executionContext) fieldContext_Mutation_recordSpo2(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_recordSpo2_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_recordOxygenSaturation_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -13037,10 +13037,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "recordSpo2":
+		case "recordOxygenSaturation":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_recordSpo2(ctx, field)
+				return ec._Mutation_recordOxygenSaturation(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {

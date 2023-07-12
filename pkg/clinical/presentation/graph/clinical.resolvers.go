@@ -91,10 +91,10 @@ func (r *mutationResolver) RecordMuac(ctx context.Context, input dto.Observation
 	return r.usecases.RecordMuac(ctx, input)
 }
 
-// RecordSpo2 is the resolver for the recordSpo2 field.
-func (r *mutationResolver) RecordSpo2(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+// RecordOxygenSaturation is the resolver for the recordOxygenSaturation field.
+func (r *mutationResolver) RecordOxygenSaturation(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	r.CheckDependencies()
-	return r.usecases.RecordSpo2(ctx, input)
+	return r.usecases.RecordOxygenSaturation(ctx, input)
 }
 
 // CreatePatient is the resolver for the createPatient field.

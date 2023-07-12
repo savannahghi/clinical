@@ -513,7 +513,7 @@ func TestUseCasesClinicalImpl_RecordMuac(t *testing.T) {
 	}
 }
 
-func TestUseCasesClinicalImpl_RecordSpo2(t *testing.T) {
+func TestUseCasesClinicalImpl_RecordOxygenSaturation(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
 		ctx   context.Context
@@ -525,7 +525,7 @@ func TestUseCasesClinicalImpl_RecordSpo2(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Happy Case - Successfully record spo2",
+			name: "Happy Case - Successfully record oxygen saturation",
 			args: args{
 				ctx: ctx,
 				input: dto.ObservationInput{
@@ -537,7 +537,7 @@ func TestUseCasesClinicalImpl_RecordSpo2(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad Case - Fail to record spo2",
+			name: "Sad Case - Fail to record oxygen saturation",
 			args: args{
 				ctx: ctx,
 				input: dto.ObservationInput{
@@ -654,9 +654,9 @@ func TestUseCasesClinicalImpl_RecordSpo2(t *testing.T) {
 				}
 			}
 
-			got, err := u.RecordMuac(tt.args.ctx, tt.args.input)
+			got, err := u.RecordOxygenSaturation(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UseCasesClinicalImpl.RecordSpo2() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UseCasesClinicalImpl.RecordOxygenSaturation() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !tt.wantErr {
