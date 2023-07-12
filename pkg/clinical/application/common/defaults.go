@@ -56,6 +56,9 @@ const (
 	// MUacCIELTerminologyCode is the terminology code for temperature
 	MuacCIELTerminologyCode = "1343"
 
+	// Spoc2CIELTerminologyCode is the terminology code for SPO2/arterial blood oxygen saturation
+	Spoc2CIELTerminologyCode = "5092"
+
 	// RespiratoryRateCIELTerminologyCode is the terminology code for respiratory rate
 	RespiratoryRateCIELTerminologyCode = "5242"
 

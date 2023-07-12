@@ -88,6 +88,7 @@ extend type Mutation {
   recordBMI(input: ObservationInput!): Observation!
   recordViralLoad(input: ObservationInput!): Observation!
   recordMUAC(input: ObservationInput!): Observation!
+  recordSpo2(input: ObservationInput!): Observation!
 
   # Patient
   createPatient(input: PatientInput!): Patient!

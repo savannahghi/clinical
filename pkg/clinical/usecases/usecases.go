@@ -49,6 +49,7 @@ type Clinical interface {
 	RecordBMI(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordViralLoad(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordMuac(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordSpo2(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error)
 
 	GetPatientObservations(ctx context.Context, patientID string, observationCode string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
