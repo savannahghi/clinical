@@ -38,6 +38,7 @@ type Clinical interface {
 	DeletePatient(ctx context.Context, id string) (bool, error)
 
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
+	PatchEncounter(ctx context.Context, encounterID string, input dto.EncounterInput) (*dto.Encounter, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 	ListPatientEncounters(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.EncounterConnection, error)
 

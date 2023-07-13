@@ -9,6 +9,10 @@ input EpisodeOfCareInput {
   patientID: String!
 }
 
+input EncounterInput {
+  status: EncounterStatusEnum
+}
+
 input ObservationInput {
   status: ObservationStatus!
   encounterID: String!

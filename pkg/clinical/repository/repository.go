@@ -86,6 +86,7 @@ type FHIREncounter interface {
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 	GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
 	SearchFHIREncounter(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error)
+	PatchFHIREncounter(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error)
 }
 type FHIRComposition interface {
 	SearchFHIRComposition(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRCompositionRelayConnection, error)

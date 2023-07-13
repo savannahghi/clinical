@@ -2258,6 +2258,16 @@ func (e EncounterStatusEnum) IsValid() bool {
 	return false
 }
 
+// IsFinal ...
+func (e EncounterStatusEnum) IsFinal() bool {
+	switch e {
+	case EncounterStatusEnumFinished, EncounterStatusEnumCancelled, EncounterStatusEnumEnteredInError:
+		return true
+	}
+
+	return false
+}
+
 // String ...
 func (e EncounterStatusEnum) String() string {
 	switch e {

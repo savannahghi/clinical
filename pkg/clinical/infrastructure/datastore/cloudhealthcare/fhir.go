@@ -527,6 +527,27 @@ func (fh StoreImpl) StartEncounter(
 	return *encPl.Resource.ID, nil
 }
 
+// PatchFHIREncounter is used to patch an encounter resource
+func (fh StoreImpl) PatchFHIREncounter(
+	_ context.Context,
+	encounterID string,
+	input domain.FHIREncounterInput,
+) (*domain.FHIREncounter, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", encounterResourceType, err)
+	}
+
+	resource := &domain.FHIREncounter{}
+
+	err = fh.Dataset.PatchFHIRResource(encounterResourceType, encounterID, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to patch %s resource: %w", encounterResourceType, err)
+	}
+
+	return resource, nil
+}
+
 // SearchEpisodeEncounter returns all encounters in a visit
 func (fh StoreImpl) SearchEpisodeEncounter(
 	ctx context.Context,
