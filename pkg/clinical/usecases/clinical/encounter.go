@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -76,6 +77,45 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 	}
 
 	return *encounter.Resource.ID, nil
+}
+
+func (c *UseCasesClinicalImpl) PatchEncounter(ctx context.Context, encounterID string, input dto.EncounterInput) (*dto.Encounter, error) {
+	if encounterID == "" {
+		return nil, fmt.Errorf("an encounterID is required")
+	}
+
+	status := domain.EncounterStatusEnum(strings.ToLower(string(input.Status)))
+	encounterInput := domain.FHIREncounterInput{
+		Status: status,
+	}
+
+	if status.IsFinal() {
+		encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, encounterID)
+		if err != nil {
+			return nil, fmt.Errorf("unable to get encounter with ID %s: %w", encounterID, err)
+		}
+
+		var startTime scalarutils.DateTime
+		if encounter.Resource.Period == nil {
+			startTime = scalarutils.DateTime(time.Now().Format(timeFormatStr))
+		} else {
+			startTime = encounter.Resource.Period.Start
+		}
+
+		// workaround for odd date comparison behavior on the Google Cloud Healthcare API
+		end := startTime.Time().Add(time.Hour * 24)
+		endTime := scalarutils.DateTime(end.Format(timeFormatStr))
+
+		encounterInput.Period = &domain.FHIRPeriodInput{Start: startTime, End: endTime}
+	}
+
+	fhirEncounter, err := c.infrastructure.FHIR.PatchFHIREncounter(ctx, encounterID, encounterInput)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return mapFHIREncounterToEncounterDTO([]domain.FHIREncounter{*fhirEncounter})[0], nil
 }
 
 // EndEncounter marks an encounter as finished and updates the endtime field

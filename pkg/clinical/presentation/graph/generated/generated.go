@@ -168,6 +168,7 @@ type ComplexityRoot struct {
 		DeletePatient            func(childComplexity int, id string) int
 		EndEncounter             func(childComplexity int, encounterID string) int
 		EndEpisodeOfCare         func(childComplexity int, id string) int
+		PatchEncounter           func(childComplexity int, encounterID string, input dto.EncounterInput) int
 		PatchEpisodeOfCare       func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
 		PatchPatient             func(childComplexity int, id string, input dto.PatientInput) int
 		RecordBloodPressure      func(childComplexity int, input dto.ObservationInput) int
@@ -283,6 +284,7 @@ type MutationResolver interface {
 	PatchEpisodeOfCare(ctx context.Context, id string, episodeOfCare dto.EpisodeOfCareInput) (*dto.EpisodeOfCare, error)
 	EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	StartEncounter(ctx context.Context, episodeID string) (string, error)
+	PatchEncounter(ctx context.Context, encounterID string, input dto.EncounterInput) (*dto.Encounter, error)
 	EndEncounter(ctx context.Context, encounterID string) (bool, error)
 	RecordTemperature(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordHeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
@@ -859,6 +861,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EndEpisodeOfCare(childComplexity, args["id"].(string)), true
+
+	case "Mutation.patchEncounter":
+		if e.complexity.Mutation.PatchEncounter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_patchEncounter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PatchEncounter(childComplexity, args["encounterID"].(string), args["input"].(dto.EncounterInput)), true
 
 	case "Mutation.patchEpisodeOfCare":
 		if e.complexity.Mutation.PatchEpisodeOfCare == nil {
@@ -1518,6 +1532,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAllergyInput,
 		ec.unmarshalInputConditionInput,
 		ec.unmarshalInputContactInput,
+		ec.unmarshalInputEncounterInput,
 		ec.unmarshalInputEpisodeOfCareInput,
 		ec.unmarshalInputHealthTimelineInput,
 		ec.unmarshalInputIdentifierInput,
@@ -1665,6 +1680,7 @@ extend type Mutation {
 
   # Encounter
   startEncounter(episodeID: String!): String!
+  patchEncounter(encounterID: String!, input: EncounterInput!): Encounter!
   endEncounter(encounterID: String!): Boolean!
 
   # Observation
@@ -1795,6 +1811,10 @@ scalar XHTML
 input EpisodeOfCareInput {
   status: EpisodeOfCareStatusEnum!
   patientID: String!
+}
+
+input EncounterInput {
+  status: EncounterStatusEnum
 }
 
 input ObservationInput {
@@ -2181,6 +2201,30 @@ func (ec *executionContext) field_Mutation_endEpisodeOfCare_args(ctx context.Con
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_patchEncounter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["encounterID"] = arg0
+	var arg1 dto.EncounterInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNEncounterInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -5921,6 +5965,73 @@ func (ec *executionContext) fieldContext_Mutation_startEncounter(ctx context.Con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_startEncounter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_patchEncounter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchEncounter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().PatchEncounter(rctx, fc.Args["encounterID"].(string), fc.Args["input"].(dto.EncounterInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Encounter)
+	fc.Result = res
+	return ec.marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_patchEncounter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Encounter_id(ctx, field)
+			case "class":
+				return ec.fieldContext_Encounter_class(ctx, field)
+			case "episodeOfCareID":
+				return ec.fieldContext_Encounter_episodeOfCareID(ctx, field)
+			case "status":
+				return ec.fieldContext_Encounter_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Encounter_patientID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Encounter", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_patchEncounter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -11905,6 +12016,35 @@ func (ec *executionContext) unmarshalInputContactInput(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputEncounterInput(ctx context.Context, obj interface{}) (dto.EncounterInput, error) {
+	var it dto.EncounterInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"status"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalOEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputEpisodeOfCareInput(ctx context.Context, obj interface{}) (dto.EpisodeOfCareInput, error) {
 	var it dto.EpisodeOfCareInput
 	asMap := map[string]interface{}{}
@@ -13053,6 +13193,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_startEncounter(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "patchEncounter":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_patchEncounter(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -14479,6 +14628,25 @@ func (ec *executionContext) marshalNDate2ᚖgithubᚗcomᚋsavannahghiᚋscalaru
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalNEncounter2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx context.Context, sel ast.SelectionSet, v dto.Encounter) graphql.Marshaler {
+	return ec._Encounter(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounter(ctx context.Context, sel ast.SelectionSet, v *dto.Encounter) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Encounter(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNEncounterInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterInput(ctx context.Context, v interface{}) (dto.EncounterInput, error) {
+	res, err := ec.unmarshalInputEncounterInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNEpisodeOfCare2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEpisodeOfCare(ctx context.Context, sel ast.SelectionSet, v dto.EpisodeOfCare) graphql.Marshaler {

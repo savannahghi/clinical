@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
@@ -108,6 +109,99 @@ func TestUseCasesClinicalImpl_StartEncounter(t *testing.T) {
 					t.Errorf("expected an episode of care ID but got %v", got)
 					return
 				}
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_PatchEncounter(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx         context.Context
+		encounterID string
+		input       dto.EncounterInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully patch encounter",
+			args: args{
+				ctx:         ctx,
+				encounterID: gofakeit.UUID(),
+				input: dto.EncounterInput{
+					Status: dto.EncounterStatusEnumInProgress,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid encounterID",
+			args: args{
+				ctx: ctx,
+				input: dto.EncounterInput{
+					Status: dto.EncounterStatusEnumInProgress,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Unable to get encounter",
+			args: args{
+				ctx:         ctx,
+				encounterID: gofakeit.UUID(),
+				input: dto.EncounterInput{
+					Status: dto.EncounterStatusEnumCancelled,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Unable to patch encounter",
+			args: args{
+				ctx:         ctx,
+				encounterID: gofakeit.UUID(),
+				input: dto.EncounterInput{
+					Status: dto.EncounterStatusEnumFinished,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Unable to get encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Unable to patch encounter" {
+				fakeFHIR.MockPatchFHIREncounterFn = func(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			got, err := c.PatchEncounter(ctx, tt.args.encounterID, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PatchEncounter() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a value to be returned, got: %v", got)
+				return
 			}
 		})
 	}

@@ -50,6 +50,7 @@ type FHIRMock struct {
 	MockDeleteFHIRCompositionFn           func(ctx context.Context, id string) (bool, error)
 	MockUpdateFHIRConditionFn             func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	MockGetFHIREncounterFn                func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
+	MockPatchFHIREncounterFn              func(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error)
 	MockSearchFHIREncounterFn             func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error)
 	MockSearchFHIRMedicationRequestFn     func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationRequestRelayConnection, error)
 	MockCreateFHIRMedicationRequestFn     func(ctx context.Context, input domain.FHIRMedicationRequestInput) (*domain.FHIRMedicationRequestRelayPayload, error)
@@ -687,6 +688,43 @@ func NewFHIRMock() *FHIRMock {
 				},
 			}, nil
 		},
+		MockPatchFHIREncounterFn: func(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error) {
+			UUID := uuid.New().String()
+			PatientRef := "Patient/" + uuid.NewString()
+			return &domain.FHIREncounter{
+				ID:            &UUID,
+				Text:          &domain.FHIRNarrative{},
+				Identifier:    []*domain.FHIRIdentifier{},
+				Status:        "",
+				StatusHistory: []*domain.FHIREncounterStatushistory{},
+				Class:         domain.FHIRCoding{},
+				ClassHistory:  []*domain.FHIREncounterClasshistory{},
+				Type:          []*domain.FHIRCodeableConcept{},
+				ServiceType:   &domain.FHIRCodeableConcept{},
+				Priority:      &domain.FHIRCodeableConcept{},
+				Subject: &domain.FHIRReference{
+					ID:        &UUID,
+					Reference: &PatientRef,
+				},
+				EpisodeOfCare: []*domain.FHIRReference{
+					{
+						ID: &UUID,
+					},
+				},
+				BasedOn:         []*domain.FHIRReference{},
+				Participant:     []*domain.FHIREncounterParticipant{},
+				Appointment:     []*domain.FHIRReference{},
+				Period:          &domain.FHIRPeriod{},
+				Length:          &domain.FHIRDuration{},
+				ReasonReference: []*domain.FHIRReference{},
+				Diagnosis:       []*domain.FHIREncounterDiagnosis{},
+				Account:         []*domain.FHIRReference{},
+				Hospitalization: &domain.FHIREncounterHospitalization{},
+				Location:        []*domain.FHIREncounterLocation{},
+				ServiceProvider: &domain.FHIRReference{},
+				PartOf:          &domain.FHIRReference{},
+			}, nil
+		},
 		MockSearchFHIREncounterFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error) {
 			PatientRef := "Patient/" + uuid.NewString()
 			UID := gofakeit.UUID()
@@ -1184,6 +1222,11 @@ func (fh *FHIRMock) UpdateFHIRCondition(ctx context.Context, input domain.FHIRCo
 // GetFHIREncounter is a mock implementation of GetFHIREncounter method
 func (fh *FHIRMock) GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
 	return fh.MockGetFHIREncounterFn(ctx, id)
+}
+
+// PatchFHIREncounter is a mock implementation of PatchFHIREncounter method
+func (fh *FHIRMock) PatchFHIREncounter(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error) {
+	return fh.MockPatchFHIREncounterFn(ctx, encounterID, input)
 }
 
 // SearchFHIREncounter is a mock implementation of SearchFHIREncounter method

@@ -35,6 +35,12 @@ func (r *mutationResolver) StartEncounter(ctx context.Context, episodeID string)
 	return r.usecases.Clinical.StartEncounter(ctx, episodeID)
 }
 
+// PatchEncounter is the resolver for the patchEncounter field.
+func (r *mutationResolver) PatchEncounter(ctx context.Context, encounterID string, input dto.EncounterInput) (*dto.Encounter, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.PatchEncounter(ctx, encounterID, input)
+}
+
 // EndEncounter is the resolver for the endEncounter field.
 func (r *mutationResolver) EndEncounter(ctx context.Context, encounterID string) (bool, error) {
 	r.CheckDependencies()

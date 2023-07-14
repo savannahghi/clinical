@@ -130,7 +130,7 @@ func (c *UseCasesClinicalImpl) PatchEpisodeOfCare(ctx context.Context, id string
 		}
 
 		// workaround for odd date comparison behavior on the Google Cloud Healthcare API
-		end := time.Now().Add(time.Hour * 24)
+		end := startTime.Time().Add(time.Hour * 24)
 		endTime := scalarutils.DateTime(end.Format(timeFormatStr))
 
 		episodeOfCareInput.Period = &domain.FHIRPeriodInput{Start: startTime, End: endTime}
