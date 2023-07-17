@@ -34,6 +34,7 @@ var ClinicalAllowedOrigins = []string{
 	"https://healthcloud.co.ke",
 	"https://bewell.co.ke",
 	"http://localhost:5000",
+	"http://localhost:4200",
 	"https://clinical-staging.healthcloud.co.ke",
 	"https://clinical-testing.healthcloud.co.ke",
 	"https://clinical-prod.healthcloud.co.ke",
