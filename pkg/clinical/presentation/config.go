@@ -139,6 +139,8 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 			"Content-Type",
 			"Authorization",
 			"X-Authorization",
+			"Clinical-Organization-ID",
+			"Clinical-Facility-ID",
 		},
 		ExposeHeaders:    []string{"Content-Length", "Link"},
 		AllowCredentials: true,
