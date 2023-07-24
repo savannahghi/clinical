@@ -209,6 +209,12 @@ func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID s
 	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID, &pagination)
 }
 
+// GetPatientMuacEntries is the resolver for the getPatientMuacEntries field.
+func (r *queryResolver) GetPatientMuacEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientMuacEntries(ctx, patientID, &pagination)
+}
+
 // GetPatientViralLoad is the resolver for the getPatientViralLoad field.
 func (r *queryResolver) GetPatientViralLoad(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()

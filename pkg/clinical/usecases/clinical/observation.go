@@ -87,6 +87,11 @@ func (c *UseCasesClinicalImpl) GetPatientWeightEntries(ctx context.Context, pati
 	return c.GetPatientObservations(ctx, patientID, common.WeightCIELTerminologyCode, pagination)
 }
 
+// GetPatientMuacEntries gets the patient's muac
+func (c *UseCasesClinicalImpl) GetPatientMuacEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.MuacCIELTerminologyCode, pagination)
+}
+
 // GetPatientViralLoad gets the patient's viral load
 func (c *UseCasesClinicalImpl) GetPatientViralLoad(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	return c.GetPatientObservations(ctx, patientID, common.ViralLoadCIELTerminologyCode, pagination)
