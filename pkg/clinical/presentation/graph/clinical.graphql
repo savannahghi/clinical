@@ -52,6 +52,11 @@ extend type Query {
     pagination: Pagination!
   ): ObservationConnection
 
+  getPatientMuacEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
   getPatientViralLoad(
     patientID: ID!
     pagination: Pagination!
@@ -72,7 +77,10 @@ extend type Query {
 extend type Mutation {
   # EpisodeOfCare
   createEpisodeOfCare(episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare
-  patchEpisodeOfCare(id: String!, episodeOfCare: EpisodeOfCareInput!): EpisodeOfCare!
+  patchEpisodeOfCare(
+    id: String!
+    episodeOfCare: EpisodeOfCareInput!
+  ): EpisodeOfCare!
   endEpisodeOfCare(id: ID!): EpisodeOfCare
 
   # Encounter
