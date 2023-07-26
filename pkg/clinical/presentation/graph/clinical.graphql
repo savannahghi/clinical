@@ -57,6 +57,11 @@ extend type Query {
     pagination: Pagination!
   ): ObservationConnection
 
+  getPatientOxygenSaturationEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
   getPatientViralLoad(
     patientID: ID!
     pagination: Pagination!

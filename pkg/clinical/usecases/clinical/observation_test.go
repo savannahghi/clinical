@@ -2603,6 +2603,62 @@ func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 	}
 }
 
+func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
+	first := 10
+	type args struct {
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient oxygen saturation",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid patient id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.BS(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			_, err := c.GetPatientOxygenSaturationEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientOxygenSaturationEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 	first := 10
 	type args struct {
