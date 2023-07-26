@@ -92,6 +92,11 @@ func (c *UseCasesClinicalImpl) GetPatientMuacEntries(ctx context.Context, patien
 	return c.GetPatientObservations(ctx, patientID, common.MuacCIELTerminologyCode, pagination)
 }
 
+// GetPatientOxygenSaturationEntries gets the patient's oxygen saturation
+func (c *UseCasesClinicalImpl) GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.OxygenSaturationCIELTerminologyCode, pagination)
+}
+
 // GetPatientViralLoad gets the patient's viral load
 func (c *UseCasesClinicalImpl) GetPatientViralLoad(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	return c.GetPatientObservations(ctx, patientID, common.ViralLoadCIELTerminologyCode, pagination)

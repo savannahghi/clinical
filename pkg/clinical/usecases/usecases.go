@@ -63,6 +63,7 @@ type Clinical interface {
 	GetPatientBMIEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientWeightEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientMuacEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientViralLoad(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
