@@ -816,6 +816,7 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockCreateFHIRObservationFn: func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 			uuid := uuid.New().String()
+			instant := gofakeit.TimeZone()
 			finalStatus := domain.ObservationStatusEnumFinal
 			return &domain.FHIRObservation{
 				ID:         new(string),
@@ -848,6 +849,7 @@ func NewFHIRMock() *FHIRMock {
 				EffectiveDateTime:    &scalarutils.Date{},
 				EffectivePeriod:      &domain.FHIRPeriod{},
 				EffectiveTiming:      &domain.FHIRTiming{},
+				EffectiveInstant:     (*scalarutils.Instant)(&instant),
 				Performer:            []*domain.FHIRReference{},
 				ValueQuantity:        &domain.FHIRQuantity{},
 				ValueCodeableConcept: (*scalarutils.Code)(&uuid),
@@ -1042,6 +1044,7 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockSearchPatientObservationsFn: func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 			uuid := uuid.New().String()
+			instant := gofakeit.TimeZone()
 			finalStatus := domain.ObservationStatusEnumFinal
 			return &domain.PagedFHIRObservations{
 				Observations: []domain.FHIRObservation{
@@ -1067,6 +1070,7 @@ func NewFHIRMock() *FHIRMock {
 							},
 							Text: "",
 						},
+						EffectiveInstant: (*scalarutils.Instant)(&instant),
 					},
 				},
 				HasNextPage:     true,

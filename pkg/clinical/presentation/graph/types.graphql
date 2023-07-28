@@ -22,6 +22,7 @@ type Observation {
   encounterID: String!
   name: String!
   value: String!
+  timeRecorded: String!
 }
 
 type Medication {

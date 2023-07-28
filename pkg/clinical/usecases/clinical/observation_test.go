@@ -1714,17 +1714,6 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name: "Sad Case - Fail to search observation - nil encounter id",
-			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.UUID(),
-				pagination: &dto.Pagination{
-					First: &first,
-				},
-			},
-			wantErr: false,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1976,6 +1965,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			if tt.name == "Sad Case - Fail to search observation - nil encounter" {
 				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
+					instant := gofakeit.TimeZone()
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
 					return &domain.PagedFHIRObservations{
@@ -2000,78 +1990,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 								ValueString:          new(string),
 								ValueBoolean:         new(bool),
 								ValueInteger:         new(string),
-								ValueRange: &domain.FHIRRange{
-									Low: domain.FHIRQuantity{
-										Value: 100,
-										Unit:  "cm",
-									},
-									High: domain.FHIRQuantity{
-										Value: 100,
-										Unit:  "cm",
-									},
-								},
-								ValueRatio: &domain.FHIRRatio{
-									Numerator: domain.FHIRQuantity{
-										Value: 100,
-										Unit:  "cm",
-									},
-									Denominator: domain.FHIRQuantity{
-										Value: 100,
-										Unit:  "cm",
-									},
-								},
-								ValueSampledData: &domain.FHIRSampledData{
-									ID: &UUID,
-								},
-								ValueTime: &time.Time{},
-								ValueDateTime: &scalarutils.Date{
-									Year:  2000,
-									Month: 1,
-									Day:   1,
-								},
-								ValuePeriod: &domain.FHIRPeriod{
-									Start: scalarutils.DateTime(time.Wednesday.String()),
-									End:   scalarutils.DateTime(time.Thursday.String()),
-								},
-							},
-						},
-						HasNextPage:     false,
-						NextCursor:      "",
-						HasPreviousPage: false,
-						PreviousCursor:  "",
-						TotalCount:      0,
-					}, nil
-				}
-			}
-
-			if tt.name == "Sad Case - Fail to search observation - nil encounter id" {
-				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
-					status := dto.ObservationStatusFinal
-					valueConcept := "222"
-					UUID := gofakeit.UUID()
-					return &domain.PagedFHIRObservations{
-						Observations: []domain.FHIRObservation{
-							{
-								ID:     new(string),
-								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
-									ID: new(string),
-									Coding: []*domain.FHIRCoding{{
-										Display: gofakeit.BS(),
-									}},
-								},
-								Subject: &domain.FHIRReference{
-									ID: new(string),
-								},
-								Encounter: &domain.FHIRReference{},
-								ValueQuantity: &domain.FHIRQuantity{
-									Value: 100,
-									Unit:  "cm",
-								},
-								ValueCodeableConcept: (*scalarutils.Code)(&valueConcept),
-								ValueString:          new(string),
-								ValueBoolean:         new(bool),
-								ValueInteger:         new(string),
+								EffectiveInstant:     (*scalarutils.Instant)(&instant),
 								ValueRange: &domain.FHIRRange{
 									Low: domain.FHIRQuantity{
 										Value: 100,

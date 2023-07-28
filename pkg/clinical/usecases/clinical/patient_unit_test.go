@@ -853,6 +853,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			if tt.name == "Happy Case - Successfully search observation" {
 				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
+					instant := gofakeit.TimeZone()
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
 					return &domain.PagedFHIRObservations{
@@ -880,6 +881,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 								ValueString:          new(string),
 								ValueBoolean:         new(bool),
 								ValueInteger:         new(string),
+								EffectiveInstant:     (*scalarutils.Instant)(&instant),
 								ValueRange: &domain.FHIRRange{
 									Low: domain.FHIRQuantity{
 										Value: 100,
@@ -1070,6 +1072,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			if tt.name == "Sad Case - Fail to search observation - nil status" {
 				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					valueConcept := "222"
+					instant := gofakeit.TimeZone()
 					UUID := gofakeit.UUID()
 					return &domain.PagedFHIRObservations{
 						Observations: []domain.FHIRObservation{
@@ -1092,6 +1095,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 								ValueString:          new(string),
 								ValueBoolean:         new(bool),
 								ValueInteger:         new(string),
+								EffectiveInstant:     (*scalarutils.Instant)(&instant),
 								ValueRange: &domain.FHIRRange{
 									Low: domain.FHIRQuantity{
 										Value: 100,
@@ -1282,6 +1286,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			if tt.name == "Sad Case - Fail to search observation - nil encounter" {
 				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
+					instant := gofakeit.TimeZone()
 					valueConcept := "222"
 					UUID := gofakeit.UUID()
 					return &domain.PagedFHIRObservations{
@@ -1306,6 +1311,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 								ValueString:          new(string),
 								ValueBoolean:         new(bool),
 								ValueInteger:         new(string),
+								EffectiveInstant:     (*scalarutils.Instant)(&instant),
 								ValueRange: &domain.FHIRRange{
 									Low: domain.FHIRQuantity{
 										Value: 100,
@@ -1354,6 +1360,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 					status := dto.ObservationStatusFinal
 					valueConcept := "222"
+					instant := gofakeit.TimeZone()
 					UUID := gofakeit.UUID()
 					return &domain.PagedFHIRObservations{
 						Observations: []domain.FHIRObservation{
@@ -1378,6 +1385,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 								ValueString:          new(string),
 								ValueBoolean:         new(bool),
 								ValueInteger:         new(string),
+								EffectiveInstant:     (*scalarutils.Instant)(&instant),
 								ValueRange: &domain.FHIRRange{
 									Low: domain.FHIRQuantity{
 										Value: 100,

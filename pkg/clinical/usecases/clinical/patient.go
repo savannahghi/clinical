@@ -312,11 +312,12 @@ func mapFHIRObservationToObservationDTO(fhirObservation domain.FHIRObservation) 
 	}
 
 	obs := &dto.Observation{
-		ID:        *fhirObservation.ID,
-		Status:    dto.ObservationStatus(*fhirObservation.Status),
-		Name:      fhirObservation.Code.Coding[0].Display,
-		Value:     value,
-		PatientID: *fhirObservation.Subject.ID,
+		ID:           *fhirObservation.ID,
+		Status:       dto.ObservationStatus(*fhirObservation.Status),
+		Name:         fhirObservation.Code.Coding[0].Display,
+		Value:        value,
+		PatientID:    *fhirObservation.Subject.ID,
+		TimeRecorded: string(*fhirObservation.EffectiveInstant),
 	}
 
 	if fhirObservation.Encounter != nil && fhirObservation.Encounter.ID != nil {
