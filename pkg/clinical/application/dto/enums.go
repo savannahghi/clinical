@@ -110,6 +110,7 @@ const (
 	ConditionStatusActive   ConditionStatus = "ACTIVE"
 	ConditionStatusInactive ConditionStatus = "INACTIVE"
 	ConditionStatusResolved ConditionStatus = "RESOLVED"
+	ConditionStatusUnknown  ConditionStatus = "UNKNOWN"
 )
 
 // TerminologySource represents various concept sources
