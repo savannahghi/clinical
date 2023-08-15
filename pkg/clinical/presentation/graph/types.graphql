@@ -56,6 +56,7 @@ type TimelineResource {
   value: String
   status: String
   date: Date
+  timeRecorded: Time
 }
 
 type HealthTimeline {
