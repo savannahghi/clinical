@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -274,6 +275,7 @@ type ComplexityRoot struct {
 		Name         func(childComplexity int) int
 		ResourceType func(childComplexity int) int
 		Status       func(childComplexity int) int
+		TimeRecorded func(childComplexity int) int
 		Value        func(childComplexity int) int
 	}
 
@@ -1543,6 +1545,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TimelineResource.Status(childComplexity), true
 
+	case "TimelineResource.timeRecorded":
+		if e.complexity.TimelineResource.TimeRecorded == nil {
+			break
+		}
+
+		return e.complexity.TimelineResource.TimeRecorded(childComplexity), true
+
 	case "TimelineResource.value":
 		if e.complexity.TimelineResource.Value == nil {
 			break
@@ -1991,6 +2000,7 @@ type TimelineResource {
   value: String
   status: String
   date: Date
+  timeRecorded: Time
 }
 
 type HealthTimeline {
@@ -4781,6 +4791,8 @@ func (ec *executionContext) fieldContext_HealthTimeline_timeline(ctx context.Con
 				return ec.fieldContext_TimelineResource_status(ctx, field)
 			case "date":
 				return ec.fieldContext_TimelineResource_date(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_TimelineResource_timeRecorded(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type TimelineResource", field.Name)
 		},
@@ -10326,6 +10338,47 @@ func (ec *executionContext) fieldContext_TimelineResource_date(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _TimelineResource_timeRecorded(ctx context.Context, field graphql.CollectedField, obj *dto.TimelineResource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TimelineResource_timeRecorded(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TimeRecorded, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TimelineResource_timeRecorded(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TimelineResource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) __Service_sdl(ctx context.Context, field graphql.CollectedField, obj *fedruntime.Service) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext__Service_sdl(ctx, field)
 	if err != nil {
@@ -14509,6 +14562,10 @@ func (ec *executionContext) _TimelineResource(ctx context.Context, sel ast.Selec
 
 			out.Values[i] = ec._TimelineResource_date(ctx, field, obj)
 
+		case "timeRecorded":
+
+			out.Values[i] = ec._TimelineResource_timeRecorded(ctx, field, obj)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -16261,6 +16318,16 @@ func (ec *executionContext) unmarshalOTerminologySource2githubᚗcomᚋsavannahg
 
 func (ec *executionContext) marshalOTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, sel ast.SelectionSet, v dto.TerminologySource) graphql.Marshaler {
 	res := graphql.MarshalString(string(v))
+	return res
+}
+
+func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	res := graphql.MarshalTime(v)
 	return res
 }
 

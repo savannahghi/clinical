@@ -144,6 +144,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				Value:        *edge.ValueString,
 				Status:       string(*edge.Status),
 				Date:         *date,
+				TimeRecorded: instant,
 			}
 
 			mut.Lock()

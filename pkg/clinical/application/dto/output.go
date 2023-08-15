@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"time"
+
 	"github.com/savannahghi/scalarutils"
 )
 
@@ -31,7 +33,7 @@ type HealthTimelineInput struct {
 	Limit     int    `json:"limit"`
 }
 
-// TimelineResource represents a FHIR timeline resource
+// TimelineResource represents a FHIR timeline resources
 type TimelineResource struct {
 	ID           string           `json:"id"`
 	ResourceType ResourceType     `json:"resourceType"`
@@ -39,6 +41,7 @@ type TimelineResource struct {
 	Value        string           `json:"value"`
 	Status       string           `json:"status"`
 	Date         scalarutils.Date `json:"date"`
+	TimeRecorded time.Time        `json:"timeRecorded"`
 }
 
 // HealthTimeline represents a health timeline containing various FHIR resources
