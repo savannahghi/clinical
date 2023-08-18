@@ -162,7 +162,7 @@ func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Conditi
 	}
 
 	if condition.OnsetDateTime != nil {
-		output.OnsetDate = *condition.OnsetDateTime
+		output.OnsetDate = condition.OnsetDateTime
 	}
 
 	return &output
