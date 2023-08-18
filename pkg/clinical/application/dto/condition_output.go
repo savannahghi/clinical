@@ -10,8 +10,8 @@ type Condition struct {
 	Code   string          `json:"code"`
 	System string          `json:"system"`
 
-	OnsetDate    scalarutils.Date `json:"onsetDate"`
-	RecordedDate scalarutils.Date `json:"recordedDate"`
+	OnsetDate    *scalarutils.Date `json:"onsetDate"`
+	RecordedDate scalarutils.Date  `json:"recordedDate"`
 
 	Note string `json:"note"`
 
