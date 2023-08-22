@@ -226,10 +226,70 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 		}
 	}
 
+	// search conditions
+	conditionResourceFunc := func(wg *sync.WaitGroup, mut *sync.Mutex) {
+		defer wg.Done()
+
+		conn, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, patientFilterParams, *identifiers, dto.Pagination{Skip: true})
+		if err != nil {
+			utils.ReportErrorToSentry(err)
+			log.Errorf("Condition search error: %v", err)
+
+			return
+		}
+
+		for _, edge := range conn.Conditions {
+			if edge.ID == nil {
+				continue
+			}
+
+			if edge.Code.Coding == nil {
+				continue
+			}
+
+			if len(edge.Code.Coding) < 1 {
+				continue
+			}
+
+			if len(edge.Category) < 1 {
+				continue
+			}
+
+			if len(edge.Note) < 1 {
+				continue
+			}
+
+			if edge.OnsetDateTime == nil {
+				continue
+			}
+
+			if err != nil {
+				utils.ReportErrorToSentry(err)
+				log.Errorf("date conversion error: %v", err)
+
+				return
+			}
+
+			timelineResource := dto.TimelineResource{
+				ID:           *edge.ID,
+				ResourceType: dto.ResourceTypeCondition,
+				Name:         edge.Code.Coding[0].Display,
+				Value:        edge.ClinicalStatus.Text,
+				Status:       edge.Category[0].Text,
+				Date:         *edge.OnsetDateTime,
+			}
+
+			mut.Lock()
+			timeline = append(timeline, timelineResource)
+			mut.Unlock()
+		}
+	}
+
 	resources := []timelineResourceFunc{
 		allergyIntoleranceResourceFunc,
 		observationResourceFunc,
 		medicationStatementResourceFunc,
+		conditionResourceFunc,
 	}
 
 	for _, resource := range resources {
