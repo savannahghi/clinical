@@ -35,7 +35,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 				ctx: nil,
 				input: dto.ConditionInput{
 					Code:        "386661006",
-					System:      "SNOMED",
+					System:      dto.TerminologySourceCIEL,
 					Status:      dto.ConditionStatusActive,
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",

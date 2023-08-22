@@ -51,7 +51,7 @@ input ContactInput {
 
 input ConditionInput {
   code: String!
-  system: String!
+  system: TerminologySource!
   status: ConditionStatus!
   encounterID: String!
 

@@ -227,7 +227,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 	postalAddrType := domain.AddressTypeEnumPostal
 
 	for _, postal := range postal {
-		text := fmt.Sprintf("%s\n%s", postal.PostalAddress, postal.PostalCode)
+		text := fmt.Sprintf("%s\n%s", *postal.PostalAddress, postal.PostalCode)
 		postalCode := scalarutils.Code(postal.PostalCode)
 		postalAddr := &domain.FHIRAddressInput{
 			Use:        &addrUse,
@@ -235,7 +235,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 			Country:    &country,
 			Period:     common.DefaultPeriodInput(),
 			PostalCode: &postalCode,
-			Line:       []*string{&postal.PostalAddress},
+			Line:       []*string{postal.PostalAddress},
 			Text:       text,
 		}
 		output = append(output, postalAddr)
@@ -243,7 +243,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 
 	for _, physical := range physical {
 		text := fmt.Sprintf(
-			"%s\n%s", physical.MapsCode, physical.PhysicalAddress)
+			"%s\n%s", physical.MapsCode, *physical.PhysicalAddress)
 		mapsCode := scalarutils.Code(physical.MapsCode)
 		physicalAddr := &domain.FHIRAddressInput{
 			Use:        &addrUse,
@@ -251,7 +251,7 @@ func PhysicalPostalAddressesToFHIRAddresses(
 			Country:    &country,
 			Period:     common.DefaultPeriodInput(),
 			PostalCode: &mapsCode,
-			Line:       []*string{&physical.PhysicalAddress},
+			Line:       []*string{physical.PhysicalAddress},
 			Text:       text,
 		}
 		output = append(output, physicalAddr)
@@ -338,7 +338,7 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 
 	postalAddressLines := []string{}
 	for _, postal := range postal {
-		postalAddressLines = append(postalAddressLines, postal.PostalAddress)
+		postalAddressLines = append(postalAddressLines, *postal.PostalAddress)
 		postalAddressLines = append(postalAddressLines, postal.PostalCode)
 
 		if addr.PostalCode == nil {
@@ -352,7 +352,7 @@ func PhysicalPostalAddressesToCombinedFHIRAddress(
 
 	physicalAddressLines := []string{}
 	for _, physical := range physical {
-		physicalAddressLines = append(physicalAddressLines, physical.PhysicalAddress)
+		physicalAddressLines = append(physicalAddressLines, *physical.PhysicalAddress)
 		physicalAddressLines = append(physicalAddressLines, physical.MapsCode)
 	}
 
@@ -399,7 +399,7 @@ func ContactsToContactPoint(
 
 	for _, email := range emails {
 		err := ValidateEmail(
-			email.Email, email.CommunicationOptIn, firestoreClient)
+			*email.Email, email.CommunicationOptIn, firestoreClient)
 		if err != nil {
 			return nil, fmt.Errorf("invalid email: %w", err)
 		}
@@ -409,7 +409,7 @@ func ContactsToContactPoint(
 			Use:    &contactUse,
 			Rank:   &rank,
 			Period: common.DefaultPeriod(),
-			Value:  &email.Email,
+			Value:  email.Email,
 		}
 		output = append(output, emailContact)
 		rank++
