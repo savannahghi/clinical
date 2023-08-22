@@ -92,6 +92,139 @@ func TestUseCasesClinicalImpl_GetTenantMetaTags(t *testing.T) {
 	}
 }
 
+func TestUseCasesClinicalImpl_CheckPatientExistenceUsingPhoneNumber(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input domain.SimplePatientRegistrationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: nil inputs",
+			args: args{
+				ctx: context.Background(),
+				input: domain.SimplePatientRegistrationInput{
+					PhoneNumbers: []*domain.PhoneNumberInput{
+						{
+							Msisdn:             gofakeit.Phone(),
+							VerificationCode:   "1234",
+							IsUssd:             false,
+							CommunicationOptIn: false,
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "happy case: contacts to contact point",
+			args: args{
+				ctx: context.Background(),
+				input: domain.SimplePatientRegistrationInput{
+					PhoneNumbers: []*domain.PhoneNumberInput{
+						{
+							Msisdn:             gofakeit.Phone(),
+							VerificationCode:   "1234",
+							IsUssd:             false,
+							CommunicationOptIn: false,
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: missing FHIR patient",
+			args: args{
+				ctx: context.Background(),
+				input: domain.SimplePatientRegistrationInput{
+					PhoneNumbers: []*domain.PhoneNumberInput{
+						{
+							Msisdn:             gofakeit.Phone(),
+							VerificationCode:   "1234",
+							IsUssd:             false,
+							CommunicationOptIn: false,
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: missing tenant org in context",
+			args: args{
+				ctx: context.Background(),
+				input: domain.SimplePatientRegistrationInput{
+					PhoneNumbers: []*domain.PhoneNumberInput{
+						{
+							Msisdn:             gofakeit.Phone(),
+							VerificationCode:   "1234",
+							IsUssd:             false,
+							CommunicationOptIn: false,
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: invalid phone",
+			args: args{
+				ctx: context.Background(),
+				input: domain.SimplePatientRegistrationInput{
+					PhoneNumbers: []*domain.PhoneNumberInput{
+						{
+							Msisdn:             "0722",
+							VerificationCode:   "1234",
+							IsUssd:             false,
+							CommunicationOptIn: false,
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			Fakefhir := fakeFHIRMock.NewFHIRMock()
+			FakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeUpload, fakePubSub)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "sad case: missing tenant org in context" {
+				FakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to to get identifiers")
+				}
+			}
+
+			if tt.name == "sad case: missing FHIR patient" {
+				Fakefhir.MockSearchFHIRPatientFn = func(ctx context.Context, searchParams string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PatientConnection, error) {
+					return nil, fmt.Errorf("failed to to get fhir patient")
+				}
+			}
+
+			got, err := c.CheckPatientExistenceUsingPhoneNumber(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.CheckPatientExistenceUsingPhoneNumber() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if tt.wantErr && got != false {
+				t.Errorf("expected result to be nil for %v", tt.name)
+				return
+			}
+		})
+	}
+}
+
 func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 	email := gofakeit.Email()
 	invalidEmail := "gofakeit.Email()"

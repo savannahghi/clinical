@@ -120,6 +120,10 @@ func (c *UseCasesClinicalImpl) GetMedicalData(ctx context.Context, patientID str
 					continue
 				}
 
+				if edge.Code.Coding[0].ID == nil {
+					continue
+				}
+
 				data.Allergies = append(data.Allergies, mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(edge))
 			}
 

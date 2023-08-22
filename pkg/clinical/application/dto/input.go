@@ -66,6 +66,7 @@ type ConditionInput struct {
 	Code        string            `json:"condition"`
 	System      TerminologySource `json:"system"`
 	Status      ConditionStatus   `json:"status"`
+	Category    ConditionCategory `json:"category"`
 	EncounterID string            `json:"encounterID"`
 	Note        string            `json:"note"`
 	OnsetDate   *scalarutils.Date `json:"onsetDate"`

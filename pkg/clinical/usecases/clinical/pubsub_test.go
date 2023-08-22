@@ -84,6 +84,24 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - fail to get organisation",
+			args: args{
+				ctx: ctx,
+				payload: dto.PatientPubSubMessage{
+					UserID:         gofakeit.UUID(),
+					ClientID:       gofakeit.UUID(),
+					Name:           gofakeit.Name(),
+					DateOfBirth:    time.Now(),
+					Gender:         "male",
+					Active:         true,
+					PhoneNumber:    gofakeit.Phone(),
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -108,6 +126,13 @@ func TestUseCasesClinicalImpl_CreatePubsubPatient(t *testing.T) {
 					return fmt.Errorf("failed to add fhir ID to profile")
 				}
 			}
+
+			if tt.name == "Sad Case - fail to get organisation" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to find org by ID")
+				}
+			}
+
 			if err := u.CreatePubsubPatient(tt.args.ctx, tt.args.payload); (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreatePubsubPatient() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -735,6 +760,22 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - fail to get organisation",
+			args: args{
+				ctx: ctx,
+				data: dto.PatientAllergyPubSubMessage{
+					PatientID:      uuid.New().String(),
+					OrganizationID: "",
+					Name:           "",
+					ConceptID:      new(string),
+					Date:           time.Time{},
+					Reaction:       dto.AllergyReaction{},
+					Severity:       dto.AllergySeverity{},
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -751,6 +792,12 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			if tt.name == "Sad Case - Fail to get user profile" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get organisation" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to find org by ID")
 				}
 			}
 

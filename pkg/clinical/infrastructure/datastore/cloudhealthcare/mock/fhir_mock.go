@@ -157,6 +157,22 @@ func NewFHIRMock() *FHIRMock {
 					Encounter: &domain.FHIRReference{
 						ID: &UUID,
 					},
+					Category: []*domain.FHIRCodeableConcept{
+						{
+							ID: &UUID,
+							Coding: []*domain.FHIRCoding{
+								{
+									ID:           &UUID,
+									System:       (*scalarutils.URI)(&UUID),
+									Version:      &UUID,
+									Code:         "PROBLEM_LIST_ITEM",
+									Display:      gofakeit.BeerAlcohol(),
+									UserSelected: new(bool),
+								},
+							},
+							Text: "PROBLEM_LIST_ITEM",
+						},
+					},
 				},
 			}, nil
 		},
@@ -443,6 +459,7 @@ func NewFHIRMock() *FHIRMock {
 		MockSearchFHIRAllergyIntoleranceFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 			UID := gofakeit.UUID()
 			system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
+			severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
 			return &domain.PagedFHIRAllergy{
 				Allergies: []domain.FHIRAllergyIntolerance{
 					{
@@ -465,7 +482,22 @@ func NewFHIRMock() *FHIRMock {
 						},
 						Reaction: []*domain.FHIRAllergyintoleranceReaction{
 							{
-								ID: &UID,
+								ID:        &UID,
+								Substance: &domain.FHIRCodeableConcept{},
+								Manifestation: []*domain.FHIRCodeableConcept{
+									{
+										ID: new(string),
+										Coding: []*domain.FHIRCoding{
+											{
+												ID:     new(string),
+												System: &system,
+												Code:   scalarutils.Code("1234"),
+											},
+										},
+										Text: gofakeit.Name(),
+									},
+								},
+								Severity: &severityStatus,
 							},
 						},
 						Meta:      &domain.FHIRMeta{},
@@ -482,6 +514,7 @@ func NewFHIRMock() *FHIRMock {
 		MockSearchPatientAllergyIntoleranceFn: func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 			UID := gofakeit.UUID()
 			system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
+			severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
 			return &domain.PagedFHIRAllergy{
 				Allergies: []domain.FHIRAllergyIntolerance{
 					{
@@ -504,7 +537,22 @@ func NewFHIRMock() *FHIRMock {
 						},
 						Reaction: []*domain.FHIRAllergyintoleranceReaction{
 							{
-								ID: &UID,
+								ID:        &UID,
+								Substance: &domain.FHIRCodeableConcept{},
+								Manifestation: []*domain.FHIRCodeableConcept{
+									{
+										ID: new(string),
+										Coding: []*domain.FHIRCoding{
+											{
+												ID:     new(string),
+												System: &system,
+												Code:   scalarutils.Code("1234"),
+											},
+										},
+										Text: gofakeit.Name(),
+									},
+								},
+								Severity: &severityStatus,
 							},
 						},
 						Meta:      &domain.FHIRMeta{},
@@ -567,6 +615,7 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockCreateFHIRAllergyIntoleranceFn: func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
+			system := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
 			return &domain.FHIRAllergyIntoleranceRelayPayload{
 				Resource: &domain.FHIRAllergyIntolerance{
 					ID:   new(string),
@@ -577,13 +626,20 @@ func NewFHIRMock() *FHIRMock {
 							Substance: &domain.FHIRCodeableConcept{},
 							Manifestation: []*domain.FHIRCodeableConcept{
 								{
-									ID:     new(string),
-									Coding: []*domain.FHIRCoding{},
-									Text:   gofakeit.Name(),
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{
+										{
+											ID:     new(string),
+											System: &system,
+											Code:   scalarutils.Code("1234"),
+										},
+									},
+									Text: gofakeit.Name(),
 								},
 							},
 						},
 					},
+					// RecordedDate: &scalarutils.Date{},
 					Meta:      &domain.FHIRMeta{},
 					Extension: []*domain.FHIRExtension{},
 				},
@@ -608,6 +664,8 @@ func NewFHIRMock() *FHIRMock {
 			id := gofakeit.UUID()
 			statusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
 			status := "inactive"
+			note := scalarutils.Markdown("Fever Fever")
+			noteTime := time.Now()
 			uri := scalarutils.URI("1234567345")
 
 			condition := domain.FHIRCondition{
@@ -639,8 +697,30 @@ func NewFHIRMock() *FHIRMock {
 				Subject: &domain.FHIRReference{
 					ID: &id,
 				},
+				Note: []*domain.FHIRAnnotation{
+					{
+						Time: &noteTime,
+						Text: &note,
+					},
+				},
 				Encounter: &domain.FHIRReference{
 					ID: &id,
+				},
+				Category: []*domain.FHIRCodeableConcept{
+					{
+						ID: &id,
+						Coding: []*domain.FHIRCoding{
+							{
+								ID:           &id,
+								System:       (*scalarutils.URI)(&id),
+								Version:      &id,
+								Code:         "PROBLEM_LIST_ITEM",
+								Display:      gofakeit.BeerAlcohol(),
+								UserSelected: new(bool),
+							},
+						},
+						Text: "PROBLEM_LIST_ITEM",
+					},
 				},
 			}
 
@@ -661,7 +741,7 @@ func NewFHIRMock() *FHIRMock {
 					ID:            &UUID,
 					Text:          &domain.FHIRNarrative{},
 					Identifier:    []*domain.FHIRIdentifier{},
-					Status:        "",
+					Status:        domain.EncounterStatusEnum(domain.EncounterStatusEnumOnleave),
 					StatusHistory: []*domain.FHIREncounterStatushistory{},
 					Class:         domain.FHIRCoding{},
 					ClassHistory:  []*domain.FHIREncounterClasshistory{},
@@ -1057,6 +1137,49 @@ func NewFHIRMock() *FHIRMock {
 						Encounter: &domain.FHIRReference{
 							ID: &uuid,
 						},
+						Code: domain.FHIRCodeableConcept{
+							ID: new(string),
+							Coding: []*domain.FHIRCoding{
+								{
+									ID:           new(string),
+									Version:      new(string),
+									Code:         "",
+									Display:      "Vital",
+									UserSelected: new(bool),
+								},
+							},
+							Text: "",
+						},
+						EffectiveInstant: (*scalarutils.Instant)(&instant),
+					},
+					{
+						ID:     &uuid,
+						Status: &finalStatus,
+						Encounter: &domain.FHIRReference{
+							ID: &uuid,
+						},
+						Code: domain.FHIRCodeableConcept{
+							ID: new(string),
+							Coding: []*domain.FHIRCoding{
+								{
+									ID:           new(string),
+									Version:      new(string),
+									Code:         "",
+									Display:      "Vital",
+									UserSelected: new(bool),
+								},
+							},
+							Text: "",
+						},
+						EffectiveInstant: (*scalarutils.Instant)(&instant),
+					},
+					{
+						ID:     &uuid,
+						Status: &finalStatus,
+						Encounter: &domain.FHIRReference{
+							ID: &uuid,
+						},
+						Subject: &domain.FHIRReference{},
 						Code: domain.FHIRCodeableConcept{
 							ID: new(string),
 							Coding: []*domain.FHIRCoding{

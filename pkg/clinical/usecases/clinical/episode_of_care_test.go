@@ -26,7 +26,6 @@ func addTenantIdentifierContext(ctx context.Context) context.Context {
 }
 
 func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
-
 	type args struct {
 		ctx   context.Context
 		input dto.EpisodeOfCareInput
@@ -92,6 +91,28 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "sad case: failed to search episode of care",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.EpisodeOfCareInput{
+					Status:    dto.EpisodeOfCareStatusEnumActive,
+					PatientID: gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad Case - Fail to get tenant meta tags",
+			args: args{
+				ctx: context.Background(),
+				input: dto.EpisodeOfCareInput{
+					Status:    dto.EpisodeOfCareStatusEnumActive,
+					PatientID: gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "sad case: failed to create episode of care",
 			args: args{
 				ctx: addTenantIdentifierContext(context.Background()),
@@ -135,18 +156,29 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 				}
 			}
 
+			if tt.name == "sad case: failed to search episode of care" {
+				fakeFHIR.MockSearchFHIREpisodeOfCareFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCareRelayConnection, error) {
+					return nil, fmt.Errorf("failed to search episode of care")
+				}
+			}
+
 			if tt.name == "sad case: failed to get tenant identifiers" {
 				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 					return nil, fmt.Errorf("failed to get tenant identifiers")
 				}
 			}
 
-			if tt.name == "sad case: failed to create episode of care" {
-				fakeFHIR.MockCreateEpisodeOfCareFn = func(ctx context.Context, episode domain.FHIREpisodeOfCareInput) (*domain.EpisodeOfCarePayload, error) {
-					return nil, fmt.Errorf("failed to create episode of care")
+			if tt.name == "sad Case - Fail to get tenant meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
 				}
 			}
 
+			if tt.name == "sad case: failed to create episode of care" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
 			got, err := c.CreateEpisodeOfCare(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreateEpisodeOfCare() error = %v, wantErr %v", err, tt.wantErr)

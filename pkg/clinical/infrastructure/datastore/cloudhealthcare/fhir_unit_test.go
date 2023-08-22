@@ -710,6 +710,16 @@ func TestStoreImpl_UpdateFHIREpisodeOfCare(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "sad case: fhirResourceID nil",
+			args: args{
+				ctx: context.Background(),
+				payload: map[string]interface{}{
+					"episode": "one",
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "sad case: error updating resource",
 			args: args{
 				ctx:            context.Background(),
@@ -727,6 +737,12 @@ func TestStoreImpl_UpdateFHIREpisodeOfCare(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "sad case: error updating resource" {
+				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed ro update resource")
+				}
+			}
+
+			if tt.name == "sad case: fhirResourceID nil" {
 				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
 					return fmt.Errorf("failed ro update resource")
 				}

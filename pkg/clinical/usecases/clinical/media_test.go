@@ -102,6 +102,16 @@ func TestUseCasesClinicalImpl_UploadMedia(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - Fail to get tenant meta tags",
+			args: args{
+				ctx:         addTenantIdentifierContext(context.Background()),
+				encounterID: uuid.NewString(),
+				file:        strings.NewReader("test"),
+				contentType: "application/json",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -145,6 +155,11 @@ func TestUseCasesClinicalImpl_UploadMedia(t *testing.T) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
+			if tt.name == "Sad Case - Fail to get tenant meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
 
 			_, err := c.UploadMedia(tt.args.ctx, tt.args.encounterID, tt.args.file, tt.args.contentType)
 			if (err != nil) != tt.wantErr {
@@ -177,6 +192,18 @@ func TestUseCasesClinicalImpl_ListPatientMedia(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "Sad Case - invalid pagination",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+				pagination: dto.Pagination{
+					First: &first,
+					Last:  &first,
+				},
+			},
+			wantErr: true,
 		},
 		{
 			name: "Sad case: unable to get tenant identifiers",

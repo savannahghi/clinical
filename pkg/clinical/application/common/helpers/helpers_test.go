@@ -84,6 +84,13 @@ func TestParseDate(t *testing.T) {
 			},
 			want: time.Time{},
 		},
+		{
+			name: "Sad case: invalid date",
+			args: args{
+				date: "invalid",
+			},
+			want: time.Time{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -63,11 +63,20 @@ enum ConditionStatus {
   ACTIVE
   INACTIVE
   RESOLVED
+  UNKNOWN
+  RECURRENCE
+  RELAPSE
+  REMISSSION
 }
 
 enum TerminologySource {
-	ICD10
-	CIEL
-	SNOMED_CT
-	LOINC
+  ICD10
+  CIEL
+  SNOMED_CT
+  LOINC
+}
+
+enum ConditionCategory {
+  PROBLEM_LIST_ITEM
+  ENCOUNTER_DIAGNOSIS
 }

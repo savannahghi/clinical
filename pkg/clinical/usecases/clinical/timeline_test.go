@@ -87,6 +87,14 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Sad Case - Fail to get allergy intolerance - nil code coding",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
 			name: "Sad Case - Fail to get allergy intolerance - nil reaction",
 			args: args{
 				ctx:       context.Background(),
@@ -95,7 +103,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad Case - Fail to get allergy intolerance - empty reaction",
+			name: "Sad Case - Fail to get allergy intolerance - reaction length < 1",
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
@@ -111,7 +119,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad Case - Fail to get allergy intolerance - empty manifestation",
+			name: "Sad Case - Fail to get allergy intolerance - manifestation length < 1",
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
@@ -297,6 +305,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 								Patient: &domain.FHIRReference{
 									ID: new(string),
 								},
+								RecordedDate: &scalarutils.Date{},
 								Encounter: &domain.FHIRReference{
 									ID: new(string),
 								},
@@ -455,21 +464,11 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 
 			if tt.name == "Sad Case - Fail to get allergy intolerance - nil code" {
 				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
-					code := "123"
-					system := gofakeit.URL()
+					UID := gofakeit.UUID()
 					return &domain.PagedFHIRAllergy{
 						Allergies: []domain.FHIRAllergyIntolerance{
 							{
-								Code: &domain.FHIRCodeableConcept{
-									ID: new(string),
-									Coding: []*domain.FHIRCoding{
-										{
-											Code:    scalarutils.Code(code),
-											Display: gofakeit.BS(),
-											System:  (*scalarutils.URI)(&system),
-										},
-									},
-								},
+								ID: &UID,
 								Patient: &domain.FHIRReference{
 									ID: new(string),
 								},
@@ -490,13 +489,42 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 				}
 			}
 
+			if tt.name == "Sad Case - Fail to get allergy intolerance - nil code coding" {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					UID := gofakeit.UUID()
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
+							{
+								ID:   &UID,
+								Code: &domain.FHIRCodeableConcept{},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
 			if tt.name == "Sad Case - Fail to get allergy intolerance - nil reaction" {
 				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					UID := gofakeit.UUID()
 					code := "123"
 					system := gofakeit.URL()
 					return &domain.PagedFHIRAllergy{
 						Allergies: []domain.FHIRAllergyIntolerance{
 							{
+								ID: &UID,
 								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
@@ -527,13 +555,15 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 				}
 			}
 
-			if tt.name == "Sad Case - Fail to get allergy intolerance - empty reaction" {
+			if tt.name == "Sad Case - Fail to get allergy intolerance - reaction length < 1" {
 				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					UID := gofakeit.UUID()
 					code := "123"
-					system := gofakeit.URL()
+					system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
 					return &domain.PagedFHIRAllergy{
 						Allergies: []domain.FHIRAllergyIntolerance{
 							{
+								ID: &UID,
 								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
@@ -542,6 +572,54 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
+									},
+								},
+								Reaction: []*domain.FHIRAllergyintoleranceReaction{},
+								Patient: &domain.FHIRReference{
+									ID: new(string),
+								},
+								Encounter: &domain.FHIRReference{
+									ID: new(string),
+								},
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get allergy intolerance - zero manifestation" {
+				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
+					code := "123"
+					UID := gofakeit.UUID()
+					severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
+					system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
+					return &domain.PagedFHIRAllergy{
+						Allergies: []domain.FHIRAllergyIntolerance{
+							{
+								ID: &UID,
+								Code: &domain.FHIRCodeableConcept{
+									ID: new(string),
+									Coding: []*domain.FHIRCoding{
+										{
+											Code:    scalarutils.Code(code),
+											Display: gofakeit.BS(),
+											System:  (*scalarutils.URI)(&system),
+										},
+									},
+								},
+								Reaction: []*domain.FHIRAllergyintoleranceReaction{
+									{
+										ID:        &UID,
+										Substance: &domain.FHIRCodeableConcept{},
+										Severity:  &severityStatus,
 									},
 								},
 								Patient: &domain.FHIRReference{
@@ -567,10 +645,13 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			if tt.name == "Sad Case - Fail to get allergy intolerance - nil manifestation" {
 				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
-					system := gofakeit.URL()
+					UID := gofakeit.UUID()
+					severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
+					system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
 					return &domain.PagedFHIRAllergy{
 						Allergies: []domain.FHIRAllergyIntolerance{
 							{
+								ID: &UID,
 								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
@@ -579,6 +660,13 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
+									},
+								},
+								Reaction: []*domain.FHIRAllergyintoleranceReaction{
+									{
+										ID:        &UID,
+										Substance: &domain.FHIRCodeableConcept{},
+										Severity:  &severityStatus,
 									},
 								},
 								Patient: &domain.FHIRReference{
@@ -601,13 +689,16 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 				}
 			}
 
-			if tt.name == "Sad Case - Fail to get allergy intolerance - empty manifestation" {
+			if tt.name == "Sad Case - Fail to get allergy intolerance - manifestation length < 1" {
 				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
-					system := gofakeit.URL()
+					UID := gofakeit.UUID()
+					system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
+					severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
 					return &domain.PagedFHIRAllergy{
 						Allergies: []domain.FHIRAllergyIntolerance{
 							{
+								ID: &UID,
 								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
@@ -616,6 +707,14 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
+									},
+								},
+								Reaction: []*domain.FHIRAllergyintoleranceReaction{
+									{
+										ID:            &UID,
+										Substance:     &domain.FHIRCodeableConcept{},
+										Manifestation: []*domain.FHIRCodeableConcept{},
+										Severity:      &severityStatus,
 									},
 								},
 								Patient: &domain.FHIRReference{
@@ -641,10 +740,13 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			if tt.name == "Sad Case - Fail to get allergy intolerance - nil date" {
 				fakeFHIR.MockSearchFHIRAllergyIntoleranceFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 					code := "123"
-					system := gofakeit.URL()
+					UID := gofakeit.UUID()
+					system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
+					severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
 					return &domain.PagedFHIRAllergy{
 						Allergies: []domain.FHIRAllergyIntolerance{
 							{
+								ID: &UID,
 								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
@@ -655,15 +757,21 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 										},
 									},
 								},
+								Reaction: []*domain.FHIRAllergyintoleranceReaction{
+									{
+										ID:            &UID,
+										Substance:     &domain.FHIRCodeableConcept{},
+										Manifestation: []*domain.FHIRCodeableConcept{},
+										Severity:      &severityStatus,
+									},
+								},
 								Patient: &domain.FHIRReference{
 									ID: new(string),
 								},
 								Encounter: &domain.FHIRReference{
 									ID: new(string),
 								},
-								OnsetPeriod: &domain.FHIRPeriod{
-									Start: "2000-01-01",
-								},
+								// RecordedDate: nil,
 							},
 						},
 						HasNextPage:     false,

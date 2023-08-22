@@ -166,6 +166,24 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - fail to get ciel concept",
+			args: args{
+				ctx: nil,
+				input: dto.AllergyInput{
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceCIEL,
+					EncounterID:       gofakeit.UUID(),
+					Reaction: &dto.ReactionInput{
+						Code:     "2000",
+						System:   gofakeit.BS(),
+						Severity: "fatal",
+					},
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -267,11 +285,19 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}
+
+			if tt.name == "Sad Case - fail to get ciel concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get concept")
+				}
+			}
+
 			if tt.name == "Sad case: fail to get tags" {
 				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 					return nil, fmt.Errorf("failed to get tags")
 				}
 			}
+
 			_, err := c.CreateAllergyIntolerance(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreateAllergyIntolerance() error = %v, wantErr %v", err, tt.wantErr)
@@ -401,10 +427,11 @@ func TestUseCasesClinicalImpl_GetAllergyIntolerance(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientAllergies(t *testing.T) {
 	testInt := 5
+	first := 3
 	type args struct {
 		ctx        context.Context
 		patientID  string
-		pagination *dto.Pagination
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -416,7 +443,7 @@ func TestUseCasesClinicalImpl_GetPatientAllergies(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				pagination: &dto.Pagination{
+				pagination: dto.Pagination{
 					First: &testInt,
 				},
 			},
@@ -427,8 +454,20 @@ func TestUseCasesClinicalImpl_GetPatientAllergies(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: "1",
-				pagination: &dto.Pagination{
+				pagination: dto.Pagination{
 					First: &testInt,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - invalid pagination",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+				pagination: dto.Pagination{
+					First: &first,
+					Last:  &first,
 				},
 			},
 			wantErr: true,
@@ -438,7 +477,7 @@ func TestUseCasesClinicalImpl_GetPatientAllergies(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				pagination: &dto.Pagination{
+				pagination: dto.Pagination{
 					First: &testInt,
 				},
 			},
@@ -449,7 +488,7 @@ func TestUseCasesClinicalImpl_GetPatientAllergies(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				patientID: gofakeit.UUID(),
-				pagination: &dto.Pagination{
+				pagination: dto.Pagination{
 					First: &testInt,
 				},
 			},
@@ -478,7 +517,7 @@ func TestUseCasesClinicalImpl_GetPatientAllergies(t *testing.T) {
 				}
 			}
 
-			_, err := c.ListPatientAllergies(tt.args.ctx, tt.args.patientID, *tt.args.pagination)
+			_, err := c.ListPatientAllergies(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientAllergies() error = %v, wantErr %v", err, tt.wantErr)
 				return
