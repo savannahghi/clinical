@@ -208,6 +208,7 @@ func TestNameToHumanName(t *testing.T) {
 }
 
 func TestPhysicalPostalAddressesToFHIRAddresses(t *testing.T) {
+	address := gofakeit.BS()
 	type args struct {
 		physical []*domain.PhysicalAddress
 		postal   []*domain.PostalAddress
@@ -222,10 +223,10 @@ func TestPhysicalPostalAddressesToFHIRAddresses(t *testing.T) {
 			args: args{
 				physical: []*domain.PhysicalAddress{{
 					MapsCode:        gofakeit.BS(),
-					PhysicalAddress: gofakeit.BS(),
+					PhysicalAddress: &address,
 				}},
 				postal: []*domain.PostalAddress{{
-					PostalAddress: gofakeit.BS(),
+					PostalAddress: &address,
 					PostalCode:    gofakeit.BS(),
 				}},
 			},
@@ -299,6 +300,7 @@ func TestLanguagesToCommunicationInputs(t *testing.T) {
 }
 
 func TestPhysicalPostalAddressesToCombinedFHIRAddress(t *testing.T) {
+	address := gofakeit.BS()
 	type args struct {
 		physical []*domain.PhysicalAddress
 		postal   []*domain.PostalAddress
@@ -313,10 +315,10 @@ func TestPhysicalPostalAddressesToCombinedFHIRAddress(t *testing.T) {
 			args: args{
 				physical: []*domain.PhysicalAddress{{
 					MapsCode:        gofakeit.BS(),
-					PhysicalAddress: gofakeit.BS(),
+					PhysicalAddress: &address,
 				}},
 				postal: []*domain.PostalAddress{{
-					PostalAddress: gofakeit.BS(),
+					PostalAddress: &address,
 					PostalCode:    gofakeit.BS(),
 				}},
 			},
@@ -343,6 +345,8 @@ func TestPhysicalPostalAddressesToCombinedFHIRAddress(t *testing.T) {
 }
 
 func TestContactsToContactPoint(t *testing.T) {
+	email := gofakeit.Email()
+	invalidEmail := "invalid"
 	type args struct {
 		ctx             context.Context
 		phones          []*domain.PhoneNumberInput
@@ -366,7 +370,7 @@ func TestContactsToContactPoint(t *testing.T) {
 					CommunicationOptIn: false,
 				}},
 				emails: []*domain.EmailInput{{
-					Email:              "user@domain.com",
+					Email:              &email,
 					CommunicationOptIn: false,
 				}},
 				firestoreClient: &firestore.Client{},
@@ -393,7 +397,7 @@ func TestContactsToContactPoint(t *testing.T) {
 					CommunicationOptIn: false,
 				}},
 				emails: []*domain.EmailInput{{
-					Email:              "user@domain.com",
+					Email:              &email,
 					CommunicationOptIn: false,
 				}},
 				firestoreClient: &firestore.Client{},
@@ -412,7 +416,7 @@ func TestContactsToContactPoint(t *testing.T) {
 					CommunicationOptIn: false,
 				}},
 				emails: []*domain.EmailInput{{
-					Email:              "invalid email address",
+					Email:              &invalidEmail,
 					CommunicationOptIn: false,
 				}},
 				firestoreClient: &firestore.Client{},

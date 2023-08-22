@@ -75,16 +75,16 @@ func (c *UseCasesClinicalImpl) CheckPatientExistenceUsingPhoneNumber(ctx context
 	}
 
 	for _, phone := range patientInput.PhoneNumbers {
-		phoneNumber := &phone.Msisdn
+		phoneNumber := phone.Msisdn
 
-		search, err := converterandformatter.NormalizeMSISDN(*phoneNumber)
+		search, err := converterandformatter.NormalizeMSISDN(phoneNumber)
 		if err != nil {
 			return false, fmt.Errorf("can't normalize contact: %w", err)
 		}
 
 		patient, err := c.infrastructure.FHIR.SearchFHIRPatient(ctx, *search, *identifiers, dto.Pagination{})
 		if err != nil {
-			return false, fmt.Errorf("unable to find patient by phonenumber: %s", *phoneNumber)
+			return false, fmt.Errorf("unable to find patient by phonenumber: %s", phoneNumber)
 		}
 
 		if len(patient.Edges) >= 1 {
@@ -163,7 +163,7 @@ func (c *UseCasesClinicalImpl) ContactsToContactPointInput(_ context.Context, ph
 	emailSystem := domain.ContactPointSystemEnumEmail
 
 	for _, email := range emails {
-		emailErr := utils.ValidateEmail(email.Email)
+		emailErr := utils.ValidateEmail(*email.Email)
 		if emailErr != nil {
 			return nil, fmt.Errorf("invalid email: %w", emailErr)
 		}
@@ -173,7 +173,7 @@ func (c *UseCasesClinicalImpl) ContactsToContactPointInput(_ context.Context, ph
 			Use:    &use,
 			Rank:   &rank,
 			Period: common.DefaultPeriodInput(),
-			Value:  &email.Email,
+			Value:  email.Email,
 		}
 		output = append(output, emailContact)
 		rank++

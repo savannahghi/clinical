@@ -93,7 +93,8 @@ func TestUseCasesClinicalImpl_GetTenantMetaTags(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
-
+	email := gofakeit.Email()
+	invalidEmail := "gofakeit.Email()"
 	type args struct {
 		ctx    context.Context
 		phones []*domain.PhoneNumberInput
@@ -127,7 +128,7 @@ func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 				},
 				emails: []*domain.EmailInput{
 					{
-						Email:              gofakeit.Email(),
+						Email:              &email,
 						CommunicationOptIn: false,
 					},
 				},
@@ -148,7 +149,7 @@ func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 				},
 				emails: []*domain.EmailInput{
 					{
-						Email:              gofakeit.Email(),
+						Email:              &email,
 						CommunicationOptIn: false,
 					},
 				},
@@ -169,7 +170,7 @@ func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 				},
 				emails: []*domain.EmailInput{
 					{
-						Email:              "invalid",
+						Email:              &invalidEmail,
 						CommunicationOptIn: false,
 					},
 				},
@@ -203,7 +204,9 @@ func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *testing.T) {
-
+	email := gofakeit.Email()
+	invalidEmail := "invalid"
+	address := gofakeit.BS()
 	type args struct {
 		ctx   context.Context
 		input domain.SimplePatientRegistrationInput
@@ -246,19 +249,19 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 					},
 					Emails: []*domain.EmailInput{
 						{
-							Email:              gofakeit.Email(),
+							Email:              &email,
 							CommunicationOptIn: false,
 						},
 					},
 					PhysicalAddresses: []*domain.PhysicalAddress{
 						{
 							MapsCode:        "123",
-							PhysicalAddress: "1234",
+							PhysicalAddress: &address,
 						},
 					},
 					PostalAddresses: []*domain.PostalAddress{
 						{
-							PostalAddress: "1234",
+							PostalAddress: &address,
 							PostalCode:    "1234",
 						},
 					},
@@ -304,19 +307,19 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 					},
 					Emails: []*domain.EmailInput{
 						{
-							Email:              "invalid",
+							Email:              &invalidEmail,
 							CommunicationOptIn: false,
 						},
 					},
 					PhysicalAddresses: []*domain.PhysicalAddress{
 						{
 							MapsCode:        "123",
-							PhysicalAddress: "1234",
+							PhysicalAddress: &address,
 						},
 					},
 					PostalAddresses: []*domain.PostalAddress{
 						{
-							PostalAddress: "1234",
+							PostalAddress: &address,
 							PostalCode:    "1234",
 						},
 					},

@@ -21,7 +21,7 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		return nil, err
 	}
 
-	conditionConcept, err := c.GetConcept(ctx, dto.TerminologySourceICD10, input.Code)
+	conditionConcept, err := c.GetConcept(ctx, input.System, input.Code)
 	if err != nil {
 		return nil, err
 	}

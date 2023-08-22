@@ -64,7 +64,7 @@ type ContactInput struct {
 // ConditionInput represents input for creating a FHIR condition
 type ConditionInput struct {
 	Code        string            `json:"condition"`
-	System      string            `json:"system"`
+	System      TerminologySource `json:"system"`
 	Status      ConditionStatus   `json:"status"`
 	EncounterID string            `json:"encounterID"`
 	Note        string            `json:"note"`

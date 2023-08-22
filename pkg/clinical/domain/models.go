@@ -61,20 +61,20 @@ type PhotoInput struct {
 
 // EmailInput is used to register patient emails.
 type EmailInput struct {
-	Email              string `json:"email"`
-	CommunicationOptIn bool   `json:"communicationOptIn"`
+	Email              *string `json:"email"`
+	CommunicationOptIn bool    `json:"communicationOptIn"`
 }
 
 // PhysicalAddress is used to record a precise physical address.
 type PhysicalAddress struct {
-	MapsCode        string `json:"mapsCode"`
-	PhysicalAddress string `json:"physicalAddress"`
+	MapsCode        string  `json:"mapsCode"`
+	PhysicalAddress *string `json:"physicalAddress"`
 }
 
 // PostalAddress is used to record patient's postal addresses
 type PostalAddress struct {
-	PostalAddress string `json:"postalAddress"`
-	PostalCode    string `json:"postalCode"`
+	PostalAddress *string `json:"postalAddress"`
+	PostalCode    string  `json:"postalCode"`
 }
 
 // SimplePatientRegistrationInput provides a simplified API to support registration
