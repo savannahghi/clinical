@@ -1827,7 +1827,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 					return &domain.PagedFHIRObservations{
 						Observations: []domain.FHIRObservation{
 							{
-								ID:     new(string),
+								ID:     &UUID,
 								Status: (*domain.ObservationStatusEnum)(&status),
 								Code: domain.FHIRCodeableConcept{
 									ID: new(string),
@@ -1836,7 +1836,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 									}},
 								},
 								Encounter: &domain.FHIRReference{
-									ID: new(string),
+									ID: &UUID,
 								},
 								ValueQuantity: &domain.FHIRQuantity{
 									Value: 100,
@@ -1980,7 +1980,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 									}},
 								},
 								Subject: &domain.FHIRReference{
-									ID: new(string),
+									ID: &UUID,
 								},
 								ValueQuantity: &domain.FHIRQuantity{
 									Value: 100,
@@ -2040,6 +2040,13 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 				t.Errorf("UseCasesClinicalImpl.GetPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
 			if !tt.wantErr {
 				if got == nil {
 					t.Errorf("expected a response but got %v", got)
@@ -2077,7 +2084,41 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 		{
 			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx: ctx,
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2096,6 +2137,30 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
 
 			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
@@ -2139,7 +2204,41 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 		{
 			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx: ctx,
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2159,6 +2258,30 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
+
 			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientBloodPressureEntries() error = %v, wantErr %v", err, tt.wantErr)
@@ -2176,6 +2299,8 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 	first := 10
+	ctx := context.Background()
+
 	type args struct {
 		ctx        context.Context
 		patientID  string
@@ -2198,10 +2323,43 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad case: invalid patient id",
+			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.BS(),
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2221,6 +2379,30 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
+
 			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientHeightEntries() error = %v, wantErr %v", err, tt.wantErr)
@@ -2232,6 +2414,7 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 	first := 10
+	ctx := context.Background()
 	type args struct {
 		ctx        context.Context
 		patientID  string
@@ -2254,10 +2437,43 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad case: invalid patient id",
+			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.BS(),
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2276,6 +2492,30 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
 
 			_, err := c.GetPatientPulseRateEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
@@ -2313,7 +2553,41 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 		{
 			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx: ctx,
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2332,6 +2606,30 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
 
 			got, err := u.GetPatientRespiratoryRateEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
@@ -2375,7 +2673,41 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 		{
 			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx: ctx,
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2395,6 +2727,30 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
+
 			got, err := u.GetPatientBMIEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientBMIEntries() error = %v, wantErr %v", err, tt.wantErr)
@@ -2412,6 +2768,7 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 	first := 10
+	ctx := context.Background()
 	type args struct {
 		ctx        context.Context
 		patientID  string
@@ -2434,10 +2791,43 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad case: invalid patient id",
+			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.BS(),
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2457,6 +2847,30 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
+
 			_, err := c.GetPatientWeightEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientWeightEntries() error = %v, wantErr %v", err, tt.wantErr)
@@ -2468,6 +2882,7 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 	first := 10
+	ctx := context.Background()
 	type args struct {
 		ctx        context.Context
 		patientID  string
@@ -2490,10 +2905,43 @@ func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad case: invalid patient id",
+			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.BS(),
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2513,6 +2961,30 @@ func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
+
 			_, err := c.GetPatientMuacEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientMuacEntries() error = %v, wantErr %v", err, tt.wantErr)
@@ -2524,6 +2996,7 @@ func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
 	first := 10
+	ctx := context.Background()
 	type args struct {
 		ctx        context.Context
 		patientID  string
@@ -2546,10 +3019,43 @@ func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Sad case: invalid patient id",
+			name: "Sad Case - Invalid patient ID",
 			args: args{
-				ctx:       context.Background(),
-				patientID: gofakeit.BS(),
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -2569,6 +3075,30 @@ func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
+
 			_, err := c.GetPatientOxygenSaturationEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientOxygenSaturationEntries() error = %v, wantErr %v", err, tt.wantErr)
@@ -2580,6 +3110,7 @@ func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
 
 func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 	first := 10
+	ctx := context.Background()
 	type args struct {
 		ctx        context.Context
 		patientID  string
@@ -2600,6 +3131,50 @@ func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
 		},
 		{
 			name: "Sad case: unable to get patient viral load",
@@ -2625,6 +3200,30 @@ func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
 
 			_, err := c.GetPatientViralLoad(tt.args.ctx, tt.args.patientID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {

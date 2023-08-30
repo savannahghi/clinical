@@ -71,9 +71,12 @@ const (
 type MedicationStatementStatusEnum string
 
 const (
-	MedicationStatementStatusEnumActive   MedicationStatementStatusEnum = "ACTIVE"
-	MedicationStatementStatusEnumInActive MedicationStatementStatusEnum = "INACTIVE"
-	MedicationStatementStatusEnumUnknown  MedicationStatementStatusEnum = "UNKNOWN"
+	MedicationStatementStatusEnumActive     MedicationStatementStatusEnum = "ACTIVE"
+	MedicationStatementStatusEnumInActive   MedicationStatementStatusEnum = "INACTIVE"
+	MedicationStatementStatusEnumUnknown    MedicationStatementStatusEnum = "UNKNOWN"
+	MedicationStatementStatusEnumRecurrence MedicationStatementStatusEnum = "RECURRENCE"
+	MedicationStatementStatusEnumRelapse    MedicationStatementStatusEnum = "RELAPSE"
+	MedicationStatementStatusEnumRemission  MedicationStatementStatusEnum = "REMISSSION"
 )
 
 type IdentifierType string
@@ -111,6 +114,14 @@ const (
 	ConditionStatusInactive ConditionStatus = "INACTIVE"
 	ConditionStatusResolved ConditionStatus = "RESOLVED"
 	ConditionStatusUnknown  ConditionStatus = "UNKNOWN"
+)
+
+// ConditionStatus represents status of a FHIR condition
+type ConditionCategory string
+
+const (
+	ConditionCategoryProblemList ConditionCategory = "PROBLEM_LIST_ITEM"
+	ConditionCategoryDiagnosis   ConditionCategory = "ENCOUNTER_DIAGNOSIS"
 )
 
 // TerminologySource represents various concept sources

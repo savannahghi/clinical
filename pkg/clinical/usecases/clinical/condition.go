@@ -21,6 +21,11 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		return nil, err
 	}
 
+	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, input.EncounterID)
+	if err != nil {
+		return nil, err
+	}
+
 	conditionConcept, err := c.GetConcept(ctx, input.System, input.Code)
 	if err != nil {
 		return nil, err
@@ -57,12 +62,12 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 				Coding: []*domain.FHIRCodingInput{
 					{
 						System:       &categorySystem,
-						Code:         scalarutils.Code("encounter-diagnosis"),
-						Display:      "encounter-diagnosis",
+						Code:         scalarutils.Code(input.Category),
+						Display:      string(input.Category),
 						UserSelected: &userSelectedFalse,
 					},
 				},
-				Text: "encounter-diagnosis",
+				Text: string(input.Category),
 			},
 		},
 		Code: &domain.FHIRCodeableConceptInput{
@@ -94,15 +99,6 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		}
 	}
 
-	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, input.EncounterID)
-	if err != nil {
-		return nil, err
-	}
-
-	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
-		return nil, fmt.Errorf("cannot record a condition in a finished encounter")
-	}
-
 	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
 	encounterType := scalarutils.URI("Encounter")
 
@@ -111,6 +107,10 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		Reference: &encounterRef,
 		Display:   *encounter.Resource.ID,
 		Type:      &encounterType,
+	}
+
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot record a condition in a finished encounter")
 	}
 
 	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
@@ -146,18 +146,30 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 }
 
 func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Condition {
+	var category scalarutils.Code
+
+	switch condition.Category[0].Text {
+	case string(dto.ConditionCategoryProblemList):
+		category = "problem-list-item"
+	case string(dto.ConditionCategoryDiagnosis):
+		category = "encounter-diagnosis"
+	default:
+		return nil
+	}
+
 	output := dto.Condition{
 		ID:           *condition.ID,
 		Status:       dto.ConditionStatus(condition.ClinicalStatus.Text),
 		Name:         condition.Code.Text,
 		Code:         string(condition.Code.Coding[0].Code),
 		System:       string(*condition.Code.Coding[0].System),
+		Category:     dto.ConditionCategory(category),
 		RecordedDate: *condition.RecordedDate,
 		PatientID:    *condition.Subject.ID,
 		EncounterID:  *condition.Encounter.ID,
 	}
 
-	if condition.Note != nil && len(condition.Note) > 0 {
+	if condition.Note != nil || len(condition.Note) > 0 {
 		output.Note = string(*condition.Note[0].Text)
 	}
 

@@ -53,8 +53,8 @@ input ConditionInput {
   code: String!
   system: TerminologySource!
   status: ConditionStatus!
+  category: ConditionCategory!
   encounterID: String!
-
   onsetDate: Date
   note: String
 }
@@ -76,6 +76,6 @@ input Pagination {
   first: Int
   after: String
 
-  last:   Int
+  last: Int
   before: String
 }

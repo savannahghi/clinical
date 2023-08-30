@@ -93,7 +93,7 @@ type Condition {
   name: String
   code: String!
   system: String!
-
+  category: ConditionCategory!
   onsetDate: Date
   recordedDate: Date
   note: String

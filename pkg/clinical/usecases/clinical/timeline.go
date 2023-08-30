@@ -60,6 +60,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
+			if edge.Code.Coding == nil {
+				continue
+			}
+
 			if edge.Reaction == nil {
 				continue
 			}
@@ -76,7 +80,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			if edge.RecordedDate == nil {
+			if edge.Reaction[0].Description == nil {
 				continue
 			}
 
@@ -85,7 +89,7 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				ResourceType: dto.ResourceTypeAllergyIntolerance,
 				Name:         edge.Code.Text,
 				Value:        edge.Reaction[0].Manifestation[0].Text,
-				Status:       edge.ClinicalStatus.Text,
+				Status:       string(*edge.Reaction[0].Description),
 				Date:         *edge.RecordedDate,
 			}
 
@@ -189,11 +193,11 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			if edge.Node.Category == nil {
+			if edge.Node.EffectiveDateTime == nil {
 				continue
 			}
 
-			if edge.Node.EffectiveDateTime == nil {
+			if edge.Node.Category == nil {
 				continue
 			}
 

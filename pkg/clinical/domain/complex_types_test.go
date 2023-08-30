@@ -526,6 +526,143 @@ func TestContactPointUseEnum_IsValid(t *testing.T) {
 	}
 }
 
+func TestContactPointSystemEnum_IsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		e    ContactPointSystemEnum
+		want bool
+	}{
+		{
+			name: "Happy Case - valid email contact point",
+			e:    ContactPointSystemEnumEmail,
+			want: true,
+		},
+		{
+			name: "Happy Case - valid fax contact point",
+			e:    ContactPointSystemEnumFax,
+			want: true,
+		},
+		{
+			name: "Happy Case - valid other contact point",
+			e:    ContactPointSystemEnumOther,
+			want: true,
+		},
+		{
+			name: "Happy Case - valid pager contact point",
+			e:    ContactPointSystemEnumPager,
+			want: true,
+		},
+		{
+			name: "Happy Case - valid phone contact point",
+			e:    ContactPointSystemEnumPhone,
+			want: true,
+		},
+		{
+			name: "Invalid System contact point",
+			e:    ContactPointSystemEnum("invalid"),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsValid(); got != tt.want {
+				t.Errorf("ContactPointSystemEnum.IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestContactPointSystemEnum_String(t *testing.T) {
+	tests := []struct {
+		name string
+		e    ContactPointSystemEnum
+		want string
+	}{
+		{
+			name: "phone",
+			e:    ContactPointSystemEnumPhone,
+			want: "phone",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.String(); got != tt.want {
+				t.Errorf("ContactPointSystemEnum.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestContactPointSystemEnum_UnmarshalGQL(t *testing.T) {
+	value := ContactPointSystemEnumEmail
+	invalidContact := ContactPointSystemEnum("invalid")
+
+	type args struct {
+		v interface{}
+	}
+	tests := []struct {
+		name    string
+		e       *ContactPointSystemEnum
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "valid contact system",
+			e:    &value,
+			args: args{
+				v: "email",
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid contact",
+			e:    &invalidContact,
+			args: args{
+				v: "this is not a valid contact",
+			},
+			wantErr: true,
+		},
+		{
+			name: "non string type",
+			e:    &invalidContact,
+			args: args{
+				v: 1,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.e.UnmarshalGQL(tt.args.v); (err != nil) != tt.wantErr {
+				t.Errorf("ContactPointSystemEnum.UnmarshalGQL() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestContactPointSystemEnum_MarshalGQL(t *testing.T) {
+	tests := []struct {
+		name  string
+		e     ContactPointSystemEnum
+		wantW string
+	}{
+		{
+			name:  "email",
+			e:     ContactPointSystemEnumEmail,
+			wantW: strconv.Quote("email"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			tt.e.MarshalGQL(w)
+			if gotW := w.String(); gotW != tt.wantW {
+				t.Errorf("ContactPointSystemEnum.MarshalGQL() = %v, want %v", gotW, tt.wantW)
+			}
+		})
+	}
+}
+
 func TestContactPointUseEnum_String(t *testing.T) {
 	tests := []struct {
 		name string
@@ -2652,6 +2789,32 @@ func TestEncounterStatusEnum_IsValid(t *testing.T) {
 	}
 }
 
+func TestEncounterStatusEnum_IsFinal(t *testing.T) {
+	tests := []struct {
+		name string
+		e    EncounterStatusEnum
+		want bool
+	}{
+		{
+			name: "valid status",
+			e:    EncounterStatusEnumFinished,
+			want: true,
+		},
+		{
+			name: "invalid status",
+			e:    EncounterStatusEnum("invalid"),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsFinal(); got != tt.want {
+				t.Errorf("EncounterStatusEnum.IsFinal() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestEncounterStatusEnum_String(t *testing.T) {
 	tests := []struct {
 		name string
@@ -3024,6 +3187,163 @@ func TestEncounterStatusHistoryStatusEnum_MarshalGQL(t *testing.T) {
 			tt.e.MarshalGQL(w)
 			if gotW := w.String(); gotW != tt.wantW {
 				t.Errorf("EncounterStatusHistoryStatusEnum.MarshalGQL() = %v, want %v", gotW, tt.wantW)
+			}
+		})
+	}
+}
+
+func TestEpisodeOfCareEnum_IsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		e    EpisodeOfCareStatusEnum
+		want bool
+	}{
+		{
+			name: "valid status",
+			e:    EpisodeOfCareStatusEnumPlanned,
+			want: true,
+		},
+		{
+			name: "invalid status",
+			e:    EpisodeOfCareStatusEnum("invalid"),
+			want: false,
+		},
+		{
+			name: "waitlist status",
+			e:    EpisodeOfCareStatusEnumWaitlist,
+			want: true,
+		},
+		{
+			name: "active status",
+			e:    EpisodeOfCareStatusEnumActive,
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsValid(); got != tt.want {
+				t.Errorf("EpisodeOfCareStatusEnum.IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEpisodeOfCareEnum_IsFinal(t *testing.T) {
+	tests := []struct {
+		name string
+		e    EpisodeOfCareStatusEnum
+		want bool
+	}{
+		{
+			name: "finished",
+			e:    EpisodeOfCareStatusEnumFinished,
+			want: true,
+		},
+		{
+			name: "invalid status",
+			e:    EpisodeOfCareStatusEnum("invalid"),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsFinal(); got != tt.want {
+				t.Errorf("EpisodeOfCareStatusEnum.isFinal() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEpisodeOfCareEnum_String(t *testing.T) {
+	tests := []struct {
+		name string
+		e    EpisodeOfCareStatusEnum
+		want string
+	}{
+		{
+			name: "entered-in-error",
+			e:    EpisodeOfCareStatusEnumEnteredInError,
+			want: "entered-in-error",
+		},
+		{
+			name: "active",
+			e:    EpisodeOfCareStatusEnumActive,
+			want: "active",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.String(); got != tt.want {
+				t.Errorf("EpisodeOfCareEnum.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEpisodeOfCareStatusEnum_UnmarshalGQL(t *testing.T) {
+	value := EpisodeOfCareStatusEnumActive
+	invalidStatus := EpisodeOfCareStatusEnum("invalid")
+	type args struct {
+		v interface{}
+	}
+	tests := []struct {
+		name    string
+		e       *EpisodeOfCareStatusEnum
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "valid status",
+			e:    &value,
+			args: args{
+				v: "active",
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid status",
+			e:    &invalidStatus,
+			args: args{
+				v: "this is not a valid status",
+			},
+			wantErr: true,
+		},
+		{
+			name: "non string type",
+			e:    &invalidStatus,
+			args: args{
+				v: 1,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.e.UnmarshalGQL(tt.args.v); (err != nil) != tt.wantErr {
+				t.Errorf("EpisodeOfCareStatusEnum.UnmarshalGQL() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestEpisodeOfCareStatusEnum_MarshalGQL(t *testing.T) {
+	tests := []struct {
+		name  string
+		e     EpisodeOfCareStatusEnum
+		wantW string
+	}{
+		{
+			name:  "active",
+			e:     EpisodeOfCareStatusEnumActive,
+			wantW: strconv.Quote("active"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			tt.e.MarshalGQL(w)
+			if gotW := w.String(); gotW != tt.wantW {
+				t.Errorf("EpisodeOfCareStatusEnum.MarshalGQL() = %v, want %v", gotW, tt.wantW)
 			}
 		})
 	}
