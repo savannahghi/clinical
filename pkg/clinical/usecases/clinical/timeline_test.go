@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -272,6 +273,62 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "Sad Case - Fail to search condition",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to get condition - nil node id",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to get condition - nil code",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to get condition - nil code coding",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to get condition - nil category",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to get condition - nil onset datetime",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to get condition - nil note",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -311,6 +368,80 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 								},
 								OnsetPeriod: &domain.FHIRPeriod{
 									Start: "2000-01-01",
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					id := gofakeit.UUID()
+					statusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+					status := "inactive"
+					note := scalarutils.Markdown("Fever Fever")
+					noteTime := time.Now()
+					uri := scalarutils.URI("1234567345")
+					return &domain.PagedFHIRCondition{
+						Conditions: []domain.FHIRCondition{
+							{
+
+								ID:         &id,
+								Text:       &domain.FHIRNarrative{},
+								Identifier: []*domain.FHIRIdentifier{},
+								ClinicalStatus: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{
+										{
+											System:  &statusSystem,
+											Code:    scalarutils.Code(string(status)),
+											Display: string(status),
+										},
+									},
+									Text: string(status),
+								},
+								Code: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{
+										{
+											System:  &uri,
+											Code:    scalarutils.Code("1234"),
+											Display: "1234567",
+										},
+									},
+									Text: "1234",
+								},
+								OnsetDateTime: &scalarutils.Date{},
+								RecordedDate:  &scalarutils.Date{},
+								Subject: &domain.FHIRReference{
+									ID: &id,
+								},
+								Note: []*domain.FHIRAnnotation{
+									{
+										Time: &noteTime,
+										Text: &note,
+									},
+								},
+								Encounter: &domain.FHIRReference{
+									ID: &id,
+								},
+								Category: []*domain.FHIRCodeableConcept{
+									{
+										ID: &id,
+										Coding: []*domain.FHIRCoding{
+											{
+												ID:           &id,
+												System:       (*scalarutils.URI)(&id),
+												Version:      &id,
+												Code:         "PROBLEM_LIST_ITEM",
+												Display:      gofakeit.BeerAlcohol(),
+												UserSelected: new(bool),
+											},
+										},
+										Text: "PROBLEM_LIST_ITEM",
+									},
 								},
 							},
 						},
@@ -771,7 +902,9 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 								Encounter: &domain.FHIRReference{
 									ID: new(string),
 								},
-								// RecordedDate: nil,
+								OnsetPeriod: &domain.FHIRPeriod{
+									Start: "2000-01-01",
+								},
 							},
 						},
 						HasNextPage:     false,
@@ -1168,6 +1301,223 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 							},
 						},
 						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search condition" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					return &domain.PagedFHIRCondition{}, fmt.Errorf("failed to get condition")
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get condition - nil node id" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					statusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+					status := "inactive"
+					uri := scalarutils.URI("1234567345")
+					return &domain.PagedFHIRCondition{
+						Conditions: []domain.FHIRCondition{
+							{
+								ClinicalStatus: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{
+										{
+											System:  &statusSystem,
+											Code:    scalarutils.Code(string(status)),
+											Display: string(status),
+										},
+									},
+									Text: string(status),
+								},
+								Code: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{
+										{
+											System:  &uri,
+											Code:    scalarutils.Code("1234"),
+											Display: "1234567",
+										},
+									},
+									Text: "1234",
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get condition - nil code" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					id := gofakeit.UUID()
+					return &domain.PagedFHIRCondition{
+						Conditions: []domain.FHIRCondition{
+							{
+								ID: &id,
+								Code: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{},
+									Text:   "1234",
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get condition - nil code coding" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					id := gofakeit.UUID()
+					return &domain.PagedFHIRCondition{
+						Conditions: []domain.FHIRCondition{
+							{
+								ID: &id,
+								Code: &domain.FHIRCodeableConcept{
+									Text: "1234",
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get condition - nil category" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					id := gofakeit.UUID()
+					uri := scalarutils.URI("1234567345")
+					return &domain.PagedFHIRCondition{
+						Conditions: []domain.FHIRCondition{
+							{
+								ID: &id,
+								Code: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{
+										{
+											System:  &uri,
+											Code:    scalarutils.Code("1234"),
+											Display: "1234567",
+										},
+									},
+									Text: "1234",
+								},
+								Category: []*domain.FHIRCodeableConcept{},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get condition - nil onset datetime" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					id := gofakeit.UUID()
+					uri := scalarutils.URI("1234567345")
+					return &domain.PagedFHIRCondition{
+						Conditions: []domain.FHIRCondition{
+							{
+								ID: &id,
+								Code: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{
+										{
+											System:  &uri,
+											Code:    scalarutils.Code("1234"),
+											Display: "1234567",
+										},
+									},
+									Text: "1234",
+								},
+								Category: []*domain.FHIRCodeableConcept{
+									{
+										ID: &id,
+										Coding: []*domain.FHIRCoding{
+											{
+												ID:           &id,
+												System:       (*scalarutils.URI)(&id),
+												Version:      &id,
+												Code:         "PROBLEM_LIST_ITEM",
+												Display:      gofakeit.BeerAlcohol(),
+												UserSelected: new(bool),
+											},
+										},
+										Text: "PROBLEM_LIST_ITEM",
+									},
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get condition - nil note" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					id := gofakeit.UUID()
+					uri := scalarutils.URI("1234567345")
+					note := scalarutils.Markdown("Fever Fever")
+					noteTime := time.Now()
+					return &domain.PagedFHIRCondition{
+						Conditions: []domain.FHIRCondition{
+							{
+								ID:   &id,
+								Text: &domain.FHIRNarrative{},
+								Code: &domain.FHIRCodeableConcept{
+									Coding: []*domain.FHIRCoding{
+										{
+											System:  &uri,
+											Code:    scalarutils.Code("1234"),
+											Display: "1234567",
+										},
+									},
+									Text: "1234",
+								},
+								Note: []*domain.FHIRAnnotation{
+									{
+										Time: &noteTime,
+										Text: &note,
+									},
+								},
+								Category: []*domain.FHIRCodeableConcept{
+									{
+										ID: &id,
+										Coding: []*domain.FHIRCoding{
+											{
+												ID:           &id,
+												System:       (*scalarutils.URI)(&id),
+												Version:      &id,
+												Code:         "PROBLEM_LIST_ITEM",
+												Display:      gofakeit.BeerAlcohol(),
+												UserSelected: new(bool),
+											},
+										},
+										Text: "PROBLEM_LIST_ITEM",
+									},
+								},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
 					}, nil
 				}
 			}
