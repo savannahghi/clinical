@@ -153,8 +153,6 @@ func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Conditi
 		category = "problem-list-item"
 	case string(dto.ConditionCategoryDiagnosis):
 		category = "encounter-diagnosis"
-	default:
-		return nil
 	}
 
 	output := dto.Condition{
@@ -164,7 +162,7 @@ func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Conditi
 		Code:         string(condition.Code.Coding[0].Code),
 		System:       string(*condition.Code.Coding[0].System),
 		Category:     dto.ConditionCategory(category),
-		RecordedDate: *condition.RecordedDate,
+		RecordedDate: condition.RecordedDate,
 		PatientID:    *condition.Subject.ID,
 		EncounterID:  *condition.Encounter.ID,
 	}

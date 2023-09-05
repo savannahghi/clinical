@@ -3887,9 +3887,9 @@ func (ec *executionContext) _Condition_recordedDate(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Condition_recordedDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
