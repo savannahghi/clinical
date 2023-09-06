@@ -13,7 +13,7 @@ type Condition struct {
 	Category ConditionCategory `json:"category"`
 
 	OnsetDate    *scalarutils.Date `json:"onsetDate"`
-	RecordedDate scalarutils.Date  `json:"recordedDate"`
+	RecordedDate *scalarutils.Date `json:"recordedDate"`
 
 	Note string `json:"note"`
 
