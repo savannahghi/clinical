@@ -23,6 +23,10 @@ func (c *UseCasesClinicalImpl) CreateAllergyIntolerance(ctx context.Context, inp
 		return nil, err
 	}
 
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot record an allergy in a finished encounter")
+	}
+
 	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
 	if err != nil {
 		return nil, err

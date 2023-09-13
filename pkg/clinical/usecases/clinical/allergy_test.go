@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit"
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -130,6 +131,26 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			},
 			wantErr: true,
 		},
+
+		{
+			name: "Sad case - fail on finished encounter",
+			args: args{
+				ctx: context.Background(),
+				input: dto.AllergyInput{
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySourceCIEL,
+					EncounterID:       gofakeit.UUID(),
+					Reaction: &dto.ReactionInput{
+						Code:     "2000",
+						System:   gofakeit.BS(),
+						Severity: "fatal",
+					},
+				},
+			},
+			wantErr: true,
+		},
+
 		{
 			name: "Sad case: failed to get fhir patient",
 			args: args{
@@ -276,10 +297,84 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			}
 
 			if tt.name == "Sad case: failed to get fhir encounter" {
+				UUID := uuid.New().String()
+				PatientRef := "Patient/" + uuid.NewString()
 				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-					return nil, fmt.Errorf("an error occurred")
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							ID:            &UUID,
+							Text:          &domain.FHIRNarrative{},
+							Identifier:    []*domain.FHIRIdentifier{},
+							Status:        domain.EncounterStatusEnum(domain.EncounterStatusEnumOnleave),
+							StatusHistory: []*domain.FHIREncounterStatushistory{},
+							Class:         domain.FHIRCoding{},
+							ClassHistory:  []*domain.FHIREncounterClasshistory{},
+							Type:          []*domain.FHIRCodeableConcept{},
+							ServiceType:   &domain.FHIRCodeableConcept{},
+							Priority:      &domain.FHIRCodeableConcept{},
+							Subject: &domain.FHIRReference{
+								ID:        &UUID,
+								Reference: &PatientRef,
+							},
+							EpisodeOfCare:   []*domain.FHIRReference{},
+							BasedOn:         []*domain.FHIRReference{},
+							Participant:     []*domain.FHIREncounterParticipant{},
+							Appointment:     []*domain.FHIRReference{},
+							Period:          &domain.FHIRPeriod{},
+							Length:          &domain.FHIRDuration{},
+							ReasonReference: []*domain.FHIRReference{},
+							Diagnosis:       []*domain.FHIREncounterDiagnosis{},
+							Account:         []*domain.FHIRReference{},
+							Hospitalization: &domain.FHIREncounterHospitalization{},
+							Location:        []*domain.FHIREncounterLocation{},
+							ServiceProvider: &domain.FHIRReference{},
+							PartOf:          &domain.FHIRReference{},
+						},
+					}, nil
+				}
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org string, source string, concept string, includeMappings bool, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
+
+			if tt.name == "Sad case - fail on finished encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					UUID := uuid.New().String()
+					PatientRef := "Patient/" + uuid.NewString()
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							ID:            &UUID,
+							Text:          &domain.FHIRNarrative{},
+							Identifier:    []*domain.FHIRIdentifier{},
+							Status:        domain.EncounterStatusEnum(domain.EncounterStatusEnumFinished),
+							StatusHistory: []*domain.FHIREncounterStatushistory{},
+							Class:         domain.FHIRCoding{},
+							ClassHistory:  []*domain.FHIREncounterClasshistory{},
+							Type:          []*domain.FHIRCodeableConcept{},
+							ServiceType:   &domain.FHIRCodeableConcept{},
+							Priority:      &domain.FHIRCodeableConcept{},
+							Subject: &domain.FHIRReference{
+								ID:        &UUID,
+								Reference: &PatientRef,
+							},
+							EpisodeOfCare:   []*domain.FHIRReference{},
+							BasedOn:         []*domain.FHIRReference{},
+							Participant:     []*domain.FHIREncounterParticipant{},
+							Appointment:     []*domain.FHIRReference{},
+							Period:          &domain.FHIRPeriod{},
+							Length:          &domain.FHIRDuration{},
+							ReasonReference: []*domain.FHIRReference{},
+							Diagnosis:       []*domain.FHIREncounterDiagnosis{},
+							Account:         []*domain.FHIRReference{},
+							Hospitalization: &domain.FHIREncounterHospitalization{},
+							Location:        []*domain.FHIREncounterLocation{},
+							ServiceProvider: &domain.FHIRReference{},
+							PartOf:          &domain.FHIRReference{},
+						},
+					}, nil
+				}
+			}
+
 			if tt.name == "Sad case: failed to get fhir patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("an error occurred")
