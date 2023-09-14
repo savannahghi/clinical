@@ -162,6 +162,16 @@ func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patient
 	return c.GetPatientObservations(ctx, patientID, common.BMICIELTerminologyCode, pagination)
 }
 
+// RecordBloodSugar records a patient's blood sugar level (Serum glucose)
+func (c *UseCasesClinicalImpl) RecordBloodSugar(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	bloodSugarObservation, err := c.RecordObservation(ctx, input, common.BloodSugarCIELTerminologyCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return bloodSugarObservation, nil
+}
+
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
 // A concept ID is also passed so that we can get the concept code of the passed observation
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {

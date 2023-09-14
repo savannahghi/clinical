@@ -56,6 +56,9 @@ const (
 	// MuacCIELTerminologyCode is the terminology code for mid-upper arm circumference
 	MuacCIELTerminologyCode = "1343"
 
+	// BloodSugarCIELTerminologyCode is the terminology code for blood sugar (Serum glucose)
+	BloodSugarCIELTerminologyCode = "887"
+
 	// Spoc2CIELTerminologyCode is the terminology code oxygen saturation
 	OxygenSaturationCIELTerminologyCode = "5092"
 
