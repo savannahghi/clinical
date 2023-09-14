@@ -104,6 +104,7 @@ extend type Mutation {
   recordViralLoad(input: ObservationInput!): Observation!
   recordMUAC(input: ObservationInput!): Observation!
   recordOxygenSaturation(input: ObservationInput!): Observation!
+  recordBloodSugar(input: ObservationInput!): Observation!
 
   # Patient
   createPatient(input: PatientInput!): Patient!

@@ -108,6 +108,12 @@ func (r *mutationResolver) RecordOxygenSaturation(ctx context.Context, input dto
 	return r.usecases.RecordOxygenSaturation(ctx, input)
 }
 
+// RecordBloodSugar is the resolver for the recordBloodSugar field.
+func (r *mutationResolver) RecordBloodSugar(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.RecordBloodSugar(ctx, input)
+}
+
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
