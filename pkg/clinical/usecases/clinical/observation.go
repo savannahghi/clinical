@@ -172,6 +172,11 @@ func (c *UseCasesClinicalImpl) RecordBloodSugar(ctx context.Context, input dto.O
 	return bloodSugarObservation, nil
 }
 
+// GetPatientBloodSugarEntries retrieves all blood sugar entries for a patient
+func (c *UseCasesClinicalImpl) GetPatientBloodSugarEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.BloodSugarCIELTerminologyCode, pagination)
+}
+
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
 // A concept ID is also passed so that we can get the concept code of the passed observation
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {

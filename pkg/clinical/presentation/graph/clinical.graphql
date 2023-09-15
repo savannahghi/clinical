@@ -67,6 +67,11 @@ extend type Query {
     pagination: Pagination!
   ): ObservationConnection
 
+  getPatientBloodSugarEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
   # Allergy
   searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
   getAllergy(id: ID!): Allergy!
