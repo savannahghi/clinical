@@ -68,6 +68,17 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	Composition struct {
+		Category    func(childComplexity int) int
+		Date        func(childComplexity int) int
+		EncounterID func(childComplexity int) int
+		ID          func(childComplexity int) int
+		PatientID   func(childComplexity int) int
+		Status      func(childComplexity int) int
+		Text        func(childComplexity int) int
+		Type        func(childComplexity int) int
+	}
+
 	Condition struct {
 		Category     func(childComplexity int) int
 		Code         func(childComplexity int) int
@@ -164,6 +175,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateAllergyIntolerance     func(childComplexity int, input dto.AllergyInput) int
+		CreateComposition            func(childComplexity int, input dto.CompositionInput) int
 		CreateCondition              func(childComplexity int, input dto.ConditionInput) int
 		CreateEpisodeOfCare          func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
 		CreatePatient                func(childComplexity int, input dto.PatientInput) int
@@ -316,6 +328,7 @@ type MutationResolver interface {
 	DeletePatient(ctx context.Context, id string) (bool, error)
 	CreateCondition(ctx context.Context, input dto.ConditionInput) (*dto.Condition, error)
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
+	CreateComposition(ctx context.Context, input dto.CompositionInput) (*dto.Composition, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -440,6 +453,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AllergyEdge.Node(childComplexity), true
+
+	case "Composition.category":
+		if e.complexity.Composition.Category == nil {
+			break
+		}
+
+		return e.complexity.Composition.Category(childComplexity), true
+
+	case "Composition.date":
+		if e.complexity.Composition.Date == nil {
+			break
+		}
+
+		return e.complexity.Composition.Date(childComplexity), true
+
+	case "Composition.encounterID":
+		if e.complexity.Composition.EncounterID == nil {
+			break
+		}
+
+		return e.complexity.Composition.EncounterID(childComplexity), true
+
+	case "Composition.id":
+		if e.complexity.Composition.ID == nil {
+			break
+		}
+
+		return e.complexity.Composition.ID(childComplexity), true
+
+	case "Composition.patientID":
+		if e.complexity.Composition.PatientID == nil {
+			break
+		}
+
+		return e.complexity.Composition.PatientID(childComplexity), true
+
+	case "Composition.status":
+		if e.complexity.Composition.Status == nil {
+			break
+		}
+
+		return e.complexity.Composition.Status(childComplexity), true
+
+	case "Composition.text":
+		if e.complexity.Composition.Text == nil {
+			break
+		}
+
+		return e.complexity.Composition.Text(childComplexity), true
+
+	case "Composition.type":
+		if e.complexity.Composition.Type == nil {
+			break
+		}
+
+		return e.complexity.Composition.Type(childComplexity), true
 
 	case "Condition.category":
 		if e.complexity.Condition.Category == nil {
@@ -816,6 +885,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateAllergyIntolerance(childComplexity, args["input"].(dto.AllergyInput)), true
+
+	case "Mutation.createComposition":
+		if e.complexity.Mutation.CreateComposition == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createComposition_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateComposition(childComplexity, args["input"].(dto.CompositionInput)), true
 
 	case "Mutation.createCondition":
 		if e.complexity.Mutation.CreateCondition == nil {
@@ -1667,6 +1748,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAllergyInput,
+		ec.unmarshalInputCompositionInput,
 		ec.unmarshalInputConditionInput,
 		ec.unmarshalInputContactInput,
 		ec.unmarshalInputEncounterInput,
@@ -1910,6 +1992,9 @@ extend type Mutation {
 
   # Allergy Intolerance
   createAllergyIntolerance(input: AllergyInput!): Allergy
+
+  # Clinical notes(composition)
+  createComposition(input: CompositionInput!): Composition!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -1981,6 +2066,21 @@ enum ConditionStatus {
   RECURRENCE
   RELAPSE
   REMISSSION
+}
+
+enum CompositionStatusEnum {
+  PRELIMINARY
+  FINAL
+  AMENDED
+  ENTERED_IN_ERROR
+}
+
+enum CompositionCategory {
+  ASSESSMENT_PLAN
+}
+
+enum CompositionType {
+  PROGRESS_NOTE
 }
 
 enum TerminologySource {
@@ -2083,6 +2183,14 @@ input AllergyInput {
   terminologySource: TerminologySource!
   encounterID: String!
   reaction: ReactionInput
+}
+
+input CompositionInput {
+  type: CompositionType!
+  status: CompositionStatusEnum!
+  category: CompositionCategory!
+  encounterID: String!
+  note: String!
 }
 
 input ReactionInput {
@@ -2289,6 +2397,18 @@ type MediaConnection {
   edges: [MediaEdge]
   pageInfo: PageInfo
 }
+
+type Composition {
+  id: String!
+  text: String!
+  type: CompositionType!
+  category: CompositionCategory!
+  status: CompositionStatusEnum!
+  date: Date
+
+  patientID: String
+  encounterID: String
+}
 `, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
@@ -2322,6 +2442,21 @@ func (ec *executionContext) field_Mutation_createAllergyIntolerance_args(ctx con
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNAllergyInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAllergyInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createComposition_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.CompositionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCompositionInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3777,6 +3912,349 @@ func (ec *executionContext) _AllergyEdge_cursor(ctx context.Context, field graph
 func (ec *executionContext) fieldContext_AllergyEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AllergyEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_id(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_text(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_text(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_type(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_type(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(dto.CompositionType)
+	fc.Result = res
+	return ec.marshalNCompositionType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type CompositionType does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_category(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_category(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Category, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(dto.CompositionCategory)
+	fc.Result = res
+	return ec.marshalNCompositionCategory2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionCategory(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_category(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type CompositionCategory does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_status(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(dto.CompositionStatusEnum)
+	fc.Result = res
+	return ec.marshalNCompositionStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type CompositionStatusEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_date(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_date(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Date, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Date)
+	fc.Result = res
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_date(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Date does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_patientID(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_patientID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PatientID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_patientID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Composition_encounterID(ctx context.Context, field graphql.CollectedField, obj *dto.Composition) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Composition_encounterID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EncounterID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Composition_encounterID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Composition",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -7787,6 +8265,79 @@ func (ec *executionContext) fieldContext_Mutation_createAllergyIntolerance(ctx c
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createAllergyIntolerance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createComposition(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createComposition(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateComposition(rctx, fc.Args["input"].(dto.CompositionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Composition)
+	fc.Result = res
+	return ec.marshalNComposition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐComposition(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createComposition(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Composition_id(ctx, field)
+			case "text":
+				return ec.fieldContext_Composition_text(ctx, field)
+			case "type":
+				return ec.fieldContext_Composition_type(ctx, field)
+			case "category":
+				return ec.fieldContext_Composition_category(ctx, field)
+			case "status":
+				return ec.fieldContext_Composition_status(ctx, field)
+			case "date":
+				return ec.fieldContext_Composition_date(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Composition_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Composition_encounterID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Composition", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createComposition_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12963,6 +13514,71 @@ func (ec *executionContext) unmarshalInputAllergyInput(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputCompositionInput(ctx context.Context, obj interface{}) (dto.CompositionInput, error) {
+	var it dto.CompositionInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"type", "status", "category", "encounterID", "note"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			data, err := ec.unmarshalNCompositionType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Type = data
+		case "status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalNCompositionStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionStatusEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		case "category":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
+			data, err := ec.unmarshalNCompositionCategory2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionCategory(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Category = data
+		case "encounterID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EncounterID = data
+		case "note":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Note = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputConditionInput(ctx context.Context, obj interface{}) (dto.ConditionInput, error) {
 	var it dto.ConditionInput
 	asMap := map[string]interface{}{}
@@ -13669,6 +14285,71 @@ func (ec *executionContext) _AllergyEdge(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = ec._AllergyEdge_node(ctx, field, obj)
 		case "cursor":
 			out.Values[i] = ec._AllergyEdge_cursor(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var compositionImplementors = []string{"Composition"}
+
+func (ec *executionContext) _Composition(ctx context.Context, sel ast.SelectionSet, obj *dto.Composition) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, compositionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Composition")
+		case "id":
+			out.Values[i] = ec._Composition_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "text":
+			out.Values[i] = ec._Composition_text(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "type":
+			out.Values[i] = ec._Composition_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "category":
+			out.Values[i] = ec._Composition_category(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "status":
+			out.Values[i] = ec._Composition_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "date":
+			out.Values[i] = ec._Composition_date(ctx, field, obj)
+		case "patientID":
+			out.Values[i] = ec._Composition_patientID(ctx, field, obj)
+		case "encounterID":
+			out.Values[i] = ec._Composition_encounterID(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -14495,6 +15176,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createAllergyIntolerance(ctx, field)
 			})
+		case "createComposition":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createComposition(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -15872,6 +16560,73 @@ func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interf
 
 func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
 	res := graphql.MarshalBoolean(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) marshalNComposition2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐComposition(ctx context.Context, sel ast.SelectionSet, v dto.Composition) graphql.Marshaler {
+	return ec._Composition(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNComposition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐComposition(ctx context.Context, sel ast.SelectionSet, v *dto.Composition) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Composition(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNCompositionCategory2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionCategory(ctx context.Context, v interface{}) (dto.CompositionCategory, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.CompositionCategory(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNCompositionCategory2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionCategory(ctx context.Context, sel ast.SelectionSet, v dto.CompositionCategory) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNCompositionInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionInput(ctx context.Context, v interface{}) (dto.CompositionInput, error) {
+	res, err := ec.unmarshalInputCompositionInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCompositionStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionStatusEnum(ctx context.Context, v interface{}) (dto.CompositionStatusEnum, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.CompositionStatusEnum(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNCompositionStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.CompositionStatusEnum) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNCompositionType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionType(ctx context.Context, v interface{}) (dto.CompositionType, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.CompositionType(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNCompositionType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionType(ctx context.Context, sel ast.SelectionSet, v dto.CompositionType) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

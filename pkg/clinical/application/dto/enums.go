@@ -116,7 +116,7 @@ const (
 	ConditionStatusUnknown  ConditionStatus = "UNKNOWN"
 )
 
-// ConditionStatus represents status of a FHIR condition
+// ConditionCategory represents status of a FHIR condition
 type ConditionCategory string
 
 const (
@@ -132,4 +132,36 @@ const (
 	TerminologySourceCIEL     TerminologySource = "CIEL"
 	TerminologySourceSNOMEDCT TerminologySource = "SNOMED_CT"
 	TerminologySourceLOINC    TerminologySource = "LOINC"
+)
+
+// LOINCCodes represents LOINC assessment codes
+type LOINCCodes string
+
+const (
+	LOINCPlanOfCareCode     LOINCCodes = "18776-5"
+	LOINCAssessmentPlanCode LOINCCodes = "51847-2"
+)
+
+// CompositionCategory enum represents category composition attribute
+type CompositionCategory string
+
+const (
+	AssessmentAndPlan CompositionCategory = "ASSESSMENT_PLAN"
+)
+
+// Type enum represents type composition attribute
+type CompositionType string
+
+const (
+	ProgressNote CompositionType = "PROGRESS_NOTE"
+)
+
+// CompositionStatus enum represents status composition attribute
+type CompositionStatusEnum string
+
+const (
+	CompositionStatuEnumPreliminary               CompositionStatusEnum = "PRELIMINARY"
+	CompositionStatuEnumFinal                     CompositionStatusEnum = "FINAL"
+	CompositionStatuEnumAmended                   CompositionStatusEnum = "AMENDED"
+	CompositionStatuEnumEnteredInErrorPreliminary CompositionStatusEnum = "ENTERED_IN_ERROR"
 )

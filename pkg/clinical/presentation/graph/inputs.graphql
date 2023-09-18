@@ -66,6 +66,14 @@ input AllergyInput {
   reaction: ReactionInput
 }
 
+input CompositionInput {
+  type: CompositionType!
+  status: CompositionStatusEnum!
+  category: CompositionCategory!
+  encounterID: String!
+  note: String!
+}
+
 input ReactionInput {
   code: String
   system: String

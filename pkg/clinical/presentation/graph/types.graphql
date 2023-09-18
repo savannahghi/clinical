@@ -188,3 +188,15 @@ type MediaConnection {
   edges: [MediaEdge]
   pageInfo: PageInfo
 }
+
+type Composition {
+  id: String!
+  text: String!
+  type: CompositionType!
+  category: CompositionCategory!
+  status: CompositionStatusEnum!
+  date: Date
+
+  patientID: String
+  encounterID: String
+}

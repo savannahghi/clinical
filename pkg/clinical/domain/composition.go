@@ -223,7 +223,7 @@ type FHIRCompositionSection struct {
 	Title *string `json:"title,omitempty"`
 
 	// A code identifying the kind of content contained within the section. This must be consistent with the section title.
-	Code *scalarutils.Code `json:"code,omitempty"`
+	Code *FHIRCodeableConceptInput `json:"code,omitempty"`
 
 	// Identifies who is responsible for the information in this section, not necessarily who typed it in.
 	Author []*FHIRReference `json:"author,omitempty"`
@@ -259,7 +259,7 @@ type FHIRCompositionSectionInput struct {
 	Title *string `json:"title,omitempty"`
 
 	// A code identifying the kind of content contained within the section. This must be consistent with the section title.
-	Code *scalarutils.Code `json:"code,omitempty"`
+	Code *FHIRCodeableConceptInput `json:"code,omitempty"`
 
 	// Identifies who is responsible for the information in this section, not necessarily who typed it in.
 	Author []*FHIRReferenceInput `json:"author,omitempty"`
