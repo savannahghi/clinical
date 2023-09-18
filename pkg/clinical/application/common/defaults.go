@@ -106,6 +106,12 @@ const (
 
 	// AddFHIRIDToProgram is the topic where details to update a program's fhir ID will be published to
 	AddFHIRIDToProgram = "program.fhirid.update"
+
+	// LOINCProgressNoteCode defines LOINC progress note terminology code
+	LOINCProgressNoteCode = "81216-4"
+
+	// LOINCAssessmentPlanCode defines LOINC assessment plan note terminology code
+	LOINCAssessmentPlanCode = "51847-2"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

@@ -10,6 +10,7 @@ require (
 	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
+	github.com/chenyahui/gin-cache v1.8.1
 	github.com/getsentry/sentry-go v0.23.0
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
@@ -55,7 +56,6 @@ require (
 	github.com/bytedance/sonic v1.10.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/chenyahui/gin-cache v1.8.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect

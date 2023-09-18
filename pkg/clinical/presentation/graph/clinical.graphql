@@ -133,4 +133,7 @@ extend type Mutation {
 
   # Allergy Intolerance
   createAllergyIntolerance(input: AllergyInput!): Allergy
+
+  # Clinical notes(composition)
+  createComposition(input: CompositionInput!): Composition!
 }
