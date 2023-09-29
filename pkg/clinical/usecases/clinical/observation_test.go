@@ -3654,3 +3654,274 @@ func TestUseCasesClinicalImpl_GetPatientBloodSugarEntries(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_RecordLastMenstrualPeriod(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx   context.Context
+		input dto.ObservationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully record last menstrual period",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "12",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to record last menstrual period",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					EncounterID: uuid.New().String(),
+					Value:       "12",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get encounter",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - return a finished encounter",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get CIEL concept",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get tenant meta tags",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to create observation",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Fail to get encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get encounter")
+				}
+			}
+
+			if tt.name == "Sad Case - return a finished encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							Status: domain.EncounterStatusEnumFinished,
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get CIEL concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("fail to get concept")
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get tenant meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to create observation" {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
+					return nil, fmt.Errorf("failed to create observation")
+				}
+			}
+
+			got, err := c.RecordLastMenstrualPeriod(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.RecordLastMenstrualPeriod() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_GetPatientLastMenstrualPeriodEntries(t *testing.T) {
+	first := 10
+	ctx := context.Background()
+	type args struct {
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *dto.ObservationConnection
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient last menstrual period",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: "invalid",
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Incorrect patient ID",
+			args: args{
+				ctx:       ctx,
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get patient observations",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Invalid patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			if tt.name == "Sad Case - Incorrect patient ID" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("incorrect patient ID")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get patient observations" {
+				fakeFHIR.MockSearchPatientObservationsFn = func(ctx context.Context, patientReference, conceptID string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("an error occured")
+				}
+			}
+
+			_, err := c.GetPatientLastMenstrualPeriodEntries(tt.args.ctx, tt.args.patientID, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientLastMenstrualPeriodEntries() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

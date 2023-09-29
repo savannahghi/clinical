@@ -59,6 +59,9 @@ const (
 	// BloodSugarCIELTerminologyCode is the terminology code for blood sugar (Serum glucose)
 	BloodSugarCIELTerminologyCode = "887"
 
+	// LastMenstrualPeriodCIELTerminologyCode is the terminology code for last menstrual period
+	LastMenstrualPeriodCIELTerminologyCode = "1427"
+
 	// Spoc2CIELTerminologyCode is the terminology code oxygen saturation
 	OxygenSaturationCIELTerminologyCode = "5092"
 

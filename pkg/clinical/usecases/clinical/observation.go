@@ -164,17 +164,22 @@ func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patient
 
 // RecordBloodSugar records a patient's blood sugar level (Serum glucose)
 func (c *UseCasesClinicalImpl) RecordBloodSugar(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	bloodSugarObservation, err := c.RecordObservation(ctx, input, common.BloodSugarCIELTerminologyCode)
-	if err != nil {
-		return nil, err
-	}
-
-	return bloodSugarObservation, nil
+	return c.RecordObservation(ctx, input, common.BloodSugarCIELTerminologyCode)
 }
 
 // GetPatientBloodSugarEntries retrieves all blood sugar entries for a patient
 func (c *UseCasesClinicalImpl) GetPatientBloodSugarEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	return c.GetPatientObservations(ctx, patientID, common.BloodSugarCIELTerminologyCode, pagination)
+}
+
+// RecordLastMenstrualPeriod records last menstrual period
+func (c *UseCasesClinicalImpl) RecordLastMenstrualPeriod(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	return c.RecordObservation(ctx, input, common.LastMenstrualPeriodCIELTerminologyCode)
+}
+
+// GetPatientLastMenstrualPeriodEntries retrieves all blood sugar entries for a patient
+func (c *UseCasesClinicalImpl) GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.LastMenstrualPeriodCIELTerminologyCode, pagination)
 }
 
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.

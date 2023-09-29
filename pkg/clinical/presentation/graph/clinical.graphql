@@ -72,6 +72,11 @@ extend type Query {
     pagination: Pagination!
   ): ObservationConnection
 
+  getPatientLastMenstrualPeriodEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
   # Allergy
   searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
   getAllergy(id: ID!): Allergy!
@@ -110,6 +115,7 @@ extend type Mutation {
   recordMUAC(input: ObservationInput!): Observation!
   recordOxygenSaturation(input: ObservationInput!): Observation!
   recordBloodSugar(input: ObservationInput!): Observation!
+  recordLastMenstrualPeriod(input: ObservationInput!): Observation!
 
   # Patient
   createPatient(input: PatientInput!): Patient!
