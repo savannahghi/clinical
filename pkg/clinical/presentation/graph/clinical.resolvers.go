@@ -114,6 +114,12 @@ func (r *mutationResolver) RecordBloodSugar(ctx context.Context, input dto.Obser
 	return r.usecases.RecordBloodSugar(ctx, input)
 }
 
+// RecordLastMenstrualPeriod is the resolver for the recordLastMenstrualPeriod field.
+func (r *mutationResolver) RecordLastMenstrualPeriod(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.RecordLastMenstrualPeriod(ctx, input)
+}
+
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
@@ -238,6 +244,12 @@ func (r *queryResolver) GetPatientViralLoad(ctx context.Context, patientID strin
 func (r *queryResolver) GetPatientBloodSugarEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
 	return r.usecases.Clinical.GetPatientBloodSugarEntries(ctx, patientID, &pagination)
+}
+
+// GetPatientLastMenstrualPeriodEntries is the resolver for the GetPatientLastMenstrualPeriodEntries field.
+func (r *queryResolver) GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientLastMenstrualPeriodEntries(ctx, patientID, &pagination)
 }
 
 // SearchAllergy is the resolver for the searchAllergy field.
