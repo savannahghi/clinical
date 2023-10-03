@@ -54,7 +54,6 @@ type Clinical interface {
 	RecordOxygenSaturation(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordBloodSugar(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordLastMenstrualPeriod(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
-	RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error)
 
 	GetPatientObservations(ctx context.Context, patientID string, observationCode string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
@@ -70,6 +69,7 @@ type Clinical interface {
 	GetPatientViralLoad(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientBloodSugarEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
 	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)

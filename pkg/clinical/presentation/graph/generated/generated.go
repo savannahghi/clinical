@@ -163,30 +163,29 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateAllergyIntolerance     func(childComplexity int, input dto.AllergyInput) int
-		CreateCondition              func(childComplexity int, input dto.ConditionInput) int
-		CreateEpisodeOfCare          func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
-		CreatePatient                func(childComplexity int, input dto.PatientInput) int
-		DeletePatient                func(childComplexity int, id string) int
-		EndEncounter                 func(childComplexity int, encounterID string) int
-		EndEpisodeOfCare             func(childComplexity int, id string) int
-		PatchEncounter               func(childComplexity int, encounterID string, input dto.EncounterInput) int
-		PatchEpisodeOfCare           func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
-		PatchPatient                 func(childComplexity int, id string, input dto.PatientInput) int
-		RecordBloodPressure          func(childComplexity int, input dto.ObservationInput) int
-		RecordBloodSugar             func(childComplexity int, input dto.ObservationInput) int
-		RecordBmi                    func(childComplexity int, input dto.ObservationInput) int
-		RecordDiastolicBloodPressure func(childComplexity int, input dto.ObservationInput) int
-		RecordHeight                 func(childComplexity int, input dto.ObservationInput) int
-		RecordLastMenstrualPeriod    func(childComplexity int, input dto.ObservationInput) int
-		RecordMuac                   func(childComplexity int, input dto.ObservationInput) int
-		RecordOxygenSaturation       func(childComplexity int, input dto.ObservationInput) int
-		RecordPulseRate              func(childComplexity int, input dto.ObservationInput) int
-		RecordRespiratoryRate        func(childComplexity int, input dto.ObservationInput) int
-		RecordTemperature            func(childComplexity int, input dto.ObservationInput) int
-		RecordViralLoad              func(childComplexity int, input dto.ObservationInput) int
-		RecordWeight                 func(childComplexity int, input dto.ObservationInput) int
-		StartEncounter               func(childComplexity int, episodeID string) int
+		CreateAllergyIntolerance  func(childComplexity int, input dto.AllergyInput) int
+		CreateCondition           func(childComplexity int, input dto.ConditionInput) int
+		CreateEpisodeOfCare       func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
+		CreatePatient             func(childComplexity int, input dto.PatientInput) int
+		DeletePatient             func(childComplexity int, id string) int
+		EndEncounter              func(childComplexity int, encounterID string) int
+		EndEpisodeOfCare          func(childComplexity int, id string) int
+		PatchEncounter            func(childComplexity int, encounterID string, input dto.EncounterInput) int
+		PatchEpisodeOfCare        func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
+		PatchPatient              func(childComplexity int, id string, input dto.PatientInput) int
+		RecordBloodPressure       func(childComplexity int, input dto.ObservationInput) int
+		RecordBloodSugar          func(childComplexity int, input dto.ObservationInput) int
+		RecordBmi                 func(childComplexity int, input dto.ObservationInput) int
+		RecordHeight              func(childComplexity int, input dto.ObservationInput) int
+		RecordLastMenstrualPeriod func(childComplexity int, input dto.ObservationInput) int
+		RecordMuac                func(childComplexity int, input dto.ObservationInput) int
+		RecordOxygenSaturation    func(childComplexity int, input dto.ObservationInput) int
+		RecordPulseRate           func(childComplexity int, input dto.ObservationInput) int
+		RecordRespiratoryRate     func(childComplexity int, input dto.ObservationInput) int
+		RecordTemperature         func(childComplexity int, input dto.ObservationInput) int
+		RecordViralLoad           func(childComplexity int, input dto.ObservationInput) int
+		RecordWeight              func(childComplexity int, input dto.ObservationInput) int
+		StartEncounter            func(childComplexity int, episodeID string) int
 	}
 
 	Observation struct {
@@ -227,28 +226,29 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetAllergy                           func(childComplexity int, id string) int
-		GetEpisodeOfCare                     func(childComplexity int, id string) int
-		GetMedicalData                       func(childComplexity int, patientID string) int
-		GetPatientBMIEntries                 func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientBloodPressureEntries       func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientBloodSugarEntries          func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientHeightEntries              func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientLastMenstrualPeriodEntries func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientMuacEntries                func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientOxygenSaturationEntries    func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientPulseRateEntries           func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientRespiratoryRateEntries     func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientTemperatureEntries         func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientViralLoad                  func(childComplexity int, patientID string, pagination dto.Pagination) int
-		GetPatientWeightEntries              func(childComplexity int, patientID string, pagination dto.Pagination) int
-		ListPatientAllergies                 func(childComplexity int, patientID string, pagination dto.Pagination) int
-		ListPatientConditions                func(childComplexity int, patientID string, pagination dto.Pagination) int
-		ListPatientEncounters                func(childComplexity int, patientID string, pagination dto.Pagination) int
-		ListPatientMedia                     func(childComplexity int, patientID string, pagination dto.Pagination) int
-		PatientHealthTimeline                func(childComplexity int, input dto.HealthTimelineInput) int
-		SearchAllergy                        func(childComplexity int, name string, pagination dto.Pagination) int
-		__resolve__service                   func(childComplexity int) int
+		GetAllergy                              func(childComplexity int, id string) int
+		GetEpisodeOfCare                        func(childComplexity int, id string) int
+		GetMedicalData                          func(childComplexity int, patientID string) int
+		GetPatientBMIEntries                    func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientBloodPressureEntries          func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientBloodSugarEntries             func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientDiastolicBloodPressureEntries func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientHeightEntries                 func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientLastMenstrualPeriodEntries    func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientMuacEntries                   func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientOxygenSaturationEntries       func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientPulseRateEntries              func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientRespiratoryRateEntries        func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientTemperatureEntries            func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientViralLoad                     func(childComplexity int, patientID string, pagination dto.Pagination) int
+		GetPatientWeightEntries                 func(childComplexity int, patientID string, pagination dto.Pagination) int
+		ListPatientAllergies                    func(childComplexity int, patientID string, pagination dto.Pagination) int
+		ListPatientConditions                   func(childComplexity int, patientID string, pagination dto.Pagination) int
+		ListPatientEncounters                   func(childComplexity int, patientID string, pagination dto.Pagination) int
+		ListPatientMedia                        func(childComplexity int, patientID string, pagination dto.Pagination) int
+		PatientHealthTimeline                   func(childComplexity int, input dto.HealthTimelineInput) int
+		SearchAllergy                           func(childComplexity int, name string, pagination dto.Pagination) int
+		__resolve__service                      func(childComplexity int) int
 	}
 
 	Reaction struct {
@@ -309,7 +309,6 @@ type MutationResolver interface {
 	RecordOxygenSaturation(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordBloodSugar(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordLastMenstrualPeriod(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
-	RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 	PatchPatient(ctx context.Context, id string, input dto.PatientInput) (*dto.Patient, error)
 	DeletePatient(ctx context.Context, id string) (bool, error)
@@ -334,6 +333,7 @@ type QueryResolver interface {
 	GetPatientViralLoad(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientBloodSugarEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
 	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)
 	GetAllergy(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
@@ -959,18 +959,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RecordBmi(childComplexity, args["input"].(dto.ObservationInput)), true
 
-	case "Mutation.recordDiastolicBloodPressure":
-		if e.complexity.Mutation.RecordDiastolicBloodPressure == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_recordDiastolicBloodPressure_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.RecordDiastolicBloodPressure(childComplexity, args["input"].(dto.ObservationInput)), true
-
 	case "Mutation.recordHeight":
 		if e.complexity.Mutation.RecordHeight == nil {
 			break
@@ -1316,6 +1304,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetPatientBloodSugarEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
+
+	case "Query.getPatientDiastolicBloodPressureEntries":
+		if e.complexity.Query.GetPatientDiastolicBloodPressureEntries == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPatientDiastolicBloodPressureEntries_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPatientDiastolicBloodPressureEntries(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientHeightEntries":
 		if e.complexity.Query.GetPatientHeightEntries == nil {
@@ -1840,6 +1840,11 @@ var sources = []*ast.Source{
     pagination: Pagination!
   ): ObservationConnection
 
+  getPatientDiastolicBloodPressureEntries(
+    patientID: String!
+    pagination: Pagination!
+  ): ObservationConnection
+
   # Allergy
   searchAllergy(name: String!, pagination: Pagination!): TerminologyConnection
   getAllergy(id: ID!): Allergy!
@@ -1879,7 +1884,6 @@ extend type Mutation {
   recordOxygenSaturation(input: ObservationInput!): Observation!
   recordBloodSugar(input: ObservationInput!): Observation!
   recordLastMenstrualPeriod(input: ObservationInput!): Observation!
-  recordDiastolicBloodPressure(input: ObservationInput!): Observation!
 
   # Patient
   createPatient(input: PatientInput!): Patient!
@@ -2518,21 +2522,6 @@ func (ec *executionContext) field_Mutation_recordBloodSugar_args(ctx context.Con
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_recordDiastolicBloodPressure_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 dto.ObservationInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_recordHeight_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2792,6 +2781,30 @@ func (ec *executionContext) field_Query_getPatientBloodPressureEntries_args(ctx 
 }
 
 func (ec *executionContext) field_Query_getPatientBloodSugarEntries_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getPatientDiastolicBloodPressureEntries_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -7339,77 +7352,6 @@ func (ec *executionContext) fieldContext_Mutation_recordLastMenstrualPeriod(ctx 
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_recordDiastolicBloodPressure(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_recordDiastolicBloodPressure(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RecordDiastolicBloodPressure(rctx, fc.Args["input"].(dto.ObservationInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*dto.Observation)
-	fc.Result = res
-	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_recordDiastolicBloodPressure(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Observation_id(ctx, field)
-			case "status":
-				return ec.fieldContext_Observation_status(ctx, field)
-			case "patientID":
-				return ec.fieldContext_Observation_patientID(ctx, field)
-			case "encounterID":
-				return ec.fieldContext_Observation_encounterID(ctx, field)
-			case "name":
-				return ec.fieldContext_Observation_name(ctx, field)
-			case "value":
-				return ec.fieldContext_Observation_value(ctx, field)
-			case "timeRecorded":
-				return ec.fieldContext_Observation_timeRecorded(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_recordDiastolicBloodPressure_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createPatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createPatient(ctx, field)
 	if err != nil {
@@ -9741,6 +9683,66 @@ func (ec *executionContext) fieldContext_Query_getPatientLastMenstrualPeriodEntr
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getPatientLastMenstrualPeriodEntries_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getPatientDiastolicBloodPressureEntries(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPatientDiastolicBloodPressureEntries(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetPatientDiastolicBloodPressureEntries(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.ObservationConnection)
+	fc.Result = res
+	return ec.marshalOObservationConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getPatientDiastolicBloodPressureEntries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "totalCount":
+				return ec.fieldContext_ObservationConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_ObservationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ObservationConnection_pageInfo(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ObservationConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPatientDiastolicBloodPressureEntries_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -14353,13 +14355,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "recordDiastolicBloodPressure":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_recordDiastolicBloodPressure(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "createPatient":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createPatient(ctx, field)
@@ -15001,6 +14996,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getPatientLastMenstrualPeriodEntries(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getPatientDiastolicBloodPressureEntries":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getPatientDiastolicBloodPressureEntries(ctx, field)
 				return res
 			}
 

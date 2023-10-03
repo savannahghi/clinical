@@ -187,6 +187,11 @@ func (c *UseCasesClinicalImpl) RecordDiastolicBloodPressure(ctx context.Context,
 	return c.RecordObservation(ctx, input, common.DiastolicBloodPressureCIELTerminologyCode)
 }
 
+// GetPatientDiastolicBloodPressureEntries retrieves all diastolic blood pressure entries for a patient
+func (c *UseCasesClinicalImpl) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, common.DiastolicBloodPressureCIELTerminologyCode, pagination)
+}
+
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
 // A concept ID is also passed so that we can get the concept code of the passed observation
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {

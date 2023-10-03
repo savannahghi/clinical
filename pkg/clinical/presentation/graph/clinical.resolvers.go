@@ -120,12 +120,6 @@ func (r *mutationResolver) RecordLastMenstrualPeriod(ctx context.Context, input 
 	return r.usecases.RecordLastMenstrualPeriod(ctx, input)
 }
 
-// RecordDiastolicBloodPressure is the resolver for the recordDiastolicBloodPressure field.
-func (r *mutationResolver) RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	r.CheckDependencies()
-	return r.usecases.RecordDiastolicBloodPressure(ctx, input)
-}
-
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
@@ -256,6 +250,12 @@ func (r *queryResolver) GetPatientBloodSugarEntries(ctx context.Context, patient
 func (r *queryResolver) GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
 	return r.usecases.Clinical.GetPatientLastMenstrualPeriodEntries(ctx, patientID, &pagination)
+}
+
+// GetPatientDiastolicBloodPressureEntries is the resolver for the getPatientDiastolicBloodPressureEntries field.
+func (r *queryResolver) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientDiastolicBloodPressureEntries(ctx, patientID, &pagination)
 }
 
 // SearchAllergy is the resolver for the searchAllergy field.
