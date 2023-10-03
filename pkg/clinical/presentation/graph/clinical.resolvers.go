@@ -120,6 +120,12 @@ func (r *mutationResolver) RecordLastMenstrualPeriod(ctx context.Context, input 
 	return r.usecases.RecordLastMenstrualPeriod(ctx, input)
 }
 
+// RecordDiastolicBloodPressure is the resolver for the recordDiastolicBloodPressure field.
+func (r *mutationResolver) RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.RecordDiastolicBloodPressure(ctx, input)
+}
+
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
