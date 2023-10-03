@@ -182,6 +182,11 @@ func (c *UseCasesClinicalImpl) GetPatientLastMenstrualPeriodEntries(ctx context.
 	return c.GetPatientObservations(ctx, patientID, common.LastMenstrualPeriodCIELTerminologyCode, pagination)
 }
 
+// RecordDiastolicBloodPressure records diastolic blood pressure
+func (c *UseCasesClinicalImpl) RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	return c.RecordObservation(ctx, input, common.DiastolicBloodPressureCIELTerminologyCode)
+}
+
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
 // A concept ID is also passed so that we can get the concept code of the passed observation
 func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error) {

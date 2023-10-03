@@ -116,6 +116,7 @@ extend type Mutation {
   recordOxygenSaturation(input: ObservationInput!): Observation!
   recordBloodSugar(input: ObservationInput!): Observation!
   recordLastMenstrualPeriod(input: ObservationInput!): Observation!
+  recordDiastolicBloodPressure(input: ObservationInput!): Observation!
 
   # Patient
   createPatient(input: PatientInput!): Patient!

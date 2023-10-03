@@ -59,6 +59,9 @@ const (
 	// BloodSugarCIELTerminologyCode is the terminology code for blood sugar (Serum glucose)
 	BloodSugarCIELTerminologyCode = "887"
 
+	// DiastolicBloodPressureTerminologyCode is the terminology code for diastolic blood pressure
+	DiastolicBloodPressureCIELTerminologyCode = "5086"
+
 	// LastMenstrualPeriodCIELTerminologyCode is the terminology code for last menstrual period
 	LastMenstrualPeriodCIELTerminologyCode = "1427"
 
