@@ -258,6 +258,12 @@ func (r *queryResolver) GetPatientLastMenstrualPeriodEntries(ctx context.Context
 	return r.usecases.Clinical.GetPatientLastMenstrualPeriodEntries(ctx, patientID, &pagination)
 }
 
+// GetPatientDiastolicBloodPressureEntries is the resolver for the getPatientDiastolicBloodPressureEntries field.
+func (r *queryResolver) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	r.CheckDependencies()
+	return r.usecases.Clinical.GetPatientDiastolicBloodPressureEntries(ctx, patientID, &pagination)
+}
+
 // SearchAllergy is the resolver for the searchAllergy field.
 func (r *queryResolver) SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error) {
 	r.CheckDependencies()
