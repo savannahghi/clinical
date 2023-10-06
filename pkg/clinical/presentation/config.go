@@ -10,6 +10,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/authutils"
@@ -116,7 +117,9 @@ func StartServer(
 
 	r := gin.Default()
 
-	SetupRoutes(r, authclient, usecases, infrastructure)
+	memoryStore := persist.NewMemoryStore(60 * time.Minute)
+
+	SetupRoutes(r, memoryStore, authclient, usecases, infrastructure)
 
 	addr := fmt.Sprintf(":%d", port)
 
@@ -125,7 +128,7 @@ func StartServer(
 	}
 }
 
-func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.Interactor, infra infrastructure.Infrastructure) {
+func SetupRoutes(r *gin.Engine, cacheStore persist.CacheStore, authclient *authutils.Client, usecases usecases.Interactor, infra infrastructure.Infrastructure) {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: ClinicalAllowedOrigins,
 		AllowMethods: []string{http.MethodPut, http.MethodPatch, http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
@@ -156,7 +159,7 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 	handlers := rest.NewPresentationHandlers(usecases, infra.BaseExtension)
 
 	graphQL := r.Group("/graphql")
-	graphQL.Use(rest.AuthenticationGinMiddleware(*authclient))
+	graphQL.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))
 	graphQL.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
 	graphQL.Any("", GQLHandler(usecases))
 
@@ -167,7 +170,7 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 	r.POST("/pubsub", handlers.ReceivePubSubPushMessage)
 
 	apis := r.Group("/api")
-	apis.Use(rest.AuthenticationGinMiddleware(*authclient))
+	apis.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))
 
 	v1 := apis.Group("/v1")
 
@@ -178,7 +181,7 @@ func SetupRoutes(r *gin.Engine, authclient *authutils.Client, usecases usecases.
 	facilities.POST("", handlers.RegisterFacility)
 
 	upload := v1.Group("/media")
-	upload.Use(rest.AuthenticationGinMiddleware(*authclient))
+	upload.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))
 	upload.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
 	upload.POST("", handlers.UploadMedia)
 }

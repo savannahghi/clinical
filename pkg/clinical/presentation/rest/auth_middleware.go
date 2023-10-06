@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,10 +11,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/serverutils"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -93,10 +96,33 @@ type authCheckFn = func(
 	r *http.Request,
 ) (bool, map[string]string, *authutils.TokenIntrospectionResponse)
 
+// HasValidCachedToken ...
+func HasValidCachedToken(cacheStore persist.CacheStore) authCheckFn {
+	return func(_ context.Context, r *http.Request) (bool, map[string]string, *authutils.TokenIntrospectionResponse) {
+		token, err := firebasetools.ExtractBearerToken(r)
+		if err != nil {
+			return false, serverutils.ErrorMap(err), nil
+		}
+
+		tokenResponse := authutils.TokenIntrospectionResponse{}
+
+		err = cacheStore.Get(token, &tokenResponse)
+		if err != nil {
+			if errors.Is(err, persist.ErrCacheMiss) {
+				return false, serverutils.ErrorMap(fmt.Errorf("supplied access token not in cache")), nil
+			}
+
+			return false, serverutils.ErrorMap(err), nil
+		}
+
+		return true, nil, &tokenResponse
+	}
+}
+
 // AuthenticationGinMiddleware is an authentication middleware for servers using Gin. It checks the user token and ensures
 // that it is valid
-func AuthenticationGinMiddleware(cl authutils.Client) gin.HandlerFunc {
-	checkFuncs := []authCheckFn{cl.HasValidSlade360BearerToken, HasValidMycarehubBearerToken}
+func AuthenticationGinMiddleware(cacheStore persist.CacheStore, cl authutils.Client) gin.HandlerFunc {
+	checkFuncs := []authCheckFn{HasValidCachedToken(cacheStore), cl.HasValidSlade360BearerToken, HasValidMycarehubBearerToken}
 
 	return func(c *gin.Context) {
 		var successful bool
@@ -110,6 +136,15 @@ func AuthenticationGinMiddleware(cl authutils.Client) gin.HandlerFunc {
 			if valid {
 				successful = true
 				tokenResponse = authToken
+
+				// myCareHub doesn't set expires in
+				// TODO: Set expires at iin myCareHub introspection
+				if !tokenResponse.Expires.IsZero() {
+					err := cacheStore.Set(tokenResponse.Token, *authToken, time.Until(tokenResponse.Expires))
+					if err != nil {
+						logrus.Errorf("set token in cache failed: %v", err)
+					}
+				}
 
 				break
 			}
