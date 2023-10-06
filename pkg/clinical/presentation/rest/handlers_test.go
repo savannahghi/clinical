@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
+	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/authutils"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -51,6 +52,8 @@ var (
 		},
 	)
 )
+
+var testMemoryStore = persist.NewMemoryStore(60 * time.Minute)
 
 func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 	type args struct {
@@ -617,7 +620,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 				req.Header.Add(k, v)
 			}
 
-			presentation.SetupRoutes(engine, authclient, usecases, infra)
+			presentation.SetupRoutes(engine, testMemoryStore, authclient, usecases, infra)
 			engine.ServeHTTP(w, req)
 
 			resp := w.Result()
