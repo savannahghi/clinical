@@ -96,7 +96,11 @@ type authCheckFn = func(
 	r *http.Request,
 ) (bool, map[string]string, *authutils.TokenIntrospectionResponse)
 
-// HasValidCachedToken ...
+// HasValidCachedToken returns an authentication check function for verifying
+// the validity of a token stored in the provided cache store.
+//
+// Parameters:
+// - cacheStore (persist.CacheStore): The cache store used for storing tokens.
 func HasValidCachedToken(cacheStore persist.CacheStore) authCheckFn {
 	return func(_ context.Context, r *http.Request) (bool, map[string]string, *authutils.TokenIntrospectionResponse) {
 		token, err := firebasetools.ExtractBearerToken(r)
@@ -138,7 +142,7 @@ func AuthenticationGinMiddleware(cacheStore persist.CacheStore, cl authutils.Cli
 				tokenResponse = authToken
 
 				// myCareHub doesn't set expires in
-				// TODO: Set expires at iin myCareHub introspection
+				// TODO: Set expires at in myCareHub introspection
 				if !tokenResponse.Expires.IsZero() {
 					err := cacheStore.Set(tokenResponse.Token, *authToken, time.Until(tokenResponse.Expires))
 					if err != nil {
