@@ -69,6 +69,21 @@ enum ConditionStatus {
   REMISSSION
 }
 
+enum CompositionStatusEnum {
+  PRELIMINARY
+  FINAL
+  AMENDED
+  ENTERED_IN_ERROR
+}
+
+enum CompositionCategory {
+  ASSESSMENT_PLAN
+}
+
+enum CompositionType {
+  PROGRESS_NOTE
+}
+
 enum TerminologySource {
   ICD10
   CIEL

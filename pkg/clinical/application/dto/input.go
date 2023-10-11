@@ -101,3 +101,12 @@ type MediaInput struct {
 	EncounterID string                             `json:"encounterID"`
 	File        map[string][]*multipart.FileHeader `form:"file" json:"file"`
 }
+
+// CompositionInput models the composition input
+type CompositionInput struct {
+	EncounterID string                `json:"encounterID"`
+	Type        CompositionType       `json:"type"`
+	Category    CompositionCategory   `json:"category"`
+	Status      CompositionStatusEnum `json:"status"`
+	Note        string                `json:"note"`
+}

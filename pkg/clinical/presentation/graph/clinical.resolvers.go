@@ -155,6 +155,12 @@ func (r *mutationResolver) CreateAllergyIntolerance(ctx context.Context, input d
 	return r.usecases.CreateAllergyIntolerance(ctx, input)
 }
 
+// CreateComposition is the resolver for the createComposition field.
+func (r *mutationResolver) CreateComposition(ctx context.Context, input dto.CompositionInput) (*dto.Composition, error) {
+	r.CheckDependencies()
+	return r.usecases.CreateComposition(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
