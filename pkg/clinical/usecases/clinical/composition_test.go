@@ -114,6 +114,20 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "sad case: failed to create composition",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.AssessmentAndPlan,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -292,9 +306,132 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 				}
 			}
 
+			if tt.name == "sad case: failed to create composition" {
+				fakeFHIR.MockCreateFHIRCompositionFn = func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
 			_, err := c.CreateComposition(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreateComposition() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
+	first := 3
+	type args struct {
+		ctx        context.Context
+		patientID  string
+		pagination dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: list compositions",
+			args: args{
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: invalid patient id",
+			args: args{
+				ctx:        context.Background(),
+				patientID:  "invalid",
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - invalid pagination",
+			args: args{
+				ctx:       context.Background(),
+				patientID: uuid.New().String(),
+				pagination: dto.Pagination{
+					First: &first,
+					Last:  &first,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get identifiers",
+			args: args{
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get patient",
+			args: args{
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to search composition",
+			args: args{
+				ctx:        context.Background(),
+				patientID:  gofakeit.UUID(),
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "sad case: fail to get identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get identifiers")
+				}
+			}
+
+			if tt.name == "sad case: fail to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+
+			if tt.name == "sad case: fail to get identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get identifiers")
+				}
+			}
+
+			if tt.name == "sad case: fail to search composition" {
+				fakeFHIR.MockSearchFHIRCompositionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRComposition, error) {
+					return nil, fmt.Errorf("failed to find condition")
+				}
+			}
+			got, err := c.ListPatientCompositions(tt.args.ctx, tt.args.patientID, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ListPatientCompositions() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a value to be returned, got: %v", got)
 				return
 			}
 		})

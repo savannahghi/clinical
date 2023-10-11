@@ -171,6 +171,26 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "sad case: failed to create condition",
+			args: args{
+				ctx: context.Background(),
+				input: dto.ConditionInput{
+					Code:        "386661006",
+					System:      "SNOMED",
+					Status:      dto.ConditionStatusActive,
+					Category:    dto.ConditionCategoryProblemList,
+					EncounterID: gofakeit.UUID(),
+					Note:        "Fever Fever",
+					OnsetDate: &scalarutils.Date{
+						Year:  2022,
+						Month: 12,
+						Day:   12,
+					},
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -411,53 +431,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 				}
 			}
 
-			if tt.name == "sad case: fail to  create condition" {
-				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-					UUID := gofakeit.UUID()
-					genderMale := "male"
-					return &domain.FHIRPatientRelayPayload{
-						Resource: &domain.FHIRPatient{
-							ID:         &UUID,
-							Text:       &domain.FHIRNarrative{},
-							Identifier: []*domain.FHIRIdentifier{},
-							Active:     new(bool),
-							Name: []*domain.FHIRHumanName{
-								{
-									ID:     new(string),
-									Use:    "",
-									Text:   "Test",
-									Family: new(string),
-									Given:  []*string{},
-									Prefix: []*string{},
-									Suffix: []*string{},
-									Period: &domain.FHIRPeriod{},
-								},
-							},
-							Telecom:              []*domain.FHIRContactPoint{},
-							Gender:               (*domain.PatientGenderEnum)(&genderMale),
-							BirthDate:            &scalarutils.Date{},
-							DeceasedBoolean:      new(bool),
-							DeceasedDateTime:     &scalarutils.Date{},
-							Address:              []*domain.FHIRAddress{},
-							MaritalStatus:        &domain.FHIRCodeableConcept{},
-							MultipleBirthBoolean: new(bool),
-							MultipleBirthInteger: new(string),
-							Photo:                []*domain.FHIRAttachment{},
-							Contact:              []*domain.FHIRPatientContact{},
-							Communication:        []*domain.FHIRPatientCommunication{},
-							GeneralPractitioner:  []*domain.FHIRReference{},
-							ManagingOrganization: &domain.FHIRReference{},
-							Link:                 []*domain.FHIRPatientLink{},
-							Meta:                 &domain.FHIRMeta{},
-							Extension:            []*domain.FHIRExtension{},
-						},
-					}, nil
-				}
-				fakeFHIR.MockCreateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
-					return nil, fmt.Errorf("failed to create condition")
-				}
-			}
-
 			if tt.name == "sad case: fail in completed encounter" {
 				finished := domain.EncounterStatusEnumFinished
 				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
@@ -470,9 +443,16 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					}, nil
 				}
 			}
+
+			if tt.name == "sad case: failed to create condition" {
+				fakeFHIR.MockCreateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
 			_, err := c.CreateCondition(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CreateCondition() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UseCasesClinicalImpl.CreateCondition() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

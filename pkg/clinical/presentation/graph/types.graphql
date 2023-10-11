@@ -200,3 +200,14 @@ type Composition {
   patientID: String
   encounterID: String
 }
+
+type CompositionEdge {
+  node: Composition
+  cursor: String
+}
+
+type CompositionConnection {
+  totalCount: Int
+  edges: [CompositionEdge]
+  pageInfo: PageInfo
+}

@@ -79,6 +79,17 @@ type ComplexityRoot struct {
 		Type        func(childComplexity int) int
 	}
 
+	CompositionConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	CompositionEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	Condition struct {
 		Category     func(childComplexity int) int
 		Code         func(childComplexity int) int
@@ -256,6 +267,7 @@ type ComplexityRoot struct {
 		GetPatientViralLoad                     func(childComplexity int, patientID string, pagination dto.Pagination) int
 		GetPatientWeightEntries                 func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientAllergies                    func(childComplexity int, patientID string, pagination dto.Pagination) int
+		ListPatientCompositions                 func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientConditions                   func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientEncounters                   func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientMedia                        func(childComplexity int, patientID string, pagination dto.Pagination) int
@@ -335,6 +347,7 @@ type QueryResolver interface {
 	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
 	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 	ListPatientConditions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ConditionConnection, error)
+	ListPatientCompositions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.CompositionConnection, error)
 	ListPatientEncounters(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.EncounterConnection, error)
 	GetPatientTemperatureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
 	GetPatientBloodPressureEntries(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ObservationConnection, error)
@@ -509,6 +522,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Composition.Type(childComplexity), true
+
+	case "CompositionConnection.edges":
+		if e.complexity.CompositionConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.CompositionConnection.Edges(childComplexity), true
+
+	case "CompositionConnection.pageInfo":
+		if e.complexity.CompositionConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.CompositionConnection.PageInfo(childComplexity), true
+
+	case "CompositionConnection.totalCount":
+		if e.complexity.CompositionConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.CompositionConnection.TotalCount(childComplexity), true
+
+	case "CompositionEdge.cursor":
+		if e.complexity.CompositionEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.CompositionEdge.Cursor(childComplexity), true
+
+	case "CompositionEdge.node":
+		if e.complexity.CompositionEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.CompositionEdge.Node(childComplexity), true
 
 	case "Condition.category":
 		if e.complexity.Condition.Category == nil {
@@ -1532,6 +1580,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ListPatientAllergies(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
+	case "Query.listPatientCompositions":
+		if e.complexity.Query.ListPatientCompositions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_listPatientCompositions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ListPatientCompositions(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
+
 	case "Query.listPatientConditions":
 		if e.complexity.Query.ListPatientConditions == nil {
 			break
@@ -1868,6 +1928,12 @@ var sources = []*ast.Source{
     patientID: ID!
     pagination: Pagination!
   ): ConditionConnection
+
+  # Compositions
+  listPatientCompositions(
+    patientID: ID!
+    pagination: Pagination!
+  ): CompositionConnection
 
   # Encounter
   listPatientEncounters(
@@ -2408,6 +2474,17 @@ type Composition {
 
   patientID: String
   encounterID: String
+}
+
+type CompositionEdge {
+  node: Composition
+  cursor: String
+}
+
+type CompositionConnection {
+  totalCount: Int
+  edges: [CompositionEdge]
+  pageInfo: PageInfo
 }
 `, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
@@ -3210,6 +3287,30 @@ func (ec *executionContext) field_Query_getPatientWeightEntries_args(ctx context
 }
 
 func (ec *executionContext) field_Query_listPatientAllergies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_listPatientCompositions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -4255,6 +4356,245 @@ func (ec *executionContext) _Composition_encounterID(ctx context.Context, field 
 func (ec *executionContext) fieldContext_Composition_encounterID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Composition",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CompositionConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *dto.CompositionConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CompositionConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CompositionConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CompositionConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CompositionConnection_edges(ctx context.Context, field graphql.CollectedField, obj *dto.CompositionConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CompositionConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.CompositionEdge)
+	fc.Result = res
+	return ec.marshalOCompositionEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CompositionConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CompositionConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_CompositionEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_CompositionEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CompositionEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CompositionConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *dto.CompositionConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CompositionConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.PageInfo)
+	fc.Result = res
+	return ec.marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CompositionConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CompositionConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CompositionEdge_node(ctx context.Context, field graphql.CollectedField, obj *dto.CompositionEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CompositionEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Composition)
+	fc.Result = res
+	return ec.marshalOComposition2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐComposition(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CompositionEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CompositionEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Composition_id(ctx, field)
+			case "text":
+				return ec.fieldContext_Composition_text(ctx, field)
+			case "type":
+				return ec.fieldContext_Composition_type(ctx, field)
+			case "category":
+				return ec.fieldContext_Composition_category(ctx, field)
+			case "status":
+				return ec.fieldContext_Composition_status(ctx, field)
+			case "date":
+				return ec.fieldContext_Composition_date(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Composition_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Composition_encounterID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Composition", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CompositionEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *dto.CompositionEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CompositionEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CompositionEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CompositionEdge",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -9561,6 +9901,66 @@ func (ec *executionContext) fieldContext_Query_listPatientConditions(ctx context
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_listPatientCompositions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_listPatientCompositions(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ListPatientCompositions(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.CompositionConnection)
+	fc.Result = res
+	return ec.marshalOCompositionConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_listPatientCompositions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "totalCount":
+				return ec.fieldContext_CompositionConnection_totalCount(ctx, field)
+			case "edges":
+				return ec.fieldContext_CompositionConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_CompositionConnection_pageInfo(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CompositionConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_listPatientCompositions_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_listPatientEncounters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_listPatientEncounters(ctx, field)
 	if err != nil {
@@ -14373,6 +14773,84 @@ func (ec *executionContext) _Composition(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var compositionConnectionImplementors = []string{"CompositionConnection"}
+
+func (ec *executionContext) _CompositionConnection(ctx context.Context, sel ast.SelectionSet, obj *dto.CompositionConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, compositionConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CompositionConnection")
+		case "totalCount":
+			out.Values[i] = ec._CompositionConnection_totalCount(ctx, field, obj)
+		case "edges":
+			out.Values[i] = ec._CompositionConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._CompositionConnection_pageInfo(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var compositionEdgeImplementors = []string{"CompositionEdge"}
+
+func (ec *executionContext) _CompositionEdge(ctx context.Context, sel ast.SelectionSet, obj *dto.CompositionEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, compositionEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CompositionEdge")
+		case "node":
+			out.Values[i] = ec._CompositionEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._CompositionEdge_cursor(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var conditionImplementors = []string{"Condition"}
 
 func (ec *executionContext) _Condition(ctx context.Context, sel ast.SelectionSet, obj *dto.Condition) graphql.Marshaler {
@@ -15545,6 +16023,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_listPatientConditions(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "listPatientCompositions":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_listPatientCompositions(ctx, field)
 				return res
 			}
 
@@ -17405,6 +17902,62 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	}
 	res := graphql.MarshalBoolean(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOComposition2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐComposition(ctx context.Context, sel ast.SelectionSet, v dto.Composition) graphql.Marshaler {
+	return ec._Composition(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOCompositionConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionConnection(ctx context.Context, sel ast.SelectionSet, v *dto.CompositionConnection) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._CompositionConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOCompositionEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionEdge(ctx context.Context, sel ast.SelectionSet, v dto.CompositionEdge) graphql.Marshaler {
+	return ec._CompositionEdge(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOCompositionEdge2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionEdge(ctx context.Context, sel ast.SelectionSet, v []dto.CompositionEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOCompositionEdge2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCompositionEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalOCondition2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx context.Context, sel ast.SelectionSet, v dto.Condition) graphql.Marshaler {

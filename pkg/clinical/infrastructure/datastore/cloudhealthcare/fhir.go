@@ -813,12 +813,19 @@ func (fh StoreImpl) UpdateFHIRAllergyIntolerance(_ context.Context, input domain
 }
 
 // SearchFHIRComposition provides a search API for FHIRComposition
-func (fh StoreImpl) SearchFHIRComposition(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRCompositionRelayConnection, error) {
-	output := domain.FHIRCompositionRelayConnection{}
-
+func (fh StoreImpl) SearchFHIRComposition(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRComposition, error) {
 	resources, err := fh.Dataset.SearchFHIRResource(compositionResourceType, params, tenant, pagination)
 	if err != nil {
 		return nil, err
+	}
+
+	output := domain.PagedFHIRComposition{
+		Compositions:    []domain.FHIRComposition{},
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
 	}
 
 	for _, result := range resources.Resources {
@@ -835,9 +842,7 @@ func (fh StoreImpl) SearchFHIRComposition(_ context.Context, params map[string]i
 				"server error: Unable to unmarshal %s: %w", compositionResourceType, err)
 		}
 
-		output.Edges = append(output.Edges, &domain.FHIRCompositionRelayEdge{
-			Node: &resource,
-		})
+		output.Compositions = append(output.Compositions, resource)
 	}
 
 	return &output, nil

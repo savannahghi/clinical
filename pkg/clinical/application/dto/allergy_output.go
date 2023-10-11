@@ -36,7 +36,7 @@ type AllergyConnection struct {
 	PageInfo   PageInfo
 }
 
-// CreateConditionConnection creates a connection that follows the GraphQl Cursor Connection Specification
+// CreateAllergyConnection creates a connection that follows the GraphQl Cursor Connection Specification
 func CreateAllergyConnection(allergies []*Allergy, pageInfo PageInfo, total int) AllergyConnection {
 	connection := AllergyConnection{
 		TotalCount: total,
