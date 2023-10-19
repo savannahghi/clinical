@@ -141,6 +141,15 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 		},
 	}
 
+	tags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	compositionInput.Meta = domain.FHIRMetaInput{
+		Tag: tags,
+	}
+
 	composition, err := c.infrastructure.FHIR.CreateFHIRComposition(ctx, compositionInput)
 	if err != nil {
 		return nil, err
@@ -162,4 +171,56 @@ func mapFHIRCompositionToCompositionDTO(composition domain.FHIRComposition) *dto
 	}
 
 	return &output
+}
+
+// ListPatientCompositions lists a patient's compositions
+func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.CompositionConnection, error) {
+	_, err := uuid.Parse(patientID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid patient id: %s", patientID)
+	}
+
+	err = pagination.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
+	if err != nil {
+		return nil, err
+	}
+
+	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
+	params := map[string]interface{}{
+		"subject": patientRef,
+		"_sort":   "date",
+	}
+
+	compositionsResponse, err := c.infrastructure.FHIR.SearchFHIRComposition(ctx, params, *identifiers, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	compositions := []dto.Composition{}
+
+	for _, resource := range compositionsResponse.Compositions {
+		composition := mapFHIRCompositionToCompositionDTO(resource)
+		compositions = append(compositions, *composition)
+	}
+
+	pageInfo := dto.PageInfo{
+		HasNextPage:     compositionsResponse.HasNextPage,
+		EndCursor:       &compositionsResponse.NextCursor,
+		HasPreviousPage: compositionsResponse.HasPreviousPage,
+		StartCursor:     &compositionsResponse.PreviousCursor,
+	}
+
+	connection := dto.CreateCompositionConnection(compositions, pageInfo, compositionsResponse.TotalCount)
+
+	return &connection, nil
 }

@@ -10,6 +10,12 @@ extend type Query {
     pagination: Pagination!
   ): ConditionConnection
 
+  # Compositions
+  listPatientCompositions(
+    patientID: ID!
+    pagination: Pagination!
+  ): CompositionConnection
+
   # Encounter
   listPatientEncounters(
     patientID: String!

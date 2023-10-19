@@ -45,7 +45,7 @@ type FHIRMock struct {
 	MockSearchFHIRAllergyIntoleranceFn    func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error)
 	MockCreateFHIRAllergyIntoleranceFn    func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 	MockUpdateFHIRAllergyIntoleranceFn    func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
-	MockSearchFHIRCompositionFn           func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRCompositionRelayConnection, error)
+	MockSearchFHIRCompositionFn           func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRComposition, error)
 	MockCreateFHIRCompositionFn           func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
 	MockUpdateFHIRCompositionFn           func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
 	MockDeleteFHIRCompositionFn           func(ctx context.Context, id string) (bool, error)
@@ -649,8 +649,112 @@ func NewFHIRMock() *FHIRMock {
 		MockUpdateFHIRAllergyIntoleranceFn: func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 			return &domain.FHIRAllergyIntoleranceRelayPayload{}, nil
 		},
-		MockSearchFHIRCompositionFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRCompositionRelayConnection, error) {
-			return &domain.FHIRCompositionRelayConnection{}, nil
+		MockSearchFHIRCompositionFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRComposition, error) {
+			id := gofakeit.UUID()
+			compositionTitle := gofakeit.Name() + "assessment note"
+			typeSystem := scalarutils.URI("http://hl7.org/fhir/ValueSet/doc-typecodes")
+			categorySystem := scalarutils.URI("http://hl7.org/fhir/ValueSet/referenced-item-category")
+			category := "Assessment + plan"
+			compositionType := "Progress note"
+			compositionCategory := "Treatment Plan"
+			compositionStatus := "active"
+			note := scalarutils.Markdown("Fever Fever")
+			PatientRef := "Patient/" + uuid.NewString()
+			patientType := "Patient"
+			organizationRef := "Organization/" + uuid.NewString()
+			compositionSectionTextStatus := "generated"
+
+			composition := domain.FHIRComposition{
+				ID: &id,
+				Text: &domain.FHIRNarrative{
+					ID:     &id,
+					Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+					Div:    scalarutils.XHTML(note),
+				},
+				Identifier: &domain.FHIRIdentifier{},
+				Status:     (*domain.CompositionStatusEnum)(&compositionStatus),
+				Type: &domain.FHIRCodeableConcept{
+					ID: new(string),
+					Coding: []*domain.FHIRCoding{
+						{
+							ID:      &id,
+							System:  &typeSystem,
+							Code:    scalarutils.Code(string(common.LOINCProgressNoteCode)),
+							Display: compositionType,
+						},
+					},
+					Text: compositionType,
+				},
+				Category: []*domain.FHIRCodeableConcept{
+					{
+						ID: new(string),
+						Coding: []*domain.FHIRCoding{
+							{
+								ID:      &id,
+								System:  &categorySystem,
+								Version: new(string),
+								Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+								Display: category,
+							},
+						},
+						Text: compositionCategory,
+					},
+				},
+				Subject: &domain.FHIRReference{
+					ID:        &id,
+					Reference: &PatientRef,
+					Type:      (*scalarutils.URI)(&patientType),
+				},
+				Encounter: &domain.FHIRReference{
+					ID: &id,
+				},
+				Date: &scalarutils.Date{
+					Year:  2023,
+					Month: 9,
+					Day:   25,
+				},
+				Author: []*domain.FHIRReference{
+					{
+						Reference: &organizationRef,
+					},
+				},
+				Title: &compositionTitle,
+				Section: []*domain.FHIRCompositionSection{
+					{
+						ID:    &id,
+						Title: &compositionCategory,
+						Code: &domain.FHIRCodeableConceptInput{
+							ID: new(string),
+							Coding: []*domain.FHIRCodingInput{
+								{
+									ID:      &id,
+									System:  &categorySystem,
+									Version: new(string),
+									Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+									Display: category,
+								},
+							},
+							Text: "Assessment + plan",
+						},
+						Author: []*domain.FHIRReference{
+							{
+								Reference: new(string),
+							},
+						},
+						Text: &domain.FHIRNarrative{
+							ID:     &id,
+							Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+							Div:    scalarutils.XHTML(note),
+						},
+					},
+				},
+			}
+
+			return &domain.PagedFHIRComposition{
+				Compositions:    []domain.FHIRComposition{composition},
+				HasNextPage:     false,
+				HasPreviousPage: false,
+			}, nil
 		},
 		MockCreateFHIRCompositionFn: func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
 			UUID := uuid.New().String()
@@ -1414,7 +1518,7 @@ func (fh *FHIRMock) UpdateFHIRAllergyIntolerance(ctx context.Context, input doma
 }
 
 // SearchFHIRComposition is a mock implementation of SearchFHIRComposition method
-func (fh *FHIRMock) SearchFHIRComposition(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRCompositionRelayConnection, error) {
+func (fh *FHIRMock) SearchFHIRComposition(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRComposition, error) {
 	return fh.MockSearchFHIRCompositionFn(ctx, params, tenant, pagination)
 }
 

@@ -30,7 +30,7 @@ type CompositionConnection struct {
 	PageInfo   PageInfo
 }
 
-// CreateConditionConnection creates a connection that follows the GraphQl Cursor Connection Specification
+// CreateCompositionConnection creates a connection that follows the GraphQl Cursor Connection Specification
 func CreateCompositionConnection(compositions []Composition, pageInfo PageInfo, total int) CompositionConnection {
 	connection := CompositionConnection{
 		TotalCount: total,

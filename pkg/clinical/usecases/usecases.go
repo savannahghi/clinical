@@ -79,7 +79,9 @@ type Clinical interface {
 
 	UploadMedia(ctx context.Context, encounterID string, file io.Reader, contentType string) (*dto.Media, error)
 	ListPatientMedia(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.MediaConnection, error)
+
 	CreateComposition(ctx context.Context, input dto.CompositionInput) (*dto.Composition, error)
+	ListPatientCompositions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.CompositionConnection, error)
 }
 
 // Interactor is an implementation of the usecases interface

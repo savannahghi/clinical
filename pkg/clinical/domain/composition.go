@@ -300,6 +300,16 @@ type FHIRCompositionRelayEdge struct {
 	Node *FHIRComposition `json:"node,omitempty"`
 }
 
+// PagedFHIRComposition ...
+type PagedFHIRComposition struct {
+	Compositions    []FHIRComposition
+	HasNextPage     bool
+	NextCursor      string
+	HasPreviousPage bool
+	PreviousCursor  string
+	TotalCount      int
+}
+
 // FHIRCompositionRelayPayload is used to return single instances of Composition
 type FHIRCompositionRelayPayload struct {
 	Resource *FHIRComposition `json:"resource,omitempty"`

@@ -24,7 +24,7 @@ type ObservationConnection struct {
 	PageInfo   PageInfo
 }
 
-// CreateConditionConnection creates a connection that follows the GraphQl Cursor Connection Specification
+// CreateObservationConnection creates a connection that follows the GraphQl Cursor Connection Specification
 func CreateObservationConnection(observations []*Observation, pageInfo PageInfo, total int) ObservationConnection {
 	connection := ObservationConnection{
 		TotalCount: total,
