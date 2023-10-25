@@ -66,17 +66,11 @@ func NewFHIRStoreImpl(
 // SearchPatientObservations fetches all observations that belong to a specific patient
 func (fh StoreImpl) SearchPatientObservations(
 	_ context.Context,
-	patientReference string,
-	observationCode string,
+	searchParameters map[string]interface{},
 	tenant dto.TenantIdentifiers,
 	pagination dto.Pagination,
 ) (*domain.PagedFHIRObservations, error) {
-	params := map[string]interface{}{
-		"patient": patientReference,
-		"code":    observationCode,
-	}
-
-	observations, err := fh.Dataset.SearchFHIRResource(observationResourceType, params, tenant, pagination)
+	observations, err := fh.Dataset.SearchFHIRResource(observationResourceType, searchParameters, tenant, pagination)
 	if err != nil {
 		return nil, err
 	}

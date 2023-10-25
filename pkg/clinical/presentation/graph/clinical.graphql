@@ -25,66 +25,79 @@ extend type Query {
   # Observation
   getPatientTemperatureEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBloodPressureEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientHeightEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientRespiratoryRateEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientPulseRateEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBMIEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientWeightEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientMuacEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientOxygenSaturationEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientViralLoad(
     patientID: ID!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBloodSugarEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientLastMenstrualPeriodEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientDiastolicBloodPressureEntries(
     patientID: String!
+    encounterID: String
     pagination: Pagination!
   ): ObservationConnection
 
