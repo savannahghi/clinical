@@ -300,6 +300,7 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 		"patient": patientReference,
 		"code":    observationCode,
 	}
+
 	if encounterID != nil {
 		encounterReference := fmt.Sprintf("Encounter/%s", *encounterID)
 		searchParams["encounter"] = encounterReference
