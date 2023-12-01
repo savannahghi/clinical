@@ -182,9 +182,9 @@ func (r *queryResolver) GetEpisodeOfCare(ctx context.Context, id string) (*dto.E
 }
 
 // ListPatientConditions is the resolver for the listPatientConditions field.
-func (r *queryResolver) ListPatientConditions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.ConditionConnection, error) {
+func (r *queryResolver) ListPatientConditions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ConditionConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.ListPatientConditions(ctx, patientID, pagination)
+	return r.usecases.ListPatientConditions(ctx, patientID, encounterID, pagination)
 }
 
 // ListPatientCompositions is the resolver for the listPatientCompositions field.
