@@ -4053,11 +4053,10 @@ func TestStoreImpl_EndEpisode(t *testing.T) {
 func TestStoreImpl_SearchPatientObservations(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
-		ctx              context.Context
-		patientReference string
-		observationCode  string
-		tenant           dto.TenantIdentifiers
-		pagination       dto.Pagination
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -4067,18 +4066,24 @@ func TestStoreImpl_SearchPatientObservations(t *testing.T) {
 		{
 			name: "Happy Case - Successfully search patient observation",
 			args: args{
-				ctx:              ctx,
-				patientReference: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
-				observationCode:  "5088",
+				ctx: ctx,
+				params: map[string]interface{}{
+					"patient":         fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+					"encounter":       fmt.Sprintf("Encounter/%s", gofakeit.UUID()),
+					"observationCode": "5088",
+				},
 			},
 			wantErr: false,
 		},
 		{
 			name: "Sad Case - fail to search fhir resource",
 			args: args{
-				ctx:              ctx,
-				patientReference: fmt.Sprintf("Patient/%s", gofakeit.UUID()),
-				observationCode:  "5088",
+				ctx: ctx,
+				params: map[string]interface{}{
+					"patient":         fmt.Sprintf("Patient/%s", gofakeit.UUID()),
+					"encounter":       fmt.Sprintf("Encounter/%s", gofakeit.UUID()),
+					"observationCode": "5088",
+				},
 			},
 			wantErr: true,
 		},
@@ -4093,8 +4098,7 @@ func TestStoreImpl_SearchPatientObservations(t *testing.T) {
 					return nil, fmt.Errorf("failed to search observation resource")
 				}
 			}
-
-			got, err := fh.SearchPatientObservations(tt.args.ctx, tt.args.patientReference, tt.args.observationCode, tt.args.tenant, tt.args.pagination)
+			got, err := fh.SearchPatientObservations(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StoreImpl.SearchPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
 				return
