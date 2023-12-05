@@ -43,7 +43,6 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 
 	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
 	encounterType := scalarutils.URI("Encounter")
-
 	organizationRef := fmt.Sprintf("Organization/%s", identifiers.OrganizationID)
 
 	today := time.Now()
@@ -174,7 +173,7 @@ func mapFHIRCompositionToCompositionDTO(composition domain.FHIRComposition) *dto
 }
 
 // ListPatientCompositions lists a patient's compositions
-func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.CompositionConnection, error) {
+func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.CompositionConnection, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
@@ -199,6 +198,11 @@ func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patie
 	params := map[string]interface{}{
 		"subject": patientRef,
 		"_sort":   "date",
+	}
+
+	if encounterID != nil {
+		encounterReference := fmt.Sprintf("Encounter/%s", *encounterID)
+		params["encounter"] = encounterReference
 	}
 
 	compositionsResponse, err := c.infrastructure.FHIR.SearchFHIRComposition(ctx, params, *identifiers, pagination)
