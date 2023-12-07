@@ -28,78 +28,91 @@ extend type Query {
   getPatientTemperatureEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBloodPressureEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientHeightEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientRespiratoryRateEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientPulseRateEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBMIEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientWeightEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientMuacEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientOxygenSaturationEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientViralLoad(
     patientID: ID!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBloodSugarEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientLastMenstrualPeriodEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientDiastolicBloodPressureEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 

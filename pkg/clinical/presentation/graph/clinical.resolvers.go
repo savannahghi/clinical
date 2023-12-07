@@ -9,6 +9,7 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
+	"github.com/savannahghi/scalarutils"
 )
 
 // CreateEpisodeOfCare is the resolver for the createEpisodeOfCare field.
@@ -201,79 +202,79 @@ func (r *queryResolver) ListPatientEncounters(ctx context.Context, patientID str
 }
 
 // GetPatientTemperatureEntries is the resolver for the getPatientTemperatureEntries field.
-func (r *queryResolver) GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientTemperatureEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientTemperatureEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientBloodPressureEntries is the resolver for the getPatientBloodPressureEntries field.
-func (r *queryResolver) GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientBloodPressureEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientBloodPressureEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientHeightEntries is the resolver for the getPatientHeightEntries field.
-func (r *queryResolver) GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
-	return r.usecases.Clinical.GetPatientHeightEntries(ctx, patientID, encounterID, &pagination)
+func (r *queryResolver) GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	return r.usecases.Clinical.GetPatientHeightEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientRespiratoryRateEntries is the resolver for the getPatientRespiratoryRateEntries field.
-func (r *queryResolver) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientRespiratoryRateEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientRespiratoryRateEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientPulseRateEntries is the resolver for the GetPatientPulseRateEntries field.
-func (r *queryResolver) GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
-	return r.usecases.Clinical.GetPatientPulseRateEntries(ctx, patientID, encounterID, &pagination)
+func (r *queryResolver) GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	return r.usecases.Clinical.GetPatientPulseRateEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientBMIEntries is the resolver for the getPatientBMIEntries field.
-func (r *queryResolver) GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientBMIEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientBMIEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientWeightEntries is the resolver for the getPatientWeightEntries field.
-func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
-	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID, encounterID, &pagination)
+func (r *queryResolver) GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+	return r.usecases.Clinical.GetPatientWeightEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientMuacEntries is the resolver for the getPatientMuacEntries field.
-func (r *queryResolver) GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientMuacEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientMuacEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientOxygenSaturationEntries is the resolver for the getPatientOxygenSaturationEntries field.
-func (r *queryResolver) GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientOxygenSaturationEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientOxygenSaturationEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientViralLoad is the resolver for the getPatientViralLoad field.
-func (r *queryResolver) GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
 
-	return r.usecases.Clinical.GetPatientViralLoad(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientViralLoad(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientBloodSugarEntries is the resolver for the getPatientBloodSugarEntries field.
-func (r *queryResolver) GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientBloodSugarEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientBloodSugarEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientLastMenstrualPeriodEntries is the resolver for the GetPatientLastMenstrualPeriodEntries field.
-func (r *queryResolver) GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientLastMenstrualPeriodEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientLastMenstrualPeriodEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // GetPatientDiastolicBloodPressureEntries is the resolver for the getPatientDiastolicBloodPressureEntries field.
-func (r *queryResolver) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error) {
+func (r *queryResolver) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error) {
 	r.CheckDependencies()
-	return r.usecases.Clinical.GetPatientDiastolicBloodPressureEntries(ctx, patientID, encounterID, &pagination)
+	return r.usecases.Clinical.GetPatientDiastolicBloodPressureEntries(ctx, patientID, encounterID, date, &pagination)
 }
 
 // SearchAllergy is the resolver for the searchAllergy field.

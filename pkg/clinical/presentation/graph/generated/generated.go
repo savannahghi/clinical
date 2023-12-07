@@ -253,19 +253,19 @@ type ComplexityRoot struct {
 		GetAllergy                              func(childComplexity int, id string) int
 		GetEpisodeOfCare                        func(childComplexity int, id string) int
 		GetMedicalData                          func(childComplexity int, patientID string) int
-		GetPatientBMIEntries                    func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientBloodPressureEntries          func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientBloodSugarEntries             func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientDiastolicBloodPressureEntries func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientHeightEntries                 func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientLastMenstrualPeriodEntries    func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientMuacEntries                   func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientOxygenSaturationEntries       func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientPulseRateEntries              func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientRespiratoryRateEntries        func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientTemperatureEntries            func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientViralLoad                     func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		GetPatientWeightEntries                 func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
+		GetPatientBMIEntries                    func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientBloodPressureEntries          func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientBloodSugarEntries             func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientDiastolicBloodPressureEntries func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientHeightEntries                 func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientLastMenstrualPeriodEntries    func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientMuacEntries                   func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientOxygenSaturationEntries       func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientPulseRateEntries              func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientRespiratoryRateEntries        func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientTemperatureEntries            func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientViralLoad                     func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientWeightEntries                 func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		ListPatientAllergies                    func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientCompositions                 func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
 		ListPatientConditions                   func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
@@ -349,19 +349,19 @@ type QueryResolver interface {
 	ListPatientConditions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ConditionConnection, error)
 	ListPatientCompositions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.CompositionConnection, error)
 	ListPatientEncounters(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.EncounterConnection, error)
-	GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
 	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)
 	GetAllergy(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
@@ -1422,7 +1422,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientBMIEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientBMIEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientBloodPressureEntries":
 		if e.complexity.Query.GetPatientBloodPressureEntries == nil {
@@ -1434,7 +1434,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientBloodPressureEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientBloodPressureEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientBloodSugarEntries":
 		if e.complexity.Query.GetPatientBloodSugarEntries == nil {
@@ -1446,7 +1446,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientBloodSugarEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientBloodSugarEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientDiastolicBloodPressureEntries":
 		if e.complexity.Query.GetPatientDiastolicBloodPressureEntries == nil {
@@ -1458,7 +1458,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientDiastolicBloodPressureEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientDiastolicBloodPressureEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientHeightEntries":
 		if e.complexity.Query.GetPatientHeightEntries == nil {
@@ -1470,7 +1470,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientHeightEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientHeightEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientLastMenstrualPeriodEntries":
 		if e.complexity.Query.GetPatientLastMenstrualPeriodEntries == nil {
@@ -1482,7 +1482,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientLastMenstrualPeriodEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientLastMenstrualPeriodEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientMuacEntries":
 		if e.complexity.Query.GetPatientMuacEntries == nil {
@@ -1494,7 +1494,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientMuacEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientMuacEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientOxygenSaturationEntries":
 		if e.complexity.Query.GetPatientOxygenSaturationEntries == nil {
@@ -1506,7 +1506,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientOxygenSaturationEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientOxygenSaturationEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientPulseRateEntries":
 		if e.complexity.Query.GetPatientPulseRateEntries == nil {
@@ -1518,7 +1518,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientPulseRateEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientPulseRateEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientRespiratoryRateEntries":
 		if e.complexity.Query.GetPatientRespiratoryRateEntries == nil {
@@ -1530,7 +1530,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientRespiratoryRateEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientRespiratoryRateEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientTemperatureEntries":
 		if e.complexity.Query.GetPatientTemperatureEntries == nil {
@@ -1542,7 +1542,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientTemperatureEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientTemperatureEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientViralLoad":
 		if e.complexity.Query.GetPatientViralLoad == nil {
@@ -1554,7 +1554,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientViralLoad(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientViralLoad(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientWeightEntries":
 		if e.complexity.Query.GetPatientWeightEntries == nil {
@@ -1566,7 +1566,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPatientWeightEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.GetPatientWeightEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.listPatientAllergies":
 		if e.complexity.Query.ListPatientAllergies == nil {
@@ -1947,78 +1947,91 @@ var sources = []*ast.Source{
   getPatientTemperatureEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBloodPressureEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientHeightEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientRespiratoryRateEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientPulseRateEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBMIEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientWeightEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientMuacEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientOxygenSaturationEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientViralLoad(
     patientID: ID!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientBloodSugarEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientLastMenstrualPeriodEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
   getPatientDiastolicBloodPressureEntries(
     patientID: String!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ObservationConnection
 
@@ -3010,15 +3023,24 @@ func (ec *executionContext) field_Query_getPatientBMIEntries_args(ctx context.Co
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3043,15 +3065,24 @@ func (ec *executionContext) field_Query_getPatientBloodPressureEntries_args(ctx 
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3076,15 +3107,24 @@ func (ec *executionContext) field_Query_getPatientBloodSugarEntries_args(ctx con
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3109,15 +3149,24 @@ func (ec *executionContext) field_Query_getPatientDiastolicBloodPressureEntries_
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3142,15 +3191,24 @@ func (ec *executionContext) field_Query_getPatientHeightEntries_args(ctx context
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3175,15 +3233,24 @@ func (ec *executionContext) field_Query_getPatientLastMenstrualPeriodEntries_arg
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3208,15 +3275,24 @@ func (ec *executionContext) field_Query_getPatientMuacEntries_args(ctx context.C
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3241,15 +3317,24 @@ func (ec *executionContext) field_Query_getPatientOxygenSaturationEntries_args(c
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3274,15 +3359,24 @@ func (ec *executionContext) field_Query_getPatientPulseRateEntries_args(ctx cont
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3307,15 +3401,24 @@ func (ec *executionContext) field_Query_getPatientRespiratoryRateEntries_args(ct
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3340,15 +3443,24 @@ func (ec *executionContext) field_Query_getPatientTemperatureEntries_args(ctx co
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3373,15 +3485,24 @@ func (ec *executionContext) field_Query_getPatientViralLoad_args(ctx context.Con
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -3406,15 +3527,24 @@ func (ec *executionContext) field_Query_getPatientWeightEntries_args(ctx context
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -10185,7 +10315,7 @@ func (ec *executionContext) _Query_getPatientTemperatureEntries(ctx context.Cont
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientTemperatureEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientTemperatureEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10245,7 +10375,7 @@ func (ec *executionContext) _Query_getPatientBloodPressureEntries(ctx context.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientBloodPressureEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientBloodPressureEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10305,7 +10435,7 @@ func (ec *executionContext) _Query_getPatientHeightEntries(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientHeightEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientHeightEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10365,7 +10495,7 @@ func (ec *executionContext) _Query_getPatientRespiratoryRateEntries(ctx context.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientRespiratoryRateEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientRespiratoryRateEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10425,7 +10555,7 @@ func (ec *executionContext) _Query_getPatientPulseRateEntries(ctx context.Contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientPulseRateEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientPulseRateEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10485,7 +10615,7 @@ func (ec *executionContext) _Query_getPatientBMIEntries(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientBMIEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientBMIEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10545,7 +10675,7 @@ func (ec *executionContext) _Query_getPatientWeightEntries(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientWeightEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientWeightEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10605,7 +10735,7 @@ func (ec *executionContext) _Query_getPatientMuacEntries(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientMuacEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientMuacEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10665,7 +10795,7 @@ func (ec *executionContext) _Query_getPatientOxygenSaturationEntries(ctx context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientOxygenSaturationEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientOxygenSaturationEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10725,7 +10855,7 @@ func (ec *executionContext) _Query_getPatientViralLoad(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientViralLoad(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientViralLoad(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10785,7 +10915,7 @@ func (ec *executionContext) _Query_getPatientBloodSugarEntries(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientBloodSugarEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientBloodSugarEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10845,7 +10975,7 @@ func (ec *executionContext) _Query_getPatientLastMenstrualPeriodEntries(ctx cont
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientLastMenstrualPeriodEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientLastMenstrualPeriodEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10905,7 +11035,7 @@ func (ec *executionContext) _Query_getPatientDiastolicBloodPressureEntries(ctx c
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPatientDiastolicBloodPressureEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().GetPatientDiastolicBloodPressureEntries(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
