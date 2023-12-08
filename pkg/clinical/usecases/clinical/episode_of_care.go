@@ -17,6 +17,7 @@ import (
 // constants and defaults
 const (
 	timeFormatStr = "2006-01-02T15:04:05+03:00"
+	dateFormatStr = "2006-01-02"
 )
 
 // CreateEpisodeOfCare creates an episode of care. An Episode of Care represents a period of time during which a patient is under the care of a particular provider/facility.

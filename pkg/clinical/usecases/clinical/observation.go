@@ -43,8 +43,8 @@ func (c *UseCasesClinicalImpl) RecordOxygenSaturation(ctx context.Context, input
 }
 
 // GetPatientTemperatureEntries returns all the temperature entries for a patient, they are automatically sorted in chronological order
-func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.TemperatureCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.TemperatureCIELTerminologyCode, pagination)
 }
 
 // RecordHeight records a patient's height and saves it to fhir
@@ -58,8 +58,8 @@ func (c *UseCasesClinicalImpl) RecordHeight(ctx context.Context, input dto.Obser
 }
 
 // GetPatientHeightEntries gets the height records of a patient
-func (c *UseCasesClinicalImpl) GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.HeightCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.HeightCIELTerminologyCode, pagination)
 }
 
 // RecordWeight records a patient's weight
@@ -83,23 +83,23 @@ func (c *UseCasesClinicalImpl) RecordViralLoad(ctx context.Context, input dto.Ob
 }
 
 // GetPatientWeightEntries gets the weight records of a patient
-func (c *UseCasesClinicalImpl) GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.WeightCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.WeightCIELTerminologyCode, pagination)
 }
 
 // GetPatientMuacEntries gets the patient's muac
-func (c *UseCasesClinicalImpl) GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.MuacCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.MuacCIELTerminologyCode, pagination)
 }
 
 // GetPatientOxygenSaturationEntries gets the patient's oxygen saturation
-func (c *UseCasesClinicalImpl) GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.OxygenSaturationCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.OxygenSaturationCIELTerminologyCode, pagination)
 }
 
 // GetPatientViralLoad gets the patient's viral load
-func (c *UseCasesClinicalImpl) GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.ViralLoadCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.ViralLoadCIELTerminologyCode, pagination)
 }
 
 // RecordRespiratoryRate records a patient's respiratory rate
@@ -113,8 +113,8 @@ func (c *UseCasesClinicalImpl) RecordRespiratoryRate(ctx context.Context, input 
 }
 
 // GetPatientRespiratoryRateEntries gets a patient's respiratory rate entries
-func (c *UseCasesClinicalImpl) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.RespiratoryRateCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.RespiratoryRateCIELTerminologyCode, pagination)
 }
 
 // RecordPulseRate records a patient's pulse rate
@@ -128,8 +128,8 @@ func (c *UseCasesClinicalImpl) RecordPulseRate(ctx context.Context, input dto.Ob
 }
 
 // GetPatientPulseRateEntries gets the pulse rate records of a patient
-func (c *UseCasesClinicalImpl) GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.PulseCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.PulseCIELTerminologyCode, pagination)
 }
 
 // RecordBloodPressure records a patient's blood pressure
@@ -143,8 +143,8 @@ func (c *UseCasesClinicalImpl) RecordBloodPressure(ctx context.Context, input dt
 }
 
 // GetPatientBloodPressureEntries retrieves all blood pressure entries for a patient
-func (c *UseCasesClinicalImpl) GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.BloodPressureCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.BloodPressureCIELTerminologyCode, pagination)
 }
 
 // RecordBMI records a patient's BMI
@@ -158,8 +158,8 @@ func (c *UseCasesClinicalImpl) RecordBMI(ctx context.Context, input dto.Observat
 }
 
 // GetPatientBMIEntries retrieves all BMI entries for a patient
-func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.BMICIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.BMICIELTerminologyCode, pagination)
 }
 
 // RecordBloodSugar records a patient's blood sugar level (Serum glucose)
@@ -168,8 +168,8 @@ func (c *UseCasesClinicalImpl) RecordBloodSugar(ctx context.Context, input dto.O
 }
 
 // GetPatientBloodSugarEntries retrieves all blood sugar entries for a patient
-func (c *UseCasesClinicalImpl) GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.BloodSugarCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.BloodSugarCIELTerminologyCode, pagination)
 }
 
 // RecordLastMenstrualPeriod records last menstrual period
@@ -178,8 +178,8 @@ func (c *UseCasesClinicalImpl) RecordLastMenstrualPeriod(ctx context.Context, in
 }
 
 // GetPatientLastMenstrualPeriodEntries retrieves all blood sugar entries for a patient
-func (c *UseCasesClinicalImpl) GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.LastMenstrualPeriodCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.LastMenstrualPeriodCIELTerminologyCode, pagination)
 }
 
 // RecordDiastolicBloodPressure records diastolic blood pressure
@@ -188,8 +188,8 @@ func (c *UseCasesClinicalImpl) RecordDiastolicBloodPressure(ctx context.Context,
 }
 
 // GetPatientDiastolicBloodPressureEntries retrieves all diastolic blood pressure entries for a patient
-func (c *UseCasesClinicalImpl) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
-	return c.GetPatientObservations(ctx, patientID, encounterID, common.DiastolicBloodPressureCIELTerminologyCode, pagination)
+func (c *UseCasesClinicalImpl) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.DiastolicBloodPressureCIELTerminologyCode, pagination)
 }
 
 // RecordObservation is an extracted function that takes any observation input and saves it to FHIR.
@@ -277,7 +277,7 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 
 // GetPatientObservations is a helper function used to fetch patient's observations based on the passed CIEL
 // terminology code. The observations will be sorted in a chronological order
-func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patientID string, encounterID *string, observationCode string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
+func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, observationCode string, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
@@ -304,6 +304,10 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 	if encounterID != nil {
 		encounterReference := fmt.Sprintf("Encounter/%s", *encounterID)
 		searchParams["encounter"] = encounterReference
+	}
+
+	if date != nil {
+		searchParams["date"] = date.AsTime().Format(dateFormatStr)
 	}
 
 	patientObs, err := c.infrastructure.FHIR.SearchPatientObservations(ctx, searchParams, *identifiers, *pagination)

@@ -7,6 +7,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/scalarutils"
 )
 
 // Clinical represents all the patient business logic
@@ -57,20 +58,20 @@ type Clinical interface {
 	RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordObservation(ctx context.Context, input dto.ObservationInput, vitalSignConceptID string) (*dto.Observation, error)
 
-	GetPatientObservations(ctx context.Context, patientID string, encounterID *string, observationCode string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
-	GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientObservations(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, observationCode string, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientHeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientRespiratoryRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientPulseRateEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBMIEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientWeightEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientMuacEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientOxygenSaturationEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientViralLoad(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientBloodSugarEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientLastMenstrualPeriodEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
+	GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error)
 
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
 	SearchAllergy(ctx context.Context, name string, pagination dto.Pagination) (*dto.TerminologyConnection, error)

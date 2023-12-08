@@ -1616,6 +1616,7 @@ func TestUseCasesClinicalImpl_GetPatientDiastolicBloodPressureEntries(t *testing
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -1629,6 +1630,11 @@ func TestUseCasesClinicalImpl_GetPatientDiastolicBloodPressureEntries(t *testing
 				ctx:         ctx,
 				patientID:   uuid.New().String(),
 				encounterID: &encounterId,
+				date: &scalarutils.Date{
+					Year:  1997,
+					Month: 12,
+					Day:   12,
+				},
 				pagination: &dto.Pagination{
 					First: &first,
 				},
@@ -1720,7 +1726,7 @@ func TestUseCasesClinicalImpl_GetPatientDiastolicBloodPressureEntries(t *testing
 				}
 			}
 
-			got, err := u.GetPatientDiastolicBloodPressureEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			got, err := u.GetPatientDiastolicBloodPressureEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientDiastolicBloodPressureEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1899,6 +1905,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 		ctx             context.Context
 		patientID       string
 		encounterID     *string
+		date            *scalarutils.Date
 		observationCode string
 		pagination      *dto.Pagination
 	}
@@ -2327,7 +2334,7 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 				}
 			}
 
-			got, err := u.GetPatientObservations(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.observationCode, tt.args.pagination)
+			got, err := u.GetPatientObservations(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.observationCode, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientObservations() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2357,6 +2364,7 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -2461,7 +2469,7 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 				}
 			}
 
-			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			got, err := u.GetPatientTemperatureEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientTemperatureEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2484,6 +2492,7 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -2588,7 +2597,7 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 				}
 			}
 
-			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			got, err := u.GetPatientBloodPressureEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientBloodPressureEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2611,6 +2620,7 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -2715,7 +2725,7 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 				}
 			}
 
-			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientHeightEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientHeightEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2731,6 +2741,7 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -2830,7 +2841,7 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 				}
 			}
 
-			_, err := c.GetPatientPulseRateEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientPulseRateEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientPulseRateEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2846,6 +2857,7 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -2945,7 +2957,7 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 				}
 			}
 
-			got, err := u.GetPatientRespiratoryRateEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			got, err := u.GetPatientRespiratoryRateEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientRespiratoryRateEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -2967,6 +2979,7 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -3066,7 +3079,7 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 				}
 			}
 
-			got, err := u.GetPatientBMIEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			got, err := u.GetPatientBMIEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientBMIEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3089,6 +3102,7 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -3188,7 +3202,7 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 				}
 			}
 
-			_, err := c.GetPatientWeightEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientWeightEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientWeightEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3204,6 +3218,7 @@ func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -3303,7 +3318,7 @@ func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 				}
 			}
 
-			_, err := c.GetPatientMuacEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientMuacEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientMuacEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3319,6 +3334,7 @@ func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -3418,7 +3434,7 @@ func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
 				}
 			}
 
-			_, err := c.GetPatientOxygenSaturationEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientOxygenSaturationEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientOxygenSaturationEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3434,6 +3450,7 @@ func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -3545,7 +3562,7 @@ func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 				}
 			}
 
-			_, err := c.GetPatientViralLoad(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientViralLoad(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientViralLoad() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -3867,6 +3884,7 @@ func TestUseCasesClinicalImpl_GetPatientBloodSugarEntries(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -3967,7 +3985,7 @@ func TestUseCasesClinicalImpl_GetPatientBloodSugarEntries(t *testing.T) {
 				}
 			}
 
-			_, err := c.GetPatientBloodSugarEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientBloodSugarEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientBloodSugarEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -4139,6 +4157,7 @@ func TestUseCasesClinicalImpl_GetPatientLastMenstrualPeriodEntries(t *testing.T)
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  *dto.Pagination
 	}
 	tests := []struct {
@@ -4239,7 +4258,7 @@ func TestUseCasesClinicalImpl_GetPatientLastMenstrualPeriodEntries(t *testing.T)
 				}
 			}
 
-			_, err := c.GetPatientLastMenstrualPeriodEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			_, err := c.GetPatientLastMenstrualPeriodEntries(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetPatientLastMenstrualPeriodEntries() error = %v, wantErr %v", err, tt.wantErr)
 				return
