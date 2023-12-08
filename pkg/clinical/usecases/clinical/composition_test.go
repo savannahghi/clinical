@@ -323,10 +323,12 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 
 func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
 	first := 3
+	EncounterID := uuid.New().String()
 	type args struct {
-		ctx        context.Context
-		patientID  string
-		pagination dto.Pagination
+		ctx         context.Context
+		patientID   string
+		encounterID *string
+		pagination  dto.Pagination
 	}
 	tests := []struct {
 		name    string
@@ -339,6 +341,16 @@ func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
 				ctx:        context.Background(),
 				patientID:  gofakeit.UUID(),
 				pagination: dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "happy case: list compositions with encounterID",
+			args: args{
+				ctx:         context.Background(),
+				patientID:   gofakeit.UUID(),
+				encounterID: &EncounterID,
+				pagination:  dto.Pagination{},
 			},
 			wantErr: false,
 		},
@@ -425,7 +437,7 @@ func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
 					return nil, fmt.Errorf("failed to find condition")
 				}
 			}
-			got, err := c.ListPatientCompositions(tt.args.ctx, tt.args.patientID, tt.args.pagination)
+			got, err := c.ListPatientCompositions(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ListPatientCompositions() error = %v, wantErr %v", err, tt.wantErr)
 				return
