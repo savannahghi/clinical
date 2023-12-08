@@ -21,7 +21,7 @@ type Clinical interface {
 	EndEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
 
 	CreateCondition(ctx context.Context, input dto.ConditionInput) (*dto.Condition, error)
-	ListPatientConditions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ConditionConnection, error)
+	ListPatientConditions(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ConditionConnection, error)
 
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
