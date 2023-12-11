@@ -180,7 +180,7 @@ func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Conditi
 
 // ListPatientConditions lists a patients conditions
 // TODO: pagination
-func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ConditionConnection, error) {
+func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ConditionConnection, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
@@ -210,6 +210,10 @@ func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patient
 	if encounterID != nil {
 		encounterReference := fmt.Sprintf("Encounter/%s", *encounterID)
 		params["encounter"] = encounterReference
+	}
+
+	if date != nil {
+		params["recorded-date"] = date.AsTime().Format(dateFormatStr)
 	}
 
 	conditionsResponse, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, params, *identifiers, pagination)

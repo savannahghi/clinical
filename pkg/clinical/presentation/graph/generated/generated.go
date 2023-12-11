@@ -268,7 +268,7 @@ type ComplexityRoot struct {
 		GetPatientWeightEntries                 func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		ListPatientAllergies                    func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientCompositions                 func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
-		ListPatientConditions                   func(childComplexity int, patientID string, encounterID *string, pagination dto.Pagination) int
+		ListPatientConditions                   func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		ListPatientEncounters                   func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientMedia                        func(childComplexity int, patientID string, pagination dto.Pagination) int
 		PatientHealthTimeline                   func(childComplexity int, input dto.HealthTimelineInput) int
@@ -346,7 +346,7 @@ type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
 	GetMedicalData(ctx context.Context, patientID string) (*dto.MedicalData, error)
 	GetEpisodeOfCare(ctx context.Context, id string) (*dto.EpisodeOfCare, error)
-	ListPatientConditions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.ConditionConnection, error)
+	ListPatientConditions(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ConditionConnection, error)
 	ListPatientCompositions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.CompositionConnection, error)
 	ListPatientEncounters(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.EncounterConnection, error)
 	GetPatientTemperatureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.ObservationConnection, error)
@@ -1602,7 +1602,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ListPatientConditions(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["pagination"].(dto.Pagination)), true
+		return e.complexity.Query.ListPatientConditions(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
 
 	case "Query.listPatientEncounters":
 		if e.complexity.Query.ListPatientEncounters == nil {
@@ -1927,6 +1927,7 @@ var sources = []*ast.Source{
   listPatientConditions(
     patientID: ID!
     encounterID: String
+    date: Date
     pagination: Pagination!
   ): ConditionConnection
 
@@ -3626,15 +3627,24 @@ func (ec *executionContext) field_Query_listPatientConditions_args(ctx context.C
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg2, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+	var arg2 *scalarutils.Date
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg2, err = ec.unmarshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pagination"] = arg2
+	args["date"] = arg2
+	var arg3 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg3, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg3
 	return args, nil
 }
 
@@ -10135,7 +10145,7 @@ func (ec *executionContext) _Query_listPatientConditions(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ListPatientConditions(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["pagination"].(dto.Pagination))
+		return ec.resolvers.Query().ListPatientConditions(rctx, fc.Args["patientID"].(string), fc.Args["encounterID"].(*string), fc.Args["date"].(*scalarutils.Date), fc.Args["pagination"].(dto.Pagination))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
