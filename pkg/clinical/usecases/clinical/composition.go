@@ -173,7 +173,7 @@ func mapFHIRCompositionToCompositionDTO(composition domain.FHIRComposition) *dto
 }
 
 // ListPatientCompositions lists a patient's compositions
-func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patientID string, encounterID *string, pagination dto.Pagination) (*dto.CompositionConnection, error) {
+func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.CompositionConnection, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
@@ -203,6 +203,10 @@ func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patie
 	if encounterID != nil {
 		encounterReference := fmt.Sprintf("Encounter/%s", *encounterID)
 		params["encounter"] = encounterReference
+	}
+
+	if date != nil {
+		params["date"] = date.AsTime().Format(dateFormatStr)
 	}
 
 	compositionsResponse, err := c.infrastructure.FHIR.SearchFHIRComposition(ctx, params, *identifiers, pagination)

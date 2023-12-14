@@ -328,6 +328,7 @@ func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
 		ctx         context.Context
 		patientID   string
 		encounterID *string
+		date        *scalarutils.Date
 		pagination  dto.Pagination
 	}
 	tests := []struct {
@@ -351,6 +352,20 @@ func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
 				patientID:   gofakeit.UUID(),
 				encounterID: &EncounterID,
 				pagination:  dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "happy case: list compositions with date",
+			args: args{
+				ctx:       context.Background(),
+				patientID: gofakeit.UUID(),
+				date: &scalarutils.Date{
+					Year:  2023,
+					Month: 12,
+					Day:   11,
+				},
+				pagination: dto.Pagination{},
 			},
 			wantErr: false,
 		},
@@ -437,7 +452,7 @@ func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
 					return nil, fmt.Errorf("failed to find condition")
 				}
 			}
-			got, err := c.ListPatientCompositions(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.pagination)
+			got, err := c.ListPatientCompositions(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ListPatientCompositions() error = %v, wantErr %v", err, tt.wantErr)
 				return
