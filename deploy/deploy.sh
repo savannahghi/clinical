@@ -50,6 +50,7 @@ helm upgrade \
     --set app.container.env.jwtKey="${JWT_KEY}"\
     --set networking.issuer.privateKeySecretRef="letsencrypt-prod"\
     --set networking.ingress.host="${APP_DOMAIN}"\
+    --set app.container.env.defaultSentryTraceSampleRate="${SENTRY_TRACE_SAMPLE_RATE}"\
     --wait \
     --timeout 300s \
     -f ./charts/clinical/values.yaml \

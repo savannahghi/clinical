@@ -115,6 +115,9 @@ spec:
             - name: CLINICAL_BUCKET_NAME
               value: {{ .Values.app.container.env.clinicalBucketName | quote }}
 
+            - name: SENTRY_TRACE_SAMPLE_RATE
+              value:  {{ .Values.app.container.env.defaultSentryTraceSampleRate | quote }}
+
           volumeMounts:
           - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
             mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}
