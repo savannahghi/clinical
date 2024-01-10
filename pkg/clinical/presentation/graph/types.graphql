@@ -196,9 +196,17 @@ type Composition {
   category: CompositionCategory!
   status: CompositionStatusEnum!
   date: Date
-
+  section: [Section]
   patientID: String
   encounterID: String
+}
+
+type Section {
+  title: String
+  code: String
+  author: String
+  text: String
+  section: [Section]
 }
 
 type CompositionEdge {

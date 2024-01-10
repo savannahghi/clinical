@@ -2189,6 +2189,98 @@ func TestStoreImpl_CreateFHIRComposition(t *testing.T) {
 		})
 	}
 }
+func TestStoreImpl_GetFHIRComposition(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "happy case: get composition",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.NewString(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: error retrieving fhir resource",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.NewString(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "happy case: get composition" {
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					id := gofakeit.UUID()
+					composition := &domain.FHIRComposition{
+						ID: &id,
+					}
+
+					bs, err := json.Marshal(composition)
+					if err != nil {
+						return err
+					}
+
+					err = json.Unmarshal(bs, resource)
+					if err != nil {
+						return err
+					}
+
+					return nil
+				}
+
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					episode := domain.FHIREpisodeOfCare{
+						Period: &domain.FHIRPeriod{
+							Start: "2020-09-24T18:02:38.661033Z",
+							End:   "2020-09-24T18:02:38.661033Z",
+						},
+					}
+
+					payload, err := converterandformatter.StructToMap(episode)
+					if err != nil {
+						return nil, err
+					}
+
+					return &domain.PagedFHIRResource{
+						Resources: []map[string]interface{}{
+							payload,
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "sad case: error retrieving fhir resource" {
+				dataset.MockUpdateFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
+				}
+			}
+
+			got, err := fh.GetFHIRComposition(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.GetFHIRComposition() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
 
 func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
 

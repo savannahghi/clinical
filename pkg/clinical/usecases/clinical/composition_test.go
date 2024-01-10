@@ -306,6 +306,12 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 				}
 			}
 
+			if tt.name == "Sad Case: Fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
 			if tt.name == "sad case: failed to create composition" {
 				fakeFHIR.MockCreateFHIRCompositionFn = func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
 					return nil, fmt.Errorf("an error occurred")
@@ -459,6 +465,198 @@ func TestUseCasesClinicalImpl_ListPatientCompositions(t *testing.T) {
 			}
 			if !tt.wantErr && got == nil {
 				t.Errorf("expected a value to be returned, got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_PatchComposition(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		id    string
+		input dto.PatchCompositionInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case: Successfully patch a composition",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.New().String(),
+				input: dto.PatchCompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.HistoryOfPresentingIllness,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+					Section: []*dto.SectionInput{
+						{
+							Title:  "History of Present illness Narrative",
+							Code:   "",
+							Author: "",
+							Text:   "",
+							Section: []*dto.SectionInput{
+								{
+									Title:   "History of Present illness Narrative",
+									Code:    "",
+									Author:  "",
+									Text:    "",
+									Section: []*dto.SectionInput{},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case: Missing composition id",
+			args: args{
+				ctx: context.Background(),
+				input: dto.PatchCompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.AssessmentAndPlan,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: Fail to get OCL concept",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.New().String(),
+				input: dto.PatchCompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.SocialHistory,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: Fail to get OCL concept - no type",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.New().String(),
+				input: dto.PatchCompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Category:    dto.PlanOfCare,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: Fail to get tenant identifiers",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.New().String(),
+				input: dto.PatchCompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.Examination,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: Fail to get fhir composition",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.New().String(),
+				input: dto.PatchCompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.SocialHistory,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: Fail to patch composition",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.New().String(),
+				input: dto.PatchCompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.AssessmentAndPlan,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case: Fail to get OCL concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org string, source string, concept string, includeMappings bool, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get concept")
+				}
+			}
+
+			if tt.name == "Sad Case: Fail to get OCL concept - no type" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org string, source string, concept string, includeMappings bool, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get concept")
+				}
+			}
+
+			if tt.name == "Sad Case: Fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case: Fail to get fhir composition" {
+				fakeFHIR.MockGetFHIRCompositionFn = func(ctx context.Context, id string) (*domain.FHIRCompositionRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get fhir composition")
+				}
+			}
+
+			if tt.name == "Sad Case: Fail to patch composition" {
+				fakeFHIR.MockPatchFHIRCompositionFn = func(ctx context.Context, id string, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error) {
+					return nil, fmt.Errorf("failed to patch composition")
+				}
+			}
+
+			got, err := u.PatchComposition(tt.args.ctx, tt.args.id, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PatchComposition() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if tt.wantErr && got != nil {
+				t.Errorf("Expected composition to be nil for %v", tt.name)
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("Expected composition not to be nil for %v", tt.name)
 				return
 			}
 		})

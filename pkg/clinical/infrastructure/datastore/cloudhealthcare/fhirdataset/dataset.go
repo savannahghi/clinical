@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"moul.io/http2curl"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/serverutils"
@@ -466,6 +467,9 @@ func (fr Repository) SearchFHIRResource(resourceType string, params map[string]i
 			"%s could not be found with search params %v: %w", resourceType, params, err)
 	}
 
+	result := respMap
+	fmt.Println(result)
+
 	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
 	for _, k := range mandatoryKeys {
 		_, found := respMap[k]
@@ -602,6 +606,9 @@ func (fr Repository) POSTRequest(
 			req.Header.Add(k, h)
 		}
 	}
+
+	command, _ := http2curl.GetCurlCommand(req)
+	fmt.Println("CURL CMD", command)
 
 	httpClient := &http.Client{Timeout: time.Second * defaultTimeoutSeconds}
 

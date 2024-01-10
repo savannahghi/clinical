@@ -82,6 +82,7 @@ type Clinical interface {
 	ListPatientMedia(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.MediaConnection, error)
 
 	CreateComposition(ctx context.Context, input dto.CompositionInput) (*dto.Composition, error)
+	PatchComposition(ctx context.Context, id string, input dto.PatchCompositionInput) (*dto.Composition, error)
 	ListPatientCompositions(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.CompositionConnection, error)
 }
 

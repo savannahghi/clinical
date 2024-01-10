@@ -145,3 +145,12 @@ func CreateMediaConnection(mediaList []*Media, pageInfo PageInfo, total int) Med
 
 	return connection
 }
+
+// Section defines a composition section output model
+type Section struct {
+	Title   *string    `json:"title,omitempty"`
+	Code    *string    `json:"code,omitempty"`
+	Author  *string    `json:"author,omitempty"`
+	Text    string     `json:"text,omitempty"`
+	Section []*Section `json:"section,omitempty"`
+}

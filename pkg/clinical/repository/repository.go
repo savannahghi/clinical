@@ -89,9 +89,11 @@ type FHIREncounter interface {
 	PatchFHIREncounter(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error)
 }
 type FHIRComposition interface {
+	GetFHIRComposition(ctx context.Context, id string) (*domain.FHIRCompositionRelayPayload, error)
 	SearchFHIRComposition(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRComposition, error)
 	CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
-	UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
+	UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error)
+	PatchFHIRComposition(ctx context.Context, id string, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error)
 	DeleteFHIRComposition(ctx context.Context, id string) (bool, error)
 }
 type FHIRMedicationStatement interface {

@@ -42,7 +42,6 @@ models:
   PatchPatientInput:
     model:
       - github.com/savannahghi/clinical/pkg/clinical/application/dto.PatientInput
-
   Date:
     model:
       - "github.com/savannahghi/scalarutils.Date"

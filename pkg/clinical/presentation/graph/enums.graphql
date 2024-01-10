@@ -78,6 +78,11 @@ enum CompositionStatusEnum {
 
 enum CompositionCategory {
   ASSESSMENT_PLAN
+  HISTORY_OF_PRESENTING_ILLNESS
+  SOCIAL_HISTORY
+  FAMILY_HISTORY
+  EXAMINATION
+  PLAN_OF_CARE
 }
 
 enum CompositionType {
