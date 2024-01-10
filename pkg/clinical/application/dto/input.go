@@ -110,3 +110,22 @@ type CompositionInput struct {
 	Status      CompositionStatusEnum `json:"status"`
 	Note        string                `json:"note"`
 }
+
+// PatchCompositionInput models the patch composition input
+type PatchCompositionInput struct {
+	Type     CompositionType       `json:"type"`
+	Category CompositionCategory   `json:"category"`
+	Status   CompositionStatusEnum `json:"status"`
+	Note     string                `json:"note"`
+	Section  []*SectionInput       `json:"section"`
+}
+
+// SectionInput models the composition section input
+type SectionInput struct {
+	ID      string          `json:"id,omitempty"`
+	Title   string          `json:"title"`
+	Code    string          `json:"code"`
+	Author  string          `json:"author"`
+	Text    string          `json:"text"`
+	Section []*SectionInput `json:"section"`
+}

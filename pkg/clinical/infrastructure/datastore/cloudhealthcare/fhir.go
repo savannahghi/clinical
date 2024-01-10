@@ -865,7 +865,7 @@ func (fh StoreImpl) CreateFHIRComposition(_ context.Context, input domain.FHIRCo
 
 // UpdateFHIRComposition updates a FHIRComposition instance
 // The resource must have its ID set.
-func (fh StoreImpl) UpdateFHIRComposition(_ context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+func (fh StoreImpl) UpdateFHIRComposition(_ context.Context, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error) {
 	if input.ID == nil {
 		return nil, fmt.Errorf("can't update with a nil ID")
 	}
@@ -882,11 +882,7 @@ func (fh StoreImpl) UpdateFHIRComposition(_ context.Context, input domain.FHIRCo
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", compositionResourceType, err)
 	}
 
-	output := &domain.FHIRCompositionRelayPayload{
-		Resource: resource,
-	}
-
-	return output, nil
+	return resource, nil
 }
 
 // DeleteFHIRComposition deletes the FHIRComposition identified by the supplied ID
@@ -1619,4 +1615,37 @@ func (fh StoreImpl) SearchFHIRPatient(_ context.Context, searchParams string, te
 	}
 
 	return &output, nil
+}
+
+// GetFHIRComposition retrieves instances of FHIRComposition by ID
+func (fh StoreImpl) GetFHIRComposition(_ context.Context, id string) (*domain.FHIRCompositionRelayPayload, error) {
+	resource := &domain.FHIRComposition{}
+
+	err := fh.Dataset.GetFHIRResource(compositionResourceType, id, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", compositionResourceType, id, err)
+	}
+
+	payload := &domain.FHIRCompositionRelayPayload{
+		Resource: resource,
+	}
+
+	return payload, nil
+}
+
+// PatchFHIRComposition is used to patch a composition resource
+func (fh StoreImpl) PatchFHIRComposition(_ context.Context, id string, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", compositionResourceType, err)
+	}
+
+	resource := &domain.FHIRComposition{}
+
+	err = fh.Dataset.PatchFHIRResource(compositionResourceType, id, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to patch %s resource: %w", compositionResourceType, err)
+	}
+
+	return resource, nil
 }

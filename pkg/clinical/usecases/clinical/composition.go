@@ -54,7 +54,26 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 
 	id := uuid.New().String()
 
-	compositionCategoryConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, common.LOINCAssessmentPlanCode)
+	var compositionCategoryCode string
+
+	switch input.Category {
+	case "ASSESSMENT_PLAN":
+		compositionCategoryCode = common.LOINCAssessmentPlanCode
+	case "HISTORY_OF_PRESENTING_ILLNESS":
+		compositionCategoryCode = common.LOINCHistoryOfPresentingIllness
+	case "SOCIAL_HISTORY":
+		compositionCategoryCode = common.LOINCSocialHistory
+	case "FAMILY_HISTORY":
+		compositionCategoryCode = common.LOINCFamilyHistory
+	case "EXAMINATION":
+		compositionCategoryCode = common.LOINCExamination
+	case "PLAN_OF_CARE":
+		compositionCategoryCode = common.LOINCPLANOFCARE
+	default:
+		return nil, fmt.Errorf("category is needed")
+	}
+
+	compositionCategoryConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, compositionCategoryCode)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +134,7 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 				ID:    &id,
 				Title: &compositionCategoryConcept.DisplayName,
 				Code: &domain.FHIRCodeableConceptInput{
-					ID: new(string),
+					ID: &id,
 					Coding: []*domain.FHIRCodingInput{
 						{
 							ID:      &id,
@@ -132,7 +151,7 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 					},
 				},
 				Text: &domain.FHIRNarrativeInput{
-					ID:     new(string),
+					ID:     &id,
 					Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
 					Div:    scalarutils.XHTML(input.Note),
 				},
@@ -145,7 +164,7 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 		return nil, err
 	}
 
-	compositionInput.Meta = domain.FHIRMetaInput{
+	compositionInput.Meta = &domain.FHIRMetaInput{
 		Tag: tags,
 	}
 
@@ -154,10 +173,53 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 		return nil, err
 	}
 
-	return mapFHIRCompositionToCompositionDTO(*composition.Resource), nil
+	compositionInput.Category = []*domain.FHIRCodeableConceptInput{
+		{
+			ID: &id,
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
+					Code:    scalarutils.Code(compositionCategoryConcept.ID),
+					Display: compositionCategoryConcept.DisplayName,
+				},
+			},
+			Text: compositionCategoryConcept.DisplayName,
+		},
+	}
+
+	result := mapFHIRCompositionToCompositionDTO(*composition.Resource)
+
+	return &result.Edges[0].Node, nil
 }
 
-func mapFHIRCompositionToCompositionDTO(composition domain.FHIRComposition) *dto.Composition {
+func mapFHIRCompositionToCompositionDTO(composition domain.FHIRComposition) *dto.CompositionConnection {
+	var compositionSection []*dto.Section
+
+	for _, item := range composition.Section {
+		var itemSubSections []*dto.Section
+
+		if len(item.Section) > 0 {
+			for _, section := range item.Section {
+				itemSubSections = append(itemSubSections, &dto.Section{
+					ID:     section.ID,
+					Title:  section.Title,
+					Code:   section.Code.ID,
+					Author: section.Author[0].Reference,
+					Text:   string(section.Text.Div),
+				})
+			}
+		}
+
+		compositionSection = append(compositionSection, &dto.Section{
+			ID:      item.ID,
+			Title:   item.Title,
+			Code:    &item.Code.Coding[0].Display,
+			Author:  item.Author[0].Reference,
+			Text:    string(item.Text.Div),
+			Section: itemSubSections,
+		})
+	}
+
 	output := dto.Composition{
 		ID:          *composition.ID,
 		Text:        string(composition.Section[0].Text.Div),
@@ -167,9 +229,19 @@ func mapFHIRCompositionToCompositionDTO(composition domain.FHIRComposition) *dto
 		PatientID:   *composition.Subject.ID,
 		EncounterID: *composition.Encounter.ID,
 		Date:        composition.Date,
+		Section:     compositionSection,
 	}
 
-	return &output
+	return &dto.CompositionConnection{
+		TotalCount: 0,
+		Edges: []dto.CompositionEdge{
+			{
+				Node:   output,
+				Cursor: "",
+			},
+		},
+		PageInfo: dto.PageInfo{},
+	}
 }
 
 // ListPatientCompositions lists a patient's compositions
@@ -218,7 +290,7 @@ func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patie
 
 	for _, resource := range compositionsResponse.Compositions {
 		composition := mapFHIRCompositionToCompositionDTO(resource)
-		compositions = append(compositions, *composition)
+		compositions = append(compositions, composition.Edges[0].Node)
 	}
 
 	pageInfo := dto.PageInfo{
@@ -231,4 +303,153 @@ func (c UseCasesClinicalImpl) ListPatientCompositions(ctx context.Context, patie
 	connection := dto.CreateCompositionConnection(compositions, pageInfo, compositionsResponse.TotalCount)
 
 	return &connection, nil
+}
+
+// AppendNoteToComposition appends a note to the patient's composition information such as section
+func (c *UseCasesClinicalImpl) AppendNoteToComposition(ctx context.Context, id string, input dto.PatchCompositionInput) (*dto.Composition, error) {
+	if id == "" {
+		return nil, fmt.Errorf("a composition id is required")
+	}
+
+	composition, err := c.infrastructure.FHIR.GetFHIRComposition(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, *composition.Resource.Encounter.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot record a composition in a finished encounter")
+	}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	organizationRef := fmt.Sprintf("Organization/%s", identifiers.OrganizationID)
+
+	var compositionCategoryCode string
+
+	switch input.Category {
+	case "ASSESSMENT_PLAN":
+		compositionCategoryCode = common.LOINCAssessmentPlanCode
+	case "HISTORY_OF_PRESENTING_ILLNESS":
+		compositionCategoryCode = common.LOINCHistoryOfPresentingIllness
+	case "SOCIAL_HISTORY":
+		compositionCategoryCode = common.LOINCSocialHistory
+	case "FAMILY_HISTORY":
+		compositionCategoryCode = common.LOINCFamilyHistory
+	case "EXAMINATION":
+		compositionCategoryCode = common.LOINCExamination
+	case "PLAN_OF_CARE":
+		compositionCategoryCode = common.LOINCPLANOFCARE
+	}
+
+	compositionCategoryConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, compositionCategoryCode)
+	if err != nil {
+		return nil, err
+	}
+
+	idd := uuid.New().String()
+	compositionSectionTextStatus := "generated"
+
+	compositionSection := &domain.FHIRCompositionSection{
+		ID:    &idd,
+		Title: &compositionCategoryConcept.DisplayName,
+		Code: &domain.FHIRCodeableConceptInput{
+			ID: &idd,
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
+					Code:    scalarutils.Code(compositionCategoryConcept.ID),
+					Display: compositionCategoryConcept.DisplayName,
+				},
+			},
+			Text: compositionCategoryConcept.DisplayName,
+		},
+		Author: []*domain.FHIRReference{
+			{
+				Reference: &organizationRef,
+			},
+		},
+		Focus: &domain.FHIRReference{},
+		Text: &domain.FHIRNarrative{
+			ID:     &idd,
+			Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+			Div:    scalarutils.XHTML(input.Note),
+		},
+	}
+
+	composition.Resource.Section = append(composition.Resource.Section, compositionSection)
+
+	var sectionInput []*domain.FHIRCompositionSectionInput
+
+	for _, s := range composition.Resource.Section {
+		sectionInput = append(sectionInput, &domain.FHIRCompositionSectionInput{
+			ID:    s.ID,
+			Title: s.Title,
+			Code: &domain.FHIRCodeableConceptInput{
+				ID:     s.Code.ID,
+				Coding: s.Code.Coding,
+				Text:   compositionSectionTextStatus,
+			},
+			Author: []*domain.FHIRReferenceInput{
+				{
+					Reference: &organizationRef,
+				},
+			},
+			Text: &domain.FHIRNarrativeInput{
+				ID:     s.Text.ID,
+				Status: s.Text.Status,
+				Div:    s.Text.Div,
+			},
+		})
+
+		if len(s.Section) > 0 {
+			var nestedsectionInput []*domain.FHIRCompositionSectionInput
+
+			for _, r := range s.Section {
+				nestedsectionInput = append(nestedsectionInput, &domain.FHIRCompositionSectionInput{
+					ID:    r.ID,
+					Title: r.Title,
+					Code: &domain.FHIRCodeableConceptInput{
+						ID:     r.Code.ID,
+						Coding: r.Code.Coding,
+						Text:   compositionSectionTextStatus,
+					},
+					Author: []*domain.FHIRReferenceInput{
+						{
+							Reference: &organizationRef,
+						},
+					},
+					Text: &domain.FHIRNarrativeInput{
+						ID:     r.Text.ID,
+						Status: r.Text.Status,
+						Div:    r.Text.Div,
+					},
+				})
+			}
+
+			for _, m := range sectionInput {
+				m.Section = append(m.Section, nestedsectionInput...)
+			}
+		}
+	}
+
+	compositionInput := &domain.FHIRCompositionInput{
+		Section: sectionInput,
+	}
+
+	output, err := c.infrastructure.FHIR.PatchFHIRComposition(ctx, id, *compositionInput)
+	if err != nil {
+		return nil, err
+	}
+
+	result := mapFHIRCompositionToCompositionDTO(*output)
+
+	return &result.Edges[0].Node, nil
 }

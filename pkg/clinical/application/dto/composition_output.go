@@ -15,6 +15,7 @@ type Composition struct {
 	EncounterID string                `json:"encounterID,omitempty"`
 	Date        *scalarutils.Date     `json:"date"`
 	Author      string                `json:"author,omitempty"`
+	Section     []*Section            `json:"section"`
 }
 
 // CompositionEdge is a composition edge

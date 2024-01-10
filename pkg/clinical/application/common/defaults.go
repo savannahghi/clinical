@@ -112,6 +112,21 @@ const (
 
 	// LOINCAssessmentPlanCode defines LOINC assessment plan note terminology code
 	LOINCAssessmentPlanCode = "51847-2"
+
+	// LOINCHistoryOfPresentingIllness defines LOINC history of presenting illness note terminology code
+	LOINCHistoryOfPresentingIllness = "10164-2"
+
+	// LOINCSocialHistory defines LOINC social history note terminology code
+	LOINCSocialHistory = "29762-2"
+
+	// LOINCFamilyHistory defines LOINC family history note terminology code
+	LOINCFamilyHistory = "10157-6"
+
+	// LOINCExamination defines LOINC Examination note terminology code
+	LOINCExamination = "29545-1"
+
+	// LOINCPLANOFCARE defines LOINC Plan of care note terminology code
+	LOINCPLANOFCARE = "18776-5"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

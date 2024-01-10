@@ -162,6 +162,12 @@ func (r *mutationResolver) CreateComposition(ctx context.Context, input dto.Comp
 	return r.usecases.CreateComposition(ctx, input)
 }
 
+// AppendNoteToComposition is the resolver for the AppendNoteToComposition field.
+func (r *mutationResolver) AppendNoteToComposition(ctx context.Context, id string, input dto.PatchCompositionInput) (*dto.Composition, error) {
+	r.CheckDependencies()
+	return r.usecases.AppendNoteToComposition(ctx, id, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
