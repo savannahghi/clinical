@@ -45,6 +45,8 @@ var ClinicalAllowedOrigins = []string{
 	"https://clinical-prod.bewell.co.ke",
 	"https://uat-emr.advantage.slade360.com",
 	"https://advantage.slade360.com",
+	"https://review-empower.web.app",
+	"https://review-advantage.web.app",
 }
 
 var (
