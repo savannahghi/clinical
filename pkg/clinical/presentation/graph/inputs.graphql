@@ -74,6 +74,23 @@ input CompositionInput {
   note: String!
 }
 
+input PatchCompositionInput {
+  type: CompositionType
+  status: CompositionStatusEnum
+  category: CompositionCategory
+  note: String
+  section: [SectionInput!]
+}
+
+input SectionInput {
+  id: String
+  title: String
+  code: String
+  author: String
+  text: String
+  section: [SectionInput!]
+}
+
 input ReactionInput {
   code: String
   system: String

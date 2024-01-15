@@ -46,8 +46,10 @@ type FHIRMock struct {
 	MockCreateFHIRAllergyIntoleranceFn    func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 	MockUpdateFHIRAllergyIntoleranceFn    func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 	MockSearchFHIRCompositionFn           func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRComposition, error)
+	MockGetFHIRCompositionFn              func(ctx context.Context, id string) (*domain.FHIRCompositionRelayPayload, error)
 	MockCreateFHIRCompositionFn           func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
-	MockUpdateFHIRCompositionFn           func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error)
+	MockPatchFHIRCompositionFn            func(ctx context.Context, id string, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error)
+	MockUpdateFHIRCompositionFn           func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error)
 	MockDeleteFHIRCompositionFn           func(ctx context.Context, id string) (bool, error)
 	MockUpdateFHIRConditionFn             func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	MockGetFHIREncounterFn                func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
@@ -756,6 +758,138 @@ func NewFHIRMock() *FHIRMock {
 				HasPreviousPage: false,
 			}, nil
 		},
+		MockGetFHIRCompositionFn: func(ctx context.Context, id string) (*domain.FHIRCompositionRelayPayload, error) {
+			idd := gofakeit.UUID()
+			compositionTitle := gofakeit.Name() + "assessment note"
+			typeSystem := scalarutils.URI("http://hl7.org/fhir/ValueSet/doc-typecodes")
+			categorySystem := scalarutils.URI("http://hl7.org/fhir/ValueSet/referenced-item-category")
+			category := "Assessment + plan"
+			compositionType := "Progress note"
+			compositionCategory := "Treatment Plan"
+			compositionStatus := "active"
+			note := scalarutils.Markdown("Fever Fever")
+			PatientRef := "Patient/" + uuid.NewString()
+			patientType := "Patient"
+			organizationRef := "Organization/" + uuid.NewString()
+			compositionSectionTextStatus := "generated"
+
+			return &domain.FHIRCompositionRelayPayload{
+				Resource: &domain.FHIRComposition{
+					ID: &id,
+					Text: &domain.FHIRNarrative{
+						ID:     &idd,
+						Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+						Div:    scalarutils.XHTML(note),
+					},
+					Identifier: &domain.FHIRIdentifier{},
+					Status:     (*domain.CompositionStatusEnum)(&compositionStatus),
+					Type: &domain.FHIRCodeableConcept{
+						ID: new(string),
+						Coding: []*domain.FHIRCoding{
+							{
+								ID:      &idd,
+								System:  &typeSystem,
+								Code:    scalarutils.Code(string(common.LOINCProgressNoteCode)),
+								Display: compositionType,
+							},
+						},
+						Text: compositionType,
+					},
+					Category: []*domain.FHIRCodeableConcept{
+						{
+							ID: new(string),
+							Coding: []*domain.FHIRCoding{
+								{
+									ID:      &idd,
+									System:  &categorySystem,
+									Version: new(string),
+									Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+									Display: category,
+								},
+							},
+							Text: compositionCategory,
+						},
+					},
+					Subject: &domain.FHIRReference{
+						ID:        &idd,
+						Reference: &PatientRef,
+						Type:      (*scalarutils.URI)(&patientType),
+					},
+					Encounter: &domain.FHIRReference{
+						ID: &idd,
+					},
+					Date: &scalarutils.Date{
+						Year:  2023,
+						Month: 9,
+						Day:   25,
+					},
+					Author: []*domain.FHIRReference{
+						{
+							Reference: &organizationRef,
+						},
+					},
+					Title: &compositionTitle,
+					Section: []*domain.FHIRCompositionSection{
+						{
+							ID:    &idd,
+							Title: &compositionCategory,
+							Code: &domain.FHIRCodeableConceptInput{
+								ID: new(string),
+								Coding: []*domain.FHIRCodingInput{
+									{
+										ID:      &idd,
+										System:  &categorySystem,
+										Version: new(string),
+										Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+										Display: category,
+									},
+								},
+								Text: "Assessment + plan",
+							},
+							Author: []*domain.FHIRReference{
+								{
+									Reference: new(string),
+								},
+							},
+							Text: &domain.FHIRNarrative{
+								ID:     &idd,
+								Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+								Div:    scalarutils.XHTML(note),
+							},
+							Section: []*domain.FHIRCompositionSection{
+								{
+									ID:    &idd,
+									Title: &compositionCategory,
+									Code: &domain.FHIRCodeableConceptInput{
+										ID: new(string),
+										Coding: []*domain.FHIRCodingInput{
+											{
+												ID:      &idd,
+												System:  &categorySystem,
+												Version: new(string),
+												Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+												Display: category,
+											},
+										},
+										Text: "Assessment + plan",
+									},
+									Author: []*domain.FHIRReference{
+										{
+											Reference: new(string),
+										},
+									},
+									Text: &domain.FHIRNarrative{
+										ID:     &idd,
+										Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+										Div:    scalarutils.XHTML(note),
+									},
+								},
+							},
+						},
+					},
+				},
+			}, nil
+		},
 		MockCreateFHIRCompositionFn: func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
 			UUID := uuid.New().String()
 			compositionTitle := gofakeit.Name() + "assessment note"
@@ -855,8 +989,8 @@ func NewFHIRMock() *FHIRMock {
 				},
 			}, nil
 		},
-		MockUpdateFHIRCompositionFn: func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
-			return &domain.FHIRCompositionRelayPayload{}, nil
+		MockUpdateFHIRCompositionFn: func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error) {
+			return &domain.FHIRComposition{}, nil
 		},
 		MockDeleteFHIRCompositionFn: func(ctx context.Context, id string) (bool, error) {
 			return true, nil
@@ -1256,15 +1390,22 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRPatient{
 				ID:         new(string),
 				Text:       &domain.FHIRNarrative{},
-				Gender:     &male,
 				Identifier: []*domain.FHIRIdentifier{},
 				Active:     new(bool),
 				Name: []*domain.FHIRHumanName{
 					{
-						Text: gofakeit.Name(),
+						ID:     new(string),
+						Use:    "",
+						Text:   "First Last",
+						Family: new(string),
+						Given:  []*string{},
+						Prefix: []*string{},
+						Suffix: []*string{},
+						Period: &domain.FHIRPeriod{},
 					},
 				},
 				Telecom:              []*domain.FHIRContactPoint{},
+				Gender:               &male,
 				BirthDate:            &scalarutils.Date{},
 				DeceasedBoolean:      new(bool),
 				DeceasedDateTime:     &scalarutils.Date{},
@@ -1278,6 +1419,98 @@ func NewFHIRMock() *FHIRMock {
 				GeneralPractitioner:  []*domain.FHIRReference{},
 				ManagingOrganization: &domain.FHIRReference{},
 				Link:                 []*domain.FHIRPatientLink{},
+				Meta:                 &domain.FHIRMeta{},
+				Extension:            []*domain.FHIRExtension{},
+			}, nil
+		},
+		MockPatchFHIRCompositionFn: func(ctx context.Context, id string, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error) {
+			compositionStatus := domain.CompositionStatusEnumFinal
+			compositionSectionTitle := "History of Present illness Narrative"
+			id = uuid.New().String()
+			return &domain.FHIRComposition{
+				ID:         &id,
+				Text:       &domain.FHIRNarrative{},
+				Identifier: &domain.FHIRIdentifier{},
+				Status:     &compositionStatus,
+				Type: &domain.FHIRCodeableConcept{
+					ID:     new(string),
+					Coding: []*domain.FHIRCoding{},
+					Text:   "Progress note - recommended C-CDA R2.0 and R2.1 sections",
+				},
+				Category: []*domain.FHIRCodeableConcept{
+					{
+						ID:     new(string),
+						Coding: []*domain.FHIRCoding{},
+						Text:   "History of Present illness Narrative",
+					},
+				},
+				Subject: &domain.FHIRReference{
+					ID: &id,
+				},
+				Encounter: &domain.FHIRReference{
+					ID: new(string),
+				},
+				Date: &scalarutils.Date{
+					Year:  2024,
+					Month: 01,
+					Day:   12,
+				},
+				Author: []*domain.FHIRReference{},
+				Title:  new(string),
+				Section: []*domain.FHIRCompositionSection{
+					{
+						ID:    &id,
+						Title: &compositionSectionTitle,
+						Code: &domain.FHIRCodeableConceptInput{
+							ID: new(string),
+							Coding: []*domain.FHIRCodingInput{
+								{
+									ID:      new(string),
+									Code:    scalarutils.Code(dto.HistoryOfPresentingIllness),
+									Display: "",
+								},
+							},
+							Text: compositionSectionTitle,
+						},
+						Author: []*domain.FHIRReference{
+							{
+								Reference: new(string),
+							},
+						},
+						Text: &domain.FHIRNarrative{
+							ID:  &id,
+							Div: "Patient condition is deteriorating",
+						},
+						Section: []*domain.FHIRCompositionSection{
+							{
+								ID:    &id,
+								Title: &compositionSectionTitle,
+								Code: &domain.FHIRCodeableConceptInput{
+									ID: new(string),
+									Coding: []*domain.FHIRCodingInput{
+										{
+											ID:      new(string),
+											Code:    scalarutils.Code(dto.FamilyHistory),
+											Display: "",
+										},
+									},
+									Text: compositionSectionTitle,
+								},
+								Author: []*domain.FHIRReference{
+									{
+										Reference: new(string),
+									},
+								},
+								Text: &domain.FHIRNarrative{
+									ID:  &id,
+									Div: "Patient condition is deteriorating",
+								},
+							},
+						},
+					},
+				},
+				Meta:      &domain.FHIRMeta{},
+				Extension: []*domain.FHIRExtension{},
 			}, nil
 		},
 		MockPatchFHIREpisodeOfCareFn: func(ctx context.Context, id string, input domain.FHIREpisodeOfCareInput) (*domain.FHIREpisodeOfCare, error) {
@@ -1522,14 +1755,24 @@ func (fh *FHIRMock) SearchFHIRComposition(ctx context.Context, params map[string
 	return fh.MockSearchFHIRCompositionFn(ctx, params, tenant, pagination)
 }
 
+// GetFHIRComposition is a mock implementantion of GetFHIRComposition method
+func (fh *FHIRMock) GetFHIRComposition(ctx context.Context, id string) (*domain.FHIRCompositionRelayPayload, error) {
+	return fh.MockGetFHIRCompositionFn(ctx, id)
+}
+
 // CreateFHIRComposition is a mock implementation of CreateFHIRComposition method
 func (fh *FHIRMock) CreateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
 	return fh.MockCreateFHIRCompositionFn(ctx, input)
 }
 
 // UpdateFHIRComposition is a mock implementation of UpdateFHIRComposition method
-func (fh *FHIRMock) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+func (fh *FHIRMock) UpdateFHIRComposition(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error) {
 	return fh.MockUpdateFHIRCompositionFn(ctx, input)
+}
+
+// PatchFHIRComposition is a mock implementation of PatchFHIRComposition method
+func (fh *FHIRMock) PatchFHIRComposition(ctx context.Context, id string, input domain.FHIRCompositionInput) (*domain.FHIRComposition, error) {
+	return fh.MockPatchFHIRCompositionFn(ctx, id, input)
 }
 
 // DeleteFHIRComposition is a mock implementation of DeleteFHIRComposition method

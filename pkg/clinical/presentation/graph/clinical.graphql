@@ -172,4 +172,8 @@ extend type Mutation {
 
   # Clinical notes(composition)
   createComposition(input: CompositionInput!): Composition!
+  appendNoteToComposition(
+    id: String!
+    input: PatchCompositionInput!
+  ): Composition!
 }
