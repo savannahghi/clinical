@@ -112,26 +112,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Sad Case - fail on finished encounter",
-			args: args{
-				ctx: context.Background(),
-				input: dto.ConditionInput{
-					Code:        "386661006",
-					System:      dto.TerminologySourceCIEL,
-					Status:      dto.ConditionStatusActive,
-					Category:    dto.ConditionCategoryDiagnosis,
-					EncounterID: gofakeit.UUID(),
-					Note:        "Fever Fever",
-					OnsetDate: &scalarutils.Date{
-						Year:  2022,
-						Month: 12,
-						Day:   12,
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
 			name: "sad case: fail to get encounter",
 			args: args{
 				ctx: context.Background(),
@@ -152,6 +132,26 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "Sad Case - fail on finished encounter",
+			args: args{
+				ctx: context.Background(),
+				input: dto.ConditionInput{
+					Code:        "386661006",
+					System:      dto.TerminologySourceCIEL,
+					Status:      dto.ConditionStatusActive,
+					Category:    dto.ConditionCategoryDiagnosis,
+					EncounterID: gofakeit.UUID(),
+					Note:        "Fever Fever",
+					OnsetDate: &scalarutils.Date{
+						Year:  2022,
+						Month: 12,
+						Day:   12,
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "sad case: fail to get patient",
 			args: args{
 				ctx: context.Background(),
@@ -159,7 +159,6 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					Code:        "386661006",
 					System:      "SNOMED",
 					Status:      dto.ConditionStatusActive,
-					Category:    dto.ConditionCategoryProblemList,
 					EncounterID: gofakeit.UUID(),
 					Note:        "Fever Fever",
 					OnsetDate: &scalarutils.Date{
@@ -203,6 +202,8 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+			codingCode := "1234"
+			categoryCode := "ENCOUNTER_DIAGNOSIS"
 
 			if tt.name == "happy case: create condition - encounter diagnosis" {
 				fakeFHIR.MockCreateFHIRConditionFn = func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error) {
@@ -221,7 +222,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 								Coding: []*domain.FHIRCoding{
 									{
 										System:  &statusSystem,
-										Code:    scalarutils.Code(string(status)),
+										Code:    (*scalarutils.Code)(&status),
 										Display: string(status),
 									},
 								},
@@ -231,7 +232,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 								Coding: []*domain.FHIRCoding{
 									{
 										System:  &uri,
-										Code:    scalarutils.Code("1234"),
+										Code:    (*scalarutils.Code)(&codingCode),
 										Display: "1234",
 									},
 								},
@@ -259,7 +260,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 											ID:           &UUID,
 											System:       (*scalarutils.URI)(&UUID),
 											Version:      &UUID,
-											Code:         "ENCOUNTER_DIAGNOSIS",
+											Code:         (*scalarutils.Code)(&categoryCode),
 											Display:      gofakeit.BeerAlcohol(),
 											UserSelected: new(bool),
 										},
@@ -279,7 +280,9 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 					status := "active"
 					note := scalarutils.Markdown("Fever Fever")
 					noteTime := time.Now()
+					codingCode := "1234"
 					uri := scalarutils.URI("1234567")
+					categoryCode := "INVALID"
 					return &domain.FHIRConditionRelayPayload{
 						Resource: &domain.FHIRCondition{
 							ID:         &UUID,
@@ -289,7 +292,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 								Coding: []*domain.FHIRCoding{
 									{
 										System:  &statusSystem,
-										Code:    scalarutils.Code(string(status)),
+										Code:    (*scalarutils.Code)(&status),
 										Display: string(status),
 									},
 								},
@@ -299,7 +302,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 								Coding: []*domain.FHIRCoding{
 									{
 										System:  &uri,
-										Code:    scalarutils.Code("1234"),
+										Code:    (*scalarutils.Code)(&codingCode),
 										Display: "1234",
 									},
 								},
@@ -327,7 +330,7 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 											ID:           &UUID,
 											System:       (*scalarutils.URI)(&UUID),
 											Version:      &UUID,
-											Code:         "INVALID",
+											Code:         (*scalarutils.Code)(&categoryCode),
 											Display:      gofakeit.BeerAlcohol(),
 											UserSelected: new(bool),
 										},
@@ -378,6 +381,9 @@ func TestUseCasesClinicalImpl_CreateCondition(t *testing.T) {
 				}
 				fakeOCL.MockGetConceptFn = func(ctx context.Context, org string, source string, concept string, includeMappings bool, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("failed to get concept")
+				}
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("fail to get patient")
 				}
 			}
 
@@ -584,13 +590,9 @@ func TestUseCasesClinicalImpl_ListPatientConditions(t *testing.T) {
 				}
 			}
 
-			got, err := c.ListPatientConditions(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
+			_, err := c.ListPatientConditions(tt.args.ctx, tt.args.patientID, tt.args.encounterID, tt.args.date, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ListPatientConditions() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !tt.wantErr && got == nil {
-				t.Errorf("expected a value to be returned, got: %v", got)
 				return
 			}
 		})

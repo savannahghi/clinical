@@ -34,7 +34,18 @@ type ObservationInput struct {
 	Value       string            `json:"value,omitempty" validate:"required"`
 }
 
+type PatchObservationInput struct {
+	Value string `json:"value,omitempty" validate:"required"`
+}
+
 func (o ObservationInput) Validate() error {
+	v := validator.New()
+	err := v.Struct(o)
+
+	return err
+}
+
+func (o PatchObservationInput) ValidatePatchObservationInput() error {
 	v := validator.New()
 	err := v.Struct(o)
 

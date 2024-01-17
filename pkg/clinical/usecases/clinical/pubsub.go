@@ -164,7 +164,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubVitals(ctx context.Context, data dto.
 		return err
 	}
 
-	input.Meta = domain.FHIRMetaInput{
+	input.Meta = &domain.FHIRMetaInput{
 		Tag: tags,
 	}
 
@@ -212,7 +212,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubTestResult(ctx context.Context, data 
 		return err
 	}
 
-	input.Meta = domain.FHIRMetaInput{
+	input.Meta = &domain.FHIRMetaInput{
 		Tag: tags,
 	}
 

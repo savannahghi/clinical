@@ -19,6 +19,10 @@ input ObservationInput {
   value: String!
 }
 
+input PatchObservationInput {
+  value: String!
+}
+
 input PatientInput {
   firstName: String!
   lastName: String

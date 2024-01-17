@@ -176,4 +176,6 @@ extend type Mutation {
     id: String!
     input: PatchCompositionInput!
   ): Composition!
+
+  patchHeight(id: String!, input: PatchObservationInput!): Observation!
 }

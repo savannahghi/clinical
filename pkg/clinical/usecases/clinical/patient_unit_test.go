@@ -50,7 +50,6 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 			},
 			wantErr: true,
 		},
-
 		{
 			name: "Happy Case - Successfully search medication statement",
 			args: args{
@@ -340,6 +339,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationStatementRelayConnection, error) {
 					status := dto.MedicationStatementStatusEnumActive
 					code := "123"
+					system := gofakeit.URL()
 					return &domain.FHIRMedicationStatementRelayConnection{
 						Edges: []*domain.FHIRMedicationStatementRelayEdge{
 							{
@@ -350,13 +350,45 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									MedicationCodeableConcept: &domain.FHIRCodeableConcept{
 										ID: new(string),
 										Coding: []*domain.FHIRCoding{{
-											Code:    scalarutils.Code(code),
-											Display: gofakeit.BS(),
+											ID:           new(string),
+											System:       (*scalarutils.URI)(&system),
+											Version:      new(string),
+											Code:         (*scalarutils.Code)(&code),
+											Display:      gofakeit.BS(),
+											UserSelected: new(bool),
 										}},
 									},
 									Subject: &domain.FHIRReference{
 										ID: new(string),
 									},
+									Text:         &domain.FHIRNarrative{},
+									Identifier:   []*domain.FHIRIdentifier{},
+									BasedOn:      []*domain.FHIRReference{},
+									PartOf:       []*domain.FHIRReference{},
+									StatusReason: []*domain.FHIRCodeableConcept{},
+									Category: &domain.FHIRCodeableConcept{
+										ID: new(string),
+										Coding: []*domain.FHIRCoding{
+											{
+												Code:    (*scalarutils.Code)(&code),
+												Display: gofakeit.BS(),
+											},
+										},
+										Text: "",
+									},
+									MedicationReference: &domain.FHIRMedication{},
+									Context:             &domain.FHIRReference{},
+									EffectiveDateTime:   &scalarutils.Date{},
+									EffectivePeriod:     &domain.FHIRPeriod{},
+									DateAsserted:        &scalarutils.Date{},
+									InformationSource:   &domain.FHIRReference{},
+									DerivedFrom:         []*domain.FHIRReference{},
+									ReasonCode:          []*domain.FHIRCodeableConcept{},
+									ReasonReference:     []*domain.FHIRReference{},
+									Note:                []*domain.FHIRAnnotation{},
+									Dosage:              []*domain.FHIRDosage{},
+									Meta:                &domain.FHIRMeta{},
+									Extension:           []*domain.FHIRExtension{},
 								},
 							},
 						},
@@ -396,7 +428,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									MedicationCodeableConcept: &domain.FHIRCodeableConcept{
 										ID: new(string),
 										Coding: []*domain.FHIRCoding{{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 										}},
 									},
@@ -420,11 +452,9 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 								Node: &domain.FHIRMedicationStatement{
 									ID: new(string),
 									MedicationCodeableConcept: &domain.FHIRCodeableConcept{
-										ID: new(string),
-										Coding: []*domain.FHIRCoding{{
-											Code:    scalarutils.Code(code),
-											Display: gofakeit.BS(),
-										}},
+										ID:     new(string),
+										Coding: []*domain.FHIRCoding{{Code: (*scalarutils.Code)(&code), Display: gofakeit.BS()}},
+										Text:   "",
 									},
 									Subject: &domain.FHIRReference{
 										ID: new(string),
@@ -497,7 +527,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									MedicationCodeableConcept: &domain.FHIRCodeableConcept{
 										ID: new(string),
 										Coding: []*domain.FHIRCoding{{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 										}},
 									},
@@ -534,7 +564,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -547,7 +577,9 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 								},
 								OnsetPeriod: &domain.FHIRPeriod{
-									Start: "2000-01-01",
+									ID:    new(string),
+									Start: "2020-09-24T18:02:38.661033Z",
+									End:   "2020-09-24T18:02:38.661033Z",
 								},
 							},
 						},
@@ -588,7 +620,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -625,7 +657,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -664,7 +696,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -699,7 +731,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -736,7 +768,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -865,7 +897,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -905,7 +937,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -943,7 +975,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
@@ -1017,7 +1049,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 						Observations: []domain.FHIRObservation{
 							{
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 								},
 								Subject: &domain.FHIRReference{
@@ -1088,7 +1120,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 								},
 								Subject: &domain.FHIRReference{
@@ -1159,7 +1191,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID:     new(string),
 									Coding: []*domain.FHIRCoding{},
 								},
@@ -1230,7 +1262,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 						Observations: []domain.FHIRObservation{
 							{
 								ID: new(string),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
@@ -1302,7 +1334,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
@@ -1373,7 +1405,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
@@ -1446,7 +1478,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
@@ -1519,7 +1551,7 @@ func TestClinicalUseCaseImpl_GetMedicalData(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),

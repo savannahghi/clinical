@@ -115,6 +115,10 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
+			if edge.Code == nil {
+				continue
+			}
+
 			if edge.Code.Coding == nil {
 				continue
 			}
