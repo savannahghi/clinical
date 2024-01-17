@@ -168,6 +168,12 @@ func (r *mutationResolver) AppendNoteToComposition(ctx context.Context, id strin
 	return r.usecases.AppendNoteToComposition(ctx, id, input)
 }
 
+// PatchHeight is the resolver for the patchHeight field.
+func (r *mutationResolver) PatchHeight(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchPatientHeight(ctx, id, value)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()

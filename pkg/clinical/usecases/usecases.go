@@ -84,6 +84,9 @@ type Clinical interface {
 	CreateComposition(ctx context.Context, input dto.CompositionInput) (*dto.Composition, error)
 	AppendNoteToComposition(ctx context.Context, id string, input dto.PatchCompositionInput) (*dto.Composition, error)
 	ListPatientCompositions(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) (*dto.CompositionConnection, error)
+
+	PatchPatientObservations(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientHeight(ctx context.Context, id string, value string) (*dto.Observation, error)
 }
 
 // Interactor is an implementation of the usecases interface

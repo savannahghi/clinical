@@ -63,6 +63,20 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 		},
 
 		{
+			name: "Sad case: fail to get encounter",
+			args: args{
+				ctx: context.Background(),
+				input: dto.AllergyInput{
+					PatientID:         gofakeit.UUID(),
+					Code:              "100",
+					TerminologySource: dto.TerminologySource("invalid"),
+					EncounterID:       gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
+		},
+
+		{
 			name: "Sad case: unsupported concept source",
 			args: args{
 				ctx: context.Background(),
@@ -216,6 +230,8 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+			codingCode := "20"
+			manifestationCodingCode := scalarutils.Code(gofakeit.BS())
 
 			if tt.name == "Happy case: create allergy intolerance" {
 				system := gofakeit.URL()
@@ -230,7 +246,7 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 							Code: &domain.FHIRCodeableConcept{
 								Coding: []*domain.FHIRCoding{{
 									System: (*scalarutils.URI)(&system),
-									Code:   "20",
+									Code:   (*scalarutils.Code)(&codingCode),
 								}},
 							},
 							OnsetPeriod: &domain.FHIRPeriod{
@@ -250,7 +266,7 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 											Coding: []*domain.FHIRCoding{
 												{
 													System: (*scalarutils.URI)(&system),
-													Code:   scalarutils.Code(gofakeit.BS()),
+													Code:   &manifestationCodingCode,
 												},
 											},
 										},
@@ -265,6 +281,7 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 			if tt.name == "Happy case: create allergy intolerance, no reaction" {
 				system := gofakeit.URL()
 				UUID := gofakeit.UUID()
+				codingCode := "20"
 				fakeFHIR.MockCreateFHIRAllergyIntoleranceFn = func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 					return &domain.FHIRAllergyIntoleranceRelayPayload{
 						Resource: &domain.FHIRAllergyIntolerance{
@@ -273,7 +290,7 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 							Code: &domain.FHIRCodeableConcept{
 								Coding: []*domain.FHIRCoding{{
 									System: (*scalarutils.URI)(&system),
-									Code:   "20",
+									Code:   (*scalarutils.Code)(&codingCode),
 								}},
 							},
 							OnsetPeriod: &domain.FHIRPeriod{
@@ -287,6 +304,12 @@ func TestUseCasesClinicalImpl_CreateAllergyIntolerance(t *testing.T) {
 							},
 						},
 					}, nil
+				}
+			}
+
+			if tt.name == "Sad case: fail to get encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
 
@@ -424,6 +447,18 @@ func TestUseCasesClinicalImpl_SearchAllergy(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid pagination",
+			args: args{
+				ctx:  context.Background(),
+				name: "Peanuts",
+				pagination: dto.Pagination{
+					First: &first,
+					Last:  &first,
+				},
+			},
+			wantErr: true,
 		},
 		{
 			name: "Sad case: unable to search for an allergy",

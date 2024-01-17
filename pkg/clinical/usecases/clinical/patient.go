@@ -197,6 +197,10 @@ func hasNilInObservation(observation domain.FHIRObservation) bool {
 		return true
 	}
 
+	if observation.Code == nil {
+		return true
+	}
+
 	if observation.Code.Coding == nil {
 		return true
 	}
@@ -222,7 +226,7 @@ func mapFHIRMedicationStatementToMedicationStatementDTO(fhirAllergyIntolerance *
 		Status: dto.MedicationStatementStatusEnum(*fhirAllergyIntolerance.Status),
 		Medication: dto.Medication{
 			Name: fhirAllergyIntolerance.MedicationCodeableConcept.Coding[0].Display,
-			Code: string(fhirAllergyIntolerance.MedicationCodeableConcept.Coding[0].Code),
+			Code: fhirAllergyIntoleranceClinicalStatusURL,
 		},
 		PatientID: *fhirAllergyIntolerance.Subject.ID,
 	}
@@ -232,7 +236,7 @@ func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance dom
 	allergyIntolerance := &dto.Allergy{
 		ID:        *fhirAllergyIntolerance.ID,
 		PatientID: *fhirAllergyIntolerance.Patient.ID,
-		Code:      string(fhirAllergyIntolerance.Code.Coding[0].Code),
+		Code:      string(*fhirAllergyIntolerance.Code.Coding[0].Code),
 		Name:      string(fhirAllergyIntolerance.Code.Coding[0].Display),
 		System:    string(fhirAllergyIntolerance.Code.Text),
 	}
@@ -259,7 +263,7 @@ func mapFHIRAllergyIntoleranceToAllergyIntoleranceDTO(fhirAllergyIntolerance dom
 					allergyIntolerance.Reaction.System = string(*coding.System)
 				}
 
-				allergyIntolerance.Reaction.Code = string(coding.Code)
+				allergyIntolerance.Reaction.Code = string(*coding.Code)
 				allergyIntolerance.Reaction.Name = string(coding.Display)
 			}
 		}

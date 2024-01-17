@@ -61,6 +61,8 @@ type FHIRMock struct {
 	MockDeleteFHIRMedicationRequestFn     func(ctx context.Context, id string) (bool, error)
 	MockSearchFHIRObservationFn           func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
 	MockCreateFHIRObservationFn           func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error)
+	MockGetFHIRObservationFn              func(ctx context.Context, id string) (*domain.FHIRObservationRelayPayload, error)
+	MockPatchFHIRObservationFn            func(ctx context.Context, id string, input domain.FHIRObservationInput) (*domain.FHIRObservation, error)
 	MockDeleteFHIRObservationFn           func(ctx context.Context, id string) (bool, error)
 	MockGetFHIRPatientFn                  func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error)
 	MockDeleteFHIRPatientFn               func(ctx context.Context, id string) (bool, error)
@@ -120,6 +122,9 @@ func NewFHIRMock() *FHIRMock {
 			note := scalarutils.Markdown("Fever Fever")
 			noteTime := time.Now()
 			uri := scalarutils.URI("1234567")
+			clinicalStatusCode := "active"
+			codingCode := "1234"
+			categoryCode := "PROBLEM_LIST_ITEM"
 
 			return &domain.FHIRConditionRelayPayload{
 				Resource: &domain.FHIRCondition{
@@ -130,7 +135,7 @@ func NewFHIRMock() *FHIRMock {
 						Coding: []*domain.FHIRCoding{
 							{
 								System:  &statusSystem,
-								Code:    scalarutils.Code(string(status)),
+								Code:    (*scalarutils.Code)(&clinicalStatusCode),
 								Display: string(status),
 							},
 						},
@@ -140,7 +145,7 @@ func NewFHIRMock() *FHIRMock {
 						Coding: []*domain.FHIRCoding{
 							{
 								System:  &uri,
-								Code:    scalarutils.Code("1234"),
+								Code:    (*scalarutils.Code)(&codingCode),
 								Display: "1234",
 							},
 						},
@@ -168,7 +173,7 @@ func NewFHIRMock() *FHIRMock {
 									ID:           &UUID,
 									System:       (*scalarutils.URI)(&UUID),
 									Version:      &UUID,
-									Code:         "PROBLEM_LIST_ITEM",
+									Code:         (*scalarutils.Code)(&categoryCode),
 									Display:      gofakeit.BeerAlcohol(),
 									UserSelected: new(bool),
 								},
@@ -463,6 +468,8 @@ func NewFHIRMock() *FHIRMock {
 			UID := gofakeit.UUID()
 			system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
 			severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
+			codingCode := "124"
+			reactionCode := "1234"
 			return &domain.PagedFHIRAllergy{
 				Allergies: []domain.FHIRAllergyIntolerance{
 					{
@@ -475,7 +482,7 @@ func NewFHIRMock() *FHIRMock {
 							Coding: []*domain.FHIRCoding{
 								{
 									ID:     &UID,
-									Code:   scalarutils.Code("124"),
+									Code:   (*scalarutils.Code)(&codingCode),
 									System: &system,
 								},
 							},
@@ -494,7 +501,7 @@ func NewFHIRMock() *FHIRMock {
 											{
 												ID:     new(string),
 												System: &system,
-												Code:   scalarutils.Code("1234"),
+												Code:   (*scalarutils.Code)(&reactionCode),
 											},
 										},
 										Text: gofakeit.Name(),
@@ -505,6 +512,11 @@ func NewFHIRMock() *FHIRMock {
 						},
 						Meta:      &domain.FHIRMeta{},
 						Extension: []*domain.FHIRExtension{},
+						OnsetPeriod: &domain.FHIRPeriod{
+							ID:    new(string),
+							Start: "2020-09-24T18:02:38.661033Z",
+							End:   "2020-09-24T18:02:38.661033Z",
+						},
 					},
 				},
 				HasNextPage:     false,
@@ -518,6 +530,8 @@ func NewFHIRMock() *FHIRMock {
 			UID := gofakeit.UUID()
 			system := scalarutils.URI("/orgs/CIEL/sources/CIEL/concepts/148888/")
 			severityStatus := domain.AllergyIntoleranceReactionSeverityEnumSevere
+			codingCode := "124"
+			reactionCode := "1234"
 			return &domain.PagedFHIRAllergy{
 				Allergies: []domain.FHIRAllergyIntolerance{
 					{
@@ -530,7 +544,7 @@ func NewFHIRMock() *FHIRMock {
 							Coding: []*domain.FHIRCoding{
 								{
 									ID:     &UID,
-									Code:   scalarutils.Code("124"),
+									Code:   (*scalarutils.Code)(&codingCode),
 									System: &system,
 								},
 							},
@@ -549,7 +563,7 @@ func NewFHIRMock() *FHIRMock {
 											{
 												ID:     new(string),
 												System: &system,
-												Code:   scalarutils.Code("1234"),
+												Code:   (*scalarutils.Code)(&reactionCode),
 											},
 										},
 										Text: gofakeit.Name(),
@@ -572,6 +586,7 @@ func NewFHIRMock() *FHIRMock {
 		MockGetFHIRAllergyIntoleranceFn: func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 			UID := uuid.NewString()
 			system := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+			codingCode := "1234"
 			return &domain.FHIRAllergyIntoleranceRelayPayload{
 				Resource: &domain.FHIRAllergyIntolerance{
 					ID:         &UID,
@@ -591,7 +606,7 @@ func NewFHIRMock() *FHIRMock {
 							{
 								ID:     &UID,
 								System: &system,
-								Code:   scalarutils.Code("1234"),
+								Code:   (*scalarutils.Code)(&codingCode),
 							},
 						},
 						Text: "",
@@ -604,21 +619,26 @@ func NewFHIRMock() *FHIRMock {
 					},
 					OnsetDateTime: &scalarutils.Date{},
 					OnsetAge:      &domain.FHIRAge{},
-					OnsetPeriod:   &domain.FHIRPeriod{},
-					OnsetRange:    &domain.FHIRRange{},
-					OnsetString:   new(string),
-					RecordedDate:  &scalarutils.Date{},
-					Recorder:      &domain.FHIRReference{},
-					Asserter:      &domain.FHIRReference{},
-					Note:          []*domain.FHIRAnnotation{},
-					Reaction:      []*domain.FHIRAllergyintoleranceReaction{},
-					Meta:          &domain.FHIRMeta{},
-					Extension:     []*domain.FHIRExtension{},
+					OnsetPeriod: &domain.FHIRPeriod{
+						ID:    new(string),
+						Start: "2020-09-24T18:02:38.661033Z",
+						End:   "2020-09-24T18:02:38.661033Z",
+					},
+					OnsetRange:   &domain.FHIRRange{},
+					OnsetString:  new(string),
+					RecordedDate: &scalarutils.Date{},
+					Recorder:     &domain.FHIRReference{},
+					Asserter:     &domain.FHIRReference{},
+					Note:         []*domain.FHIRAnnotation{},
+					Reaction:     []*domain.FHIRAllergyintoleranceReaction{},
+					Meta:         &domain.FHIRMeta{},
+					Extension:    []*domain.FHIRExtension{},
 				},
 			}, nil
 		},
 		MockCreateFHIRAllergyIntoleranceFn: func(ctx context.Context, input domain.FHIRAllergyIntoleranceInput) (*domain.FHIRAllergyIntoleranceRelayPayload, error) {
 			system := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
+			codingCode := "1234"
 			return &domain.FHIRAllergyIntoleranceRelayPayload{
 				Resource: &domain.FHIRAllergyIntolerance{
 					ID:   new(string),
@@ -634,7 +654,7 @@ func NewFHIRMock() *FHIRMock {
 										{
 											ID:     new(string),
 											System: &system,
-											Code:   scalarutils.Code("1234"),
+											Code:   (*scalarutils.Code)(&codingCode),
 										},
 									},
 									Text: gofakeit.Name(),
@@ -665,6 +685,8 @@ func NewFHIRMock() *FHIRMock {
 			patientType := "Patient"
 			organizationRef := "Organization/" + uuid.NewString()
 			compositionSectionTextStatus := "generated"
+			typeCode := scalarutils.Code(string(common.LOINCProgressNoteCode))
+			categoryCode := scalarutils.Code(string(common.LOINCAssessmentPlanCode))
 
 			composition := domain.FHIRComposition{
 				ID: &id,
@@ -681,7 +703,7 @@ func NewFHIRMock() *FHIRMock {
 						{
 							ID:      &id,
 							System:  &typeSystem,
-							Code:    scalarutils.Code(string(common.LOINCProgressNoteCode)),
+							Code:    &typeCode,
 							Display: compositionType,
 						},
 					},
@@ -695,7 +717,7 @@ func NewFHIRMock() *FHIRMock {
 								ID:      &id,
 								System:  &categorySystem,
 								Version: new(string),
-								Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+								Code:    &categoryCode,
 								Display: category,
 							},
 						},
@@ -772,6 +794,8 @@ func NewFHIRMock() *FHIRMock {
 			patientType := "Patient"
 			organizationRef := "Organization/" + uuid.NewString()
 			compositionSectionTextStatus := "generated"
+			typeCode := scalarutils.Code(string(common.LOINCProgressNoteCode))
+			categoryCode := scalarutils.Code(string(common.LOINCAssessmentPlanCode))
 
 			return &domain.FHIRCompositionRelayPayload{
 				Resource: &domain.FHIRComposition{
@@ -789,7 +813,7 @@ func NewFHIRMock() *FHIRMock {
 							{
 								ID:      &idd,
 								System:  &typeSystem,
-								Code:    scalarutils.Code(string(common.LOINCProgressNoteCode)),
+								Code:    &typeCode,
 								Display: compositionType,
 							},
 						},
@@ -803,7 +827,7 @@ func NewFHIRMock() *FHIRMock {
 									ID:      &idd,
 									System:  &categorySystem,
 									Version: new(string),
-									Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+									Code:    &categoryCode,
 									Display: category,
 								},
 							},
@@ -904,6 +928,7 @@ func NewFHIRMock() *FHIRMock {
 			patientType := "Patient"
 			organizationRef := "Organization/" + uuid.NewString()
 			compositionSectionTextStatus := "generated"
+			code := scalarutils.Code(common.LOINCAssessmentPlanCode)
 
 			return &domain.FHIRCompositionRelayPayload{
 				Resource: &domain.FHIRComposition{
@@ -917,7 +942,7 @@ func NewFHIRMock() *FHIRMock {
 							{
 								ID:      &UUID,
 								System:  &typeSystem,
-								Code:    scalarutils.Code(string(common.LOINCProgressNoteCode)),
+								Code:    &code,
 								Display: compositionType,
 							},
 						},
@@ -931,7 +956,7 @@ func NewFHIRMock() *FHIRMock {
 									ID:      &UUID,
 									System:  &categorySystem,
 									Version: new(string),
-									Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+									Code:    &code,
 									Display: category,
 								},
 							},
@@ -1002,6 +1027,8 @@ func NewFHIRMock() *FHIRMock {
 			note := scalarutils.Markdown("Fever Fever")
 			noteTime := time.Now()
 			uri := scalarutils.URI("1234567345")
+			codingCode := "1234"
+			categoryCode := "PROBLEM_LIST_ITEM"
 
 			condition := domain.FHIRCondition{
 				ID:         &id,
@@ -1011,7 +1038,7 @@ func NewFHIRMock() *FHIRMock {
 					Coding: []*domain.FHIRCoding{
 						{
 							System:  &statusSystem,
-							Code:    scalarutils.Code(string(status)),
+							Code:    (*scalarutils.Code)(&status),
 							Display: string(status),
 						},
 					},
@@ -1021,7 +1048,7 @@ func NewFHIRMock() *FHIRMock {
 					Coding: []*domain.FHIRCoding{
 						{
 							System:  &uri,
-							Code:    scalarutils.Code("1234"),
+							Code:    (*scalarutils.Code)(&codingCode),
 							Display: "1234567",
 						},
 					},
@@ -1049,7 +1076,7 @@ func NewFHIRMock() *FHIRMock {
 								ID:           &id,
 								System:       (*scalarutils.URI)(&id),
 								Version:      &id,
-								Code:         "PROBLEM_LIST_ITEM",
+								Code:         (*scalarutils.Code)(&categoryCode),
 								Display:      gofakeit.BeerAlcohol(),
 								UserSelected: new(bool),
 							},
@@ -1240,13 +1267,13 @@ func NewFHIRMock() *FHIRMock {
 				BasedOn:    []*domain.FHIRReference{},
 				PartOf:     []*domain.FHIRReference{},
 				Category:   []*domain.FHIRCodeableConcept{},
-				Code: domain.FHIRCodeableConcept{
+				Code: &domain.FHIRCodeableConcept{
 					ID: new(string),
 					Coding: []*domain.FHIRCoding{
 						{
 							ID:           new(string),
 							Version:      new(string),
-							Code:         "",
+							Code:         (*scalarutils.Code)(&finalStatus),
 							Display:      "Vital",
 							UserSelected: new(bool),
 						},
@@ -1269,6 +1296,138 @@ func NewFHIRMock() *FHIRMock {
 				ValueQuantity:        &domain.FHIRQuantity{},
 				ValueCodeableConcept: (*scalarutils.Code)(&uuid),
 				ValueString:          new(string),
+				ValueBoolean:         new(bool),
+				ValueInteger:         new(string),
+				ValueRange:           &domain.FHIRRange{},
+				ValueRatio:           &domain.FHIRRatio{},
+				ValueSampledData: &domain.FHIRSampledData{
+					ID: &uuid,
+				},
+				ValueTime:        &time.Time{},
+				ValueDateTime:    &scalarutils.Date{},
+				ValuePeriod:      &domain.FHIRPeriod{},
+				DataAbsentReason: &domain.FHIRCodeableConcept{},
+				Interpretation:   []*domain.FHIRCodeableConcept{},
+				Note:             []*domain.FHIRAnnotation{},
+				BodySite:         &domain.FHIRCodeableConcept{},
+				Method:           &domain.FHIRCodeableConcept{},
+				Specimen:         &domain.FHIRReference{},
+				Device:           &domain.FHIRReference{},
+				ReferenceRange:   []*domain.FHIRObservationReferencerange{},
+				HasMember:        []*domain.FHIRReference{},
+				DerivedFrom:      []*domain.FHIRReference{},
+				Component:        []*domain.FHIRObservationComponent{},
+				Meta:             &domain.FHIRMeta{},
+				Extension:        []*domain.FHIRExtension{},
+			}, nil
+		},
+		MockGetFHIRObservationFn: func(ctx context.Context, id string) (*domain.FHIRObservationRelayPayload, error) {
+			uuid := uuid.New().String()
+			instant := gofakeit.TimeZone()
+			finalStatus := domain.ObservationStatusEnumFinal
+
+			return &domain.FHIRObservationRelayPayload{
+				Resource: &domain.FHIRObservation{
+					ID:         &uuid,
+					Text:       &domain.FHIRNarrative{},
+					Identifier: []*domain.FHIRIdentifier{},
+					BasedOn:    []*domain.FHIRReference{},
+					PartOf:     []*domain.FHIRReference{},
+					Code: &domain.FHIRCodeableConcept{
+						ID: new(string),
+						Coding: []*domain.FHIRCoding{
+							{
+								ID:           new(string),
+								Version:      new(string),
+								Code:         (*scalarutils.Code)(&finalStatus),
+								Display:      "Vital",
+								UserSelected: new(bool),
+							},
+						},
+						Text: "",
+					},
+					Subject: &domain.FHIRReference{
+						ID: &id,
+					},
+					Status: &finalStatus,
+					Focus:  []*domain.FHIRReference{},
+					Encounter: &domain.FHIRReference{
+						ID: &id,
+					},
+					Category:             []*domain.FHIRCodeableConcept{},
+					EffectiveDateTime:    &scalarutils.Date{},
+					EffectivePeriod:      &domain.FHIRPeriod{},
+					EffectiveTiming:      &domain.FHIRTiming{},
+					EffectiveInstant:     (*scalarutils.Instant)(&instant),
+					Performer:            []*domain.FHIRReference{},
+					ValueQuantity:        &domain.FHIRQuantity{},
+					ValueCodeableConcept: (*scalarutils.Code)(&uuid),
+					ValueString:          new(string),
+					ValueBoolean:         new(bool),
+					ValueInteger:         new(string),
+					ValueRange:           &domain.FHIRRange{},
+					ValueRatio:           &domain.FHIRRatio{},
+					ValueSampledData: &domain.FHIRSampledData{
+						ID: &uuid,
+					},
+					ValueTime:        &time.Time{},
+					ValueDateTime:    &scalarutils.Date{},
+					ValuePeriod:      &domain.FHIRPeriod{},
+					DataAbsentReason: &domain.FHIRCodeableConcept{},
+					Interpretation:   []*domain.FHIRCodeableConcept{},
+					Note:             []*domain.FHIRAnnotation{},
+					BodySite:         &domain.FHIRCodeableConcept{},
+					Method:           &domain.FHIRCodeableConcept{},
+					Specimen:         &domain.FHIRReference{},
+					Device:           &domain.FHIRReference{},
+					ReferenceRange:   []*domain.FHIRObservationReferencerange{},
+					HasMember:        []*domain.FHIRReference{},
+					DerivedFrom:      []*domain.FHIRReference{},
+					Component:        []*domain.FHIRObservationComponent{},
+					Meta:             &domain.FHIRMeta{},
+					Extension:        []*domain.FHIRExtension{},
+				},
+			}, nil
+		},
+		MockPatchFHIRObservationFn: func(ctx context.Context, id string, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
+			cancelledStatus := domain.ObservationStatusEnumFinal
+			uuid := uuid.New().String()
+			instant := gofakeit.TimeZone()
+			value := "170"
+			return &domain.FHIRObservation{
+				ID:         new(string),
+				Text:       &domain.FHIRNarrative{},
+				Identifier: []*domain.FHIRIdentifier{},
+				BasedOn:    []*domain.FHIRReference{},
+				PartOf:     []*domain.FHIRReference{},
+				Status:     &cancelledStatus,
+				Category:   []*domain.FHIRCodeableConcept{},
+				Code: &domain.FHIRCodeableConcept{
+					ID: new(string),
+					Coding: []*domain.FHIRCoding{
+						{
+							ID:           new(string),
+							Version:      new(string),
+							Code:         (*scalarutils.Code)(&cancelledStatus),
+							Display:      "Updated Vital",
+							UserSelected: new(bool),
+						},
+					},
+					Text: "",
+				},
+				Subject: &domain.FHIRReference{
+					ID: &id,
+				},
+				Focus:                []*domain.FHIRReference{},
+				Encounter:            &domain.FHIRReference{},
+				EffectiveDateTime:    &scalarutils.Date{},
+				EffectivePeriod:      &domain.FHIRPeriod{},
+				EffectiveTiming:      &domain.FHIRTiming{},
+				EffectiveInstant:     (*scalarutils.Instant)(&instant),
+				Performer:            []*domain.FHIRReference{},
+				ValueQuantity:        &domain.FHIRQuantity{},
+				ValueCodeableConcept: (*scalarutils.Code)(&uuid),
+				ValueString:          &value,
 				ValueBoolean:         new(bool),
 				ValueInteger:         new(string),
 				ValueRange:           &domain.FHIRRange{},
@@ -1321,7 +1480,52 @@ func NewFHIRMock() *FHIRMock {
 			return true, nil
 		},
 		MockSearchFHIRMedicationStatementFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationStatementRelayConnection, error) {
-			return &domain.FHIRMedicationStatementRelayConnection{}, nil
+			codingCode := "123"
+			return &domain.FHIRMedicationStatementRelayConnection{
+				Edges: []*domain.FHIRMedicationStatementRelayEdge{
+					{
+						Cursor: new(string),
+						Node: &domain.FHIRMedicationStatement{
+							ID:         new(string),
+							Text:       &domain.FHIRNarrative{},
+							Identifier: []*domain.FHIRIdentifier{},
+							BasedOn:    []*domain.FHIRReference{},
+							PartOf:     []*domain.FHIRReference{},
+							// Status:                    &"",
+							StatusReason: []*domain.FHIRCodeableConcept{},
+							Category: &domain.FHIRCodeableConcept{
+								ID: new(string),
+								Coding: []*domain.FHIRCoding{
+									{
+										ID:           new(string),
+										Version:      new(string),
+										Code:         (*scalarutils.Code)(&codingCode),
+										Display:      "",
+										UserSelected: new(bool),
+									},
+								},
+								Text: "",
+							},
+							MedicationCodeableConcept: &domain.FHIRCodeableConcept{},
+							MedicationReference:       &domain.FHIRMedication{},
+							Subject:                   &domain.FHIRReference{},
+							Context:                   &domain.FHIRReference{},
+							EffectiveDateTime:         &scalarutils.Date{},
+							EffectivePeriod:           &domain.FHIRPeriod{},
+							DateAsserted:              &scalarutils.Date{},
+							InformationSource:         &domain.FHIRReference{},
+							DerivedFrom:               []*domain.FHIRReference{},
+							ReasonCode:                []*domain.FHIRCodeableConcept{},
+							ReasonReference:           []*domain.FHIRReference{},
+							Note:                      []*domain.FHIRAnnotation{},
+							Dosage:                    []*domain.FHIRDosage{},
+							Meta:                      &domain.FHIRMeta{},
+							Extension:                 []*domain.FHIRExtension{},
+						},
+					},
+				},
+				PageInfo: &firebasetools.PageInfo{},
+			}, nil
 		},
 		MockGetFHIROrganizationFn: func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 			id := uuid.New().String()
@@ -1571,13 +1775,13 @@ func NewFHIRMock() *FHIRMock {
 						Encounter: &domain.FHIRReference{
 							ID: &uuid,
 						},
-						Code: domain.FHIRCodeableConcept{
+						Code: &domain.FHIRCodeableConcept{
 							ID: new(string),
 							Coding: []*domain.FHIRCoding{
 								{
 									ID:           new(string),
 									Version:      new(string),
-									Code:         "",
+									Code:         (*scalarutils.Code)(&finalStatus),
 									Display:      "Vital",
 									UserSelected: new(bool),
 								},
@@ -1592,13 +1796,13 @@ func NewFHIRMock() *FHIRMock {
 						Encounter: &domain.FHIRReference{
 							ID: &uuid,
 						},
-						Code: domain.FHIRCodeableConcept{
+						Code: &domain.FHIRCodeableConcept{
 							ID: new(string),
 							Coding: []*domain.FHIRCoding{
 								{
 									ID:           new(string),
 									Version:      new(string),
-									Code:         "",
+									Code:         (*scalarutils.Code)(&finalStatus),
 									Display:      "Vital",
 									UserSelected: new(bool),
 								},
@@ -1614,13 +1818,13 @@ func NewFHIRMock() *FHIRMock {
 							ID: &uuid,
 						},
 						Subject: &domain.FHIRReference{},
-						Code: domain.FHIRCodeableConcept{
+						Code: &domain.FHIRCodeableConcept{
 							ID: new(string),
 							Coding: []*domain.FHIRCoding{
 								{
 									ID:           new(string),
 									Version:      new(string),
-									Code:         "",
+									Code:         (*scalarutils.Code)(&finalStatus),
 									Display:      "Vital",
 									UserSelected: new(bool),
 								},
@@ -1908,6 +2112,16 @@ func (fh *FHIRMock) SearchFHIRPatient(ctx context.Context, searchParams string, 
 // SearchPatientObservations mocks the implementation of searching patient observations
 func (fh *FHIRMock) SearchPatientObservations(ctx context.Context, searchParameters map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 	return fh.MockSearchPatientObservationsFn(ctx, searchParameters, tenant, pagination)
+}
+
+// GetFHIRObservation mocks the implementation of getting a resource by its ID
+func (fh *FHIRMock) GetFHIRObservation(ctx context.Context, id string) (*domain.FHIRObservationRelayPayload, error) {
+	return fh.MockGetFHIRObservationFn(ctx, id)
+}
+
+// PatchFHIRObservation is a mock implementation of PatchFHIRObservation method
+func (fh *FHIRMock) PatchFHIRObservation(ctx context.Context, id string, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
+	return fh.MockPatchFHIRObservationFn(ctx, id, input)
 }
 
 // GetFHIRAllergyIntolerance mocks the implementation of getting a resource by its ID

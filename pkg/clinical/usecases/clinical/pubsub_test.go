@@ -273,6 +273,38 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Happy Case - Successfully create pubsub vitals with facilityID",
+			args: args{
+				ctx: ctx,
+				data: dto.VitalSignPubSubMessage{
+					PatientID:      uuid.NewString(),
+					OrganizationID: "",
+					Name:           "",
+					FacilityID:     uuid.NewString(),
+					ConceptID:      new(string),
+					Value:          "",
+					Date:           time.Time{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - fail to create pubsub vitals with facilityID",
+			args: args{
+				ctx: ctx,
+				data: dto.VitalSignPubSubMessage{
+					PatientID:      uuid.NewString(),
+					OrganizationID: "",
+					Name:           "",
+					FacilityID:     uuid.NewString(),
+					ConceptID:      new(string),
+					Value:          "",
+					Date:           time.Time{},
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "Sad Case - Fail to find patient",
 			args: args{
 				ctx: ctx,
@@ -344,6 +376,12 @@ func TestUseCasesClinicalImpl_CreatePubsubVitals(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - fail to create pubsub vitals with facilityID" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to create observation")
+				}
+			}
 
 			if tt.name == "Sad Case - Fail to find patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
@@ -418,6 +456,44 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Happy Case - Successfully create pubsub vitals with facilityID",
+			args: args{
+				ctx: ctx,
+				data: dto.PatientTestResultPubSubMessage{
+					PatientID:      uuid.NewString(),
+					OrganizationID: "",
+					Name:           "",
+					FacilityID:     uuid.NewString(),
+					ConceptID:      new(string),
+					Result: dto.TestResult{
+						Name:      "",
+						ConceptID: new(string),
+					},
+					Date: time.Time{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - fail create pubsub vitals with facilityID",
+			args: args{
+				ctx: ctx,
+				data: dto.PatientTestResultPubSubMessage{
+					PatientID:      uuid.NewString(),
+					OrganizationID: "",
+					Name:           "",
+					FacilityID:     uuid.NewString(),
+					ConceptID:      new(string),
+					Result: dto.TestResult{
+						Name:      "",
+						ConceptID: new(string),
+					},
+					Date: time.Time{},
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "Sad Case - fail to get fhir patient",
 			args: args{
 				ctx: ctx,
@@ -489,6 +565,16 @@ func TestUseCasesClinicalImpl_CreatePubsubTestResult(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - fail create pubsub vitals with facilityID" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to create observation")
+				}
+
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to create observation")
+				}
+			}
 
 			if tt.name == "Sad Case - fail to get fhir patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
@@ -568,6 +654,43 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "Happy Case - Successfully create medication statement - with facilityID",
+			args: args{
+				ctx: ctx,
+				data: dto.MedicationPubSubMessage{
+					PatientID:      uuid.NewString(),
+					OrganizationID: uuid.New().String(),
+					Name:           "",
+					FacilityID:     uuid.NewString(),
+					ConceptID:      new(string),
+					Value:          "",
+					Drug: &dto.MedicationDrug{
+						ConceptID: &conceptID,
+					},
+					Date: time.Time{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - fail to create medication statement with facilityID",
+			args: args{
+				ctx: ctx,
+				data: dto.MedicationPubSubMessage{
+					PatientID:  uuid.NewString(),
+					Name:       "",
+					FacilityID: uuid.NewString(),
+					ConceptID:  new(string),
+					Value:      "",
+					Drug: &dto.MedicationDrug{
+						ConceptID: &conceptID,
+					},
+					Date: time.Time{},
+				},
+			},
+			wantErr: true,
 		},
 		{
 			name: "Sad Case - Fail to get patient",
@@ -654,6 +777,12 @@ func TestUseCasesClinicalImpl_CreatePubsubMedicationStatement(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
+			if tt.name == "Sad Case - fail to create medication statement with facilityID" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to create observation")
+				}
+			}
+
 			if tt.name == "Sad Case - Fail to get patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("failed to get fhir patient")
@@ -713,6 +842,52 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Happy Case - Successfully create allergy with reaction",
+			args: args{
+				ctx: ctx,
+				data: dto.PatientAllergyPubSubMessage{
+					PatientID:      uuid.NewString(),
+					OrganizationID: "",
+					Name:           "",
+					FacilityID:     uuid.NewString(),
+					ConceptID:      new(string),
+					Reaction: dto.AllergyReaction{
+						Name:      "",
+						ConceptID: new(string),
+					},
+					Severity: dto.AllergySeverity{
+						Name:      "",
+						ConceptID: new(string),
+					},
+					Date: time.Time{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - fail create allergy with reaction",
+			args: args{
+				ctx: ctx,
+				data: dto.PatientAllergyPubSubMessage{
+					PatientID:      uuid.NewString(),
+					OrganizationID: "",
+					Name:           "",
+					FacilityID:     uuid.NewString(),
+					ConceptID:      new(string),
+					Reaction: dto.AllergyReaction{
+						Name:      "",
+						ConceptID: new(string),
+					},
+					Severity: dto.AllergySeverity{
+						Name:      "",
+						ConceptID: new(string),
+					},
+					Date: time.Time{},
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "Sad Case - Fail to get user profile",
 			args: args{
 				ctx: ctx,
@@ -754,8 +929,11 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 					Name:           "",
 					ConceptID:      new(string),
 					Date:           time.Time{},
-					Reaction:       dto.AllergyReaction{},
-					Severity:       dto.AllergySeverity{},
+					Reaction: dto.AllergyReaction{
+						Name:      "",
+						ConceptID: new(string),
+					},
+					Severity: dto.AllergySeverity{},
 				},
 			},
 			wantErr: true,
@@ -788,6 +966,12 @@ func TestUseCasesClinicalImpl_CreatePubsubAllergyIntolerance(t *testing.T) {
 
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - fail create allergy with reaction" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to create allergy with reaction")
+				}
+			}
 
 			if tt.name == "Sad Case - Fail to get user profile" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {

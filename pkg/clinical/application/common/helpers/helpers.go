@@ -265,10 +265,11 @@ func PhysicalPostalAddressesToFHIRAddresses(
 func MaritalStatusEnumToCodeableConcept(val domain.MaritalStatus) *domain.FHIRCodeableConcept {
 	sel := true
 	disp := domain.MaritalStatusDisplay(val)
+	codingCode := scalarutils.Code(val.String())
 	output := &domain.FHIRCodeableConcept{
 		Coding: []*domain.FHIRCoding{
 			{
-				Code:         scalarutils.Code(val.String()),
+				Code:         &codingCode,
 				Display:      disp,
 				UserSelected: &sel,
 			},

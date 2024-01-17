@@ -31,7 +31,7 @@ type FHIRObservation struct {
 	Category []*FHIRCodeableConcept `json:"category,omitempty"`
 
 	// Describes what was observed. Sometimes this is called the observation "name".
-	Code FHIRCodeableConcept `json:"code,omitempty"`
+	Code *FHIRCodeableConcept `json:"code,omitempty"`
 
 	// The patient, or group of patients, location, or device this observation is about and into whose record the observation is placed. If the actual focus of the observation is different from the subject (or a sample of, part, or region of the subject), the `focus` element or the `code` itself specifies the actual focus of the observation.
 	Subject *FHIRReference `json:"subject,omitempty"`
@@ -256,7 +256,7 @@ type FHIRObservationInput struct {
 	Category []*FHIRCodeableConceptInput `json:"category,omitempty"`
 
 	// Describes what was observed. Sometimes this is called the observation "name".
-	Code FHIRCodeableConceptInput `json:"code,omitempty"`
+	Code *FHIRCodeableConceptInput `json:"code,omitempty"`
 
 	// The patient, or group of patients, location, or device this observation is about and into whose record the observation is placed. If the actual focus of the observation is different from the subject (or a sample of, part, or region of the subject), the `focus` element or the `code` itself specifies the actual focus of the observation.
 	Subject *FHIRReferenceInput `json:"subject,omitempty"`
@@ -352,7 +352,7 @@ type FHIRObservationInput struct {
 	Component []*FHIRObservationComponentInput `json:"component,omitempty"`
 
 	// Meta stores more information about the resource
-	Meta FHIRMetaInput `json:"meta,omitempty"`
+	Meta *FHIRMetaInput `json:"meta,omitempty"`
 
 	// Extension is an optional element that provides additional information not captured in the basic resource definition
 	Extension []*FHIRExtension `json:"extension,omitempty"`
@@ -414,4 +414,9 @@ type PagedFHIRObservations struct {
 	HasPreviousPage bool
 	PreviousCursor  string
 	TotalCount      int
+}
+
+// FHIRObservationRelayPayload is used to return single instance of Observation
+type FHIRObservationRelayPayload struct {
+	Resource *FHIRObservation `json:"resource,omitempty"`
 }

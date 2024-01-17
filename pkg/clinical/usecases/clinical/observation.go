@@ -62,6 +62,11 @@ func (c *UseCasesClinicalImpl) GetPatientHeightEntries(ctx context.Context, pati
 	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.HeightCIELTerminologyCode, pagination)
 }
 
+// PatchPatientHeight patches the height record of a patient
+func (c *UseCasesClinicalImpl) PatchPatientHeight(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	return c.PatchPatientObservations(ctx, id, value)
+}
+
 // RecordWeight records a patient's weight
 func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode)
@@ -236,7 +241,7 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 			},
 		},
 		EffectiveInstant: &instant,
-		Code: domain.FHIRCodeableConceptInput{
+		Code: &domain.FHIRCodeableConceptInput{
 			Coding: []*domain.FHIRCodingInput{
 				{
 					System:  (*scalarutils.URI)(&vitalsConcept.URL),
@@ -263,7 +268,7 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 		return nil, err
 	}
 
-	observation.Meta = domain.FHIRMetaInput{
+	observation.Meta = &domain.FHIRMetaInput{
 		Tag: tags,
 	}
 
@@ -337,4 +342,45 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 	connection := dto.CreateObservationConnection(observations, pageInfo, patientObs.TotalCount)
 
 	return &connection, nil
+}
+
+// PatchPatientObservations update a patient's observation resource
+func (c *UseCasesClinicalImpl) PatchPatientObservations(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	if value == "" {
+		return nil, fmt.Errorf("observation value required")
+	}
+
+	if id == "" {
+		return nil, fmt.Errorf("an observation id is required")
+	}
+
+	observation, err := c.infrastructure.FHIR.GetFHIRObservation(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, *observation.Resource.Encounter.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot patch an observation in a finished encounter")
+	}
+
+	instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
+
+	observationInput := &domain.FHIRObservationInput{
+		EffectiveInstant: &instant,
+		ValueString:      &value,
+	}
+
+	output, err := c.infrastructure.FHIR.PatchFHIRObservation(ctx, id, *observationInput)
+	if err != nil {
+		return nil, err
+	}
+
+	result := mapFHIRObservationToObservationDTO(*output)
+
+	return result, nil
 }

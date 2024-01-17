@@ -353,7 +353,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -386,6 +386,8 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 					note := scalarutils.Markdown("Fever Fever")
 					noteTime := time.Now()
 					uri := scalarutils.URI("1234567345")
+					codingCode := "1234"
+					categoryCode := "PROBLEM_LIST_ITEM"
 					return &domain.PagedFHIRCondition{
 						Conditions: []domain.FHIRCondition{
 							{
@@ -397,7 +399,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									Coding: []*domain.FHIRCoding{
 										{
 											System:  &statusSystem,
-											Code:    scalarutils.Code(string(status)),
+											Code:    (*scalarutils.Code)(&status),
 											Display: string(status),
 										},
 									},
@@ -407,7 +409,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									Coding: []*domain.FHIRCoding{
 										{
 											System:  &uri,
-											Code:    scalarutils.Code("1234"),
+											Code:    (*scalarutils.Code)(&codingCode),
 											Display: "1234567",
 										},
 									},
@@ -435,7 +437,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 												ID:           &id,
 												System:       (*scalarutils.URI)(&id),
 												Version:      &id,
-												Code:         "PROBLEM_LIST_ITEM",
+												Code:         (*scalarutils.Code)(&categoryCode),
 												Display:      gofakeit.BeerAlcohol(),
 												UserSelected: new(bool),
 											},
@@ -460,7 +462,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
 									}},
@@ -530,7 +532,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -567,7 +569,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -660,7 +662,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -699,7 +701,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -740,7 +742,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -787,7 +789,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -834,7 +836,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -882,7 +884,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -929,7 +931,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 						Observations: []domain.FHIRObservation{
 							{
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
 									}},
@@ -959,7 +961,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Text: gofakeit.BS(),
 								},
 								EffectiveDateTime: &scalarutils.Date{
@@ -986,7 +988,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Coding: []*domain.FHIRCoding{},
 									Text:   gofakeit.BS(),
 								},
@@ -1012,7 +1014,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 						Observations: []domain.FHIRObservation{
 							{
 								ID: new(string),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
 									}},
@@ -1042,7 +1044,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
 									}},
@@ -1072,7 +1074,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
 									}},
@@ -1316,6 +1318,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 					statusSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/condition-clinical")
 					status := "inactive"
 					uri := scalarutils.URI("1234567345")
+					codingCode := "1234"
 					return &domain.PagedFHIRCondition{
 						Conditions: []domain.FHIRCondition{
 							{
@@ -1323,7 +1326,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									Coding: []*domain.FHIRCoding{
 										{
 											System:  &statusSystem,
-											Code:    scalarutils.Code(string(status)),
+											Code:    (*scalarutils.Code)(&status),
 											Display: string(status),
 										},
 									},
@@ -1333,7 +1336,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									Coding: []*domain.FHIRCoding{
 										{
 											System:  &uri,
-											Code:    scalarutils.Code("1234"),
+											Code:    (*scalarutils.Code)(&codingCode),
 											Display: "1234567",
 										},
 									},
@@ -1397,6 +1400,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
 					id := gofakeit.UUID()
 					uri := scalarutils.URI("1234567345")
+					codingCode := "1234"
 					return &domain.PagedFHIRCondition{
 						Conditions: []domain.FHIRCondition{
 							{
@@ -1405,7 +1409,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									Coding: []*domain.FHIRCoding{
 										{
 											System:  &uri,
-											Code:    scalarutils.Code("1234"),
+											Code:    (*scalarutils.Code)(&codingCode),
 											Display: "1234567",
 										},
 									},
@@ -1427,6 +1431,8 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
 					id := gofakeit.UUID()
 					uri := scalarutils.URI("1234567345")
+					codingCode := "1234"
+					categoryCode := "PROBLEM_LIST_ITEM"
 					return &domain.PagedFHIRCondition{
 						Conditions: []domain.FHIRCondition{
 							{
@@ -1435,7 +1441,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									Coding: []*domain.FHIRCoding{
 										{
 											System:  &uri,
-											Code:    scalarutils.Code("1234"),
+											Code:    (*scalarutils.Code)(&codingCode),
 											Display: "1234567",
 										},
 									},
@@ -1449,7 +1455,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 												ID:           &id,
 												System:       (*scalarutils.URI)(&id),
 												Version:      &id,
-												Code:         "PROBLEM_LIST_ITEM",
+												Code:         (*scalarutils.Code)(&categoryCode),
 												Display:      gofakeit.BeerAlcohol(),
 												UserSelected: new(bool),
 											},
@@ -1473,6 +1479,8 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 					id := gofakeit.UUID()
 					uri := scalarutils.URI("1234567345")
 					note := scalarutils.Markdown("Fever Fever")
+					codingCode := "1234"
+					categoryCode := "PROBLEM_LIST_ITEM"
 					noteTime := time.Now()
 					return &domain.PagedFHIRCondition{
 						Conditions: []domain.FHIRCondition{
@@ -1483,7 +1491,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 									Coding: []*domain.FHIRCoding{
 										{
 											System:  &uri,
-											Code:    scalarutils.Code("1234"),
+											Code:    (*scalarutils.Code)(&codingCode),
 											Display: "1234567",
 										},
 									},
@@ -1503,7 +1511,7 @@ func TestClinicalUseCaseImpl_PatientTimeline(t *testing.T) {
 												ID:           &id,
 												System:       (*scalarutils.URI)(&id),
 												Version:      &id,
-												Code:         "PROBLEM_LIST_ITEM",
+												Code:         (*scalarutils.Code)(&categoryCode),
 												Display:      gofakeit.BeerAlcohol(),
 												UserSelected: new(bool),
 											},
@@ -1601,7 +1609,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 									ID: new(string),
 									Coding: []*domain.FHIRCoding{
 										{
-											Code:    scalarutils.Code(code),
+											Code:    (*scalarutils.Code)(&code),
 											Display: gofakeit.BS(),
 											System:  (*scalarutils.URI)(&system),
 										},
@@ -1633,7 +1641,7 @@ func TestClinicalUseCaseImpl_PatientHealthTimeline(t *testing.T) {
 							{
 								ID:     new(string),
 								Status: (*domain.ObservationStatusEnum)(&status),
-								Code: domain.FHIRCodeableConcept{
+								Code: &domain.FHIRCodeableConcept{
 									Coding: []*domain.FHIRCoding{{
 										Display: gofakeit.BS(),
 									}},
