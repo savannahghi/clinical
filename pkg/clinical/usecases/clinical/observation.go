@@ -67,6 +67,11 @@ func (c *UseCasesClinicalImpl) PatchPatientHeightEntries(ctx context.Context, id
 	return c.PatchPatientObservations(ctx, id, input)
 }
 
+// PatchPatientWeightEntries updates the weight records of a patient
+func (c *UseCasesClinicalImpl) PatchPatientWeightEntries(ctx context.Context, id string, input dto.PatchObservationInput) (*dto.Observation, error) {
+	return c.PatchPatientObservations(ctx, id, input)
+}
+
 // RecordWeight records a patient's weight
 func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode)

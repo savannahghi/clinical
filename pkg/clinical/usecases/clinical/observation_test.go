@@ -4554,3 +4554,147 @@ func TestUseCasesClinicalImpl_PatchPatientHeightEntries(t *testing.T) {
 		}
 	}
 }
+
+func TestUseCasesClinicalImpl_PatchPatientWeightEntries(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		id    string
+		input dto.PatchObservationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - successfully patch patient observations",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: dto.PatchObservationInput{
+					Value: "160",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail validation nil value",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: dto.PatchObservationInput{
+					Value: "",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - missing observation ID",
+			args: args{
+				ctx: context.Background(),
+				input: dto.PatchObservationInput{
+					Value: "150",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get observation",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: dto.PatchObservationInput{
+					Value: "150",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: fail to get encounter",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: dto.PatchObservationInput{
+					Value: "150",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: fail on finished encounter",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: dto.PatchObservationInput{
+					Value: "150",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to patch patient observations",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: dto.PatchObservationInput{
+					Value: "150",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+		fakeFHIR := fakeFHIRMock.NewFHIRMock()
+		fakeOCL := fakeOCLMock.NewFakeOCLMock()
+		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+		if tt.name == "Sad Case - fail to get observation" {
+			fakeFHIR.MockGetFHIRObservationFn = func(ctx context.Context, id string) (*domain.FHIRObservationRelayPayload, error) {
+				return nil, fmt.Errorf("an error occurred")
+			}
+		}
+
+		if tt.name == "Sad Case: fail to get encounter" {
+			fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+				return nil, fmt.Errorf("an error occurred")
+			}
+		}
+
+		if tt.name == "Sad Case: fail on finished encounter" {
+			fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+				UUID := uuid.New().String()
+				PatientRef := "Patient/" + uuid.NewString()
+				return &domain.FHIREncounterRelayPayload{
+					Resource: &domain.FHIREncounter{
+						ID:         &UUID,
+						Text:       &domain.FHIRNarrative{},
+						Identifier: []*domain.FHIRIdentifier{},
+						Status:     domain.EncounterStatusEnum(domain.EncounterStatusEnumFinished),
+						Subject: &domain.FHIRReference{
+							ID:        &UUID,
+							Reference: &PatientRef,
+						},
+					},
+				}, nil
+			}
+		}
+
+		if tt.name == "Sad Case - fail to patch patient observations" {
+			fakeFHIR.MockPatchFHIRObservationFn = func(ctx context.Context, id string, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
+				return nil, fmt.Errorf("an error occurred")
+			}
+		}
+
+		_, err := u.PatchPatientWeightEntries(tt.args.ctx, tt.args.id, tt.args.input)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("PatchPatientWeightEntries() error = %v, wantErr %v", err, tt.wantErr)
+			return
+		}
+	}
+}
