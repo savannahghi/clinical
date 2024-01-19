@@ -179,4 +179,5 @@ extend type Mutation {
 
   patchPatientHeight(id: String!, value: String!): Observation!
   patchPatientWeight(id: String!, value: String!): Observation!
+  patchPatientBMI(id: String!, value: String!): Observation!
 }
