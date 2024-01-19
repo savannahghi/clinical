@@ -177,5 +177,6 @@ extend type Mutation {
     input: PatchCompositionInput!
   ): Composition!
 
-  patchHeight(id: String!, value: String!): Observation!
+  patchPatientHeight(id: String!, value: String!): Observation!
+  patchPatientWeight(id: String!, value: String!): Observation!
 }

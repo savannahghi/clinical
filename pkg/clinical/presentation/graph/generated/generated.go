@@ -197,8 +197,9 @@ type ComplexityRoot struct {
 		EndEpisodeOfCare             func(childComplexity int, id string) int
 		PatchEncounter               func(childComplexity int, encounterID string, input dto.EncounterInput) int
 		PatchEpisodeOfCare           func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
-		PatchHeight                  func(childComplexity int, id string, value string) int
 		PatchPatient                 func(childComplexity int, id string, input dto.PatientInput) int
+		PatchPatientHeight           func(childComplexity int, id string, value string) int
+		PatchPatientWeight           func(childComplexity int, id string, value string) int
 		RecordBloodPressure          func(childComplexity int, input dto.ObservationInput) int
 		RecordBloodSugar             func(childComplexity int, input dto.ObservationInput) int
 		RecordBmi                    func(childComplexity int, input dto.ObservationInput) int
@@ -354,7 +355,8 @@ type MutationResolver interface {
 	CreateAllergyIntolerance(ctx context.Context, input dto.AllergyInput) (*dto.Allergy, error)
 	CreateComposition(ctx context.Context, input dto.CompositionInput) (*dto.Composition, error)
 	AppendNoteToComposition(ctx context.Context, id string, input dto.PatchCompositionInput) (*dto.Composition, error)
-	PatchHeight(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientHeight(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientWeight(ctx context.Context, id string, value string) (*dto.Observation, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -1075,18 +1077,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.PatchEpisodeOfCare(childComplexity, args["id"].(string), args["episodeOfCare"].(dto.EpisodeOfCareInput)), true
 
-	case "Mutation.patchHeight":
-		if e.complexity.Mutation.PatchHeight == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_patchHeight_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.PatchHeight(childComplexity, args["id"].(string), args["value"].(string)), true
-
 	case "Mutation.patchPatient":
 		if e.complexity.Mutation.PatchPatient == nil {
 			break
@@ -1098,6 +1088,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.PatchPatient(childComplexity, args["id"].(string), args["input"].(dto.PatientInput)), true
+
+	case "Mutation.patchPatientHeight":
+		if e.complexity.Mutation.PatchPatientHeight == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_patchPatientHeight_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PatchPatientHeight(childComplexity, args["id"].(string), args["value"].(string)), true
+
+	case "Mutation.patchPatientWeight":
+		if e.complexity.Mutation.PatchPatientWeight == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_patchPatientWeight_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PatchPatientWeight(childComplexity, args["id"].(string), args["value"].(string)), true
 
 	case "Mutation.recordBloodPressure":
 		if e.complexity.Mutation.RecordBloodPressure == nil {
@@ -2185,7 +2199,8 @@ extend type Mutation {
     input: PatchCompositionInput!
   ): Composition!
 
-  patchHeight(id: String!, value: String!): Observation!
+  patchPatientHeight(id: String!, value: String!): Observation!
+  patchPatientWeight(id: String!, value: String!): Observation!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -2860,7 +2875,31 @@ func (ec *executionContext) field_Mutation_patchEpisodeOfCare_args(ctx context.C
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_patchHeight_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_patchPatientHeight_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["value"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["value"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_patchPatientWeight_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -9292,8 +9331,8 @@ func (ec *executionContext) fieldContext_Mutation_appendNoteToComposition(ctx co
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_patchHeight(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_patchHeight(ctx, field)
+func (ec *executionContext) _Mutation_patchPatientHeight(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchPatientHeight(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -9306,7 +9345,7 @@ func (ec *executionContext) _Mutation_patchHeight(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().PatchHeight(rctx, fc.Args["id"].(string), fc.Args["value"].(string))
+		return ec.resolvers.Mutation().PatchPatientHeight(rctx, fc.Args["id"].(string), fc.Args["value"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9323,7 +9362,7 @@ func (ec *executionContext) _Mutation_patchHeight(ctx context.Context, field gra
 	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_patchHeight(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_patchPatientHeight(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -9356,7 +9395,78 @@ func (ec *executionContext) fieldContext_Mutation_patchHeight(ctx context.Contex
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_patchHeight_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_patchPatientHeight_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_patchPatientWeight(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchPatientWeight(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().PatchPatientWeight(rctx, fc.Args["id"].(string), fc.Args["value"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_patchPatientWeight(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_patchPatientWeight_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -16748,9 +16858,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "patchHeight":
+		case "patchPatientHeight":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_patchHeight(ctx, field)
+				return ec._Mutation_patchPatientHeight(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "patchPatientWeight":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_patchPatientWeight(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
