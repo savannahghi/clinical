@@ -1649,3 +1649,36 @@ func (fh StoreImpl) PatchFHIRComposition(_ context.Context, id string, input dom
 
 	return resource, nil
 }
+
+// GetFHIRObservation retrieves instances of FHIRObservation by ID
+func (fh StoreImpl) GetFHIRObservation(_ context.Context, id string) (*domain.FHIRObservationRelayPayload, error) {
+	resource := &domain.FHIRObservation{}
+
+	err := fh.Dataset.GetFHIRResource(observationResourceType, id, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", observationResourceType, id, err)
+	}
+
+	payload := &domain.FHIRObservationRelayPayload{
+		Resource: resource,
+	}
+
+	return payload, nil
+}
+
+// PatchFHIRObservation is ued to patch an observation resource
+func (fh StoreImpl) PatchFHIRObservation(_ context.Context, id string, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", observationResourceType, err)
+	}
+
+	resource := &domain.FHIRObservation{}
+
+	err = fh.Dataset.PatchFHIRResource(observationResourceType, id, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to patch %s resource: %w", observationResourceType, err)
+	}
+
+	return resource, nil
+}

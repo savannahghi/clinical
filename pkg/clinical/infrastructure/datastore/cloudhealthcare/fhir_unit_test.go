@@ -150,7 +150,7 @@ func TestStoreImpl_CreateFHIRObservation(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: domain.FHIRObservationInput{
-					Code: domain.FHIRCodeableConceptInput{
+					Code: &domain.FHIRCodeableConceptInput{
 						Text: "Obs",
 					},
 				},
@@ -162,7 +162,7 @@ func TestStoreImpl_CreateFHIRObservation(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: domain.FHIRObservationInput{
-					Code: domain.FHIRCodeableConceptInput{
+					Code: &domain.FHIRCodeableConceptInput{
 						Text: "Obs",
 					},
 				},
@@ -842,6 +842,8 @@ func fakePatient() (*domain.FHIRPatient, error) {
 	nameUse := domain.HumanNameUseEnumOfficial
 
 	creation := scalarutils.DateTime("2020-09-24T18:02:38.661033Z")
+	typeCode := gofakeit.UUID()
+	maritalStatusCode := scalarutils.Code(domain.MaritalStatusA.String())
 
 	patient := domain.FHIRPatient{
 		ID: &id,
@@ -855,7 +857,7 @@ func fakePatient() (*domain.FHIRPatient, error) {
 						{
 							System:       &system,
 							Version:      &version,
-							Code:         scalarutils.Code(id),
+							Code:         (*scalarutils.Code)(&typeCode),
 							Display:      id,
 							UserSelected: &userSelected,
 						},
@@ -940,7 +942,7 @@ func fakePatient() (*domain.FHIRPatient, error) {
 		MaritalStatus: &domain.FHIRCodeableConcept{
 			Coding: []*domain.FHIRCoding{
 				{
-					Code:         scalarutils.Code(domain.MaritalStatusA.String()),
+					Code:         &maritalStatusCode,
 					Display:      domain.MaritalStatusDisplay(domain.MaritalStatusA),
 					UserSelected: &userSelected,
 				},

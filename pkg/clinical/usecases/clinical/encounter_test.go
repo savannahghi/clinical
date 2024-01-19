@@ -325,6 +325,18 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "Sad Case: Fail to get identifiers",
+			args: args{
+				ctx:       ctx,
+				patientID: uuid.New().String(),
+				pagination: &dto.Pagination{
+					First: &first,
+					Skip:  false,
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "Sad Case - Fail to get patient encounters",
 			args: args{
 				ctx:       ctx,
@@ -364,6 +376,12 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 			if tt.name == "Sad Case - Fail to get fhir patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("failed to get fhir patient")
+				}
+			}
+
+			if tt.name == "Sad Case: Fail to get identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
 				}
 			}
 

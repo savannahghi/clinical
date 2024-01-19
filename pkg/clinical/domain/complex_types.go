@@ -255,7 +255,7 @@ type FHIRCoding struct {
 	Version *string `json:"version,omitempty"`
 
 	// A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
-	Code scalarutils.Code `json:"code,omitempty"`
+	Code *scalarutils.Code `json:"code,omitempty"`
 
 	// A representation of the meaning of the code in the system, following the rules of the system.
 	Display string `json:"display,omitempty"`

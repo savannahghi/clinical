@@ -87,7 +87,7 @@ func (c *UseCasesClinicalImpl) ComposeVitalsInput(ctx context.Context, input dto
 			},
 		},
 		EffectiveInstant: &instant,
-		Code: domain.FHIRCodeableConceptInput{
+		Code: &domain.FHIRCodeableConceptInput{
 			Coding: []*domain.FHIRCodingInput{
 				{
 					System:  (*scalarutils.URI)(&vitalsConcept.URL),
@@ -286,7 +286,7 @@ func (c *UseCasesClinicalImpl) ComposeTestResultInput(ctx context.Context, input
 				Text: "Laboratory",
 			},
 		},
-		Code: domain.FHIRCodeableConceptInput{
+		Code: &domain.FHIRCodeableConceptInput{
 			Coding: []*domain.FHIRCodingInput{
 				{
 					System:  (*scalarutils.URI)(&observationConcept.URL),

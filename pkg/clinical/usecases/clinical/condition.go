@@ -26,6 +26,21 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 		return nil, err
 	}
 
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot record a condition in a finished encounter")
+	}
+
+	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+	encounterType := scalarutils.URI("Encounter")
+
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
+	patientType := scalarutils.URI("Patient")
+
 	conditionConcept, err := c.GetConcept(ctx, input.System, input.Code)
 	if err != nil {
 		return nil, err
@@ -81,6 +96,18 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 			Text: conditionConcept.DisplayName,
 		},
 		RecordedDate: date,
+		Subject: &domain.FHIRReferenceInput{
+			ID:        patient.Resource.ID,
+			Reference: &patientRef,
+			Display:   patient.Resource.Name[0].Text,
+			Type:      &patientType,
+		},
+		Encounter: &domain.FHIRReferenceInput{
+			ID:        encounter.Resource.ID,
+			Reference: &encounterRef,
+			Display:   *encounter.Resource.ID,
+			Type:      &encounterType,
+		},
 	}
 
 	if input.OnsetDate != nil {
@@ -97,35 +124,6 @@ func (c *UseCasesClinicalImpl) CreateCondition(ctx context.Context, input dto.Co
 				Text: &note,
 			},
 		}
-	}
-
-	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
-	encounterType := scalarutils.URI("Encounter")
-
-	conditionInput.Encounter = &domain.FHIRReferenceInput{
-		ID:        encounter.Resource.ID,
-		Reference: &encounterRef,
-		Display:   *encounter.Resource.ID,
-		Type:      &encounterType,
-	}
-
-	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
-		return nil, fmt.Errorf("cannot record a condition in a finished encounter")
-	}
-
-	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
-	patientType := scalarutils.URI("Patient")
-
-	conditionInput.Subject = &domain.FHIRReferenceInput{
-		ID:        patient.Resource.ID,
-		Reference: &patientRef,
-		Display:   patient.Resource.Name[0].Text,
-		Type:      &patientType,
 	}
 
 	tags, err := c.GetTenantMetaTags(ctx)
@@ -159,7 +157,7 @@ func mapFHIRConditionToConditionDTO(condition domain.FHIRCondition) *dto.Conditi
 		ID:           *condition.ID,
 		Status:       dto.ConditionStatus(condition.ClinicalStatus.Text),
 		Name:         condition.Code.Text,
-		Code:         string(condition.Code.Coding[0].Code),
+		Code:         string(*condition.Code.Coding[0].Code),
 		System:       string(*condition.Code.Coding[0].System),
 		Category:     dto.ConditionCategory(category),
 		RecordedDate: condition.RecordedDate,

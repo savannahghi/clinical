@@ -31,7 +31,7 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy case: create composition",
+			name: "happy case: create composition - AssessmentAndPlan",
 			args: args{
 				ctx: context.Background(),
 				input: dto.CompositionInput{
@@ -43,6 +43,104 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "happy case: create composition - HistoryOfPresentingIllness",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.HistoryOfPresentingIllness,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "happy case: create composition - SocialHistory",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.SocialHistory,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "happy case: create composition - FamilyHistory",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.FamilyHistory,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "happy case: create composition - Examination",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.Examination,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "happy case: create composition - PlanOfCare",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.PlanOfCare,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "sad case: create composition - unsupported category",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.CompositionCategory(dto.CompositionStatuEnumFinal),
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sad case: fail to get identifiers",
+			args: args{
+				ctx: context.Background(),
+				input: dto.CompositionInput{
+					EncounterID: gofakeit.UUID(),
+					Type:        dto.ProgressNote,
+					Category:    dto.AssessmentAndPlan,
+					Status:      "final",
+					Note:        "Patient is deteriorating",
+				},
+			},
+			wantErr: true,
 		},
 		{
 			name: "sad case: error fetching concept",
@@ -74,20 +172,6 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 		},
 		{
 			name: "sad case: fail to get patient",
-			args: args{
-				ctx: context.Background(),
-				input: dto.CompositionInput{
-					EncounterID: gofakeit.UUID(),
-					Type:        dto.ProgressNote,
-					Category:    dto.AssessmentAndPlan,
-					Status:      "final",
-					Note:        "Patient is deteriorating",
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "sad case: fail to get identifiers",
 			args: args{
 				ctx: context.Background(),
 				input: dto.CompositionInput{
@@ -155,6 +239,8 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 				patientType := "Patient"
 				organizationRef := "Organization/" + uuid.NewString()
 				compositionSectionTextStatus := "generated"
+				typeCode := scalarutils.Code(string(common.LOINCProgressNoteCode))
+				categoryCode := scalarutils.Code(string(common.LOINCAssessmentPlanCode))
 
 				fakeFHIR.MockCreateFHIRCompositionFn = func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
 					return &domain.FHIRCompositionRelayPayload{
@@ -169,7 +255,7 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 									{
 										ID:      &UUID,
 										System:  &typeSystem,
-										Code:    scalarutils.Code(string(common.LOINCProgressNoteCode)),
+										Code:    &typeCode,
 										Display: compositionType,
 									},
 								},
@@ -183,7 +269,7 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 											ID:      &UUID,
 											System:  &categorySystem,
 											Version: new(string),
-											Code:    scalarutils.Code(string(common.LOINCAssessmentPlanCode)),
+											Code:    &categoryCode,
 											Display: category,
 										},
 									},
@@ -249,6 +335,12 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 				}
 			}
 
+			if tt.name == "sad case: fail to get identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
 			if tt.name == "sad case: fail on finished encounter" {
 				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
 					UUID := uuid.New().String()
@@ -256,33 +348,15 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 
 					return &domain.FHIREncounterRelayPayload{
 						Resource: &domain.FHIREncounter{
-							ID:            &UUID,
-							Text:          &domain.FHIRNarrative{},
-							Identifier:    []*domain.FHIRIdentifier{},
-							Status:        domain.EncounterStatusEnum(domain.EncounterStatusEnumFinished),
-							StatusHistory: []*domain.FHIREncounterStatushistory{},
-							Class:         domain.FHIRCoding{},
-							ClassHistory:  []*domain.FHIREncounterClasshistory{},
-							Type:          []*domain.FHIRCodeableConcept{},
-							ServiceType:   &domain.FHIRCodeableConcept{},
-							Priority:      &domain.FHIRCodeableConcept{},
+							ID:         &UUID,
+							Text:       &domain.FHIRNarrative{},
+							Identifier: []*domain.FHIRIdentifier{},
+							Status:     domain.EncounterStatusEnum(domain.EncounterStatusEnumFinished),
+							Type:       []*domain.FHIRCodeableConcept{},
 							Subject: &domain.FHIRReference{
 								ID:        &UUID,
 								Reference: &PatientRef,
 							},
-							EpisodeOfCare:   []*domain.FHIRReference{},
-							BasedOn:         []*domain.FHIRReference{},
-							Participant:     []*domain.FHIREncounterParticipant{},
-							Appointment:     []*domain.FHIRReference{},
-							Period:          &domain.FHIRPeriod{},
-							Length:          &domain.FHIRDuration{},
-							ReasonReference: []*domain.FHIRReference{},
-							Diagnosis:       []*domain.FHIREncounterDiagnosis{},
-							Account:         []*domain.FHIRReference{},
-							Hospitalization: &domain.FHIREncounterHospitalization{},
-							Location:        []*domain.FHIREncounterLocation{},
-							ServiceProvider: &domain.FHIRReference{},
-							PartOf:          &domain.FHIRReference{},
 						},
 					}, nil
 				}
@@ -297,18 +371,6 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 			if tt.name == "sad case: fail to get patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("failed to get patient")
-				}
-			}
-
-			if tt.name == "sad case: fail to get identifiers" {
-				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
-					return nil, fmt.Errorf("failed to get identifiers")
-				}
-			}
-
-			if tt.name == "Sad Case: Fail to get tenant identifiers" {
-				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
-					return nil, fmt.Errorf("failed to get tenant identifiers")
 				}
 			}
 

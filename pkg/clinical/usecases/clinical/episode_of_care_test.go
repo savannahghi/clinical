@@ -17,6 +17,7 @@ import (
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/firebasetools"
 )
 
 func addTenantIdentifierContext(ctx context.Context) context.Context {
@@ -45,6 +46,17 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "sad case: create an episode of care already exists",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.EpisodeOfCareInput{
+					Status:    dto.EpisodeOfCareStatusEnumActive,
+					PatientID: gofakeit.UUID(),
+				},
+			},
+			wantErr: true,
 		},
 		{
 			name: "sad case: missing facility identifier in context",
@@ -140,6 +152,40 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 				fakeFHIR.MockSearchFHIREpisodeOfCareFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCareRelayConnection, error) {
 					return &domain.FHIREpisodeOfCareRelayConnection{
 						Edges: []*domain.FHIREpisodeOfCareRelayEdge{},
+					}, nil
+				}
+			}
+
+			if tt.name == "sad case: create an episode of care already exists" {
+				fakeFHIR.MockSearchFHIREpisodeOfCareFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIREpisodeOfCareRelayConnection, error) {
+					PatientRef := "Patient/1"
+					OrgRef := "Organization/1"
+					return &domain.FHIREpisodeOfCareRelayConnection{
+						Edges: []*domain.FHIREpisodeOfCareRelayEdge{
+							{
+								Cursor: new(string),
+								Node: &domain.FHIREpisodeOfCare{
+									ID:            new(string),
+									Text:          &domain.FHIRNarrative{},
+									Identifier:    []*domain.FHIRIdentifier{},
+									StatusHistory: []*domain.FHIREpisodeofcareStatushistory{},
+									Type:          []*domain.FHIRCodeableConcept{},
+									Diagnosis:     []*domain.FHIREpisodeofcareDiagnosis{},
+									Patient:       &domain.FHIRReference{Reference: &PatientRef},
+									ManagingOrganization: &domain.FHIRReference{
+										Reference: &OrgRef,
+									},
+									Period:          &domain.FHIRPeriod{},
+									ReferralRequest: []*domain.FHIRReference{},
+									CareManager:     &domain.FHIRReference{},
+									Team:            []*domain.FHIRReference{},
+									Account:         []*domain.FHIRReference{},
+									Meta:            &domain.FHIRMeta{},
+									Extension:       []*domain.FHIRExtension{},
+								},
+							},
+						},
+						PageInfo: &firebasetools.PageInfo{},
 					}, nil
 				}
 			}
