@@ -1666,7 +1666,7 @@ func (fh StoreImpl) GetFHIRObservation(_ context.Context, id string) (*domain.FH
 	return payload, nil
 }
 
-// PatchFHIRObservation is ued to patch an observation resource
+// PatchFHIRObservation is used to patch an observation resource
 func (fh StoreImpl) PatchFHIRObservation(_ context.Context, id string, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {

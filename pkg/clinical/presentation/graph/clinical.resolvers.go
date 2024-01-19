@@ -168,10 +168,16 @@ func (r *mutationResolver) AppendNoteToComposition(ctx context.Context, id strin
 	return r.usecases.AppendNoteToComposition(ctx, id, input)
 }
 
-// PatchHeight is the resolver for the patchHeight field.
-func (r *mutationResolver) PatchHeight(ctx context.Context, id string, value string) (*dto.Observation, error) {
+// PatchPatientHeight is the resolver for the patchHeight field.
+func (r *mutationResolver) PatchPatientHeight(ctx context.Context, id string, value string) (*dto.Observation, error) {
 	r.CheckDependencies()
 	return r.usecases.PatchPatientHeight(ctx, id, value)
+}
+
+// PatchPatientWeight is the resolver for the patchWeight field.
+func (r *mutationResolver) PatchPatientWeight(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchPatientWeight(ctx, id, value)
 }
 
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
