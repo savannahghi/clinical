@@ -186,6 +186,12 @@ func (r *mutationResolver) PatchPatientBmi(ctx context.Context, id string, value
 	return r.usecases.PatchPatientBMI(ctx, id, value)
 }
 
+// PatchPatientTemperature is the resolver for the patchPatientTemperature field.
+func (r *mutationResolver) PatchPatientTemperature(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchPatientTemperature(ctx, id, value)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()

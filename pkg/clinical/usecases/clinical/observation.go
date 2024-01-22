@@ -77,6 +77,11 @@ func (c *UseCasesClinicalImpl) PatchPatientBMI(ctx context.Context, id string, v
 	return c.PatchPatientObservations(ctx, id, value)
 }
 
+// PatchPatientTemperature patches the temperature record of a patient
+func (c *UseCasesClinicalImpl) PatchPatientTemperature(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	return c.PatchPatientObservations(ctx, id, value)
+}
+
 // RecordWeight records a patient's weight
 func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode)
