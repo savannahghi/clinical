@@ -186,36 +186,38 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AppendNoteToComposition      func(childComplexity int, id string, input dto.PatchCompositionInput) int
-		CreateAllergyIntolerance     func(childComplexity int, input dto.AllergyInput) int
-		CreateComposition            func(childComplexity int, input dto.CompositionInput) int
-		CreateCondition              func(childComplexity int, input dto.ConditionInput) int
-		CreateEpisodeOfCare          func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
-		CreatePatient                func(childComplexity int, input dto.PatientInput) int
-		DeletePatient                func(childComplexity int, id string) int
-		EndEncounter                 func(childComplexity int, encounterID string) int
-		EndEpisodeOfCare             func(childComplexity int, id string) int
-		PatchEncounter               func(childComplexity int, encounterID string, input dto.EncounterInput) int
-		PatchEpisodeOfCare           func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
-		PatchPatient                 func(childComplexity int, id string, input dto.PatientInput) int
-		PatchPatientBmi              func(childComplexity int, id string, value string) int
-		PatchPatientHeight           func(childComplexity int, id string, value string) int
-		PatchPatientTemperature      func(childComplexity int, id string, value string) int
-		PatchPatientWeight           func(childComplexity int, id string, value string) int
-		RecordBloodPressure          func(childComplexity int, input dto.ObservationInput) int
-		RecordBloodSugar             func(childComplexity int, input dto.ObservationInput) int
-		RecordBmi                    func(childComplexity int, input dto.ObservationInput) int
-		RecordDiastolicBloodPressure func(childComplexity int, input dto.ObservationInput) int
-		RecordHeight                 func(childComplexity int, input dto.ObservationInput) int
-		RecordLastMenstrualPeriod    func(childComplexity int, input dto.ObservationInput) int
-		RecordMuac                   func(childComplexity int, input dto.ObservationInput) int
-		RecordOxygenSaturation       func(childComplexity int, input dto.ObservationInput) int
-		RecordPulseRate              func(childComplexity int, input dto.ObservationInput) int
-		RecordRespiratoryRate        func(childComplexity int, input dto.ObservationInput) int
-		RecordTemperature            func(childComplexity int, input dto.ObservationInput) int
-		RecordViralLoad              func(childComplexity int, input dto.ObservationInput) int
-		RecordWeight                 func(childComplexity int, input dto.ObservationInput) int
-		StartEncounter               func(childComplexity int, episodeID string) int
+		AppendNoteToComposition            func(childComplexity int, id string, input dto.PatchCompositionInput) int
+		CreateAllergyIntolerance           func(childComplexity int, input dto.AllergyInput) int
+		CreateComposition                  func(childComplexity int, input dto.CompositionInput) int
+		CreateCondition                    func(childComplexity int, input dto.ConditionInput) int
+		CreateEpisodeOfCare                func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
+		CreatePatient                      func(childComplexity int, input dto.PatientInput) int
+		DeletePatient                      func(childComplexity int, id string) int
+		EndEncounter                       func(childComplexity int, encounterID string) int
+		EndEpisodeOfCare                   func(childComplexity int, id string) int
+		PatchEncounter                     func(childComplexity int, encounterID string, input dto.EncounterInput) int
+		PatchEpisodeOfCare                 func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
+		PatchPatient                       func(childComplexity int, id string, input dto.PatientInput) int
+		PatchPatientBmi                    func(childComplexity int, id string, value string) int
+		PatchPatientDiastolicBloodPressure func(childComplexity int, id string, value string) int
+		PatchPatientHeight                 func(childComplexity int, id string, value string) int
+		PatchPatientSystolicBloodPressure  func(childComplexity int, id string, value string) int
+		PatchPatientTemperature            func(childComplexity int, id string, value string) int
+		PatchPatientWeight                 func(childComplexity int, id string, value string) int
+		RecordBloodPressure                func(childComplexity int, input dto.ObservationInput) int
+		RecordBloodSugar                   func(childComplexity int, input dto.ObservationInput) int
+		RecordBmi                          func(childComplexity int, input dto.ObservationInput) int
+		RecordDiastolicBloodPressure       func(childComplexity int, input dto.ObservationInput) int
+		RecordHeight                       func(childComplexity int, input dto.ObservationInput) int
+		RecordLastMenstrualPeriod          func(childComplexity int, input dto.ObservationInput) int
+		RecordMuac                         func(childComplexity int, input dto.ObservationInput) int
+		RecordOxygenSaturation             func(childComplexity int, input dto.ObservationInput) int
+		RecordPulseRate                    func(childComplexity int, input dto.ObservationInput) int
+		RecordRespiratoryRate              func(childComplexity int, input dto.ObservationInput) int
+		RecordTemperature                  func(childComplexity int, input dto.ObservationInput) int
+		RecordViralLoad                    func(childComplexity int, input dto.ObservationInput) int
+		RecordWeight                       func(childComplexity int, input dto.ObservationInput) int
+		StartEncounter                     func(childComplexity int, episodeID string) int
 	}
 
 	Observation struct {
@@ -361,6 +363,8 @@ type MutationResolver interface {
 	PatchPatientWeight(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientBmi(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientTemperature(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientDiastolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientSystolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -1105,6 +1109,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.PatchPatientBmi(childComplexity, args["id"].(string), args["value"].(string)), true
 
+	case "Mutation.patchPatientDiastolicBloodPressure":
+		if e.complexity.Mutation.PatchPatientDiastolicBloodPressure == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_patchPatientDiastolicBloodPressure_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PatchPatientDiastolicBloodPressure(childComplexity, args["id"].(string), args["value"].(string)), true
+
 	case "Mutation.patchPatientHeight":
 		if e.complexity.Mutation.PatchPatientHeight == nil {
 			break
@@ -1116,6 +1132,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.PatchPatientHeight(childComplexity, args["id"].(string), args["value"].(string)), true
+
+	case "Mutation.patchPatientSystolicBloodPressure":
+		if e.complexity.Mutation.PatchPatientSystolicBloodPressure == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_patchPatientSystolicBloodPressure_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PatchPatientSystolicBloodPressure(childComplexity, args["id"].(string), args["value"].(string)), true
 
 	case "Mutation.patchPatientTemperature":
 		if e.complexity.Mutation.PatchPatientTemperature == nil {
@@ -2231,6 +2259,8 @@ extend type Mutation {
   patchPatientWeight(id: String!, value: String!): Observation!
   patchPatientBMI(id: String!, value: String!): Observation!
   patchPatientTemperature(id: String!, value: String!): Observation!
+  patchPatientDiastolicBloodPressure(id: String!, value: String!): Observation!
+  patchPatientSystolicBloodPressure(id: String!, value: String!): Observation!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -2929,7 +2959,55 @@ func (ec *executionContext) field_Mutation_patchPatientBMI_args(ctx context.Cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_patchPatientDiastolicBloodPressure_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["value"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["value"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_patchPatientHeight_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["value"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["value"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_patchPatientSystolicBloodPressure_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -9687,6 +9765,148 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientTemperature(ctx co
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_patchPatientTemperature_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_patchPatientDiastolicBloodPressure(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchPatientDiastolicBloodPressure(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().PatchPatientDiastolicBloodPressure(rctx, fc.Args["id"].(string), fc.Args["value"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_patchPatientDiastolicBloodPressure(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_patchPatientDiastolicBloodPressure_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_patchPatientSystolicBloodPressure(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchPatientSystolicBloodPressure(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().PatchPatientSystolicBloodPressure(rctx, fc.Args["id"].(string), fc.Args["value"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_patchPatientSystolicBloodPressure(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_patchPatientSystolicBloodPressure_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -17102,6 +17322,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "patchPatientTemperature":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_patchPatientTemperature(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "patchPatientDiastolicBloodPressure":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_patchPatientDiastolicBloodPressure(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "patchPatientSystolicBloodPressure":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_patchPatientSystolicBloodPressure(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
