@@ -90,6 +90,8 @@ type Clinical interface {
 	PatchPatientWeight(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientBMI(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientTemperature(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientDiastolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientSystolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
 }
 
 // Interactor is an implementation of the usecases interface

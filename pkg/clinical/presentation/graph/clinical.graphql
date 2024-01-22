@@ -181,4 +181,6 @@ extend type Mutation {
   patchPatientWeight(id: String!, value: String!): Observation!
   patchPatientBMI(id: String!, value: String!): Observation!
   patchPatientTemperature(id: String!, value: String!): Observation!
+  patchPatientDiastolicBloodPressure(id: String!, value: String!): Observation!
+  patchPatientSystolicBloodPressure(id: String!, value: String!): Observation!
 }
