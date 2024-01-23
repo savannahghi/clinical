@@ -22,6 +22,7 @@ type FHIR interface {
 	FHIRMedicationStatement
 	FHIRMedication
 	FHIRMedia
+	FHIRQuestionnaire
 }
 
 type FHIROrganization interface {
@@ -110,4 +111,8 @@ type FHIRMedication interface {
 type FHIRMedia interface {
 	CreateFHIRMedia(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error)
 	SearchPatientMedia(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error)
+}
+
+type FHIRQuestionnaire interface {
+	CreateFHIRQuestionnaire(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
 }

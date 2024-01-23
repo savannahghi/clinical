@@ -186,6 +186,11 @@ func SetupRoutes(r *gin.Engine, cacheStore persist.CacheStore, authclient *authu
 	upload.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))
 	upload.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
 	upload.POST("", handlers.UploadMedia)
+
+	questionnaire := v1.Group("/questionnaire")
+	questionnaire.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))
+	questionnaire.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
+	questionnaire.POST("", handlers.LoadQuestionnaire)
 }
 
 // GQLHandler sets up a GraphQL resolver

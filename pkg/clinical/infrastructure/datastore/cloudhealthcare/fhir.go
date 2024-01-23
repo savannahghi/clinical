@@ -35,6 +35,7 @@ const (
 	medicationStatementResourceType = "MedicationStatement"
 	medicationResourceType          = "Medication"
 	mediaResourceType               = "Media"
+	questionnaireResourceType       = "Questionnaire"
 )
 
 // Dataset ...
@@ -1678,6 +1679,23 @@ func (fh StoreImpl) PatchFHIRObservation(_ context.Context, id string, input dom
 	err = fh.Dataset.PatchFHIRResource(observationResourceType, id, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to patch %s resource: %w", observationResourceType, err)
+	}
+
+	return resource, nil
+}
+
+// CreateFHIRQuestionnaire is used to create a FHIR Questionnaire resource
+func (fh StoreImpl) CreateFHIRQuestionnaire(_ context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", questionnaireResourceType, err)
+	}
+
+	resource := &domain.FHIRQuestionnaire{}
+
+	err = fh.Dataset.CreateFHIRResource(questionnaireResourceType, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create %s resource: %w", questionnaireResourceType, err)
 	}
 
 	return resource, nil

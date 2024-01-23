@@ -4390,3 +4390,80 @@ func TestStoreImpl_SearchPatientMedia(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
+	ID := gofakeit.UUID()
+	type args struct {
+		ctx   context.Context
+		input *domain.FHIRQuestionnaire
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: successfully create a questionnaire resource",
+			args: args{
+				ctx: context.Background(),
+				input: &domain.FHIRQuestionnaire{
+					ID:                &ID,
+					Meta:              &domain.FHIRMetaInput{},
+					ImplicitRules:     new(string),
+					Language:          new(string),
+					Text:              &domain.FHIRNarrative{},
+					FHIRExtension:     []*domain.Extension{},
+					ModifierExtension: []*domain.Extension{},
+					Identifier:        []*domain.FHIRIdentifier{},
+					Version:           new(string),
+					Name:              new(string),
+					Title:             new(string),
+					DerivedFrom:       []*string{},
+					Experimental:      new(bool),
+					Publisher:         new(string),
+					Description:       new(string),
+					UseContext:        &domain.FHIRUsageContext{},
+					Jurisdiction:      []*domain.FHIRCodeableConcept{},
+					Purpose:           new(string),
+					EffectivePeriod:   &domain.FHIRPeriod{},
+					Code:              []*domain.FHIRCoding{},
+					Item:              []*domain.FHIRQuestionnaireItem{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create a questionnaire resource",
+			args: args{
+				ctx: context.Background(),
+				input: &domain.FHIRQuestionnaire{
+					ID:            &ID,
+					Meta:          &domain.FHIRMetaInput{},
+					ImplicitRules: new(string),
+					Language:      new(string),
+					Text:          &domain.FHIRNarrative{},
+					FHIRExtension: []*domain.Extension{},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to create a questionnaire resource" {
+				fakeDataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error ocurred")
+				}
+			}
+
+			_, err := fh.CreateFHIRQuestionnaire(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRQuestionnaire() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
