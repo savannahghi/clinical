@@ -155,3 +155,8 @@ type Section struct {
 	Text    string     `json:"text,omitempty"`
 	Section []*Section `json:"section,omitempty"`
 }
+
+// Consent models a fhir consent resource
+type ConsentOutput struct {
+	Status *ConsentStatusEnum `json:"status"`
+}

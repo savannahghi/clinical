@@ -36,6 +36,7 @@ const (
 	medicationResourceType          = "Medication"
 	mediaResourceType               = "Media"
 	questionnaireResourceType       = "Questionnaire"
+	consentResourceType             = "Consent"
 )
 
 // Dataset ...
@@ -1696,6 +1697,23 @@ func (fh StoreImpl) CreateFHIRQuestionnaire(_ context.Context, input *domain.FHI
 	err = fh.Dataset.CreateFHIRResource(questionnaireResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create %s resource: %w", questionnaireResourceType, err)
+	}
+
+	return resource, nil
+}
+
+// CreateFHIRConsent creates a FHIRConsent instance
+func (fh StoreImpl) CreateFHIRConsent(_ context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", consentResourceType, err)
+	}
+
+	resource := &domain.FHIRConsent{}
+
+	err = fh.Dataset.CreateFHIRResource(consentResourceType, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create/update %s resource: %w", consentResourceType, err)
 	}
 
 	return resource, nil

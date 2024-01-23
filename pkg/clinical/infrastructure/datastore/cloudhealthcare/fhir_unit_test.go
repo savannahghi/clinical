@@ -4467,3 +4467,68 @@ func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_CreateFHIRConsent(t *testing.T) {
+	ID := gofakeit.UUID()
+	status := dto.ConsentStatusActive
+	provisionType := dto.ConsentProvisionTypePermit
+	type args struct {
+		ctx     context.Context
+		consent domain.FHIRConsent
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: create a fhir consent",
+			args: args{
+				ctx: context.Background(),
+				consent: domain.FHIRConsent{
+					Status:     (*dto.ConsentStatusEnum)(&status),
+					Scope:      &domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()},
+					Category:   []*domain.FHIRCodeableConcept{&domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()}},
+					PolicyRule: &domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()},
+					Provision:  &domain.FHIRConsentProvision{Type: (*dto.ConsentProvisionTypeEnum)(&provisionType)},
+					Patient:    &domain.FHIRReference{ID: &ID},
+					Meta:       &domain.FHIRMetaInput{Tag: []domain.FHIRCodingInput{}},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create consent",
+			args: args{
+				ctx: context.Background(),
+				consent: domain.FHIRConsent{
+					Status:     (*dto.ConsentStatusEnum)(&status),
+					PolicyRule: &domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()},
+					Provision:  &domain.FHIRConsentProvision{Type: (*dto.ConsentProvisionTypeEnum)(&provisionType)},
+					Patient:    &domain.FHIRReference{ID: &ID},
+					Meta:       &domain.FHIRMetaInput{Tag: []domain.FHIRCodingInput{}},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to create consent" {
+				fakeDataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return errors.New("unable to create fhir consent")
+				}
+
+			}
+
+			_, err := fh.CreateFHIRConsent(tt.args.ctx, tt.args.consent)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRConsent() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

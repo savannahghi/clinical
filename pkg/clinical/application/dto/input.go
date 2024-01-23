@@ -129,3 +129,10 @@ type SectionInput struct {
 	Text    string          `json:"text"`
 	Section []*SectionInput `json:"section"`
 }
+
+// ConsentInput models the consent input
+type ConsentInput struct {
+	Status    ConsentStatusEnum        `json:"status"`
+	Provision ConsentProvisionTypeEnum `json:"provision,omitempty"`
+	PatientID string                   `json:"patientID,omitempty"`
+}

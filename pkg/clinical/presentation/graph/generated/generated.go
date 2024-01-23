@@ -116,6 +116,10 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	ConsentOutput struct {
+		Status func(childComplexity int) int
+	}
+
 	Encounter struct {
 		Class           func(childComplexity int) int
 		EpisodeOfCareID func(childComplexity int) int
@@ -208,6 +212,7 @@ type ComplexityRoot struct {
 		RecordBloodPressure                func(childComplexity int, input dto.ObservationInput) int
 		RecordBloodSugar                   func(childComplexity int, input dto.ObservationInput) int
 		RecordBmi                          func(childComplexity int, input dto.ObservationInput) int
+		RecordConsent                      func(childComplexity int, input dto.ConsentInput) int
 		RecordDiastolicBloodPressure       func(childComplexity int, input dto.ObservationInput) int
 		RecordHeight                       func(childComplexity int, input dto.ObservationInput) int
 		RecordLastMenstrualPeriod          func(childComplexity int, input dto.ObservationInput) int
@@ -367,6 +372,7 @@ type MutationResolver interface {
 	PatchPatientDiastolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientSystolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientRespiratoryRate(ctx context.Context, id string, value string) (*dto.Observation, error)
+	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -702,6 +708,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ConditionEdge.Node(childComplexity), true
+
+	case "ConsentOutput.status":
+		if e.complexity.ConsentOutput.Status == nil {
+			break
+		}
+
+		return e.complexity.ConsentOutput.Status(childComplexity), true
 
 	case "Encounter.class":
 		if e.complexity.Encounter.Class == nil {
@@ -1218,6 +1231,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RecordBmi(childComplexity, args["input"].(dto.ObservationInput)), true
+
+	case "Mutation.recordConsent":
+		if e.complexity.Mutation.RecordConsent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordConsent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordConsent(childComplexity, args["input"].(dto.ConsentInput)), true
 
 	case "Mutation.recordDiastolicBloodPressure":
 		if e.complexity.Mutation.RecordDiastolicBloodPressure == nil {
@@ -1981,6 +2006,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAllergyInput,
 		ec.unmarshalInputCompositionInput,
 		ec.unmarshalInputConditionInput,
+		ec.unmarshalInputConsentInput,
 		ec.unmarshalInputContactInput,
 		ec.unmarshalInputEncounterInput,
 		ec.unmarshalInputEpisodeOfCareInput,
@@ -2276,6 +2302,8 @@ extend type Mutation {
   patchPatientDiastolicBloodPressure(id: String!, value: String!): Observation!
   patchPatientSystolicBloodPressure(id: String!, value: String!): Observation!
   patchPatientRespiratoryRate(id: String!, value: String!): Observation!
+  # Consent
+  recordConsent(input: ConsentInput!): ConsentOutput!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -2380,7 +2408,16 @@ enum ConditionCategory {
   PROBLEM_LIST_ITEM
   ENCOUNTER_DIAGNOSIS
 }
-`, BuiltIn: false},
+
+enum ConsentProvisionTypeEnum {
+  permit
+  deny
+}
+
+enum ConsentStatusEnum{
+  active
+  inactive
+}`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
 scalar Time
@@ -2508,6 +2545,12 @@ input Pagination {
 
   last: Int
   before: String
+}
+
+input ConsentInput{
+  status: ConsentStatusEnum!
+  provision: ConsentProvisionTypeEnum!
+  patientID: String!
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
@@ -2732,6 +2775,11 @@ type CompositionConnection {
   edges: [CompositionEdge]
   pageInfo: PageInfo
 }
+
+type ConsentOutput{
+  status: ConsentStatusEnum!
+}
+
 `, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
@@ -3179,6 +3227,21 @@ func (ec *executionContext) field_Mutation_recordBloodSugar_args(ctx context.Con
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recordConsent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.ConsentInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNConsentInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6070,6 +6133,50 @@ func (ec *executionContext) fieldContext_ConditionEdge_cursor(ctx context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ConsentOutput_status(ctx context.Context, field graphql.CollectedField, obj *dto.ConsentOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ConsentOutput_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.ConsentStatusEnum)
+	fc.Result = res
+	return ec.marshalNConsentStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ConsentOutput_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ConsentOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ConsentStatusEnum does not have child fields")
 		},
 	}
 	return fc, nil
@@ -10017,6 +10124,65 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientRespiratoryRate(ct
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_patchPatientRespiratoryRate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_recordConsent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordConsent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecordConsent(rctx, fc.Args["input"].(dto.ConsentInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.ConsentOutput)
+	fc.Result = res
+	return ec.marshalNConsentOutput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentOutput(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recordConsent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "status":
+				return ec.fieldContext_ConsentOutput_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ConsentOutput", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recordConsent_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -15661,6 +15827,53 @@ func (ec *executionContext) unmarshalInputConditionInput(ctx context.Context, ob
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputConsentInput(ctx context.Context, obj interface{}) (dto.ConsentInput, error) {
+	var it dto.ConsentInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"status", "provision", "patientID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalNConsentStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		case "provision":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("provision"))
+			data, err := ec.unmarshalNConsentProvisionTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvisionTypeEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Provision = data
+		case "patientID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PatientID = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputContactInput(ctx context.Context, obj interface{}) (dto.ContactInput, error) {
 	var it dto.ContactInput
 	asMap := map[string]interface{}{}
@@ -16734,6 +16947,45 @@ func (ec *executionContext) _ConditionEdge(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var consentOutputImplementors = []string{"ConsentOutput"}
+
+func (ec *executionContext) _ConsentOutput(ctx context.Context, sel ast.SelectionSet, obj *dto.ConsentOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, consentOutputImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConsentOutput")
+		case "status":
+			out.Values[i] = ec._ConsentOutput_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var encounterImplementors = []string{"Encounter"}
 
 func (ec *executionContext) _Encounter(ctx context.Context, sel ast.SelectionSet, obj *dto.Encounter) graphql.Marshaler {
@@ -17453,6 +17705,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "patchPatientRespiratoryRate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_patchPatientRespiratoryRate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "recordConsent":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recordConsent(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -19023,6 +19282,61 @@ func (ec *executionContext) marshalNConditionStatus2githubᚗcomᚋsavannahghi�
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNConsentInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentInput(ctx context.Context, v interface{}) (dto.ConsentInput, error) {
+	res, err := ec.unmarshalInputConsentInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNConsentOutput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentOutput(ctx context.Context, sel ast.SelectionSet, v dto.ConsentOutput) graphql.Marshaler {
+	return ec._ConsentOutput(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNConsentOutput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentOutput(ctx context.Context, sel ast.SelectionSet, v *dto.ConsentOutput) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ConsentOutput(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNConsentProvisionTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvisionTypeEnum(ctx context.Context, v interface{}) (dto.ConsentProvisionTypeEnum, error) {
+	var res dto.ConsentProvisionTypeEnum
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNConsentProvisionTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvisionTypeEnum(ctx context.Context, sel ast.SelectionSet, v dto.ConsentProvisionTypeEnum) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNConsentStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, v interface{}) (dto.ConsentStatusEnum, error) {
+	var res dto.ConsentStatusEnum
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNConsentStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.ConsentStatusEnum) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNConsentStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, v interface{}) (*dto.ConsentStatusEnum, error) {
+	var res = new(dto.ConsentStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNConsentStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, sel ast.SelectionSet, v *dto.ConsentStatusEnum) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalNContactInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInput(ctx context.Context, v interface{}) (dto.ContactInput, error) {
