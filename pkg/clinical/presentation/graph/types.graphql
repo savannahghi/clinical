@@ -220,3 +220,8 @@ type CompositionConnection {
   edges: [CompositionEdge]
   pageInfo: PageInfo
 }
+
+type ConsentOutput{
+  status: ConsentStatusEnum!
+}
+

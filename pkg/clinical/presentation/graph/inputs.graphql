@@ -104,3 +104,9 @@ input Pagination {
   last: Int
   before: String
 }
+
+input ConsentInput{
+  status: ConsentStatusEnum!
+  provision: ConsentProvisionTypeEnum!
+  patientID: String!
+}

@@ -100,3 +100,13 @@ enum ConditionCategory {
   PROBLEM_LIST_ITEM
   ENCOUNTER_DIAGNOSIS
 }
+
+enum ConsentProvisionTypeEnum {
+  permit
+  deny
+}
+
+enum ConsentStatusEnum{
+  active
+  inactive
+}

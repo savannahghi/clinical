@@ -1,5 +1,11 @@
 package dto
 
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
 type OrganizationIdentifierType string
 
 const (
@@ -170,3 +176,89 @@ const (
 	CompositionStatuEnumAmended                   CompositionStatusEnum = "AMENDED"
 	CompositionStatuEnumEnteredInErrorPreliminary CompositionStatusEnum = "ENTERED_IN_ERROR"
 )
+
+// ConsentStatusEnum a type enum tha represents a Consent Status field of consent resource
+type ConsentStatusEnum string
+
+const (
+	ConsentStatusActive   = "active"
+	ConsentStatusInactive = "inactive"
+)
+
+// IsValid ...
+func (c ConsentStatusEnum) IsValid() bool {
+	switch c {
+	case ConsentStatusActive, ConsentStatusInactive:
+		return true
+	}
+
+	return false
+}
+
+// String converts status to string
+func (c ConsentStatusEnum) String() string {
+	return string(c)
+}
+
+// MarshalGQL writes the consent status as a quoted string
+func (c ConsentStatusEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(c.String()))
+}
+
+// UnmarshalGQL reads a json and converts it to a consent status enum
+func (c *ConsentStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*c = ConsentStatusEnum(str)
+	if !c.IsValid() {
+		return fmt.Errorf("%s is not a valid ConsentStatus Enum", str)
+	}
+
+	return nil
+}
+
+// ConsentProvisionTypeEnum a type enum tha represents a Consent Provision field of consent resource
+type ConsentProvisionTypeEnum string
+
+const (
+	ConsentProvisionTypeDeny   = "deny"
+	ConsentProvisionTypePermit = "permit"
+)
+
+// IsValid ...
+func (c ConsentProvisionTypeEnum) IsValid() bool {
+	switch c {
+	case ConsentProvisionTypeDeny, ConsentProvisionTypePermit:
+		return true
+	}
+
+	return false
+}
+
+// String converts consent provision type to string
+func (c ConsentProvisionTypeEnum) String() string {
+	return string(c)
+}
+
+// MarshalGQL writes the consent provision type as a quoted string
+func (c ConsentProvisionTypeEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(c.String()))
+}
+
+// UnmarshalGQL reads a json and converts it to a consent provision type enum
+func (c *ConsentProvisionTypeEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*c = ConsentProvisionTypeEnum(str)
+	if !c.IsValid() {
+		return fmt.Errorf("%s is not a valid ConsentProvisionTypeEnum Enum", str)
+	}
+
+	return nil
+}

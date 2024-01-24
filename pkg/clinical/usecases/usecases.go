@@ -97,6 +97,7 @@ type Clinical interface {
 
 	// Questionnaire
 	CreateQuestionnaire(ctx context.Context, questionnaireInput *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
+	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
 }
 
 // Interactor is an implementation of the usecases interface

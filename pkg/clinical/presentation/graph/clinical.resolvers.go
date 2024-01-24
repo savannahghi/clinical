@@ -210,6 +210,11 @@ func (r *mutationResolver) PatchPatientRespiratoryRate(ctx context.Context, id s
 	return r.usecases.PatchPatientRespiratoryRate(ctx, id, value)
 }
 
+// RecordConsent is the resolver for the recordConsent field.
+func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error) {
+	return r.usecases.RecordConsent(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
