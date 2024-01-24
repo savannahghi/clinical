@@ -222,6 +222,11 @@ func (c *UseCasesClinicalImpl) RecordDiastolicBloodPressure(ctx context.Context,
 	return c.RecordObservation(ctx, input, common.DiastolicBloodPressureCIELTerminologyCode)
 }
 
+// RecordColposcopy records colposcopy findings
+func (c *UseCasesClinicalImpl) RecordColposcopy(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	return c.RecordObservation(ctx, input, common.ColposcopyCIELTerminologyCode)
+}
+
 // GetPatientDiastolicBloodPressureEntries retrieves all diastolic blood pressure entries for a patient
 func (c *UseCasesClinicalImpl) GetPatientDiastolicBloodPressureEntries(ctx context.Context, patientID string, encounterID *string, date *scalarutils.Date, pagination *dto.Pagination) (*dto.ObservationConnection, error) {
 	return c.GetPatientObservations(ctx, patientID, encounterID, date, common.DiastolicBloodPressureCIELTerminologyCode, pagination)

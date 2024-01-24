@@ -127,6 +127,11 @@ func (r *mutationResolver) RecordDiastolicBloodPressure(ctx context.Context, inp
 	return r.usecases.RecordDiastolicBloodPressure(ctx, input)
 }
 
+// RecordColposcopy is the resolver for the recordColposcopy field.
+func (r *mutationResolver) RecordColposcopy(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	return r.usecases.RecordColposcopy(ctx, input)
+}
+
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
