@@ -10,6 +10,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/errorcodeutil"
 	"github.com/savannahghi/pubsubtools"
@@ -311,4 +312,23 @@ func (p PresentationHandlersImpl) UploadMedia(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+// LoadQuestionnaire is used to upload a user defined questionnaire for the purpose of soliciting client data.
+func (p PresentationHandlersImpl) LoadQuestionnaire(c *gin.Context) {
+	input := domain.FHIRQuestionnaire{}
+
+	err := c.BindJSON(&input)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	questionnaire, err := p.usecases.CreateQuestionnaire(c.Request.Context(), &input)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, questionnaire)
 }

@@ -81,6 +81,7 @@ type FHIRMock struct {
 	MockSearchPatientAllergyIntoleranceFn func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error)
 	MockCreateFHIRMediaFn                 func(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error)
 	MockSearchPatientMediaFn              func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error)
+	MockCreateFHIRQuestionnaireFn         func(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -1841,6 +1842,31 @@ func NewFHIRMock() *FHIRMock {
 				TotalCount:      0,
 			}, nil
 		},
+		MockCreateFHIRQuestionnaireFn: func(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error) {
+			return &domain.FHIRQuestionnaire{
+				ID:                new(string),
+				Meta:              &domain.FHIRMetaInput{},
+				ImplicitRules:     new(string),
+				Language:          new(string),
+				Text:              &domain.FHIRNarrative{},
+				FHIRExtension:     []*domain.Extension{},
+				ModifierExtension: []*domain.Extension{},
+				Identifier:        []*domain.FHIRIdentifier{},
+				Version:           new(string),
+				Name:              new(string),
+				Title:             new(string),
+				DerivedFrom:       []*string{},
+				Experimental:      new(bool),
+				Publisher:         new(string),
+				Description:       new(string),
+				UseContext:        &domain.FHIRUsageContext{},
+				Jurisdiction:      []*domain.FHIRCodeableConcept{},
+				Purpose:           new(string),
+				EffectivePeriod:   &domain.FHIRPeriod{},
+				Code:              []*domain.FHIRCoding{},
+				Item:              []*domain.FHIRQuestionnaireItem{},
+			}, nil
+		},
 	}
 }
 
@@ -2142,4 +2168,9 @@ func (fh *FHIRMock) CreateFHIRMedia(ctx context.Context, input domain.FHIRMedia)
 // SearchPatentMedia mocks the searching of patient media
 func (fh *FHIRMock) SearchPatientMedia(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error) {
 	return fh.MockSearchPatientMediaFn(ctx, patientReference, tenant, pagination)
+}
+
+// CreateFHIRQuestionnaire mocks the creation of a new Questionnaire resource.
+func (fh *FHIRMock) CreateFHIRQuestionnaire(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error) {
+	return fh.MockCreateFHIRQuestionnaireFn(ctx, input)
 }

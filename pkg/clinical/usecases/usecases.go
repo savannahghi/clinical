@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/scalarutils"
@@ -93,6 +94,9 @@ type Clinical interface {
 	PatchPatientDiastolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientSystolicBloodPressure(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientRespiratoryRate(ctx context.Context, id string, value string) (*dto.Observation, error)
+
+	// Questionnaire
+	CreateQuestionnaire(ctx context.Context, questionnaireInput *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
 }
 
 // Interactor is an implementation of the usecases interface
