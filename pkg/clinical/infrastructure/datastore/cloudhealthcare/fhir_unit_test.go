@@ -194,6 +194,61 @@ func TestStoreImpl_CreateFHIRObservation(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_PatchFHIRObservation(t *testing.T) {
+
+	UUID := uuid.New().String()
+	id := ksuid.New().String()
+
+	type args struct {
+		ctx   context.Context
+		id    string
+		input domain.FHIRObservationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRObservationRelayPayload
+		wantErr bool
+	}{
+		{
+			name: "Happy case - successfully patch observation",
+			args: args{
+				ctx:   context.Background(),
+				id:    id,
+				input: domain.FHIRObservationInput{ID: &UUID},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case - fail to patch observation",
+			args: args{
+				ctx:   context.Background(),
+				id:    id,
+				input: domain.FHIRObservationInput{ID: &UUID},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad case - fail to patch observation" {
+				dataset.MockPatchFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
+				}
+			}
+			_, err := fh.PatchFHIRObservation(tt.args.ctx, tt.args.id, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.PatchFHIRObservation() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestStoreImpl_GetFHIRPatient(t *testing.T) {
 
 	type args struct {
@@ -2300,6 +2355,61 @@ func TestStoreImpl_UpdateFHIRComposition(t *testing.T) {
 			_, err := fh.UpdateFHIRComposition(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FHIRUseCaseImpl.UpdateFHIRComposition() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_PatchFHIRComposition(t *testing.T) {
+
+	UUID := uuid.New().String()
+	id := ksuid.New().String()
+
+	type args struct {
+		ctx   context.Context
+		id    string
+		input domain.FHIRCompositionInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRCompositionRelayPayload
+		wantErr bool
+	}{
+		{
+			name: "Happy case - succesfully patch composition",
+			args: args{
+				ctx:   context.Background(),
+				id:    id,
+				input: domain.FHIRCompositionInput{ID: &UUID},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case - fail to patch composition",
+			args: args{
+				ctx:   context.Background(),
+				id:    id,
+				input: domain.FHIRCompositionInput{ID: &UUID},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad case - fail to patch composition" {
+				dataset.MockPatchFHIRResourceFn = func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
+				}
+			}
+			_, err := fh.PatchFHIRComposition(tt.args.ctx, tt.args.id, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FHIRUseCaseImpl.PatchFHIRComposition() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
