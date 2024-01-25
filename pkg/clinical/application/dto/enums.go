@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 )
 
 type OrganizationIdentifierType string
@@ -262,3 +263,50 @@ func (c *ConsentProvisionTypeEnum) UnmarshalGQL(v interface{}) error {
 
 	return nil
 }
+
+// QuestionnaireResponseStatusEnum a type enum tha represents a questionnaire response status field of questionnaire response
+type QuestionnaireResponseStatusEnum string
+
+const (
+	QuestionnaireResponseStatusEnumCompleted = "completed"
+)
+
+// IsValid ...
+func (c QuestionnaireResponseStatusEnum) IsValid() bool {
+	return c == QuestionnaireResponseStatusEnumCompleted
+}
+
+// String converts questionnaire response status type to string
+func (c QuestionnaireResponseStatusEnum) String() string {
+	return string(c)
+}
+
+// MarshalGQL writes the questionnaire response status type as a quoted string
+func (c QuestionnaireResponseStatusEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(c.String()))
+}
+
+// UnmarshalGQL reads a json and converts it to a questionnaire response status type enum
+func (c *QuestionnaireResponseStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*c = QuestionnaireResponseStatusEnum(strings.ReplaceAll(str, "_", "-"))
+	if !c.IsValid() {
+		return fmt.Errorf("%s is not a valid QuestionnaireResponseStatus Enum", str)
+	}
+
+	return nil
+}
+
+// QuantityComparatorEnum is a FHIR enum
+type QuantityComparatorEnum string
+
+const (
+	QuantityComparatorEnumLessThan             QuantityComparatorEnum = "less_than"
+	QuantityComparatorEnumLessThanOrEqualTo    QuantityComparatorEnum = "less_than_or_equal_to"
+	QuantityComparatorEnumGreaterThanOrEqualTo QuantityComparatorEnum = "greater_than_or_equal_to"
+	QuantityComparatorEnumGreaterThan          QuantityComparatorEnum = "greater_than"
+)

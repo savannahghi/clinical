@@ -42,6 +42,27 @@ models:
   PatchPatientInput:
     model:
       - github.com/savannahghi/clinical/pkg/clinical/application/dto.PatientInput
+  CodingInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.Coding
+  AttachmentInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.Attachment
+  QuantityInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.Quantity
+  QuestionnaireResponseInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.QuestionnaireResponse
+  QuestionnaireResponseItemAnswerInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItemInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.QuestionnaireResponseItem
+  ReferenceInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.Reference
   Date:
     model:
       - "github.com/savannahghi/scalarutils.Date"

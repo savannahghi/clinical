@@ -225,3 +225,62 @@ type ConsentOutput{
   status: ConsentStatusEnum!
 }
 
+type Reference {
+	reference: String
+	type: URI
+	display: String
+}
+
+type Quantity {
+	value: Float
+	comparator: QuantityComparatorEnum
+	unit: String
+	system: URI
+	code: Code
+}
+
+type Attachment {
+	contentType: Code
+	data: Base64Binary
+	URL: URL
+	size: Int
+	hash: Base64Binary
+	title: String
+}
+
+type Coding {
+	system: URI
+	version: String
+	code: Code
+	display: String
+}
+
+type QuestionnaireResponseItem {
+	linkId: String
+	text: String
+	answer: [QuestionnaireResponseItemAnswer]
+	item: [QuestionnaireResponseItem]
+}
+
+type QuestionnaireResponseItemAnswer {
+	valueBoolean: Boolean
+	valueDecimal: Float
+	valueInteger: Int
+	valueDate: String
+	valueDateTime: String
+	valueTime: String
+	valueString: String
+	valueUri: String
+	valueAttachment: Attachment
+	valueCoding: Coding
+	valueQuantity: Quantity
+	valueReference: Reference
+	item: [QuestionnaireResponseItem]
+}
+
+type QuestionnaireResponse {
+	status: QuestionnaireResponseStatusEnum!
+	authored: String!
+	item: [QuestionnaireResponseItem]
+}
+

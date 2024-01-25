@@ -190,4 +190,7 @@ extend type Mutation {
 
   # Consent
   recordConsent(input: ConsentInput!): ConsentOutput!
+
+  # questionnaireResponse
+  createQuestionnaireResponse(questionnaireID: String!, encounterID: String! input: QuestionnaireResponseInput!): QuestionnaireResponse!
 }

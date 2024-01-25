@@ -68,6 +68,22 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	Attachment struct {
+		ContentType func(childComplexity int) int
+		Data        func(childComplexity int) int
+		Hash        func(childComplexity int) int
+		Size        func(childComplexity int) int
+		Title       func(childComplexity int) int
+		URL         func(childComplexity int) int
+	}
+
+	Coding struct {
+		Code    func(childComplexity int) int
+		Display func(childComplexity int) int
+		System  func(childComplexity int) int
+		Version func(childComplexity int) int
+	}
+
 	Composition struct {
 		Category    func(childComplexity int) int
 		Date        func(childComplexity int) int
@@ -196,6 +212,7 @@ type ComplexityRoot struct {
 		CreateCondition                    func(childComplexity int, input dto.ConditionInput) int
 		CreateEpisodeOfCare                func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
 		CreatePatient                      func(childComplexity int, input dto.PatientInput) int
+		CreateQuestionnaireResponse        func(childComplexity int, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) int
 		DeletePatient                      func(childComplexity int, id string) int
 		EndEncounter                       func(childComplexity int, encounterID string) int
 		EndEpisodeOfCare                   func(childComplexity int, id string) int
@@ -266,6 +283,14 @@ type ComplexityRoot struct {
 		PhoneNumber func(childComplexity int) int
 	}
 
+	Quantity struct {
+		Code       func(childComplexity int) int
+		Comparator func(childComplexity int) int
+		System     func(childComplexity int) int
+		Unit       func(childComplexity int) int
+		Value      func(childComplexity int) int
+	}
+
 	Query struct {
 		GetAllergy                              func(childComplexity int, id string) int
 		GetEpisodeOfCare                        func(childComplexity int, id string) int
@@ -293,11 +318,46 @@ type ComplexityRoot struct {
 		__resolve__service                      func(childComplexity int) int
 	}
 
+	QuestionnaireResponse struct {
+		Authored func(childComplexity int) int
+		Item     func(childComplexity int) int
+		Status   func(childComplexity int) int
+	}
+
+	QuestionnaireResponseItem struct {
+		Answer func(childComplexity int) int
+		Item   func(childComplexity int) int
+		LinkID func(childComplexity int) int
+		Text   func(childComplexity int) int
+	}
+
+	QuestionnaireResponseItemAnswer struct {
+		Item            func(childComplexity int) int
+		ValueAttachment func(childComplexity int) int
+		ValueBoolean    func(childComplexity int) int
+		ValueCoding     func(childComplexity int) int
+		ValueDate       func(childComplexity int) int
+		ValueDateTime   func(childComplexity int) int
+		ValueDecimal    func(childComplexity int) int
+		ValueInteger    func(childComplexity int) int
+		ValueQuantity   func(childComplexity int) int
+		ValueReference  func(childComplexity int) int
+		ValueString     func(childComplexity int) int
+		ValueTime       func(childComplexity int) int
+		ValueURI        func(childComplexity int) int
+	}
+
 	Reaction struct {
 		Code     func(childComplexity int) int
 		Name     func(childComplexity int) int
 		Severity func(childComplexity int) int
 		System   func(childComplexity int) int
+	}
+
+	Reference struct {
+		Display   func(childComplexity int) int
+		Reference func(childComplexity int) int
+		Type      func(childComplexity int) int
 	}
 
 	Section struct {
@@ -379,6 +439,7 @@ type MutationResolver interface {
 	PatchPatientOxygenSaturation(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientPulseRate(ctx context.Context, id string, value string) (*dto.Observation, error)
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
+	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -504,6 +565,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AllergyEdge.Node(childComplexity), true
+
+	case "Attachment.contentType":
+		if e.complexity.Attachment.ContentType == nil {
+			break
+		}
+
+		return e.complexity.Attachment.ContentType(childComplexity), true
+
+	case "Attachment.data":
+		if e.complexity.Attachment.Data == nil {
+			break
+		}
+
+		return e.complexity.Attachment.Data(childComplexity), true
+
+	case "Attachment.hash":
+		if e.complexity.Attachment.Hash == nil {
+			break
+		}
+
+		return e.complexity.Attachment.Hash(childComplexity), true
+
+	case "Attachment.size":
+		if e.complexity.Attachment.Size == nil {
+			break
+		}
+
+		return e.complexity.Attachment.Size(childComplexity), true
+
+	case "Attachment.title":
+		if e.complexity.Attachment.Title == nil {
+			break
+		}
+
+		return e.complexity.Attachment.Title(childComplexity), true
+
+	case "Attachment.URL":
+		if e.complexity.Attachment.URL == nil {
+			break
+		}
+
+		return e.complexity.Attachment.URL(childComplexity), true
+
+	case "Coding.code":
+		if e.complexity.Coding.Code == nil {
+			break
+		}
+
+		return e.complexity.Coding.Code(childComplexity), true
+
+	case "Coding.display":
+		if e.complexity.Coding.Display == nil {
+			break
+		}
+
+		return e.complexity.Coding.Display(childComplexity), true
+
+	case "Coding.system":
+		if e.complexity.Coding.System == nil {
+			break
+		}
+
+		return e.complexity.Coding.System(childComplexity), true
+
+	case "Coding.version":
+		if e.complexity.Coding.Version == nil {
+			break
+		}
+
+		return e.complexity.Coding.Version(childComplexity), true
 
 	case "Composition.category":
 		if e.complexity.Composition.Category == nil {
@@ -1046,6 +1177,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreatePatient(childComplexity, args["input"].(dto.PatientInput)), true
 
+	case "Mutation.createQuestionnaireResponse":
+		if e.complexity.Mutation.CreateQuestionnaireResponse == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createQuestionnaireResponse_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateQuestionnaireResponse(childComplexity, args["questionnaireID"].(string), args["encounterID"].(string), args["input"].(dto.QuestionnaireResponse)), true
+
 	case "Mutation.deletePatient":
 		if e.complexity.Mutation.DeletePatient == nil {
 			break
@@ -1572,6 +1715,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Patient.PhoneNumber(childComplexity), true
 
+	case "Quantity.code":
+		if e.complexity.Quantity.Code == nil {
+			break
+		}
+
+		return e.complexity.Quantity.Code(childComplexity), true
+
+	case "Quantity.comparator":
+		if e.complexity.Quantity.Comparator == nil {
+			break
+		}
+
+		return e.complexity.Quantity.Comparator(childComplexity), true
+
+	case "Quantity.system":
+		if e.complexity.Quantity.System == nil {
+			break
+		}
+
+		return e.complexity.Quantity.System(childComplexity), true
+
+	case "Quantity.unit":
+		if e.complexity.Quantity.Unit == nil {
+			break
+		}
+
+		return e.complexity.Quantity.Unit(childComplexity), true
+
+	case "Quantity.value":
+		if e.complexity.Quantity.Value == nil {
+			break
+		}
+
+		return e.complexity.Quantity.Value(childComplexity), true
+
 	case "Query.getAllergy":
 		if e.complexity.Query.GetAllergy == nil {
 			break
@@ -1855,6 +2033,146 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.__resolve__service(childComplexity), true
 
+	case "QuestionnaireResponse.authored":
+		if e.complexity.QuestionnaireResponse.Authored == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponse.Authored(childComplexity), true
+
+	case "QuestionnaireResponse.item":
+		if e.complexity.QuestionnaireResponse.Item == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponse.Item(childComplexity), true
+
+	case "QuestionnaireResponse.status":
+		if e.complexity.QuestionnaireResponse.Status == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponse.Status(childComplexity), true
+
+	case "QuestionnaireResponseItem.answer":
+		if e.complexity.QuestionnaireResponseItem.Answer == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItem.Answer(childComplexity), true
+
+	case "QuestionnaireResponseItem.item":
+		if e.complexity.QuestionnaireResponseItem.Item == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItem.Item(childComplexity), true
+
+	case "QuestionnaireResponseItem.linkId":
+		if e.complexity.QuestionnaireResponseItem.LinkID == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItem.LinkID(childComplexity), true
+
+	case "QuestionnaireResponseItem.text":
+		if e.complexity.QuestionnaireResponseItem.Text == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItem.Text(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.item":
+		if e.complexity.QuestionnaireResponseItemAnswer.Item == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.Item(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueAttachment":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueAttachment == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueAttachment(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueBoolean":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueBoolean == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueBoolean(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueCoding":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueCoding == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueCoding(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueDate":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueDate == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueDate(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueDateTime":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueDateTime == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueDateTime(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueDecimal":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueDecimal == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueDecimal(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueInteger":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueInteger == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueInteger(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueQuantity":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueQuantity == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueQuantity(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueReference":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueReference == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueReference(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueString":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueString == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueString(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueTime":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueTime == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueTime(childComplexity), true
+
+	case "QuestionnaireResponseItemAnswer.valueUri":
+		if e.complexity.QuestionnaireResponseItemAnswer.ValueURI == nil {
+			break
+		}
+
+		return e.complexity.QuestionnaireResponseItemAnswer.ValueURI(childComplexity), true
+
 	case "Reaction.code":
 		if e.complexity.Reaction.Code == nil {
 			break
@@ -1882,6 +2200,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Reaction.System(childComplexity), true
+
+	case "Reference.display":
+		if e.complexity.Reference.Display == nil {
+			break
+		}
+
+		return e.complexity.Reference.Display(childComplexity), true
+
+	case "Reference.reference":
+		if e.complexity.Reference.Reference == nil {
+			break
+		}
+
+		return e.complexity.Reference.Reference(childComplexity), true
+
+	case "Reference.type":
+		if e.complexity.Reference.Type == nil {
+			break
+		}
+
+		return e.complexity.Reference.Type(childComplexity), true
 
 	case "Section.author":
 		if e.complexity.Section.Author == nil {
@@ -2046,6 +2385,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAllergyInput,
+		ec.unmarshalInputAttachmentInput,
+		ec.unmarshalInputCodingInput,
 		ec.unmarshalInputCompositionInput,
 		ec.unmarshalInputConditionInput,
 		ec.unmarshalInputConsentInput,
@@ -2059,7 +2400,12 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputPatchCompositionInput,
 		ec.unmarshalInputPatchPatientInput,
 		ec.unmarshalInputPatientInput,
+		ec.unmarshalInputQuantityInput,
+		ec.unmarshalInputQuestionnaireResponseInput,
+		ec.unmarshalInputQuestionnaireResponseItemAnswerInput,
+		ec.unmarshalInputQuestionnaireResponseItemInput,
 		ec.unmarshalInputReactionInput,
+		ec.unmarshalInputReferenceInput,
 		ec.unmarshalInputSectionInput,
 	)
 	first := true
@@ -2350,6 +2696,9 @@ extend type Mutation {
 
   # Consent
   recordConsent(input: ConsentInput!): ConsentOutput!
+
+  # questionnaireResponse
+  createQuestionnaireResponse(questionnaireID: String!, encounterID: String! input: QuestionnaireResponseInput!): QuestionnaireResponse!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -2463,6 +2812,17 @@ enum ConsentProvisionTypeEnum {
 enum ConsentStatusEnum{
   active
   inactive
+}
+
+enum QuantityComparatorEnum{
+  less_than
+  less_than_or_equal_to
+  greater_than_or_equal_to
+  greater_than
+}
+
+enum QuestionnaireResponseStatusEnum{
+  completed
 }`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
@@ -2597,6 +2957,63 @@ input ConsentInput{
   status: ConsentStatusEnum!
   provision: ConsentProvisionTypeEnum!
   patientID: String!
+}
+
+input ReferenceInput {
+	reference: String
+	type: URI
+	display: String
+}
+
+input QuantityInput {
+	value: Float
+	comparator: QuantityComparatorEnum
+	unit: String
+	system: URI
+	code: Code
+}
+
+input AttachmentInput {
+	contentType: Code
+	data: Base64Binary
+	URL: URL
+	size: Int
+	hash: Base64Binary
+	title: String
+}
+
+input CodingInput {
+	system: URI
+	version: String
+	code: Code
+	display: String
+}
+input QuestionnaireResponseItemInput {
+	linkId: String
+	text: String
+	answer: [QuestionnaireResponseItemAnswerInput]
+	item: [QuestionnaireResponseItemInput]
+}
+input QuestionnaireResponseItemAnswerInput {
+	valueBoolean: Boolean
+	valueDecimal: Float
+	valueInteger: Int
+	valueDate: String
+	valueDateTime: String
+	valueTime: String
+	valueString: String
+	valueUri: String
+	valueAttachment: AttachmentInput
+	valueCoding: CodingInput
+	valueQuantity: QuantityInput
+	valueReference: ReferenceInput
+	item: [QuestionnaireResponseItemInput]
+}
+
+input QuestionnaireResponseInput {
+	status: QuestionnaireResponseStatusEnum!
+	authored: String!
+	item: [QuestionnaireResponseItemInput]
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
@@ -2826,6 +3243,65 @@ type ConsentOutput{
   status: ConsentStatusEnum!
 }
 
+type Reference {
+	reference: String
+	type: URI
+	display: String
+}
+
+type Quantity {
+	value: Float
+	comparator: QuantityComparatorEnum
+	unit: String
+	system: URI
+	code: Code
+}
+
+type Attachment {
+	contentType: Code
+	data: Base64Binary
+	URL: URL
+	size: Int
+	hash: Base64Binary
+	title: String
+}
+
+type Coding {
+	system: URI
+	version: String
+	code: Code
+	display: String
+}
+
+type QuestionnaireResponseItem {
+	linkId: String
+	text: String
+	answer: [QuestionnaireResponseItemAnswer]
+	item: [QuestionnaireResponseItem]
+}
+
+type QuestionnaireResponseItemAnswer {
+	valueBoolean: Boolean
+	valueDecimal: Float
+	valueInteger: Int
+	valueDate: String
+	valueDateTime: String
+	valueTime: String
+	valueString: String
+	valueUri: String
+	valueAttachment: Attachment
+	valueCoding: Coding
+	valueQuantity: Quantity
+	valueReference: Reference
+	item: [QuestionnaireResponseItem]
+}
+
+type QuestionnaireResponse {
+	status: QuestionnaireResponseStatusEnum!
+	authored: String!
+	item: [QuestionnaireResponseItem]
+}
+
 `, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
@@ -2972,6 +3448,39 @@ func (ec *executionContext) field_Mutation_createPatient_args(ctx context.Contex
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createQuestionnaireResponse_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["questionnaireID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("questionnaireID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["questionnaireID"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["encounterID"] = arg1
+	var arg2 dto.QuestionnaireResponse
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg2, err = ec.unmarshalNQuestionnaireResponseInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg2
 	return args, nil
 }
 
@@ -4893,6 +5402,416 @@ func (ec *executionContext) _AllergyEdge_cursor(ctx context.Context, field graph
 func (ec *executionContext) fieldContext_AllergyEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AllergyEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Attachment_contentType(ctx context.Context, field graphql.CollectedField, obj *dto.Attachment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Attachment_contentType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContentType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Code)
+	fc.Result = res
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Attachment_contentType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Attachment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Code does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Attachment_data(ctx context.Context, field graphql.CollectedField, obj *dto.Attachment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Attachment_data(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Base64Binary)
+	fc.Result = res
+	return ec.marshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Attachment_data(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Attachment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Base64Binary does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Attachment_URL(ctx context.Context, field graphql.CollectedField, obj *dto.Attachment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Attachment_URL(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.URL)
+	fc.Result = res
+	return ec.marshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Attachment_URL(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Attachment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type URL does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Attachment_size(ctx context.Context, field graphql.CollectedField, obj *dto.Attachment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Attachment_size(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Size, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Attachment_size(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Attachment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Attachment_hash(ctx context.Context, field graphql.CollectedField, obj *dto.Attachment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Attachment_hash(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Hash, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Base64Binary)
+	fc.Result = res
+	return ec.marshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Attachment_hash(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Attachment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Base64Binary does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Attachment_title(ctx context.Context, field graphql.CollectedField, obj *dto.Attachment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Attachment_title(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Title, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Attachment_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Attachment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Coding_system(ctx context.Context, field graphql.CollectedField, obj *dto.Coding) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Coding_system(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.System, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.URI)
+	fc.Result = res
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Coding_system(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Coding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type URI does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Coding_version(ctx context.Context, field graphql.CollectedField, obj *dto.Coding) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Coding_version(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Version, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Coding_version(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Coding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Coding_code(ctx context.Context, field graphql.CollectedField, obj *dto.Coding) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Coding_code(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.Code)
+	fc.Result = res
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Coding_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Coding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Code does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Coding_display(ctx context.Context, field graphql.CollectedField, obj *dto.Coding) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Coding_display(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Display, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Coding_display(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Coding",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -10511,6 +11430,69 @@ func (ec *executionContext) fieldContext_Mutation_recordConsent(ctx context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createQuestionnaireResponse(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createQuestionnaireResponse(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateQuestionnaireResponse(rctx, fc.Args["questionnaireID"].(string), fc.Args["encounterID"].(string), fc.Args["input"].(dto.QuestionnaireResponse))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.QuestionnaireResponse)
+	fc.Result = res
+	return ec.marshalNQuestionnaireResponse2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createQuestionnaireResponse(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "status":
+				return ec.fieldContext_QuestionnaireResponse_status(ctx, field)
+			case "authored":
+				return ec.fieldContext_QuestionnaireResponse_authored(ctx, field)
+			case "item":
+				return ec.fieldContext_QuestionnaireResponse_item(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type QuestionnaireResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createQuestionnaireResponse_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Observation_id(ctx context.Context, field graphql.CollectedField, obj *dto.Observation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Observation_id(ctx, field)
 	if err != nil {
@@ -11476,6 +12458,211 @@ func (ec *executionContext) fieldContext_Patient_birthDate(ctx context.Context, 
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Date does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Quantity_value(ctx context.Context, field graphql.CollectedField, obj *dto.Quantity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quantity_value(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Value, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalOFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quantity_value(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quantity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Quantity_comparator(ctx context.Context, field graphql.CollectedField, obj *dto.Quantity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quantity_comparator(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Comparator, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.QuantityComparatorEnum)
+	fc.Result = res
+	return ec.marshalOQuantityComparatorEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantityComparatorEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quantity_comparator(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quantity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type QuantityComparatorEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Quantity_unit(ctx context.Context, field graphql.CollectedField, obj *dto.Quantity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quantity_unit(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Unit, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quantity_unit(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quantity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Quantity_system(ctx context.Context, field graphql.CollectedField, obj *dto.Quantity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quantity_system(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.System, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(scalarutils.URI)
+	fc.Result = res
+	return ec.marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quantity_system(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quantity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type URI does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Quantity_code(ctx context.Context, field graphql.CollectedField, obj *dto.Quantity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quantity_code(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(scalarutils.Code)
+	fc.Result = res
+	return ec.marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quantity_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quantity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Code does not have child fields")
 		},
 	}
 	return fc, nil
@@ -13056,6 +14243,934 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _QuestionnaireResponse_status(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponse_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(dto.QuestionnaireResponseStatusEnum)
+	fc.Result = res
+	return ec.marshalNQuestionnaireResponseStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponse_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type QuestionnaireResponseStatusEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponse_authored(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponse_authored(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Authored, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponse_authored(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponse_item(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponse_item(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Item, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.QuestionnaireResponseItem)
+	fc.Result = res
+	return ec.marshalOQuestionnaireResponseItem2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponse_item(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "linkId":
+				return ec.fieldContext_QuestionnaireResponseItem_linkId(ctx, field)
+			case "text":
+				return ec.fieldContext_QuestionnaireResponseItem_text(ctx, field)
+			case "answer":
+				return ec.fieldContext_QuestionnaireResponseItem_answer(ctx, field)
+			case "item":
+				return ec.fieldContext_QuestionnaireResponseItem_item(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type QuestionnaireResponseItem", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItem_linkId(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItem_linkId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LinkID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItem_linkId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItem_text(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItem_text(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItem_text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItem_answer(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItem_answer(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Answer, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.QuestionnaireResponseItemAnswer)
+	fc.Result = res
+	return ec.marshalOQuestionnaireResponseItemAnswer2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItem_answer(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "valueBoolean":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueBoolean(ctx, field)
+			case "valueDecimal":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueDecimal(ctx, field)
+			case "valueInteger":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueInteger(ctx, field)
+			case "valueDate":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueDate(ctx, field)
+			case "valueDateTime":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueDateTime(ctx, field)
+			case "valueTime":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueTime(ctx, field)
+			case "valueString":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueString(ctx, field)
+			case "valueUri":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueUri(ctx, field)
+			case "valueAttachment":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueAttachment(ctx, field)
+			case "valueCoding":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueCoding(ctx, field)
+			case "valueQuantity":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueQuantity(ctx, field)
+			case "valueReference":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_valueReference(ctx, field)
+			case "item":
+				return ec.fieldContext_QuestionnaireResponseItemAnswer_item(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type QuestionnaireResponseItemAnswer", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItem_item(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItem_item(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Item, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.QuestionnaireResponseItem)
+	fc.Result = res
+	return ec.marshalOQuestionnaireResponseItem2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItem_item(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "linkId":
+				return ec.fieldContext_QuestionnaireResponseItem_linkId(ctx, field)
+			case "text":
+				return ec.fieldContext_QuestionnaireResponseItem_text(ctx, field)
+			case "answer":
+				return ec.fieldContext_QuestionnaireResponseItem_answer(ctx, field)
+			case "item":
+				return ec.fieldContext_QuestionnaireResponseItem_item(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type QuestionnaireResponseItem", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueBoolean(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueBoolean(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueBoolean, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueBoolean(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueDecimal(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueDecimal(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueDecimal, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueDecimal(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueInteger(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueInteger(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueInteger, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueInteger(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueDate(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueDateTime(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueDateTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueDateTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueTime(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueString(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueString(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueString, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueString(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueUri(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueUri(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueURI, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueUri(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueAttachment(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueAttachment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueAttachment, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Attachment)
+	fc.Result = res
+	return ec.marshalOAttachment2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueAttachment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "contentType":
+				return ec.fieldContext_Attachment_contentType(ctx, field)
+			case "data":
+				return ec.fieldContext_Attachment_data(ctx, field)
+			case "URL":
+				return ec.fieldContext_Attachment_URL(ctx, field)
+			case "size":
+				return ec.fieldContext_Attachment_size(ctx, field)
+			case "hash":
+				return ec.fieldContext_Attachment_hash(ctx, field)
+			case "title":
+				return ec.fieldContext_Attachment_title(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Attachment", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueCoding(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueCoding(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueCoding, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Coding)
+	fc.Result = res
+	return ec.marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueCoding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "system":
+				return ec.fieldContext_Coding_system(ctx, field)
+			case "version":
+				return ec.fieldContext_Coding_version(ctx, field)
+			case "code":
+				return ec.fieldContext_Coding_code(ctx, field)
+			case "display":
+				return ec.fieldContext_Coding_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Coding", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueQuantity(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueQuantity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueQuantity, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Quantity)
+	fc.Result = res
+	return ec.marshalOQuantity2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueQuantity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "value":
+				return ec.fieldContext_Quantity_value(ctx, field)
+			case "comparator":
+				return ec.fieldContext_Quantity_comparator(ctx, field)
+			case "unit":
+				return ec.fieldContext_Quantity_unit(ctx, field)
+			case "system":
+				return ec.fieldContext_Quantity_system(ctx, field)
+			case "code":
+				return ec.fieldContext_Quantity_code(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Quantity", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_valueReference(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_valueReference(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ValueReference, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Reference)
+	fc.Result = res
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_valueReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "reference":
+				return ec.fieldContext_Reference_reference(ctx, field)
+			case "type":
+				return ec.fieldContext_Reference_type(ctx, field)
+			case "display":
+				return ec.fieldContext_Reference_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Reference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer_item(ctx context.Context, field graphql.CollectedField, obj *dto.QuestionnaireResponseItemAnswer) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionnaireResponseItemAnswer_item(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Item, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.QuestionnaireResponseItem)
+	fc.Result = res
+	return ec.marshalOQuestionnaireResponseItem2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuestionnaireResponseItemAnswer_item(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuestionnaireResponseItemAnswer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "linkId":
+				return ec.fieldContext_QuestionnaireResponseItem_linkId(ctx, field)
+			case "text":
+				return ec.fieldContext_QuestionnaireResponseItem_text(ctx, field)
+			case "answer":
+				return ec.fieldContext_QuestionnaireResponseItem_answer(ctx, field)
+			case "item":
+				return ec.fieldContext_QuestionnaireResponseItem_item(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type QuestionnaireResponseItem", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Reaction_code(ctx context.Context, field graphql.CollectedField, obj *dto.Reaction) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Reaction_code(ctx, field)
 	if err != nil {
@@ -13215,6 +15330,129 @@ func (ec *executionContext) fieldContext_Reaction_severity(ctx context.Context, 
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type AllergyIntoleranceReactionSeverityEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Reference_reference(ctx context.Context, field graphql.CollectedField, obj *dto.Reference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Reference_reference(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Reference, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Reference_reference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Reference",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Reference_type(ctx context.Context, field graphql.CollectedField, obj *dto.Reference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Reference_type(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalarutils.URI)
+	fc.Result = res
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Reference_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Reference",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type URI does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Reference_display(ctx context.Context, field graphql.CollectedField, obj *dto.Reference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Reference_display(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Display, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Reference_display(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Reference",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -16001,6 +18239,136 @@ func (ec *executionContext) unmarshalInputAllergyInput(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputAttachmentInput(ctx context.Context, obj interface{}) (dto.Attachment, error) {
+	var it dto.Attachment
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"contentType", "data", "URL", "size", "hash", "title"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "contentType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentType"))
+			data, err := ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ContentType = data
+		case "data":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
+			data, err := ec.unmarshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Data = data
+		case "URL":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("URL"))
+			data, err := ec.unmarshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.URL = data
+		case "size":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("size"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Size = data
+		case "hash":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hash"))
+			data, err := ec.unmarshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Hash = data
+		case "title":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Title = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCodingInput(ctx context.Context, obj interface{}) (dto.Coding, error) {
+	var it dto.Coding
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"system", "version", "code", "display"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "system":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("system"))
+			data, err := ec.unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.System = data
+		case "version":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("version"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Version = data
+		case "code":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
+			data, err := ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Code = data
+		case "display":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("display"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Display = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCompositionInput(ctx context.Context, obj interface{}) (dto.CompositionInput, error) {
 	var it dto.CompositionInput
 	asMap := map[string]interface{}{}
@@ -16720,6 +19088,311 @@ func (ec *executionContext) unmarshalInputPatientInput(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputQuantityInput(ctx context.Context, obj interface{}) (dto.Quantity, error) {
+	var it dto.Quantity
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"value", "comparator", "unit", "system", "code"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "value":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+			data, err := ec.unmarshalOFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Value = data
+		case "comparator":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comparator"))
+			data, err := ec.unmarshalOQuantityComparatorEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantityComparatorEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Comparator = data
+		case "unit":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("unit"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Unit = data
+		case "system":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("system"))
+			data, err := ec.unmarshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.System = data
+		case "code":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
+			data, err := ec.unmarshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Code = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputQuestionnaireResponseInput(ctx context.Context, obj interface{}) (dto.QuestionnaireResponse, error) {
+	var it dto.QuestionnaireResponse
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"status", "authored", "item"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalNQuestionnaireResponseStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseStatusEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		case "authored":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authored"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Authored = data
+		case "item":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("item"))
+			data, err := ec.unmarshalOQuestionnaireResponseItemInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Item = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputQuestionnaireResponseItemAnswerInput(ctx context.Context, obj interface{}) (dto.QuestionnaireResponseItemAnswer, error) {
+	var it dto.QuestionnaireResponseItemAnswer
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"valueBoolean", "valueDecimal", "valueInteger", "valueDate", "valueDateTime", "valueTime", "valueString", "valueUri", "valueAttachment", "valueCoding", "valueQuantity", "valueReference", "item"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "valueBoolean":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueBoolean"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueBoolean = data
+		case "valueDecimal":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueDecimal"))
+			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueDecimal = data
+		case "valueInteger":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueInteger"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueInteger = data
+		case "valueDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueDate"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueDate = data
+		case "valueDateTime":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueDateTime"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueDateTime = data
+		case "valueTime":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueTime"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueTime = data
+		case "valueString":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueString"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueString = data
+		case "valueUri":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueUri"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueURI = data
+		case "valueAttachment":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueAttachment"))
+			data, err := ec.unmarshalOAttachmentInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueAttachment = data
+		case "valueCoding":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueCoding"))
+			data, err := ec.unmarshalOCodingInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueCoding = data
+		case "valueQuantity":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueQuantity"))
+			data, err := ec.unmarshalOQuantityInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueQuantity = data
+		case "valueReference":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueReference"))
+			data, err := ec.unmarshalOReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ValueReference = data
+		case "item":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("item"))
+			data, err := ec.unmarshalOQuestionnaireResponseItemInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Item = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputQuestionnaireResponseItemInput(ctx context.Context, obj interface{}) (dto.QuestionnaireResponseItem, error) {
+	var it dto.QuestionnaireResponseItem
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"linkId", "text", "answer", "item"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "linkId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("linkId"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.LinkID = data
+		case "text":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Text = data
+		case "answer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("answer"))
+			data, err := ec.unmarshalOQuestionnaireResponseItemAnswerInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Answer = data
+		case "item":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("item"))
+			data, err := ec.unmarshalOQuestionnaireResponseItemInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Item = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputReactionInput(ctx context.Context, obj interface{}) (dto.ReactionInput, error) {
 	var it dto.ReactionInput
 	asMap := map[string]interface{}{}
@@ -16761,6 +19434,53 @@ func (ec *executionContext) unmarshalInputReactionInput(ctx context.Context, obj
 				return it, err
 			}
 			it.Severity = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputReferenceInput(ctx context.Context, obj interface{}) (dto.Reference, error) {
+	var it dto.Reference
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"reference", "type", "display"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "reference":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reference"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Reference = data
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			data, err := ec.unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Type = data
+		case "display":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("display"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Display = data
 		}
 	}
 
@@ -16958,6 +19678,94 @@ func (ec *executionContext) _AllergyEdge(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = ec._AllergyEdge_node(ctx, field, obj)
 		case "cursor":
 			out.Values[i] = ec._AllergyEdge_cursor(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var attachmentImplementors = []string{"Attachment"}
+
+func (ec *executionContext) _Attachment(ctx context.Context, sel ast.SelectionSet, obj *dto.Attachment) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, attachmentImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Attachment")
+		case "contentType":
+			out.Values[i] = ec._Attachment_contentType(ctx, field, obj)
+		case "data":
+			out.Values[i] = ec._Attachment_data(ctx, field, obj)
+		case "URL":
+			out.Values[i] = ec._Attachment_URL(ctx, field, obj)
+		case "size":
+			out.Values[i] = ec._Attachment_size(ctx, field, obj)
+		case "hash":
+			out.Values[i] = ec._Attachment_hash(ctx, field, obj)
+		case "title":
+			out.Values[i] = ec._Attachment_title(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var codingImplementors = []string{"Coding"}
+
+func (ec *executionContext) _Coding(ctx context.Context, sel ast.SelectionSet, obj *dto.Coding) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, codingImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Coding")
+		case "system":
+			out.Values[i] = ec._Coding_system(ctx, field, obj)
+		case "version":
+			out.Values[i] = ec._Coding_version(ctx, field, obj)
+		case "code":
+			out.Values[i] = ec._Coding_code(ctx, field, obj)
+		case "display":
+			out.Values[i] = ec._Coding_display(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -18059,6 +20867,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "createQuestionnaireResponse":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createQuestionnaireResponse(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -18309,6 +21124,50 @@ func (ec *executionContext) _Patient(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "birthDate":
 			out.Values[i] = ec._Patient_birthDate(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var quantityImplementors = []string{"Quantity"}
+
+func (ec *executionContext) _Quantity(ctx context.Context, sel ast.SelectionSet, obj *dto.Quantity) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, quantityImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Quantity")
+		case "value":
+			out.Values[i] = ec._Quantity_value(ctx, field, obj)
+		case "comparator":
+			out.Values[i] = ec._Quantity_comparator(ctx, field, obj)
+		case "unit":
+			out.Values[i] = ec._Quantity_unit(ctx, field, obj)
+		case "system":
+			out.Values[i] = ec._Quantity_system(ctx, field, obj)
+		case "code":
+			out.Values[i] = ec._Quantity_code(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -18847,6 +21706,154 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
+var questionnaireResponseImplementors = []string{"QuestionnaireResponse"}
+
+func (ec *executionContext) _QuestionnaireResponse(ctx context.Context, sel ast.SelectionSet, obj *dto.QuestionnaireResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, questionnaireResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("QuestionnaireResponse")
+		case "status":
+			out.Values[i] = ec._QuestionnaireResponse_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "authored":
+			out.Values[i] = ec._QuestionnaireResponse_authored(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "item":
+			out.Values[i] = ec._QuestionnaireResponse_item(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var questionnaireResponseItemImplementors = []string{"QuestionnaireResponseItem"}
+
+func (ec *executionContext) _QuestionnaireResponseItem(ctx context.Context, sel ast.SelectionSet, obj *dto.QuestionnaireResponseItem) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, questionnaireResponseItemImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("QuestionnaireResponseItem")
+		case "linkId":
+			out.Values[i] = ec._QuestionnaireResponseItem_linkId(ctx, field, obj)
+		case "text":
+			out.Values[i] = ec._QuestionnaireResponseItem_text(ctx, field, obj)
+		case "answer":
+			out.Values[i] = ec._QuestionnaireResponseItem_answer(ctx, field, obj)
+		case "item":
+			out.Values[i] = ec._QuestionnaireResponseItem_item(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var questionnaireResponseItemAnswerImplementors = []string{"QuestionnaireResponseItemAnswer"}
+
+func (ec *executionContext) _QuestionnaireResponseItemAnswer(ctx context.Context, sel ast.SelectionSet, obj *dto.QuestionnaireResponseItemAnswer) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, questionnaireResponseItemAnswerImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("QuestionnaireResponseItemAnswer")
+		case "valueBoolean":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueBoolean(ctx, field, obj)
+		case "valueDecimal":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueDecimal(ctx, field, obj)
+		case "valueInteger":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueInteger(ctx, field, obj)
+		case "valueDate":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueDate(ctx, field, obj)
+		case "valueDateTime":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueDateTime(ctx, field, obj)
+		case "valueTime":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueTime(ctx, field, obj)
+		case "valueString":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueString(ctx, field, obj)
+		case "valueUri":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueUri(ctx, field, obj)
+		case "valueAttachment":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueAttachment(ctx, field, obj)
+		case "valueCoding":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueCoding(ctx, field, obj)
+		case "valueQuantity":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueQuantity(ctx, field, obj)
+		case "valueReference":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_valueReference(ctx, field, obj)
+		case "item":
+			out.Values[i] = ec._QuestionnaireResponseItemAnswer_item(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var reactionImplementors = []string{"Reaction"}
 
 func (ec *executionContext) _Reaction(ctx context.Context, sel ast.SelectionSet, obj *dto.Reaction) graphql.Marshaler {
@@ -18866,6 +21873,46 @@ func (ec *executionContext) _Reaction(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = ec._Reaction_system(ctx, field, obj)
 		case "severity":
 			out.Values[i] = ec._Reaction_severity(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var referenceImplementors = []string{"Reference"}
+
+func (ec *executionContext) _Reference(ctx context.Context, sel ast.SelectionSet, obj *dto.Reference) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, referenceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Reference")
+		case "reference":
+			out.Values[i] = ec._Reference_reference(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._Reference_type(ctx, field, obj)
+		case "display":
+			out.Values[i] = ec._Reference_display(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -19932,6 +22979,35 @@ func (ec *executionContext) unmarshalNPatientInput2githubᚗcomᚋsavannahghiᚋ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNQuestionnaireResponse2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireResponse) graphql.Marshaler {
+	return ec._QuestionnaireResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNQuestionnaireResponse2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, sel ast.SelectionSet, v *dto.QuestionnaireResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._QuestionnaireResponse(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNQuestionnaireResponseInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, v interface{}) (dto.QuestionnaireResponse, error) {
+	res, err := ec.unmarshalInputQuestionnaireResponseInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNQuestionnaireResponseStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseStatusEnum(ctx context.Context, v interface{}) (dto.QuestionnaireResponseStatusEnum, error) {
+	var res dto.QuestionnaireResponseStatusEnum
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNQuestionnaireResponseStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireResponseStatusEnum) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNSectionInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐSectionInput(ctx context.Context, v interface{}) (*dto.SectionInput, error) {
 	res, err := ec.unmarshalInputSectionInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -20387,6 +23463,37 @@ func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2githu
 	return res
 }
 
+func (ec *executionContext) marshalOAttachment2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx context.Context, sel ast.SelectionSet, v *dto.Attachment) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Attachment(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOAttachmentInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx context.Context, v interface{}) (*dto.Attachment, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputAttachmentInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx context.Context, v interface{}) (*scalarutils.Base64Binary, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.Base64Binary)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOBase64Binary2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐBase64Binary(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Base64Binary) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -20411,6 +23518,47 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	}
 	res := graphql.MarshalBoolean(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, v interface{}) (scalarutils.Code, error) {
+	var res scalarutils.Code
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, sel ast.SelectionSet, v scalarutils.Code) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, v interface{}) (*scalarutils.Code, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.Code)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Code) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx context.Context, sel ast.SelectionSet, v *dto.Coding) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Coding(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOCodingInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx context.Context, v interface{}) (*dto.Coding, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputCodingInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOComposition2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐComposition(ctx context.Context, sel ast.SelectionSet, v dto.Composition) graphql.Marshaler {
@@ -20698,6 +23846,32 @@ func (ec *executionContext) marshalOEpisodeOfCare2ᚖgithubᚗcomᚋsavannahghi�
 		return graphql.Null
 	}
 	return ec._EpisodeOfCare(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOFloat2float64(ctx context.Context, v interface{}) (float64, error) {
+	res, err := graphql.UnmarshalFloatContext(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
+	res := graphql.MarshalFloatContext(v)
+	return graphql.WrapContextMarshaler(ctx, res)
+}
+
+func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v interface{}) (*float64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalFloatContext(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel ast.SelectionSet, v *float64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalFloatContext(*v)
+	return graphql.WrapContextMarshaler(ctx, res)
 }
 
 func (ec *executionContext) unmarshalOGender2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐGender(ctx context.Context, v interface{}) (dto.Gender, error) {
@@ -20997,6 +24171,178 @@ func (ec *executionContext) marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinic
 	return ec._PageInfo(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalOQuantity2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx context.Context, sel ast.SelectionSet, v *dto.Quantity) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Quantity(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOQuantityComparatorEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantityComparatorEnum(ctx context.Context, v interface{}) (*dto.QuantityComparatorEnum, error) {
+	if v == nil {
+		return nil, nil
+	}
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.QuantityComparatorEnum(tmp)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOQuantityComparatorEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantityComparatorEnum(ctx context.Context, sel ast.SelectionSet, v *dto.QuantityComparatorEnum) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalString(string(*v))
+	return res
+}
+
+func (ec *executionContext) unmarshalOQuantityInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx context.Context, v interface{}) (*dto.Quantity, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputQuantityInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOQuestionnaireResponseItem2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireResponseItem) graphql.Marshaler {
+	return ec._QuestionnaireResponseItem(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOQuestionnaireResponseItem2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx context.Context, sel ast.SelectionSet, v []dto.QuestionnaireResponseItem) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOQuestionnaireResponseItem2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOQuestionnaireResponseItemAnswer2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireResponseItemAnswer) graphql.Marshaler {
+	return ec._QuestionnaireResponseItemAnswer(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOQuestionnaireResponseItemAnswer2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx context.Context, sel ast.SelectionSet, v []dto.QuestionnaireResponseItemAnswer) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOQuestionnaireResponseItemAnswer2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOQuestionnaireResponseItemAnswerInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx context.Context, v interface{}) (dto.QuestionnaireResponseItemAnswer, error) {
+	res, err := ec.unmarshalInputQuestionnaireResponseItemAnswerInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOQuestionnaireResponseItemAnswerInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx context.Context, v interface{}) ([]dto.QuestionnaireResponseItemAnswer, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]dto.QuestionnaireResponseItemAnswer, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOQuestionnaireResponseItemAnswerInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItemAnswer(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOQuestionnaireResponseItemInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx context.Context, v interface{}) (dto.QuestionnaireResponseItem, error) {
+	res, err := ec.unmarshalInputQuestionnaireResponseItemInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOQuestionnaireResponseItemInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx context.Context, v interface{}) ([]dto.QuestionnaireResponseItem, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]dto.QuestionnaireResponseItem, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOQuestionnaireResponseItemInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 func (ec *executionContext) marshalOReaction2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReaction(ctx context.Context, sel ast.SelectionSet, v dto.Reaction) graphql.Marshaler {
 	return ec._Reaction(ctx, sel, &v)
 }
@@ -21006,6 +24352,21 @@ func (ec *executionContext) unmarshalOReactionInput2ᚖgithubᚗcomᚋsavannahgh
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputReactionInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx context.Context, sel ast.SelectionSet, v *dto.Reference) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Reference(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOReferenceInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx context.Context, v interface{}) (*dto.Reference, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputReferenceInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -21234,6 +24595,48 @@ func (ec *executionContext) marshalOTimelineResource2ᚕgithubᚗcomᚋsavannahg
 	wg.Wait()
 
 	return ret
+}
+
+func (ec *executionContext) unmarshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, v interface{}) (scalarutils.URI, error) {
+	var res scalarutils.URI
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, sel ast.SelectionSet, v scalarutils.URI) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, v interface{}) (*scalarutils.URI, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.URI)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, sel ast.SelectionSet, v *scalarutils.URI) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx context.Context, v interface{}) (*scalarutils.URL, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.URL)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOURL2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx context.Context, sel ast.SelectionSet, v *scalarutils.URL) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

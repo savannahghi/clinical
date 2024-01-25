@@ -83,6 +83,7 @@ type FHIRMock struct {
 	MockSearchPatientMediaFn              func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error)
 	MockCreateFHIRQuestionnaireFn         func(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
 	MockCreateFHIRConsentFn               func(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error)
+	MockCreateFHIRQuestionnaireResponseFn func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -1871,6 +1872,9 @@ func NewFHIRMock() *FHIRMock {
 		MockCreateFHIRConsentFn: func(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error) {
 			return &input, nil
 		},
+		MockCreateFHIRQuestionnaireResponseFn: func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+			return input, nil
+		},
 	}
 }
 
@@ -2182,4 +2186,9 @@ func (fh *FHIRMock) CreateFHIRQuestionnaire(ctx context.Context, input *domain.F
 // CreateFHIRConsent mocks the create consent resource on fhir
 func (fh *FHIRMock) CreateFHIRConsent(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error) {
 	return fh.MockCreateFHIRConsentFn(ctx, input)
+}
+
+// CreateFHIRQuestionnaireResponse mocks the create questionnaire response resource on fhir
+func (fh *FHIRMock) CreateFHIRQuestionnaireResponse(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+	return fh.MockCreateFHIRQuestionnaireResponseFn(ctx, input)
 }

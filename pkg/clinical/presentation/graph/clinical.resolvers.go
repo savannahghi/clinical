@@ -232,6 +232,11 @@ func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentI
 	return r.usecases.RecordConsent(ctx, input)
 }
 
+// CreateQuestionnaireResponse is the resolver for the createQuestionnaireResponse field.
+func (r *mutationResolver) CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error) {
+	return r.usecases.CreateQuestionnaireResponse(ctx, questionnaireID, encounterID, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
