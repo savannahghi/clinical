@@ -221,6 +221,12 @@ func (r *mutationResolver) PatchPatientOxygenSaturation(ctx context.Context, id 
 	return r.usecases.PatchPatientOxygenSaturation(ctx, id, value)
 }
 
+// PatchPatientPulseRate is the resolver for the PatchPatientPulseRate field.
+func (r *mutationResolver) PatchPatientPulseRate(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchPatientPulseRate(ctx, id, value)
+}
+
 // RecordConsent is the resolver for the recordConsent field.
 func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error) {
 	return r.usecases.RecordConsent(ctx, input)
