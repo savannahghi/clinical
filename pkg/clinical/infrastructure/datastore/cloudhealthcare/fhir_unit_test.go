@@ -4437,6 +4437,71 @@ func TestStoreImpl_CreateFHIRMedia(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_SearchFHIRQuestionnaire(t *testing.T) {
+	type args struct {
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: search questionnaire",
+			args: args{
+				ctx: nil,
+				params: map[string]interface{}{
+					"status": "active",
+					"name":   "title",
+				},
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to search questionnaire",
+			args: args{
+				ctx: nil,
+				params: map[string]interface{}{
+					"status": "active",
+					"name":   "title",
+				},
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to search questionnaire" {
+				fakeDataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, errors.New("an error occurred")
+				}
+			}
+
+			_, err := fh.SearchFHIRQuestionnaire(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchFHIRQuestionnaire() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestStoreImpl_SearchPatientMedia(t *testing.T) {
 	first := 1
 	type args struct {
@@ -4518,11 +4583,11 @@ func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
 				ctx: context.Background(),
 				input: &domain.FHIRQuestionnaire{
 					ID:                &ID,
-					Meta:              &domain.FHIRMetaInput{},
+					Meta:              &domain.FHIRMeta{},
 					ImplicitRules:     new(string),
 					Language:          new(string),
 					Text:              &domain.FHIRNarrative{},
-					FHIRExtension:     []*domain.Extension{},
+					Extension:         []*domain.Extension{},
 					ModifierExtension: []*domain.Extension{},
 					Identifier:        []*domain.FHIRIdentifier{},
 					Version:           new(string),
@@ -4548,11 +4613,11 @@ func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
 				ctx: context.Background(),
 				input: &domain.FHIRQuestionnaire{
 					ID:            &ID,
-					Meta:          &domain.FHIRMetaInput{},
+					Meta:          &domain.FHIRMeta{},
 					ImplicitRules: new(string),
 					Language:      new(string),
 					Text:          &domain.FHIRNarrative{},
-					FHIRExtension: []*domain.Extension{},
+					Extension:     []*domain.Extension{},
 				},
 			},
 			wantErr: true,
@@ -4565,7 +4630,7 @@ func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
 
 			if tt.name == "Sad case: unable to create a questionnaire resource" {
 				fakeDataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
-					return fmt.Errorf("an error ocurred")
+					return errors.New("unable to create a questionnaire resource")
 				}
 			}
 

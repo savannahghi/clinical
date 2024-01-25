@@ -369,6 +369,13 @@ func (r *queryResolver) ListPatientMedia(ctx context.Context, patientID string, 
 	return r.usecases.ListPatientMedia(ctx, patientID, pagination)
 }
 
+// SearchQuestionnaire is the resolver for the searchQuestionnaire field.
+func (r *queryResolver) SearchQuestionnaire(ctx context.Context, name string, pagination dto.Pagination) (*dto.QuestionnaireConnection, error) {
+	r.CheckDependencies()
+
+	return r.usecases.SearchQuestionnaire(ctx, name, &pagination)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

@@ -225,3 +225,245 @@ type ConsentOutput{
   status: ConsentStatusEnum!
 }
 
+type QuestionnaireEdge {
+  node: Questionnaire
+  cursor: String
+}
+
+type QuestionnaireConnection {
+  totalCount: Int
+  edges: [QuestionnaireEdge]
+  pageInfo: PageInfo
+}
+
+type Questionnaire {
+  id: String
+  meta: Meta
+  implicitRules: String
+  language: String
+  text: Narrative
+  extension: [Extension]
+  modifierExtension: [Extension]
+  url: URI
+  identifier: [Identifier]
+  version: String
+  name: String
+  title: String
+  derivedFrom: [String]
+  status: Code
+  experimental: Boolean
+  date: DateTime
+  publisher: String
+  description: String
+  useContext: UsageContext
+  jurisdiction: [CodeableConcept]
+  purpose: String
+  effectivePeriod: Period
+  code: [Coding]
+  item: [QuestionnaireItem]
+}
+
+type Narrative {
+  id: String
+  status: String
+  div: XHTML
+}
+
+type Meta {
+  versionId: String
+  source: String
+  tag: [Coding]
+  security: [Coding]
+}
+
+type Coding {
+  id: String
+  system: URI
+  version: String
+  code: Code
+  display: String
+  userSelected: Boolean
+}
+
+type UsageContext {
+  id: String
+  extension: [Extension]
+  code: Coding
+  valueCodeableConcept: CodeableConcept
+  valueQuantity: Quantity
+  valueRange: Range
+  valueReference: Reference
+}
+
+type Extension {
+  url: String
+  valueBoolean: Boolean
+  valueInteger: Int
+  valueDecimal: Float
+  valueBase64Binary: String
+  valueInstant: String
+  valueString: String
+  valueURI: String
+  valueDate: String
+  valueDateTime: String
+  valueTime: String
+  valueCode: String
+  valueOid: String
+  valueUUID: String
+  valueID: String
+  valueUnsignedInt: Int
+  valuePositiveInt: Int
+  valueMarkdown: String
+  valueAnnotation: Annotation
+  valueAttachment: Attachment
+  valueIdentifier: Identifier
+  valueCodeableConcept: CodeableConcept
+  valueCoding: Coding
+  valueQuantity: Quantity
+  valueRange: Range
+  valuePeriod: Period
+  valueRatio: Ratio
+  valueReference: Reference
+}
+
+type Annotation {
+  id: ID
+  AuthorReference: Reference
+  AuthorString: String
+  Time: DateTime
+  Text: Markdown
+}
+
+type Range {
+  id: String
+  low: Quantity
+  high: Quantity
+}
+
+type Ratio {
+  id: String
+  numerator: Quantity
+  denominator: Quantity
+}
+
+type QuestionnaireItem {
+  id: String
+  meta: Meta
+  extension: [Extension]
+  modifierExtension: [Extension]
+  linkId: String
+  definition: URI
+  code: [Coding]
+  prefix: String
+  text: String
+  type: Code
+  enableWhen: [QuestionnaireItemEnableWhen]
+  enableBehavior: Code
+  disabledDisplay: Code
+  required: Boolean
+  repeats: Boolean
+  readOnly: Boolean
+  maxLength: Int
+  answerValueSet: String
+  answerOption: [QuestionnaireItemAnswerOption]
+  initial: [QuestionnaireItemInitial]
+  item: [QuestionnaireItem]
+}
+
+type QuestionnaireItemEnableWhen {
+  id: String
+  extension: [Extension]
+  modifierExtension: [Extension]
+  question: String
+  operator: Code
+  answerBoolean: Boolean
+  answerDecimal: Float
+  answerInteger: Int
+  answerDate: Date
+  answerDateTime: DateTime
+  answerTime: DateTime
+  answerString: String
+  answerCoding: Coding
+  answerQuantity: Quantity
+  answerReference: Reference
+}
+
+type QuestionnaireItemAnswerOption {
+  id: String
+  extension: [Extension]
+  modifierExtension: [Extension]
+  valueInteger: Int
+  valueDate: Date
+  valueString: String
+  valueCoding: Coding
+  valueReference: Reference
+  initialSelected: Boolean
+}
+
+type QuestionnaireItemInitial {
+  id: String
+  extension: [Extension]
+  modifierExtension: [Extension]
+  valueBoolean: Boolean
+  valueDecimal: Float
+  valueInteger: Int
+  valueDate: Date
+  valueDateTime: DateTime
+  valueString: String
+  valueUri: URI
+  valueAttachment: Attachment
+  valueCoding: Coding
+  valueQuantity: Quantity
+  valueReference: Reference
+}
+
+type Quantity {
+  id: String
+  value: Float
+  comparator: String
+  unit: String
+  system: URI
+  code: Code
+}
+
+type Attachment {
+  id: String
+  contentType: Code
+  language: Code
+  data: Base64Binary
+  url: URL
+  size: Int
+  hash: Base64Binary
+  title: String
+  creation: DateTime
+}
+
+type Reference {
+  id: String
+  reference: String
+  type: URI
+  identifier: Identifier
+  display: String
+}
+
+type Identifier {
+  id: String
+  use: String
+  type: CodeableConcept
+  system: URI
+  value: String
+  period: Period
+  assigner: Reference
+}
+
+type CodeableConcept {
+  id: String
+  coding: [Coding]
+  text: String
+}
+
+type Period {
+  id: String
+  start: DateTime
+  end: DateTime
+}

@@ -79,6 +79,7 @@ type FHIRMock struct {
 	MockSearchPatientObservationsFn       func(ctx context.Context, searchParameters map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error)
 	MockGetFHIRAllergyIntoleranceFn       func(ctx context.Context, id string) (*domain.FHIRAllergyIntoleranceRelayPayload, error)
 	MockSearchPatientAllergyIntoleranceFn func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error)
+	MockSearchFHIRQuestionnaireFn         func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRQuestionnaires, error)
 	MockCreateFHIRMediaFn                 func(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error)
 	MockSearchPatientMediaFn              func(ctx context.Context, patientReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRMedia, error)
 	MockCreateFHIRQuestionnaireFn         func(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
@@ -1843,14 +1844,29 @@ func NewFHIRMock() *FHIRMock {
 				TotalCount:      0,
 			}, nil
 		},
+		MockSearchFHIRQuestionnaireFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRQuestionnaires, error) {
+			uuid := uuid.New().String()
+			return &domain.PagedFHIRQuestionnaires{
+				Questionnaires: []domain.FHIRQuestionnaire{
+					{
+						ID: &uuid,
+					},
+				},
+				HasNextPage:     true,
+				NextCursor:      "",
+				HasPreviousPage: true,
+				PreviousCursor:  "",
+				TotalCount:      0,
+			}, nil
+		},
 		MockCreateFHIRQuestionnaireFn: func(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error) {
 			return &domain.FHIRQuestionnaire{
 				ID:                new(string),
-				Meta:              &domain.FHIRMetaInput{},
+				Meta:              &domain.FHIRMeta{},
 				ImplicitRules:     new(string),
 				Language:          new(string),
 				Text:              &domain.FHIRNarrative{},
-				FHIRExtension:     []*domain.Extension{},
+				Extension:         []*domain.Extension{},
 				ModifierExtension: []*domain.Extension{},
 				Identifier:        []*domain.FHIRIdentifier{},
 				Version:           new(string),
@@ -2182,4 +2198,9 @@ func (fh *FHIRMock) CreateFHIRQuestionnaire(ctx context.Context, input *domain.F
 // CreateFHIRConsent mocks the create consent resource on fhir
 func (fh *FHIRMock) CreateFHIRConsent(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error) {
 	return fh.MockCreateFHIRConsentFn(ctx, input)
+}
+
+// SearchFHIRQuestionnaire mocks the searching of FHIR questionnaire resource
+func (fh *FHIRMock) SearchFHIRQuestionnaire(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRQuestionnaires, error) {
+	return fh.MockSearchFHIRQuestionnaireFn(ctx, params, tenant, pagination)
 }
