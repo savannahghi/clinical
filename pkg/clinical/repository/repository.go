@@ -24,6 +24,7 @@ type FHIR interface {
 	FHIRMedia
 	FHIRQuestionnaire
 	FHIRConsent
+	FHIRQuestionnaireResponse
 }
 
 type FHIROrganization interface {
@@ -119,4 +120,8 @@ type FHIRQuestionnaire interface {
 }
 type FHIRConsent interface {
 	CreateFHIRConsent(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error)
+}
+
+type FHIRQuestionnaireResponse interface {
+	CreateFHIRQuestionnaireResponse(_ context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error)
 }

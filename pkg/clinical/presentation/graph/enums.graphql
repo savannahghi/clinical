@@ -110,3 +110,14 @@ enum ConsentStatusEnum{
   active
   inactive
 }
+
+enum QuantityComparatorEnum{
+  less_than
+  less_than_or_equal_to
+  greater_than_or_equal_to
+  greater_than
+}
+
+enum QuestionnaireResponseStatusEnum{
+  completed
+}

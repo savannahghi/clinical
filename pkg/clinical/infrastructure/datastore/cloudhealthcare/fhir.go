@@ -22,21 +22,22 @@ const (
 
 // resource types
 const (
-	organizationResource            = "Organization"
-	patientResourceType             = "Patient"
-	episodeOfCareResourceType       = "EpisodeOfCare"
-	observationResourceType         = "Observation"
-	allergyIntoleranceResourceType  = "AllergyIntolerance"
-	serviceRequestResourceType      = "ServiceRequest"
-	medicationRequestResourceType   = "MedicationRequest"
-	conditionResourceType           = "Condition"
-	encounterResourceType           = "Encounter"
-	compositionResourceType         = "Composition"
-	medicationStatementResourceType = "MedicationStatement"
-	medicationResourceType          = "Medication"
-	mediaResourceType               = "Media"
-	questionnaireResourceType       = "Questionnaire"
-	consentResourceType             = "Consent"
+	organizationResource              = "Organization"
+	patientResourceType               = "Patient"
+	episodeOfCareResourceType         = "EpisodeOfCare"
+	observationResourceType           = "Observation"
+	allergyIntoleranceResourceType    = "AllergyIntolerance"
+	serviceRequestResourceType        = "ServiceRequest"
+	medicationRequestResourceType     = "MedicationRequest"
+	conditionResourceType             = "Condition"
+	encounterResourceType             = "Encounter"
+	compositionResourceType           = "Composition"
+	medicationStatementResourceType   = "MedicationStatement"
+	medicationResourceType            = "Medication"
+	mediaResourceType                 = "Media"
+	questionnaireResourceType         = "Questionnaire"
+	consentResourceType               = "Consent"
+	questionnaireResponseResourceType = "QuestionnaireResponse"
 )
 
 // Dataset ...
@@ -1714,6 +1715,23 @@ func (fh StoreImpl) CreateFHIRConsent(_ context.Context, input domain.FHIRConsen
 	err = fh.Dataset.CreateFHIRResource(consentResourceType, payload, resource)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create/update %s resource: %w", consentResourceType, err)
+	}
+
+	return resource, nil
+}
+
+// CreateFHIRQuestionnaireResponse is used to create a FHIR Questionnaire response resource
+func (fh StoreImpl) CreateFHIRQuestionnaireResponse(_ context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", questionnaireResponseResourceType, err)
+	}
+
+	resource := &domain.FHIRQuestionnaireResponse{}
+
+	err = fh.Dataset.CreateFHIRResource(questionnaireResponseResourceType, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create %s resource: %w", questionnaireResponseResourceType, err)
 	}
 
 	return resource, nil

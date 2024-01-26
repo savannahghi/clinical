@@ -110,3 +110,60 @@ input ConsentInput{
   provision: ConsentProvisionTypeEnum!
   patientID: String!
 }
+
+input ReferenceInput {
+	reference: String
+	type: URI
+	display: String
+}
+
+input QuantityInput {
+	value: Float
+	comparator: QuantityComparatorEnum
+	unit: String
+	system: URI
+	code: Code
+}
+
+input AttachmentInput {
+	contentType: Code
+	data: Base64Binary
+	URL: URL
+	size: Int
+	hash: Base64Binary
+	title: String
+}
+
+input CodingInput {
+	system: URI
+	version: String
+	code: Code
+	display: String
+}
+input QuestionnaireResponseItemInput {
+	linkId: String
+	text: String
+	answer: [QuestionnaireResponseItemAnswerInput]
+	item: [QuestionnaireResponseItemInput]
+}
+input QuestionnaireResponseItemAnswerInput {
+	valueBoolean: Boolean
+	valueDecimal: Float
+	valueInteger: Int
+	valueDate: String
+	valueDateTime: String
+	valueTime: String
+	valueString: String
+	valueUri: String
+	valueAttachment: AttachmentInput
+	valueCoding: CodingInput
+	valueQuantity: QuantityInput
+	valueReference: ReferenceInput
+	item: [QuestionnaireResponseItemInput]
+}
+
+input QuestionnaireResponseInput {
+	status: QuestionnaireResponseStatusEnum!
+	authored: String!
+	item: [QuestionnaireResponseItemInput]
+}
