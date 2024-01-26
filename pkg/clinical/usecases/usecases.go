@@ -98,6 +98,7 @@ type Clinical interface {
 	PatchPatientOxygenSaturation(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientPulseRate(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientViralLoad(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientMuac(ctx context.Context, id string, value string) (*dto.Observation, error)
 
 	// Questionnaire
 	CreateQuestionnaire(ctx context.Context, questionnaireInput *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)

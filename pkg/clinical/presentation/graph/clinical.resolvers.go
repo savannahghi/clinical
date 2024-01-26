@@ -233,6 +233,12 @@ func (r *mutationResolver) PatchPatientViralLoad(ctx context.Context, id string,
 	return r.usecases.PatchPatientViralLoad(ctx, id, value)
 }
 
+// PatchPatientMuac is the resolver for the patchPatientMuac field.
+func (r *mutationResolver) PatchPatientMuac(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchPatientMuac(ctx, id, value)
+}
+
 // RecordConsent is the resolver for the recordConsent field.
 func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error) {
 	return r.usecases.RecordConsent(ctx, input)
