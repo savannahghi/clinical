@@ -107,6 +107,11 @@ func (c *UseCasesClinicalImpl) PatchPatientPulseRate(ctx context.Context, id str
 	return c.PatchPatientObservations(ctx, id, value)
 }
 
+// PatchPatientViralLoad patches the viral load record of a patient
+func (c *UseCasesClinicalImpl) PatchPatientViralLoad(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	return c.PatchPatientObservations(ctx, id, value)
+}
+
 // RecordWeight records a patient's weight
 func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode)
