@@ -1686,6 +1686,41 @@ func (fh StoreImpl) PatchFHIRObservation(_ context.Context, id string, input dom
 	return resource, nil
 }
 
+// ListFHIRQuestionnaire is used to list questionnaire resource using the name or the title of the resource.
+func (fh StoreImpl) ListFHIRQuestionnaire(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRQuestionnaires, error) {
+	results, err := fh.Dataset.SearchFHIRResource(questionnaireResourceType, params, tenant, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	questionnaireOutput := domain.PagedFHIRQuestionnaires{
+		Questionnaires:  []domain.FHIRQuestionnaire{},
+		HasNextPage:     results.HasNextPage,
+		NextCursor:      results.NextCursor,
+		HasPreviousPage: results.HasPreviousPage,
+		PreviousCursor:  results.PreviousCursor,
+		TotalCount:      results.TotalCount,
+	}
+
+	for _, result := range results.Resources {
+		var questionnaire domain.FHIRQuestionnaire
+
+		resourceBytes, err := json.Marshal(result)
+		if err != nil {
+			return nil, fmt.Errorf("unable to marshal resource to JSON: %w", err)
+		}
+
+		err = json.Unmarshal(resourceBytes, &questionnaire)
+		if err != nil {
+			return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
+		}
+
+		questionnaireOutput.Questionnaires = append(questionnaireOutput.Questionnaires, questionnaire)
+	}
+
+	return &questionnaireOutput, nil
+}
+
 // CreateFHIRQuestionnaire is used to create a FHIR Questionnaire resource
 func (fh StoreImpl) CreateFHIRQuestionnaire(_ context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error) {
 	payload, err := converterandformatter.StructToMap(input)
