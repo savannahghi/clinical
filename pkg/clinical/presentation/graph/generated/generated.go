@@ -227,6 +227,7 @@ type ComplexityRoot struct {
 		PatchPatientRespiratoryRate        func(childComplexity int, id string, value string) int
 		PatchPatientSystolicBloodPressure  func(childComplexity int, id string, value string) int
 		PatchPatientTemperature            func(childComplexity int, id string, value string) int
+		PatchPatientViralLoad              func(childComplexity int, id string, value string) int
 		PatchPatientWeight                 func(childComplexity int, id string, value string) int
 		RecordBloodPressure                func(childComplexity int, input dto.ObservationInput) int
 		RecordBloodSugar                   func(childComplexity int, input dto.ObservationInput) int
@@ -438,6 +439,7 @@ type MutationResolver interface {
 	PatchPatientRespiratoryRate(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientOxygenSaturation(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientPulseRate(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientViralLoad(ctx context.Context, id string, value string) (*dto.Observation, error)
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
 	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error)
 }
@@ -1309,12 +1311,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.PatchPatientOxygenSaturation(childComplexity, args["id"].(string), args["value"].(string)), true
 
-	case "Mutation.PatchPatientPulseRate":
+	case "Mutation.patchPatientPulseRate":
 		if e.complexity.Mutation.PatchPatientPulseRate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_PatchPatientPulseRate_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_patchPatientPulseRate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -1356,6 +1358,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.PatchPatientTemperature(childComplexity, args["id"].(string), args["value"].(string)), true
+
+	case "Mutation.patchPatientViralLoad":
+		if e.complexity.Mutation.PatchPatientViralLoad == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_patchPatientViralLoad_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PatchPatientViralLoad(childComplexity, args["id"].(string), args["value"].(string)), true
 
 	case "Mutation.patchPatientWeight":
 		if e.complexity.Mutation.PatchPatientWeight == nil {
@@ -2692,7 +2706,8 @@ extend type Mutation {
   patchPatientSystolicBloodPressure(id: String!, value: String!): Observation!
   patchPatientRespiratoryRate(id: String!, value: String!): Observation!
   patchPatientOxygenSaturation(id: String!, value: String!): Observation!
-  PatchPatientPulseRate(id: String!, value: String!): Observation!
+  patchPatientPulseRate(id: String!, value: String!): Observation!
+  patchPatientViralLoad(id: String!, value: String!): Observation!
 
   # Consent
   recordConsent(input: ConsentInput!): ConsentOutput!
@@ -3328,30 +3343,6 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_PatchPatientPulseRate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["value"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["value"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_appendNoteToComposition_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3673,6 +3664,30 @@ func (ec *executionContext) field_Mutation_patchPatientOxygenSaturation_args(ctx
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_patchPatientPulseRate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["value"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["value"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_patchPatientRespiratoryRate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3722,6 +3737,30 @@ func (ec *executionContext) field_Mutation_patchPatientSystolicBloodPressure_arg
 }
 
 func (ec *executionContext) field_Mutation_patchPatientTemperature_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["value"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["value"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_patchPatientViralLoad_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -11300,8 +11339,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientOxygenSaturation(c
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_PatchPatientPulseRate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_PatchPatientPulseRate(ctx, field)
+func (ec *executionContext) _Mutation_patchPatientPulseRate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchPatientPulseRate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11331,7 +11370,7 @@ func (ec *executionContext) _Mutation_PatchPatientPulseRate(ctx context.Context,
 	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_PatchPatientPulseRate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_patchPatientPulseRate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -11364,7 +11403,78 @@ func (ec *executionContext) fieldContext_Mutation_PatchPatientPulseRate(ctx cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_PatchPatientPulseRate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_patchPatientPulseRate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_patchPatientViralLoad(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_patchPatientViralLoad(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().PatchPatientViralLoad(rctx, fc.Args["id"].(string), fc.Args["value"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_patchPatientViralLoad(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_patchPatientViralLoad_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -20853,9 +20963,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "PatchPatientPulseRate":
+		case "patchPatientPulseRate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_PatchPatientPulseRate(ctx, field)
+				return ec._Mutation_patchPatientPulseRate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "patchPatientViralLoad":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_patchPatientViralLoad(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
