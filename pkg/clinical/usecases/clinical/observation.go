@@ -9,6 +9,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/enumutils"
 	"github.com/savannahghi/scalarutils"
 )
 
@@ -501,4 +502,45 @@ func (c *UseCasesClinicalImpl) PatchPatientObservations(ctx context.Context, id 
 	result := mapFHIRObservationToObservationDTO(*output)
 
 	return result, nil
+}
+
+// RecordHPV is used to record HPV test results. We record it as observations as specified in https://build.fhir.org/ig/HL7/cqf-measures/Measure-EXM124-FHIR.html
+// Check whether the gender of the patient is valid and that the patient is within the acceptable age range
+func (c *UseCasesClinicalImpl) RecordHPV(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	err := input.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, input.EncounterID)
+	if err != nil {
+		return nil, err
+	}
+
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot record an observation in a finished encounter")
+	}
+
+	patientRecord, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if enumutils.Gender(*patientRecord.Resource.Gender) != "female" {
+		return nil, fmt.Errorf("cannot record HPV results for a male patients")
+	}
+
+	currentTime := time.Now()
+	age := currentTime.Year() - patientRecord.Resource.BirthDate.AsTime().Year()
+
+	// Check if the birthday has occurred this year
+	if currentTime.YearDay() < patientRecord.Resource.BirthDate.AsTime().YearDay() {
+		age--
+	}
+
+	if age < 25 || age > 65 {
+		return nil, fmt.Errorf("cannot record HPV results for an age of %d. The patient has to be between 25 - 65 years", age)
+	}
+
+	return c.RecordObservation(ctx, input, common.HPVCIELTerminologyCode, nil)
 }

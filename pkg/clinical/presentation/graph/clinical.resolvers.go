@@ -132,6 +132,12 @@ func (r *mutationResolver) RecordColposcopy(ctx context.Context, input dto.Obser
 	return r.usecases.RecordColposcopy(ctx, input)
 }
 
+// RecordHpv is the resolver for the recordHPV field.
+func (r *mutationResolver) RecordHpv(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.RecordHPV(ctx, input)
+}
+
 // RecordVia is the resolver for the recordVIA field.
 func (r *mutationResolver) RecordVia(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	r.CheckDependencies()

@@ -1115,7 +1115,7 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRConditionRelayPayload{}, nil
 		},
 		MockGetFHIREncounterFn: func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-			UUID := uuid.New().String()
+			UUID := "12345678905432345"
 			PatientRef := "Patient/" + uuid.NewString()
 			return &domain.FHIREncounterRelayPayload{
 				Resource: &domain.FHIREncounter{
@@ -1478,6 +1478,7 @@ func NewFHIRMock() *FHIRMock {
 		MockGetFHIRPatientFn: func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 			patientID := uuid.New().String()
 			patientName := gofakeit.Name()
+			gender := domain.PatientGenderEnumFemale
 			return &domain.FHIRPatientRelayPayload{
 				Resource: &domain.FHIRPatient{
 					ID: &patientID,
@@ -1485,6 +1486,12 @@ func NewFHIRMock() *FHIRMock {
 						{
 							Given: []*string{&patientName},
 						},
+					},
+					Gender: &gender,
+					BirthDate: &scalarutils.Date{
+						Year:  1990,
+						Month: 12,
+						Day:   12,
 					},
 				},
 			}, nil

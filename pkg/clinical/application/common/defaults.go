@@ -142,6 +142,9 @@ const (
 
 	// VIASuspiciousOfCancerCIELCode is the terminology code for a suspicious cancer VIA test
 	VIAResultSuspiciousOfCancerCIELCode = "159008"
+
+	// HPVCIELTerminologyCode is the terminology code used to represent HPV test.
+	HPVCIELTerminologyCode = "1213"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

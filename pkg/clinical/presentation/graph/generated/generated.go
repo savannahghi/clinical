@@ -304,6 +304,7 @@ type ComplexityRoot struct {
 		RecordConsent                      func(childComplexity int, input dto.ConsentInput) int
 		RecordDiastolicBloodPressure       func(childComplexity int, input dto.ObservationInput) int
 		RecordHeight                       func(childComplexity int, input dto.ObservationInput) int
+		RecordHpv                          func(childComplexity int, input dto.ObservationInput) int
 		RecordLastMenstrualPeriod          func(childComplexity int, input dto.ObservationInput) int
 		RecordMuac                         func(childComplexity int, input dto.ObservationInput) int
 		RecordOxygenSaturation             func(childComplexity int, input dto.ObservationInput) int
@@ -639,6 +640,7 @@ type MutationResolver interface {
 	RecordLastMenstrualPeriod(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordColposcopy(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordHpv(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordVia(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 	PatchPatient(ctx context.Context, id string, input dto.PatientInput) (*dto.Patient, error)
@@ -2061,6 +2063,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RecordHeight(childComplexity, args["input"].(dto.ObservationInput)), true
+
+	case "Mutation.recordHPV":
+		if e.complexity.Mutation.RecordHpv == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordHPV_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordHpv(childComplexity, args["input"].(dto.ObservationInput)), true
 
 	case "Mutation.recordLastMenstrualPeriod":
 		if e.complexity.Mutation.RecordLastMenstrualPeriod == nil {
@@ -4071,6 +4085,7 @@ extend type Mutation {
   recordLastMenstrualPeriod(input: ObservationInput!): Observation!
   recordDiastolicBloodPressure(input: ObservationInput!): Observation!
   recordColposcopy(input: ObservationInput!): Observation!
+  recordHPV(input: ObservationInput!): Observation!
   # Visual Inspection with Acetic Acid
   recordVIA(input: ObservationInput!): Observation!
 
@@ -4426,8 +4441,7 @@ input QuestionnaireResponseInput {
 	status: QuestionnaireResponseStatusEnum!
 	authored: String!
 	item: [QuestionnaireResponseItemInput]
-}
-`, BuiltIn: false},
+}`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
   id: ID
   code: String!
@@ -5542,6 +5556,21 @@ func (ec *executionContext) field_Mutation_recordConsent_args(ctx context.Contex
 }
 
 func (ec *executionContext) field_Mutation_recordDiastolicBloodPressure_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.ObservationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recordHPV_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 dto.ObservationInput
@@ -14316,6 +14345,79 @@ func (ec *executionContext) fieldContext_Mutation_recordColposcopy(ctx context.C
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_recordColposcopy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_recordHPV(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordHPV(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecordHpv(rctx, fc.Args["input"].(dto.ObservationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recordHPV(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			case "interpretation":
+				return ec.fieldContext_Observation_interpretation(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recordHPV_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -31145,6 +31247,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "recordColposcopy":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_recordColposcopy(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "recordHPV":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recordHPV(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

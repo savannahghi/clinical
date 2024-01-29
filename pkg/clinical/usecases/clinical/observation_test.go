@@ -6086,3 +6086,169 @@ func TestUseCasesClinicalImpl_RecordVIA(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_RecordHPV(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input dto.ObservationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: record HPV",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to get FHIR encounter",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: encounter ID not provided",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status: dto.ObservationStatusFinal,
+					Value:  "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: finished encounter",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get FHIR patient",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: male patient",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: patient less than 25 years old",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to get FHIR encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: finished encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					ID := "12345678905432345"
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							ID:     &ID,
+							Status: domain.EncounterStatusEnumFinished,
+						},
+					}, nil
+				}
+			}
+			if tt.name == "Sad case: unable to get FHIR patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: male patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					ID := gofakeit.UUID()
+					gender := domain.PatientGenderEnumMale
+					return &domain.FHIRPatientRelayPayload{
+						Resource: &domain.FHIRPatient{
+							ID:     &ID,
+							Gender: &gender,
+						},
+					}, nil
+				}
+			}
+			if tt.name == "Sad case: patient less than 25 years old" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					ID := gofakeit.UUID()
+					gender := domain.PatientGenderEnumFemale
+					return &domain.FHIRPatientRelayPayload{
+						Resource: &domain.FHIRPatient{
+							ID:     &ID,
+							Gender: &gender,
+							BirthDate: &scalarutils.Date{
+								Year:  2012,
+								Month: 12,
+								Day:   12,
+							},
+						},
+					}, nil
+				}
+			}
+
+			_, err := u.RecordHPV(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.RecordHPV() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
