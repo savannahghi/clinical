@@ -26,6 +26,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 		ctx                context.Context
 		input              dto.ObservationInput
 		vitalSignConceptID string
+		mutators           []clinicalUsecase.ObservationInputMutatorFunc
 	}
 	tests := []struct {
 		name    string
@@ -184,7 +185,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 				}
 			}
 
-			got, err := u.RecordObservation(tt.args.ctx, tt.args.input, tt.args.vitalSignConceptID)
+			got, err := u.RecordObservation(tt.args.ctx, tt.args.input, tt.args.vitalSignConceptID, tt.args.mutators)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.RecordObservation() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -5980,5 +5981,108 @@ func TestUseCasesClinicalImpl_PatchPatientHeight(t *testing.T) {
 			t.Errorf("UseCasesClinicalImpl.PatchPatientHeight() error = %v, wantErr %v", err, tt.wantErr)
 			return
 		}
+	}
+}
+
+func TestUseCasesClinicalImpl_RecordVIA(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input dto.ObservationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully record positive VIA",
+			args: args{
+				ctx: context.Background(),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "positive",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Happy Case - Successfully record negative VIA",
+			args: args{
+				ctx: context.Background(),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "negative",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Happy Case - Successfully record suspicious VIA",
+			args: args{
+				ctx: context.Background(),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "suspicious_for_cancer",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid VIA value",
+			args: args{
+				ctx: context.Background(),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "bonoko",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get concept",
+			args: args{
+				ctx: context.Background(),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "positive",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Fail to get concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("fail to get concept")
+				}
+			}
+
+			got, err := u.RecordVIA(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.RecordVIA() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
 	}
 }

@@ -132,6 +132,12 @@ func (r *mutationResolver) RecordColposcopy(ctx context.Context, input dto.Obser
 	return r.usecases.RecordColposcopy(ctx, input)
 }
 
+// RecordVia is the resolver for the recordVIA field.
+func (r *mutationResolver) RecordVia(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.RecordVIA(ctx, input)
+}
+
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
