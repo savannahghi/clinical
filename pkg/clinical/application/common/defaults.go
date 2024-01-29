@@ -127,8 +127,21 @@ const (
 
 	// LOINCPLANOFCARE defines LOINC Plan of care note terminology code
 	LOINCPLANOFCARE = "18776-5"
+
 	// ColposcopyCIELTerminologyCode is the terminology code for colposcopy findings
 	ColposcopyCIELTerminologyCode = "162816"
+
+	// VIACIELCode is the terminology code for a VIA test
+	VIACIELCode = "164805"
+
+	// VIAPositiveCIELCode is the terminology code for a positive VIA test
+	VIAResultPositiveCIELCode = "703"
+
+	// VIANegativeCIELCode is the terminology code for a negative VIA test
+	VIAResultNegativeCIELCode = "664"
+
+	// VIASuspiciousOfCancerCIELCode is the terminology code for a suspicious cancer VIA test
+	VIAResultSuspiciousOfCancerCIELCode = "159008"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

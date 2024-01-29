@@ -310,3 +310,48 @@ const (
 	QuantityComparatorEnumGreaterThanOrEqualTo QuantityComparatorEnum = "greater_than_or_equal_to"
 	QuantityComparatorEnumGreaterThan          QuantityComparatorEnum = "greater_than"
 )
+
+// VIAOutcomeEnum a type enum that represents the results of a VIA test
+// VIA (Visual Inspection with Acetic Acid)
+type VIAOutcomeEnum string
+
+const (
+	VIAOutcomeNegative               = "negative"
+	VIAOutcomePositive               = "positive"
+	VIAOutcomePositiveInvasiveCancer = "suspicious_for_cancer"
+)
+
+// IsValid checks validity of a VIAOutcomeEnum enum
+func (c VIAOutcomeEnum) IsValid() bool {
+	switch c {
+	case VIAOutcomeNegative, VIAOutcomePositive, VIAOutcomePositiveInvasiveCancer:
+		return true
+	}
+
+	return false
+}
+
+// String converts VIA to string
+func (c VIAOutcomeEnum) String() string {
+	return string(c)
+}
+
+// MarshalGQL writes the VIA as a quoted string
+func (c VIAOutcomeEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(c.String()))
+}
+
+// UnmarshalGQL reads a json and converts it to a VIA enum
+func (c *VIAOutcomeEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be a string")
+	}
+
+	*c = VIAOutcomeEnum(str)
+	if !c.IsValid() {
+		return fmt.Errorf("%s is not a valid VIAOutcomeEnum Enum", str)
+	}
+
+	return nil
+}

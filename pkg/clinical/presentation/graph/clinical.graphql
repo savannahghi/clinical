@@ -162,6 +162,8 @@ extend type Mutation {
   recordLastMenstrualPeriod(input: ObservationInput!): Observation!
   recordDiastolicBloodPressure(input: ObservationInput!): Observation!
   recordColposcopy(input: ObservationInput!): Observation!
+  # Visual Inspection with Acetic Acid
+  recordVIA(input: ObservationInput!): Observation!
 
   # Patient
   createPatient(input: PatientInput!): Patient!

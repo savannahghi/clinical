@@ -332,6 +332,10 @@ func mapFHIRObservationToObservationDTO(fhirObservation domain.FHIRObservation) 
 		obs.EncounterID = *fhirObservation.Encounter.ID
 	}
 
+	for _, interpretation := range fhirObservation.Interpretation {
+		obs.Interpretation = append(obs.Interpretation, interpretation.Text)
+	}
+
 	return obs
 }
 
