@@ -127,8 +127,12 @@ const (
 
 	// LOINCPLANOFCARE defines LOINC Plan of care note terminology code
 	LOINCPLANOFCARE = "18776-5"
+
 	// ColposcopyCIELTerminologyCode is the terminology code for colposcopy findings
 	ColposcopyCIELTerminologyCode = "162816"
+
+	// HPVCIELTerminologyCode is the terminology code used to represent HPV test.
+	HPVCIELTerminologyCode = "1213"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

@@ -66,3 +66,6 @@ models:
   Date:
     model:
       - "github.com/savannahghi/scalarutils.Date"
+  HPVInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.ObservationInput

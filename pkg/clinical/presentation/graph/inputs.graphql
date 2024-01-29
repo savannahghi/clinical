@@ -167,3 +167,9 @@ input QuestionnaireResponseInput {
 	authored: String!
 	item: [QuestionnaireResponseItemInput]
 }
+
+input HPVInput {
+  status: ObservationStatus!
+  encounterID: String!
+  value: String!
+}

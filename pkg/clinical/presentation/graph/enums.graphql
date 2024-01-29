@@ -121,3 +121,8 @@ enum QuantityComparatorEnum{
 enum QuestionnaireResponseStatusEnum{
   completed
 }
+
+enum ObservationStatusEnum {
+  final
+  cancelled
+}

@@ -193,6 +193,7 @@ extend type Mutation {
   patchPatientPulseRate(id: String!, value: String!): Observation!
   patchPatientViralLoad(id: String!, value: String!): Observation!
   patchPatientMuac(id: String!, value: String!): Observation!
+  recordHPV(input: HPVInput!): Observation!
 
   # Consent
   recordConsent(input: ConsentInput!): ConsentOutput!

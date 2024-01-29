@@ -41,6 +41,12 @@ func (o ObservationInput) Validate() error {
 	return err
 }
 
+// // ObservationPayload models a common data class re-usable for use with any type of observation
+// type ObservationPayload struct {
+// 	Input ObservationInput            `json:"input,omitempty"`
+// 	Obs   domain.FHIRObservationInput `json:"obs,omitempty"`
+// }
+
 type PatientInput struct {
 	FirstName   string            `json:"firstName"`
 	LastName    string            `json:"lastName"`

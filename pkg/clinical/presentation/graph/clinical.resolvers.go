@@ -239,6 +239,12 @@ func (r *mutationResolver) PatchPatientMuac(ctx context.Context, id string, valu
 	return r.usecases.PatchPatientMuac(ctx, id, value)
 }
 
+// RecordHpv is the resolver for the recordHPV field.
+func (r *mutationResolver) RecordHpv(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.RecordHPV(ctx, input)
+}
+
 // RecordConsent is the resolver for the recordConsent field.
 func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error) {
 	return r.usecases.RecordConsent(ctx, input)
