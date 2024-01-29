@@ -267,22 +267,22 @@ type FHIRCoding struct {
 // FHIRCodingInput is the input type for Coding
 type FHIRCodingInput struct {
 	// Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" mapstructure:"id"`
 
 	// The identification of the code system that defines the meaning of the symbol in the code.
-	System *scalarutils.URI `json:"system,omitempty"`
+	System *scalarutils.URI `json:"system,omitempty" mapstructure:"system"`
 
 	// The version of the code system which was used when choosing this code. Note that a well-maintained code system does not need the version reported, because the meaning of codes is consistent across versions. However this cannot consistently be assured, and when the meaning is not guaranteed to be consistent, the version SHOULD be exchanged.
-	Version *string `json:"version,omitempty"`
+	Version *string `json:"version,omitempty" mapstructure:"version"`
 
 	// A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
-	Code scalarutils.Code `json:"code,omitempty"`
+	Code scalarutils.Code `json:"code,omitempty" mapstructure:"code"`
 
 	// A representation of the meaning of the code in the system, following the rules of the system.
-	Display string `json:"display,omitempty"`
+	Display string `json:"display,omitempty" mapstructure:"display"`
 
 	// Indicates that this coding was chosen by a user directly - e.g. off a pick list of available items (codes or displays).
-	UserSelected *bool `json:"userSelected,omitempty"`
+	UserSelected *bool `json:"userSelected,omitempty" mapstructure:"userSelected"`
 }
 
 // FHIRContactPoint definition: details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc.

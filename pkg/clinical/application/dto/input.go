@@ -171,24 +171,30 @@ type QuestionnaireResponseItemAnswer struct {
 
 // Coding : an input for a code defined by a terminology system.
 type Coding struct {
-	System  *scalarutils.URI  `json:"system,omitempty"`
-	Version *string           `json:"version,omitempty"`
-	Code    *scalarutils.Code `json:"code,omitempty"`
-	Display string            `json:"display,omitempty"`
+	ID           string           `json:"id,omitempty"`
+	System       scalarutils.URI  `json:"system,omitempty"`
+	Version      string           `json:"version,omitempty"`
+	Code         scalarutils.Code `json:"code,omitempty"`
+	Display      string           `json:"display,omitempty"`
+	UserSelected bool             `json:"userSelected,omitempty"`
 }
 
 // Attachment definition: input for referring to data content defined in other formats.
 type Attachment struct {
-	ContentType *scalarutils.Code         `json:"contentType,omitempty"`
-	Data        *scalarutils.Base64Binary `json:"data,omitempty"`
-	URL         *scalarutils.URL          `json:"url,omitempty"`
-	Size        *int                      `json:"size,omitempty"`
-	Hash        *scalarutils.Base64Binary `json:"hash,omitempty"`
-	Title       *string                   `json:"title,omitempty"`
+	ID          string                   `json:"id,omitempty"`
+	ContentType scalarutils.Code         `json:"contentType,omitempty"`
+	Language    scalarutils.Code         `json:"language,omitempty"`
+	Data        scalarutils.Base64Binary `json:"data,omitempty"`
+	URL         scalarutils.URL          `json:"url,omitempty"`
+	Size        int                      `json:"size,omitempty"`
+	Hash        scalarutils.Base64Binary `json:"hash,omitempty"`
+	Title       string                   `json:"title,omitempty"`
+	Creation    scalarutils.DateTime     `json:"creation,omitempty"`
 }
 
 // Quantity definition: input for measured amount (or an amount that can potentially be measured). note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floating currencies.
 type Quantity struct {
+	ID         string                  `json:"id,omitempty"`
 	Value      float64                 `json:"value"`
 	Comparator *QuantityComparatorEnum `json:"comparator,omitempty"`
 	Unit       string                  `json:"unit"`
@@ -198,7 +204,9 @@ type Quantity struct {
 
 // Reference definition: input for reference from one resource to another.
 type Reference struct {
-	Reference *string          `json:"reference,omitempty"`
-	Type      *scalarutils.URI `json:"type,omitempty"`
-	Display   string           `json:"display,omitempty"`
+	ID         string          `json:"id,omitempty"`
+	Reference  string          `json:"reference,omitempty"`
+	Type       scalarutils.URI `json:"type,omitempty"`
+	Identifier Identifier      `json:"identifier,omitempty"`
+	Display    string          `json:"display,omitempty"`
 }

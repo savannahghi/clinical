@@ -117,6 +117,7 @@ type FHIRMedia interface {
 
 type FHIRQuestionnaire interface {
 	CreateFHIRQuestionnaire(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
+	ListFHIRQuestionnaire(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRQuestionnaires, error)
 }
 type FHIRConsent interface {
 	CreateFHIRConsent(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error)

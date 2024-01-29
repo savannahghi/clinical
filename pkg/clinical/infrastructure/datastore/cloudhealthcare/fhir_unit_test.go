@@ -4501,6 +4501,71 @@ func TestStoreImpl_SearchPatientMedia(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_ListFHIRQuestionnaire(t *testing.T) {
+	type args struct {
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: search questionnaire",
+			args: args{
+				ctx: nil,
+				params: map[string]interface{}{
+					"status": "active",
+					"name":   "title",
+				},
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to search questionnaire",
+			args: args{
+				ctx: nil,
+				params: map[string]interface{}{
+					"status": "active",
+					"name":   "title",
+				},
+				tenant: dto.TenantIdentifiers{
+					OrganizationID: gofakeit.UUID(),
+					FacilityID:     gofakeit.UUID(),
+				},
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to search questionnaire" {
+				fakeDataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, errors.New("an error occurred")
+				}
+			}
+
+			_, err := fh.ListFHIRQuestionnaire(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.ListFHIRQuestionnaire() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
 	ID := gofakeit.UUID()
 	type args struct {
@@ -4522,7 +4587,7 @@ func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
 					ImplicitRules:     new(string),
 					Language:          new(string),
 					Text:              &domain.FHIRNarrative{},
-					FHIRExtension:     []*domain.Extension{},
+					Extension:         []*domain.Extension{},
 					ModifierExtension: []*domain.Extension{},
 					Identifier:        []*domain.FHIRIdentifier{},
 					Version:           new(string),
@@ -4552,7 +4617,7 @@ func TestStoreImpl_CreateFHIRQuestionnaire(t *testing.T) {
 					ImplicitRules: new(string),
 					Language:      new(string),
 					Text:          &domain.FHIRNarrative{},
-					FHIRExtension: []*domain.Extension{},
+					Extension:     []*domain.Extension{},
 				},
 			},
 			wantErr: true,
@@ -4596,9 +4661,13 @@ func TestStoreImpl_CreateFHIRConsent(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				consent: domain.FHIRConsent{
-					Status:     (*dto.ConsentStatusEnum)(&status),
-					Scope:      &domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()},
-					Category:   []*domain.FHIRCodeableConcept{&domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()}},
+					Status: (*dto.ConsentStatusEnum)(&status),
+					Scope:  &domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()},
+					Category: []*domain.FHIRCodeableConcept{
+						{
+							Text: gofakeit.BeerIbu(),
+						},
+					},
 					PolicyRule: &domain.FHIRCodeableConcept{Text: gofakeit.BeerIbu()},
 					Provision:  &domain.FHIRConsentProvision{Type: (*dto.ConsentProvisionTypeEnum)(&provisionType)},
 					Patient:    &domain.FHIRReference{ID: &ID},

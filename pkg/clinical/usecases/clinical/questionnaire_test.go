@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -36,14 +35,12 @@ func TestUseCasesClinicalImpl_CreateQuestionnaire(t *testing.T) {
 				questionnaireInput: &domain.FHIRQuestionnaire{
 					ID: &ID,
 					Meta: &domain.FHIRMetaInput{
-						VersionID:   ID,
-						LastUpdated: time.Now(),
-						Source:      "",
+						VersionID: ID,
+						Source:    "",
 						Tag: []domain.FHIRCodingInput{
 							{
 								ID:           &ID,
 								Version:      &ID,
-								Code:         "",
 								Display:      "",
 								UserSelected: new(bool),
 							},
@@ -60,14 +57,12 @@ func TestUseCasesClinicalImpl_CreateQuestionnaire(t *testing.T) {
 				questionnaireInput: &domain.FHIRQuestionnaire{
 					ID: &ID,
 					Meta: &domain.FHIRMetaInput{
-						VersionID:   ID,
-						LastUpdated: time.Now(),
-						Source:      "",
+						VersionID: ID,
+						Source:    "",
 						Tag: []domain.FHIRCodingInput{
 							{
 								ID:           &ID,
 								Version:      &ID,
-								Code:         "",
 								Display:      "",
 								UserSelected: new(bool),
 							},
@@ -84,14 +79,12 @@ func TestUseCasesClinicalImpl_CreateQuestionnaire(t *testing.T) {
 				questionnaireInput: &domain.FHIRQuestionnaire{
 					ID: &ID,
 					Meta: &domain.FHIRMetaInput{
-						VersionID:   ID,
-						LastUpdated: time.Now(),
-						Source:      "",
+						VersionID: ID,
+						Source:    "",
 						Tag: []domain.FHIRCodingInput{
 							{
 								ID:           &ID,
 								Version:      &ID,
-								Code:         "",
 								Display:      "",
 								UserSelected: new(bool),
 							},
@@ -128,6 +121,78 @@ func TestUseCasesClinicalImpl_CreateQuestionnaire(t *testing.T) {
 			_, err := q.CreateQuestionnaire(tt.args.ctx, tt.args.questionnaireInput)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreateQuestionnaire() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_ListQuestionnaires(t *testing.T) {
+	cancerType := "Cervical"
+	type args struct {
+		ctx        context.Context
+		name       *string
+		pagination *dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: list questionnaire",
+			args: args{
+				ctx:        addTenantIdentifierContext(context.Background()),
+				name:       &cancerType,
+				pagination: &dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to list questionnaire",
+			args: args{
+				ctx:        addTenantIdentifierContext(context.Background()),
+				name:       &cancerType,
+				pagination: &dto.Pagination{},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get tenant identifiers",
+			args: args{
+				ctx:        addTenantIdentifierContext(context.Background()),
+				name:       &cancerType,
+				pagination: &dto.Pagination{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			q := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to list questionnaire" {
+				fakeFHIR.MockListFHIRQuestionnaireFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRQuestionnaires, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: unable to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := q.ListQuestionnaires(tt.args.ctx, tt.args.name, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.ListQuestionnaires() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

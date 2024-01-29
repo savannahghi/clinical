@@ -2,7 +2,10 @@ package clinical
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 )
 
@@ -24,4 +27,50 @@ func (q *UseCasesClinicalImpl) CreateQuestionnaire(ctx context.Context, question
 	}
 
 	return questionnaire, nil
+}
+
+// ListQuestionnaires is used to list questionnaires from FHIR repository.
+// This search is performed using the name or the title of the questionnaire and returns the available questionnaire(s).
+func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchParam *string, pagination *dto.Pagination) (*dto.QuestionnaireConnection, error) {
+	identifiers, err := q.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	params := map[string]interface{}{
+		"status": "active",
+	}
+
+	if searchParam != nil {
+		params["title"] = *searchParam
+	}
+
+	questionnaire, err := q.infrastructure.FHIR.ListFHIRQuestionnaire(ctx, params, *identifiers, *pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	pageInfo := dto.PageInfo{
+		HasNextPage:     questionnaire.HasNextPage,
+		EndCursor:       &questionnaire.NextCursor,
+		HasPreviousPage: questionnaire.HasPreviousPage,
+		StartCursor:     &questionnaire.PreviousCursor,
+	}
+
+	questionnaireList := []*dto.Questionnaire{}
+
+	var dtoQuestionnaire *dto.Questionnaire
+
+	for _, questionnaire := range questionnaire.Questionnaires {
+		err := mapstructure.Decode(questionnaire, &dtoQuestionnaire)
+		if err != nil {
+			return nil, err
+		}
+
+		questionnaireList = append(questionnaireList, dtoQuestionnaire)
+	}
+
+	connection := dto.CreateQuestionnaireConnection(questionnaireList, pageInfo, questionnaire.TotalCount)
+
+	return &connection, nil
 }

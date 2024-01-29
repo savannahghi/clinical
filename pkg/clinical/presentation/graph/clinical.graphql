@@ -128,6 +128,9 @@ extend type Query {
 
   # Media
   listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
+
+    # Questionnaire
+  listQuestionnaires(searchParam: String, pagination: Pagination!): QuestionnaireConnection!
 }
 
 extend type Mutation {
