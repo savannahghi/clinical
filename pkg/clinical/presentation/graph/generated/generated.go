@@ -308,6 +308,7 @@ type ComplexityRoot struct {
 		RecordLastMenstrualPeriod          func(childComplexity int, input dto.ObservationInput) int
 		RecordMuac                         func(childComplexity int, input dto.ObservationInput) int
 		RecordOxygenSaturation             func(childComplexity int, input dto.ObservationInput) int
+		RecordPapSmear                     func(childComplexity int, input dto.ObservationInput) int
 		RecordPulseRate                    func(childComplexity int, input dto.ObservationInput) int
 		RecordRespiratoryRate              func(childComplexity int, input dto.ObservationInput) int
 		RecordTemperature                  func(childComplexity int, input dto.ObservationInput) int
@@ -642,6 +643,7 @@ type MutationResolver interface {
 	RecordColposcopy(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordHpv(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordVia(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
+	RecordPapSmear(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error)
 	PatchPatient(ctx context.Context, id string, input dto.PatientInput) (*dto.Patient, error)
 	DeletePatient(ctx context.Context, id string) (bool, error)
@@ -2111,6 +2113,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RecordOxygenSaturation(childComplexity, args["input"].(dto.ObservationInput)), true
+
+	case "Mutation.recordPapSmear":
+		if e.complexity.Mutation.RecordPapSmear == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordPapSmear_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordPapSmear(childComplexity, args["input"].(dto.ObservationInput)), true
 
 	case "Mutation.recordPulseRate":
 		if e.complexity.Mutation.RecordPulseRate == nil {
@@ -4089,6 +4103,8 @@ extend type Mutation {
   # Visual Inspection with Acetic Acid
   recordVIA(input: ObservationInput!): Observation!
 
+  recordPapSmear(input: ObservationInput!): Observation!
+
   # Patient
   createPatient(input: PatientInput!): Patient!
   patchPatient(id: String!, input: PatchPatientInput!): Patient!
@@ -5631,6 +5647,21 @@ func (ec *executionContext) field_Mutation_recordMUAC_args(ctx context.Context, 
 }
 
 func (ec *executionContext) field_Mutation_recordOxygenSaturation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.ObservationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recordPapSmear_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 dto.ObservationInput
@@ -14491,6 +14522,79 @@ func (ec *executionContext) fieldContext_Mutation_recordVIA(ctx context.Context,
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_recordVIA_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_recordPapSmear(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordPapSmear(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecordPapSmear(rctx, fc.Args["input"].(dto.ObservationInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalNObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recordPapSmear(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			case "interpretation":
+				return ec.fieldContext_Observation_interpretation(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recordPapSmear_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -31261,6 +31365,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "recordVIA":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_recordVIA(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "recordPapSmear":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recordPapSmear(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

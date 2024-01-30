@@ -6252,3 +6252,154 @@ func TestUseCasesClinicalImpl_RecordHPV(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_RecordPapSmear(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input dto.ObservationInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: record pap smear",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to record pap smear",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get encounter",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - return a finished encounter",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get CIEL concept",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get tenant meta tags",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to create observation",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: "12345678905432345",
+					Value:       "1234",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to record pap smear" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad Case - Fail to get encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get encounter")
+				}
+			}
+			if tt.name == "Sad Case - return a finished encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							Status: domain.EncounterStatusEnumFinished,
+						},
+					}, nil
+				}
+			}
+			if tt.name == "Sad Case - Fail to get CIEL concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("fail to get concept")
+				}
+			}
+			if tt.name == "Sad Case - Fail to get tenant meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+			if tt.name == "Sad Case - Fail to create observation" {
+				fakeFHIR.MockCreateFHIRObservationFn = func(ctx context.Context, input domain.FHIRObservationInput) (*domain.FHIRObservation, error) {
+					return nil, fmt.Errorf("failed to create observation")
+				}
+			}
+
+			_, err := u.RecordPapSmear(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.RecordPapSmear() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

@@ -144,6 +144,13 @@ func (r *mutationResolver) RecordVia(ctx context.Context, input dto.ObservationI
 	return r.usecases.RecordVIA(ctx, input)
 }
 
+// RecordPapSmear is the resolver for the recordPapSmear field.
+func (r *mutationResolver) RecordPapSmear(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	r.CheckDependencies()
+
+	return r.usecases.RecordPapSmear(ctx, input)
+}
+
 // CreatePatient is the resolver for the createPatient field.
 func (r *mutationResolver) CreatePatient(ctx context.Context, input dto.PatientInput) (*dto.Patient, error) {
 	r.CheckDependencies()
