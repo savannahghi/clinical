@@ -20,8 +20,32 @@ import (
 	"github.com/savannahghi/scalarutils"
 )
 
+var testObservationCategorySystem = "http://terminology.hl7.org/CodeSystem/observation-category"
+
+// addLabCategory is used to add laboratory categories for various observations records.
+var addLabCategory = func(ctx context.Context, observation *domain.FHIRObservationInput) error {
+	userSelected := false
+	category := []*domain.FHIRCodeableConceptInput{
+		{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:       (*scalarutils.URI)(&testObservationCategorySystem),
+					Code:         "laboratory",
+					Display:      "Laboratory",
+					UserSelected: &userSelected,
+				},
+			},
+			Text: "Laboratory",
+		},
+	}
+
+	observation.Category = append(observation.Category, category...)
+	return nil
+}
+
 func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 	ctx := context.Background()
+
 	type args struct {
 		ctx                context.Context
 		input              dto.ObservationInput
@@ -42,6 +66,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					EncounterID: uuid.New().String(),
 					Value:       "1234",
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: false,
 		},
@@ -53,6 +78,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					EncounterID: uuid.New().String(),
 					Value:       "1234",
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: true,
 		},
@@ -64,6 +90,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					Status: dto.ObservationStatusFinal,
 					Value:  "1234",
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: true,
 		},
@@ -75,6 +102,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					Status:      dto.ObservationStatusFinal,
 					EncounterID: uuid.New().String(),
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: true,
 		},
@@ -87,6 +115,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					EncounterID: uuid.New().String(),
 					Value:       "1234",
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: true,
 		},
@@ -99,6 +128,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					EncounterID: uuid.New().String(),
 					Value:       "1234",
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: true,
 		},
@@ -111,6 +141,7 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					EncounterID: uuid.New().String(),
 					Value:       "1234",
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: true,
 		},
@@ -123,11 +154,25 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 					EncounterID: uuid.New().String(),
 					Value:       "1234",
 				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
 			},
 			wantErr: true,
 		},
 		{
 			name: "Sad Case - Fail to create observation",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - no observation category specified",
 			args: args{
 				ctx: ctx,
 				input: dto.ObservationInput{
