@@ -37,9 +37,10 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.ConsentInput{
-					PatientID: ID,
-					Provision: dto.ConsentProvisionTypeEnum(provisionType),
-					Status:    dto.ConsentStatusEnum(status),
+					PatientID:  ID,
+					Provision:  dto.ConsentProvisionTypeEnum(provisionType),
+					Status:     dto.ConsentStatusEnum(status),
+					DenyReason: "",
 				},
 			},
 			wantErr: false,
@@ -49,8 +50,9 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.ConsentInput{
-					PatientID: ID,
-					Status:    dto.ConsentStatusEnum(status),
+					PatientID:  ID,
+					Status:     dto.ConsentStatusEnum(status),
+					DenyReason: "",
 				},
 			},
 			wantErr: true,
@@ -60,8 +62,9 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.ConsentInput{
-					PatientID: "",
-					Status:    dto.ConsentStatusEnum(status),
+					PatientID:  "",
+					Status:     dto.ConsentStatusEnum(status),
+					DenyReason: "",
 				},
 			},
 			wantErr: true,
@@ -71,8 +74,9 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 			args: args{
 				ctx: nil,
 				input: dto.ConsentInput{
-					PatientID: "",
-					Status:    dto.ConsentStatusEnum(status),
+					PatientID:  "",
+					Status:     dto.ConsentStatusEnum(status),
+					DenyReason: "",
 				},
 			},
 			wantErr: true,
