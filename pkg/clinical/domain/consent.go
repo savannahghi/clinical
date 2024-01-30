@@ -4,7 +4,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 )
 
-// Consent models a fhir consent resource
+// Consent models a fhir consent resource.
 type FHIRConsent struct {
 	ID         *string                `json:"id,omitempty"`
 	Status     *dto.ConsentStatusEnum `json:"status"`
@@ -14,6 +14,7 @@ type FHIRConsent struct {
 	Provision  *FHIRConsentProvision  `json:"provision,omitempty"`
 	Patient    *FHIRReference         `json:"patient,omitempty"`
 	Meta       *FHIRMetaInput         `json:"meta,omitempty"`
+	Extension  []Extension            `json:"extension,omitempty"`
 }
 
 // ConsentProvision models a fhir consent provision

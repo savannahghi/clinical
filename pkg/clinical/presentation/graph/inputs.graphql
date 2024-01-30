@@ -109,6 +109,7 @@ input ConsentInput{
   status: ConsentStatusEnum!
   provision: ConsentProvisionTypeEnum!
   patientID: String!
+  denyReason: String
 }
 
 input ReferenceInput {

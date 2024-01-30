@@ -23,7 +23,7 @@ func (u *UseCasesClinicalImpl) RecordConsent(ctx context.Context, input dto.Cons
 	}
 
 	scope := &domain.FHIRCodeableConcept{
-		Text: "privacy",
+		Text: "patient-privacy",
 	}
 
 	var system scalarutils.URI = "http://terminology.hl7.org/CodeSystem/consentcategorycodes"
@@ -63,6 +63,14 @@ func (u *UseCasesClinicalImpl) RecordConsent(ctx context.Context, input dto.Cons
 		Category:   []*domain.FHIRCodeableConcept{category},
 		PolicyRule: policyRule,
 		Meta:       &consentMeta,
+	}
+
+	if input.Provision == dto.ConsentProvisionTypeDeny {
+		extension := &domain.Extension{
+			URL:         "http://hl7.org/fhir/StructureDefinition/event-statusReason",
+			ValueString: input.DenyReason,
+		}
+		consent.Extension = []domain.Extension{*extension}
 	}
 
 	resp, err := u.infrastructure.FHIR.CreateFHIRConsent(ctx, consent)

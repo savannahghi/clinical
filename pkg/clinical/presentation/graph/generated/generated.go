@@ -4384,6 +4384,7 @@ input ConsentInput{
   status: ConsentStatusEnum!
   provision: ConsentProvisionTypeEnum!
   patientID: String!
+  denyReason: String
 }
 
 input ReferenceInput {
@@ -28750,7 +28751,7 @@ func (ec *executionContext) unmarshalInputConsentInput(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"status", "provision", "patientID"}
+	fieldsInOrder := [...]string{"status", "provision", "patientID", "denyReason"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -28784,6 +28785,15 @@ func (ec *executionContext) unmarshalInputConsentInput(ctx context.Context, obj 
 				return it, err
 			}
 			it.PatientID = data
+		case "denyReason":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("denyReason"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DenyReason = data
 		}
 	}
 
