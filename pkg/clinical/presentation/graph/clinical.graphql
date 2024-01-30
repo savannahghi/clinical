@@ -166,6 +166,8 @@ extend type Mutation {
   # Visual Inspection with Acetic Acid
   recordVIA(input: ObservationInput!): Observation!
 
+  recordPapSmear(input: ObservationInput!): Observation!
+
   # Patient
   createPatient(input: PatientInput!): Patient!
   patchPatient(id: String!, input: PatchPatientInput!): Patient!

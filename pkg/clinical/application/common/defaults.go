@@ -145,6 +145,9 @@ const (
 
 	// HPVCIELTerminologyCode is the terminology code used to represent HPV test.
 	HPVCIELTerminologyCode = "1213"
+
+	// PapSmearTerminologyCode is the terminology code used to represent pap smear test.
+	PapSmearTerminologyCode = "154451"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

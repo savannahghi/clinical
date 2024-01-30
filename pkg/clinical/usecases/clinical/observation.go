@@ -544,3 +544,8 @@ func (c *UseCasesClinicalImpl) RecordHPV(ctx context.Context, input dto.Observat
 
 	return c.RecordObservation(ctx, input, common.HPVCIELTerminologyCode, nil)
 }
+
+// RecordPapSmear records patients pap smear findings
+func (c *UseCasesClinicalImpl) RecordPapSmear(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
+	return c.RecordObservation(ctx, input, common.PapSmearTerminologyCode, nil)
+}
