@@ -20,7 +20,7 @@ type ObservationInputMutatorFunc func(context.Context, *domain.FHIRObservationIn
 
 // RecordTemperature is used to record a patient's temperature and saves it as a FHIR observation
 func (c *UseCasesClinicalImpl) RecordTemperature(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	temperatureObservation, err := c.RecordObservation(ctx, input, common.TemperatureCIELTerminologyCode, nil)
+	temperatureObservation, err := c.RecordObservation(ctx, input, common.TemperatureCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (c *UseCasesClinicalImpl) RecordTemperature(ctx context.Context, input dto.
 
 // RecordMuac is used to record a patient's Muac
 func (c *UseCasesClinicalImpl) RecordMuac(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	muacObservation, err := c.RecordObservation(ctx, input, common.MuacCIELTerminologyCode, nil)
+	muacObservation, err := c.RecordObservation(ctx, input, common.MuacCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (c *UseCasesClinicalImpl) RecordMuac(ctx context.Context, input dto.Observa
 
 // RecordOxygenSaturation is used to record a patient's oxygen saturation
 func (c *UseCasesClinicalImpl) RecordOxygenSaturation(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	oxygenSaturationObservation, err := c.RecordObservation(ctx, input, common.OxygenSaturationCIELTerminologyCode, nil)
+	oxygenSaturationObservation, err := c.RecordObservation(ctx, input, common.OxygenSaturationCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *UseCasesClinicalImpl) GetPatientTemperatureEntries(ctx context.Context,
 
 // RecordHeight records a patient's height and saves it to fhir
 func (c *UseCasesClinicalImpl) RecordHeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	heightObservation, err := c.RecordObservation(ctx, input, common.HeightCIELTerminologyCode, nil)
+	heightObservation, err := c.RecordObservation(ctx, input, common.HeightCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +125,7 @@ func (c *UseCasesClinicalImpl) PatchPatientMuac(ctx context.Context, id string, 
 
 // RecordWeight records a patient's weight
 func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode, nil)
+	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.Obser
 
 // RecordViralLoad records the patient viral load
 func (c *UseCasesClinicalImpl) RecordViralLoad(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	viralLoadObservation, err := c.RecordObservation(ctx, input, common.ViralLoadCIELTerminologyCode, nil)
+	viralLoadObservation, err := c.RecordObservation(ctx, input, common.ViralLoadCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +165,7 @@ func (c *UseCasesClinicalImpl) GetPatientViralLoad(ctx context.Context, patientI
 
 // RecordRespiratoryRate records a patient's respiratory rate
 func (c *UseCasesClinicalImpl) RecordRespiratoryRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	respiratoryRateObservation, err := c.RecordObservation(ctx, input, common.RespiratoryRateCIELTerminologyCode, nil)
+	respiratoryRateObservation, err := c.RecordObservation(ctx, input, common.RespiratoryRateCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func (c *UseCasesClinicalImpl) GetPatientRespiratoryRateEntries(ctx context.Cont
 
 // RecordPulseRate records a patient's pulse rate
 func (c *UseCasesClinicalImpl) RecordPulseRate(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	pulseRateObservation, err := c.RecordObservation(ctx, input, common.PulseCIELTerminologyCode, nil)
+	pulseRateObservation, err := c.RecordObservation(ctx, input, common.PulseCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -195,7 +195,7 @@ func (c *UseCasesClinicalImpl) GetPatientPulseRateEntries(ctx context.Context, p
 
 // RecordBloodPressure records a patient's blood pressure
 func (c *UseCasesClinicalImpl) RecordBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	bloodPressureObservation, err := c.RecordObservation(ctx, input, common.BloodPressureCIELTerminologyCode, nil)
+	bloodPressureObservation, err := c.RecordObservation(ctx, input, common.BloodPressureCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +210,7 @@ func (c *UseCasesClinicalImpl) GetPatientBloodPressureEntries(ctx context.Contex
 
 // RecordBMI records a patient's BMI
 func (c *UseCasesClinicalImpl) RecordBMI(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	bmiObservation, err := c.RecordObservation(ctx, input, common.BMICIELTerminologyCode, nil)
+	bmiObservation, err := c.RecordObservation(ctx, input, common.BMICIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +225,7 @@ func (c *UseCasesClinicalImpl) GetPatientBMIEntries(ctx context.Context, patient
 
 // RecordBloodSugar records a patient's blood sugar level (Serum glucose)
 func (c *UseCasesClinicalImpl) RecordBloodSugar(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	return c.RecordObservation(ctx, input, common.BloodSugarCIELTerminologyCode, nil)
+	return c.RecordObservation(ctx, input, common.BloodSugarCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 }
 
 // GetPatientBloodSugarEntries retrieves all blood sugar entries for a patient
@@ -235,7 +235,7 @@ func (c *UseCasesClinicalImpl) GetPatientBloodSugarEntries(ctx context.Context, 
 
 // RecordLastMenstrualPeriod records last menstrual period
 func (c *UseCasesClinicalImpl) RecordLastMenstrualPeriod(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	return c.RecordObservation(ctx, input, common.LastMenstrualPeriodCIELTerminologyCode, nil)
+	return c.RecordObservation(ctx, input, common.LastMenstrualPeriodCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 }
 
 // GetPatientLastMenstrualPeriodEntries retrieves all blood sugar entries for a patient
@@ -245,12 +245,12 @@ func (c *UseCasesClinicalImpl) GetPatientLastMenstrualPeriodEntries(ctx context.
 
 // RecordDiastolicBloodPressure records diastolic blood pressure
 func (c *UseCasesClinicalImpl) RecordDiastolicBloodPressure(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	return c.RecordObservation(ctx, input, common.DiastolicBloodPressureCIELTerminologyCode, nil)
+	return c.RecordObservation(ctx, input, common.DiastolicBloodPressureCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 }
 
 // RecordColposcopy records colposcopy findings
 func (c *UseCasesClinicalImpl) RecordColposcopy(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	return c.RecordObservation(ctx, input, common.ColposcopyCIELTerminologyCode, nil)
+	return c.RecordObservation(ctx, input, common.ColposcopyCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
 }
 
 // RecordVIA records Visual Inspection with Acetic Acid results
@@ -300,7 +300,7 @@ func (c *UseCasesClinicalImpl) RecordVIA(ctx context.Context, input dto.Observat
 		return nil
 	}
 
-	return c.RecordObservation(ctx, input, common.VIACIELCode, []ObservationInputMutatorFunc{addInterpretation})
+	return c.RecordObservation(ctx, input, common.VIACIELCode, []ObservationInputMutatorFunc{addInterpretation, addLabCategory})
 }
 
 // GetPatientDiastolicBloodPressureEntries retrieves all diastolic blood pressure entries for a patient
@@ -335,22 +335,11 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 		return nil, err
 	}
 
-	system := "http://terminology.hl7.org/CodeSystem/observation-category"
 	instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
+
 	observation := domain.FHIRObservationInput{
-		Status: (*domain.ObservationStatusEnum)(&input.Status),
-		Category: []*domain.FHIRCodeableConceptInput{
-			{
-				Coding: []*domain.FHIRCodingInput{
-					{
-						System:  (*scalarutils.URI)(&system),
-						Code:    "vital-signs",
-						Display: "Vital Signs",
-					},
-				},
-				Text: "Vital Signs",
-			},
-		},
+		Status:           (*domain.ObservationStatusEnum)(&input.Status),
+		Category:         []*domain.FHIRCodeableConceptInput{},
 		EffectiveInstant: &instant,
 		Code: &domain.FHIRCodeableConceptInput{
 			Coding: []*domain.FHIRCodingInput{
@@ -380,6 +369,10 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	if len(observation.Category) < 1 {
+		return nil, fmt.Errorf("observation category (i.e laboratory, vital-signs etc.) must be specified")
 	}
 
 	tags, err := c.GetTenantMetaTags(ctx)
@@ -542,10 +535,10 @@ func (c *UseCasesClinicalImpl) RecordHPV(ctx context.Context, input dto.Observat
 		return nil, fmt.Errorf("cannot record HPV results for an age of %d. The patient has to be between 25 - 65 years", age)
 	}
 
-	return c.RecordObservation(ctx, input, common.HPVCIELTerminologyCode, nil)
+	return c.RecordObservation(ctx, input, common.HPVCIELTerminologyCode, []ObservationInputMutatorFunc{addLabCategory})
 }
 
 // RecordPapSmear records patients pap smear findings
 func (c *UseCasesClinicalImpl) RecordPapSmear(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
-	return c.RecordObservation(ctx, input, common.PapSmearTerminologyCode, nil)
+	return c.RecordObservation(ctx, input, common.PapSmearTerminologyCode, []ObservationInputMutatorFunc{addLabCategory})
 }
