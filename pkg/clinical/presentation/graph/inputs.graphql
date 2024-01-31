@@ -106,7 +106,6 @@ input Pagination {
 }
 
 input ConsentInput{
-  status: ConsentStatusEnum!
   provision: ConsentProvisionTypeEnum!
   patientID: String!
   denyReason: String
