@@ -4397,7 +4397,6 @@ input Pagination {
 }
 
 input ConsentInput{
-  status: ConsentStatusEnum!
   provision: ConsentProvisionTypeEnum!
   patientID: String!
   denyReason: String
@@ -28855,22 +28854,13 @@ func (ec *executionContext) unmarshalInputConsentInput(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"status", "provision", "patientID", "denyReason"}
+	fieldsInOrder := [...]string{"provision", "patientID", "denyReason"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "status":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			data, err := ec.unmarshalNConsentStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Status = data
 		case "provision":
 			var err error
 
@@ -33999,16 +33989,6 @@ func (ec *executionContext) unmarshalNConsentProvisionTypeEnum2githubᚗcomᚋsa
 }
 
 func (ec *executionContext) marshalNConsentProvisionTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvisionTypeEnum(ctx context.Context, sel ast.SelectionSet, v dto.ConsentProvisionTypeEnum) graphql.Marshaler {
-	return v
-}
-
-func (ec *executionContext) unmarshalNConsentStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, v interface{}) (dto.ConsentStatusEnum, error) {
-	var res dto.ConsentStatusEnum
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNConsentStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.ConsentStatusEnum) graphql.Marshaler {
 	return v
 }
 

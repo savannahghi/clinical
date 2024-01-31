@@ -55,9 +55,10 @@ func (u *UseCasesClinicalImpl) RecordConsent(ctx context.Context, input dto.Cons
 		Tag: tags,
 	}
 
+	status := dto.ConditionStatusActive
 	consent := domain.FHIRConsent{
 		Provision:  consentProvision,
-		Status:     &input.Status,
+		Status:     (*dto.ConsentStatusEnum)(&status),
 		Patient:    subjectReference,
 		Scope:      scope,
 		Category:   []*domain.FHIRCodeableConcept{category},
