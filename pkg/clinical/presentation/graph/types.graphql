@@ -23,7 +23,7 @@ type Observation {
   name: String!
   value: String!
   timeRecorded: String!
-  interpretation: [String!]
+  interpretations: [String!]
 }
 
 type Medication {
@@ -497,3 +497,9 @@ type QuestionnaireResponse {
 	item: [QuestionnaireResponseItem]
 }
 
+type QuestionnaireReviewSummary {
+  title:   String
+	riskLevel: String
+	nextSteps:  [String]
+	tests:      [String]
+}

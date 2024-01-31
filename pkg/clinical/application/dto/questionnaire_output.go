@@ -248,3 +248,10 @@ type Meta struct {
 	Tag         []Coding  `json:"tag,omitempty"`
 	Security    []Coding  `json:"security,omitempty"`
 }
+
+type QuestionnaireReviewSummary struct {
+	Title     string   `json:"title"`
+	RiskLevel string   `json:"riskLevel"`
+	NextSteps []string `json:"nextSteps"`
+	Tests     []string `json:"tests"`
+}

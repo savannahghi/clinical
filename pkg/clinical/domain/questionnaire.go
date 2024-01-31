@@ -134,3 +134,8 @@ type FHIRUsageContext struct {
 	ValueRange           *FHIRRange           `json:"valueRange,omitempty" mapstructure:"valueRange"`
 	ValueReference       *FHIRReference       `json:"valueReference,omitempty" mapstructure:"valueReference"`
 }
+
+// FHIRQuestionnaireRelayPayload is used to return single instances of Questionnaire
+type FHIRQuestionnaireRelayPayload struct {
+	Resource *FHIRQuestionnaire `json:"resource,omitempty"`
+}

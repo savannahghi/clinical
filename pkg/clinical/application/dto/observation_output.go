@@ -2,14 +2,14 @@ package dto
 
 // Observation is a minimal representation of a fhir Observation
 type Observation struct {
-	ID             string            `json:"id,omitempty"`
-	Name           string            `json:"name,omitempty"`
-	Value          string            `json:"value,omitempty"`
-	Status         ObservationStatus `json:"status,omitempty"`
-	PatientID      string            `json:"patientID,omitempty"`
-	EncounterID    string            `json:"encounterID,omitempty"`
-	TimeRecorded   string            `json:"timeRecorded,omitempty"`
-	Interpretation []string          `json:"interpretation,omitempty"`
+	ID              string            `json:"id,omitempty"`
+	Name            string            `json:"name,omitempty"`
+	Value           string            `json:"value,omitempty"`
+	Status          ObservationStatus `json:"status,omitempty"`
+	PatientID       string            `json:"patientID,omitempty"`
+	EncounterID     string            `json:"encounterID,omitempty"`
+	TimeRecorded    string            `json:"timeRecorded,omitempty"`
+	Interpretations []string          `json:"interpretations,omitempty"`
 }
 
 // ObservationEdge is an observation edge

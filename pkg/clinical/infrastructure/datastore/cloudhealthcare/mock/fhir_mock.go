@@ -53,6 +53,7 @@ type FHIRMock struct {
 	MockDeleteFHIRCompositionFn           func(ctx context.Context, id string) (bool, error)
 	MockUpdateFHIRConditionFn             func(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	MockGetFHIREncounterFn                func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
+	MockGetFHIRQuestionnaireFn            func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error)
 	MockPatchFHIREncounterFn              func(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error)
 	MockSearchFHIREncounterFn             func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error)
 	MockSearchFHIRMedicationRequestFn     func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationRequestRelayConnection, error)
@@ -1892,6 +1893,32 @@ func NewFHIRMock() *FHIRMock {
 				Item:              []*domain.FHIRQuestionnaireItem{},
 			}, nil
 		},
+		MockGetFHIRQuestionnaireFn: func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+			resource := &domain.FHIRQuestionnaire{
+				ID:                new(string),
+				Meta:              &domain.FHIRMetaInput{},
+				ImplicitRules:     new(string),
+				Language:          new(string),
+				Text:              &domain.FHIRNarrative{},
+				Extension:         []*domain.Extension{},
+				ModifierExtension: []*domain.Extension{},
+				Identifier:        []*domain.FHIRIdentifier{},
+				Version:           new(string),
+				Name:              new(string),
+				Title:             new(string),
+				DerivedFrom:       []*string{},
+				Experimental:      new(bool),
+				Publisher:         new(string),
+				Description:       new(string),
+				UseContext:        &domain.FHIRUsageContext{},
+				Jurisdiction:      []*domain.FHIRCodeableConcept{},
+				Purpose:           new(string),
+				EffectivePeriod:   &domain.FHIRPeriod{},
+				Code:              []*domain.FHIRCoding{},
+				Item:              []*domain.FHIRQuestionnaireItem{},
+			}
+			return &domain.FHIRQuestionnaireRelayPayload{Resource: resource}, nil
+		},
 		MockCreateFHIRConsentFn: func(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error) {
 			return &input, nil
 		},
@@ -2209,6 +2236,11 @@ func (fh *FHIRMock) ListFHIRQuestionnaire(ctx context.Context, params map[string
 // CreateFHIRQuestionnaire mocks the creation of a new Questionnaire resource.
 func (fh *FHIRMock) CreateFHIRQuestionnaire(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error) {
 	return fh.MockCreateFHIRQuestionnaireFn(ctx, input)
+}
+
+// GetFHIRQuestionnaire retrieves instances of FHIRQuestionnaire by ID
+func (fh *FHIRMock) GetFHIRQuestionnaire(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+	return fh.MockGetFHIRQuestionnaireFn(ctx, id)
 }
 
 // CreateFHIRConsent mocks the create consent resource on fhir

@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
@@ -266,6 +267,11 @@ func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentI
 // CreateQuestionnaireResponse is the resolver for the createQuestionnaireResponse field.
 func (r *mutationResolver) CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error) {
 	return r.usecases.CreateQuestionnaireResponse(ctx, questionnaireID, encounterID, input)
+}
+
+// GetQuestionnaireReviewSummary is the resolver for the getQuestionnaireReviewSummary field.
+func (r *mutationResolver) GetQuestionnaireReviewSummary(ctx context.Context, questionnaireResponseID string) (*dto.QuestionnaireReviewSummary, error) {
+	panic(fmt.Errorf("not implemented: GetQuestionnaireReviewSummary - getQuestionnaireReviewSummary"))
 }
 
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.

@@ -2036,6 +2036,54 @@ func TestStoreImpl_GetFHIREncounter(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_GetFHIRQuestionnaire(t *testing.T) {
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case",
+			args: args{
+				ctx: context.Background(),
+				id:  uuid.New().String(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case",
+			args: args{
+				ctx: context.Background(),
+				id:  "",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad case" {
+				dataset.MockGetFHIRResourceFn = func(resourceType, fhirResourceID string, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
+				}
+			}
+			_, err := fh.GetFHIRQuestionnaire(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.GetFHIRQuestionnaire() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestStoreImpl_CreateFHIRServiceRequest(t *testing.T) {
 
 	UUID := uuid.New().String()

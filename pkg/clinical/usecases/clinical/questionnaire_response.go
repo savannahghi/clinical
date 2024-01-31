@@ -62,17 +62,85 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 	questionnaireResponse.Status = input.Status
 
 	resp, err := u.infrastructure.FHIR.CreateFHIRQuestionnaireResponse(ctx, questionnaireResponse)
-
 	if err != nil {
 		return nil, err
 	}
 
-	output := &dto.QuestionnaireResponse{}
-	err = mapstructure.Decode(resp, output)
+	u.generateSummary(ctx, questionnaireID, *resp)
 
+	output := &dto.QuestionnaireResponse{}
+
+	err = mapstructure.Decode(resp, output)
 	if err != nil {
 		return nil, err
 	}
 
 	return output, nil
+}
+
+// GetQuestionnaireReviewSummary fetches a summary of a completed questionnaire response
+func (u *UseCasesClinicalImpl) GetQuestionnaireReviewSummary(_ context.Context, _ string) (*dto.QuestionnaireReviewSummary, error) {
+	return nil, nil
+}
+
+func (u UseCasesClinicalImpl) generateSummary(ctx context.Context, questionnaireID string, questionnaireResponse domain.FHIRQuestionnaireResponse) error {
+	/*
+		1. Get questionnaire
+		2. Switch on the questionnaire (cervical, breast, mental etc)
+		3. calculate and save in Obs resource
+	*/
+	questionnaire, err := u.infrastructure.FHIR.GetFHIRQuestionnaire(ctx, questionnaireID)
+	if err != nil {
+		return err
+	}
+
+	switch *questionnaire.Resource.Name {
+	case "CERVICAL":
+		/*
+			Total symptoms
+			Total family history
+			Total risk factors
+		*/
+		var familyHistoryScore, symptomsScore, riskFactorsScore int
+
+		for _, item := range questionnaireResponse.Item {
+			if item.LinkID == "family-history" {
+				for _, answer := range item.Item {
+					if answer.LinkID == "family-history-score" {
+						familyHistoryScore = *answer.Answer[0].ValueInteger
+					}
+				}
+			}
+
+			if item.LinkID == "symptoms" {
+				for _, answer := range item.Item {
+					if answer.LinkID == "symptoms-score" {
+						symptomsScore = *answer.Answer[0].ValueInteger
+					}
+				}
+			}
+
+			if item.LinkID == "risk-factors" {
+				for _, answer := range item.Item {
+					if answer.LinkID == "risk-factors-score" {
+						riskFactorsScore = *answer.Answer[0].ValueInteger
+					}
+				}
+			}
+
+			if familyHistoryScore > 1 {
+
+			}
+			if symptomsScore > 1 {
+
+			}
+			if riskFactorsScore > 1 {
+
+			}
+		}
+	case "BREAST":
+
+	}
+
+	return nil
 }

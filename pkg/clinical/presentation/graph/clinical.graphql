@@ -204,4 +204,5 @@ extend type Mutation {
 
   # questionnaireResponse
   createQuestionnaireResponse(questionnaireID: String!, encounterID: String! input: QuestionnaireResponseInput!): QuestionnaireResponse!
+  getQuestionnaireReviewSummary(questionnaireResponseID: String!): QuestionnaireReviewSummary!
 }
