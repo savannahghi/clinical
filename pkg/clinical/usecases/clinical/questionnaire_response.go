@@ -24,7 +24,7 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 	}
 
 	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
-		return nil, fmt.Errorf("cannot record an observation in a finished encounter")
+		return nil, fmt.Errorf("cannot create a questionnaire response in a finished encounter")
 	}
 
 	patientID := encounter.Resource.Subject.ID
@@ -37,10 +37,6 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 	}
 
 	encounterReference := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
-
-	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
-		return nil, fmt.Errorf("cannot patch an observation in a finished encounter")
-	}
 
 	questionnaireResponse.Encounter = &domain.FHIRReference{
 		ID:        encounter.Resource.ID,
