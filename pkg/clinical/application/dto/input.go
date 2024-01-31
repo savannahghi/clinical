@@ -211,3 +211,14 @@ type Reference struct {
 	Identifier Identifier      `json:"identifier,omitempty"`
 	Display    string          `json:"display,omitempty"`
 }
+
+// Expression is documented here http://hl7.org/fhir/StructureDefinition/Expression
+type Expression struct {
+	ID          *string     `bson:"id,omitempty" json:"id,omitempty"`
+	Extension   []Extension `bson:"extension,omitempty" json:"extension,omitempty"`
+	Description *string     `bson:"description,omitempty" json:"description,omitempty"`
+	Name        *string     `bson:"name,omitempty" json:"name,omitempty"`
+	Language    string      `bson:"language" json:"language"`
+	Expression  *string     `bson:"expression,omitempty" json:"expression,omitempty"`
+	Reference   *string     `bson:"reference,omitempty" json:"reference,omitempty"`
+}

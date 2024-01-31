@@ -991,6 +991,17 @@ type FHIRTimingRepeatInput struct {
 	Offset *int `json:"offset,omitempty"`
 }
 
+// FHIRExpression is documented here http://hl7.org/fhir/StructureDefinition/Expression
+type FHIRExpression struct {
+	ID          *string     `bson:"id,omitempty" json:"id,omitempty"`
+	Extension   []Extension `bson:"extension,omitempty" json:"extension,omitempty"`
+	Description *string     `bson:"description,omitempty" json:"description,omitempty"`
+	Name        *string     `bson:"name,omitempty" json:"name,omitempty"`
+	Language    string      `bson:"language" json:"language"`
+	Expression  *string     `bson:"expression,omitempty" json:"expression,omitempty"`
+	Reference   *string     `bson:"reference,omitempty" json:"reference,omitempty"`
+}
+
 // AddressTypeEnum is a FHIR enum
 type AddressTypeEnum string
 

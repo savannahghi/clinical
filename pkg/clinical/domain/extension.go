@@ -31,6 +31,7 @@ type Extension struct {
 	ValuePeriod          *FHIRPeriod          `json:"valuePeriod,omitempty"`
 	ValueRatio           *FHIRRatio           `json:"valueRatio,omitempty"`
 	ValueReference       *FHIRReference       `json:"valueReference,omitempty"`
+	ValueExpression      *FHIRExpression      `json:"valueExpression,omitempty"`
 }
 
 // FHIRExtension contains child elements to represent additional information that is not part of the basic definition of the resource.

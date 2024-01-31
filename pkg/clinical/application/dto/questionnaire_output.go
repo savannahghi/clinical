@@ -104,6 +104,7 @@ type Extension struct {
 	ValuePeriod          *Period          `json:"valuePeriod,omitempty"`
 	ValueRatio           *Ratio           `json:"valueRatio,omitempty"`
 	ValueReference       *Reference       `json:"valueReference,omitempty"`
+	ValueExpression      *Expression      `json:"valueExpression,omitempty"`
 }
 
 // Annotation is a resources annotation
