@@ -47,6 +47,7 @@ var ClinicalAllowedOrigins = []string{
 	"https://advantage.slade360.com",
 	"https://review-empower.web.app",
 	"https://review-advantage.web.app",
+	"https://prod-empower.web.app",
 }
 
 var (
