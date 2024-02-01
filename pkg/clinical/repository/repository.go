@@ -82,6 +82,8 @@ type FHIRCondition interface {
 	SearchFHIRCondition(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error)
 	CreateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
 	UpdateFHIRCondition(ctx context.Context, input domain.FHIRConditionInput) (*domain.FHIRConditionRelayPayload, error)
+	GetFHIRCondition(ctx context.Context, id string) (*domain.FHIRConditionRelayPayload, error)
+	PatchFHIRCondition(ctx context.Context, id string, input domain.FHIRConditionInput) (*domain.FHIRCondition, error)
 }
 type FHIREncounter interface {
 	CreateFHIREncounter(ctx context.Context, input domain.FHIREncounterInput) (*domain.FHIREncounterRelayPayload, error)

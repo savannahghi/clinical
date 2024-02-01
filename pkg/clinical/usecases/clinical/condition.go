@@ -237,3 +237,50 @@ func (c UseCasesClinicalImpl) ListPatientConditions(ctx context.Context, patient
 
 	return &connection, nil
 }
+
+// PatchPatientCondition update a patient's condition resource
+func (c *UseCasesClinicalImpl) PatchPatientCondition(ctx context.Context, id string, note string) (*dto.Condition, error) {
+	if note == "" {
+		return nil, fmt.Errorf("note cannot be empty")
+	}
+
+	if id == "" {
+		return nil, fmt.Errorf("condition id cannot be empty")
+	}
+
+	condition, err := c.infrastructure.FHIR.GetFHIRCondition(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, *condition.Resource.Encounter.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot patch an observation in a finished encounter")
+	}
+
+	// conditionInput
+	inputNote := scalarutils.Markdown(note)
+	noteTime := scalarutils.DateTime(time.Now().Format(scalarutils.DateTimeFormatLayout))
+
+	conditionInput := &domain.FHIRConditionInput{
+		Note: []*domain.FHIRAnnotationInput{
+			{
+				Time: &noteTime,
+				Text: &inputNote,
+			},
+		},
+	}
+
+	output, err := c.infrastructure.FHIR.PatchFHIRCondition(ctx, id, *conditionInput)
+	if err != nil {
+		return nil, err
+	}
+
+	result := mapFHIRConditionToConditionDTO(*output)
+
+	return result, nil
+}
