@@ -3059,3 +3059,70 @@ func (e *MediaStatusEnum) UnmarshalGQL(v interface{}) error {
 func (e MediaStatusEnum) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
+// DiagnosticReportStatusEnum is documented here http://hl7.org/fhir/ValueSet/diagnostic-report-status
+type DiagnosticReportStatusEnum string
+
+const (
+	DiagnosticReportStatusRegistered     = "registered"
+	DiagnosticReportStatusPartial        = "partial"
+	DiagnosticReportStatusPreliminary    = "preliminary"
+	DiagnosticReportStatusFinal          = "final"
+	DiagnosticReportStatusAmended        = "amended"
+	DiagnosticReportStatusCorrected      = "corrected"
+	DiagnosticReportStatusAppended       = "appended"
+	DiagnosticReportStatusCancelled      = "cancelled"
+	DiagnosticReportStatusEnteredInError = "entered-in-error"
+	DiagnosticReportStatusUnknown        = "unknown"
+)
+
+// AllDiagnosticReportStatusEnum ...
+var AllDiagnosticReportStatusEnum = []DiagnosticReportStatusEnum{
+	DiagnosticReportStatusRegistered,
+	DiagnosticReportStatusPartial,
+	DiagnosticReportStatusPreliminary,
+	DiagnosticReportStatusFinal,
+	DiagnosticReportStatusAmended,
+	DiagnosticReportStatusCorrected,
+	DiagnosticReportStatusAppended,
+	DiagnosticReportStatusCancelled,
+	DiagnosticReportStatusEnteredInError,
+	DiagnosticReportStatusUnknown,
+}
+
+// IsValid ...
+func (e DiagnosticReportStatusEnum) IsValid() bool {
+	switch e {
+	case DiagnosticReportStatusRegistered, DiagnosticReportStatusPartial, DiagnosticReportStatusPreliminary,
+		DiagnosticReportStatusFinal, DiagnosticReportStatusAmended, DiagnosticReportStatusCorrected, DiagnosticReportStatusAppended,
+		DiagnosticReportStatusCancelled, DiagnosticReportStatusEnteredInError, DiagnosticReportStatusUnknown:
+		return true
+	}
+
+	return false
+}
+
+// String ...
+func (e DiagnosticReportStatusEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *DiagnosticReportStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = DiagnosticReportStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid DiagnosticReportStatusEnum", str)
+	}
+
+	return nil
+}
+
+// MarshalGQL writes the composition attester mode to the supplied writer as a quoted string
+func (e DiagnosticReportStatusEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}

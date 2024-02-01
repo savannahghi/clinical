@@ -4401,3 +4401,119 @@ func TestMediaStatusEnum_MarshalGQL(t *testing.T) {
 		})
 	}
 }
+
+func TestDiagnosticReportStatusEnum_IsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		c    DiagnosticReportStatusEnum
+		want bool
+	}{
+		{
+			name: "Happy Case - Valid type",
+			c:    DiagnosticReportStatusAmended,
+			want: true,
+		},
+		{
+			name: "Sad Case - Invalid type",
+			c:    DiagnosticReportStatusEnum("INVALID"),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.c.IsValid(); got != tt.want {
+				t.Errorf("DiagnosticReportStatusEnum.IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDiagnosticReportStatusEnum_String(t *testing.T) {
+	tests := []struct {
+		name string
+		c    DiagnosticReportStatusEnum
+		want string
+	}{
+		{
+			name: "Happy Case",
+			c:    DiagnosticReportStatusAmended,
+			want: DiagnosticReportStatusAmended,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.c.String(); got != tt.want {
+				t.Errorf("DiagnosticReportStatusEnum = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDiagnosticReportStatusEnum_UnmarshalGQL(t *testing.T) {
+	validValue := DiagnosticReportStatusUnknown
+	invalidType := DiagnosticReportStatusEnum("INVALID")
+	type args struct {
+		v interface{}
+	}
+	tests := []struct {
+		name    string
+		c       *DiagnosticReportStatusEnum
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Valid type",
+			args: args{
+				v: DiagnosticReportStatusAmended,
+			},
+			c:       (*DiagnosticReportStatusEnum)(&validValue),
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Invalid type",
+			args: args{
+				v: "invalid type",
+			},
+			c:       &invalidType,
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Invalid type(float)",
+			args: args{
+				v: 45.1,
+			},
+			c:       (*DiagnosticReportStatusEnum)(&validValue),
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.c.UnmarshalGQL(tt.args.v); (err != nil) != tt.wantErr {
+				t.Errorf("DiagnosticReportStatusEnum.UnmarshalGQL() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestConsentState_MarshalGQL(t *testing.T) {
+	tests := []struct {
+		name  string
+		c     DiagnosticReportStatusEnum
+		wantW string
+	}{
+		{
+			name:  "valid type enums",
+			c:     DiagnosticReportStatusAmended,
+			wantW: strconv.Quote("amended"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			tt.c.MarshalGQL(w)
+			if gotW := w.String(); gotW != tt.wantW {
+				t.Errorf("DiagnosticReportStatusEnum.MarshalGQL() = %v, want %v", gotW, tt.wantW)
+			}
+		})
+	}
+}
