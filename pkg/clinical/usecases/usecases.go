@@ -99,6 +99,7 @@ type Clinical interface {
 	PatchPatientPulseRate(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientViralLoad(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientMuac(ctx context.Context, id string, value string) (*dto.Observation, error)
+	PatchPatientLastMenstrualPeriod(ctx context.Context, id string, value string) (*dto.Observation, error)
 	RecordHPV(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordPapSmear(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 

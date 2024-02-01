@@ -123,6 +123,11 @@ func (c *UseCasesClinicalImpl) PatchPatientMuac(ctx context.Context, id string, 
 	return c.PatchPatientObservations(ctx, id, value)
 }
 
+// PatchPatientLastMenstrualPeriod patches the last menstrual record of a patient
+func (c *UseCasesClinicalImpl) PatchPatientLastMenstrualPeriod(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	return c.PatchPatientObservations(ctx, id, value)
+}
+
 // RecordWeight records a patient's weight
 func (c *UseCasesClinicalImpl) RecordWeight(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error) {
 	weightObservation, err := c.RecordObservation(ctx, input, common.WeightCIELTerminologyCode, []ObservationInputMutatorFunc{addVitalSignCategory})
