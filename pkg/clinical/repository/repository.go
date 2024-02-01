@@ -25,6 +25,7 @@ type FHIR interface {
 	FHIRQuestionnaire
 	FHIRConsent
 	FHIRQuestionnaireResponse
+	FHIRRiskAssessment
 }
 
 type FHIROrganization interface {
@@ -125,4 +126,8 @@ type FHIRConsent interface {
 
 type FHIRQuestionnaireResponse interface {
 	CreateFHIRQuestionnaireResponse(_ context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error)
+}
+
+type FHIRRiskAssessment interface {
+	CreateFHIRRiskAssessment(_ context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error)
 }

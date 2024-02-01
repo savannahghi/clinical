@@ -4772,3 +4772,56 @@ func TestStoreImpl_CreateFHIRQuestionnaireResponse(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_CreateFHIRRiskAssessment(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input *domain.FHIRRiskAssessment
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRRiskAssessmentRelayPayload
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully create a risk assessment",
+			args: args{
+				ctx:   context.Background(),
+				input: &domain.FHIRRiskAssessment{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to create a risk assessment",
+			args: args{
+				ctx:   context.Background(),
+				input: &domain.FHIRRiskAssessment{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad Case - Fail to create a risk assessment" {
+				fakeDataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("failed to create the risk assessment")
+				}
+			}
+
+			got, err := fh.CreateFHIRRiskAssessment(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRRiskAssessment() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}

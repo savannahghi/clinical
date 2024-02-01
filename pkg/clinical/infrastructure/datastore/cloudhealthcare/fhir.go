@@ -38,6 +38,7 @@ const (
 	questionnaireResourceType         = "Questionnaire"
 	consentResourceType               = "Consent"
 	questionnaireResponseResourceType = "QuestionnaireResponse"
+	riskAssessmentResourceType        = "RiskAssessment"
 )
 
 // Dataset ...
@@ -1770,4 +1771,25 @@ func (fh StoreImpl) CreateFHIRQuestionnaireResponse(_ context.Context, input *do
 	}
 
 	return resource, nil
+}
+
+// CreateFHIRRiskAssessment creates a RiskAssessment on FHIR
+// The RiskAssessment resource represents an assessment of the likely outcome(s) for a patient's health over
+// a period of time, considering various factors.
+func (fh StoreImpl) CreateFHIRRiskAssessment(_ context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", riskAssessmentResourceType, err)
+	}
+
+	resource := &domain.FHIRRiskAssessment{}
+
+	err = fh.Dataset.CreateFHIRResource(riskAssessmentResourceType, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create %s resource: %w", riskAssessmentResourceType, err)
+	}
+
+	return &domain.FHIRRiskAssessmentRelayPayload{
+		Resource: resource,
+	}, nil
 }
