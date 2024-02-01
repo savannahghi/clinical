@@ -132,10 +132,10 @@ type SectionInput struct {
 
 // ConsentInput models the consent input
 type ConsentInput struct {
-	Status     ConsentStatusEnum        `json:"status"`
-	Provision  ConsentProvisionTypeEnum `json:"provision,omitempty"`
-	PatientID  string                   `json:"patientID,omitempty"`
-	DenyReason string                   `json:"denyReason,omitempty"`
+	Status      ConsentStatusEnum        `json:"status"`
+	Provision   ConsentProvisionTypeEnum `json:"provision,omitempty"`
+	EncounterID string                   `json:"encounterID,omitempty"`
+	DenyReason  string                   `json:"denyReason,omitempty"`
 }
 
 // QuestionnaireResponse models input for questionnaire response resource in fhir
