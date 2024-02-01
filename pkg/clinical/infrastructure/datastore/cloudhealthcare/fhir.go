@@ -1793,3 +1793,19 @@ func (fh StoreImpl) CreateFHIRRiskAssessment(_ context.Context, input *domain.FH
 		Resource: resource,
 	}, nil
 }
+
+// GetFHIRQuestionnaire retrieves instances of FHIRQuestionnaire by ID
+func (fh StoreImpl) GetFHIRQuestionnaire(_ context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+	resource := &domain.FHIRQuestionnaire{}
+
+	err := fh.Dataset.GetFHIRResource(questionnaireResourceType, id, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", questionnaireResourceType, id, err)
+	}
+
+	payload := &domain.FHIRQuestionnaireRelayPayload{
+		Resource: resource,
+	}
+
+	return payload, nil
+}
