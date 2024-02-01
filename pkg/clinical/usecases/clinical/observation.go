@@ -123,7 +123,7 @@ func (c *UseCasesClinicalImpl) PatchPatientMuac(ctx context.Context, id string, 
 	return c.PatchPatientObservations(ctx, id, value)
 }
 
-// patchPatientLastMenstrualPeriod patches the last menstrual record of a patient
+// PatchPatientLastMenstrualPeriod patches the last menstrual record of a patient
 func (c *UseCasesClinicalImpl) PatchPatientLastMenstrualPeriod(ctx context.Context, id string, value string) (*dto.Observation, error) {
 	return c.PatchPatientObservations(ctx, id, value)
 }
