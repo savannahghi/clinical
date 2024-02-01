@@ -89,6 +89,7 @@ type FHIRMock struct {
 	MockGetFHIRQuestionnaireFn            func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error)
 	MockSearchFHIRRiskAssessmentFn        func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error)
 	MockGetFHIRQuestionnaireResponseFn    func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error)
+	MockCreateFHIRDiagnosticReportFn      func(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -1596,10 +1597,11 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRMedicationRelayPayload{}, nil
 		},
 		MockCreateFHIRMediaFn: func(ctx context.Context, input domain.FHIRMedia) (*domain.FHIRMedia, error) {
-			id := uuid.New().String()
+			id := "1"
 			url := gofakeit.URL()
 			title := gofakeit.BeerName()
 			return &domain.FHIRMedia{
+				ID:     &id,
 				Status: "",
 				Subject: &domain.FHIRReferenceInput{
 					ID: &id,
@@ -2016,6 +2018,40 @@ func NewFHIRMock() *FHIRMock {
 			}
 			return &domain.FHIRQuestionnaireRelayPayload{Resource: resource}, nil
 		},
+		MockCreateFHIRDiagnosticReportFn: func(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error) {
+			ID := "1234"
+			return &domain.FHIRDiagnosticReport{
+				ID:                new(string),
+				Meta:              &domain.FHIRMeta{},
+				ImplicitRules:     new(string),
+				Language:          new(string),
+				Text:              &domain.FHIRNarrative{},
+				Extension:         []*domain.Extension{},
+				ModifierExtension: []*domain.Extension{},
+				Identifier:        []*domain.FHIRIdentifier{},
+				BasedOn:           []*domain.FHIRReference{},
+				Status:            "",
+				Category:          []*domain.FHIRCodeableConcept{},
+				Code:              domain.FHIRCodeableConcept{},
+				Subject: &domain.FHIRReference{
+					ID: &ID,
+				},
+				Encounter: &domain.FHIRReference{
+					ID: &ID,
+				},
+				EffectivePeriod:    &domain.FHIRPeriod{},
+				Issued:             new(string),
+				Performer:          []*domain.FHIRReference{},
+				ResultsInterpreter: []*domain.FHIRReference{},
+				Specimen:           []*domain.FHIRReference{},
+				Result:             []*domain.FHIRReference{},
+				ImagingStudy:       []*domain.FHIRReference{},
+				Media:              []*domain.FHIRDiagnosticReportMedia{},
+				Conclusion:         new(string),
+				ConclusionCode:     []*domain.FHIRCodeableConcept{},
+				PresentedForm:      []*domain.FHIRAttachment{},
+			}, nil
+		},
 	}
 }
 
@@ -2357,4 +2393,9 @@ func (fh *FHIRMock) SearchFHIRRiskAssessment(ctx context.Context, params map[str
 // GetFHIRQuestionnaireResponse mocks the implementation of getting a single instance of a fhir questionnaire response
 func (fh *FHIRMock) GetFHIRQuestionnaireResponse(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error) {
 	return fh.MockGetFHIRQuestionnaireResponseFn(ctx, id)
+}
+
+// CreateFHIRDiagnosticReport mocks the implementation of creating a diagnostic report.
+func (fh *FHIRMock) CreateFHIRDiagnosticReport(ctx context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error) {
+	return fh.MockCreateFHIRDiagnosticReportFn(ctx, input)
 }

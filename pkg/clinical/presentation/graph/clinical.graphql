@@ -215,4 +215,7 @@ extend type Mutation {
     encounterID: String!
     input: QuestionnaireResponseInput!
   ): QuestionnaireResponse!
+
+  # Diagnostic Report
+  recordMammographyResult(input: DiagnosticReportInput!): DiagnosticReport!
 }

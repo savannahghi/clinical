@@ -157,6 +157,12 @@ const (
 
 	// CIELTerminologySystem is the identity of ciel terminology system
 	CIELTerminologySystem = "https://CIELterminology.org"
+
+	// MammogramTerminologyCode is the terminology code used to represent mammogram results.
+	MammogramTerminologyCode = "163591"
+
+	// BenignNeoplasmOfBreastOfSkinTerminologyCode is the terminology code used to represent benign of skin results.
+	BenignNeoplasmOfBreastOfSkinTerminologyCode = "147661"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

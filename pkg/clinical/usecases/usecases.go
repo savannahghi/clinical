@@ -111,6 +111,7 @@ type Clinical interface {
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
 
 	GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error)
+	RecordMammographyResult(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 }
 
 // Interactor is an implementation of the usecases interface

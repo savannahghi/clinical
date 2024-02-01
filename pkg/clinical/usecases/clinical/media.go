@@ -103,6 +103,7 @@ func (c *UseCasesClinicalImpl) UploadMedia(ctx context.Context, encounterID stri
 	}
 
 	output := &dto.Media{
+		ID:          *media.ID,
 		PatientID:   *patientID,
 		PatientName: patient.Resource.Names(),
 		URL:         string(*media.Content.URL),

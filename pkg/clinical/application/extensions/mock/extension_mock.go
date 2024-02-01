@@ -92,6 +92,7 @@ func NewFakeBaseExtensionMock() *FakeBaseExtension {
 		MockGetTenantIdentifiersFn: func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 			return &dto.TenantIdentifiers{
 				OrganizationID: uuid.New().String(),
+				FacilityID:     uuid.New().String(),
 			}, nil
 		},
 		MockVerifyPubSubJWTAndDecodePayloadFn: func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {

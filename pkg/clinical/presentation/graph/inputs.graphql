@@ -168,3 +168,16 @@ input QuestionnaireResponseInput {
 	authored: String!
 	item: [QuestionnaireResponseItemInput]
 }
+
+input DiagnosticReportInput {
+  encounterID: String!
+  note: String
+  findings: String!
+  media: MediaInput
+}
+
+input MediaInput {
+  id: ID!
+  name: String!
+  url: String!
+}

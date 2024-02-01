@@ -26,6 +26,7 @@ type FHIR interface {
 	FHIRConsent
 	FHIRQuestionnaireResponse
 	FHIRRiskAssessment
+	FHIRDiagnosticReport
 }
 
 type FHIROrganization interface {
@@ -133,4 +134,8 @@ type FHIRQuestionnaireResponse interface {
 type FHIRRiskAssessment interface {
 	CreateFHIRRiskAssessment(_ context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error)
 	SearchFHIRRiskAssessment(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error)
+}
+
+type FHIRDiagnosticReport interface {
+	CreateFHIRDiagnosticReport(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
 }

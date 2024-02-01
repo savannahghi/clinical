@@ -4873,6 +4873,57 @@ func TestStoreImpl_GetFHIRQuestionnaire(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_CreateFHIRDiagnosticReport(t *testing.T) {
+	ID := gofakeit.UUID()
+	type args struct {
+		in0   context.Context
+		input *domain.FHIRDiagnosticReportInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRDiagnosticReport
+		wantErr bool
+	}{
+		{
+			name: "Happy case: create diagnostic report",
+			args: args{
+				input: &domain.FHIRDiagnosticReportInput{
+					ID: &ID,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create diagnostic report",
+			args: args{
+				input: &domain.FHIRDiagnosticReportInput{
+					ID: &ID,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeDataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(fakeDataset)
+
+			if tt.name == "Sad case: unable to create diagnostic report" {
+				fakeDataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error ocurred")
+				}
+			}
+
+			_, err := fh.CreateFHIRDiagnosticReport(tt.args.in0, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRDiagnosticReport() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestStoreImpl_SearchFHIRRiskAssessment(t *testing.T) {
 	ctx := context.Background()
 	type args struct {

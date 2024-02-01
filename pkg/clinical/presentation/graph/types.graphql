@@ -498,3 +498,13 @@ type QuestionnaireResponse {
 	item: [QuestionnaireResponseItem]
 }
 
+type DiagnosticReport {
+  id: ID!
+  status: ObservationStatus!
+  patientID: String!
+  encounterID: String!
+  issued: String!
+  result: [Observation!]
+  media: [Media!]
+  conclusion: String!
+}

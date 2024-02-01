@@ -54,3 +54,24 @@ var addLabCategory = func(ctx context.Context, observation *domain.FHIRObservati
 	observation.Category = append(observation.Category, category...)
 	return nil
 }
+
+// addImagingCategory is used to add imaging categories for various observations records.
+var addImagingCategory = func(ctx context.Context, observation *domain.FHIRObservationInput) error {
+	userSelected := false
+	category := []*domain.FHIRCodeableConceptInput{
+		{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:       (*scalarutils.URI)(&observationCategorySystem),
+					Code:         "imaging",
+					Display:      "Imaging",
+					UserSelected: &userSelected,
+				},
+			},
+			Text: "Imaging",
+		},
+	}
+
+	observation.Category = append(observation.Category, category...)
+	return nil
+}

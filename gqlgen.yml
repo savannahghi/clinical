@@ -63,6 +63,9 @@ models:
   ReferenceInput:
     model:
       - github.com/savannahghi/clinical/pkg/clinical/application/dto.Reference
+  MediaInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.Media
   Date:
     model:
       - "github.com/savannahghi/scalarutils.Date"

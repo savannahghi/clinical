@@ -280,6 +280,11 @@ func (r *mutationResolver) CreateQuestionnaireResponse(ctx context.Context, ques
 	return r.usecases.CreateQuestionnaireResponse(ctx, questionnaireID, encounterID, input)
 }
 
+// RecordMammographyResult is the resolver for the recordMammographyResult field.
+func (r *mutationResolver) RecordMammographyResult(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
+	return r.usecases.RecordMammographyResult(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()
