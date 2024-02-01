@@ -264,6 +264,12 @@ func (r *mutationResolver) PatchPatientLastMenstrualPeriod(ctx context.Context, 
 	return r.usecases.PatchPatientLastMenstrualPeriod(ctx, id, value)
 }
 
+// PatchPatientBloodSugar is the resolver for the patchPatientBloodSugar field.
+func (r *mutationResolver) PatchPatientBloodSugar(ctx context.Context, id string, value string) (*dto.Observation, error) {
+	r.CheckDependencies()
+	return r.usecases.PatchPatientBloodSugar(ctx, id, value)
+}
+
 // RecordConsent is the resolver for the recordConsent field.
 func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error) {
 	return r.usecases.RecordConsent(ctx, input)

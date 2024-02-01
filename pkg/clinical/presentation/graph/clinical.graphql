@@ -202,6 +202,7 @@ extend type Mutation {
   patchPatientViralLoad(id: String!, value: String!): Observation!
   patchPatientMuac(id: String!, value: String!): Observation!
   patchPatientLastMenstrualPeriod(id: String!, value: String!): Observation!
+  patchPatientBloodSugar(id: String!, value: String!): Observation!
 
   # Consent
   recordConsent(input: ConsentInput!): ConsentOutput!
