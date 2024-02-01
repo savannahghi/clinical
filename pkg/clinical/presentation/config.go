@@ -48,6 +48,7 @@ var ClinicalAllowedOrigins = []string{
 	"https://review-empower.web.app",
 	"https://review-advantage.web.app",
 	"https://prod-empower.web.app",
+	"https://staging-empower.web.app",
 }
 
 var (
