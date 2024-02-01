@@ -4398,7 +4398,7 @@ input Pagination {
 
 input ConsentInput{
   provision: ConsentProvisionTypeEnum!
-  patientID: String!
+  encounterID: String!
   denyReason: String
 }
 
@@ -28854,7 +28854,7 @@ func (ec *executionContext) unmarshalInputConsentInput(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"provision", "patientID", "denyReason"}
+	fieldsInOrder := [...]string{"provision", "encounterID", "denyReason"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -28870,15 +28870,15 @@ func (ec *executionContext) unmarshalInputConsentInput(ctx context.Context, obj 
 				return it, err
 			}
 			it.Provision = data
-		case "patientID":
+		case "encounterID":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.PatientID = data
+			it.EncounterID = data
 		case "denyReason":
 			var err error
 

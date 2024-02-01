@@ -11,15 +11,20 @@ import (
 
 // RecordConsent records a user consent
 func (u *UseCasesClinicalImpl) RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error) {
-	patient, err := u.infrastructure.FHIR.GetFHIRPatient(ctx, input.PatientID)
+	encounter, err := u.infrastructure.FHIR.GetFHIREncounter(ctx, input.EncounterID)
 	if err != nil {
 		return nil, err
 	}
 
-	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot create a consent in a finished encounter")
+	}
+
+	patientID := encounter.Resource.Subject.ID
+	patientReference := fmt.Sprintf("Patient/%s", *patientID)
 	subjectReference := &domain.FHIRReference{
-		ID:        patient.Resource.ID,
-		Reference: &patientRef,
+		ID:        patientID,
+		Reference: &patientReference,
 	}
 
 	scope := &domain.FHIRCodeableConcept{

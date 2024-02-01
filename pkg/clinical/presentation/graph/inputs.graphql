@@ -107,7 +107,7 @@ input Pagination {
 
 input ConsentInput{
   provision: ConsentProvisionTypeEnum!
-  patientID: String!
+  encounterID: String!
   denyReason: String
 }
 

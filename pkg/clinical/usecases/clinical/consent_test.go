@@ -37,10 +37,10 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.ConsentInput{
-					PatientID:  ID,
-					Provision:  dto.ConsentProvisionTypeEnum(provisionType),
-					Status:     dto.ConsentStatusEnum(status),
-					DenyReason: "",
+					EncounterID: ID,
+					Provision:   dto.ConsentProvisionTypeEnum(provisionType),
+					Status:      dto.ConsentStatusEnum(status),
+					DenyReason:  "",
 				},
 			},
 			wantErr: false,
@@ -50,21 +50,21 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				input: dto.ConsentInput{
-					PatientID:  ID,
-					Status:     dto.ConsentStatusEnum(status),
-					DenyReason: "",
+					EncounterID: ID,
+					Status:      dto.ConsentStatusEnum(status),
+					DenyReason:  "",
 				},
 			},
 			wantErr: true,
 		},
 		{
-			name: "Sad Case: invalid patient id",
+			name: "Sad Case: invalid encounter id",
 			args: args{
 				ctx: context.Background(),
 				input: dto.ConsentInput{
-					PatientID:  "",
-					Status:     dto.ConsentStatusEnum(status),
-					DenyReason: "",
+					EncounterID: "",
+					Status:      dto.ConsentStatusEnum(status),
+					DenyReason:  "",
 				},
 			},
 			wantErr: true,
@@ -74,9 +74,9 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 			args: args{
 				ctx: nil,
 				input: dto.ConsentInput{
-					PatientID:  "",
-					Status:     dto.ConsentStatusEnum(status),
-					DenyReason: "",
+					EncounterID: "",
+					Status:      dto.ConsentStatusEnum(status),
+					DenyReason:  "",
 				},
 			},
 			wantErr: true,
@@ -100,8 +100,8 @@ func TestUseCasesClinicalImpl_RecordConsent(t *testing.T) {
 				}
 
 			}
-			if tt.name == "Sad Case: invalid patient id" {
-				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+			if tt.name == "Sad Case: invalid encounter id" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 
