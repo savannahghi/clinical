@@ -129,8 +129,11 @@ extend type Query {
   # Media
   listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
 
-    # Questionnaire
-  listQuestionnaires(searchParam: String, pagination: Pagination!): QuestionnaireConnection!
+  # Questionnaire
+  listQuestionnaires(
+    searchParam: String
+    pagination: Pagination!
+  ): QuestionnaireConnection!
 }
 
 extend type Mutation {
@@ -198,10 +201,15 @@ extend type Mutation {
   patchPatientPulseRate(id: String!, value: String!): Observation!
   patchPatientViralLoad(id: String!, value: String!): Observation!
   patchPatientMuac(id: String!, value: String!): Observation!
+  patchPatientLastMenstrualPeriod(id: String!, value: String!): Observation!
 
   # Consent
   recordConsent(input: ConsentInput!): ConsentOutput!
 
   # questionnaireResponse
-  createQuestionnaireResponse(questionnaireID: String!, encounterID: String! input: QuestionnaireResponseInput!): QuestionnaireResponse!
+  createQuestionnaireResponse(
+    questionnaireID: String!
+    encounterID: String!
+    input: QuestionnaireResponseInput!
+  ): QuestionnaireResponse!
 }
