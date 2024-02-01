@@ -86,6 +86,7 @@ type FHIRMock struct {
 	MockCreateFHIRConsentFn               func(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error)
 	MockCreateFHIRQuestionnaireResponseFn func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error)
 	MockCreateFHIRRiskAssessmentFn        func(ctx context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error)
+	MockGetFHIRQuestionnaireFn            func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -1904,6 +1905,32 @@ func NewFHIRMock() *FHIRMock {
 				Resource: input,
 			}, nil
 		},
+		MockGetFHIRQuestionnaireFn: func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+			resource := &domain.FHIRQuestionnaire{
+				ID:                new(string),
+				Meta:              &domain.FHIRMetaInput{},
+				ImplicitRules:     new(string),
+				Language:          new(string),
+				Text:              &domain.FHIRNarrative{},
+				Extension:         []*domain.Extension{},
+				ModifierExtension: []*domain.Extension{},
+				Identifier:        []*domain.FHIRIdentifier{},
+				Version:           new(string),
+				Name:              new(string),
+				Title:             new(string),
+				DerivedFrom:       []*string{},
+				Experimental:      new(bool),
+				Publisher:         new(string),
+				Description:       new(string),
+				UseContext:        &domain.FHIRUsageContext{},
+				Jurisdiction:      []*domain.FHIRCodeableConcept{},
+				Purpose:           new(string),
+				EffectivePeriod:   &domain.FHIRPeriod{},
+				Code:              []*domain.FHIRCoding{},
+				Item:              []*domain.FHIRQuestionnaireItem{},
+			}
+			return &domain.FHIRQuestionnaireRelayPayload{Resource: resource}, nil
+		},
 	}
 }
 
@@ -2230,4 +2257,9 @@ func (fh *FHIRMock) CreateFHIRQuestionnaireResponse(ctx context.Context, input *
 // CreateFHIRRiskAssessment mocks the method for creating a fhir risk assessment record
 func (fh *FHIRMock) CreateFHIRRiskAssessment(ctx context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error) {
 	return fh.MockCreateFHIRRiskAssessmentFn(ctx, input)
+}
+
+// GetFHIRQuestionnaire retrieves an instance of FHIRQuestionnaire by ID
+func (fh *FHIRMock) GetFHIRQuestionnaire(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+	return fh.MockGetFHIRQuestionnaireFn(ctx, id)
 }
