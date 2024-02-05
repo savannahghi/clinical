@@ -4776,7 +4776,7 @@ func TestStoreImpl_CreateFHIRQuestionnaireResponse(t *testing.T) {
 func TestStoreImpl_CreateFHIRRiskAssessment(t *testing.T) {
 	type args struct {
 		ctx   context.Context
-		input *domain.FHIRRiskAssessment
+		input *domain.FHIRRiskAssessmentInput
 	}
 	tests := []struct {
 		name    string
@@ -4788,7 +4788,7 @@ func TestStoreImpl_CreateFHIRRiskAssessment(t *testing.T) {
 			name: "Happy Case - Successfully create a risk assessment",
 			args: args{
 				ctx:   context.Background(),
-				input: &domain.FHIRRiskAssessment{},
+				input: &domain.FHIRRiskAssessmentInput{},
 			},
 			wantErr: false,
 		},
@@ -4796,7 +4796,7 @@ func TestStoreImpl_CreateFHIRRiskAssessment(t *testing.T) {
 			name: "Sad Case - Fail to create a risk assessment",
 			args: args{
 				ctx:   context.Background(),
-				input: &domain.FHIRRiskAssessment{},
+				input: &domain.FHIRRiskAssessmentInput{},
 			},
 			wantErr: true,
 		},

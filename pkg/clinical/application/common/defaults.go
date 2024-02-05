@@ -148,6 +148,15 @@ const (
 
 	// PapSmearTerminologyCode is the terminology code used to represent pap smear test.
 	PapSmearTerminologyCode = "154451"
+
+	// HighRiskCIELCode represents the CIEL code for a high-risk condition
+	HighRiskCIELCode = "166674"
+
+	// LowRiskCIELCode represents the CIEL code for a low-risk condition
+	LowRiskCIELCode = "166675"
+
+	// CIELTerminologySystem is the identity of ciel terminology system
+	CIELTerminologySystem = "https://CIELterminology.org"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

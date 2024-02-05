@@ -130,5 +130,5 @@ type FHIRQuestionnaireResponse interface {
 }
 
 type FHIRRiskAssessment interface {
-	CreateFHIRRiskAssessment(_ context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error)
+	CreateFHIRRiskAssessment(_ context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error)
 }

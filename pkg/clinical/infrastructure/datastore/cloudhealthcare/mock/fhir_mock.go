@@ -85,7 +85,7 @@ type FHIRMock struct {
 	MockCreateFHIRQuestionnaireFn         func(ctx context.Context, input *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)
 	MockCreateFHIRConsentFn               func(ctx context.Context, input domain.FHIRConsent) (*domain.FHIRConsent, error)
 	MockCreateFHIRQuestionnaireResponseFn func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error)
-	MockCreateFHIRRiskAssessmentFn        func(ctx context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error)
+	MockCreateFHIRRiskAssessmentFn        func(ctx context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error)
 	MockGetFHIRQuestionnaireFn            func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error)
 }
 
@@ -1898,11 +1898,62 @@ func NewFHIRMock() *FHIRMock {
 			return &input, nil
 		},
 		MockCreateFHIRQuestionnaireResponseFn: func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
-			return input, nil
+			ID := gofakeit.UUID()
+			highScore := 8
+			lowScore := 1
+			return &domain.FHIRQuestionnaireResponse{
+				ID: &ID,
+				Item: []domain.FHIRQuestionnaireResponseItem{
+					{
+						LinkID: "symptoms",
+						Answer: []domain.FHIRQuestionnaireResponseItemAnswer{},
+						Item: []domain.FHIRQuestionnaireResponseItem{
+							{
+								ID:                new(string),
+								Extension:         []domain.FHIRExtension{},
+								ModifierExtension: []domain.FHIRExtension{},
+								LinkID:            "symptoms-score",
+								Definition:        new(string),
+								Text:              new(string),
+								Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+									{
+										ValueInteger: &highScore,
+									},
+								},
+								Item: []domain.FHIRQuestionnaireResponseItem{},
+							},
+						},
+					},
+					{
+						LinkID: "risk-factors",
+						Answer: []domain.FHIRQuestionnaireResponseItemAnswer{},
+						Item: []domain.FHIRQuestionnaireResponseItem{
+							{
+								ID:                new(string),
+								Extension:         []domain.FHIRExtension{},
+								ModifierExtension: []domain.FHIRExtension{},
+								LinkID:            "risk-factors-score",
+								Definition:        new(string),
+								Text:              new(string),
+								Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+									{
+										ValueInteger: &lowScore,
+									},
+								},
+								Item: []domain.FHIRQuestionnaireResponseItem{},
+							},
+						},
+					},
+				},
+			}, nil
 		},
-		MockCreateFHIRRiskAssessmentFn: func(ctx context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error) {
+		MockCreateFHIRRiskAssessmentFn: func(ctx context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error) {
+			riskAssessment := &domain.FHIRRiskAssessment{
+				ID:   new(string),
+				Meta: &domain.FHIRMeta{},
+			}
 			return &domain.FHIRRiskAssessmentRelayPayload{
-				Resource: input,
+				Resource: riskAssessment,
 			}, nil
 		},
 		MockGetFHIRQuestionnaireFn: func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
@@ -2255,7 +2306,7 @@ func (fh *FHIRMock) CreateFHIRQuestionnaireResponse(ctx context.Context, input *
 }
 
 // CreateFHIRRiskAssessment mocks the method for creating a fhir risk assessment record
-func (fh *FHIRMock) CreateFHIRRiskAssessment(ctx context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error) {
+func (fh *FHIRMock) CreateFHIRRiskAssessment(ctx context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error) {
 	return fh.MockCreateFHIRRiskAssessmentFn(ctx, input)
 }
 

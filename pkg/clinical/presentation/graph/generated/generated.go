@@ -8138,9 +8138,9 @@ func (ec *executionContext) _Coding_code(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Coding_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28910,7 +28910,7 @@ func (ec *executionContext) unmarshalInputCodingInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
-			data, err := ec.unmarshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
+			data, err := ec.unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35070,6 +35070,22 @@ func (ec *executionContext) unmarshalOCode2githubᚗcomᚋsavannahghiᚋscalarut
 }
 
 func (ec *executionContext) marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, sel ast.SelectionSet, v scalarutils.Code) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, v interface{}) (*scalarutils.Code, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.Code)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Code) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
 	return v
 }
 
