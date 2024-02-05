@@ -4872,3 +4872,57 @@ func TestStoreImpl_GetFHIRQuestionnaire(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_SearchFHIRRiskAssessment(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx        context.Context
+		params     map[string]interface{}
+		tenant     dto.TenantIdentifiers
+		pagination dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *domain.FHIRRiskAssessmentRelayConnection
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully search a fhir risk assessment",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - fail to search a fhir risk assessment",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad Case - fail to search a fhir risk assessment" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, fmt.Errorf("failed to search risk assessment")
+				}
+			}
+
+			got, err := fh.SearchFHIRRiskAssessment(tt.args.ctx, tt.args.params, tt.args.tenant, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchFHIRRiskAssessment() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr && got == nil {
+				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}

@@ -87,6 +87,7 @@ type FHIRMock struct {
 	MockCreateFHIRQuestionnaireResponseFn func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error)
 	MockCreateFHIRRiskAssessmentFn        func(ctx context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error)
 	MockGetFHIRQuestionnaireFn            func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error)
+	MockSearchFHIRRiskAssessmentFn        func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -232,6 +233,9 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockSearchFHIROrganizationFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIROrganizationRelayConnection, error) {
 			return &domain.FHIROrganizationRelayConnection{}, nil
+		},
+		MockSearchFHIRRiskAssessmentFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
+			return &domain.FHIRRiskAssessmentRelayConnection{}, nil
 		},
 		MockSearchEpisodesByParamFn: func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIREpisodeOfCare, error) {
 			return []*domain.FHIREpisodeOfCare{}, nil
@@ -2313,4 +2317,9 @@ func (fh *FHIRMock) CreateFHIRRiskAssessment(ctx context.Context, input *domain.
 // GetFHIRQuestionnaire retrieves an instance of FHIRQuestionnaire by ID
 func (fh *FHIRMock) GetFHIRQuestionnaire(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
 	return fh.MockGetFHIRQuestionnaireFn(ctx, id)
+}
+
+// SearchFHIRRiskAssessment mocks the implementation of searching a FHIR risk assessment
+func (fh *FHIRMock) SearchFHIRRiskAssessment(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
+	return fh.MockSearchFHIRRiskAssessmentFn(ctx, params, tenant, pagination)
 }
