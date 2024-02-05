@@ -1776,7 +1776,7 @@ func (fh StoreImpl) CreateFHIRQuestionnaireResponse(_ context.Context, input *do
 // CreateFHIRRiskAssessment creates a RiskAssessment on FHIR
 // The RiskAssessment resource represents an assessment of the likely outcome(s) for a patient's health over
 // a period of time, considering various factors.
-func (fh StoreImpl) CreateFHIRRiskAssessment(_ context.Context, input *domain.FHIRRiskAssessment) (*domain.FHIRRiskAssessmentRelayPayload, error) {
+func (fh StoreImpl) CreateFHIRRiskAssessment(_ context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error) {
 	payload, err := converterandformatter.StructToMap(input)
 	if err != nil {
 		return nil, fmt.Errorf("unable to turn %s input into a map: %w", riskAssessmentResourceType, err)

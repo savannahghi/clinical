@@ -172,12 +172,12 @@ type QuestionnaireResponseItemAnswer struct {
 
 // Coding : an input for a code defined by a terminology system.
 type Coding struct {
-	ID           string           `json:"id,omitempty"`
-	System       scalarutils.URI  `json:"system,omitempty"`
-	Version      string           `json:"version,omitempty"`
-	Code         scalarutils.Code `json:"code,omitempty"`
-	Display      string           `json:"display,omitempty"`
-	UserSelected bool             `json:"userSelected,omitempty"`
+	ID           string            `json:"id,omitempty"`
+	System       scalarutils.URI   `json:"system,omitempty"`
+	Version      string            `json:"version,omitempty"`
+	Code         *scalarutils.Code `json:"code,omitempty"`
+	Display      string            `json:"display,omitempty"`
+	UserSelected bool              `json:"userSelected,omitempty"`
 }
 
 // Attachment definition: input for referring to data content defined in other formats.

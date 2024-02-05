@@ -17,6 +17,57 @@ import (
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 )
 
+func setupMockFHIRFunctions(fakeFHIR *fakeFHIRMock.FHIRMock, score int) {
+	ID := gofakeit.UUID()
+	fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+		questionnaireName := "Cervical Cancer Screening"
+		return &domain.FHIRQuestionnaireRelayPayload{
+			Resource: &domain.FHIRQuestionnaire{
+				ID:   &ID,
+				Name: &questionnaireName,
+			},
+		}, nil
+	}
+
+	fakeFHIR.MockCreateFHIRQuestionnaireResponseFn = func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+		return &domain.FHIRQuestionnaireResponse{
+			ID: &ID,
+			Item: []domain.FHIRQuestionnaireResponseItem{
+				{
+					LinkID: "symptoms",
+					Item: []domain.FHIRQuestionnaireResponseItem{
+						{
+							LinkID: "symptoms-score",
+							Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+								{
+									ValueInteger: &score,
+								},
+							},
+						},
+					},
+				},
+				{
+					LinkID: "risk-factors",
+					Item: []domain.FHIRQuestionnaireResponseItem{
+						{
+							LinkID: "risk-factors-score",
+							Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+								{
+									ValueInteger: &score,
+								},
+							},
+						},
+					},
+				},
+			},
+		}, nil
+	}
+
+	fakeFHIR.MockCreateFHIRRiskAssessmentFn = func(ctx context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error) {
+		return nil, fmt.Errorf("failed to record fhir risk assessment")
+	}
+}
+
 func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 	ID := gofakeit.UUID()
 	type args struct {
@@ -30,16 +81,6 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{
-			name: "Happy case: create questionnaire",
-			args: args{
-				ctx:             addTenantIdentifierContext(context.Background()),
-				input:           dto.QuestionnaireResponse{},
-				questionnaireID: ID,
-				encounterID:     ID,
-			},
-			wantErr: false,
-		},
 		{
 			name: "Sad case: unable to get tenant tags",
 			args: args{
@@ -70,6 +111,60 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - Attempt to record questionnaire response in a finished encounter",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get fhir questionnaire",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Happy Case - Create questionnaire response and generate review summary - Cervical Cancer - High Risk",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Happy Case - Create questionnaire response and generate review summary - Cervical Cancer - Low Risk",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to record risk assessment - Low Risk",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to record risk assessment - High Risk",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -97,7 +192,125 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
+			}
 
+			if tt.name == "Sad Case - Attempt to record questionnaire response in a finished encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							Status: "finished",
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get fhir questionnaire" {
+				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get questionnaire")
+				}
+			}
+
+			if tt.name == "Happy Case - Create questionnaire response and generate review summary - Cervical Cancer - High Risk" {
+				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+					questionnaireName := "Cervical Cancer Screening"
+					return &domain.FHIRQuestionnaireRelayPayload{
+						Resource: &domain.FHIRQuestionnaire{
+							ID:   &ID,
+							Name: &questionnaireName,
+						},
+					}, nil
+				}
+
+				score := 3
+				fakeFHIR.MockCreateFHIRQuestionnaireResponseFn = func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+					return &domain.FHIRQuestionnaireResponse{
+						ID: &ID,
+						Item: []domain.FHIRQuestionnaireResponseItem{
+							{
+								LinkID: "symptoms",
+								Item: []domain.FHIRQuestionnaireResponseItem{
+									{
+										LinkID: "symptoms-score",
+										Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+											{
+												ValueInteger: &score,
+											},
+										},
+									},
+								},
+							},
+							{
+								LinkID: "risk-factors",
+								Item: []domain.FHIRQuestionnaireResponseItem{
+									{
+										LinkID: "risk-factors-score",
+										Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+											{
+												ValueInteger: &score,
+											},
+										},
+									},
+								},
+							},
+						},
+					}, nil
+				}
+
+			}
+
+			if tt.name == "Happy Case - Create questionnaire response and generate review summary - Cervical Cancer - Low Risk" {
+				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+					questionnaireName := "Cervical Cancer Screening"
+					return &domain.FHIRQuestionnaireRelayPayload{
+						Resource: &domain.FHIRQuestionnaire{
+							ID:   &ID,
+							Name: &questionnaireName,
+						},
+					}, nil
+				}
+
+				score := 0
+				fakeFHIR.MockCreateFHIRQuestionnaireResponseFn = func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+					return &domain.FHIRQuestionnaireResponse{
+						ID: &ID,
+						Item: []domain.FHIRQuestionnaireResponseItem{
+							{
+								LinkID: "symptoms",
+								Item: []domain.FHIRQuestionnaireResponseItem{
+									{
+										LinkID: "symptoms-score",
+										Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+											{
+												ValueInteger: &score,
+											},
+										},
+									},
+								},
+							},
+							{
+								LinkID: "risk-factors",
+								Item: []domain.FHIRQuestionnaireResponseItem{
+									{
+										LinkID: "risk-factors-score",
+										Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+											{
+												ValueInteger: &score,
+											},
+										},
+									},
+								},
+							},
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to record risk assessment - Low Risk" {
+				setupMockFHIRFunctions(fakeFHIR, 0)
+			}
+
+			if tt.name == "Sad Case - Fail to record risk assessment - High Risk" {
+				setupMockFHIRFunctions(fakeFHIR, 3)
 			}
 
 			_, err := q.CreateQuestionnaireResponse(tt.args.ctx, tt.args.questionnaireID, tt.args.encounterID, tt.args.input)

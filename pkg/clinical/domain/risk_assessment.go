@@ -49,3 +49,31 @@ type FHIRRiskAssessmentPrediction struct {
 type FHIRRiskAssessmentRelayPayload struct {
 	Resource *FHIRRiskAssessment `json:"resource,omitempty"`
 }
+
+type FHIRRiskAssessmentInput struct {
+	ID                 *string                        `json:"id,omitempty"`
+	Meta               *FHIRMetaInput                 `json:"meta,omitempty"`
+	ImplicitRules      *string                        `json:"implicitRules,omitempty"`
+	Language           *string                        `json:"language,omitempty"`
+	Text               *FHIRNarrativeInput            `json:"text,omitempty"`
+	Extension          []Extension                    `json:"extension,omitempty"`
+	ModifierExtension  []Extension                    `json:"modifierExtension,omitempty"`
+	Identifier         []FHIRIdentifierInput          `json:"identifier,omitempty"`
+	BasedOn            *FHIRReferenceInput            `json:"basedOn,omitempty"`
+	Parent             *FHIRReferenceInput            `json:"parent,omitempty"`
+	Status             ObservationStatusEnum          `json:"status,omitempty"`
+	Method             *FHIRCodeableConceptInput      `json:"method,omitempty"`
+	Code               *FHIRCodeableConceptInput      `json:"code,omitempty"`
+	Subject            FHIRReferenceInput             `json:"subject,omitempty"`
+	Encounter          *FHIRReferenceInput            `json:"encounter,omitempty"`
+	OccurrenceDateTime *string                        `json:"occurrenceDateTime,omitempty"`
+	OccurrencePeriod   *FHIRPeriodInput               `json:"occurrencePeriod,omitempty"`
+	Condition          *FHIRReferenceInput            `json:"condition,omitempty"`
+	Performer          *FHIRReferenceInput            `json:"performer,omitempty"`
+	ReasonCode         []FHIRCodeableConceptInput     `json:"reasonCode,omitempty"`
+	ReasonReference    []FHIRReferenceInput           `json:"reasonReference,omitempty"`
+	Basis              []FHIRReferenceInput           `json:"basis,omitempty"`
+	Prediction         []FHIRRiskAssessmentPrediction `json:"prediction,omitempty"`
+	Mitigation         *string                        `json:"mitigation,omitempty"`
+	Note               []FHIRAnnotationInput          `json:"note,omitempty"`
+}

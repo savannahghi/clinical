@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/scalarutils"
 )
 
 // CreateQuestionnaireResponse creates a questionnaire response
@@ -58,17 +60,132 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 	questionnaireResponse.Status = input.Status
 
 	resp, err := u.infrastructure.FHIR.CreateFHIRQuestionnaireResponse(ctx, questionnaireResponse)
-
 	if err != nil {
 		return nil, err
 	}
 
 	output := &dto.QuestionnaireResponse{}
-	err = mapstructure.Decode(resp, output)
 
+	err = mapstructure.Decode(resp, output)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: This will affect the API performance. Optimize it
+	err = u.generateQuestionnaireReviewSummary(
+		ctx,
+		questionnaireID,
+		*resp.ID,
+		encounterID,
+		output,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	return output, nil
+}
+
+// generateQuestionnaireReviewSummary takes a questionnaire response and
+// analyzes it to determine the risk stratification based on three distinct groups:
+// symptoms, family history, and risk factors. The assumption is that the
+// questionnaire has groups with linkIds: symptoms, family_history, and risk-factors.
+// The function looks into the responses saved under the tags <group_name>-score,
+// calculates the total scores for each group, and returns a summary indicating
+// whether the individual is high risk, low risk, or average risk.
+func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
+	ctx context.Context,
+	questionnaireID,
+	questionnaireResponseID,
+	encounterID string,
+	questionnaireResponse *dto.QuestionnaireResponse,
+) error {
+	questionnaire, err := u.infrastructure.FHIR.GetFHIRQuestionnaire(ctx, questionnaireID)
+	if err != nil {
+		return err
+	}
+
+	switch *questionnaire.Resource.Name {
+	// TODO: Make this a controlled enum?
+	case "Cervical Cancer Screening":
+		var symptomsScore, riskFactorsScore, totalScore int
+
+		for _, item := range questionnaireResponse.Item {
+			if item.LinkID == "symptoms" {
+				for _, answer := range item.Item {
+					if answer.LinkID == "symptoms-score" {
+						symptomsScore = *answer.Answer[0].ValueInteger
+					}
+				}
+			}
+
+			if item.LinkID == "risk-factors" {
+				for _, answer := range item.Item {
+					if answer.LinkID == "risk-factors-score" {
+						riskFactorsScore = *answer.Answer[0].ValueInteger
+					}
+				}
+			}
+		}
+
+		totalScore = symptomsScore + riskFactorsScore
+
+		switch {
+		case totalScore >= 2:
+			err := u.recordRiskAssessment(
+				ctx,
+				encounterID,
+				questionnaireResponseID,
+				common.HighRiskCIELCode,
+				"High Risk",
+			)
+			if err != nil {
+				return err
+			}
+
+		case totalScore < 2:
+			err := u.recordRiskAssessment(
+				ctx,
+				encounterID,
+				questionnaireResponseID,
+				common.LowRiskCIELCode,
+				"Low Risk",
+			)
+			if err != nil {
+				return err
+			}
+		}
+	default:
+		return fmt.Errorf("questionnaire does not exist")
+	}
+
+	return nil
+}
+
+func (u *UseCasesClinicalImpl) recordRiskAssessment(
+	ctx context.Context,
+	encounterID,
+	questionnaireResponseID string,
+	outcomeCode, outcomeDisplay string,
+) error {
+	CIELTerminologySystem := scalarutils.URI(common.CIELTerminologySystem)
+	codingCode := scalarutils.Code(outcomeCode)
+
+	outcome := domain.FHIRCodeableConcept{
+		Coding: []*domain.FHIRCoding{
+			{
+				System:  &CIELTerminologySystem,
+				Code:    &codingCode,
+				Display: outcomeDisplay,
+			},
+		},
+		Text: outcomeDisplay,
+	}
+
+	_, err := u.RecordRiskAssessment(ctx, encounterID, questionnaireResponseID, outcome)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
