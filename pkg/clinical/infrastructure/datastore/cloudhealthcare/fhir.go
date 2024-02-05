@@ -1794,6 +1794,37 @@ func (fh StoreImpl) CreateFHIRRiskAssessment(_ context.Context, input *domain.FH
 	}, nil
 }
 
+// SearchFHIRRiskAssessment searches for a fhir risk assessment
+func (fh StoreImpl) SearchFHIRRiskAssessment(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
+	output := domain.FHIRRiskAssessmentRelayConnection{}
+
+	resources, err := fh.Dataset.SearchFHIRResource(riskAssessmentResourceType, params, tenant, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, result := range resources.Resources {
+		var resource domain.FHIRRiskAssessment
+
+		resourceBs, err := json.Marshal(result)
+		if err != nil {
+			return nil, fmt.Errorf("server error: Unable to marshal map to JSON: %w", err)
+		}
+
+		err = json.Unmarshal(resourceBs, &resource)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"server error: Unable to unmarshal %s: %w", riskAssessmentResourceType, err)
+		}
+
+		output.Edges = append(output.Edges, &domain.FHIRRiskAssessmentRelayEdge{
+			Node: &resource,
+		})
+	}
+
+	return &output, nil
+}
+
 // GetFHIRQuestionnaire retrieves instances of FHIRQuestionnaire by ID
 func (fh StoreImpl) GetFHIRQuestionnaire(_ context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
 	resource := &domain.FHIRQuestionnaire{}

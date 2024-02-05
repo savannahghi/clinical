@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/savannahghi/firebasetools"
+
 // FHIRRiskAssessment resource captures predicted outcomes for a patient or population on the basis of source information
 // http://hl7.org/fhir/StructureDefinition/RiskAssessment
 type FHIRRiskAssessment struct {
@@ -76,4 +78,18 @@ type FHIRRiskAssessmentInput struct {
 	Prediction         []FHIRRiskAssessmentPrediction `json:"prediction,omitempty"`
 	Mitigation         *string                        `json:"mitigation,omitempty"`
 	Note               []FHIRAnnotationInput          `json:"note,omitempty"`
+}
+
+// FHIRRiskAssessmentRelayConnection is a Relay connection for RiskAssessment
+type FHIRRiskAssessmentRelayConnection struct {
+	Edges []*FHIRRiskAssessmentRelayEdge `json:"edges,omitempty"`
+
+	PageInfo *firebasetools.PageInfo `json:"pageInfo,omitempty"`
+}
+
+// FHIRRiskAssessmentRelayEdge is a Relay edge for RiskAssessment
+type FHIRRiskAssessmentRelayEdge struct {
+	Cursor *string `json:"cursor,omitempty"`
+
+	Node *FHIRRiskAssessment `json:"node,omitempty"`
 }
