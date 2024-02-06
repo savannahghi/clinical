@@ -10,6 +10,7 @@ type Observation struct {
 	EncounterID    string            `json:"encounterID,omitempty"`
 	TimeRecorded   string            `json:"timeRecorded,omitempty"`
 	Interpretation []string          `json:"interpretation,omitempty"`
+	Note           string            `json:"note,omitempty"`
 }
 
 // ObservationEdge is an observation edge

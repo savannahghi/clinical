@@ -1320,6 +1320,7 @@ func NewFHIRMock() *FHIRMock {
 			uuid := uuid.New().String()
 			instant := gofakeit.TimeZone()
 			finalStatus := domain.ObservationStatusEnumFinal
+			note := gofakeit.Sentence(10)
 			return &domain.FHIRObservation{
 				ID:         new(string),
 				Text:       &domain.FHIRNarrative{},
@@ -1368,23 +1369,28 @@ func NewFHIRMock() *FHIRMock {
 				ValuePeriod:      &domain.FHIRPeriod{},
 				DataAbsentReason: &domain.FHIRCodeableConcept{},
 				Interpretation:   []*domain.FHIRCodeableConcept{},
-				Note:             []*domain.FHIRAnnotation{},
-				BodySite:         &domain.FHIRCodeableConcept{},
-				Method:           &domain.FHIRCodeableConcept{},
-				Specimen:         &domain.FHIRReference{},
-				Device:           &domain.FHIRReference{},
-				ReferenceRange:   []*domain.FHIRObservationReferencerange{},
-				HasMember:        []*domain.FHIRReference{},
-				DerivedFrom:      []*domain.FHIRReference{},
-				Component:        []*domain.FHIRObservationComponent{},
-				Meta:             &domain.FHIRMeta{},
-				Extension:        []*domain.FHIRExtension{},
+				Note: []*domain.FHIRAnnotation{
+					{
+						Text: (*scalarutils.Markdown)(&note),
+					},
+				},
+				BodySite:       &domain.FHIRCodeableConcept{},
+				Method:         &domain.FHIRCodeableConcept{},
+				Specimen:       &domain.FHIRReference{},
+				Device:         &domain.FHIRReference{},
+				ReferenceRange: []*domain.FHIRObservationReferencerange{},
+				HasMember:      []*domain.FHIRReference{},
+				DerivedFrom:    []*domain.FHIRReference{},
+				Component:      []*domain.FHIRObservationComponent{},
+				Meta:           &domain.FHIRMeta{},
+				Extension:      []*domain.FHIRExtension{},
 			}, nil
 		},
 		MockGetFHIRObservationFn: func(ctx context.Context, id string) (*domain.FHIRObservationRelayPayload, error) {
 			uuid := uuid.New().String()
 			instant := gofakeit.TimeZone()
 			finalStatus := domain.ObservationStatusEnumFinal
+			note := gofakeit.Sentence(10)
 
 			return &domain.FHIRObservationRelayPayload{
 				Resource: &domain.FHIRObservation{
@@ -1430,22 +1436,11 @@ func NewFHIRMock() *FHIRMock {
 					ValueSampledData: &domain.FHIRSampledData{
 						ID: &uuid,
 					},
-					ValueTime:        &time.Time{},
-					ValueDateTime:    &scalarutils.Date{},
-					ValuePeriod:      &domain.FHIRPeriod{},
-					DataAbsentReason: &domain.FHIRCodeableConcept{},
-					Interpretation:   []*domain.FHIRCodeableConcept{},
-					Note:             []*domain.FHIRAnnotation{},
-					BodySite:         &domain.FHIRCodeableConcept{},
-					Method:           &domain.FHIRCodeableConcept{},
-					Specimen:         &domain.FHIRReference{},
-					Device:           &domain.FHIRReference{},
-					ReferenceRange:   []*domain.FHIRObservationReferencerange{},
-					HasMember:        []*domain.FHIRReference{},
-					DerivedFrom:      []*domain.FHIRReference{},
-					Component:        []*domain.FHIRObservationComponent{},
-					Meta:             &domain.FHIRMeta{},
-					Extension:        []*domain.FHIRExtension{},
+					Note: []*domain.FHIRAnnotation{
+						{
+							Text: (*scalarutils.Markdown)(&note),
+						},
+					},
 				},
 			}, nil
 		},
@@ -1454,6 +1449,7 @@ func NewFHIRMock() *FHIRMock {
 			uuid := uuid.New().String()
 			instant := gofakeit.TimeZone()
 			value := "170"
+			note := gofakeit.Sentence(10)
 			return &domain.FHIRObservation{
 				ID:         new(string),
 				Text:       &domain.FHIRNarrative{},
@@ -1495,22 +1491,11 @@ func NewFHIRMock() *FHIRMock {
 				ValueSampledData: &domain.FHIRSampledData{
 					ID: &uuid,
 				},
-				ValueTime:        &time.Time{},
-				ValueDateTime:    &scalarutils.Date{},
-				ValuePeriod:      &domain.FHIRPeriod{},
-				DataAbsentReason: &domain.FHIRCodeableConcept{},
-				Interpretation:   []*domain.FHIRCodeableConcept{},
-				Note:             []*domain.FHIRAnnotation{},
-				BodySite:         &domain.FHIRCodeableConcept{},
-				Method:           &domain.FHIRCodeableConcept{},
-				Specimen:         &domain.FHIRReference{},
-				Device:           &domain.FHIRReference{},
-				ReferenceRange:   []*domain.FHIRObservationReferencerange{},
-				HasMember:        []*domain.FHIRReference{},
-				DerivedFrom:      []*domain.FHIRReference{},
-				Component:        []*domain.FHIRObservationComponent{},
-				Meta:             &domain.FHIRMeta{},
-				Extension:        []*domain.FHIRExtension{},
+				Note: []*domain.FHIRAnnotation{
+					{
+						Text: (*scalarutils.Markdown)(&note),
+					},
+				},
 			}, nil
 		},
 		MockDeleteFHIRObservationFn: func(ctx context.Context, id string) (bool, error) {
