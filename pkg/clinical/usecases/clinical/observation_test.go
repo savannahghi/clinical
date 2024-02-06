@@ -71,6 +71,20 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Happy Case - Successfully record observation with a note",
+			args: args{
+				ctx: ctx,
+				input: dto.ObservationInput{
+					Status:      dto.ObservationStatusFinal,
+					EncounterID: uuid.New().String(),
+					Value:       "1234",
+					Note:        "The status is final",
+				},
+				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
+			},
+			wantErr: false,
+		},
+		{
 			name: "Sad Case - Fail validation",
 			args: args{
 				ctx: ctx,

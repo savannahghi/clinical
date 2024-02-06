@@ -374,6 +374,13 @@ func (c *UseCasesClinicalImpl) RecordObservation(ctx context.Context, input dto.
 		Interpretation: []*domain.FHIRCodeableConceptInput{},
 	}
 
+	if input.Note != "" {
+		note := domain.FHIRAnnotationInput{
+			Text: (*scalarutils.Markdown)(&input.Note),
+		}
+		observation.Note = append(observation.Note, &note)
+	}
+
 	for _, mutator := range mutators {
 		err = mutator(ctx, &observation)
 		if err != nil {

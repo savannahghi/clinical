@@ -331,6 +331,7 @@ type ComplexityRoot struct {
 		ID             func(childComplexity int) int
 		Interpretation func(childComplexity int) int
 		Name           func(childComplexity int) int
+		Note           func(childComplexity int) int
 		PatientID      func(childComplexity int) int
 		Status         func(childComplexity int) int
 		TimeRecorded   func(childComplexity int) int
@@ -2288,6 +2289,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Observation.Name(childComplexity), true
+
+	case "Observation.note":
+		if e.complexity.Observation.Note == nil {
+			break
+		}
+
+		return e.complexity.Observation.Note(childComplexity), true
 
 	case "Observation.patientID":
 		if e.complexity.Observation.PatientID == nil {
@@ -4361,6 +4369,7 @@ input ObservationInput {
   status: ObservationStatus!
   encounterID: String!
   value: String!
+  note: String
 }
 
 input PatientInput {
@@ -4537,6 +4546,7 @@ type Observation {
   value: String!
   timeRecorded: String!
   interpretation: [String!]
+  note: String
 }
 
 type Medication {
@@ -12476,6 +12486,8 @@ func (ec *executionContext) fieldContext_MedicalData_weight(ctx context.Context,
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -12535,6 +12547,8 @@ func (ec *executionContext) fieldContext_MedicalData_bmi(ctx context.Context, fi
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -12594,6 +12608,8 @@ func (ec *executionContext) fieldContext_MedicalData_viralLoad(ctx context.Conte
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -12653,6 +12669,8 @@ func (ec *executionContext) fieldContext_MedicalData_cd4Count(ctx context.Contex
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -13531,6 +13549,8 @@ func (ec *executionContext) fieldContext_Mutation_recordTemperature(ctx context.
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -13604,6 +13624,8 @@ func (ec *executionContext) fieldContext_Mutation_recordHeight(ctx context.Conte
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -13677,6 +13699,8 @@ func (ec *executionContext) fieldContext_Mutation_recordWeight(ctx context.Conte
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -13750,6 +13774,8 @@ func (ec *executionContext) fieldContext_Mutation_recordRespiratoryRate(ctx cont
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -13823,6 +13849,8 @@ func (ec *executionContext) fieldContext_Mutation_recordPulseRate(ctx context.Co
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -13896,6 +13924,8 @@ func (ec *executionContext) fieldContext_Mutation_recordBloodPressure(ctx contex
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -13969,6 +13999,8 @@ func (ec *executionContext) fieldContext_Mutation_recordBMI(ctx context.Context,
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14042,6 +14074,8 @@ func (ec *executionContext) fieldContext_Mutation_recordViralLoad(ctx context.Co
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14115,6 +14149,8 @@ func (ec *executionContext) fieldContext_Mutation_recordMUAC(ctx context.Context
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14188,6 +14224,8 @@ func (ec *executionContext) fieldContext_Mutation_recordOxygenSaturation(ctx con
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14261,6 +14299,8 @@ func (ec *executionContext) fieldContext_Mutation_recordBloodSugar(ctx context.C
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14334,6 +14374,8 @@ func (ec *executionContext) fieldContext_Mutation_recordLastMenstrualPeriod(ctx 
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14407,6 +14449,8 @@ func (ec *executionContext) fieldContext_Mutation_recordDiastolicBloodPressure(c
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14480,6 +14524,8 @@ func (ec *executionContext) fieldContext_Mutation_recordColposcopy(ctx context.C
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14553,6 +14599,8 @@ func (ec *executionContext) fieldContext_Mutation_recordHPV(ctx context.Context,
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14626,6 +14674,8 @@ func (ec *executionContext) fieldContext_Mutation_recordVIA(ctx context.Context,
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -14699,6 +14749,8 @@ func (ec *executionContext) fieldContext_Mutation_recordPapSmear(ctx context.Con
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15262,6 +15314,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientHeight(ctx context
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15335,6 +15389,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientWeight(ctx context
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15408,6 +15464,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientBMI(ctx context.Co
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15481,6 +15539,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientTemperature(ctx co
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15554,6 +15614,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientDiastolicBloodPres
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15627,6 +15689,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientSystolicBloodPress
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15700,6 +15764,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientRespiratoryRate(ct
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15773,6 +15839,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientOxygenSaturation(c
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15846,6 +15914,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientPulseRate(ctx cont
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15919,6 +15989,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientViralLoad(ctx cont
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -15992,6 +16064,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientMuac(ctx context.C
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -16065,6 +16139,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientLastMenstrualPerio
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -16138,6 +16214,8 @@ func (ec *executionContext) fieldContext_Mutation_patchPatientBloodSugar(ctx con
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -16750,6 +16828,47 @@ func (ec *executionContext) fieldContext_Observation_interpretation(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Observation_note(ctx context.Context, field graphql.CollectedField, obj *dto.Observation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Observation_note(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Note, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Observation_note(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Observation",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ObservationConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *dto.ObservationConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ObservationConnection_totalCount(ctx, field)
 	if err != nil {
@@ -16941,6 +17060,8 @@ func (ec *executionContext) fieldContext_ObservationEdge_node(ctx context.Contex
 				return ec.fieldContext_Observation_timeRecorded(ctx, field)
 			case "interpretation":
 				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
@@ -29408,7 +29529,7 @@ func (ec *executionContext) unmarshalInputObservationInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"status", "encounterID", "value"}
+	fieldsInOrder := [...]string{"status", "encounterID", "value", "note"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29442,6 +29563,15 @@ func (ec *executionContext) unmarshalInputObservationInput(ctx context.Context, 
 				return it, err
 			}
 			it.Value = data
+		case "note":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Note = data
 		}
 	}
 
@@ -31955,6 +32085,8 @@ func (ec *executionContext) _Observation(ctx context.Context, sel ast.SelectionS
 			}
 		case "interpretation":
 			out.Values[i] = ec._Observation_interpretation(ctx, field, obj)
+		case "note":
+			out.Values[i] = ec._Observation_note(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

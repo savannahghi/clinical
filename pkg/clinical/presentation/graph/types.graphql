@@ -24,6 +24,7 @@ type Observation {
   value: String!
   timeRecorded: String!
   interpretation: [String!]
+  note: String
 }
 
 type Medication {

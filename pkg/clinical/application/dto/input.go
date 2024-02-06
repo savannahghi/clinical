@@ -32,6 +32,7 @@ type ObservationInput struct {
 	Status      ObservationStatus `json:"status,omitempty" validate:"required"`
 	EncounterID string            `json:"encounterID,omitempty" validate:"required"`
 	Value       string            `json:"value,omitempty" validate:"required"`
+	Note        string            `json:"note,omitempty"`
 }
 
 func (o ObservationInput) Validate() error {

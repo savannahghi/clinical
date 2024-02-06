@@ -17,6 +17,7 @@ input ObservationInput {
   status: ObservationStatus!
   encounterID: String!
   value: String!
+  note: String
 }
 
 input PatientInput {
