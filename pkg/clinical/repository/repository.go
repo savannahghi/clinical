@@ -127,6 +127,7 @@ type FHIRConsent interface {
 
 type FHIRQuestionnaireResponse interface {
 	CreateFHIRQuestionnaireResponse(_ context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error)
+	GetFHIRQuestionnaireResponse(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error)
 }
 
 type FHIRRiskAssessment interface {

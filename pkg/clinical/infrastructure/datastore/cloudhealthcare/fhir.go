@@ -1840,3 +1840,19 @@ func (fh StoreImpl) GetFHIRQuestionnaire(_ context.Context, id string) (*domain.
 
 	return payload, nil
 }
+
+// GetFHIRQuestionnaireResponse retrieves an instance of FHIRQuestionnaireResponse by ID
+func (fh StoreImpl) GetFHIRQuestionnaireResponse(_ context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error) {
+	resource := &domain.FHIRQuestionnaireResponse{}
+
+	err := fh.Dataset.GetFHIRResource(questionnaireResponseResourceType, id, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", questionnaireResponseResourceType, id, err)
+	}
+
+	payload := &domain.FHIRQuestionnaireResponseRelayPayload{
+		Resource: resource,
+	}
+
+	return payload, nil
+}

@@ -109,6 +109,8 @@ type Clinical interface {
 	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error)
 	ListQuestionnaires(ctx context.Context, searchParam *string, pagination *dto.Pagination) (*dto.QuestionnaireConnection, error)
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
+
+	GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error)
 }
 
 // Interactor is an implementation of the usecases interface
