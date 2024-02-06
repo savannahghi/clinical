@@ -57,3 +57,8 @@ type FHIRQuestionnaireResponseItemAnswer struct {
 	ValueReference    *FHIRReference                  `json:"valueReference,omitempty"`
 	Item              []FHIRQuestionnaireResponseItem `json:"item,omitempty"`
 }
+
+// FHIRQuestionnaireResponseRelayPayload is used to return a single instance of Questionnaire response
+type FHIRQuestionnaireResponseRelayPayload struct {
+	Resource *FHIRQuestionnaireResponse `json:"resource,omitempty"`
+}

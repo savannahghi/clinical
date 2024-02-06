@@ -430,6 +430,13 @@ func (r *queryResolver) ListQuestionnaires(ctx context.Context, searchParam *str
 	return r.usecases.ListQuestionnaires(ctx, searchParam, &pagination)
 }
 
+// GetQuestionnaireResponseRiskLevel is the resolver for the getQuestionnaireResponseRiskLevel field.
+func (r *queryResolver) GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error) {
+	r.CheckDependencies()
+
+	return r.usecases.GetQuestionnaireResponseRiskLevel(ctx, questionnaireResponseID)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

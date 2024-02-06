@@ -88,6 +88,7 @@ type FHIRMock struct {
 	MockCreateFHIRRiskAssessmentFn        func(ctx context.Context, input *domain.FHIRRiskAssessmentInput) (*domain.FHIRRiskAssessmentRelayPayload, error)
 	MockGetFHIRQuestionnaireFn            func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error)
 	MockSearchFHIRRiskAssessmentFn        func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error)
+	MockGetFHIRQuestionnaireResponseFn    func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -235,7 +236,21 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIROrganizationRelayConnection{}, nil
 		},
 		MockSearchFHIRRiskAssessmentFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
-			return &domain.FHIRRiskAssessmentRelayConnection{}, nil
+			return &domain.FHIRRiskAssessmentRelayConnection{
+				Edges: []*domain.FHIRRiskAssessmentRelayEdge{
+					{
+						Node: &domain.FHIRRiskAssessment{
+							Prediction: []domain.FHIRRiskAssessmentPrediction{
+								{
+									Outcome: &domain.FHIRCodeableConcept{
+										Text: "High Risk",
+									},
+								},
+							},
+						},
+					},
+				},
+			}, nil
 		},
 		MockSearchEpisodesByParamFn: func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) ([]*domain.FHIREpisodeOfCare, error) {
 			return []*domain.FHIREpisodeOfCare{}, nil
@@ -415,6 +430,26 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockStartEncounterFn: func(ctx context.Context, episodeID string) (string, error) {
 			return "test-encounter", nil
+		},
+		MockGetFHIRQuestionnaireResponseFn: func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error) {
+			ID := uuid.New().String()
+			return &domain.FHIRQuestionnaireResponseRelayPayload{
+				Resource: &domain.FHIRQuestionnaireResponse{
+					ID:     &id,
+					Author: &domain.FHIRReference{},
+					Item:   []domain.FHIRQuestionnaireResponseItem{},
+					Encounter: &domain.FHIRReference{
+						ID:        &ID,
+						Reference: &ID,
+						Display:   "",
+					},
+					Source: &domain.FHIRReference{
+						ID:        &ID,
+						Reference: &ID,
+						Display:   "",
+					},
+				},
+			}, nil
 		},
 		MockUpgradeEpisodeFn: func(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
 			return &domain.EpisodeOfCarePayload{}, nil
@@ -1907,6 +1942,16 @@ func NewFHIRMock() *FHIRMock {
 			lowScore := 1
 			return &domain.FHIRQuestionnaireResponse{
 				ID: &ID,
+				Encounter: &domain.FHIRReference{
+					ID:        &ID,
+					Reference: &ID,
+					Display:   "",
+				},
+				Source: &domain.FHIRReference{
+					ID:        &ID,
+					Reference: &ID,
+					Display:   "",
+				},
 				Item: []domain.FHIRQuestionnaireResponseItem{
 					{
 						LinkID: "symptoms",
@@ -2322,4 +2367,9 @@ func (fh *FHIRMock) GetFHIRQuestionnaire(ctx context.Context, id string) (*domai
 // SearchFHIRRiskAssessment mocks the implementation of searching a FHIR risk assessment
 func (fh *FHIRMock) SearchFHIRRiskAssessment(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
 	return fh.MockSearchFHIRRiskAssessmentFn(ctx, params, tenant, pagination)
+}
+
+// GetFHIRQuestionnaireResponse mocks the implementation of getting a single instance of a fhir questionnaire response
+func (fh *FHIRMock) GetFHIRQuestionnaireResponse(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error) {
+	return fh.MockGetFHIRQuestionnaireResponseFn(ctx, id)
 }

@@ -189,3 +189,40 @@ func (u *UseCasesClinicalImpl) recordRiskAssessment(
 
 	return nil
 }
+
+// GetQuestionnaireResponseRiskLevel fetches the risk level associated with a questionnaire response. This is based off the scoring
+// of the questionnaire response. Outcome: High Risk / Low Risk
+func (u *UseCasesClinicalImpl) GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error) {
+	questionnaireResponse, err := u.infrastructure.FHIR.GetFHIRQuestionnaireResponse(ctx, questionnaireResponseID)
+	if err != nil {
+		return "", err
+	}
+
+	encounterReference := questionnaireResponse.Resource.Encounter.Reference
+	patientReference := questionnaireResponse.Resource.Source.Reference
+
+	riskAssessmentSearchParams := map[string]interface{}{
+		"patient":   *patientReference,
+		"encounter": *encounterReference,
+		"_sort":     "date",
+		"_count":    "1",
+	}
+
+	identifiers, err := u.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	riskAssessment, err := u.infrastructure.FHIR.SearchFHIRRiskAssessment(ctx, riskAssessmentSearchParams, *identifiers, dto.Pagination{})
+	if err != nil {
+		return "", err
+	}
+
+	riskLevel := ""
+
+	for _, assessment := range riskAssessment.Edges {
+		riskLevel = assessment.Node.Prediction[0].Outcome.Text
+	}
+
+	return riskLevel, nil
+}

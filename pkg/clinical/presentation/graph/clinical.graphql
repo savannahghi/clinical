@@ -134,6 +134,8 @@ extend type Query {
     searchParam: String
     pagination: Pagination!
   ): QuestionnaireConnection!
+
+  getQuestionnaireResponseRiskLevel(questionnaireResponseID: String!): String!
 }
 
 extend type Mutation {

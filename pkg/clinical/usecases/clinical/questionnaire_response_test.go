@@ -321,3 +321,93 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_GetQuestionnaireResponseRiskLevel(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx                     context.Context
+		questionnaireResponseID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully get risk level",
+			args: args{
+				ctx:                     ctx,
+				questionnaireResponseID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Fail to get fhir questionnaire response",
+			args: args{
+				ctx:                     ctx,
+				questionnaireResponseID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get tenant identifiers",
+			args: args{
+				ctx:                     ctx,
+				questionnaireResponseID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to search risk assessment",
+			args: args{
+				ctx:                     ctx,
+				questionnaireResponseID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Fail to get fhir questionnaire response" {
+				fakeFHIR.MockGetFHIRQuestionnaireResponseFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get questionnaire response")
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to search risk assessment" {
+				fakeFHIR.MockSearchFHIRRiskAssessmentFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
+					return nil, fmt.Errorf("failed to search risk assessment")
+				}
+			}
+
+			got, err := u.GetQuestionnaireResponseRiskLevel(tt.args.ctx, tt.args.questionnaireResponseID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetQuestionnaireResponseRiskLevel() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if got == "" {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}
