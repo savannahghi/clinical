@@ -27,7 +27,6 @@ linters:
     - ireturn
     - importas
     - wsl
-    - revive
     - exportloopref
     - nilerr
     - makezero
@@ -39,4 +38,11 @@ linters-settings:
   funlen:
     lines: -1 
     statements: -1
+  revive:
+    rules:
+      - name: unused-parameter
+        severity: warning
+        disabled: true
+        arguments:
+          - allowRegex: "^_"
   

@@ -228,7 +228,7 @@ type Expression struct {
 type DiagnosticReportInput struct {
 	EncounterID string `json:"encounterID,omitempty"  validate:"required"`
 	Note        string `json:"note,omitempty"`
-	Media       Media  `json:"media"  validate:"required"`
+	Media       *Media `json:"media"`
 	Findings    string `json:"findings,omitempty" validate:"required"`
 }
 

@@ -155,7 +155,7 @@ const (
 	// LowRiskCIELCode represents the CIEL code for a low-risk condition
 	LowRiskCIELCode = "166675"
 
-	// CIELTerminologySystem is the identity of ciel terminology system
+	// CIELTerminologySystem is the identity of CIEL terminology system
 	CIELTerminologySystem = "https://CIELterminology.org"
 
 	// MammogramTerminologyCode is the terminology code used to represent mammogram results.
@@ -163,6 +163,9 @@ const (
 
 	// BenignNeoplasmOfBreastOfSkinTerminologyCode is the terminology code used to represent benign of skin results.
 	BenignNeoplasmOfBreastOfSkinTerminologyCode = "147661"
+
+	// BiopsyTerminologySystem is the terminology code used to represent Biopsy of cervix.
+	BiopsyTerminologySystem = "161826"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

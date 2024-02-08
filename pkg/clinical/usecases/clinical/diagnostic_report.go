@@ -32,11 +32,39 @@ func (c *UseCasesClinicalImpl) RecordMammographyResult(ctx context.Context, inpu
 		return nil, err
 	}
 
-	observationsReference := fmt.Sprintf("Observation/%s", observationOutput.ID)
+	return c.RecordDiagnosticReport(ctx, common.MammogramTerminologyCode, input, observationOutput, nil)
+}
+
+// RecordBiopsy is used to record biopsy test results as observations
+// FHIR recommends use of diagnostic resource to record the findings and interpretation of biopsy test results
+// performed on patients, groups of patients, devices, and locations, and/or specimens.
+func (c *UseCasesClinicalImpl) RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
+	err := input.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	observationInput := &dto.ObservationInput{
+		Status:      dto.ObservationStatusFinal,
+		EncounterID: input.EncounterID,
+		Value:       input.Findings,
+	}
+
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BiopsyTerminologySystem, []ObservationInputMutatorFunc{addProcedureCategory})
+	if err != nil {
+		return nil, err
+	}
+
+	return c.RecordDiagnosticReport(ctx, common.BiopsyTerminologySystem, input, observationOutput, []DiagnosticReportMutatorFunc{addCytologyCategory})
+}
+
+// RecordDiagnosticReport is a re-usable method to help with diagnostic report recording
+func (c *UseCasesClinicalImpl) RecordDiagnosticReport(ctx context.Context, conceptID string, input dto.DiagnosticReportInput, observation *dto.Observation, mutators []DiagnosticReportMutatorFunc) (*dto.DiagnosticReport, error) {
+	observationsReference := fmt.Sprintf("Observation/%s", observation.ID)
 	observationType := scalarutils.URI("Observation")
-	encounterReference := fmt.Sprintf("Encounter/%s", observationOutput.EncounterID)
+	encounterReference := fmt.Sprintf("Encounter/%s", observation.EncounterID)
 	encounterType := scalarutils.URI("Encounter")
-	patientReference := fmt.Sprintf("Patient/%s", observationOutput.PatientID)
+	patientReference := fmt.Sprintf("Patient/%s", observation.PatientID)
 	patientType := scalarutils.URI("Patient")
 
 	tags, err := c.GetTenantMetaTags(ctx)
@@ -57,18 +85,17 @@ func (c *UseCasesClinicalImpl) RecordMammographyResult(ctx context.Context, inpu
 	orgRef := fmt.Sprintf("Organization/%s", *facility.Resource.ID)
 	orgType := scalarutils.URI("Organization")
 	id := uuid.New().String()
-	mediaReference := fmt.Sprintf("Media/%s", input.Media.ID)
-	mediaType := scalarutils.URI("Media")
 	instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
 
-	concept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, common.MammogramTerminologyCode)
+	concept, err := c.GetConcept(ctx, dto.TerminologySourceCIEL, conceptID)
 	if err != nil {
 		return nil, err
 	}
 
 	diagnosticReport := &domain.FHIRDiagnosticReportInput{
-		ID:     &id,
-		Status: domain.DiagnosticReportStatusPreliminary,
+		ID:       &id,
+		Status:   domain.DiagnosticReportStatusFinal,
+		Category: []*domain.FHIRCodeableConceptInput{},
 		Code: domain.FHIRCodeableConceptInput{
 			Coding: []*domain.FHIRCodingInput{
 				{
@@ -80,12 +107,12 @@ func (c *UseCasesClinicalImpl) RecordMammographyResult(ctx context.Context, inpu
 			Text: concept.DisplayName,
 		},
 		Subject: &domain.FHIRReferenceInput{
-			ID:        &observationOutput.PatientID,
+			ID:        &observation.PatientID,
 			Reference: &patientReference,
 			Type:      &patientType,
 		},
 		Encounter: &domain.FHIRReferenceInput{
-			ID:        &observationOutput.EncounterID,
+			ID:        &observation.EncounterID,
 			Reference: &encounterReference,
 			Type:      &encounterType,
 		},
@@ -106,19 +133,10 @@ func (c *UseCasesClinicalImpl) RecordMammographyResult(ctx context.Context, inpu
 				Display:   *facility.Resource.Name,
 			},
 		},
-		Media: []*domain.FHIRDiagnosticReportMediaInput{
-			{
-				ID: &input.Media.ID,
-				Link: &domain.FHIRReferenceInput{
-					Reference: &mediaReference,
-					Type:      &mediaType,
-				},
-			},
-		},
 		Conclusion: &input.Note,
 		Result: []*domain.FHIRReferenceInput{
 			{
-				ID:        &observationOutput.ID,
+				ID:        &observation.ID,
 				Reference: &observationsReference,
 				Type:      &observationType,
 			},
@@ -127,6 +145,30 @@ func (c *UseCasesClinicalImpl) RecordMammographyResult(ctx context.Context, inpu
 
 	diagnosticReport.Meta = &domain.FHIRMetaInput{
 		Tag: tags,
+	}
+
+	if input.Media != nil {
+		mediaReference := fmt.Sprintf("Media/%s", input.Media.ID)
+		mediaType := scalarutils.URI("Media")
+
+		diagnosticReport.Media = []*domain.FHIRDiagnosticReportMediaInput{
+			{
+				ID: &input.Media.ID,
+				Link: &domain.FHIRReferenceInput{
+					Reference: &mediaReference,
+					Type:      &mediaType,
+				},
+			},
+		}
+	}
+
+	if len(mutators) > 0 {
+		for _, mutator := range mutators {
+			err = mutator(ctx, diagnosticReport)
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 
 	result, err := c.infrastructure.FHIR.CreateFHIRDiagnosticReport(ctx, diagnosticReport)
