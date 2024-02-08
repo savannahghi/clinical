@@ -31,8 +31,8 @@ type EncounterInput struct {
 type ObservationInput struct {
 	Status      ObservationStatus `json:"status,omitempty" validate:"required"`
 	EncounterID string            `json:"encounterID,omitempty" validate:"required"`
-	Value       string            `json:"value,omitempty" validate:"required"`
 	Note        string            `json:"note,omitempty"`
+	Value       string            `json:"value,omitempty"`
 }
 
 func (o ObservationInput) Validate() error {
@@ -222,4 +222,19 @@ type Expression struct {
 	Language    string      `json:"language,omitempty"`
 	Expression  *string     `json:"expression,omitempty"`
 	Reference   *string     `json:"reference,omitempty"`
+}
+
+// DiagnosticReportInput represents the data class used to provide diagnostic report information
+type DiagnosticReportInput struct {
+	EncounterID string `json:"encounterID,omitempty"  validate:"required"`
+	Note        string `json:"note,omitempty"`
+	Media       Media  `json:"media"  validate:"required"`
+	Findings    string `json:"findings,omitempty" validate:"required"`
+}
+
+func (d DiagnosticReportInput) Validate() error {
+	v := validator.New()
+	err := v.Struct(d)
+
+	return err
 }

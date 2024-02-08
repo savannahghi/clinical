@@ -39,6 +39,7 @@ const (
 	consentResourceType               = "Consent"
 	questionnaireResponseResourceType = "QuestionnaireResponse"
 	riskAssessmentResourceType        = "RiskAssessment"
+	diagnosticReportResourceType      = "DiagnosticReport"
 )
 
 // Dataset ...
@@ -1855,4 +1856,21 @@ func (fh StoreImpl) GetFHIRQuestionnaireResponse(_ context.Context, id string) (
 	}
 
 	return payload, nil
+}
+
+// CreateFHIRDiagnosticReport is used to create a diagnostic report resource for a patient
+func (fh StoreImpl) CreateFHIRDiagnosticReport(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", diagnosticReportResourceType, err)
+	}
+
+	resource := &domain.FHIRDiagnosticReport{}
+
+	err = fh.Dataset.CreateFHIRResource(diagnosticReportResourceType, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create %s resource: %w", diagnosticReportResourceType, err)
+	}
+
+	return resource, nil
 }

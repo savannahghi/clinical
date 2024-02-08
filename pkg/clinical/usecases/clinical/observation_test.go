@@ -109,18 +109,6 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Sad Case - Fail validation",
-			args: args{
-				ctx: ctx,
-				input: dto.ObservationInput{
-					Status:      dto.ObservationStatusFinal,
-					EncounterID: uuid.New().String(),
-				},
-				mutators: []clinicalUsecase.ObservationInputMutatorFunc{addLabCategory},
-			},
-			wantErr: true,
-		},
-		{
 			name: "Sad Case - Fail to get encounter",
 			args: args{
 				ctx: ctx,

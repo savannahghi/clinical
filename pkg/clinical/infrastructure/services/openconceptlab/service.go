@@ -99,6 +99,7 @@ func (s Service) GetConcept(
 	if err != nil {
 		return nil, fmt.Errorf("OCL API request error: %w", err)
 	}
+
 	defer resp.Body.Close()
 
 	output := make(map[string]interface{})
