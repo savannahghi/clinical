@@ -1987,6 +1987,13 @@ func NewFHIRMock() *FHIRMock {
 			riskAssessment := &domain.FHIRRiskAssessment{
 				ID:   new(string),
 				Meta: &domain.FHIRMeta{},
+				Prediction: []domain.FHIRRiskAssessmentPrediction{
+					{
+						Outcome: &domain.FHIRCodeableConcept{
+							Text: "High Risk",
+						},
+					},
+				},
 			}
 			return &domain.FHIRRiskAssessmentRelayPayload{
 				Resource: riskAssessment,

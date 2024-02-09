@@ -3,6 +3,7 @@ package clinical
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -12,21 +13,21 @@ import (
 )
 
 // CreateQuestionnaireResponse creates a questionnaire response
-func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error) {
+func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (string, error) {
 	questionnaireResponse := &domain.FHIRQuestionnaireResponse{}
 
 	err := mapstructure.Decode(input, questionnaireResponse)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	encounter, err := u.infrastructure.FHIR.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
-		return nil, fmt.Errorf("cannot create a questionnaire response in a finished encounter")
+		return "", fmt.Errorf("cannot create a questionnaire response in a finished encounter")
 	}
 
 	patientID := encounter.Resource.Subject.ID
@@ -49,7 +50,7 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 
 	tags, err := u.GetTenantMetaTags(ctx)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	questionnaireResponse.Meta = &domain.FHIRMetaInput{
@@ -61,29 +62,29 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 
 	resp, err := u.infrastructure.FHIR.CreateFHIRQuestionnaireResponse(ctx, questionnaireResponse)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	output := &dto.QuestionnaireResponse{}
 
 	err = mapstructure.Decode(resp, output)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// TODO: This will affect the API performance. Optimize it
-	err = u.generateQuestionnaireReviewSummary(
+	riskLevel, err := u.generateQuestionnaireReviewSummary(
 		ctx,
 		questionnaireID,
 		*resp.ID,
-		encounterID,
+		encounter,
 		output,
 	)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return output, nil
+	return riskLevel, nil
 }
 
 // generateQuestionnaireReviewSummary takes a questionnaire response and
@@ -96,13 +97,15 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 	ctx context.Context,
 	questionnaireID,
-	questionnaireResponseID,
-	encounterID string,
+	questionnaireResponseID string,
+	encounter *domain.FHIREncounterRelayPayload,
 	questionnaireResponse *dto.QuestionnaireResponse,
-) error {
+) (string, error) {
+	riskLevel := ""
+
 	questionnaire, err := u.infrastructure.FHIR.GetFHIRQuestionnaire(ctx, questionnaireID)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	switch *questionnaire.Resource.Name {
@@ -132,42 +135,42 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 
 		switch {
 		case totalScore >= 2:
-			err := u.recordRiskAssessment(
+			riskLevel, err = u.recordRiskAssessment(
 				ctx,
-				encounterID,
+				encounter,
 				questionnaireResponseID,
 				common.HighRiskCIELCode,
 				"High Risk",
 			)
 			if err != nil {
-				return err
+				return "", err
 			}
 
 		case totalScore < 2:
-			err := u.recordRiskAssessment(
+			riskLevel, err = u.recordRiskAssessment(
 				ctx,
-				encounterID,
+				encounter,
 				questionnaireResponseID,
 				common.LowRiskCIELCode,
 				"Low Risk",
 			)
 			if err != nil {
-				return err
+				return "", err
 			}
 		}
 	default:
-		return fmt.Errorf("questionnaire does not exist")
+		return "", fmt.Errorf("questionnaire does not exist")
 	}
 
-	return nil
+	return riskLevel, nil
 }
 
 func (u *UseCasesClinicalImpl) recordRiskAssessment(
 	ctx context.Context,
-	encounterID,
+	encounter *domain.FHIREncounterRelayPayload,
 	questionnaireResponseID string,
 	outcomeCode, outcomeDisplay string,
-) error {
+) (string, error) {
 	CIELTerminologySystem := scalarutils.URI(common.CIELTerminologySystem)
 	codingCode := scalarutils.Code(outcomeCode)
 
@@ -182,12 +185,58 @@ func (u *UseCasesClinicalImpl) recordRiskAssessment(
 		Text: outcomeDisplay,
 	}
 
-	_, err := u.RecordRiskAssessment(ctx, encounterID, questionnaireResponseID, outcome)
-	if err != nil {
-		return err
+	patientID := encounter.Resource.Subject.ID
+	patientReference := fmt.Sprintf("Patient/%s", *patientID)
+
+	encounterReference := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+
+	questionnaireResponseReference := fmt.Sprintf("QuestionnaireResponse/%s", questionnaireResponseID)
+
+	instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
+
+	riskAssessment := domain.FHIRRiskAssessmentInput{
+		Status: domain.ObservationStatusEnumFinal,
+		Code:   &domain.FHIRCodeableConceptInput{},
+		Subject: domain.FHIRReferenceInput{
+			ID:        encounter.Resource.Subject.ID,
+			Reference: &patientReference,
+			Display:   encounter.Resource.Subject.Display,
+		},
+
+		Encounter: &domain.FHIRReferenceInput{
+			ID:        encounter.Resource.ID,
+			Reference: &encounterReference,
+		},
+		OccurrenceDateTime: (*string)(&instant),
+		Prediction: []domain.FHIRRiskAssessmentPrediction{
+			{
+				Outcome: &outcome,
+			},
+		},
+		Basis: []domain.FHIRReferenceInput{
+			{
+				Reference: &questionnaireResponseReference,
+			},
+		},
 	}
 
-	return nil
+	tags, err := u.GetTenantMetaTags(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	riskAssessment.Meta = &domain.FHIRMetaInput{
+		Tag: tags,
+	}
+
+	assessment, err := u.RecordRiskAssessment(ctx, &riskAssessment)
+	if err != nil {
+		return "", err
+	}
+
+	riskLevel := assessment.Prediction[0].Outcome.Text
+
+	return riskLevel, nil
 }
 
 // GetQuestionnaireResponseRiskLevel fetches the risk level associated with a questionnaire response. This is based off the scoring
