@@ -310,6 +310,7 @@ type ComplexityRoot struct {
 		PatchPatientTemperature            func(childComplexity int, id string, value string) int
 		PatchPatientViralLoad              func(childComplexity int, id string, value string) int
 		PatchPatientWeight                 func(childComplexity int, id string, value string) int
+		RecordBiopsy                       func(childComplexity int, input dto.DiagnosticReportInput) int
 		RecordBloodPressure                func(childComplexity int, input dto.ObservationInput) int
 		RecordBloodSugar                   func(childComplexity int, input dto.ObservationInput) int
 		RecordBmi                          func(childComplexity int, input dto.ObservationInput) int
@@ -683,6 +684,7 @@ type MutationResolver interface {
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
 	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error)
 	RecordMammographyResult(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
+	RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -2081,6 +2083,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.PatchPatientWeight(childComplexity, args["id"].(string), args["value"].(string)), true
+
+	case "Mutation.recordBiopsy":
+		if e.complexity.Mutation.RecordBiopsy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordBiopsy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordBiopsy(childComplexity, args["input"].(dto.DiagnosticReportInput)), true
 
 	case "Mutation.recordBloodPressure":
 		if e.complexity.Mutation.RecordBloodPressure == nil {
@@ -4288,6 +4302,7 @@ extend type Mutation {
 
   # Diagnostic Report
   recordMammographyResult(input: DiagnosticReportInput!): DiagnosticReport!
+  recordBiopsy(input: DiagnosticReportInput!): DiagnosticReport!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -5722,6 +5737,21 @@ func (ec *executionContext) field_Mutation_recordBMI_args(ctx context.Context, r
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recordBiopsy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.DiagnosticReportInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNDiagnosticReportInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐDiagnosticReportInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -16922,6 +16952,79 @@ func (ec *executionContext) fieldContext_Mutation_recordMammographyResult(ctx co
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_recordMammographyResult_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_recordBiopsy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordBiopsy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecordBiopsy(rctx, fc.Args["input"].(dto.DiagnosticReportInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.DiagnosticReport)
+	fc.Result = res
+	return ec.marshalNDiagnosticReport2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐDiagnosticReport(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recordBiopsy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_DiagnosticReport_id(ctx, field)
+			case "status":
+				return ec.fieldContext_DiagnosticReport_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_DiagnosticReport_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_DiagnosticReport_encounterID(ctx, field)
+			case "issued":
+				return ec.fieldContext_DiagnosticReport_issued(ctx, field)
+			case "result":
+				return ec.fieldContext_DiagnosticReport_result(ctx, field)
+			case "media":
+				return ec.fieldContext_DiagnosticReport_media(ctx, field)
+			case "conclusion":
+				return ec.fieldContext_DiagnosticReport_conclusion(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DiagnosticReport", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recordBiopsy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -29987,7 +30090,7 @@ func (ec *executionContext) unmarshalInputDiagnosticReportInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("media"))
-			data, err := ec.unmarshalOMediaInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedia(ctx, v)
+			data, err := ec.unmarshalOMediaInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedia(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -32720,6 +32823,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "recordMammographyResult":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_recordMammographyResult(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "recordBiopsy":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recordBiopsy(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -36858,9 +36968,12 @@ func (ec *executionContext) marshalOMediaEdge2ᚕgithubᚗcomᚋsavannahghiᚋcl
 	return ret
 }
 
-func (ec *executionContext) unmarshalOMediaInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedia(ctx context.Context, v interface{}) (dto.Media, error) {
+func (ec *executionContext) unmarshalOMediaInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedia(ctx context.Context, v interface{}) (*dto.Media, error) {
+	if v == nil {
+		return nil, nil
+	}
 	res, err := ec.unmarshalInputMediaInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOMedicalData2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicalData(ctx context.Context, sel ast.SelectionSet, v *dto.MedicalData) graphql.Marshaler {

@@ -7,10 +7,9 @@ import (
 	"github.com/savannahghi/scalarutils"
 )
 
-// NOTE: This file contains simplified helper functions to map observation categories to their FHIR observation categories
-
 var (
-	observationCategorySystem = "http://terminology.hl7.org/CodeSystem/observation-category"
+	observationCategorySystem      = "http://terminology.hl7.org/CodeSystem/observation-category"
+	diagnosticReportCategorySystem = "http://terminology.hl7.org/CodeSystem/v2-0074"
 )
 
 // addVitalSignCategory is used to add laboratory categories for various observations records.
@@ -69,6 +68,27 @@ var addImagingCategory = func(ctx context.Context, observation *domain.FHIRObser
 				},
 			},
 			Text: "Imaging",
+		},
+	}
+
+	observation.Category = append(observation.Category, category...)
+	return nil
+}
+
+// addProcedureCategory is used to add procedure category for various observations records such as biopsy etc.
+var addProcedureCategory = func(ctx context.Context, observation *domain.FHIRObservationInput) error {
+	userSelected := false
+	category := []*domain.FHIRCodeableConceptInput{
+		{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:       (*scalarutils.URI)(&observationCategorySystem),
+					Code:         "procedure",
+					Display:      "Procedure",
+					UserSelected: &userSelected,
+				},
+			},
+			Text: "Procedure",
 		},
 	}
 
