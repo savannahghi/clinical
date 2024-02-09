@@ -47,7 +47,7 @@ func NewFakeBaseExtensionMock() *FakeBaseExtension {
 		GetLoggedInUserUIDFn: func(ctx context.Context) (string, error) {
 			return uuid.NewString(), nil
 		},
-		NormalizeMSISDNFn: func(msisdn string) (*string, error) {
+		NormalizeMSISDNFn: func(_ string) (*string, error) {
 			p := interserviceclient.TestUserPhoneNumber
 			return &p, nil
 		},
@@ -73,13 +73,13 @@ func NewFakeBaseExtensionMock() *FakeBaseExtension {
 				},
 			}, nil
 		},
-		SetupISCclientFn: func(config interserviceclient.DepsConfig, serviceName string) (*interserviceclient.InterServiceClient, error) {
+		SetupISCclientFn: func(_ interserviceclient.DepsConfig, serviceName string) (*interserviceclient.InterServiceClient, error) {
 			return &interserviceclient.InterServiceClient{
 				Name:              "clinical",
 				RequestRootDomain: "clinical.com",
 			}, nil
 		},
-		GetEnvVarFn: func(envName string) (string, error) {
+		GetEnvVarFn: func(_ string) (string, error) {
 			return "test", nil
 		},
 		ErrorMapFn: func(err error) map[string]string {
@@ -88,17 +88,17 @@ func NewFakeBaseExtensionMock() *FakeBaseExtension {
 			}
 			return m
 		},
-		WriteJSONResponseFn: func(w http.ResponseWriter, source interface{}, status int) {},
+		WriteJSONResponseFn: func(_ http.ResponseWriter, source interface{}, status int) {},
 		MockGetTenantIdentifiersFn: func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 			return &dto.TenantIdentifiers{
 				OrganizationID: uuid.New().String(),
 				FacilityID:     uuid.New().String(),
 			}, nil
 		},
-		MockVerifyPubSubJWTAndDecodePayloadFn: func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
+		MockVerifyPubSubJWTAndDecodePayloadFn: func(_ http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
 			return &pubsubtools.PubSubPayload{}, nil
 		},
-		MockGetPubSubTopicFn: func(m *pubsubtools.PubSubPayload) (string, error) {
+		MockGetPubSubTopicFn: func(_ *pubsubtools.PubSubPayload) (string, error) {
 			return "", nil
 		},
 	}

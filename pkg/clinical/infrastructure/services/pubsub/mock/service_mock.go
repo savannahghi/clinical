@@ -16,13 +16,13 @@ type FakeServicePubsub struct {
 // NewPubSubServiceMock mocks the pubsub service implementation
 func NewPubSubServiceMock() *FakeServicePubsub {
 	return &FakeServicePubsub{
-		MockNotifyPatientFHIRIDUpdatefn: func(ctx context.Context, data dto.UpdatePatientFHIRID) error {
+		MockNotifyPatientFHIRIDUpdatefn: func(_ context.Context, data dto.UpdatePatientFHIRID) error {
 			return nil
 		},
-		MockNotifyFacilityFHIRIDUpdatefn: func(ctx context.Context, data dto.UpdateFacilityFHIRID) error {
+		MockNotifyFacilityFHIRIDUpdatefn: func(_ context.Context, data dto.UpdateFacilityFHIRID) error {
 			return nil
 		},
-		MockNotifyProgramFHIRIDUpdatefn: func(ctx context.Context, data dto.UpdateProgramFHIRID) error {
+		MockNotifyProgramFHIRIDUpdatefn: func(_ context.Context, data dto.UpdateProgramFHIRID) error {
 			return nil
 		},
 	}
