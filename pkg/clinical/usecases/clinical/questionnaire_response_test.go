@@ -165,6 +165,24 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - non-existent fhir questionnaire",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to get tenant meta tags",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -302,6 +320,23 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 							},
 						},
 					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - non-existent fhir questionnaire" {
+				randomName := gofakeit.BeerName()
+				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+					return &domain.FHIRQuestionnaireRelayPayload{
+						Resource: &domain.FHIRQuestionnaire{
+							Name: &randomName,
+						},
+					}, nil
+				}
+			}
+
+			if tt.name == "Sad Case - fail to get tenant meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
 				}
 			}
 

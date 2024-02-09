@@ -682,7 +682,7 @@ type MutationResolver interface {
 	PatchPatientLastMenstrualPeriod(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientBloodSugar(ctx context.Context, id string, value string) (*dto.Observation, error)
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
-	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (*dto.QuestionnaireResponse, error)
+	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (string, error)
 	RecordMammographyResult(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 }
@@ -4298,7 +4298,7 @@ extend type Mutation {
     questionnaireID: String!
     encounterID: String!
     input: QuestionnaireResponseInput!
-  ): QuestionnaireResponse!
+  ): String!
 
   # Diagnostic Report
   recordMammographyResult(input: DiagnosticReportInput!): DiagnosticReport!
@@ -16848,9 +16848,9 @@ func (ec *executionContext) _Mutation_createQuestionnaireResponse(ctx context.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*dto.QuestionnaireResponse)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNQuestionnaireResponse2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createQuestionnaireResponse(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16860,15 +16860,7 @@ func (ec *executionContext) fieldContext_Mutation_createQuestionnaireResponse(ct
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "status":
-				return ec.fieldContext_QuestionnaireResponse_status(ctx, field)
-			case "authored":
-				return ec.fieldContext_QuestionnaireResponse_authored(ctx, field)
-			case "item":
-				return ec.fieldContext_QuestionnaireResponse_item(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type QuestionnaireResponse", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	defer func() {
@@ -35644,20 +35636,6 @@ func (ec *executionContext) marshalNQuestionnaireConnection2ᚖgithubᚗcomᚋsa
 		return graphql.Null
 	}
 	return ec._QuestionnaireConnection(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNQuestionnaireResponse2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireResponse) graphql.Marshaler {
-	return ec._QuestionnaireResponse(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNQuestionnaireResponse2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, sel ast.SelectionSet, v *dto.QuestionnaireResponse) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._QuestionnaireResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNQuestionnaireResponseInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, v interface{}) (dto.QuestionnaireResponse, error) {
