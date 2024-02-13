@@ -166,6 +166,9 @@ const (
 
 	// BiopsyTerminologySystem is the terminology code used to represent Biopsy of cervix.
 	BiopsyTerminologySystem = "161826"
+
+	// MRITerminologySystem is the terminology code used to represent MRI scan of the breast
+	MRITerminologySystem = "168651"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

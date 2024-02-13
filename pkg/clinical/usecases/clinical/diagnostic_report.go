@@ -35,7 +35,7 @@ func (c *UseCasesClinicalImpl) RecordMammographyResult(ctx context.Context, inpu
 	return c.RecordDiagnosticReport(ctx, common.MammogramTerminologyCode, input, observationOutput, nil)
 }
 
-// RecordBiopsy is used to record biopsy test results as observations
+// RecordBiopsy is used to record biopsy test results as a diagnostic report
 // FHIR recommends use of diagnostic resource to record the findings and interpretation of biopsy test results
 // performed on patients, groups of patients, devices, and locations, and/or specimens.
 func (c *UseCasesClinicalImpl) RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
@@ -55,7 +55,28 @@ func (c *UseCasesClinicalImpl) RecordBiopsy(ctx context.Context, input dto.Diagn
 		return nil, err
 	}
 
-	return c.RecordDiagnosticReport(ctx, common.BiopsyTerminologySystem, input, observationOutput, []DiagnosticReportMutatorFunc{addCytologyCategory})
+	return c.RecordDiagnosticReport(ctx, common.BiopsyTerminologySystem, input, observationOutput, []DiagnosticReportMutatorFunc{addCytopathologyCategory})
+}
+
+// RecordMRI is used to record MRI scan results as a diagnostic report
+func (c *UseCasesClinicalImpl) RecordMRI(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
+	err := input.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	observationInput := &dto.ObservationInput{
+		Status:      dto.ObservationStatusFinal,
+		EncounterID: input.EncounterID,
+		Value:       input.Findings,
+	}
+
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.MRITerminologySystem, []ObservationInputMutatorFunc{addProcedureCategory})
+	if err != nil {
+		return nil, err
+	}
+
+	return c.RecordDiagnosticReport(ctx, common.MRITerminologySystem, input, observationOutput, []DiagnosticReportMutatorFunc{addNuclearMagneticResonanceCategory})
 }
 
 // RecordDiagnosticReport is a re-usable method to help with diagnostic report recording

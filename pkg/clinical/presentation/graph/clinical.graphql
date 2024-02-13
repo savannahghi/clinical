@@ -219,4 +219,5 @@ extend type Mutation {
   # Diagnostic Report
   recordMammographyResult(input: DiagnosticReportInput!): DiagnosticReport!
   recordBiopsy(input: DiagnosticReportInput!): DiagnosticReport!
+  recordMRI(input: DiagnosticReportInput!): DiagnosticReport!
 }
