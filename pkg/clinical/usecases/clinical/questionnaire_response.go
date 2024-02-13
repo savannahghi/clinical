@@ -30,6 +30,8 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 		return "", fmt.Errorf("cannot create a questionnaire response in a finished encounter")
 	}
 
+	// TODO: Ensure user cannot submit the same risk assessment twice in the same encounter
+
 	patientID := encounter.Resource.Subject.ID
 	patientReference := fmt.Sprintf("Patient/%s", *patientID)
 
@@ -141,6 +143,7 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 				questionnaireResponseID,
 				common.HighRiskCIELCode,
 				"High Risk",
+				domain.CervicalCancerScreeningTypeEnum.Text(), // TODO: This is TEMPORARY. A follow up PR is to follow supplying the value from params
 			)
 			if err != nil {
 				return "", err
@@ -153,6 +156,7 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 				questionnaireResponseID,
 				common.LowRiskCIELCode,
 				"Low Risk",
+				domain.CervicalCancerScreeningTypeEnum.Text(),
 			)
 			if err != nil {
 				return "", err
@@ -168,8 +172,8 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 func (u *UseCasesClinicalImpl) recordRiskAssessment(
 	ctx context.Context,
 	encounter *domain.FHIREncounterRelayPayload,
-	questionnaireResponseID string,
-	outcomeCode, outcomeDisplay string,
+	questionnaireResponseID, outcomeCode string,
+	outcomeDisplay, usageContext string,
 ) (string, error) {
 	CIELTerminologySystem := scalarutils.URI(common.CIELTerminologySystem)
 	codingCode := scalarutils.Code(outcomeCode)
@@ -194,6 +198,7 @@ func (u *UseCasesClinicalImpl) recordRiskAssessment(
 
 	instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
 
+	textStatus := domain.NarrativeStatusEnumAdditional
 	riskAssessment := domain.FHIRRiskAssessmentInput{
 		Status: domain.ObservationStatusEnumFinal,
 		Code:   &domain.FHIRCodeableConceptInput{},
@@ -218,6 +223,10 @@ func (u *UseCasesClinicalImpl) recordRiskAssessment(
 				Reference: &questionnaireResponseReference,
 			},
 		},
+		Text: &domain.FHIRNarrativeInput{
+			Status: &textStatus,
+			Div:    scalarutils.XHTML(usageContext),
+		},
 	}
 
 	tags, err := u.GetTenantMetaTags(ctx)
@@ -241,20 +250,21 @@ func (u *UseCasesClinicalImpl) recordRiskAssessment(
 
 // GetQuestionnaireResponseRiskLevel fetches the risk level associated with a questionnaire response. This is based off the scoring
 // of the questionnaire response. Outcome: High Risk / Low Risk
-func (u *UseCasesClinicalImpl) GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error) {
-	questionnaireResponse, err := u.infrastructure.FHIR.GetFHIRQuestionnaireResponse(ctx, questionnaireResponseID)
+func (u *UseCasesClinicalImpl) GetQuestionnaireResponseRiskLevel(ctx context.Context, encounterID string, screeningType domain.ScreeningTypeEnum) (string, error) {
+	encounter, err := u.infrastructure.FHIR.GetFHIREncounter(ctx, encounterID)
 	if err != nil {
 		return "", err
 	}
 
-	encounterReference := questionnaireResponse.Resource.Encounter.Reference
-	patientReference := questionnaireResponse.Resource.Source.Reference
+	patientID := encounter.Resource.Subject.ID
+	encounterReference := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+	patientReference := fmt.Sprintf("Patient/%s", *patientID)
 
 	riskAssessmentSearchParams := map[string]interface{}{
-		"patient":   *patientReference,
-		"encounter": *encounterReference,
+		"patient":   patientReference,
+		"encounter": encounterReference,
+		"_text":     screeningType.Text(),
 		"_sort":     "date",
-		"_count":    "1",
 	}
 
 	identifiers, err := u.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)

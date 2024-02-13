@@ -3126,3 +3126,68 @@ func (e *DiagnosticReportStatusEnum) UnmarshalGQL(v interface{}) error {
 func (e DiagnosticReportStatusEnum) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
+// ScreeningTypeEnum is used to define the type of Screening
+type ScreeningTypeEnum string
+
+const (
+	// CervicalCancerScreeningTypeEnum is cervical Screening type
+	CervicalCancerScreeningTypeEnum ScreeningTypeEnum = "CERVICAL_CANCER_SCREENING"
+
+	// BreastCancerScreeningTypeEnum is represents the breast Screening type
+	BreastCancerScreeningTypeEnum ScreeningTypeEnum = "BREAST_CANCER_SCREENING"
+)
+
+// AllScreeningTypeEnum is a list of all possible Screening types
+var AllScreeningTypeEnum = []ScreeningTypeEnum{
+	CervicalCancerScreeningTypeEnum,
+	BreastCancerScreeningTypeEnum,
+}
+
+// IsValid ...
+func (e ScreeningTypeEnum) IsValid() bool {
+	switch e {
+	case CervicalCancerScreeningTypeEnum,
+		BreastCancerScreeningTypeEnum:
+		return true
+	}
+
+	return false
+}
+
+// String ...
+func (e ScreeningTypeEnum) String() string {
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *ScreeningTypeEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ScreeningTypeEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Screening type enum", str)
+	}
+
+	return nil
+}
+
+// MarshalGQL writes the Screening type to the supplied writer as a quoted string
+func (e ScreeningTypeEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Text returns a human friendly representation of the screening type
+func (screeningType ScreeningTypeEnum) Text() string {
+	switch screeningType {
+	case BreastCancerScreeningTypeEnum:
+		return "Breast Cancer Screening"
+	case CervicalCancerScreeningTypeEnum:
+		return "Cervical Cancer Screening"
+	}
+
+	return "unknown screening type"
+}

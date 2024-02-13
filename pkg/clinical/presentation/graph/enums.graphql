@@ -121,3 +121,8 @@ enum QuantityComparatorEnum{
 enum QuestionnaireResponseStatusEnum{
   completed
 }
+
+enum ScreeningTypeEnum{
+  BREAST_CANCER_SCREENING
+  CERVICAL_CANCER_SCREENING
+}
