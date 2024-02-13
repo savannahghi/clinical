@@ -104,6 +104,7 @@ type Clinical interface {
 	RecordHPV(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordPapSmear(ctx context.Context, input dto.ObservationInput) (*dto.Observation, error)
 	RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
+	RecordMRI(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 
 	// Questionnaire
 	CreateQuestionnaire(ctx context.Context, questionnaireInput *domain.FHIRQuestionnaire) (*domain.FHIRQuestionnaire, error)

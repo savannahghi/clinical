@@ -290,6 +290,11 @@ func (r *mutationResolver) RecordBiopsy(ctx context.Context, input dto.Diagnosti
 	return r.usecases.RecordBiopsy(ctx, input)
 }
 
+// RecordMri is the resolver for the recordMRI field.
+func (r *mutationResolver) RecordMri(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
+	return r.usecases.RecordMRI(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()

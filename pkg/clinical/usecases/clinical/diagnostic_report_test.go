@@ -405,3 +405,149 @@ func TestUseCasesClinicalImpl_RecordBiopsy(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_RecordMRI(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input dto.DiagnosticReportInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: successfully record mri results",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.DiagnosticReportInput{
+					EncounterID: "12345678905432345",
+					Note:        "No Tumours observed",
+					Media: &dto.Media{
+						URL:  gofakeit.URL(),
+						Name: gofakeit.Name(),
+					},
+					Findings: gofakeit.HipsterSentence(20),
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to successfully record mri results",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.DiagnosticReportInput{
+					EncounterID: "12345678905432345",
+					Note:        "No Tumours observed",
+					Media: &dto.Media{
+						URL:  gofakeit.URL(),
+						Name: gofakeit.Name(),
+					},
+					Findings: gofakeit.HipsterSentence(20),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: fail validation",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.DiagnosticReportInput{
+					EncounterID: "12345678905432345",
+					Media: &dto.Media{
+						URL:  gofakeit.URL(),
+						Name: gofakeit.Name(),
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to record observation",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.DiagnosticReportInput{
+					EncounterID: "12345678905432345",
+					Note:        "No Tumours observed",
+					Media: &dto.Media{
+						URL:  gofakeit.URL(),
+						Name: gofakeit.Name(),
+					},
+					Findings: gofakeit.HipsterSentence(20),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get tenant identifiers",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.DiagnosticReportInput{
+					EncounterID: "12345678905432345",
+					Note:        "No Tumours observed",
+					Media: &dto.Media{
+						URL:  gofakeit.URL(),
+						Name: gofakeit.Name(),
+					},
+					Findings: gofakeit.HipsterSentence(20),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get organization",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				input: dto.DiagnosticReportInput{
+					EncounterID: "12345678905432345",
+					Note:        "No Tumours observed",
+					Media: &dto.Media{
+						URL:  gofakeit.URL(),
+						Name: gofakeit.Name(),
+					},
+					Findings: gofakeit.HipsterSentence(20),
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to successfully record mri results" {
+				fakeFHIR.MockCreateFHIRDiagnosticReportFn = func(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: unable to record observation" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: unable to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: unable to get organization" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := u.RecordMRI(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.RecordMRI() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
