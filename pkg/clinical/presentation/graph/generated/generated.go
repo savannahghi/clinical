@@ -291,7 +291,7 @@ type ComplexityRoot struct {
 		CreateCondition                    func(childComplexity int, input dto.ConditionInput) int
 		CreateEpisodeOfCare                func(childComplexity int, episodeOfCare dto.EpisodeOfCareInput) int
 		CreatePatient                      func(childComplexity int, input dto.PatientInput) int
-		CreateQuestionnaireResponse        func(childComplexity int, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) int
+		CreateQuestionnaireResponse        func(childComplexity int, questionnaireID string, encounterID string, screeningType domain.ScreeningTypeEnum, input dto.QuestionnaireResponse) int
 		DeletePatient                      func(childComplexity int, id string) int
 		EndEncounter                       func(childComplexity int, encounterID string) int
 		EndEpisodeOfCare                   func(childComplexity int, id string) int
@@ -685,7 +685,7 @@ type MutationResolver interface {
 	PatchPatientLastMenstrualPeriod(ctx context.Context, id string, value string) (*dto.Observation, error)
 	PatchPatientBloodSugar(ctx context.Context, id string, value string) (*dto.Observation, error)
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
-	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (string, error)
+	CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, screeningType domain.ScreeningTypeEnum, input dto.QuestionnaireResponse) (string, error)
 	RecordMammographyResult(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordMri(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
@@ -1858,7 +1858,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateQuestionnaireResponse(childComplexity, args["questionnaireID"].(string), args["encounterID"].(string), args["input"].(dto.QuestionnaireResponse)), true
+		return e.complexity.Mutation.CreateQuestionnaireResponse(childComplexity, args["questionnaireID"].(string), args["encounterID"].(string), args["screeningType"].(domain.ScreeningTypeEnum), args["input"].(dto.QuestionnaireResponse)), true
 
 	case "Mutation.deletePatient":
 		if e.complexity.Mutation.DeletePatient == nil {
@@ -4321,6 +4321,7 @@ extend type Mutation {
   createQuestionnaireResponse(
     questionnaireID: String!
     encounterID: String!
+    screeningType: ScreeningTypeEnum!
     input: QuestionnaireResponseInput!
   ): String!
 
@@ -5330,15 +5331,24 @@ func (ec *executionContext) field_Mutation_createQuestionnaireResponse_args(ctx 
 		}
 	}
 	args["encounterID"] = arg1
-	var arg2 dto.QuestionnaireResponse
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg2, err = ec.unmarshalNQuestionnaireResponseInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx, tmp)
+	var arg2 domain.ScreeningTypeEnum
+	if tmp, ok := rawArgs["screeningType"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("screeningType"))
+		arg2, err = ec.unmarshalNScreeningTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐScreeningTypeEnum(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg2
+	args["screeningType"] = arg2
+	var arg3 dto.QuestionnaireResponse
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg3, err = ec.unmarshalNQuestionnaireResponseInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg3
 	return args, nil
 }
 
@@ -16901,7 +16911,7 @@ func (ec *executionContext) _Mutation_createQuestionnaireResponse(ctx context.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateQuestionnaireResponse(rctx, fc.Args["questionnaireID"].(string), fc.Args["encounterID"].(string), fc.Args["input"].(dto.QuestionnaireResponse))
+		return ec.resolvers.Mutation().CreateQuestionnaireResponse(rctx, fc.Args["questionnaireID"].(string), fc.Args["encounterID"].(string), fc.Args["screeningType"].(domain.ScreeningTypeEnum), fc.Args["input"].(dto.QuestionnaireResponse))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

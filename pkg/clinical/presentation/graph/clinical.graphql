@@ -213,6 +213,7 @@ extend type Mutation {
   createQuestionnaireResponse(
     questionnaireID: String!
     encounterID: String!
+    screeningType: ScreeningTypeEnum!
     input: QuestionnaireResponseInput!
   ): String!
 

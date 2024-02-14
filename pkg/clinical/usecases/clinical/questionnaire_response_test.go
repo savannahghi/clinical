@@ -15,6 +15,7 @@ import (
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/firebasetools"
 )
 
 func setupMockFHIRFunctions(fakeFHIR *fakeFHIRMock.FHIRMock, score int) {
@@ -75,6 +76,7 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 		input           dto.QuestionnaireResponse
 		questionnaireID string
 		encounterID     string
+		screeningType   domain.ScreeningTypeEnum
 	}
 	tests := []struct {
 		name    string
@@ -88,6 +90,7 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 				input:           dto.QuestionnaireResponse{},
 				questionnaireID: ID,
 				encounterID:     ID,
+				screeningType:   domain.CervicalCancerScreeningTypeEnum,
 			},
 			wantErr: true,
 		},
@@ -135,6 +138,7 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 				ctx:             context.Background(),
 				encounterID:     gofakeit.UUID(),
 				questionnaireID: gofakeit.UUID(),
+				screeningType:   domain.CervicalCancerScreeningTypeEnum,
 			},
 			wantErr: false,
 		},
@@ -144,6 +148,7 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 				ctx:             context.Background(),
 				encounterID:     gofakeit.UUID(),
 				questionnaireID: gofakeit.UUID(),
+				screeningType:   domain.CervicalCancerScreeningTypeEnum,
 			},
 			wantErr: false,
 		},
@@ -176,6 +181,24 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 		},
 		{
 			name: "Sad Case - fail to get tenant meta tags",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - unable to get tenant identifiers",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - unable to search for risk assessment",
 			args: args{
 				ctx:             context.Background(),
 				encounterID:     gofakeit.UUID(),
@@ -229,6 +252,13 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			}
 
 			if tt.name == "Happy Case - Create questionnaire response and generate review summary - Cervical Cancer - High Risk" {
+				fakeFHIR.MockSearchFHIRRiskAssessmentFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
+					return &domain.FHIRRiskAssessmentRelayConnection{
+						Edges:    []*domain.FHIRRiskAssessmentRelayEdge{},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+
 				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
 					questionnaireName := "Cervical Cancer Screening"
 					return &domain.FHIRQuestionnaireRelayPayload{
@@ -277,6 +307,13 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			}
 
 			if tt.name == "Happy Case - Create questionnaire response and generate review summary - Cervical Cancer - Low Risk" {
+				fakeFHIR.MockSearchFHIRRiskAssessmentFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
+					return &domain.FHIRRiskAssessmentRelayConnection{
+						Edges:    []*domain.FHIRRiskAssessmentRelayEdge{},
+						PageInfo: &firebasetools.PageInfo{},
+					}, nil
+				}
+
 				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
 					questionnaireName := "Cervical Cancer Screening"
 					return &domain.FHIRQuestionnaireRelayPayload{
@@ -347,8 +384,18 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			if tt.name == "Sad Case - Fail to record risk assessment - High Risk" {
 				setupMockFHIRFunctions(fakeFHIR, 3)
 			}
+			if tt.name == "Sad Case - unable to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+			if tt.name == "Sad Case - unable to search for risk assessment" {
+				fakeFHIR.MockSearchFHIRRiskAssessmentFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error) {
+					return nil, fmt.Errorf("failed to search for risk assessment")
+				}
+			}
 
-			_, err := q.CreateQuestionnaireResponse(tt.args.ctx, tt.args.questionnaireID, tt.args.encounterID, tt.args.input)
+			_, err := q.CreateQuestionnaireResponse(tt.args.ctx, tt.args.questionnaireID, tt.args.encounterID, tt.args.screeningType, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.CreateQuestionnaireResponse() error = %v, wantErr %v", err, tt.wantErr)
 				return

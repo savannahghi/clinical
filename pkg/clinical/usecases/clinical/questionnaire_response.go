@@ -13,7 +13,9 @@ import (
 )
 
 // CreateQuestionnaireResponse creates a questionnaire response
-func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (string, error) {
+func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(
+	ctx context.Context, questionnaireID string, encounterID string,
+	screeningType domain.ScreeningTypeEnum, input dto.QuestionnaireResponse) (string, error) {
 	questionnaireResponse := &domain.FHIRQuestionnaireResponse{}
 
 	err := mapstructure.Decode(input, questionnaireResponse)
@@ -30,18 +32,21 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 		return "", fmt.Errorf("cannot create a questionnaire response in a finished encounter")
 	}
 
-	// TODO: Ensure user cannot submit the same risk assessment twice in the same encounter
-
 	patientID := encounter.Resource.Subject.ID
 	patientReference := fmt.Sprintf("Patient/%s", *patientID)
+	encounterReference := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+
+	// check if an assessment has already been done with the same encounter
+	err = u.checkIfAssessmentHasBeenDone(ctx, screeningType, encounterReference, patientReference)
+	if err != nil {
+		return "", err
+	}
 
 	questionnaireResponse.Source = &domain.FHIRReference{
 		ID:        patientID,
 		Reference: &patientReference,
 		Display:   encounter.Resource.Subject.Display,
 	}
-
-	encounterReference := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
 
 	questionnaireResponse.Encounter = &domain.FHIRReference{
 		ID:        encounter.Resource.ID,
@@ -87,6 +92,31 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 	return riskLevel, nil
 }
 
+// checkIfAssessmentHasBeenDone is a helper function to check if the assessment has already been completed
+func (u *UseCasesClinicalImpl) checkIfAssessmentHasBeenDone(ctx context.Context, screeningType domain.ScreeningTypeEnum, encounterReference, patientReference string) error {
+	searchParams := map[string]interface{}{
+		"encounter": encounterReference,
+		"patient":   patientReference,
+		"_text":     screeningType.Text(),
+	}
+
+	identifiers, err := u.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	results, err := u.infrastructure.FHIR.SearchFHIRRiskAssessment(ctx, searchParams, *identifiers, dto.Pagination{})
+	if err != nil {
+		return err
+	}
+
+	if len(results.Edges) > 0 {
+		return fmt.Errorf("a %s questionnaire response  for patient %s already exists for encounter %s", screeningType.Text(), patientReference, encounterReference)
+	}
+
+	return nil
+}
+
 // generateQuestionnaireReviewSummary takes a questionnaire response and
 // analyzes it to determine the risk stratification based on three distinct groups:
 // symptoms, family history, and risk factors. The assumption is that the
@@ -109,8 +139,7 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 	}
 
 	switch *questionnaire.Resource.Name {
-	// TODO: Make this a controlled enum?
-	case "Cervical Cancer Screening":
+	case domain.CervicalCancerScreeningTypeEnum.Text():
 		var symptomsScore, riskFactorsScore, totalScore int
 
 		for _, item := range questionnaireResponse.Item {
@@ -141,7 +170,7 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 				questionnaireResponseID,
 				common.HighRiskCIELCode,
 				"High Risk",
-				domain.CervicalCancerScreeningTypeEnum.Text(), // TODO: This is TEMPORARY. A follow up PR is to follow supplying the value from params
+				domain.CervicalCancerScreeningTypeEnum.Text(),
 			)
 			if err != nil {
 				return "", err

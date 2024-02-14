@@ -277,8 +277,8 @@ func (r *mutationResolver) RecordConsent(ctx context.Context, input dto.ConsentI
 }
 
 // CreateQuestionnaireResponse is the resolver for the createQuestionnaireResponse field.
-func (r *mutationResolver) CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, input dto.QuestionnaireResponse) (string, error) {
-	return r.usecases.CreateQuestionnaireResponse(ctx, questionnaireID, encounterID, input)
+func (r *mutationResolver) CreateQuestionnaireResponse(ctx context.Context, questionnaireID string, encounterID string, screeningType domain.ScreeningTypeEnum, input dto.QuestionnaireResponse) (string, error) {
+	return r.usecases.CreateQuestionnaireResponse(ctx, questionnaireID, encounterID, screeningType, input)
 }
 
 // RecordMammographyResult is the resolver for the recordMammographyResult field.
