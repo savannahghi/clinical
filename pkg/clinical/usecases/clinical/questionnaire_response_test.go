@@ -360,8 +360,9 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 func TestUseCasesClinicalImpl_GetQuestionnaireResponseRiskLevel(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
-		ctx                     context.Context
-		questionnaireResponseID string
+		ctx           context.Context
+		encounterID   string
+		screeningType domain.ScreeningTypeEnum
 	}
 	tests := []struct {
 		name    string
@@ -372,32 +373,36 @@ func TestUseCasesClinicalImpl_GetQuestionnaireResponseRiskLevel(t *testing.T) {
 		{
 			name: "Happy Case - Successfully get risk level",
 			args: args{
-				ctx:                     ctx,
-				questionnaireResponseID: gofakeit.UUID(),
+				ctx:           ctx,
+				encounterID:   gofakeit.UUID(),
+				screeningType: domain.CervicalCancerScreeningTypeEnum,
 			},
 			wantErr: false,
 		},
 		{
-			name: "Sad Case - Fail to get fhir questionnaire response",
+			name: "Sad Case - Fail to get fhir encounter",
 			args: args{
-				ctx:                     ctx,
-				questionnaireResponseID: gofakeit.UUID(),
+				ctx:           ctx,
+				encounterID:   gofakeit.UUID(),
+				screeningType: domain.CervicalCancerScreeningTypeEnum,
 			},
 			wantErr: true,
 		},
 		{
 			name: "Sad Case - Fail to get tenant identifiers",
 			args: args{
-				ctx:                     ctx,
-				questionnaireResponseID: gofakeit.UUID(),
+				ctx:           ctx,
+				encounterID:   gofakeit.UUID(),
+				screeningType: domain.CervicalCancerScreeningTypeEnum,
 			},
 			wantErr: true,
 		},
 		{
 			name: "Sad Case - Fail to search risk assessment",
 			args: args{
-				ctx:                     ctx,
-				questionnaireResponseID: gofakeit.UUID(),
+				ctx:           ctx,
+				encounterID:   gofakeit.UUID(),
+				screeningType: domain.CervicalCancerScreeningTypeEnum,
 			},
 			wantErr: true,
 		},
@@ -414,9 +419,9 @@ func TestUseCasesClinicalImpl_GetQuestionnaireResponseRiskLevel(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			if tt.name == "Sad Case - Fail to get fhir questionnaire response" {
-				fakeFHIR.MockGetFHIRQuestionnaireResponseFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error) {
-					return nil, fmt.Errorf("failed to get questionnaire response")
+			if tt.name == "Sad Case - Fail to get fhir encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get encounter")
 				}
 			}
 
@@ -432,7 +437,7 @@ func TestUseCasesClinicalImpl_GetQuestionnaireResponseRiskLevel(t *testing.T) {
 				}
 			}
 
-			got, err := u.GetQuestionnaireResponseRiskLevel(tt.args.ctx, tt.args.questionnaireResponseID)
+			got, err := u.GetQuestionnaireResponseRiskLevel(tt.args.ctx, tt.args.encounterID, tt.args.screeningType)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GetQuestionnaireResponseRiskLevel() error = %v, wantErr %v", err, tt.wantErr)
 				return

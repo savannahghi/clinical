@@ -16,6 +16,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -410,7 +411,7 @@ type ComplexityRoot struct {
 		GetPatientTemperatureEntries            func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		GetPatientViralLoad                     func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		GetPatientWeightEntries                 func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
-		GetQuestionnaireResponseRiskLevel       func(childComplexity int, questionnaireResponseID string) int
+		GetQuestionnaireResponseRiskLevel       func(childComplexity int, encounterID string, screeningType domain.ScreeningTypeEnum) int
 		ListPatientAllergies                    func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientCompositions                 func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		ListPatientConditions                   func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
@@ -713,7 +714,7 @@ type QueryResolver interface {
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
 	ListPatientMedia(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.MediaConnection, error)
 	ListQuestionnaires(ctx context.Context, searchParam *string, pagination dto.Pagination) (*dto.QuestionnaireConnection, error)
-	GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error)
+	GetQuestionnaireResponseRiskLevel(ctx context.Context, encounterID string, screeningType domain.ScreeningTypeEnum) (string, error)
 }
 
 type executableSchema struct {
@@ -2797,7 +2798,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetQuestionnaireResponseRiskLevel(childComplexity, args["questionnaireResponseID"].(string)), true
+		return e.complexity.Query.GetQuestionnaireResponseRiskLevel(childComplexity, args["encounterID"].(string), args["screeningType"].(domain.ScreeningTypeEnum)), true
 
 	case "Query.listPatientAllergies":
 		if e.complexity.Query.ListPatientAllergies == nil {
@@ -4233,7 +4234,7 @@ var sources = []*ast.Source{
     pagination: Pagination!
   ): QuestionnaireConnection!
 
-  getQuestionnaireResponseRiskLevel(questionnaireResponseID: String!): String!
+  getQuestionnaireResponseRiskLevel(encounterID: String!, screeningType: ScreeningTypeEnum!): String!
 }
 
 extend type Mutation {
@@ -4443,7 +4444,11 @@ enum QuantityComparatorEnum{
 enum QuestionnaireResponseStatusEnum{
   completed
 }
-`, BuiltIn: false},
+
+enum ScreeningTypeEnum{
+  BREAST_CANCER_SCREENING
+  CERVICAL_CANCER_SCREENING
+}`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
 scalar Time
@@ -6685,14 +6690,23 @@ func (ec *executionContext) field_Query_getQuestionnaireResponseRiskLevel_args(c
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["questionnaireResponseID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("questionnaireResponseID"))
+	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["questionnaireResponseID"] = arg0
+	args["encounterID"] = arg0
+	var arg1 domain.ScreeningTypeEnum
+	if tmp, ok := rawArgs["screeningType"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("screeningType"))
+		arg1, err = ec.unmarshalNScreeningTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐScreeningTypeEnum(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["screeningType"] = arg1
 	return args, nil
 }
 
@@ -20108,7 +20122,7 @@ func (ec *executionContext) _Query_getQuestionnaireResponseRiskLevel(ctx context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetQuestionnaireResponseRiskLevel(rctx, fc.Args["questionnaireResponseID"].(string))
+		return ec.resolvers.Query().GetQuestionnaireResponseRiskLevel(rctx, fc.Args["encounterID"].(string), fc.Args["screeningType"].(domain.ScreeningTypeEnum))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -35760,6 +35774,16 @@ func (ec *executionContext) unmarshalNQuestionnaireResponseStatusEnum2githubᚗc
 }
 
 func (ec *executionContext) marshalNQuestionnaireResponseStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireResponseStatusEnum) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNScreeningTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐScreeningTypeEnum(ctx context.Context, v interface{}) (domain.ScreeningTypeEnum, error) {
+	var res domain.ScreeningTypeEnum
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNScreeningTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐScreeningTypeEnum(ctx context.Context, sel ast.SelectionSet, v domain.ScreeningTypeEnum) graphql.Marshaler {
 	return v
 }
 

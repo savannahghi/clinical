@@ -112,7 +112,7 @@ type Clinical interface {
 	ListQuestionnaires(ctx context.Context, searchParam *string, pagination *dto.Pagination) (*dto.QuestionnaireConnection, error)
 	RecordConsent(ctx context.Context, input dto.ConsentInput) (*dto.ConsentOutput, error)
 
-	GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error)
+	GetQuestionnaireResponseRiskLevel(ctx context.Context, encounterID string, screeningType domain.ScreeningTypeEnum) (string, error)
 	RecordMammographyResult(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 }
 

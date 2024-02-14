@@ -8,6 +8,7 @@ import (
 	"context"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/scalarutils"
 )
@@ -446,10 +447,10 @@ func (r *queryResolver) ListQuestionnaires(ctx context.Context, searchParam *str
 }
 
 // GetQuestionnaireResponseRiskLevel is the resolver for the getQuestionnaireResponseRiskLevel field.
-func (r *queryResolver) GetQuestionnaireResponseRiskLevel(ctx context.Context, questionnaireResponseID string) (string, error) {
+func (r *queryResolver) GetQuestionnaireResponseRiskLevel(ctx context.Context, encounterID string, screeningType domain.ScreeningTypeEnum) (string, error) {
 	r.CheckDependencies()
 
-	return r.usecases.GetQuestionnaireResponseRiskLevel(ctx, questionnaireResponseID)
+	return r.usecases.GetQuestionnaireResponseRiskLevel(ctx, encounterID, screeningType)
 }
 
 // Mutation returns generated.MutationResolver implementation.
