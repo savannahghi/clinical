@@ -2,6 +2,7 @@ package dto
 
 import (
 	"mime/multipart"
+	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/savannahghi/scalarutils"
@@ -141,9 +142,21 @@ type ConsentInput struct {
 
 // QuestionnaireResponse models input for questionnaire response resource in fhir
 type QuestionnaireResponse struct {
-	Status   QuestionnaireResponseStatusEnum `json:"status"`
-	Authored string                          `json:"authored,omitempty"`
-	Item     []QuestionnaireResponseItem     `json:"item,omitempty"`
+	ResourceType string                          `json:"resourceType,omitempty"`
+	Meta         MetaInput                       `json:"meta,omitempty"`
+	Status       QuestionnaireResponseStatusEnum `json:"status"`
+	Authored     string                          `json:"authored,omitempty"`
+	Item         []QuestionnaireResponseItem     `json:"item,omitempty"`
+}
+
+// MetaInput represents the data class model of a metadata input
+type MetaInput struct {
+	VersionID   string            `json:"versionId,omitempty"`
+	LastUpdated time.Time         `json:"lastUpdated,omitempty"`
+	Source      string            `json:"source,omitempty"`
+	Tag         []Coding          `json:"tag,omitempty"`
+	Security    []Coding          `json:"security,omitempty"`
+	Profile     []scalarutils.URI `json:"profile,omitempty"`
 }
 
 // QuestionnaireResponseItem models input for item object of questionnaire response resource

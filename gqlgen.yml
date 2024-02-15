@@ -69,3 +69,6 @@ models:
   Date:
     model:
       - "github.com/savannahghi/scalarutils.Date"
+  MetaInput:
+    model:
+      - github.com/savannahghi/clinical/pkg/clinical/application/dto.MetaInput
