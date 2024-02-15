@@ -55,9 +55,7 @@ func (u *UseCasesClinicalImpl) CreateQuestionnaireResponse(ctx context.Context, 
 		return "", err
 	}
 
-	questionnaireResponse.Meta = &domain.FHIRMetaInput{
-		Tag: tags,
-	}
+	questionnaireResponse.Meta.Tag = tags
 
 	questionnaireResponse.Authored = &input.Authored
 	questionnaireResponse.Status = input.Status

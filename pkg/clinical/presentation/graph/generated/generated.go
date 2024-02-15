@@ -3988,6 +3988,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputHealthTimelineInput,
 		ec.unmarshalInputIdentifierInput,
 		ec.unmarshalInputMediaInput,
+		ec.unmarshalInputMetaInput,
 		ec.unmarshalInputObservationInput,
 		ec.unmarshalInputPagination,
 		ec.unmarshalInputPatchCompositionInput,
@@ -4637,9 +4638,20 @@ input QuestionnaireResponseItemAnswerInput {
 }
 
 input QuestionnaireResponseInput {
+  resourceType: String!
+  meta: MetaInput!
 	status: QuestionnaireResponseStatusEnum!
 	authored: String!
 	item: [QuestionnaireResponseItemInput]
+}
+
+input MetaInput {
+  versionId: String
+  lastUpdated: Time
+  source: String
+  tag: [CodingInput]
+  security: [CodingInput]
+  profile: [URI]
 }
 
 input DiagnosticReportInput {
@@ -30409,6 +30421,80 @@ func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputMetaInput(ctx context.Context, obj interface{}) (dto.MetaInput, error) {
+	var it dto.MetaInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"versionId", "lastUpdated", "source", "tag", "security", "profile"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "versionId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("versionId"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VersionID = data
+		case "lastUpdated":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastUpdated"))
+			data, err := ec.unmarshalOTime2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.LastUpdated = data
+		case "source":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("source"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Source = data
+		case "tag":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tag"))
+			data, err := ec.unmarshalOCodingInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Tag = data
+		case "security":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("security"))
+			data, err := ec.unmarshalOCodingInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Security = data
+		case "profile":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profile"))
+			data, err := ec.unmarshalOURI2ᚕgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Profile = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputObservationInput(ctx context.Context, obj interface{}) (dto.ObservationInput, error) {
 	var it dto.ObservationInput
 	asMap := map[string]interface{}{}
@@ -30824,13 +30910,31 @@ func (ec *executionContext) unmarshalInputQuestionnaireResponseInput(ctx context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"status", "authored", "item"}
+	fieldsInOrder := [...]string{"resourceType", "meta", "status", "authored", "item"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "resourceType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resourceType"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ResourceType = data
+		case "meta":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("meta"))
+			data, err := ec.unmarshalNMetaInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMetaInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Meta = data
 		case "status":
 			var err error
 
@@ -35679,6 +35783,11 @@ func (ec *executionContext) marshalNMedication2githubᚗcomᚋsavannahghiᚋclin
 	return ec._Medication(ctx, sel, &v)
 }
 
+func (ec *executionContext) unmarshalNMetaInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMetaInput(ctx context.Context, v interface{}) (dto.MetaInput, error) {
+	res, err := ec.unmarshalInputMetaInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNObservation2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx context.Context, sel ast.SelectionSet, v dto.Observation) graphql.Marshaler {
 	return ec._Observation(ctx, sel, &v)
 }
@@ -36432,6 +36541,31 @@ func (ec *executionContext) marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclini
 		return graphql.Null
 	}
 	return ec._Coding(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOCodingInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx context.Context, v interface{}) (dto.Coding, error) {
+	res, err := ec.unmarshalInputCodingInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOCodingInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx context.Context, v interface{}) ([]dto.Coding, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]dto.Coding, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOCodingInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
 func (ec *executionContext) unmarshalOCodingInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx context.Context, v interface{}) (*dto.Coding, error) {
@@ -38087,6 +38221,38 @@ func (ec *executionContext) unmarshalOURI2githubᚗcomᚋsavannahghiᚋscalaruti
 
 func (ec *executionContext) marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, sel ast.SelectionSet, v scalarutils.URI) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) unmarshalOURI2ᚕgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, v interface{}) ([]scalarutils.URI, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]scalarutils.URI, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOURI2ᚕgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, sel ast.SelectionSet, v []scalarutils.URI) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOURL2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx context.Context, v interface{}) (scalarutils.URL, error) {

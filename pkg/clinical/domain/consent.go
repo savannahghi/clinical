@@ -1,8 +1,6 @@
 package domain
 
-import (
-	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
-)
+import "github.com/savannahghi/clinical/pkg/clinical/application/dto"
 
 // Consent models a fhir consent resource.
 type FHIRConsent struct {

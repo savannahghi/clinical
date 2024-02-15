@@ -1,6 +1,10 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+	"github.com/savannahghi/scalarutils"
+)
 
 // FHIRMetaInput is the input to resource meta
 type FHIRMetaInput struct {
@@ -9,6 +13,7 @@ type FHIRMetaInput struct {
 	Source      string            `json:"source,omitempty"`
 	Tag         []FHIRCodingInput `json:"tag,omitempty"`
 	Security    []FHIRCodingInput `json:"security,omitempty"`
+	Profile     []scalarutils.URI `json:"profile,omitempty"`
 }
 
 // FHIRMeta is a set of metadata that provides technical and workflow context to a resource.
