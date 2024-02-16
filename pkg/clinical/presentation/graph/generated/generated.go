@@ -442,6 +442,7 @@ type ComplexityRoot struct {
 		Name              func(childComplexity int) int
 		Publisher         func(childComplexity int) int
 		Purpose           func(childComplexity int) int
+		ResourceType      func(childComplexity int) int
 		Status            func(childComplexity int) int
 		Text              func(childComplexity int) int
 		Title             func(childComplexity int) int
@@ -3029,6 +3030,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Questionnaire.Purpose(childComplexity), true
 
+	case "Questionnaire.resourceType":
+		if e.complexity.Questionnaire.ResourceType == nil {
+			break
+		}
+
+		return e.complexity.Questionnaire.ResourceType(childComplexity), true
+
 	case "Questionnaire.status":
 		if e.complexity.Questionnaire.Status == nil {
 			break
@@ -4908,6 +4916,7 @@ type QuestionnaireConnection {
 
 type Questionnaire {
   id: String
+  resourceType: String!
   meta: Meta
   implicitRules: String
   language: String
@@ -20393,6 +20402,50 @@ func (ec *executionContext) fieldContext_Questionnaire_id(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Questionnaire_resourceType(ctx context.Context, field graphql.CollectedField, obj *dto.Questionnaire) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Questionnaire_resourceType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ResourceType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Questionnaire_resourceType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Questionnaire",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Questionnaire_meta(ctx context.Context, field graphql.CollectedField, obj *dto.Questionnaire) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Questionnaire_meta(ctx, field)
 	if err != nil {
@@ -21753,6 +21806,8 @@ func (ec *executionContext) fieldContext_QuestionnaireEdge_node(ctx context.Cont
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Questionnaire_id(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_Questionnaire_resourceType(ctx, field)
 			case "meta":
 				return ec.fieldContext_Questionnaire_meta(ctx, field)
 			case "implicitRules":
@@ -34027,6 +34082,11 @@ func (ec *executionContext) _Questionnaire(ctx context.Context, sel ast.Selectio
 			out.Values[i] = graphql.MarshalString("Questionnaire")
 		case "id":
 			out.Values[i] = ec._Questionnaire_id(ctx, field, obj)
+		case "resourceType":
+			out.Values[i] = ec._Questionnaire_resourceType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "meta":
 			out.Values[i] = ec._Questionnaire_meta(ctx, field, obj)
 		case "implicitRules":

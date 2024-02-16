@@ -42,6 +42,7 @@ func CreateQuestionnaireConnection(questionnaires []*Questionnaire, pageInfo Pag
 // Questionnaire models the dataclass to display questionnaires
 type Questionnaire struct {
 	ID                string               `json:"id,omitempty"`
+	ResourceType      string               `json:"resourceType,omitempty"`
 	Meta              Meta                 `json:"meta,omitempty"`
 	ImplicitRules     string               `json:"implicitRules,omitempty"`
 	Language          string               `json:"language,omitempty"`
