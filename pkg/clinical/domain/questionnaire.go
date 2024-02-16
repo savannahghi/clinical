@@ -19,6 +19,7 @@ type PagedFHIRQuestionnaires struct {
 // FHIRQuestionnaire models the FHIR questionnaire model as described in https://www.hl7.org/fhir/questionnaire.html
 type FHIRQuestionnaire struct {
 	ID                *string                  `json:"id,omitempty" mapstructure:"id"`
+	ResourceType      string                   `json:"resourceType,omitempty" mapstructure:"resourceType"`
 	Meta              *FHIRMetaInput           `json:"meta,omitempty" mapstructure:"meta"`
 	ImplicitRules     *string                  `json:"implicitRules,omitempty" mapstructure:"implicitRules"`
 	Language          *string                  `json:"language,omitempty" mapstructure:"language"`

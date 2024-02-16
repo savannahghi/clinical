@@ -240,6 +240,7 @@ type QuestionnaireConnection {
 
 type Questionnaire {
   id: String
+  resourceType: String!
   meta: Meta
   implicitRules: String
   language: String
