@@ -2,10 +2,12 @@ package clinical
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
@@ -25,7 +27,7 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 	encounterClassCode := scalarutils.Code("AMB")
 	encounterClassSystem := scalarutils.URI("http://terminology.hl7.org/CodeSystem/v3-ActCode")
 	encounterClassVersion := "2018-08-12"
-	encounterClassDisplay := string(dto.EncounterClassAmbulatory)
+	encounterClassDisplay := string(dto.EncounterClassEnumAmbulatory)
 	encounterClassUserSelected := false
 	now := time.Now()
 	startTime := scalarutils.DateTime(now.Format("2006-01-02T15:04:05+03:00"))
@@ -115,7 +117,15 @@ func (c *UseCasesClinicalImpl) PatchEncounter(ctx context.Context, encounterID s
 		return nil, err
 	}
 
-	return mapFHIREncounterToEncounterDTO([]domain.FHIREncounter{*fhirEncounter})[0], nil
+	encounters := []*dto.Encounter{}
+
+	err = mapstructure.Decode([]domain.FHIREncounter{*fhirEncounter}, &encounters)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return encounters[0], nil
 }
 
 // EndEncounter marks an encounter as finished and updates the endtime field
@@ -160,7 +170,12 @@ func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patien
 		return nil, err
 	}
 
-	encounters := mapFHIREncounterToEncounterDTO(encounterResponses.Encounters)
+	encounters := []*dto.Encounter{}
+
+	err = mapstructure.Decode(encounterResponses.Encounters, &encounters)
+	if err != nil {
+		return nil, err
+	}
 
 	pagedInfo := dto.PageInfo{
 		HasNextPage:     encounterResponses.HasNextPage,
@@ -174,23 +189,63 @@ func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patien
 	return &connection, nil
 }
 
-func mapFHIREncounterToEncounterDTO(fhirEncounters []domain.FHIREncounter) []*dto.Encounter {
-	var encounters []*dto.Encounter
-
-	for _, fhirEncounter := range fhirEncounters {
-		encounter := &dto.Encounter{
-			ID:              *fhirEncounter.ID,
-			Status:          dto.EncounterStatusEnum(fhirEncounter.Status),
-			Class:           dto.EncounterClass(fhirEncounter.Class.Display),
-			EpisodeOfCareID: *fhirEncounter.EpisodeOfCare[0].ID,
-		}
-
-		if fhirEncounter.Subject.ID != nil {
-			encounter.PatientID = *fhirEncounter.Subject.ID
-		}
-
-		encounters = append(encounters, encounter)
+// GetEncounterAssociatedResources get all resources assocuated with an encounter
+func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error) {
+	if encounterID == "" {
+		return nil, fmt.Errorf("an encounterID is required")
 	}
 
-	return encounters
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	encounterSearchParams := map[string]interface{}{
+		"_id":         encounterID,
+		"_sort":       "date",
+		"_count":      "1",
+		"_revinclude": []string{"RiskAssessment:encounter", "Consent:data"},
+	}
+
+	encounterAllData, err := c.infrastructure.FHIR.SearchFHIREncounterAllData(ctx, encounterSearchParams, *identifiers, dto.Pagination{})
+	if err != nil {
+		return nil, err
+	}
+
+	result := dto.EncounterAssociatedResources{}
+
+	for _, encounterData := range encounterAllData.Resources {
+		switch encounterData["resourceType"] {
+		case "RiskAssessment":
+			var riskAssessment dto.RiskAssessment
+
+			riskAssessmentBytes, err := json.Marshal(encounterData)
+
+			if err != nil {
+				return nil, err
+			}
+
+			if err := json.Unmarshal(riskAssessmentBytes, &riskAssessment); err != nil {
+				return nil, err
+			}
+
+			result.RiskAssessment = &riskAssessment
+		case "Consent":
+			var consent dto.Consent
+
+			consentBytes, err := json.Marshal(encounterData)
+
+			if err != nil {
+				return nil, err
+			}
+
+			if err := json.Unmarshal(consentBytes, &consent); err != nil {
+				return nil, err
+			}
+
+			result.Consent = &consent
+		}
+	}
+
+	return &result, nil
 }

@@ -406,3 +406,64 @@ func TestUseCasesClinicalImpl_ListPatientEncounters(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_GetEncounterAssociatedResources(t *testing.T) {
+	ctx := context.Background()
+	type args struct {
+		ctx         context.Context
+		encounterID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy Case - Successfully list encounter's all data",
+			args: args{
+				ctx:         ctx,
+				encounterID: uuid.New().String(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad Case - Missing encounter ID",
+			args: args{
+				ctx: ctx,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad Case - Missing encounter ID" {
+				fakeFHIR.MockSearchFHIREncounterAllDataFn = func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, fmt.Errorf("failed to get encounter")
+				}
+			}
+
+			got, err := u.GetEncounterAssociatedResources(tt.args.ctx, tt.args.encounterID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetEncounterAssociatedResources() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr {
+				if got == nil {
+					t.Errorf("expected a response but got %v", got)
+					return
+				}
+			}
+		})
+	}
+}

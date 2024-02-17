@@ -296,6 +296,11 @@ func (r *mutationResolver) RecordMri(ctx context.Context, input dto.DiagnosticRe
 	return r.usecases.RecordMRI(ctx, input)
 }
 
+// GetEncounterAssociatedResources is the resolver for the getEncounterAssociatedResources field.
+func (r *mutationResolver) GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error) {
+	return r.usecases.GetEncounterAssociatedResources(ctx, encounterID)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()

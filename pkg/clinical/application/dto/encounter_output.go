@@ -2,11 +2,16 @@ package dto
 
 // Encounter definition: an interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
 type Encounter struct {
-	ID              string              `json:"id,omitempty"`
-	Status          EncounterStatusEnum `json:"status,omitempty"`
-	Class           EncounterClass      `json:"class,omitempty"`
-	PatientID       string              `json:"patientID,omitempty"`
-	EpisodeOfCareID string              `json:"episodeOfCareID,omitempty"`
+	ID              *string              `json:"id,omitempty" mapstructure:"id"`
+	Status          *EncounterStatusEnum `json:"status,omitempty"`
+	Class           *EncounterClass      `json:"class,omitempty"`
+	PatientID       *string              `json:"patientID,omitempty"`
+	EpisodeOfCareID *string              `json:"episodeOfCareID,omitempty"`
+}
+
+type EncounterClass struct {
+	Code    *string             `json:"code,omitempty"`
+	Display *EncounterClassEnum `json:"display,omitempty"`
 }
 
 // EncounterConnection is the encounter connection type
@@ -33,11 +38,17 @@ func CreateEncounterConnection(encounters []*Encounter, pageInfo PageInfo, total
 	for _, encounter := range encounters {
 		edge := EncounterEdge{
 			Node:   *encounter,
-			Cursor: encounter.ID,
+			Cursor: *encounter.ID,
 		}
 
 		connection.Edges = append(connection.Edges, edge)
 	}
 
 	return connection
+}
+
+// EncounterAssociatedResources models  resources associated with an encounter
+type EncounterAssociatedResources struct {
+	RiskAssessment *RiskAssessment `json:"riskAssesment"`
+	Consent        *Consent        `json:"consent"`
 }

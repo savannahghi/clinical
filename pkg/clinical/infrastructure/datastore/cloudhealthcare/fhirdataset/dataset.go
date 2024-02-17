@@ -440,12 +440,16 @@ func (fr Repository) SearchFHIRResource(resourceType string, params map[string]i
 	urlParams := url.Values{}
 
 	for k, v := range params {
-		val, ok := v.(string)
-		if !ok {
+		switch value := v.(type) {
+		case string:
+			urlParams.Add(k, value)
+		case []string:
+			for _, i := range value {
+				urlParams.Add(k, i)
+			}
+		default:
 			return nil, fmt.Errorf("the search/filter param: %s should all be sent as strings", k)
 		}
-
-		urlParams.Add(k, val)
 	}
 
 	urlParams.Add("_tag", fmt.Sprintf("http://mycarehub/tenant-identification/organisation|%s", tenant.OrganizationID))
