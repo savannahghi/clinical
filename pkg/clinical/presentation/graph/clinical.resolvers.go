@@ -439,13 +439,6 @@ func (r *queryResolver) ListPatientMedia(ctx context.Context, patientID string, 
 	return r.usecases.ListPatientMedia(ctx, patientID, pagination)
 }
 
-// ListQuestionnaires is the resolver for the listQuestionnaires field.
-func (r *queryResolver) ListQuestionnaires(ctx context.Context, searchParam *string, pagination dto.Pagination) (*dto.QuestionnaireConnection, error) {
-	r.CheckDependencies()
-
-	return r.usecases.ListQuestionnaires(ctx, *searchParam, &pagination)
-}
-
 // GetQuestionnaireResponseRiskLevel is the resolver for the getQuestionnaireResponseRiskLevel field.
 func (r *queryResolver) GetQuestionnaireResponseRiskLevel(ctx context.Context, encounterID string, screeningType domain.ScreeningTypeEnum) (string, error) {
 	r.CheckDependencies()

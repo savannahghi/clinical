@@ -129,13 +129,10 @@ extend type Query {
   # Media
   listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
 
-  # Questionnaire
-  listQuestionnaires(
-    searchParam: String
-    pagination: Pagination!
-  ): QuestionnaireConnection!
-
-  getQuestionnaireResponseRiskLevel(encounterID: String!, screeningType: ScreeningTypeEnum!): String!
+  getQuestionnaireResponseRiskLevel(
+    encounterID: String!
+    screeningType: ScreeningTypeEnum!
+  ): String!
 }
 
 extend type Mutation {
