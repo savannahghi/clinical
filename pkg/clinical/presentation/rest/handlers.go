@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -335,15 +336,19 @@ func (p PresentationHandlersImpl) LoadQuestionnaire(c *gin.Context) {
 
 // ListQuestionnaire is used to provide params used to fetch questionnaires
 func (p PresentationHandlersImpl) ListQuestionnaire(c *gin.Context) {
-	input := dto.ListQuestionnaireInput{}
+	queryParams := c.Request.URL.Query()
 
-	err := c.BindJSON(&input)
+	searchParam := queryParams.Get("searchParam")
+
+	first, err := strconv.Atoi(queryParams.Get("first"))
 	if err != nil {
 		jsonErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	questionnaire, err := p.usecases.ListQuestionnaires(c.Request.Context(), input.SearchParam, &input.Pagination)
+	questionnaire, err := p.usecases.ListQuestionnaires(c.Request.Context(), searchParam, &dto.Pagination{
+		First: &first,
+	})
 	if err != nil {
 		jsonErrorResponse(c, http.StatusBadRequest, err)
 		return
