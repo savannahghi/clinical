@@ -264,6 +264,51 @@ func (c *ConsentProvisionTypeEnum) UnmarshalGQL(v interface{}) error {
 	return nil
 }
 
+// ConsentDataMeaningEnum represents the meaning of consent data
+type ConsentDataMeaningEnum string
+
+const (
+	ConsentDataMeaningInstance   = "instance"
+	ConsentDataMeaningRelated    = "related"
+	ConsentDataMeaningDependents = "dependents"
+	ConsentDataMeaningAuthoredBy = "authoredby"
+)
+
+// IsValid checks if the consent data meaning is valid
+func (c ConsentDataMeaningEnum) IsValid() bool {
+	switch c {
+	case ConsentDataMeaningInstance, ConsentDataMeaningRelated, ConsentDataMeaningDependents, ConsentDataMeaningAuthoredBy:
+		return true
+	}
+
+	return false
+}
+
+// String converts the consent data meaning to string
+func (c ConsentDataMeaningEnum) String() string {
+	return string(c)
+}
+
+// MarshalGQL writes the consent data meaning as a quoted string
+func (c ConsentDataMeaningEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(c.String()))
+}
+
+// UnmarshalGQL reads a JSON and converts it to a consent data meaning enum
+func (c *ConsentDataMeaningEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*c = ConsentDataMeaningEnum(str)
+	if !c.IsValid() {
+		return fmt.Errorf("%s is not a valid ConsentDataMeaningEnum", str)
+	}
+
+	return nil
+}
+
 // QuestionnaireResponseStatusEnum a type enum tha represents a questionnaire response status field of questionnaire response
 type QuestionnaireResponseStatusEnum string
 
