@@ -108,7 +108,7 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 		return "", err
 	}
 
-	switch *questionnaire.Resource.Name {
+	switch *questionnaire.Resource.Title {
 	// TODO: Make this a controlled enum?
 	case "Cervical Cancer Screening":
 		var symptomsScore, riskFactorsScore, totalScore int
@@ -160,6 +160,50 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 				return "", err
 			}
 		}
+
+	case "Breast Cancer Screening":
+		var riskScore int
+
+		for _, item := range questionnaireResponse.Item {
+			if item.LinkID == "risk-assessment" {
+				for _, answer := range item.Item {
+					if answer.LinkID == "high-risk" {
+						for _, ans := range answer.Item {
+							if ans.LinkID == "high-risk-score" {
+								riskScore = *ans.Answer[0].ValueInteger
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if riskScore >= 1 {
+			riskLevel, err = u.recordRiskAssessment(
+				ctx,
+				encounter,
+				questionnaireResponseID,
+				common.HighRiskCIELCode,
+				"High Risk",
+				domain.BreastCancerScreeningTypeEnum.String(),
+			)
+			if err != nil {
+				return "", err
+			}
+		} else {
+			riskLevel, err = u.recordRiskAssessment(
+				ctx,
+				encounter,
+				questionnaireResponseID,
+				common.HighRiskCIELCode,
+				"Average Risk",
+				domain.BreastCancerScreeningTypeEnum.String(),
+			)
+			if err != nil {
+				return "", err
+			}
+		}
+
 	default:
 		return "", fmt.Errorf("questionnaire does not exist")
 	}

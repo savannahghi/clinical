@@ -2000,6 +2000,7 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockGetFHIRQuestionnaireFn: func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+			name := gofakeit.Name()
 			resource := &domain.FHIRQuestionnaire{
 				ID:                new(string),
 				Meta:              &domain.FHIRMetaInput{},
@@ -2010,8 +2011,8 @@ func NewFHIRMock() *FHIRMock {
 				ModifierExtension: []*domain.Extension{},
 				Identifier:        []*domain.FHIRIdentifier{},
 				Version:           new(string),
-				Name:              new(string),
-				Title:             new(string),
+				Name:              &name,
+				Title:             &name,
 				DerivedFrom:       []*string{},
 				Experimental:      new(bool),
 				Publisher:         new(string),
