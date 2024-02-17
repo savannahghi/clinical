@@ -23,8 +23,9 @@ func setupMockFHIRFunctions(fakeFHIR *fakeFHIRMock.FHIRMock, score int) {
 		questionnaireName := "Cervical Cancer Screening"
 		return &domain.FHIRQuestionnaireRelayPayload{
 			Resource: &domain.FHIRQuestionnaire{
-				ID:   &ID,
-				Name: &questionnaireName,
+				ID:    &ID,
+				Name:  &questionnaireName,
+				Title: &questionnaireName,
 			},
 		}, nil
 	}
@@ -183,6 +184,24 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Happy Case - Create questionnaire response and generate review summary - Breast Cancer - High Risk",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Happy Case - Create questionnaire response and generate review summary - Breast Cancer - Low Risk",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -233,8 +252,9 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 					questionnaireName := "Cervical Cancer Screening"
 					return &domain.FHIRQuestionnaireRelayPayload{
 						Resource: &domain.FHIRQuestionnaire{
-							ID:   &ID,
-							Name: &questionnaireName,
+							ID:    &ID,
+							Name:  &questionnaireName,
+							Title: &questionnaireName,
 						},
 					}, nil
 				}
@@ -281,8 +301,9 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 					questionnaireName := "Cervical Cancer Screening"
 					return &domain.FHIRQuestionnaireRelayPayload{
 						Resource: &domain.FHIRQuestionnaire{
-							ID:   &ID,
-							Name: &questionnaireName,
+							ID:    &ID,
+							Name:  &questionnaireName,
+							Title: &questionnaireName,
 						},
 					}, nil
 				}
@@ -323,12 +344,96 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 				}
 			}
 
+			if tt.name == "Happy Case - Create questionnaire response and generate review summary - Breast Cancer - High Risk" {
+				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+					questionnaireName := "Breast Cancer Screening"
+					return &domain.FHIRQuestionnaireRelayPayload{
+						Resource: &domain.FHIRQuestionnaire{
+							ID:    &ID,
+							Name:  &questionnaireName,
+							Title: &questionnaireName,
+						},
+					}, nil
+				}
+
+				score := 3
+				fakeFHIR.MockCreateFHIRQuestionnaireResponseFn = func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+					return &domain.FHIRQuestionnaireResponse{
+						ID: &ID,
+						Item: []domain.FHIRQuestionnaireResponseItem{
+							{
+								LinkID: "risk-assessment",
+								Item: []domain.FHIRQuestionnaireResponseItem{
+									{
+										LinkID: "high-risk",
+
+										Item: []domain.FHIRQuestionnaireResponseItem{
+											{
+												LinkID: "high-risk-score",
+												Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+													{
+														ValueInteger: &score,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					}, nil
+				}
+
+			}
+
+			if tt.name == "Happy Case - Create questionnaire response and generate review summary - Breast Cancer - Low Risk" {
+				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
+					questionnaireName := "Breast Cancer Screening"
+					return &domain.FHIRQuestionnaireRelayPayload{
+						Resource: &domain.FHIRQuestionnaire{
+							ID:    &ID,
+							Name:  &questionnaireName,
+							Title: &questionnaireName,
+						},
+					}, nil
+				}
+
+				score := 0
+				fakeFHIR.MockCreateFHIRQuestionnaireResponseFn = func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
+					return &domain.FHIRQuestionnaireResponse{
+						ID: &ID,
+						Item: []domain.FHIRQuestionnaireResponseItem{
+							{
+								LinkID: "risk-assessment",
+								Item: []domain.FHIRQuestionnaireResponseItem{
+									{
+										LinkID: "high-risk",
+
+										Item: []domain.FHIRQuestionnaireResponseItem{
+											{
+												LinkID: "high-risk-score",
+												Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
+													{
+														ValueInteger: &score,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					}, nil
+				}
+			}
+
 			if tt.name == "Sad Case - non-existent fhir questionnaire" {
 				randomName := gofakeit.BeerName()
 				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
 					return &domain.FHIRQuestionnaireRelayPayload{
 						Resource: &domain.FHIRQuestionnaire{
-							Name: &randomName,
+							Name:  &randomName,
+							Title: &randomName,
 						},
 					}, nil
 				}
