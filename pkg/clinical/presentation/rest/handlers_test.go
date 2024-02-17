@@ -21,6 +21,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
+	fakeAdvantageMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
@@ -199,6 +200,26 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 			wantErr:    true,
 		},
 		{
+			name: "happy case: publish patient segmentation",
+			args: args{
+				url:        "/pubsub",
+				httpMethod: http.MethodPost,
+				body:       nil,
+			},
+			wantStatus: http.StatusOK,
+			wantErr:    false,
+		},
+		{
+			name: "sad case: unable to publish patient segmentation",
+			args: args{
+				url:        "/pubsub",
+				httpMethod: http.MethodPost,
+				body:       nil,
+			},
+			wantStatus: http.StatusBadRequest,
+			wantErr:    true,
+		},
+		{
 			name: "sad case: verify pubsub request fails",
 			args: args{
 				url:        "/pubsub",
@@ -236,7 +257,8 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			usecases := usecases.NewUsecasesInteractor(infra)
 
 			if tt.name == "happy case: publish create patient message" {
@@ -599,6 +621,49 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 			if tt.name == "sad case: topic name error" {
 				fakeExt.MockGetPubSubTopicFn = func(m *pubsubtools.PubSubPayload) (string, error) {
 					return "", fmt.Errorf("cant get pubsub topic")
+				}
+			}
+
+			if tt.name == "happy case: publish patient segmentation" {
+				message := dto.SegmentationPayload{
+					ClinicalID:   gofakeit.UUID(),
+					SegmentLabel: "LOW RISK",
+				}
+
+				data, _ := json.Marshal(message)
+				fakeExt.MockVerifyPubSubJWTAndDecodePayloadFn = func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
+					return &pubsubtools.PubSubPayload{
+						Message: pubsubtools.PubSubMessage{
+							Data: data,
+						},
+					}, nil
+				}
+
+				fakeExt.MockGetPubSubTopicFn = func(m *pubsubtools.PubSubPayload) (string, error) {
+					return utils.AddPubSubNamespace(common.SegmentationTopicName, common.ClinicalServiceName), nil
+				}
+			}
+			if tt.name == "sad case: unable to publish patient segmentation" {
+				message := dto.SegmentationPayload{
+					ClinicalID:   gofakeit.UUID(),
+					SegmentLabel: "LOW RISK",
+				}
+
+				data, _ := json.Marshal(message)
+				fakeExt.MockVerifyPubSubJWTAndDecodePayloadFn = func(w http.ResponseWriter, r *http.Request) (*pubsubtools.PubSubPayload, error) {
+					return &pubsubtools.PubSubPayload{
+						Message: pubsubtools.PubSubMessage{
+							Data: data,
+						},
+					}, nil
+				}
+
+				fakeExt.MockGetPubSubTopicFn = func(m *pubsubtools.PubSubPayload) (string, error) {
+					return utils.AddPubSubNamespace(common.SegmentationTopicName, common.ClinicalServiceName), nil
+				}
+
+				fakeAdvantage.MockSegmentPatient = func(ctx context.Context, payload dto.SegmentationPayload) error {
+					return fmt.Errorf("failed to segment patient")
 				}
 			}
 

@@ -28,6 +28,7 @@ type ServicePubsub interface {
 	NotifyPatientFHIRIDUpdate(ctx context.Context, data dto.UpdatePatientFHIRID) error
 	NotifyFacilityFHIRIDUpdate(ctx context.Context, data dto.UpdateFacilityFHIRID) error
 	NotifyProgramFHIRIDUpdate(ctx context.Context, data dto.UpdateProgramFHIRID) error
+	NotifySegmentation(ctx context.Context, data dto.SegmentationPayload) error
 }
 
 // ServicePubSubMessaging is used to send and receive pubsub notifications
@@ -83,6 +84,7 @@ func (ps ServicePubSubMessaging) TopicIDs() []string {
 		ps.AddPubSubNamespace(common.TestOrderTopicName, common.ClinicalServiceName),
 		ps.AddPubSubNamespace(common.OrganizationTopicName, common.ClinicalServiceName),
 		ps.AddPubSubNamespace(common.TenantTopicName, common.ClinicalServiceName),
+		ps.AddPubSubNamespace(common.SegmentationTopicName, common.ClinicalServiceName),
 	}
 }
 

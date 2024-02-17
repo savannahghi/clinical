@@ -11,6 +11,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
+	fakeAdvantageMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
@@ -52,23 +53,24 @@ func TestUseCasesClinicalImpl_GetTenantMetaTags(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-			Fakefhir := fakeFHIRMock.NewFHIRMock()
-			FakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "sad case: missing tenant org in context" {
-				FakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 					return nil, fmt.Errorf("failed to to get identifiers")
 				}
 			}
 
 			if tt.name == "sad case: error retrieving organisation" {
-				Fakefhir.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 					return nil, fmt.Errorf("failed to find organization")
 				}
 			}
@@ -195,8 +197,9 @@ func TestUseCasesClinicalImpl_CheckPatientExistenceUsingPhoneNumber(t *testing.T
 			FakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "sad case: missing tenant org in context" {
@@ -313,13 +316,14 @@ func TestUseCasesClinicalImpl_ContactsToContactPointInput(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			FakeExt := fakeExtMock.NewFakeBaseExtensionMock()
-			Fakefhir := fakeFHIRMock.NewFHIRMock()
-			FakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(FakeExt, Fakefhir, FakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := c.ContactsToContactPointInput(tt.args.ctx, tt.args.phones, tt.args.emails)
@@ -466,13 +470,14 @@ func TestUseCasesClinicalImpl_SimplePatientRegistrationInputToPatientInput(t *te
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ext := fakeExtMock.NewFakeBaseExtensionMock()
-			fhir := fakeFHIRMock.NewFHIRMock()
-			ocl := fakeOCLMock.NewFakeOCLMock()
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(ext, fhir, ocl, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			got, err := c.SimplePatientRegistrationInputToPatientInput(tt.args.ctx, tt.args.input)

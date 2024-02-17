@@ -118,6 +118,9 @@ spec:
             - name: SENTRY_TRACE_SAMPLE_RATE
               value:  {{ .Values.app.container.env.defaultSentryTraceSampleRate | quote }}
 
+            - name: ADVANTAGE_BASE_URL
+             value: {{.Values.app.container.env.advantageBaseURL | quote }}
+
           volumeMounts:
           - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
             mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}

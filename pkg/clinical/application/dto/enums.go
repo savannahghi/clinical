@@ -474,3 +474,48 @@ func (e *ObservationStatusEnum) UnmarshalGQL(v interface{}) error {
 func (e ObservationStatusEnum) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
+// SegmentationCategory models advantage segmentation categories for clients
+type SegmentationCategory string
+
+const (
+	SegmentationCategoryNoRisk           SegmentationCategory = "CERVICAL_CANCER_TIPS"
+	SegmentationCategoryLowRisk          SegmentationCategory = "CERVICAL_CANCER_LOW_RISK"
+	SegmentationCategoryHighRiskPositive SegmentationCategory = "CERVICAL_CANCER_POSITIVE"
+	SegmentationCategoryHighRiskNegative SegmentationCategory = "CERVICAL_CANCER_HIGH_RISK"
+)
+
+// IsValid checks validity of a SegmentationCategory enum
+func (c SegmentationCategory) IsValid() bool {
+	switch c {
+	case SegmentationCategoryNoRisk, SegmentationCategoryLowRisk, SegmentationCategoryHighRiskPositive, SegmentationCategoryHighRiskNegative:
+		return true
+	}
+
+	return false
+}
+
+// String converts segmentation to string
+func (c SegmentationCategory) String() string {
+	return string(c)
+}
+
+// MarshalGQL writes the segmentation as a quoted string
+func (c SegmentationCategory) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(c.String()))
+}
+
+// UnmarshalGQL reads a json and converts it to a segmentation enum
+func (c *SegmentationCategory) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be a string")
+	}
+
+	*c = SegmentationCategory(str)
+	if !c.IsValid() {
+		return fmt.Errorf("%s is not a valid SegmentationCategory Enum", str)
+	}
+
+	return nil
+}

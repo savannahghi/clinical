@@ -11,6 +11,7 @@ type FakeServicePubsub struct {
 	MockNotifyPatientFHIRIDUpdatefn  func(ctx context.Context, data dto.UpdatePatientFHIRID) error
 	MockNotifyFacilityFHIRIDUpdatefn func(ctx context.Context, data dto.UpdateFacilityFHIRID) error
 	MockNotifyProgramFHIRIDUpdatefn  func(ctx context.Context, data dto.UpdateProgramFHIRID) error
+	MockNotifySegmentationFn         func(ctx context.Context, data dto.SegmentationPayload) error
 }
 
 // NewPubSubServiceMock mocks the pubsub service implementation
@@ -23,6 +24,9 @@ func NewPubSubServiceMock() *FakeServicePubsub {
 			return nil
 		},
 		MockNotifyProgramFHIRIDUpdatefn: func(ctx context.Context, data dto.UpdateProgramFHIRID) error {
+			return nil
+		},
+		MockNotifySegmentationFn: func(ctx context.Context, data dto.SegmentationPayload) error {
 			return nil
 		},
 	}
@@ -43,4 +47,9 @@ func (f *FakeServicePubsub) NotifyFacilityFHIRIDUpdate(ctx context.Context, data
 // NotifyProgramFHIRIDUpdate publishes to the program fhir id update topic
 func (f *FakeServicePubsub) NotifyProgramFHIRIDUpdate(ctx context.Context, data dto.UpdateProgramFHIRID) error {
 	return f.MockNotifyProgramFHIRIDUpdatefn(ctx, data)
+}
+
+// NotifySegmentation publishes the mock data used to update the segmentation data in advantage
+func (f *FakeServicePubsub) NotifySegmentation(ctx context.Context, data dto.SegmentationPayload) error {
+	return f.MockNotifySegmentationFn(ctx, data)
 }
