@@ -20,6 +20,12 @@ func (u *UseCasesClinicalImpl) RecordConsent(ctx context.Context, input dto.Cons
 		return nil, fmt.Errorf("cannot create a consent in a finished encounter")
 	}
 
+	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+	encounterReference := &domain.FHIRReference{
+		ID:        encounter.Resource.ID,
+		Reference: &encounterRef,
+	}
+
 	patientID := encounter.Resource.Subject.ID
 	patientReference := fmt.Sprintf("Patient/%s", *patientID)
 	subjectReference := &domain.FHIRReference{
@@ -49,6 +55,12 @@ func (u *UseCasesClinicalImpl) RecordConsent(ctx context.Context, input dto.Cons
 	}
 	consentProvision := &domain.FHIRConsentProvision{
 		Type: &input.Provision,
+		Data: []domain.FHIRConsentProvisionData{
+			{
+				Meaning:   dto.ConsentDataMeaningRelated,
+				Reference: encounterReference,
+			},
+		},
 	}
 
 	tags, err := u.GetTenantMetaTags(ctx)

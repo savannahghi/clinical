@@ -15,8 +15,18 @@ type FHIRConsent struct {
 	Extension  []Extension            `json:"extension,omitempty"`
 }
 
-// ConsentProvision models a fhir consent provision
+// FHIRConsentProvision models a fhir consent provision
 type FHIRConsentProvision struct {
 	ID   *string                       `json:"id,omitempty"`
 	Type *dto.ConsentProvisionTypeEnum `json:"type,omitempty"`
+	Data []FHIRConsentProvisionData    `json:"data,omitempty"`
+}
+
+// FHIRConsentProvisionData models a consent provision data
+type FHIRConsentProvisionData struct {
+	Id                *string                    `json:"id,omitempty"`
+	Extension         []Extension                `json:"extension,omitempty"`
+	ModifierExtension []Extension                `json:"modifierExtension,omitempty"`
+	Meaning           dto.ConsentDataMeaningEnum `json:"meaning,omitempty"`
+	Reference         *FHIRReference             `json:"reference,omitempty"`
 }
