@@ -251,3 +251,9 @@ func (d DiagnosticReportInput) Validate() error {
 
 	return err
 }
+
+// ListQuestionnaireInput is used the payload to be used when fetching the questionnaires
+type ListQuestionnaireInput struct {
+	SearchParam string     `json:"searchParam,omitempty"`
+	Pagination  Pagination `json:"pagination,omitempty"`
+}

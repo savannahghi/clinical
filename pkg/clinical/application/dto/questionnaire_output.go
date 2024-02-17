@@ -30,7 +30,7 @@ func CreateQuestionnaireConnection(questionnaires []*Questionnaire, pageInfo Pag
 	for _, questionnaire := range questionnaires {
 		edge := QuestionnaireEdge{
 			Node:   *questionnaire,
-			Cursor: questionnaire.ID,
+			Cursor: *questionnaire.ID,
 		}
 
 		connection.Edges = append(connection.Edges, edge)
@@ -41,46 +41,46 @@ func CreateQuestionnaireConnection(questionnaires []*Questionnaire, pageInfo Pag
 
 // Questionnaire models the dataclass to display questionnaires
 type Questionnaire struct {
-	ID                string               `json:"id,omitempty"`
-	ResourceType      string               `json:"resourceType,omitempty"`
-	Meta              Meta                 `json:"meta,omitempty"`
-	ImplicitRules     string               `json:"implicitRules,omitempty"`
-	Language          string               `json:"language,omitempty"`
-	Text              Narrative            `json:"text,omitempty"`
-	Extension         []Extension          `json:"extension,omitempty"`
-	ModifierExtension []Extension          `json:"modifierExtension,omitempty"`
-	URL               scalarutils.URI      `json:"url,omitempty"`
-	Identifier        []Identifier         `json:"identifier,omitempty"`
-	Version           string               `json:"version,omitempty"`
-	Name              string               `json:"name,omitempty"`
-	Title             string               `json:"title,omitempty"`
-	DerivedFrom       []string             `json:"derivedFrom,omitempty"`
-	Status            scalarutils.Code     `json:"status,omitempty"`
-	Experimental      bool                 `json:"experimental,omitempty"`
-	Date              scalarutils.DateTime `json:"date,omitempty"`
-	Publisher         string               `json:"publisher,omitempty"`
-	Description       string               `json:"description,omitempty"`
-	UseContext        UsageContext         `json:"useContext,omitempty"`
-	Jurisdiction      []CodeableConcept    `json:"jurisdiction,omitempty"`
-	Purpose           string               `json:"purpose,omitempty"`
-	EffectivePeriod   Period               `json:"effectivePeriod,omitempty"`
-	Code              []Coding             `json:"code,omitempty"`
-	Item              []QuestionnaireItem  `json:"item,omitempty"`
+	ID                *string               `json:"id,omitempty"`
+	ResourceType      *string               `json:"resourceType,omitempty"`
+	Meta              *Meta                 `json:"meta,omitempty"`
+	ImplicitRules     *string               `json:"implicitRules,omitempty"`
+	Language          *string               `json:"language,omitempty"`
+	Text              *Narrative            `json:"text,omitempty"`
+	Extension         []*Extension          `json:"extension,omitempty"`
+	ModifierExtension []*Extension          `json:"modifierExtension,omitempty"`
+	URL               *scalarutils.URI      `json:"url,omitempty"`
+	Identifier        *[]Identifier         `json:"identifier,omitempty"`
+	Version           *string               `json:"version,omitempty"`
+	Name              *string               `json:"name,omitempty"`
+	Title             *string               `json:"title,omitempty"`
+	DerivedFrom       []*string             `json:"derivedFrom,omitempty"`
+	Status            *scalarutils.Code     `json:"status,omitempty"`
+	Experimental      *bool                 `json:"experimental,omitempty"`
+	Date              *scalarutils.DateTime `json:"date,omitempty"`
+	Publisher         *string               `json:"publisher,omitempty"`
+	Description       *string               `json:"description,omitempty"`
+	UseContext        *UsageContext         `json:"useContext,omitempty"`
+	Jurisdiction      []*CodeableConcept    `json:"jurisdiction,omitempty"`
+	Purpose           *string               `json:"purpose,omitempty"`
+	EffectivePeriod   *Period               `json:"effectivePeriod,omitempty"`
+	Code              []*Coding             `json:"code,omitempty"`
+	Item              []*QuestionnaireItem  `json:"item,omitempty"`
 }
 
 // Narrative models the questionnaire narrative
 type Narrative struct {
-	ID     string            `json:"id,omitempty"`
-	Status string            `json:"status,omitempty"`
-	Div    scalarutils.XHTML `json:"div,omitempty"`
+	ID     string             `json:"id,omitempty"`
+	Status string             `json:"status,omitempty"`
+	Div    *scalarutils.XHTML `json:"div,omitempty"`
 }
 
 // Extension models the various extensions of a questionnaire resource
 type Extension struct {
 	URL                  string           `json:"url,omitempty"`
 	ValueBoolean         bool             `json:"valueBoolean,omitempty"`
-	ValueInteger         int              `json:"valueInteger,omitempty"`
-	ValueDecimal         float64          `json:"valueDecimal,omitempty"`
+	ValueInteger         int              `json:"valueInteger"`
+	ValueDecimal         float64          `json:"valueDecimal"`
 	ValueBase64Binary    string           `json:"valueBase64Binary,omitempty"`
 	ValueInstant         string           `json:"valueInstant,omitempty"`
 	ValueString          string           `json:"valueString,omitempty"`
@@ -114,7 +114,7 @@ type Annotation struct {
 	AuthorReference *Reference            `json:"authorReference,omitempty"`
 	AuthorString    *string               `json:"authorString,omitempty"`
 	Time            *scalarutils.DateTime `json:"time,omitempty"`
-	Text            *scalarutils.Markdown `json:"text,omitempty"`
+	Text            scalarutils.Markdown  `json:"text,omitempty"`
 }
 
 // Range models the range of a resource
@@ -133,113 +133,113 @@ type Ratio struct {
 
 // QuestionnaireItem contains the questionnaires questions
 type QuestionnaireItem struct {
-	ID                string                          `json:"id,omitempty"`
-	Meta              Meta                            `json:"meta,omitempty"`
-	Extension         []Extension                     `json:"extension,omitempty"`
-	ModifierExtension []Extension                     `json:"modifierExtension,omitempty"`
-	LinkID            string                          `json:"linkId,omitempty"`
-	Definition        scalarutils.URI                 `json:"definition,omitempty"`
-	Code              []Coding                        `json:"code,omitempty"`
-	Prefix            string                          `json:"prefix,omitempty"`
-	Text              string                          `json:"text,omitempty"`
-	Type              scalarutils.Code                `json:"type,omitempty"`
-	EnableWhen        []QuestionnaireItemEnableWhen   `json:"enableWhen,omitempty"`
-	EnableBehavior    scalarutils.Code                `json:"enableBehavior,omitempty"`
-	DisabledDisplay   scalarutils.Code                `json:"disabledDisplay,omitempty"`
-	Required          bool                            `json:"required,omitempty"`
-	Repeats           bool                            `json:"repeats,omitempty"`
-	ReadOnly          bool                            `json:"readOnly,omitempty"`
-	MaxLength         int                             `json:"maxLength,omitempty"`
-	AnswerValueSet    string                          `json:"answerValueSet,omitempty"`
-	AnswerOption      []QuestionnaireItemAnswerOption `json:"answerOption,omitempty"`
-	Initial           []QuestionnaireItemInitial      `json:"initial,omitempty"`
-	Item              []QuestionnaireItem             `json:"item,omitempty"`
+	ID                *string                          `json:"id,omitempty"`
+	Meta              *Meta                            `json:"meta,omitempty"`
+	Extension         []*Extension                     `json:"extension,omitempty"`
+	ModifierExtension []*Extension                     `json:"modifierExtension,omitempty"`
+	LinkID            *string                          `json:"linkId,omitempty"`
+	Definition        *scalarutils.URI                 `json:"definition,omitempty"`
+	Code              []*Coding                        `json:"code,omitempty"`
+	Prefix            *string                          `json:"prefix,omitempty"`
+	Text              string                           `json:"text,omitempty"`
+	Type              *scalarutils.Code                `json:"type,omitempty"`
+	EnableWhen        []*QuestionnaireItemEnableWhen   `json:"enableWhen,omitempty"`
+	EnableBehavior    *scalarutils.Code                `json:"enableBehavior,omitempty"`
+	DisabledDisplay   *scalarutils.Code                `json:"disabledDisplay,omitempty"`
+	Required          *bool                            `json:"required,omitempty"`
+	Repeats           *bool                            `json:"repeats,omitempty"`
+	ReadOnly          *bool                            `json:"readOnly,omitempty"`
+	MaxLength         *int                             `json:"maxLength,omitempty"`
+	AnswerValueSet    *string                          `json:"answerValueSet,omitempty"`
+	AnswerOption      []*QuestionnaireItemAnswerOption `json:"answerOption,omitempty"`
+	Initial           []*QuestionnaireItemInitial      `json:"initial,omitempty"`
+	Item              []*QuestionnaireItem             `json:"item,omitempty"`
 }
 
 // QuestionnaireItemEnableWhen models an output that represents the initial values of a questionnaire item
 type QuestionnaireItemEnableWhen struct {
-	ID                string               `json:"id,omitempty"`
-	Extension         []Extension          `json:"extension,omitempty"`
-	ModifierExtension []Extension          `json:"modifierExtension,omitempty"`
-	Question          string               `json:"question,omitempty"`
-	Operator          scalarutils.Code     `json:"operator,omitempty"`
-	AnswerBoolean     bool                 `json:"answerBoolean,omitempty"`
-	AnswerDecimal     float64              `json:"answerDecimal,omitempty"`
-	AnswerInteger     int                  `json:"answerInteger,omitempty"`
-	AnswerDate        scalarutils.Date     `json:"answerDate,omitempty"`
-	AnswerDateTime    scalarutils.DateTime `json:"answerDateTime,omitempty"`
-	AnswerTime        scalarutils.DateTime `json:"answerTime,omitempty"`
-	AnswerString      string               `json:"answerString,omitempty"`
-	AnswerCoding      Coding               `json:"answerCoding,omitempty"`
-	AnswerQuantity    Quantity             `json:"answerQuantity,omitempty"`
-	AnswerReference   Reference            `json:"answerReference,omitempty"`
+	ID                *string               `json:"id,omitempty"`
+	Extension         []*Extension          `json:"extension,omitempty"`
+	ModifierExtension []*Extension          `json:"modifierExtension,omitempty"`
+	Question          *string               `json:"question,omitempty"`
+	Operator          *scalarutils.Code     `json:"operator,omitempty"`
+	AnswerBoolean     *bool                 `json:"answerBoolean,omitempty"`
+	AnswerDecimal     *float64              `json:"answerDecimal,omitempty"`
+	AnswerInteger     *int                  `json:"answerInteger,omitempty"`
+	AnswerDate        *scalarutils.Date     `json:"answerDate,omitempty"`
+	AnswerDateTime    *scalarutils.DateTime `json:"answerDateTime,omitempty"`
+	AnswerTime        *scalarutils.DateTime `json:"answerTime,omitempty"`
+	AnswerString      *string               `json:"answerString,omitempty"`
+	AnswerCoding      *Coding               `json:"answerCoding,omitempty"`
+	AnswerQuantity    *Quantity             `json:"answerQuantity,omitempty"`
+	AnswerReference   *Reference            `json:"answerReference,omitempty"`
 }
 
 // QuestionnaireItemAnswerOption defines the answer option for a Questionnaire item
 type QuestionnaireItemAnswerOption struct {
-	ID                string           `json:"id,omitempty"`
-	Extension         []Extension      `json:"extension,omitempty"`
-	ModifierExtension []Extension      `json:"modifierExtension,omitempty"`
-	ValueInteger      int              `json:"valueInteger,omitempty"`
-	ValueDate         scalarutils.Date `json:"valueDate,omitempty"`
-	ValueString       string           `json:"valueString,omitempty"`
-	ValueCoding       Coding           `json:"valueCoding,omitempty"`
-	ValueReference    Reference        `json:"valueReference,omitempty"`
-	InitialSelected   bool             `json:"initialSelected,omitempty"`
+	ID                *string           `json:"id,omitempty"`
+	Extension         []*Extension      `json:"extension,omitempty"`
+	ModifierExtension []*Extension      `json:"modifierExtension,omitempty"`
+	ValueInteger      int               `json:"valueInteger,omitempty"`
+	ValueDate         *scalarutils.Date `json:"valueDate,omitempty"`
+	ValueString       *string           `json:"valueString,omitempty"`
+	ValueCoding       *Coding           `json:"valueCoding,omitempty"`
+	ValueReference    *Reference        `json:"valueReference,omitempty"`
+	InitialSelected   *bool             `json:"initialSelected,omitempty"`
 }
 
 // QuestionnaireItemInitial models the initial values of a Questionnaire item.
 type QuestionnaireItemInitial struct {
-	ID                string               `json:"id,omitempty"`
-	Extension         []Extension          `json:"extension,omitempty"`
-	ModifierExtension []Extension          `json:"modifierExtension,omitempty"`
-	ValueBoolean      bool                 `json:"valueBoolean,omitempty"`
-	ValueDecimal      float64              `json:"valueDecimal,omitempty"`
-	ValueInteger      int                  `json:"valueInteger,omitempty"`
-	ValueDate         scalarutils.Date     `json:"valueDate,omitempty"`
-	ValueDateTime     scalarutils.DateTime `json:"valuescalarutils.DateTime,omitempty"`
-	ValueString       string               `json:"valueString,omitempty"`
-	ValueURI          scalarutils.URI      `json:"valueUri,omitempty"`
-	ValueAttachment   Attachment           `json:"valueAttachment,omitempty"`
-	ValueCoding       Coding               `json:"valueCoding,omitempty"`
-	ValueQuantity     Quantity             `json:"valueQuantity,omitempty"`
-	ValueReference    Reference            `json:"valueReference,omitempty"`
+	ID                *string               `json:"id,omitempty"`
+	Extension         []*Extension          `json:"extension,omitempty"`
+	ModifierExtension []*Extension          `json:"modifierExtension,omitempty"`
+	ValueBoolean      *bool                 `json:"valueBoolean,omitempty"`
+	ValueDecimal      *float64              `json:"valueDecimal,omitempty"`
+	ValueInteger      *int                  `json:"valueInteger,omitempty"`
+	ValueDate         *scalarutils.Date     `json:"valueDate,omitempty"`
+	ValueDateTime     *scalarutils.DateTime `json:"valuescalarutils.DateTime,omitempty"`
+	ValueString       *string               `json:"valueString,omitempty"`
+	ValueURI          *scalarutils.URI      `json:"valueUri,omitempty"`
+	ValueAttachment   *Attachment           `json:"valueAttachment,omitempty"`
+	ValueCoding       *Coding               `json:"valueCoding,omitempty"`
+	ValueQuantity     *Quantity             `json:"valueQuantity,omitempty"`
+	ValueReference    *Reference            `json:"valueReference,omitempty"`
 }
 
 // UsageContext defines the questionnaires usage context
 type UsageContext struct {
-	ID                   string          `json:"id,omitempty"`
-	Extension            []Extension     `json:"extension,omitempty"`
-	Code                 Coding          `json:"code,omitempty"`
-	ValueCodeableConcept CodeableConcept `json:"valueCodeableConcept,omitempty"`
-	ValueQuantity        Quantity        `json:"valueQuantity,omitempty"`
-	ValueRange           Range           `json:"valueRange,omitempty"`
-	ValueReference       Reference       `json:"valueReference,omitempty"`
+	ID                   *string          `json:"id,omitempty"`
+	Extension            []*Extension     `json:"extension,omitempty"`
+	Code                 *Coding          `json:"code,omitempty"`
+	ValueCodeableConcept *CodeableConcept `json:"valueCodeableConcept,omitempty"`
+	ValueQuantity        *Quantity        `json:"valueQuantity,omitempty"`
+	ValueRange           *Range           `json:"valueRange,omitempty"`
+	ValueReference       *Reference       `json:"valueReference,omitempty"`
 }
 
 // Identifier models tha data is associated with a resource
 type Identifier struct {
-	ID       string          `json:"id,omitempty"`
-	Use      string          `json:"use,omitempty"`
-	Type     CodeableConcept `json:"type,omitempty"`
-	System   scalarutils.URI `json:"system,omitempty"`
-	Value    string          `json:"value,omitempty"`
-	Period   Period          `json:"period,omitempty"`
-	Assigner *Reference      `json:"assigner,omitempty"`
+	ID       *string          `json:"id,omitempty"`
+	Use      *string          `json:"use,omitempty"`
+	Type     *CodeableConcept `json:"type,omitempty"`
+	System   *scalarutils.URI `json:"system,omitempty"`
+	Value    *string          `json:"value,omitempty"`
+	Period   *Period          `json:"period,omitempty"`
+	Assigner *Reference       `json:"assigner,omitempty"`
 }
 
 // CodeableConcept represents a codeable concept associated with a questionnaire item
 type CodeableConcept struct {
-	ID     string   `json:"id,omitempty"`
-	Coding []Coding `json:"coding,omitempty"`
-	Text   string   `json:"text,omitempty"`
+	ID     *string   `json:"id,omitempty"`
+	Coding []*Coding `json:"coding,omitempty"`
+	Text   string    `json:"text,omitempty"`
 }
 
 // Period is the questionnaires period
 type Period struct {
-	ID    string               `json:"id,omitempty"`
-	Start scalarutils.DateTime `json:"start,omitempty"`
-	End   scalarutils.DateTime `json:"end,omitempty"`
+	ID    *string               `json:"id,omitempty"`
+	Start *scalarutils.DateTime `json:"start,omitempty"`
+	End   *scalarutils.DateTime `json:"end,omitempty"`
 }
 
 // Meta models questionnaire output metadata

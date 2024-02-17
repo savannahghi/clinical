@@ -128,10 +128,9 @@ func TestUseCasesClinicalImpl_CreateQuestionnaire(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_ListQuestionnaires(t *testing.T) {
-	cancerType := "Cervical"
 	type args struct {
 		ctx        context.Context
-		name       *string
+		title      string
 		pagination *dto.Pagination
 	}
 	tests := []struct {
@@ -143,7 +142,7 @@ func TestUseCasesClinicalImpl_ListQuestionnaires(t *testing.T) {
 			name: "Happy case: list questionnaire",
 			args: args{
 				ctx:        addTenantIdentifierContext(context.Background()),
-				name:       &cancerType,
+				title:      "Cervical Cancer Screening Form",
 				pagination: &dto.Pagination{},
 			},
 			wantErr: false,
@@ -152,7 +151,7 @@ func TestUseCasesClinicalImpl_ListQuestionnaires(t *testing.T) {
 			name: "Sad case: unable to list questionnaire",
 			args: args{
 				ctx:        addTenantIdentifierContext(context.Background()),
-				name:       &cancerType,
+				title:      "Cervical Cancer Screening Form",
 				pagination: &dto.Pagination{},
 			},
 			wantErr: true,
@@ -161,7 +160,7 @@ func TestUseCasesClinicalImpl_ListQuestionnaires(t *testing.T) {
 			name: "Sad case: unable to get tenant identifiers",
 			args: args{
 				ctx:        addTenantIdentifierContext(context.Background()),
-				name:       &cancerType,
+				title:      "Cervical Cancer Screening Form",
 				pagination: &dto.Pagination{},
 			},
 			wantErr: true,
@@ -190,7 +189,7 @@ func TestUseCasesClinicalImpl_ListQuestionnaires(t *testing.T) {
 				}
 			}
 
-			_, err := q.ListQuestionnaires(tt.args.ctx, tt.args.name, tt.args.pagination)
+			_, err := q.ListQuestionnaires(tt.args.ctx, tt.args.title, tt.args.pagination)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.ListQuestionnaires() error = %v, wantErr %v", err, tt.wantErr)
 				return

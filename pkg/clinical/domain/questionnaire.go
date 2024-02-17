@@ -100,7 +100,7 @@ type FHIRQuestionnaireItemAnswerOption struct {
 	ValueInteger      *int              `json:"valueInteger,omitempty" mapstructure:"valueInteger"`
 	ValueDate         *scalarutils.Date `json:"valueDate,omitempty" mapstructure:"valueDate"`
 	ValueTime         *time.Time        `json:"valueTime,omitempty" mapstructure:"valueTime"`
-	ValueString       string            `json:"valueString,omitempty" mapstructure:"valueString"`
+	ValueString       *string           `json:"valueString,omitempty" mapstructure:"valueString"`
 	ValueCoding       *FHIRCoding       `json:"valueCoding,omitempty" mapstructure:"valueCoding"`
 	ValueReference    *FHIRReference    `json:"valueReference,omitempty" mapstructure:"valueReference"`
 	InitialSelected   *bool             `json:"initialSelected,omitempty" mapstructure:"initialSelected"`

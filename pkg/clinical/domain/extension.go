@@ -5,8 +5,8 @@ package domain
 type Extension struct {
 	URL                  string               `json:"url,omitempty"`
 	ValueBoolean         bool                 `json:"valueBoolean,omitempty"`
-	ValueInteger         int                  `json:"valueInteger,omitempty"`
-	ValueDecimal         float64              `json:"valueDecimal,omitempty"`
+	ValueInteger         *int                 `json:"valueInteger,omitempty"`
+	ValueDecimal         *float64             `json:"valueDecimal,omitempty"`
 	ValueBase64Binary    string               `json:"valueBase64Binary,omitempty"`
 	ValueInstant         string               `json:"valueInstant,omitempty"`
 	ValueString          string               `json:"valueString,omitempty"`

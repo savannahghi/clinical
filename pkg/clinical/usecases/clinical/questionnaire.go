@@ -31,7 +31,7 @@ func (q *UseCasesClinicalImpl) CreateQuestionnaire(ctx context.Context, question
 
 // ListQuestionnaires is used to list questionnaires from FHIR repository.
 // This search is performed using the name or the title of the questionnaire and returns the available questionnaire(s).
-func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchParam *string, pagination *dto.Pagination) (*dto.QuestionnaireConnection, error) {
+func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchParam string, pagination *dto.Pagination) (*dto.QuestionnaireConnection, error) {
 	identifiers, err := q.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
@@ -39,10 +39,11 @@ func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchPar
 
 	params := map[string]interface{}{
 		"status": "active",
+		"_sort":  "-date",
 	}
 
-	if searchParam != nil {
-		params["title"] = *searchParam
+	if searchParam != "" {
+		params["title:exact"] = searchParam
 	}
 
 	questionnaire, err := q.infrastructure.FHIR.ListFHIRQuestionnaire(ctx, params, *identifiers, *pagination)
