@@ -31,7 +31,7 @@ func (q *UseCasesClinicalImpl) CreateQuestionnaire(ctx context.Context, question
 
 // ListQuestionnaires is used to list questionnaires from FHIR repository.
 // This search is performed using the name or the title of the questionnaire and returns the available questionnaire(s).
-func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchParam string, pagination *dto.Pagination) (*dto.QuestionnaireConnection, error) {
+func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchParam string, pagination *dto.Pagination) (*dto.Questionnaire, error) {
 	identifiers, err := q.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
@@ -40,6 +40,7 @@ func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchPar
 	params := map[string]interface{}{
 		"status": "active",
 		"_sort":  "-date",
+		"_count": "1",
 	}
 
 	if searchParam != "" {
@@ -51,15 +52,6 @@ func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchPar
 		return nil, err
 	}
 
-	pageInfo := dto.PageInfo{
-		HasNextPage:     questionnaire.HasNextPage,
-		EndCursor:       &questionnaire.NextCursor,
-		HasPreviousPage: questionnaire.HasPreviousPage,
-		StartCursor:     &questionnaire.PreviousCursor,
-	}
-
-	questionnaireList := []*dto.Questionnaire{}
-
 	var dtoQuestionnaire *dto.Questionnaire
 
 	for _, questionnaire := range questionnaire.Questionnaires {
@@ -67,11 +59,7 @@ func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchPar
 		if err != nil {
 			return nil, err
 		}
-
-		questionnaireList = append(questionnaireList, dtoQuestionnaire)
 	}
 
-	connection := dto.CreateQuestionnaireConnection(questionnaireList, pageInfo, questionnaire.TotalCount)
-
-	return &connection, nil
+	return dtoQuestionnaire, nil
 }

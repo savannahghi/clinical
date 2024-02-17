@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
@@ -340,15 +339,7 @@ func (p PresentationHandlersImpl) ListQuestionnaire(c *gin.Context) {
 
 	searchParam := queryParams.Get("searchParam")
 
-	first, err := strconv.Atoi(queryParams.Get("first"))
-	if err != nil {
-		jsonErrorResponse(c, http.StatusBadRequest, err)
-		return
-	}
-
-	questionnaire, err := p.usecases.ListQuestionnaires(c.Request.Context(), searchParam, &dto.Pagination{
-		First: &first,
-	})
+	questionnaire, err := p.usecases.ListQuestionnaires(c.Request.Context(), searchParam, &dto.Pagination{})
 	if err != nil {
 		jsonErrorResponse(c, http.StatusBadRequest, err)
 		return

@@ -417,7 +417,6 @@ type ComplexityRoot struct {
 		ListPatientConditions                   func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		ListPatientEncounters                   func(childComplexity int, patientID string, pagination dto.Pagination) int
 		ListPatientMedia                        func(childComplexity int, patientID string, pagination dto.Pagination) int
-		ListQuestionnaires                      func(childComplexity int, searchParam *string, pagination dto.Pagination) int
 		PatientHealthTimeline                   func(childComplexity int, input dto.HealthTimelineInput) int
 		SearchAllergy                           func(childComplexity int, name string, pagination dto.Pagination) int
 		__resolve__service                      func(childComplexity int) int
@@ -714,7 +713,6 @@ type QueryResolver interface {
 	GetAllergy(ctx context.Context, id string) (*dto.Allergy, error)
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
 	ListPatientMedia(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.MediaConnection, error)
-	ListQuestionnaires(ctx context.Context, searchParam *string, pagination dto.Pagination) (*dto.QuestionnaireConnection, error)
 	GetQuestionnaireResponseRiskLevel(ctx context.Context, encounterID string, screeningType domain.ScreeningTypeEnum) (string, error)
 }
 
@@ -2861,18 +2859,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ListPatientMedia(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
-	case "Query.listQuestionnaires":
-		if e.complexity.Query.ListQuestionnaires == nil {
-			break
-		}
-
-		args, err := ec.field_Query_listQuestionnaires_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.ListQuestionnaires(childComplexity, args["searchParam"].(*string), args["pagination"].(dto.Pagination)), true
-
 	case "Query.patientHealthTimeline":
 		if e.complexity.Query.PatientHealthTimeline == nil {
 			break
@@ -4237,13 +4223,10 @@ var sources = []*ast.Source{
   # Media
   listPatientMedia(patientID: ID!, pagination: Pagination!): MediaConnection
 
-  # Questionnaire
-  listQuestionnaires(
-    searchParam: String
-    pagination: Pagination!
-  ): QuestionnaireConnection!
-
-  getQuestionnaireResponseRiskLevel(encounterID: String!, screeningType: ScreeningTypeEnum!): String!
+  getQuestionnaireResponseRiskLevel(
+    encounterID: String!
+    screeningType: ScreeningTypeEnum!
+  ): String!
 }
 
 extend type Mutation {
@@ -6887,30 +6870,6 @@ func (ec *executionContext) field_Query_listPatientMedia_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_listQuestionnaires_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["searchParam"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("searchParam"))
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["searchParam"] = arg0
-	var arg1 dto.Pagination
-	if tmp, ok := rawArgs["pagination"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["pagination"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_patientHealthTimeline_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -7727,9 +7686,9 @@ func (ec *executionContext) _Annotation_Text(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*scalarutils.Markdown)
+	res := resTmp.(scalarutils.Markdown)
 	fc.Result = res
-	return ec.marshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx, field.Selections, res)
+	return ec.marshalOMarkdown2githubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Annotation_Text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8137,9 +8096,9 @@ func (ec *executionContext) _CodeableConcept_id(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_CodeableConcept_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8178,9 +8137,9 @@ func (ec *executionContext) _CodeableConcept_coding(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Coding)
+	res := resTmp.([]*dto.Coding)
 	fc.Result = res
-	return ec.marshalOCoding2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+	return ec.marshalOCoding2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_CodeableConcept_coding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12221,9 +12180,9 @@ func (ec *executionContext) _Identifier_id(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Identifier_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12262,9 +12221,9 @@ func (ec *executionContext) _Identifier_use(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Identifier_use(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12303,9 +12262,9 @@ func (ec *executionContext) _Identifier_type(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.CodeableConcept)
+	res := resTmp.(*dto.CodeableConcept)
 	fc.Result = res
-	return ec.marshalOCodeableConcept2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, field.Selections, res)
+	return ec.marshalOCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Identifier_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12352,9 +12311,9 @@ func (ec *executionContext) _Identifier_system(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Identifier_system(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12393,9 +12352,9 @@ func (ec *executionContext) _Identifier_value(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Identifier_value(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12434,9 +12393,9 @@ func (ec *executionContext) _Identifier_period(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Period)
+	res := resTmp.(*dto.Period)
 	fc.Result = res
-	return ec.marshalOPeriod2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPeriod(ctx, field.Selections, res)
+	return ec.marshalOPeriod2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPeriod(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Identifier_period(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17266,9 +17225,9 @@ func (ec *executionContext) _Narrative_div(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.XHTML)
+	res := resTmp.(*scalarutils.XHTML)
 	fc.Result = res
-	return ec.marshalOXHTML2githubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx, field.Selections, res)
+	return ec.marshalOXHTML2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Narrative_div(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18363,9 +18322,9 @@ func (ec *executionContext) _Period_id(ctx context.Context, field graphql.Collec
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Period_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18404,9 +18363,9 @@ func (ec *executionContext) _Period_start(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Period_start(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18445,9 +18404,9 @@ func (ec *executionContext) _Period_end(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Period_end(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20066,69 +20025,6 @@ func (ec *executionContext) fieldContext_Query_listPatientMedia(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_listQuestionnaires(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_listQuestionnaires(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ListQuestionnaires(rctx, fc.Args["searchParam"].(*string), fc.Args["pagination"].(dto.Pagination))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*dto.QuestionnaireConnection)
-	fc.Result = res
-	return ec.marshalNQuestionnaireConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireConnection(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_listQuestionnaires(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "totalCount":
-				return ec.fieldContext_QuestionnaireConnection_totalCount(ctx, field)
-			case "edges":
-				return ec.fieldContext_QuestionnaireConnection_edges(ctx, field)
-			case "pageInfo":
-				return ec.fieldContext_QuestionnaireConnection_pageInfo(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type QuestionnaireConnection", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_listQuestionnaires_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_getQuestionnaireResponseRiskLevel(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_getQuestionnaireResponseRiskLevel(ctx, field)
 	if err != nil {
@@ -20384,9 +20280,9 @@ func (ec *executionContext) _Questionnaire_id(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20428,9 +20324,9 @@ func (ec *executionContext) _Questionnaire_resourceType(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_resourceType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20469,9 +20365,9 @@ func (ec *executionContext) _Questionnaire_meta(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Meta)
+	res := resTmp.(*dto.Meta)
 	fc.Result = res
-	return ec.marshalOMeta2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMeta(ctx, field.Selections, res)
+	return ec.marshalOMeta2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMeta(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_meta(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20520,9 +20416,9 @@ func (ec *executionContext) _Questionnaire_implicitRules(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_implicitRules(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20561,9 +20457,9 @@ func (ec *executionContext) _Questionnaire_language(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_language(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20602,9 +20498,9 @@ func (ec *executionContext) _Questionnaire_text(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Narrative)
+	res := resTmp.(*dto.Narrative)
 	fc.Result = res
-	return ec.marshalONarrative2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐNarrative(ctx, field.Selections, res)
+	return ec.marshalONarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐNarrative(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20651,9 +20547,9 @@ func (ec *executionContext) _Questionnaire_extension(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_extension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20750,9 +20646,9 @@ func (ec *executionContext) _Questionnaire_modifierExtension(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_modifierExtension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20849,9 +20745,9 @@ func (ec *executionContext) _Questionnaire_url(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_url(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20890,9 +20786,9 @@ func (ec *executionContext) _Questionnaire_identifier(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Identifier)
+	res := resTmp.(*[]dto.Identifier)
 	fc.Result = res
-	return ec.marshalOIdentifier2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalOIdentifier2ᚖᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_identifier(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20947,9 +20843,9 @@ func (ec *executionContext) _Questionnaire_version(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_version(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20988,9 +20884,9 @@ func (ec *executionContext) _Questionnaire_name(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21029,9 +20925,9 @@ func (ec *executionContext) _Questionnaire_title(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21070,9 +20966,9 @@ func (ec *executionContext) _Questionnaire_derivedFrom(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]string)
+	res := resTmp.([]*string)
 	fc.Result = res
-	return ec.marshalOString2ᚕstring(ctx, field.Selections, res)
+	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_derivedFrom(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21111,9 +21007,9 @@ func (ec *executionContext) _Questionnaire_status(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21152,9 +21048,9 @@ func (ec *executionContext) _Questionnaire_experimental(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_experimental(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21193,9 +21089,9 @@ func (ec *executionContext) _Questionnaire_date(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_date(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21234,9 +21130,9 @@ func (ec *executionContext) _Questionnaire_publisher(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_publisher(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21275,9 +21171,9 @@ func (ec *executionContext) _Questionnaire_description(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21316,9 +21212,9 @@ func (ec *executionContext) _Questionnaire_useContext(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.UsageContext)
+	res := resTmp.(*dto.UsageContext)
 	fc.Result = res
-	return ec.marshalOUsageContext2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐUsageContext(ctx, field.Selections, res)
+	return ec.marshalOUsageContext2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐUsageContext(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_useContext(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21373,9 +21269,9 @@ func (ec *executionContext) _Questionnaire_jurisdiction(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.CodeableConcept)
+	res := resTmp.([]*dto.CodeableConcept)
 	fc.Result = res
-	return ec.marshalOCodeableConcept2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, field.Selections, res)
+	return ec.marshalOCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_jurisdiction(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21422,9 +21318,9 @@ func (ec *executionContext) _Questionnaire_purpose(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_purpose(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21463,9 +21359,9 @@ func (ec *executionContext) _Questionnaire_effectivePeriod(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Period)
+	res := resTmp.(*dto.Period)
 	fc.Result = res
-	return ec.marshalOPeriod2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPeriod(ctx, field.Selections, res)
+	return ec.marshalOPeriod2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPeriod(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_effectivePeriod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21512,9 +21408,9 @@ func (ec *executionContext) _Questionnaire_code(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Coding)
+	res := resTmp.([]*dto.Coding)
 	fc.Result = res
-	return ec.marshalOCoding2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+	return ec.marshalOCoding2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21567,9 +21463,9 @@ func (ec *executionContext) _Questionnaire_item(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.QuestionnaireItem)
+	res := resTmp.([]*dto.QuestionnaireItem)
 	fc.Result = res
-	return ec.marshalOQuestionnaireItem2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx, field.Selections, res)
+	return ec.marshalOQuestionnaireItem2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Questionnaire_item(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21925,9 +21821,9 @@ func (ec *executionContext) _QuestionnaireItem_id(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21966,9 +21862,9 @@ func (ec *executionContext) _QuestionnaireItem_meta(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Meta)
+	res := resTmp.(*dto.Meta)
 	fc.Result = res
-	return ec.marshalOMeta2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMeta(ctx, field.Selections, res)
+	return ec.marshalOMeta2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMeta(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_meta(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22017,9 +21913,9 @@ func (ec *executionContext) _QuestionnaireItem_extension(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_extension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22116,9 +22012,9 @@ func (ec *executionContext) _QuestionnaireItem_modifierExtension(ctx context.Con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_modifierExtension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22215,9 +22111,9 @@ func (ec *executionContext) _QuestionnaireItem_linkId(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_linkId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22256,9 +22152,9 @@ func (ec *executionContext) _QuestionnaireItem_definition(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_definition(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22297,9 +22193,9 @@ func (ec *executionContext) _QuestionnaireItem_code(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Coding)
+	res := resTmp.([]*dto.Coding)
 	fc.Result = res
-	return ec.marshalOCoding2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+	return ec.marshalOCoding2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22352,9 +22248,9 @@ func (ec *executionContext) _QuestionnaireItem_prefix(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_prefix(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22434,9 +22330,9 @@ func (ec *executionContext) _QuestionnaireItem_type(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22475,9 +22371,9 @@ func (ec *executionContext) _QuestionnaireItem_enableWhen(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.QuestionnaireItemEnableWhen)
+	res := resTmp.([]*dto.QuestionnaireItemEnableWhen)
 	fc.Result = res
-	return ec.marshalOQuestionnaireItemEnableWhen2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx, field.Selections, res)
+	return ec.marshalOQuestionnaireItemEnableWhen2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_enableWhen(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22548,9 +22444,9 @@ func (ec *executionContext) _QuestionnaireItem_enableBehavior(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_enableBehavior(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22589,9 +22485,9 @@ func (ec *executionContext) _QuestionnaireItem_disabledDisplay(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_disabledDisplay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22630,9 +22526,9 @@ func (ec *executionContext) _QuestionnaireItem_required(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_required(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22671,9 +22567,9 @@ func (ec *executionContext) _QuestionnaireItem_repeats(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_repeats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22712,9 +22608,9 @@ func (ec *executionContext) _QuestionnaireItem_readOnly(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_readOnly(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22753,9 +22649,9 @@ func (ec *executionContext) _QuestionnaireItem_maxLength(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_maxLength(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22794,9 +22690,9 @@ func (ec *executionContext) _QuestionnaireItem_answerValueSet(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_answerValueSet(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22835,9 +22731,9 @@ func (ec *executionContext) _QuestionnaireItem_answerOption(ctx context.Context,
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.QuestionnaireItemAnswerOption)
+	res := resTmp.([]*dto.QuestionnaireItemAnswerOption)
 	fc.Result = res
-	return ec.marshalOQuestionnaireItemAnswerOption2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx, field.Selections, res)
+	return ec.marshalOQuestionnaireItemAnswerOption2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_answerOption(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22896,9 +22792,9 @@ func (ec *executionContext) _QuestionnaireItem_initial(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.QuestionnaireItemInitial)
+	res := resTmp.([]*dto.QuestionnaireItemInitial)
 	fc.Result = res
-	return ec.marshalOQuestionnaireItemInitial2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx, field.Selections, res)
+	return ec.marshalOQuestionnaireItemInitial2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_initial(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22967,9 +22863,9 @@ func (ec *executionContext) _QuestionnaireItem_item(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.QuestionnaireItem)
+	res := resTmp.([]*dto.QuestionnaireItem)
 	fc.Result = res
-	return ec.marshalOQuestionnaireItem2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx, field.Selections, res)
+	return ec.marshalOQuestionnaireItem2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItem_item(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23052,9 +22948,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_id(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23093,9 +22989,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_extension(ctx context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_extension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23192,9 +23088,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_modifierExtension(ctx
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_modifierExtension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23332,9 +23228,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_valueDate(ctx context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_valueDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23373,9 +23269,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_valueString(ctx conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_valueString(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23414,9 +23310,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_valueCoding(ctx conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Coding)
+	res := resTmp.(*dto.Coding)
 	fc.Result = res
-	return ec.marshalOCoding2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+	return ec.marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_valueCoding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23469,9 +23365,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_valueReference(ctx co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Reference)
+	res := resTmp.(*dto.Reference)
 	fc.Result = res
-	return ec.marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_valueReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23522,9 +23418,9 @@ func (ec *executionContext) _QuestionnaireItemAnswerOption_initialSelected(ctx c
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemAnswerOption_initialSelected(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23563,9 +23459,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_id(ctx context.Context,
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23604,9 +23500,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_extension(ctx context.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_extension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23703,9 +23599,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_modifierExtension(ctx c
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_modifierExtension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23802,9 +23698,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_question(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_question(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23843,9 +23739,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_operator(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Code)
+	res := resTmp.(*scalarutils.Code)
 	fc.Result = res
-	return ec.marshalOCode2githubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
+	return ec.marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐCode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_operator(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23884,9 +23780,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerBoolean(ctx conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerBoolean(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23925,9 +23821,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerDecimal(ctx conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(float64)
+	res := resTmp.(*float64)
 	fc.Result = res
-	return ec.marshalOFloat2float64(ctx, field.Selections, res)
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerDecimal(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23966,9 +23862,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerInteger(ctx conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerInteger(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24007,9 +23903,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerDate(ctx context.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24048,9 +23944,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerDateTime(ctx cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24089,9 +23985,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerTime(ctx context.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24130,9 +24026,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerString(ctx contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerString(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24171,9 +24067,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerCoding(ctx contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Coding)
+	res := resTmp.(*dto.Coding)
 	fc.Result = res
-	return ec.marshalOCoding2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+	return ec.marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerCoding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24226,9 +24122,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerQuantity(ctx cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Quantity)
+	res := resTmp.(*dto.Quantity)
 	fc.Result = res
-	return ec.marshalOQuantity2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, field.Selections, res)
+	return ec.marshalOQuantity2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerQuantity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24279,9 +24175,9 @@ func (ec *executionContext) _QuestionnaireItemEnableWhen_answerReference(ctx con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Reference)
+	res := resTmp.(*dto.Reference)
 	fc.Result = res
-	return ec.marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemEnableWhen_answerReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24332,9 +24228,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_id(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24373,9 +24269,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_extension(ctx context.Cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_extension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24472,9 +24368,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_modifierExtension(ctx cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_modifierExtension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24571,9 +24467,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueBoolean(ctx context.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueBoolean(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24612,9 +24508,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueDecimal(ctx context.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(float64)
+	res := resTmp.(*float64)
 	fc.Result = res
-	return ec.marshalOFloat2float64(ctx, field.Selections, res)
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueDecimal(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24653,9 +24549,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueInteger(ctx context.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueInteger(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24694,9 +24590,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueDate(ctx context.Cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.Date)
+	res := resTmp.(*scalarutils.Date)
 	fc.Result = res
-	return ec.marshalODate2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
+	return ec.marshalODate2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24735,9 +24631,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueDateTime(ctx context.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.DateTime)
+	res := resTmp.(*scalarutils.DateTime)
 	fc.Result = res
-	return ec.marshalODateTime2githubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐDateTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24776,9 +24672,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueString(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueString(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24817,9 +24713,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueUri(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalarutils.URI)
+	res := resTmp.(*scalarutils.URI)
 	fc.Result = res
-	return ec.marshalOURI2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
+	return ec.marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueUri(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24858,9 +24754,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueAttachment(ctx contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Attachment)
+	res := resTmp.(*dto.Attachment)
 	fc.Result = res
-	return ec.marshalOAttachment2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx, field.Selections, res)
+	return ec.marshalOAttachment2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueAttachment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24919,9 +24815,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueCoding(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Coding)
+	res := resTmp.(*dto.Coding)
 	fc.Result = res
-	return ec.marshalOCoding2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+	return ec.marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueCoding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24974,9 +24870,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueQuantity(ctx context.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Quantity)
+	res := resTmp.(*dto.Quantity)
 	fc.Result = res
-	return ec.marshalOQuantity2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, field.Selections, res)
+	return ec.marshalOQuantity2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueQuantity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25027,9 +24923,9 @@ func (ec *executionContext) _QuestionnaireItemInitial_valueReference(ctx context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Reference)
+	res := resTmp.(*dto.Reference)
 	fc.Result = res
-	return ec.marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionnaireItemInitial_valueReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27612,9 +27508,9 @@ func (ec *executionContext) _UsageContext_id(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UsageContext_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27653,9 +27549,9 @@ func (ec *executionContext) _UsageContext_extension(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]dto.Extension)
+	res := resTmp.([]*dto.Extension)
 	fc.Result = res
-	return ec.marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
+	return ec.marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UsageContext_extension(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27752,9 +27648,9 @@ func (ec *executionContext) _UsageContext_code(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Coding)
+	res := resTmp.(*dto.Coding)
 	fc.Result = res
-	return ec.marshalOCoding2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
+	return ec.marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UsageContext_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27807,9 +27703,9 @@ func (ec *executionContext) _UsageContext_valueCodeableConcept(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.CodeableConcept)
+	res := resTmp.(*dto.CodeableConcept)
 	fc.Result = res
-	return ec.marshalOCodeableConcept2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, field.Selections, res)
+	return ec.marshalOCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UsageContext_valueCodeableConcept(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27856,9 +27752,9 @@ func (ec *executionContext) _UsageContext_valueQuantity(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Quantity)
+	res := resTmp.(*dto.Quantity)
 	fc.Result = res
-	return ec.marshalOQuantity2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, field.Selections, res)
+	return ec.marshalOQuantity2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuantity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UsageContext_valueQuantity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27909,9 +27805,9 @@ func (ec *executionContext) _UsageContext_valueRange(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Range)
+	res := resTmp.(*dto.Range)
 	fc.Result = res
-	return ec.marshalORange2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRange(ctx, field.Selections, res)
+	return ec.marshalORange2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRange(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UsageContext_valueRange(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27958,9 +27854,9 @@ func (ec *executionContext) _UsageContext_valueReference(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.Reference)
+	res := resTmp.(*dto.Reference)
 	fc.Result = res
-	return ec.marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UsageContext_valueReference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -33972,28 +33868,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "listQuestionnaires":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_listQuestionnaires(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "getQuestionnaireResponseRiskLevel":
 			field := field
 
@@ -35917,20 +35791,6 @@ func (ec *executionContext) unmarshalNPatientInput2githubᚗcomᚋsavannahghiᚋ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNQuestionnaireConnection2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireConnection(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireConnection) graphql.Marshaler {
-	return ec._QuestionnaireConnection(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNQuestionnaireConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireConnection(ctx context.Context, sel ast.SelectionSet, v *dto.QuestionnaireConnection) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._QuestionnaireConnection(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNQuestionnaireResponseInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, v interface{}) (dto.QuestionnaireResponse, error) {
 	res, err := ec.unmarshalInputQuestionnaireResponseInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -36006,6 +35866,27 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	}
 
 	return ret
+}
+
+func (ec *executionContext) unmarshalNString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+	res, err := graphql.UnmarshalString(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNString2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalString(*v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, v interface{}) (dto.TerminologySource, error) {
@@ -36418,10 +36299,6 @@ func (ec *executionContext) marshalOAnnotation2ᚖgithubᚗcomᚋsavannahghiᚋc
 	return ec._Annotation(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAttachment2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx context.Context, sel ast.SelectionSet, v dto.Attachment) graphql.Marshaler {
-	return ec._Attachment(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOAttachment2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAttachment(ctx context.Context, sel ast.SelectionSet, v *dto.Attachment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -36499,11 +36376,7 @@ func (ec *executionContext) marshalOCode2ᚖgithubᚗcomᚋsavannahghiᚋscalaru
 	return v
 }
 
-func (ec *executionContext) marshalOCodeableConcept2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx context.Context, sel ast.SelectionSet, v dto.CodeableConcept) graphql.Marshaler {
-	return ec._CodeableConcept(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOCodeableConcept2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx context.Context, sel ast.SelectionSet, v []dto.CodeableConcept) graphql.Marshaler {
+func (ec *executionContext) marshalOCodeableConcept2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx context.Context, sel ast.SelectionSet, v []*dto.CodeableConcept) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -36530,7 +36403,7 @@ func (ec *executionContext) marshalOCodeableConcept2ᚕgithubᚗcomᚋsavannahgh
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOCodeableConcept2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, sel, v[i])
+			ret[i] = ec.marshalOCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36583,6 +36456,47 @@ func (ec *executionContext) marshalOCoding2ᚕgithubᚗcomᚋsavannahghiᚋclini
 				defer wg.Done()
 			}
 			ret[i] = ec.marshalOCoding2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOCoding2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx context.Context, sel ast.SelectionSet, v []*dto.Coding) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOCoding2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCoding(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36949,11 +36863,7 @@ func (ec *executionContext) marshalOEpisodeOfCare2ᚖgithubᚗcomᚋsavannahghi�
 	return ec._EpisodeOfCare(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOExtension2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx context.Context, sel ast.SelectionSet, v dto.Extension) graphql.Marshaler {
-	return ec._Extension(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx context.Context, sel ast.SelectionSet, v []dto.Extension) graphql.Marshaler {
+func (ec *executionContext) marshalOExtension2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx context.Context, sel ast.SelectionSet, v []*dto.Extension) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -36980,7 +36890,7 @@ func (ec *executionContext) marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋcl
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOExtension2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, sel, v[i])
+			ret[i] = ec.marshalOExtension2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36992,6 +36902,13 @@ func (ec *executionContext) marshalOExtension2ᚕgithubᚗcomᚋsavannahghiᚋcl
 	wg.Wait()
 
 	return ret
+}
+
+func (ec *executionContext) marshalOExtension2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐExtension(ctx context.Context, sel ast.SelectionSet, v *dto.Extension) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Extension(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOFloat2float64(ctx context.Context, v interface{}) (float64, error) {
@@ -37109,6 +37026,10 @@ func (ec *executionContext) marshalOIdentifier2ᚖgithubᚗcomᚋsavannahghiᚋc
 	return ec._Identifier(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOIdentifier2ᚖᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifier(ctx context.Context, sel ast.SelectionSet, v *[]dto.Identifier) graphql.Marshaler {
+	return ec.marshalOIdentifier2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifier(ctx, sel, *v)
+}
+
 func (ec *executionContext) unmarshalOIdentifierInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐIdentifierInputᚄ(ctx context.Context, v interface{}) ([]dto.IdentifierInput, error) {
 	if v == nil {
 		return nil, nil
@@ -37155,19 +37076,13 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx context.Context, v interface{}) (*scalarutils.Markdown, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(scalarutils.Markdown)
+func (ec *executionContext) unmarshalOMarkdown2githubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx context.Context, v interface{}) (scalarutils.Markdown, error) {
+	var res scalarutils.Markdown
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMarkdown2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx context.Context, sel ast.SelectionSet, v *scalarutils.Markdown) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
+func (ec *executionContext) marshalOMarkdown2githubᚗcomᚋsavannahghiᚋscalarutilsᚐMarkdown(ctx context.Context, sel ast.SelectionSet, v scalarutils.Markdown) graphql.Marshaler {
 	return v
 }
 
@@ -37348,12 +37263,18 @@ func (ec *executionContext) marshalOMedicationStatementStatusEnum2githubᚗcom�
 	return res
 }
 
-func (ec *executionContext) marshalOMeta2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMeta(ctx context.Context, sel ast.SelectionSet, v dto.Meta) graphql.Marshaler {
-	return ec._Meta(ctx, sel, &v)
+func (ec *executionContext) marshalOMeta2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMeta(ctx context.Context, sel ast.SelectionSet, v *dto.Meta) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Meta(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalONarrative2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐNarrative(ctx context.Context, sel ast.SelectionSet, v dto.Narrative) graphql.Marshaler {
-	return ec._Narrative(ctx, sel, &v)
+func (ec *executionContext) marshalONarrative2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐNarrative(ctx context.Context, sel ast.SelectionSet, v *dto.Narrative) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Narrative(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOObservation2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx context.Context, sel ast.SelectionSet, v dto.Observation) graphql.Marshaler {
@@ -37511,10 +37432,6 @@ func (ec *executionContext) marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinic
 	return ec._PageInfo(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOPeriod2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPeriod(ctx context.Context, sel ast.SelectionSet, v dto.Period) graphql.Marshaler {
-	return ec._Period(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalOPeriod2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPeriod(ctx context.Context, sel ast.SelectionSet, v *dto.Period) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -37607,11 +37524,7 @@ func (ec *executionContext) marshalOQuestionnaireEdge2ᚕgithubᚗcomᚋsavannah
 	return ret
 }
 
-func (ec *executionContext) marshalOQuestionnaireItem2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireItem) graphql.Marshaler {
-	return ec._QuestionnaireItem(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOQuestionnaireItem2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx context.Context, sel ast.SelectionSet, v []dto.QuestionnaireItem) graphql.Marshaler {
+func (ec *executionContext) marshalOQuestionnaireItem2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx context.Context, sel ast.SelectionSet, v []*dto.QuestionnaireItem) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37638,7 +37551,7 @@ func (ec *executionContext) marshalOQuestionnaireItem2ᚕgithubᚗcomᚋsavannah
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOQuestionnaireItem2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx, sel, v[i])
+			ret[i] = ec.marshalOQuestionnaireItem2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37652,11 +37565,14 @@ func (ec *executionContext) marshalOQuestionnaireItem2ᚕgithubᚗcomᚋsavannah
 	return ret
 }
 
-func (ec *executionContext) marshalOQuestionnaireItemAnswerOption2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireItemAnswerOption) graphql.Marshaler {
-	return ec._QuestionnaireItemAnswerOption(ctx, sel, &v)
+func (ec *executionContext) marshalOQuestionnaireItem2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItem(ctx context.Context, sel ast.SelectionSet, v *dto.QuestionnaireItem) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._QuestionnaireItem(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOQuestionnaireItemAnswerOption2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx context.Context, sel ast.SelectionSet, v []dto.QuestionnaireItemAnswerOption) graphql.Marshaler {
+func (ec *executionContext) marshalOQuestionnaireItemAnswerOption2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx context.Context, sel ast.SelectionSet, v []*dto.QuestionnaireItemAnswerOption) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37683,7 +37599,7 @@ func (ec *executionContext) marshalOQuestionnaireItemAnswerOption2ᚕgithubᚗco
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOQuestionnaireItemAnswerOption2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx, sel, v[i])
+			ret[i] = ec.marshalOQuestionnaireItemAnswerOption2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37697,11 +37613,14 @@ func (ec *executionContext) marshalOQuestionnaireItemAnswerOption2ᚕgithubᚗco
 	return ret
 }
 
-func (ec *executionContext) marshalOQuestionnaireItemEnableWhen2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireItemEnableWhen) graphql.Marshaler {
-	return ec._QuestionnaireItemEnableWhen(ctx, sel, &v)
+func (ec *executionContext) marshalOQuestionnaireItemAnswerOption2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemAnswerOption(ctx context.Context, sel ast.SelectionSet, v *dto.QuestionnaireItemAnswerOption) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._QuestionnaireItemAnswerOption(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOQuestionnaireItemEnableWhen2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx context.Context, sel ast.SelectionSet, v []dto.QuestionnaireItemEnableWhen) graphql.Marshaler {
+func (ec *executionContext) marshalOQuestionnaireItemEnableWhen2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx context.Context, sel ast.SelectionSet, v []*dto.QuestionnaireItemEnableWhen) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37728,7 +37647,7 @@ func (ec *executionContext) marshalOQuestionnaireItemEnableWhen2ᚕgithubᚗcom�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOQuestionnaireItemEnableWhen2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx, sel, v[i])
+			ret[i] = ec.marshalOQuestionnaireItemEnableWhen2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37742,11 +37661,14 @@ func (ec *executionContext) marshalOQuestionnaireItemEnableWhen2ᚕgithubᚗcom�
 	return ret
 }
 
-func (ec *executionContext) marshalOQuestionnaireItemInitial2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireItemInitial) graphql.Marshaler {
-	return ec._QuestionnaireItemInitial(ctx, sel, &v)
+func (ec *executionContext) marshalOQuestionnaireItemEnableWhen2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemEnableWhen(ctx context.Context, sel ast.SelectionSet, v *dto.QuestionnaireItemEnableWhen) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._QuestionnaireItemEnableWhen(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOQuestionnaireItemInitial2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx context.Context, sel ast.SelectionSet, v []dto.QuestionnaireItemInitial) graphql.Marshaler {
+func (ec *executionContext) marshalOQuestionnaireItemInitial2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx context.Context, sel ast.SelectionSet, v []*dto.QuestionnaireItemInitial) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37773,7 +37695,7 @@ func (ec *executionContext) marshalOQuestionnaireItemInitial2ᚕgithubᚗcomᚋs
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOQuestionnaireItemInitial2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx, sel, v[i])
+			ret[i] = ec.marshalOQuestionnaireItemInitial2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37785,6 +37707,13 @@ func (ec *executionContext) marshalOQuestionnaireItemInitial2ᚕgithubᚗcomᚋs
 	wg.Wait()
 
 	return ret
+}
+
+func (ec *executionContext) marshalOQuestionnaireItemInitial2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireItemInitial(ctx context.Context, sel ast.SelectionSet, v *dto.QuestionnaireItemInitial) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._QuestionnaireItemInitial(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOQuestionnaireResponseItem2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponseItem(ctx context.Context, sel ast.SelectionSet, v dto.QuestionnaireResponseItem) graphql.Marshaler {
@@ -37927,10 +37856,6 @@ func (ec *executionContext) unmarshalOQuestionnaireResponseItemInput2ᚕgithub�
 	return res, nil
 }
 
-func (ec *executionContext) marshalORange2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRange(ctx context.Context, sel ast.SelectionSet, v dto.Range) graphql.Marshaler {
-	return ec._Range(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalORange2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRange(ctx context.Context, sel ast.SelectionSet, v *dto.Range) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -37955,10 +37880,6 @@ func (ec *executionContext) unmarshalOReactionInput2ᚖgithubᚗcomᚋsavannahgh
 	}
 	res, err := ec.unmarshalInputReactionInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx context.Context, sel ast.SelectionSet, v dto.Reference) graphql.Marshaler {
-	return ec._Reference(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx context.Context, sel ast.SelectionSet, v *dto.Reference) graphql.Marshaler {
@@ -38065,38 +37986,6 @@ func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalOString2ᚕstring(ctx context.Context, v interface{}) ([]string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOString2string(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOString2ᚕstring(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOString2string(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
 func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
 	if v == nil {
 		return nil, nil
@@ -38130,6 +38019,38 @@ func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel
 		if e == graphql.Null {
 			return graphql.Null
 		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOString2ᚖstring(ctx, sel, v[i])
 	}
 
 	return ret
@@ -38315,6 +38236,22 @@ func (ec *executionContext) marshalOURI2ᚕgithubᚗcomᚋsavannahghiᚋscalarut
 	return ret
 }
 
+func (ec *executionContext) unmarshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, v interface{}) (*scalarutils.URI, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.URI)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOURI2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐURI(ctx context.Context, sel ast.SelectionSet, v *scalarutils.URI) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOURL2githubᚗcomᚋsavannahghiᚋscalarutilsᚐURL(ctx context.Context, v interface{}) (scalarutils.URL, error) {
 	var res scalarutils.URL
 	err := res.UnmarshalGQL(v)
@@ -38325,17 +38262,26 @@ func (ec *executionContext) marshalOURL2githubᚗcomᚋsavannahghiᚋscalarutils
 	return v
 }
 
-func (ec *executionContext) marshalOUsageContext2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐUsageContext(ctx context.Context, sel ast.SelectionSet, v dto.UsageContext) graphql.Marshaler {
-	return ec._UsageContext(ctx, sel, &v)
+func (ec *executionContext) marshalOUsageContext2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐUsageContext(ctx context.Context, sel ast.SelectionSet, v *dto.UsageContext) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UsageContext(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOXHTML2githubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx context.Context, v interface{}) (scalarutils.XHTML, error) {
-	var res scalarutils.XHTML
+func (ec *executionContext) unmarshalOXHTML2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx context.Context, v interface{}) (*scalarutils.XHTML, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(scalarutils.XHTML)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOXHTML2githubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx context.Context, sel ast.SelectionSet, v scalarutils.XHTML) graphql.Marshaler {
+func (ec *executionContext) marshalOXHTML2ᚖgithubᚗcomᚋsavannahghiᚋscalarutilsᚐXHTML(ctx context.Context, sel ast.SelectionSet, v *scalarutils.XHTML) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
 	return v
 }
 
