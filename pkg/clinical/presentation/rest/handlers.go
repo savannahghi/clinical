@@ -332,3 +332,22 @@ func (p PresentationHandlersImpl) LoadQuestionnaire(c *gin.Context) {
 
 	c.JSON(http.StatusOK, questionnaire)
 }
+
+// ListQuestionnaire is used to provide params used to fetch questionnaires
+func (p PresentationHandlersImpl) ListQuestionnaire(c *gin.Context) {
+	input := dto.ListQuestionnaireInput{}
+
+	err := c.BindJSON(&input)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	questionnaire, err := p.usecases.ListQuestionnaires(c.Request.Context(), input.SearchParam, &input.Pagination)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, questionnaire)
+}
