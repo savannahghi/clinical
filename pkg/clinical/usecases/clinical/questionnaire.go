@@ -39,7 +39,7 @@ func (q *UseCasesClinicalImpl) ListQuestionnaires(ctx context.Context, searchPar
 
 	params := map[string]interface{}{
 		"status": "active",
-		"_sort":  "-date",
+		"_sort":  "_lastUpdated",
 		"_count": "1",
 	}
 
