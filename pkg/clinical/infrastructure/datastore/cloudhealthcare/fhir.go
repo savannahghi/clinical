@@ -1057,6 +1057,25 @@ func (fh StoreImpl) SearchFHIREncounter(_ context.Context, params map[string]int
 	return &encounterOutput, nil
 }
 
+// SearchFHIREncounterAllData provides a search API for a FHIREncounter and all other resources that reference the encounter
+func (fh StoreImpl) SearchFHIREncounterAllData(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+	resources, err := fh.Dataset.SearchFHIRResource(encounterResourceType, params, tenant, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	encounterAllDataOutput := domain.PagedFHIRResource{
+		Resources:       resources.Resources,
+		HasNextPage:     resources.HasNextPage,
+		NextCursor:      resources.NextCursor,
+		HasPreviousPage: resources.HasPreviousPage,
+		PreviousCursor:  resources.PreviousCursor,
+		TotalCount:      resources.TotalCount,
+	}
+
+	return &encounterAllDataOutput, nil
+}
+
 // SearchFHIRMedicationRequest provides a search API for FHIRMedicationRequest
 func (fh StoreImpl) SearchFHIRMedicationRequest(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationRequestRelayConnection, error) {
 	output := domain.FHIRMedicationRequestRelayConnection{}

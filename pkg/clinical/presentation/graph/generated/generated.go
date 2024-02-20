@@ -152,8 +152,20 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	Consent struct {
+		ID        func(childComplexity int) int
+		Patient   func(childComplexity int) int
+		Provision func(childComplexity int) int
+		Status    func(childComplexity int) int
+	}
+
 	ConsentOutput struct {
 		Status func(childComplexity int) int
+	}
+
+	ConsentProvision struct {
+		ID   func(childComplexity int) int
+		Type func(childComplexity int) int
 	}
 
 	DiagnosticReport struct {
@@ -173,6 +185,16 @@ type ComplexityRoot struct {
 		ID              func(childComplexity int) int
 		PatientID       func(childComplexity int) int
 		Status          func(childComplexity int) int
+	}
+
+	EncounterAssociatedResources struct {
+		Consent        func(childComplexity int) int
+		RiskAssessment func(childComplexity int) int
+	}
+
+	EncounterClass struct {
+		Code    func(childComplexity int) int
+		Display func(childComplexity int) int
 	}
 
 	EncounterConnection struct {
@@ -295,6 +317,7 @@ type ComplexityRoot struct {
 		DeletePatient                      func(childComplexity int, id string) int
 		EndEncounter                       func(childComplexity int, encounterID string) int
 		EndEpisodeOfCare                   func(childComplexity int, id string) int
+		GetEncounterAssociatedResources    func(childComplexity int, encounterID string) int
 		PatchEncounter                     func(childComplexity int, encounterID string, input dto.EncounterInput) int
 		PatchEpisodeOfCare                 func(childComplexity int, id string, episodeOfCare dto.EpisodeOfCareInput) int
 		PatchPatient                       func(childComplexity int, id string, input dto.PatientInput) int
@@ -588,6 +611,20 @@ type ComplexityRoot struct {
 		Type       func(childComplexity int) int
 	}
 
+	RiskAssessment struct {
+		Encounter  func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Note       func(childComplexity int) int
+		Prediction func(childComplexity int) int
+		Subject    func(childComplexity int) int
+	}
+
+	RiskAssessmentPrediction struct {
+		ID                 func(childComplexity int) int
+		Outcome            func(childComplexity int) int
+		ProbabilityDecimal func(childComplexity int) int
+	}
+
 	Section struct {
 		Author  func(childComplexity int) int
 		Code    func(childComplexity int) int
@@ -688,6 +725,7 @@ type MutationResolver interface {
 	RecordMammographyResult(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordMri(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
+	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -1186,12 +1224,54 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ConditionEdge.Node(childComplexity), true
 
+	case "Consent.id":
+		if e.complexity.Consent.ID == nil {
+			break
+		}
+
+		return e.complexity.Consent.ID(childComplexity), true
+
+	case "Consent.patient":
+		if e.complexity.Consent.Patient == nil {
+			break
+		}
+
+		return e.complexity.Consent.Patient(childComplexity), true
+
+	case "Consent.provision":
+		if e.complexity.Consent.Provision == nil {
+			break
+		}
+
+		return e.complexity.Consent.Provision(childComplexity), true
+
+	case "Consent.status":
+		if e.complexity.Consent.Status == nil {
+			break
+		}
+
+		return e.complexity.Consent.Status(childComplexity), true
+
 	case "ConsentOutput.status":
 		if e.complexity.ConsentOutput.Status == nil {
 			break
 		}
 
 		return e.complexity.ConsentOutput.Status(childComplexity), true
+
+	case "ConsentProvision.id":
+		if e.complexity.ConsentProvision.ID == nil {
+			break
+		}
+
+		return e.complexity.ConsentProvision.ID(childComplexity), true
+
+	case "ConsentProvision.type":
+		if e.complexity.ConsentProvision.Type == nil {
+			break
+		}
+
+		return e.complexity.ConsentProvision.Type(childComplexity), true
 
 	case "DiagnosticReport.conclusion":
 		if e.complexity.DiagnosticReport.Conclusion == nil {
@@ -1283,6 +1363,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Encounter.Status(childComplexity), true
+
+	case "EncounterAssociatedResources.consent":
+		if e.complexity.EncounterAssociatedResources.Consent == nil {
+			break
+		}
+
+		return e.complexity.EncounterAssociatedResources.Consent(childComplexity), true
+
+	case "EncounterAssociatedResources.riskAssessment":
+		if e.complexity.EncounterAssociatedResources.RiskAssessment == nil {
+			break
+		}
+
+		return e.complexity.EncounterAssociatedResources.RiskAssessment(childComplexity), true
+
+	case "EncounterClass.code":
+		if e.complexity.EncounterClass.Code == nil {
+			break
+		}
+
+		return e.complexity.EncounterClass.Code(childComplexity), true
+
+	case "EncounterClass.display":
+		if e.complexity.EncounterClass.Display == nil {
+			break
+		}
+
+		return e.complexity.EncounterClass.Display(childComplexity), true
 
 	case "EncounterConnection.edges":
 		if e.complexity.EncounterConnection.Edges == nil {
@@ -1893,6 +2001,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EndEpisodeOfCare(childComplexity, args["id"].(string)), true
+
+	case "Mutation.getEncounterAssociatedResources":
+		if e.complexity.Mutation.GetEncounterAssociatedResources == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_getEncounterAssociatedResources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.GetEncounterAssociatedResources(childComplexity, args["encounterID"].(string)), true
 
 	case "Mutation.patchEncounter":
 		if e.complexity.Mutation.PatchEncounter == nil {
@@ -3758,6 +3878,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Reference.Type(childComplexity), true
 
+	case "RiskAssessment.encounter":
+		if e.complexity.RiskAssessment.Encounter == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessment.Encounter(childComplexity), true
+
+	case "RiskAssessment.id":
+		if e.complexity.RiskAssessment.ID == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessment.ID(childComplexity), true
+
+	case "RiskAssessment.note":
+		if e.complexity.RiskAssessment.Note == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessment.Note(childComplexity), true
+
+	case "RiskAssessment.prediction":
+		if e.complexity.RiskAssessment.Prediction == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessment.Prediction(childComplexity), true
+
+	case "RiskAssessment.subject":
+		if e.complexity.RiskAssessment.Subject == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessment.Subject(childComplexity), true
+
+	case "RiskAssessmentPrediction.id":
+		if e.complexity.RiskAssessmentPrediction.ID == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessmentPrediction.ID(childComplexity), true
+
+	case "RiskAssessmentPrediction.outcome":
+		if e.complexity.RiskAssessmentPrediction.Outcome == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessmentPrediction.Outcome(childComplexity), true
+
+	case "RiskAssessmentPrediction.probabilityDecimal":
+		if e.complexity.RiskAssessmentPrediction.ProbabilityDecimal == nil {
+			break
+		}
+
+		return e.complexity.RiskAssessmentPrediction.ProbabilityDecimal(childComplexity), true
+
 	case "Section.author":
 		if e.complexity.Section.Author == nil {
 			break
@@ -4311,6 +4487,8 @@ extend type Mutation {
   recordMammographyResult(input: DiagnosticReportInput!): DiagnosticReport!
   recordBiopsy(input: DiagnosticReportInput!): DiagnosticReport!
   recordMRI(input: DiagnosticReportInput!): DiagnosticReport!
+
+  getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResources!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -4329,7 +4507,7 @@ enum EncounterStatusEnum {
   CANCELLED
 }
 
-enum EncounterClass {
+enum EncounterClassEnum {
   AMBULATORY
 }
 
@@ -4738,6 +4916,10 @@ type Encounter {
   status: EncounterStatusEnum
   patientID: String
 }
+type EncounterClass {
+	code: String
+	display: EncounterClassEnum
+}
 
 type Patient {
   id: ID!
@@ -4882,7 +5064,7 @@ type CompositionConnection {
   pageInfo: PageInfo
 }
 
-type ConsentOutput{
+type ConsentOutput {
   status: ConsentStatusEnum!
 }
 
@@ -5122,40 +5304,40 @@ type Period {
 }
 
 type Quantity {
-	value: Float
-	comparator: QuantityComparatorEnum
-	unit: String
-	system: URI
-	code: Code
+  value: Float
+  comparator: QuantityComparatorEnum
+  unit: String
+  system: URI
+  code: Code
 }
 
 type QuestionnaireResponseItem {
-	linkId: String
-	text: String
-	answer: [QuestionnaireResponseItemAnswer]
-	item: [QuestionnaireResponseItem]
+  linkId: String
+  text: String
+  answer: [QuestionnaireResponseItemAnswer]
+  item: [QuestionnaireResponseItem]
 }
 
 type QuestionnaireResponseItemAnswer {
-	valueBoolean: Boolean
-	valueDecimal: Float
-	valueInteger: Int
-	valueDate: String
-	valueDateTime: String
-	valueTime: String
-	valueString: String
-	valueUri: String
-	valueAttachment: Attachment
-	valueCoding: Coding
-	valueQuantity: Quantity
-	valueReference: Reference
-	item: [QuestionnaireResponseItem]
+  valueBoolean: Boolean
+  valueDecimal: Float
+  valueInteger: Int
+  valueDate: String
+  valueDateTime: String
+  valueTime: String
+  valueString: String
+  valueUri: String
+  valueAttachment: Attachment
+  valueCoding: Coding
+  valueQuantity: Quantity
+  valueReference: Reference
+  item: [QuestionnaireResponseItem]
 }
 
 type QuestionnaireResponse {
-	status: QuestionnaireResponseStatusEnum!
-	authored: String!
-	item: [QuestionnaireResponseItem]
+  status: QuestionnaireResponseStatusEnum!
+  authored: String!
+  item: [QuestionnaireResponseItem]
 }
 
 type DiagnosticReport {
@@ -5167,6 +5349,40 @@ type DiagnosticReport {
   result: [Observation!]
   media: [Media!]
   conclusion: String!
+}
+
+
+type Consent {
+	id: String!
+	status: ConsentStatusEnum
+	provision: ConsentProvision
+	patient: Reference
+}
+
+
+type ConsentProvision {
+	id: String
+	type: ConsentProvisionTypeEnum
+}
+
+type RiskAssessment {
+	id: String
+	subject: Reference
+	encounter: Reference
+	prediction: [RiskAssessmentPrediction]
+  note: [Annotation]
+}
+
+
+type RiskAssessmentPrediction {
+	id: String
+	outcome: CodeableConcept
+	probabilityDecimal: Float
+}
+
+type EncounterAssociatedResources {
+  riskAssessment: RiskAssessment
+  consent: Consent
 }`, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
@@ -5367,6 +5583,21 @@ func (ec *executionContext) field_Mutation_endEpisodeOfCare_args(ctx context.Con
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_getEncounterAssociatedResources_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["encounterID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["encounterID"] = arg0
 	return args, nil
 }
 
@@ -9800,6 +10031,191 @@ func (ec *executionContext) fieldContext_ConditionEdge_cursor(ctx context.Contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Consent_id(ctx context.Context, field graphql.CollectedField, obj *dto.Consent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Consent_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalNString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Consent_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Consent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Consent_status(ctx context.Context, field graphql.CollectedField, obj *dto.Consent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Consent_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.ConsentStatusEnum)
+	fc.Result = res
+	return ec.marshalOConsentStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Consent_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Consent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ConsentStatusEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Consent_provision(ctx context.Context, field graphql.CollectedField, obj *dto.Consent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Consent_provision(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Provision, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.ConsentProvision)
+	fc.Result = res
+	return ec.marshalOConsentProvision2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvision(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Consent_provision(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Consent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ConsentProvision_id(ctx, field)
+			case "type":
+				return ec.fieldContext_ConsentProvision_type(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ConsentProvision", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Consent_patient(ctx context.Context, field graphql.CollectedField, obj *dto.Consent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Consent_patient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Patient, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Reference)
+	fc.Result = res
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Consent_patient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Consent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Reference_id(ctx, field)
+			case "reference":
+				return ec.fieldContext_Reference_reference(ctx, field)
+			case "type":
+				return ec.fieldContext_Reference_type(ctx, field)
+			case "identifier":
+				return ec.fieldContext_Reference_identifier(ctx, field)
+			case "display":
+				return ec.fieldContext_Reference_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Reference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ConsentOutput_status(ctx context.Context, field graphql.CollectedField, obj *dto.ConsentOutput) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ConsentOutput_status(ctx, field)
 	if err != nil {
@@ -9839,6 +10255,88 @@ func (ec *executionContext) fieldContext_ConsentOutput_status(ctx context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ConsentStatusEnum does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ConsentProvision_id(ctx context.Context, field graphql.CollectedField, obj *dto.ConsentProvision) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ConsentProvision_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ConsentProvision_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ConsentProvision",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ConsentProvision_type(ctx context.Context, field graphql.CollectedField, obj *dto.ConsentProvision) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ConsentProvision_type(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.ConsentProvisionTypeEnum)
+	fc.Result = res
+	return ec.marshalOConsentProvisionTypeEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvisionTypeEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ConsentProvision_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ConsentProvision",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ConsentProvisionTypeEnum does not have child fields")
 		},
 	}
 	return fc, nil
@@ -10243,9 +10741,9 @@ func (ec *executionContext) _Encounter_id(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Encounter_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10284,9 +10782,9 @@ func (ec *executionContext) _Encounter_class(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.EncounterClass)
+	res := resTmp.(*dto.EncounterClass)
 	fc.Result = res
-	return ec.marshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx, field.Selections, res)
+	return ec.marshalOEncounterClass2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Encounter_class(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10296,7 +10794,13 @@ func (ec *executionContext) fieldContext_Encounter_class(ctx context.Context, fi
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type EncounterClass does not have child fields")
+			switch field.Name {
+			case "code":
+				return ec.fieldContext_EncounterClass_code(ctx, field)
+			case "display":
+				return ec.fieldContext_EncounterClass_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type EncounterClass", field.Name)
 		},
 	}
 	return fc, nil
@@ -10325,9 +10829,9 @@ func (ec *executionContext) _Encounter_episodeOfCareID(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Encounter_episodeOfCareID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10366,9 +10870,9 @@ func (ec *executionContext) _Encounter_status(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(dto.EncounterStatusEnum)
+	res := resTmp.(*dto.EncounterStatusEnum)
 	fc.Result = res
-	return ec.marshalOEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx, field.Selections, res)
+	return ec.marshalOEncounterStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Encounter_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10407,9 +10911,9 @@ func (ec *executionContext) _Encounter_patientID(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Encounter_patientID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10420,6 +10924,192 @@ func (ec *executionContext) fieldContext_Encounter_patientID(ctx context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterAssociatedResources_riskAssessment(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResources) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterAssociatedResources_riskAssessment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RiskAssessment, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.RiskAssessment)
+	fc.Result = res
+	return ec.marshalORiskAssessment2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRiskAssessment(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterAssociatedResources_riskAssessment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterAssociatedResources",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_RiskAssessment_id(ctx, field)
+			case "subject":
+				return ec.fieldContext_RiskAssessment_subject(ctx, field)
+			case "encounter":
+				return ec.fieldContext_RiskAssessment_encounter(ctx, field)
+			case "prediction":
+				return ec.fieldContext_RiskAssessment_prediction(ctx, field)
+			case "note":
+				return ec.fieldContext_RiskAssessment_note(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type RiskAssessment", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterAssociatedResources_consent(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResources) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterAssociatedResources_consent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Consent, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Consent)
+	fc.Result = res
+	return ec.marshalOConsent2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterAssociatedResources_consent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterAssociatedResources",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Consent_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Consent_status(ctx, field)
+			case "provision":
+				return ec.fieldContext_Consent_provision(ctx, field)
+			case "patient":
+				return ec.fieldContext_Consent_patient(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Consent", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterClass_code(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterClass) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterClass_code(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterClass_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterClass",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterClass_display(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterClass) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterClass_display(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Display, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.EncounterClassEnum)
+	fc.Result = res
+	return ec.marshalOEncounterClassEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClassEnum(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterClass_display(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterClass",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type EncounterClassEnum does not have child fields")
 		},
 	}
 	return fc, nil
@@ -17114,6 +17804,67 @@ func (ec *executionContext) fieldContext_Mutation_recordMRI(ctx context.Context,
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_recordMRI_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_getEncounterAssociatedResources(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_getEncounterAssociatedResources(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().GetEncounterAssociatedResources(rctx, fc.Args["encounterID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.EncounterAssociatedResources)
+	fc.Result = res
+	return ec.marshalNEncounterAssociatedResources2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResources(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_getEncounterAssociatedResources(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "riskAssessment":
+				return ec.fieldContext_EncounterAssociatedResources_riskAssessment(ctx, field)
+			case "consent":
+				return ec.fieldContext_EncounterAssociatedResources_consent(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type EncounterAssociatedResources", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_getEncounterAssociatedResources_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -26574,6 +27325,386 @@ func (ec *executionContext) fieldContext_Reference_display(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _RiskAssessment_id(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessment_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessment_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RiskAssessment_subject(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessment_subject(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Subject, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Reference)
+	fc.Result = res
+	return ec.marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessment_subject(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Reference_id(ctx, field)
+			case "reference":
+				return ec.fieldContext_Reference_reference(ctx, field)
+			case "type":
+				return ec.fieldContext_Reference_type(ctx, field)
+			case "identifier":
+				return ec.fieldContext_Reference_identifier(ctx, field)
+			case "display":
+				return ec.fieldContext_Reference_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Reference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RiskAssessment_encounter(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessment_encounter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Encounter, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Reference)
+	fc.Result = res
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessment_encounter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Reference_id(ctx, field)
+			case "reference":
+				return ec.fieldContext_Reference_reference(ctx, field)
+			case "type":
+				return ec.fieldContext_Reference_type(ctx, field)
+			case "identifier":
+				return ec.fieldContext_Reference_identifier(ctx, field)
+			case "display":
+				return ec.fieldContext_Reference_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Reference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RiskAssessment_prediction(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessment_prediction(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Prediction, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.RiskAssessmentPrediction)
+	fc.Result = res
+	return ec.marshalORiskAssessmentPrediction2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRiskAssessmentPrediction(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessment_prediction(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_RiskAssessmentPrediction_id(ctx, field)
+			case "outcome":
+				return ec.fieldContext_RiskAssessmentPrediction_outcome(ctx, field)
+			case "probabilityDecimal":
+				return ec.fieldContext_RiskAssessmentPrediction_probabilityDecimal(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type RiskAssessmentPrediction", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RiskAssessment_note(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessment_note(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Note, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.Annotation)
+	fc.Result = res
+	return ec.marshalOAnnotation2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAnnotation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessment_note(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Annotation_id(ctx, field)
+			case "AuthorReference":
+				return ec.fieldContext_Annotation_AuthorReference(ctx, field)
+			case "AuthorString":
+				return ec.fieldContext_Annotation_AuthorString(ctx, field)
+			case "Time":
+				return ec.fieldContext_Annotation_Time(ctx, field)
+			case "Text":
+				return ec.fieldContext_Annotation_Text(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Annotation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RiskAssessmentPrediction_id(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessmentPrediction) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessmentPrediction_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessmentPrediction_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessmentPrediction",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RiskAssessmentPrediction_outcome(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessmentPrediction) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessmentPrediction_outcome(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Outcome, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.CodeableConcept)
+	fc.Result = res
+	return ec.marshalOCodeableConcept2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCodeableConcept(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessmentPrediction_outcome(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessmentPrediction",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CodeableConcept_id(ctx, field)
+			case "coding":
+				return ec.fieldContext_CodeableConcept_coding(ctx, field)
+			case "text":
+				return ec.fieldContext_CodeableConcept_text(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CodeableConcept", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RiskAssessmentPrediction_probabilityDecimal(ctx context.Context, field graphql.CollectedField, obj *dto.RiskAssessmentPrediction) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RiskAssessmentPrediction_probabilityDecimal(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProbabilityDecimal, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RiskAssessmentPrediction_probabilityDecimal(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RiskAssessmentPrediction",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Section_id(ctx context.Context, field graphql.CollectedField, obj *dto.Section) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Section_id(ctx, field)
 	if err != nil {
@@ -31890,6 +33021,51 @@ func (ec *executionContext) _ConditionEdge(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var consentImplementors = []string{"Consent"}
+
+func (ec *executionContext) _Consent(ctx context.Context, sel ast.SelectionSet, obj *dto.Consent) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, consentImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Consent")
+		case "id":
+			out.Values[i] = ec._Consent_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "status":
+			out.Values[i] = ec._Consent_status(ctx, field, obj)
+		case "provision":
+			out.Values[i] = ec._Consent_provision(ctx, field, obj)
+		case "patient":
+			out.Values[i] = ec._Consent_patient(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var consentOutputImplementors = []string{"ConsentOutput"}
 
 func (ec *executionContext) _ConsentOutput(ctx context.Context, sel ast.SelectionSet, obj *dto.ConsentOutput) graphql.Marshaler {
@@ -31906,6 +33082,44 @@ func (ec *executionContext) _ConsentOutput(ctx context.Context, sel ast.Selectio
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var consentProvisionImplementors = []string{"ConsentProvision"}
+
+func (ec *executionContext) _ConsentProvision(ctx context.Context, sel ast.SelectionSet, obj *dto.ConsentProvision) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, consentProvisionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConsentProvision")
+		case "id":
+			out.Values[i] = ec._ConsentProvision_id(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._ConsentProvision_type(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -32018,6 +33232,82 @@ func (ec *executionContext) _Encounter(ctx context.Context, sel ast.SelectionSet
 			out.Values[i] = ec._Encounter_status(ctx, field, obj)
 		case "patientID":
 			out.Values[i] = ec._Encounter_patientID(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var encounterAssociatedResourcesImplementors = []string{"EncounterAssociatedResources"}
+
+func (ec *executionContext) _EncounterAssociatedResources(ctx context.Context, sel ast.SelectionSet, obj *dto.EncounterAssociatedResources) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, encounterAssociatedResourcesImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("EncounterAssociatedResources")
+		case "riskAssessment":
+			out.Values[i] = ec._EncounterAssociatedResources_riskAssessment(ctx, field, obj)
+		case "consent":
+			out.Values[i] = ec._EncounterAssociatedResources_consent(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var encounterClassImplementors = []string{"EncounterClass"}
+
+func (ec *executionContext) _EncounterClass(ctx context.Context, sel ast.SelectionSet, obj *dto.EncounterClass) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, encounterClassImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("EncounterClass")
+		case "code":
+			out.Values[i] = ec._EncounterClass_code(ctx, field, obj)
+		case "display":
+			out.Values[i] = ec._EncounterClass_display(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -33001,6 +34291,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "recordMRI":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_recordMRI(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "getEncounterAssociatedResources":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_getEncounterAssociatedResources(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -34676,6 +35973,90 @@ func (ec *executionContext) _Reference(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
+var riskAssessmentImplementors = []string{"RiskAssessment"}
+
+func (ec *executionContext) _RiskAssessment(ctx context.Context, sel ast.SelectionSet, obj *dto.RiskAssessment) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, riskAssessmentImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RiskAssessment")
+		case "id":
+			out.Values[i] = ec._RiskAssessment_id(ctx, field, obj)
+		case "subject":
+			out.Values[i] = ec._RiskAssessment_subject(ctx, field, obj)
+		case "encounter":
+			out.Values[i] = ec._RiskAssessment_encounter(ctx, field, obj)
+		case "prediction":
+			out.Values[i] = ec._RiskAssessment_prediction(ctx, field, obj)
+		case "note":
+			out.Values[i] = ec._RiskAssessment_note(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var riskAssessmentPredictionImplementors = []string{"RiskAssessmentPrediction"}
+
+func (ec *executionContext) _RiskAssessmentPrediction(ctx context.Context, sel ast.SelectionSet, obj *dto.RiskAssessmentPrediction) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, riskAssessmentPredictionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RiskAssessmentPrediction")
+		case "id":
+			out.Values[i] = ec._RiskAssessmentPrediction_id(ctx, field, obj)
+		case "outcome":
+			out.Values[i] = ec._RiskAssessmentPrediction_outcome(ctx, field, obj)
+		case "probabilityDecimal":
+			out.Values[i] = ec._RiskAssessmentPrediction_probabilityDecimal(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var sectionImplementors = []string{"Section"}
 
 func (ec *executionContext) _Section(ctx context.Context, sel ast.SelectionSet, obj *dto.Section) graphql.Marshaler {
@@ -35577,6 +36958,20 @@ func (ec *executionContext) marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋcl
 	return ec._Encounter(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNEncounterAssociatedResources2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResources(ctx context.Context, sel ast.SelectionSet, v dto.EncounterAssociatedResources) graphql.Marshaler {
+	return ec._EncounterAssociatedResources(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNEncounterAssociatedResources2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResources(ctx context.Context, sel ast.SelectionSet, v *dto.EncounterAssociatedResources) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._EncounterAssociatedResources(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNEncounterInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterInput(ctx context.Context, v interface{}) (dto.EncounterInput, error) {
 	res, err := ec.unmarshalInputEncounterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -36292,6 +37687,51 @@ func (ec *executionContext) marshalOAllergyIntoleranceReactionSeverityEnum2githu
 	return res
 }
 
+func (ec *executionContext) marshalOAnnotation2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAnnotation(ctx context.Context, sel ast.SelectionSet, v dto.Annotation) graphql.Marshaler {
+	return ec._Annotation(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOAnnotation2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAnnotation(ctx context.Context, sel ast.SelectionSet, v []dto.Annotation) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOAnnotation2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAnnotation(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalOAnnotation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAnnotation(ctx context.Context, sel ast.SelectionSet, v *dto.Annotation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -36706,6 +38146,52 @@ func (ec *executionContext) marshalOConditionStatus2githubᚗcomᚋsavannahghi�
 	return res
 }
 
+func (ec *executionContext) marshalOConsent2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsent(ctx context.Context, sel ast.SelectionSet, v *dto.Consent) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Consent(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOConsentProvision2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvision(ctx context.Context, sel ast.SelectionSet, v *dto.ConsentProvision) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ConsentProvision(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOConsentProvisionTypeEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvisionTypeEnum(ctx context.Context, v interface{}) (*dto.ConsentProvisionTypeEnum, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(dto.ConsentProvisionTypeEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOConsentProvisionTypeEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentProvisionTypeEnum(ctx context.Context, sel ast.SelectionSet, v *dto.ConsentProvisionTypeEnum) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOConsentStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, v interface{}) (*dto.ConsentStatusEnum, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(dto.ConsentStatusEnum)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOConsentStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsentStatusEnum(ctx context.Context, sel ast.SelectionSet, v *dto.ConsentStatusEnum) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOContactInput2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐContactInputᚄ(ctx context.Context, v interface{}) ([]dto.ContactInput, error) {
 	if v == nil {
 		return nil, nil
@@ -36782,14 +38268,27 @@ func (ec *executionContext) marshalOEncounter2githubᚗcomᚋsavannahghiᚋclini
 	return ec._Encounter(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx context.Context, v interface{}) (dto.EncounterClass, error) {
-	tmp, err := graphql.UnmarshalString(v)
-	res := dto.EncounterClass(tmp)
-	return res, graphql.ErrorOnPath(ctx, err)
+func (ec *executionContext) marshalOEncounterClass2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx context.Context, sel ast.SelectionSet, v *dto.EncounterClass) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._EncounterClass(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOEncounterClass2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClass(ctx context.Context, sel ast.SelectionSet, v dto.EncounterClass) graphql.Marshaler {
-	res := graphql.MarshalString(string(v))
+func (ec *executionContext) unmarshalOEncounterClassEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClassEnum(ctx context.Context, v interface{}) (*dto.EncounterClassEnum, error) {
+	if v == nil {
+		return nil, nil
+	}
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.EncounterClassEnum(tmp)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOEncounterClassEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterClassEnum(ctx context.Context, sel ast.SelectionSet, v *dto.EncounterClassEnum) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalString(string(*v))
 	return res
 }
 
@@ -36853,6 +38352,23 @@ func (ec *executionContext) unmarshalOEncounterStatusEnum2githubᚗcomᚋsavanna
 
 func (ec *executionContext) marshalOEncounterStatusEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx context.Context, sel ast.SelectionSet, v dto.EncounterStatusEnum) graphql.Marshaler {
 	res := graphql.MarshalString(string(v))
+	return res
+}
+
+func (ec *executionContext) unmarshalOEncounterStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx context.Context, v interface{}) (*dto.EncounterStatusEnum, error) {
+	if v == nil {
+		return nil, nil
+	}
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.EncounterStatusEnum(tmp)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOEncounterStatusEnum2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterStatusEnum(ctx context.Context, sel ast.SelectionSet, v *dto.EncounterStatusEnum) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalString(string(*v))
 	return res
 }
 
@@ -37882,6 +39398,10 @@ func (ec *executionContext) unmarshalOReactionInput2ᚖgithubᚗcomᚋsavannahgh
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx context.Context, sel ast.SelectionSet, v dto.Reference) graphql.Marshaler {
+	return ec._Reference(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx context.Context, sel ast.SelectionSet, v *dto.Reference) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -37906,6 +39426,58 @@ func (ec *executionContext) unmarshalOResourceType2githubᚗcomᚋsavannahghiᚋ
 func (ec *executionContext) marshalOResourceType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐResourceType(ctx context.Context, sel ast.SelectionSet, v dto.ResourceType) graphql.Marshaler {
 	res := graphql.MarshalString(string(v))
 	return res
+}
+
+func (ec *executionContext) marshalORiskAssessment2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRiskAssessment(ctx context.Context, sel ast.SelectionSet, v *dto.RiskAssessment) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._RiskAssessment(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalORiskAssessmentPrediction2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRiskAssessmentPrediction(ctx context.Context, sel ast.SelectionSet, v dto.RiskAssessmentPrediction) graphql.Marshaler {
+	return ec._RiskAssessmentPrediction(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalORiskAssessmentPrediction2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRiskAssessmentPrediction(ctx context.Context, sel ast.SelectionSet, v []dto.RiskAssessmentPrediction) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalORiskAssessmentPrediction2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRiskAssessmentPrediction(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalOSection2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐSection(ctx context.Context, sel ast.SelectionSet, v []*dto.Section) graphql.Marshaler {

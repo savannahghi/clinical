@@ -79,6 +79,10 @@ type Encounter {
   status: EncounterStatusEnum
   patientID: String
 }
+type EncounterClass {
+	code: String
+	display: EncounterClassEnum
+}
 
 type Patient {
   id: ID!
@@ -223,7 +227,7 @@ type CompositionConnection {
   pageInfo: PageInfo
 }
 
-type ConsentOutput{
+type ConsentOutput {
   status: ConsentStatusEnum!
 }
 
@@ -463,40 +467,40 @@ type Period {
 }
 
 type Quantity {
-	value: Float
-	comparator: QuantityComparatorEnum
-	unit: String
-	system: URI
-	code: Code
+  value: Float
+  comparator: QuantityComparatorEnum
+  unit: String
+  system: URI
+  code: Code
 }
 
 type QuestionnaireResponseItem {
-	linkId: String
-	text: String
-	answer: [QuestionnaireResponseItemAnswer]
-	item: [QuestionnaireResponseItem]
+  linkId: String
+  text: String
+  answer: [QuestionnaireResponseItemAnswer]
+  item: [QuestionnaireResponseItem]
 }
 
 type QuestionnaireResponseItemAnswer {
-	valueBoolean: Boolean
-	valueDecimal: Float
-	valueInteger: Int
-	valueDate: String
-	valueDateTime: String
-	valueTime: String
-	valueString: String
-	valueUri: String
-	valueAttachment: Attachment
-	valueCoding: Coding
-	valueQuantity: Quantity
-	valueReference: Reference
-	item: [QuestionnaireResponseItem]
+  valueBoolean: Boolean
+  valueDecimal: Float
+  valueInteger: Int
+  valueDate: String
+  valueDateTime: String
+  valueTime: String
+  valueString: String
+  valueUri: String
+  valueAttachment: Attachment
+  valueCoding: Coding
+  valueQuantity: Quantity
+  valueReference: Reference
+  item: [QuestionnaireResponseItem]
 }
 
 type QuestionnaireResponse {
-	status: QuestionnaireResponseStatusEnum!
-	authored: String!
-	item: [QuestionnaireResponseItem]
+  status: QuestionnaireResponseStatusEnum!
+  authored: String!
+  item: [QuestionnaireResponseItem]
 }
 
 type DiagnosticReport {
@@ -508,4 +512,38 @@ type DiagnosticReport {
   result: [Observation!]
   media: [Media!]
   conclusion: String!
+}
+
+
+type Consent {
+	id: String!
+	status: ConsentStatusEnum
+	provision: ConsentProvision
+	patient: Reference
+}
+
+
+type ConsentProvision {
+	id: String
+	type: ConsentProvisionTypeEnum
+}
+
+type RiskAssessment {
+	id: String
+	subject: Reference
+	encounter: Reference
+	prediction: [RiskAssessmentPrediction]
+  note: [Annotation]
+}
+
+
+type RiskAssessmentPrediction {
+	id: String
+	outcome: CodeableConcept
+	probabilityDecimal: Float
+}
+
+type EncounterAssociatedResources {
+  riskAssessment: RiskAssessment
+  consent: Consent
 }

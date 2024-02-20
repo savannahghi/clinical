@@ -217,4 +217,6 @@ extend type Mutation {
   recordMammographyResult(input: DiagnosticReportInput!): DiagnosticReport!
   recordBiopsy(input: DiagnosticReportInput!): DiagnosticReport!
   recordMRI(input: DiagnosticReportInput!): DiagnosticReport!
+
+  getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResources!
 }

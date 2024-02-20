@@ -90,6 +90,7 @@ type FHIRMock struct {
 	MockSearchFHIRRiskAssessmentFn        func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRRiskAssessmentRelayConnection, error)
 	MockGetFHIRQuestionnaireResponseFn    func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error)
 	MockCreateFHIRDiagnosticReportFn      func(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
+	MockSearchFHIREncounterAllDataFn      func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -2060,6 +2061,9 @@ func NewFHIRMock() *FHIRMock {
 				PresentedForm:      []*domain.FHIRAttachment{},
 			}, nil
 		},
+		MockSearchFHIREncounterAllDataFn: func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+			return &domain.PagedFHIRResource{}, nil
+		},
 	}
 }
 
@@ -2406,4 +2410,9 @@ func (fh *FHIRMock) GetFHIRQuestionnaireResponse(ctx context.Context, id string)
 // CreateFHIRDiagnosticReport mocks the implementation of creating a diagnostic report.
 func (fh *FHIRMock) CreateFHIRDiagnosticReport(ctx context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error) {
 	return fh.MockCreateFHIRDiagnosticReportFn(ctx, input)
+}
+
+// SearchFHIREncounterAllData mocks the implementation of SearchFHIREncounterAllData
+func (fh *FHIRMock) SearchFHIREncounterAllData(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+	return fh.MockSearchFHIREncounterAllDataFn(ctx, params, tenant, pagination)
 }

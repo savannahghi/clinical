@@ -44,11 +44,12 @@ const (
 	EncounterStatusEnumCancelled EncounterStatusEnum = "CANCELLED"
 )
 
-type EncounterClass string
+// EncounterClassEnum ...
+type EncounterClassEnum string
 
 const (
 	// Also referred to as outpatient - For now we'll start with outpatient only
-	EncounterClassAmbulatory EncounterClass = "AMBULATORY"
+	EncounterClassEnumAmbulatory EncounterClassEnum = "AMBULATORY"
 )
 
 type ResourceType string
@@ -399,4 +400,77 @@ func (c *VIAOutcomeEnum) UnmarshalGQL(v interface{}) error {
 	}
 
 	return nil
+}
+
+// ObservationStatusEnum is a FHIR enum
+type ObservationStatusEnum string
+
+const (
+	// ObservationStatusEnumRegistered ...
+	ObservationStatusEnumRegistered ObservationStatusEnum = "registered"
+	// ObservationStatusEnumPreliminary ...
+	ObservationStatusEnumPreliminary ObservationStatusEnum = "preliminary"
+	// ObservationStatusEnumFinal ...
+	ObservationStatusEnumFinal ObservationStatusEnum = "final"
+	// ObservationStatusEnumAmended ...
+	ObservationStatusEnumAmended ObservationStatusEnum = "amended"
+	// ObservationStatusEnumCorrected ...
+	ObservationStatusEnumCorrected ObservationStatusEnum = "corrected"
+	// ObservationStatusEnumCancelled ...
+	ObservationStatusEnumCancelled ObservationStatusEnum = "cancelled"
+	// ObservationStatusEnumEnteredInError ...
+	ObservationStatusEnumEnteredInError ObservationStatusEnum = "entered_in_error"
+	// ObservationStatusEnumUnknown ...
+	ObservationStatusEnumUnknown ObservationStatusEnum = "unknown"
+)
+
+// AllObservationStatusEnum ...
+var AllObservationStatusEnum = []ObservationStatusEnum{
+	ObservationStatusEnumRegistered,
+	ObservationStatusEnumPreliminary,
+	ObservationStatusEnumFinal,
+	ObservationStatusEnumAmended,
+	ObservationStatusEnumCorrected,
+	ObservationStatusEnumCancelled,
+	ObservationStatusEnumEnteredInError,
+	ObservationStatusEnumUnknown,
+}
+
+// IsValid ...
+func (e ObservationStatusEnum) IsValid() bool {
+	switch e {
+	case ObservationStatusEnumRegistered, ObservationStatusEnumPreliminary, ObservationStatusEnumFinal, ObservationStatusEnumAmended, ObservationStatusEnumCorrected, ObservationStatusEnumCancelled, ObservationStatusEnumEnteredInError, ObservationStatusEnumUnknown:
+		return true
+	}
+
+	return false
+}
+
+// String ...
+func (e ObservationStatusEnum) String() string {
+	if e == ObservationStatusEnumEnteredInError {
+		return "entered-in-error"
+	}
+
+	return string(e)
+}
+
+// UnmarshalGQL ...
+func (e *ObservationStatusEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ObservationStatusEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ObservationStatusEnum", str)
+	}
+
+	return nil
+}
+
+// MarshalGQL writes the observation status to the supplied writer as a quoted string
+func (e ObservationStatusEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

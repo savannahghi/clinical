@@ -14,7 +14,7 @@ enum EncounterStatusEnum {
   CANCELLED
 }
 
-enum EncounterClass {
+enum EncounterClassEnum {
   AMBULATORY
 }
 

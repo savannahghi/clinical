@@ -94,6 +94,7 @@ type FHIREncounter interface {
 	GetFHIREncounter(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error)
 	SearchFHIREncounter(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error)
 	PatchFHIREncounter(ctx context.Context, encounterID string, input domain.FHIREncounterInput) (*domain.FHIREncounter, error)
+	SearchFHIREncounterAllData(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
 }
 type FHIRComposition interface {
 	GetFHIRComposition(ctx context.Context, id string) (*domain.FHIRCompositionRelayPayload, error)
