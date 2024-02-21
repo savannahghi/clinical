@@ -13,6 +13,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
+	fakeAdvantageMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
@@ -144,8 +145,9 @@ func TestUseCasesClinicalImpl_CreateEpisodeOfCare(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "happy case: create an episode of care" {
@@ -308,8 +310,9 @@ func TestUseCasesClinicalImpl_PatchEpisodeOfCare(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Unable to get episode of care" {
@@ -414,8 +417,9 @@ func TestUseCasesClinicalImpl_EndEpisodeOfCare(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "sad case: error retrieving episode of care" {
@@ -506,8 +510,9 @@ func TestUseCasesClinicalImpl_GetEpisodeOfCare(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "sad case: fail to get episode of care" {

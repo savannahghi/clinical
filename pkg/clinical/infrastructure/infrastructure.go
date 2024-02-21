@@ -8,6 +8,7 @@ import (
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload"
 	"github.com/savannahghi/clinical/pkg/clinical/repository"
@@ -53,11 +54,12 @@ type BaseExtension interface {
 
 // Infrastructure ...
 type Infrastructure struct {
-	FHIR           repository.FHIR
-	OpenConceptLab ServiceOCL
-	BaseExtension  BaseExtension
-	Upload         upload.ServiceUpload
-	Pubsub         pubsubmessaging.ServicePubsub
+	FHIR             repository.FHIR
+	OpenConceptLab   ServiceOCL
+	BaseExtension    BaseExtension
+	Upload           upload.ServiceUpload
+	Pubsub           pubsubmessaging.ServicePubsub
+	AdvantageService advantage.AdvantageService
 }
 
 // NewInfrastructureInteractor initializes a new Infrastructure
@@ -67,6 +69,7 @@ func NewInfrastructureInteractor(
 	openconceptlab ServiceOCL,
 	upload upload.ServiceUpload,
 	pubsub pubsubmessaging.ServicePubsub,
+	advantage advantage.AdvantageService,
 ) Infrastructure {
 	return Infrastructure{
 		fhir,
@@ -74,5 +77,6 @@ func NewInfrastructureInteractor(
 		ext,
 		upload,
 		pubsub,
+		advantage,
 	}
 }

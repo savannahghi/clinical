@@ -41,6 +41,9 @@ const (
 	// TenantTopicName is the topic where program is registered in clinical as a tenant
 	TenantTopicName = "mycarehub.tenant.create"
 
+	// SegmentationTopicName topic sends patient segmentation information to slade advantage
+	SegmentationTopicName = "patient.segmentation.create"
+
 	// MedicalDataCount is the count of medical records
 	MedicalDataCount = "3"
 

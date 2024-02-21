@@ -18,6 +18,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fhir "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/fhirdataset"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab"
 	pubsubmessaging "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload"
@@ -92,19 +93,6 @@ func StartServer(
 		log.Panicf("unable to initialize new Google Cloud Healthcare Service: %s", err)
 	}
 
-	repo := fhirdataset.NewFHIRRepository(ctx, hsv, project, datasetID, datasetLocation, fhirStoreID)
-	fhir := fhir.NewFHIRStoreImpl(repo)
-	ocl := openconceptlab.NewServiceOCL()
-
-	upload := upload.NewServiceUpload(ctx)
-
-	pubsubSvc, err := pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient)
-	if err != nil {
-		serverutils.LogStartupError(ctx, fmt.Errorf("failed to initialize pubsub messaging service: %w", err))
-	}
-
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, upload, pubsubSvc)
-
 	authServerConfig := authutils.Config{
 		AuthServerEndpoint: authServerEndpoint,
 		ClientID:           clientID,
@@ -118,6 +106,21 @@ func StartServer(
 	if err != nil {
 		serverutils.LogStartupError(ctx, err)
 	}
+
+	repo := fhirdataset.NewFHIRRepository(ctx, hsv, project, datasetID, datasetLocation, fhirStoreID)
+	fhir := fhir.NewFHIRStoreImpl(repo)
+	ocl := openconceptlab.NewServiceOCL()
+
+	upload := upload.NewServiceUpload(ctx)
+
+	pubsubSvc, err := pubsubmessaging.NewServicePubSubMessaging(ctx, pubSubClient)
+	if err != nil {
+		serverutils.LogStartupError(ctx, fmt.Errorf("failed to initialize pubsub messaging service: %w", err))
+	}
+
+	advantageSvc := advantage.NewServiceAdvantage(authclient)
+
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, upload, pubsubSvc, advantageSvc)
 
 	usecases := usecases.NewUsecasesInteractor(infrastructure)
 
@@ -162,7 +165,7 @@ func SetupRoutes(r *gin.Engine, cacheStore persist.CacheStore, authclient *authu
 		AllowWebSockets: true,
 	}))
 
-	handlers := rest.NewPresentationHandlers(usecases, infra.BaseExtension)
+	handlers := rest.NewPresentationHandlers(usecases, infra.BaseExtension, infra.AdvantageService)
 
 	graphQL := r.Group("/graphql")
 	graphQL.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))

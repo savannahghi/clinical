@@ -43,3 +43,8 @@ func (ps ServicePubSubMessaging) NotifyFacilityFHIRIDUpdate(ctx context.Context,
 func (ps ServicePubSubMessaging) NotifyProgramFHIRIDUpdate(ctx context.Context, data dto.UpdateProgramFHIRID) error {
 	return ps.newPublish(ctx, data, common.AddFHIRIDToProgram, MyCareHubServiceName)
 }
+
+// NotifySegmentation publishes the the data used to update the segmentation data in advantage
+func (ps ServicePubSubMessaging) NotifySegmentation(ctx context.Context, data dto.SegmentationPayload) error {
+	return ps.newPublish(ctx, data, common.SegmentationTopicName, common.ClinicalServiceName)
+}

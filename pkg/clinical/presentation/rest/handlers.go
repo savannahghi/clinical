@@ -11,6 +11,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
+	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage"
 	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/errorcodeutil"
 	"github.com/savannahghi/pubsubtools"
@@ -25,13 +26,18 @@ type BaseExtension interface {
 
 // PresentationHandlersImpl represents the usecase implementation object
 type PresentationHandlersImpl struct {
-	usecases usecases.Interactor
-	baseExt  BaseExtension
+	usecases         usecases.Interactor
+	baseExt          BaseExtension
+	advantageService advantage.AdvantageService
 }
 
 // NewPresentationHandlers initializes a new rest handlers usecase
-func NewPresentationHandlers(usecases usecases.Interactor, extension BaseExtension) *PresentationHandlersImpl {
-	return &PresentationHandlersImpl{usecases: usecases, baseExt: extension}
+func NewPresentationHandlers(usecases usecases.Interactor, extension BaseExtension, advantageSvc advantage.AdvantageService) *PresentationHandlersImpl {
+	return &PresentationHandlersImpl{
+		usecases:         usecases,
+		baseExt:          extension,
+		advantageService: advantageSvc,
+	}
 }
 
 // ReceivePubSubPushMessage receives and processes a pubsub message
@@ -211,6 +217,29 @@ func (p PresentationHandlersImpl) ReceivePubSubPushMessage(c *gin.Context) {
 		}
 
 		err = p.usecases.CreatePubsubTestResult(ctx, data)
+		if err != nil {
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+
+			return
+		}
+
+	case utils.AddPubSubNamespace(common.SegmentationTopicName, common.ClinicalServiceName):
+		var data dto.SegmentationPayload
+
+		err := json.Unmarshal(message.Message.Data, &data)
+		if err != nil {
+			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
+				Err:     err,
+				Message: err.Error(),
+			}, http.StatusBadRequest)
+
+			return
+		}
+
+		err = p.advantageService.SegmentPatient(ctx, data)
 		if err != nil {
 			serverutils.WriteJSONResponse(c.Writer, errorcodeutil.CustomError{
 				Err:     err,

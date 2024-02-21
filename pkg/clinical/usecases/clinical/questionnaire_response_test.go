@@ -11,6 +11,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
+	fakeAdvantageMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
@@ -202,6 +203,24 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "Sad Case - fail to get patient",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - fail to publish to pusbsub",
+			args: args{
+				ctx:             context.Background(),
+				encounterID:     gofakeit.UUID(),
+				questionnaireID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -211,8 +230,9 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			q := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: unable to create questionnaire response" {
@@ -452,6 +472,16 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			if tt.name == "Sad Case - Fail to record risk assessment - High Risk" {
 				setupMockFHIRFunctions(fakeFHIR, 3)
 			}
+			if tt.name == "Sad Case - fail to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+			if tt.name == "Sad Case - fail to publish to pusbsub" {
+				fakePubSub.MockNotifySegmentationFn = func(ctx context.Context, data dto.SegmentationPayload) error {
+					return fmt.Errorf("failed to publish to pubsub")
+				}
+			}
 
 			_, err := q.CreateQuestionnaireResponse(tt.args.ctx, tt.args.questionnaireID, tt.args.encounterID, tt.args.input)
 			if (err != nil) != tt.wantErr {
@@ -520,8 +550,9 @@ func TestUseCasesClinicalImpl_GetQuestionnaireResponseRiskLevel(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get fhir encounter" {

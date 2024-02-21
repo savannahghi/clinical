@@ -13,6 +13,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
 	fakeFHIRMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/datastore/cloudhealthcare/mock"
+	fakeAdvantageMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage/mock"
 	fakeOCLMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/openconceptlab/mock"
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
@@ -194,8 +195,9 @@ func TestUseCasesClinicalImpl_RecordObservation(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -350,8 +352,9 @@ func TestUseCasesClinicalImpl_RecordTemperature(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -506,9 +509,10 @@ func TestUseCasesClinicalImpl_RecordMuac(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infa := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
-			u := clinicalUsecase.NewUseCasesClinicalImpl(infa)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
 				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
@@ -664,9 +668,10 @@ func TestUseCasesClinicalImpl_RecordOxygenSaturation(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infa := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
-			u := clinicalUsecase.NewUseCasesClinicalImpl(infa)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
 				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
@@ -822,8 +827,9 @@ func TestUseCasesClinicalImpl_RecordHeight(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -979,8 +985,9 @@ func TestUseCasesClinicalImpl_RecordWeight(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -1135,8 +1142,9 @@ func TestUseCasesClinicalImpl_RecordRespiratoryRate(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -1269,8 +1277,9 @@ func TestUseCasesClinicalImpl_PatchPatientRespirationRate(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -1421,8 +1430,9 @@ func TestUseCasesClinicalImpl_RecordPulseRate(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -1555,8 +1565,9 @@ func TestUseCasesClinicalImpl_PatchPatientPulseRate(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -1707,8 +1718,9 @@ func TestUseCasesClinicalImpl_RecordBloodPressure(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -1863,8 +1875,9 @@ func TestUseCasesClinicalImpl_RecordDiastolicBloodPressure(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -2019,8 +2032,9 @@ func TestUseCasesClinicalImpl_RecordColposcopy(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -2153,8 +2167,9 @@ func TestUseCasesClinicalImpl_PatchPatientDiastolicBloodPressure(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -2292,8 +2307,9 @@ func TestUseCasesClinicalImpl_GetPatientDiastolicBloodPressureEntries(t *testing
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -2438,8 +2454,9 @@ func TestUseCasesClinicalImpl_RecordBMI(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -2616,8 +2633,9 @@ func TestUseCasesClinicalImpl_GetPatientObservations(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - fail to get patient" {
@@ -3035,8 +3053,9 @@ func TestUseCasesClinicalImpl_GetPatientTemperatureEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -3159,8 +3178,9 @@ func TestUseCasesClinicalImpl_PatchPatientTemperature(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -3293,8 +3313,9 @@ func TestUseCasesClinicalImpl_GetPatientBloodPressureEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -3417,8 +3438,9 @@ func TestUseCasesClinicalImpl_PatchPatientSystolicBloodPressure(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -3551,8 +3573,9 @@ func TestUseCasesClinicalImpl_GetHeight(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -3667,8 +3690,9 @@ func TestUseCasesClinicalImpl_GetPatientPulseRateEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -3783,8 +3807,9 @@ func TestUseCasesClinicalImpl_GetPatientRespiratoryRateEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -3905,8 +3930,9 @@ func TestUseCasesClinicalImpl_GetPatientBMIEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -4029,8 +4055,9 @@ func TestUseCasesClinicalImpl_PatchPatientBMI(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -4158,8 +4185,9 @@ func TestUseCasesClinicalImpl_GetPatientWeightEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -4276,8 +4304,9 @@ func TestUseCasesClinicalImpl_PatchPatientWeight(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -4404,8 +4433,9 @@ func TestUseCasesClinicalImpl_GetPatientMuacEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -4522,8 +4552,9 @@ func TestUseCasesClinicalImpl_PatchPatientMuac(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -4650,8 +4681,9 @@ func TestUseCasesClinicalImpl_GetPatientOxygenSaturationEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -4768,8 +4800,9 @@ func TestUseCasesClinicalImpl_PatchPatientOxygenSaturation(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -4908,8 +4941,9 @@ func TestUseCasesClinicalImpl_GetPatientViralLoad(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -5026,8 +5060,9 @@ func TestUseCasesClinicalImpl_PatchPatientViralLoad(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -5178,8 +5213,9 @@ func TestUseCasesClinicalImpl_RecordViralLoad(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -5328,8 +5364,9 @@ func TestUseCasesClinicalImpl_RecordBloodSugar(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -5461,8 +5498,9 @@ func TestUseCasesClinicalImpl_GetPatientBloodSugarEntries(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -5579,8 +5617,9 @@ func TestUseCasesClinicalImpl_PatchPatientBloodSugar(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -5731,8 +5770,9 @@ func TestUseCasesClinicalImpl_RecordLastMenstrualPeriod(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get encounter" {
@@ -5865,8 +5905,9 @@ func TestUseCasesClinicalImpl_PatchPatientLastMenstrualPeriod(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -5994,8 +6035,9 @@ func TestUseCasesClinicalImpl_GetPatientLastMenstrualPeriodEntries(t *testing.T)
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Invalid patient ID" {
@@ -6112,8 +6154,9 @@ func TestUseCasesClinicalImpl_PatchPatientObservations(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -6242,8 +6285,9 @@ func TestUseCasesClinicalImpl_PatchPatientHeight(t *testing.T) {
 		fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 		fakeUpload := fakeUploadMock.NewFakeUploadMock()
+		fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+		infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 		u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 		if tt.name == "Sad Case - fail to get observation" {
@@ -6369,8 +6413,9 @@ func TestUseCasesClinicalImpl_RecordVIA(t *testing.T) {
 			fakeOCL := fakeOCLMock.NewFakeOCLMock()
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to get concept" {
@@ -6496,8 +6541,9 @@ func TestUseCasesClinicalImpl_RecordHPV(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: unable to get FHIR encounter" {
@@ -6663,8 +6709,9 @@ func TestUseCasesClinicalImpl_RecordPapSmear(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: unable to record pap smear" {

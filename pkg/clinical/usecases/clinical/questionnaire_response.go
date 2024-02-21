@@ -108,6 +108,11 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 		return "", err
 	}
 
+	patient, err := u.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
+	if err != nil {
+		return "", err
+	}
+
 	switch *questionnaire.Resource.Title {
 	// TODO: Make this a controlled enum?
 	case "Cervical Cancer Screening":
@@ -147,6 +152,14 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 				return "", err
 			}
 
+			err := u.infrastructure.Pubsub.NotifySegmentation(ctx, dto.SegmentationPayload{
+				ClinicalID:   *patient.Resource.ID,
+				SegmentLabel: dto.SegmentationCategoryHighRiskNegative,
+			})
+			if err != nil {
+				return "", err
+			}
+
 		case totalScore < 2:
 			riskLevel, err = u.recordRiskAssessment(
 				ctx,
@@ -156,6 +169,14 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 				"Low Risk",
 				domain.CervicalCancerScreeningTypeEnum.Text(),
 			)
+			if err != nil {
+				return "", err
+			}
+
+			err := u.infrastructure.Pubsub.NotifySegmentation(ctx, dto.SegmentationPayload{
+				ClinicalID:   *patient.Resource.ID,
+				SegmentLabel: dto.SegmentationCategoryLowRisk,
+			})
 			if err != nil {
 				return "", err
 			}
