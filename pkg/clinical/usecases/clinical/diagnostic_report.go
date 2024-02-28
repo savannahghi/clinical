@@ -79,6 +79,28 @@ func (c *UseCasesClinicalImpl) RecordMRI(ctx context.Context, input dto.Diagnost
 	return c.RecordDiagnosticReport(ctx, common.MRITerminologySystem, input, observationOutput, []DiagnosticReportMutatorFunc{addNuclearMagneticResonanceCategory})
 }
 
+// RecordUltrasound is used to record the breast ultrasound diagnostic reports
+func (c *UseCasesClinicalImpl) RecordUltrasound(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
+	err := input.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	observationInput := &dto.ObservationInput{
+		Status:      dto.ObservationStatusFinal,
+		EncounterID: input.EncounterID,
+		Value:       input.Findings,
+	}
+
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BilateralConceptTerminologySystem, []ObservationInputMutatorFunc{addImagingCategory})
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: `BilateralConceptTerminologySystem` is a `PLACE HOLDER`. It should be adjusted accordingly when the breast cancer designs are revamped
+	return c.RecordDiagnosticReport(ctx, common.BilateralConceptTerminologySystem, input, observationOutput, []DiagnosticReportMutatorFunc{addRadiologyUltrasoundCategory})
+}
+
 // RecordDiagnosticReport is a re-usable method to help with diagnostic report recording
 func (c *UseCasesClinicalImpl) RecordDiagnosticReport(ctx context.Context, conceptID string, input dto.DiagnosticReportInput, observation *dto.Observation, mutators []DiagnosticReportMutatorFunc) (*dto.DiagnosticReport, error) {
 	observationsReference := fmt.Sprintf("Observation/%s", observation.ID)

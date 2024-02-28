@@ -296,6 +296,11 @@ func (r *mutationResolver) RecordMri(ctx context.Context, input dto.DiagnosticRe
 	return r.usecases.RecordMRI(ctx, input)
 }
 
+// RecordUltrasound is the resolver for the recordUltrasound field.
+func (r *mutationResolver) RecordUltrasound(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
+	return r.usecases.RecordUltrasound(ctx, input)
+}
+
 // GetEncounterAssociatedResources is the resolver for the getEncounterAssociatedResources field.
 func (r *mutationResolver) GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error) {
 	return r.usecases.GetEncounterAssociatedResources(ctx, encounterID)

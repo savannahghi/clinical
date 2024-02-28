@@ -50,3 +50,23 @@ var addNuclearMagneticResonanceCategory = func(ctx context.Context, diagnosticRe
 
 	return nil
 }
+
+// addRadiologyUltrasoundCategory is used to add radiology ultrasound category
+var addRadiologyUltrasoundCategory = func(ctx context.Context, diagnosticReport *domain.FHIRDiagnosticReportInput) error {
+	category := []*domain.FHIRCodeableConceptInput{
+		{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&diagnosticReportCategorySystem),
+					Code:    scalarutils.Code("RUS"),
+					Display: "Radiology Ultrasound",
+				},
+			},
+			Text: "Radiology Ultrasound",
+		},
+	}
+
+	diagnosticReport.Category = append(diagnosticReport.Category, category...)
+
+	return nil
+}
