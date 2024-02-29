@@ -172,6 +172,15 @@ const (
 
 	// MRITerminologySystem is the terminology code used to represent MRI scan of the breast
 	MRITerminologySystem = "168651"
+
+	// LeftBreastUltrasoundTerminologySystem is the terminology code used to represent left breast ultrasound scan
+	LeftBreastUltrasoundTerminologySystem = "161289"
+
+	// RightBreastUltrasoundTerminologySystem is the terminology code used to represent right breast scan
+	RightBreastUltrasoundTerminologySystem = "161290"
+
+	// BilateralConceptTerminologySystem is the terminology code used to represent miscellaneous bilateral concepts
+	BilateralConceptTerminologySystem = "160406"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their
