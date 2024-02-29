@@ -25,7 +25,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/graph/generated"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation/rest"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/serverutils"
 	"google.golang.org/api/healthcare/v1"
 )
@@ -52,6 +52,7 @@ var ClinicalAllowedOrigins = []string{
 	"https://staging-empower.web.app",
 	"https://uat.empower.savannahghi.org",
 	"https://empower.savannahghi.org",
+	"https://review-uzazi-salama.web.app",
 }
 
 var (
@@ -122,13 +123,13 @@ func StartServer(
 
 	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, upload, pubsubSvc, advantageSvc)
 
-	usecases := usecases.NewUsecasesInteractor(infrastructure)
+	usecases := clinical.NewUseCasesClinicalImpl(infrastructure)
 
 	r := gin.Default()
 
 	memoryStore := persist.NewMemoryStore(60 * time.Minute)
 
-	SetupRoutes(r, memoryStore, authclient, usecases, infrastructure)
+	SetupRoutes(r, memoryStore, authclient, *usecases, infrastructure)
 
 	addr := fmt.Sprintf(":%d", port)
 
@@ -137,7 +138,7 @@ func StartServer(
 	}
 }
 
-func SetupRoutes(r *gin.Engine, cacheStore persist.CacheStore, authclient *authutils.Client, usecases usecases.Interactor, infra infrastructure.Infrastructure) {
+func SetupRoutes(r *gin.Engine, cacheStore persist.CacheStore, authclient *authutils.Client, usecases clinical.UseCasesClinicalImpl, infra infrastructure.Infrastructure) {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: ClinicalAllowedOrigins,
 		AllowMethods: []string{http.MethodPut, http.MethodPatch, http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
@@ -206,7 +207,7 @@ func SetupRoutes(r *gin.Engine, cacheStore persist.CacheStore, authclient *authu
 }
 
 // GQLHandler sets up a GraphQL resolver
-func GQLHandler(service usecases.Interactor) gin.HandlerFunc {
+func GQLHandler(service clinical.UseCasesClinicalImpl) gin.HandlerFunc {
 	resolver, err := graph.NewResolver(service)
 	if err != nil {
 		log.Panicf("failed to start graph resolver: %s", err)

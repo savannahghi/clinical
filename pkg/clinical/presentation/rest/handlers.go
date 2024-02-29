@@ -12,7 +12,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/advantage"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
 	"github.com/savannahghi/errorcodeutil"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
@@ -26,13 +26,13 @@ type BaseExtension interface {
 
 // PresentationHandlersImpl represents the usecase implementation object
 type PresentationHandlersImpl struct {
-	usecases         usecases.Interactor
+	usecases         clinical.UseCasesClinicalImpl
 	baseExt          BaseExtension
 	advantageService advantage.AdvantageService
 }
 
 // NewPresentationHandlers initializes a new rest handlers usecase
-func NewPresentationHandlers(usecases usecases.Interactor, extension BaseExtension, advantageSvc advantage.AdvantageService) *PresentationHandlersImpl {
+func NewPresentationHandlers(usecases clinical.UseCasesClinicalImpl, extension BaseExtension, advantageSvc advantage.AdvantageService) *PresentationHandlersImpl {
 	return &PresentationHandlersImpl{
 		usecases:         usecases,
 		baseExt:          extension,

@@ -95,7 +95,7 @@ func (c *UseCasesClinicalImpl) CreatePubsubPatient(ctx context.Context, payload 
 		return err
 	}
 
-	patientInput.Meta = domain.FHIRMetaInput{
+	patientInput.Meta = &domain.FHIRMetaInput{
 		Tag: tags,
 	}
 
