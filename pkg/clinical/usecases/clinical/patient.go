@@ -412,7 +412,7 @@ func (c *UseCasesClinicalImpl) CreatePatient(ctx context.Context, input dto.Pati
 		return nil, err
 	}
 
-	patientInput.Meta = &domain.FHIRMetaInput{
+	patientInput.Meta = domain.FHIRMetaInput{
 		Tag: tags,
 	}
 

@@ -1,19 +1,19 @@
 package graph
 
 import (
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 )
 
 //go:generate go run github.com/99designs/gqlgen
 
 // Resolver wires up the resolvers needed for the clinical services
 type Resolver struct {
-	usecases clinical.UseCasesClinicalImpl
+	usecases usecases.Interactor
 }
 
 // NewResolver initializes a working top leve Resolver that has been initialized
 // with all necessary dependencies
-func NewResolver(usecases clinical.UseCasesClinicalImpl) (*Resolver, error) {
+func NewResolver(usecases usecases.Interactor) (*Resolver, error) {
 	return &Resolver{
 		usecases: usecases,
 	}, nil

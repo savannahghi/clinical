@@ -26,7 +26,7 @@ import (
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/presentation"
-	"github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/clinical/pkg/clinical/usecases"
 	"github.com/savannahghi/interserviceclient"
 	"github.com/savannahghi/pubsubtools"
 	"github.com/savannahghi/serverutils"
@@ -259,7 +259,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
 			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
-			usecases := clinical.NewUseCasesClinicalImpl(infra)
+			usecases := usecases.NewUsecasesInteractor(infra)
 
 			if tt.name == "happy case: publish create patient message" {
 				msg := dto.PatientPubSubMessage{
@@ -685,7 +685,7 @@ func TestPresentationHandlersImpl_ReceivePubSubPushMessage(t *testing.T) {
 				req.Header.Add(k, v)
 			}
 
-			presentation.SetupRoutes(engine, testMemoryStore, authclient, *usecases, infra)
+			presentation.SetupRoutes(engine, testMemoryStore, authclient, usecases, infra)
 			engine.ServeHTTP(w, req)
 
 			resp := w.Result()
