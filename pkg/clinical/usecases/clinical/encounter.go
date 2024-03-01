@@ -69,7 +69,7 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 		return "", err
 	}
 
-	encounterPayload.Meta = domain.FHIRMetaInput{
+	encounterPayload.Meta = &domain.FHIRMetaInput{
 		Tag: tags,
 	}
 
