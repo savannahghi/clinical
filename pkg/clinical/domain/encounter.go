@@ -284,7 +284,7 @@ type FHIREncounterInput struct {
 	PartOf *FHIRReferenceInput `json:"partOf,omitempty"`
 
 	// Meta stores more information about the resource
-	Meta FHIRMetaInput `json:"meta,omitempty"`
+	Meta *FHIRMetaInput `json:"meta,omitempty"`
 
 	// Extension is an optional element that provides additional information not captured in the basic resource definition
 	Extension []*FHIRExtension `json:"extension,omitempty"`
