@@ -338,6 +338,7 @@ type ComplexityRoot struct {
 		RecordBloodPressure                func(childComplexity int, input dto.ObservationInput) int
 		RecordBloodSugar                   func(childComplexity int, input dto.ObservationInput) int
 		RecordBmi                          func(childComplexity int, input dto.ObservationInput) int
+		RecordCbe                          func(childComplexity int, input dto.DiagnosticReportInput) int
 		RecordColposcopy                   func(childComplexity int, input dto.ObservationInput) int
 		RecordConsent                      func(childComplexity int, input dto.ConsentInput) int
 		RecordDiastolicBloodPressure       func(childComplexity int, input dto.ObservationInput) int
@@ -727,6 +728,7 @@ type MutationResolver interface {
 	RecordBiopsy(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordMri(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordUltrasound(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
+	RecordCbe(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error)
 }
 type QueryResolver interface {
@@ -2255,6 +2257,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RecordBmi(childComplexity, args["input"].(dto.ObservationInput)), true
+
+	case "Mutation.recordCBE":
+		if e.complexity.Mutation.RecordCbe == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_recordCBE_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RecordCbe(childComplexity, args["input"].(dto.DiagnosticReportInput)), true
 
 	case "Mutation.recordColposcopy":
 		if e.complexity.Mutation.RecordColposcopy == nil {
@@ -4502,6 +4516,7 @@ extend type Mutation {
   recordBiopsy(input: DiagnosticReportInput!): DiagnosticReport!
   recordMRI(input: DiagnosticReportInput!): DiagnosticReport!
   recordUltrasound(input: DiagnosticReportInput!): DiagnosticReport!
+  recordCBE(input: DiagnosticReportInput!): DiagnosticReport!
 
   getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResources!
 }
@@ -6052,6 +6067,21 @@ func (ec *executionContext) field_Mutation_recordBloodSugar_args(ctx context.Con
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recordCBE_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.DiagnosticReportInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNDiagnosticReportInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐDiagnosticReportInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -17907,6 +17937,79 @@ func (ec *executionContext) fieldContext_Mutation_recordUltrasound(ctx context.C
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_recordUltrasound_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_recordCBE(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recordCBE(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecordCbe(rctx, fc.Args["input"].(dto.DiagnosticReportInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.DiagnosticReport)
+	fc.Result = res
+	return ec.marshalNDiagnosticReport2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐDiagnosticReport(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recordCBE(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_DiagnosticReport_id(ctx, field)
+			case "status":
+				return ec.fieldContext_DiagnosticReport_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_DiagnosticReport_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_DiagnosticReport_encounterID(ctx, field)
+			case "issued":
+				return ec.fieldContext_DiagnosticReport_issued(ctx, field)
+			case "result":
+				return ec.fieldContext_DiagnosticReport_result(ctx, field)
+			case "media":
+				return ec.fieldContext_DiagnosticReport_media(ctx, field)
+			case "conclusion":
+				return ec.fieldContext_DiagnosticReport_conclusion(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DiagnosticReport", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recordCBE_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -34401,6 +34504,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "recordUltrasound":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_recordUltrasound(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "recordCBE":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recordCBE(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

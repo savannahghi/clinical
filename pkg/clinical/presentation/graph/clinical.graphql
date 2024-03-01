@@ -218,6 +218,7 @@ extend type Mutation {
   recordBiopsy(input: DiagnosticReportInput!): DiagnosticReport!
   recordMRI(input: DiagnosticReportInput!): DiagnosticReport!
   recordUltrasound(input: DiagnosticReportInput!): DiagnosticReport!
+  recordCBE(input: DiagnosticReportInput!): DiagnosticReport!
 
   getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResources!
 }

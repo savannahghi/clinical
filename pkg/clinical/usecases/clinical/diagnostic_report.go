@@ -101,6 +101,27 @@ func (c *UseCasesClinicalImpl) RecordUltrasound(ctx context.Context, input dto.D
 	return c.RecordDiagnosticReport(ctx, common.BilateralConceptTerminologySystem, input, observationOutput, []DiagnosticReportMutatorFunc{addRadiologyUltrasoundCategory})
 }
 
+// RecordCBE is used to record clinical based examination test results for a patient
+func (c *UseCasesClinicalImpl) RecordCBE(ctx context.Context, input *dto.DiagnosticReportInput) (*dto.DiagnosticReport, error) {
+	err := input.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	observationInput := &dto.ObservationInput{
+		Status:      dto.ObservationStatusFinal,
+		EncounterID: input.EncounterID,
+		Value:       input.Findings,
+	}
+
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BreastExaminationCIELTerminologySystem, []ObservationInputMutatorFunc{addExamCategory})
+	if err != nil {
+		return nil, err
+	}
+
+	return c.RecordDiagnosticReport(ctx, common.BreastExaminationCIELTerminologySystem, *input, observationOutput, []DiagnosticReportMutatorFunc{addOtherCategory})
+}
+
 // RecordDiagnosticReport is a re-usable method to help with diagnostic report recording
 func (c *UseCasesClinicalImpl) RecordDiagnosticReport(ctx context.Context, conceptID string, input dto.DiagnosticReportInput, observation *dto.Observation, mutators []DiagnosticReportMutatorFunc) (*dto.DiagnosticReport, error) {
 	observationsReference := fmt.Sprintf("Observation/%s", observation.ID)
