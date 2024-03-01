@@ -70,3 +70,23 @@ var addRadiologyUltrasoundCategory = func(ctx context.Context, diagnosticReport 
 
 	return nil
 }
+
+// addOtherCategory is used to add `other` category to represent categories that do not have a definitive category
+var addOtherCategory = func(ctx context.Context, diagnosticReport *domain.FHIRDiagnosticReportInput) error {
+	category := []*domain.FHIRCodeableConceptInput{
+		{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&diagnosticReportCategorySystem),
+					Code:    scalarutils.Code("OTH"),
+					Display: "Other",
+				},
+			},
+			Text: "Other",
+		},
+	}
+
+	diagnosticReport.Category = append(diagnosticReport.Category, category...)
+
+	return nil
+}
