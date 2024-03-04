@@ -2062,7 +2062,33 @@ func NewFHIRMock() *FHIRMock {
 			}, nil
 		},
 		MockSearchFHIREncounterAllDataFn: func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
-			return &domain.PagedFHIRResource{}, nil
+			return &domain.PagedFHIRResource{
+				Resources: []map[string]interface{}{
+					{
+						"resourceType": "RiskAssessment",
+						"id":           "1234",
+						"status":       "final",
+					},
+					{
+						"resourceType": "Consent",
+						"id":           "5678",
+						"provision": map[string]interface{}{
+							"type": "permit",
+						},
+					},
+					{
+						"resourceType": "Observation",
+						"id":           "9012",
+						"status":       "final",
+						"valueString":  "Positive",
+					},
+				},
+				HasNextPage:     false,
+				NextCursor:      "",
+				HasPreviousPage: false,
+				PreviousCursor:  "",
+				TotalCount:      0,
+			}, nil
 		},
 	}
 }

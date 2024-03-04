@@ -189,6 +189,7 @@ type ComplexityRoot struct {
 
 	EncounterAssociatedResources struct {
 		Consent        func(childComplexity int) int
+		Observation    func(childComplexity int) int
 		RiskAssessment func(childComplexity int) int
 	}
 
@@ -1374,6 +1375,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.EncounterAssociatedResources.Consent(childComplexity), true
+
+	case "EncounterAssociatedResources.observation":
+		if e.complexity.EncounterAssociatedResources.Observation == nil {
+			break
+		}
+
+		return e.complexity.EncounterAssociatedResources.Observation(childComplexity), true
 
 	case "EncounterAssociatedResources.riskAssessment":
 		if e.complexity.EncounterAssociatedResources.RiskAssessment == nil {
@@ -5413,6 +5421,7 @@ type RiskAssessmentPrediction {
 type EncounterAssociatedResources {
   riskAssessment: RiskAssessment
   consent: Consent
+  observation: Observation
 }`, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
@@ -11088,6 +11097,67 @@ func (ec *executionContext) fieldContext_EncounterAssociatedResources_consent(ct
 				return ec.fieldContext_Consent_patient(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Consent", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EncounterAssociatedResources_observation(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResources) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterAssociatedResources_observation(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Observation, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Observation)
+	fc.Result = res
+	return ec.marshalOObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EncounterAssociatedResources_observation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EncounterAssociatedResources",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			case "interpretation":
+				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
 		},
 	}
 	return fc, nil
@@ -18059,6 +18129,8 @@ func (ec *executionContext) fieldContext_Mutation_getEncounterAssociatedResource
 				return ec.fieldContext_EncounterAssociatedResources_riskAssessment(ctx, field)
 			case "consent":
 				return ec.fieldContext_EncounterAssociatedResources_consent(ctx, field)
+			case "observation":
+				return ec.fieldContext_EncounterAssociatedResources_observation(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EncounterAssociatedResources", field.Name)
 		},
@@ -33476,6 +33548,8 @@ func (ec *executionContext) _EncounterAssociatedResources(ctx context.Context, s
 			out.Values[i] = ec._EncounterAssociatedResources_riskAssessment(ctx, field, obj)
 		case "consent":
 			out.Values[i] = ec._EncounterAssociatedResources_consent(ctx, field, obj)
+		case "observation":
+			out.Values[i] = ec._EncounterAssociatedResources_observation(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

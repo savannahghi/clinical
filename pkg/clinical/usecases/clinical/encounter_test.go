@@ -438,6 +438,14 @@ func TestUseCasesClinicalImpl_GetEncounterAssociatedResources(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - unable to search all fhir encounter data",
+			args: args{
+				ctx:         ctx,
+				encounterID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -455,6 +463,11 @@ func TestUseCasesClinicalImpl_GetEncounterAssociatedResources(t *testing.T) {
 			if tt.name == "Sad Case - Missing encounter ID" {
 				fakeFHIR.MockSearchFHIREncounterAllDataFn = func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 					return nil, fmt.Errorf("failed to get encounter")
+				}
+			}
+			if tt.name == "Sad Case - unable to search all fhir encounter data" {
+				fakeFHIR.MockSearchFHIREncounterAllDataFn = func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, fmt.Errorf("an error occurred")
 				}
 			}
 
