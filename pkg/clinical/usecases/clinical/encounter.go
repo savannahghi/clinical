@@ -200,11 +200,17 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
+	includedResources := []string{
+		"RiskAssessment:encounter",
+		"Consent:data",
+		"Observation:encounter",
+	}
+
 	encounterSearchParams := map[string]interface{}{
 		"_id":         encounterID,
 		"_sort":       "date",
 		"_count":      "1",
-		"_revinclude": []string{"RiskAssessment:encounter", "Consent:data"},
+		"_revinclude": includedResources,
 	}
 
 	encounterAllData, err := c.infrastructure.FHIR.SearchFHIREncounterAllData(ctx, encounterSearchParams, *identifiers, dto.Pagination{})
@@ -244,6 +250,24 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 			}
 
 			result.Consent = &consent
+
+		case "Observation":
+			var observation domain.FHIRObservation
+
+			observationBytes, err := json.Marshal(encounterData)
+			if err != nil {
+				return nil, err
+			}
+
+			if err := json.Unmarshal(observationBytes, &observation); err != nil {
+				return nil, err
+			}
+
+			result.Observation = &dto.Observation{
+				ID:     *observation.ID,
+				Value:  *observation.ValueString,
+				Status: dto.ObservationStatus(*observation.Status),
+			}
 		}
 	}
 

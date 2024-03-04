@@ -546,4 +546,5 @@ type RiskAssessmentPrediction {
 type EncounterAssociatedResources {
   riskAssessment: RiskAssessment
   consent: Consent
+  observation: Observation
 }

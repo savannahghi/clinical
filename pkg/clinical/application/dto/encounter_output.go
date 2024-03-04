@@ -51,4 +51,5 @@ func CreateEncounterConnection(encounters []*Encounter, pageInfo PageInfo, total
 type EncounterAssociatedResources struct {
 	RiskAssessment *RiskAssessment `json:"riskAssesment"`
 	Consent        *Consent        `json:"consent"`
+	Observation    *Observation    `json:"observation"`
 }
