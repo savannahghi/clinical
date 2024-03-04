@@ -140,8 +140,11 @@ func (c *UseCasesClinicalImpl) SearchAllergy(ctx context.Context, name string, p
 		return nil, err
 	}
 
+	org := []string{string(dto.OrganisationSourceWHO), string(dto.OrganisationSourceCIEL)}
+	source := []string{string(dto.TerminologySourceICD10WHO), string(dto.TerminologySourceCIEL)}
+
 	conceptPage, err := c.infrastructure.OpenConceptLab.
-		ListConcepts(ctx, string(dto.TerminologySourceCIEL), string(dto.TerminologySourceCIEL), true, &name, nil, nil, nil, nil, nil, nil, nil, nil, &pagination)
+		ListConcepts(ctx, org, source, true, &name, nil, nil, nil, nil, nil, nil, nil, nil, &pagination)
 	if err != nil {
 		return nil, err
 	}

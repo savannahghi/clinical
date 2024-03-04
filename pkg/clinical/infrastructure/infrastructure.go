@@ -21,7 +21,7 @@ import (
 type ServiceOCL interface {
 	MakeRequest(method string, path string, params url.Values, body io.Reader) (*http.Response, error)
 	ListConcepts(
-		ctx context.Context, org string, source string, verbose bool, q *string,
+		ctx context.Context, org []string, source []string, verbose bool, q *string,
 		sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 		locale *string, includeRetired *bool,
 		includeMappings *bool, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error)
