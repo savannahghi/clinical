@@ -137,9 +137,17 @@ type TerminologySource string
 
 const (
 	TerminologySourceICD10    TerminologySource = "ICD10"
+	TerminologySourceICD10WHO TerminologySource = "ICD-10-WHO"
 	TerminologySourceCIEL     TerminologySource = "CIEL"
 	TerminologySourceSNOMEDCT TerminologySource = "SNOMED_CT"
 	TerminologySourceLOINC    TerminologySource = "LOINC"
+)
+
+type OrganisationSource string
+
+const (
+	OrganisationSourceWHO  OrganisationSource = "WHO"
+	OrganisationSourceCIEL OrganisationSource = "CIEL"
 )
 
 // LOINCCodes represents LOINC assessment codes

@@ -14,7 +14,7 @@ import (
 type FakeOCL struct {
 	MockMakeRequestFn  func(method string, path string, params url.Values, body io.Reader) (*http.Response, error)
 	MockListConceptsFn func(
-		ctx context.Context, org string, source string, verbose bool, q *string,
+		ctx context.Context, org []string, source []string, verbose bool, q *string,
 		sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 		locale *string, includeRetired *bool,
 		includeMappings *bool, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error)
@@ -31,7 +31,7 @@ func NewFakeOCLMock() *FakeOCL {
 				StatusCode: 200,
 			}, nil
 		},
-		MockListConceptsFn: func(ctx context.Context, org, source string, verbose bool, q, sortAsc, sortDesc, conceptClass, dataType, locale *string, includeRetired, includeMappings, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {
+		MockListConceptsFn: func(ctx context.Context, org []string, source []string, verbose bool, q, sortAsc, sortDesc, conceptClass, dataType, locale *string, includeRetired, includeMappings, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {
 			next := "https://api.openconceptlab.org/orgs/CIEL/sources/CIEL/concepts/?limit=2&page=2&q=Eggs&verbose=true"
 			previous := "https://api.openconceptlab.org/orgs/CIEL/sources/CIEL/concepts/?limit=2&page=1&q=Eggs&verbose=true"
 			return &domain.ConceptPage{
@@ -67,7 +67,7 @@ func (o *FakeOCL) MakeRequest(method string, path string, params url.Values, bod
 
 // ListConcepts is a mock implementation of listing concepts
 func (o *FakeOCL) ListConcepts(
-	ctx context.Context, org string, source string, verbose bool, q *string,
+	ctx context.Context, org []string, source []string, verbose bool, q *string,
 	sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 	locale *string, includeRetired *bool,
 	includeMappings *bool, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {

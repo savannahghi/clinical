@@ -107,8 +107,8 @@ func TestService_ListConcepts(t *testing.T) {
 	previous := "https://api.openconceptlab.org/orgs/CIEL/sources/CIEL/concepts/?limit=2&page=1&q=Eggs&verbose=true"
 	type args struct {
 		ctx                    context.Context
-		org                    string
-		source                 string
+		org                    []string
+		source                 []string
 		verbose                bool
 		q                      *string
 		sortAsc                *string
@@ -130,8 +130,8 @@ func TestService_ListConcepts(t *testing.T) {
 			name: "happy case: list concepts",
 			args: args{
 				ctx:                    context.Background(),
-				org:                    "CIEL",
-				source:                 "CIEL",
+				org:                    []string{"CIEL", "WHO"},
+				source:                 []string{"CIEL", "WHO"},
 				verbose:                false,
 				q:                      toPointer("panadol"),
 				sortAsc:                toPointer("id"),
@@ -155,7 +155,7 @@ func TestService_ListConcepts(t *testing.T) {
 			defer httpmock.DeactivateAndReset()
 
 			if tt.name == "happy case: list concepts" {
-				httpmock.RegisterResponder(http.MethodGet, "/orgs/CIEL/sources/CIEL/concepts/",
+				httpmock.RegisterResponder(http.MethodGet, "/concepts/",
 					func(req *http.Request) (*http.Response, error) {
 						response, err := httpmock.NewJsonResponse(200, []map[string]interface{}{
 							{

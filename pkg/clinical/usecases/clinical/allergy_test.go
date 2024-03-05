@@ -486,7 +486,7 @@ func TestUseCasesClinicalImpl_SearchAllergy(t *testing.T) {
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: unable to search for an allergy" {
-				fakeOCL.MockListConceptsFn = func(ctx context.Context, org, source string, verbose bool, q, sortAsc, sortDesc, conceptClass, dataType, locale *string, includeRetired, includeMappings, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {
+				fakeOCL.MockListConceptsFn = func(ctx context.Context, org []string, source []string, verbose bool, q, sortAsc, sortDesc, conceptClass, dataType, locale *string, includeRetired, includeMappings, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {
 					return nil, fmt.Errorf("an error occurred")
 				}
 			}

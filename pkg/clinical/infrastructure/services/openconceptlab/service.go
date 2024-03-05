@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -135,13 +136,13 @@ func (s Service) GetConcept(
 // The URL that is composed follows this pattern: GET /orgs/:org/sources/:source/[:sourceVersion/]concepts/
 // e.g GET /orgs/PEPFAR-Test7/sources/MER/concepts/?conceptClass="Symptom"+OR+"Diagnosis"
 func (s Service) ListConcepts(
-	_ context.Context, org string, source string, verbose bool, q *string,
+	_ context.Context, org []string, source []string, verbose bool, q *string,
 	sortAsc *string, sortDesc *string, conceptClass *string, dataType *string,
 	locale *string, includeRetired *bool,
 	includeMappings *bool, includeInverseMappings *bool, paginationInput *dto.Pagination) (*domain.ConceptPage, error) {
 	s.enforcePreconditions()
 
-	path := fmt.Sprintf("orgs/%s/sources/%s/concepts", org, source)
+	path := "concepts"
 
 	params := url.Values{}
 	params.Add("verbose", strconv.FormatBool(verbose))
@@ -150,6 +151,16 @@ func (s Service) ListConcepts(
 		params.Add("page", paginationInput.After)
 	} else {
 		params.Add("page", "1")
+	}
+
+	if len(org) > 0 {
+		formattedOrg := strings.Join(org, ",")
+		params.Add("owner", formattedOrg)
+	}
+
+	if len(source) > 0 {
+		formattedSource := strings.Join(source, ",")
+		params.Add("source", formattedSource)
 	}
 
 	params.Add("limit", strconv.Itoa(*paginationInput.First))
