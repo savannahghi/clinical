@@ -2113,7 +2113,7 @@ func TestUseCasesClinicalImpl_DeletePatient(t *testing.T) {
 			fakeUpload := fakeUploadMock.NewFakeUploadMock()
 			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
 
-			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad Case - Fail to delete patient" {

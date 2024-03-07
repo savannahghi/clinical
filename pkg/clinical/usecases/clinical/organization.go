@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
@@ -34,12 +35,19 @@ func (c *UseCasesClinicalImpl) RegisterTenant(ctx context.Context, input dto.Org
 
 	payload := mapOrganizationInputToFHIROrganizationInput(input)
 
-	organisationPayload, err := c.infrastructure.FHIR.CreateFHIROrganization(ctx, *payload)
+	organisationPayload, err := c.infrastructure.GenericFHIR.CreateFHIRGenericResource(ctx, *payload)
 	if err != nil {
 		return nil, err
 	}
 
-	return mapFHIROrganizationToDTOOrganization(organisationPayload.Resource), nil
+	organisation := &domain.FHIROrganization{}
+
+	err = mapstructure.Decode(organisationPayload.Resource, organisation)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapFHIROrganizationToDTOOrganization(organisation), nil
 }
 
 func mapIdentifierToFHIRIdentifierInput(idType, value string) *domain.FHIRIdentifierInput {

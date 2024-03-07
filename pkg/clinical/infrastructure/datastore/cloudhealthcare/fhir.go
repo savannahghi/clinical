@@ -273,6 +273,28 @@ func (fh StoreImpl) CreateFHIRCondition(_ context.Context, input domain.FHIRCond
 	return output, nil
 }
 
+// Create is generic function for creating a resource
+func (fh *StoreImpl) CreateFHIRGenericResource(ctx context.Context, input any) (*domain.FHIRRelayPayload, error) {
+	// Implementation for creating an FHIR organization...
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", organizationResource, err)
+	}
+
+	resource := &map[string]interface{}{}
+
+	err = fh.Dataset.CreateFHIRResource(organizationResource, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create %s resource: %w", organizationResource, err)
+	}
+
+	output := &domain.FHIRRelayPayload{
+		Resource: *resource,
+	}
+
+	return output, nil
+}
+
 // CreateFHIROrganization creates a FHIROrganization instance
 func (fh StoreImpl) CreateFHIROrganization(_ context.Context, input domain.FHIROrganizationInput) (*domain.FHIROrganizationRelayPayload, error) {
 	payload, err := converterandformatter.StructToMap(input)

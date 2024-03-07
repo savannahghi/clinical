@@ -121,7 +121,7 @@ func StartServer(
 
 	advantageSvc := advantage.NewServiceAdvantage(authclient)
 
-	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, ocl, upload, pubsubSvc, advantageSvc)
+	infrastructure := infrastructure.NewInfrastructureInteractor(baseExtension, fhir, fhir, ocl, upload, pubsubSvc, advantageSvc)
 
 	usecases := clinical.NewUseCasesClinicalImpl(infrastructure)
 

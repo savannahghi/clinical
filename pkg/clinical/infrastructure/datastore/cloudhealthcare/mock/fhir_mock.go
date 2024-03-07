@@ -91,6 +91,7 @@ type FHIRMock struct {
 	MockGetFHIRQuestionnaireResponseFn    func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error)
 	MockCreateFHIRDiagnosticReportFn      func(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
 	MockSearchFHIREncounterAllDataFn      func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
+	MockCreateFHIRGenericResourceFn       func(ctx context.Context, input any) (*domain.FHIRRelayPayload, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -2090,6 +2091,11 @@ func NewFHIRMock() *FHIRMock {
 				TotalCount:      0,
 			}, nil
 		},
+		MockCreateFHIRGenericResourceFn: func(ctx context.Context, input any) (*domain.FHIRRelayPayload, error) {
+			return &domain.FHIRRelayPayload{
+				Resource: map[string]interface{}{},
+			}, nil
+		},
 	}
 }
 
@@ -2441,4 +2447,9 @@ func (fh *FHIRMock) CreateFHIRDiagnosticReport(ctx context.Context, input *domai
 // SearchFHIREncounterAllData mocks the implementation of SearchFHIREncounterAllData
 func (fh *FHIRMock) SearchFHIREncounterAllData(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 	return fh.MockSearchFHIREncounterAllDataFn(ctx, params, tenant, pagination)
+}
+
+// MockCreateFHIRGenericResourceFn mocks the implementation of generic method to create FHIR resource
+func (fh *FHIRMock) CreateFHIRGenericResource(ctx context.Context, input any) (*domain.FHIRRelayPayload, error) {
+	return fh.MockCreateFHIRGenericResourceFn(ctx, input)
 }

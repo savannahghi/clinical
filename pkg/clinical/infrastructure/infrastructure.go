@@ -55,6 +55,7 @@ type BaseExtension interface {
 // Infrastructure ...
 type Infrastructure struct {
 	FHIR             repository.FHIR
+	GenericFHIR      repository.GenericFHIRRepository[any]
 	OpenConceptLab   ServiceOCL
 	BaseExtension    BaseExtension
 	Upload           upload.ServiceUpload
@@ -66,6 +67,7 @@ type Infrastructure struct {
 func NewInfrastructureInteractor(
 	ext BaseExtension,
 	fhir repository.FHIR,
+	genericFhir repository.GenericFHIRRepository[any],
 	openconceptlab ServiceOCL,
 	upload upload.ServiceUpload,
 	pubsub pubsubmessaging.ServicePubsub,
@@ -73,6 +75,7 @@ func NewInfrastructureInteractor(
 ) Infrastructure {
 	return Infrastructure{
 		fhir,
+		genericFhir,
 		openconceptlab,
 		ext,
 		upload,

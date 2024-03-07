@@ -7,23 +7,23 @@ import (
 // FHIROrganization definition: The organization (facility) responsible for this organization
 type FHIROrganization struct {
 	// The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" mapstructure:"id"`
 	// Whether the organization's record is still in active use
-	Active *bool `json:"active,omitempty"`
+	Active *bool `json:"active,omitempty" mapstructure:"active"`
 	// Identifier(s) by which this organization is known.
-	Identifier []*FHIRIdentifier `json:"identifier,omitempty"`
+	Identifier []*FHIRIdentifier `json:"identifier,omitempty" mapstructure:"identifier"`
 	// Specific type of organization (e.g. Healthcare Provider, Hospital Department, Insurance Company).
-	Type []*FHIRCodeableConcept `json:"type,omitempty"`
+	Type []*FHIRCodeableConcept `json:"type,omitempty" mapstructure:"type"`
 	// Name used for the organization
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" mapstructure:"name"`
 	// A list of alternate names that the organization is known as, or was known as in the past
-	Alias []string `json:"alias,omitempty"`
+	Alias []string `json:"alias,omitempty" mapstructure:"alias"`
 	// A contact detail for the organization
 	// ! Rule: The telecom of an organization can never be of use 'home'
-	Telecom []*FHIRContactPoint `json:"telecom,omitempty"`
+	Telecom []*FHIRContactPoint `json:"telecom,omitempty" mapstructure:"telecom"`
 
 	// An address for the organization.
-	Address []*FHIRAddress `json:"address,omitempty"`
+	Address []*FHIRAddress `json:"address,omitempty" mapstructure:"address"`
 }
 
 // FHIROrganizationInput definition: The organization (facility) responsible for this organization
@@ -51,6 +51,11 @@ type FHIROrganizationInput struct {
 // FHIROrganizationRelayPayload is used to return single instances of Organization
 type FHIROrganizationRelayPayload struct {
 	Resource *FHIROrganization `json:"resource,omitempty"`
+}
+
+// FHIRRelayPayload is used to return single instances of Organization
+type FHIRRelayPayload struct {
+	Resource map[string]interface{} `json:"resource,omitempty"`
 }
 
 // FHIROrganizationRelayConnection is a Relay connection for Organization

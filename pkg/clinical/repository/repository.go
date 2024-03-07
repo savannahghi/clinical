@@ -140,3 +140,10 @@ type FHIRRiskAssessment interface {
 type FHIRDiagnosticReport interface {
 	CreateFHIRDiagnosticReport(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
 }
+
+// Generic repository interface
+type GenericFHIRRepository[T any] interface {
+	CreateFHIRGenericResource(ctx context.Context, input T) (*domain.FHIRRelayPayload, error)
+	// Get(ctx context.Context, id string) (domain.FHIRRelayPayload, error)
+	// Other common methods...
+}
