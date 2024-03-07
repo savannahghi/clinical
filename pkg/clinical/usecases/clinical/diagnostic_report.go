@@ -27,7 +27,7 @@ func (c *UseCasesClinicalImpl) RecordMammographyResult(ctx context.Context, inpu
 	}
 
 	// !NOTE: The terminology code used here is used TEMPORARILY. Pending discussion about how to represent BI-RADs conclusions/observation
-	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BenignNeoplasmOfBreastOfSkinTerminologyCode, []ObservationInputMutatorFunc{addImagingCategory})
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BenignNeoplasmOfBreastOfSkinTerminologyCode, []ObservationInputMutatorFunc{addObservationCategory("imaging")})
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *UseCasesClinicalImpl) RecordBiopsy(ctx context.Context, input dto.Diagn
 		Value:       input.Findings,
 	}
 
-	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BiopsyTerminologySystem, []ObservationInputMutatorFunc{addProcedureCategory})
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BiopsyTerminologySystem, []ObservationInputMutatorFunc{addObservationCategory("procedure")})
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (c *UseCasesClinicalImpl) RecordMRI(ctx context.Context, input dto.Diagnost
 		Value:       input.Findings,
 	}
 
-	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.MRITerminologySystem, []ObservationInputMutatorFunc{addProcedureCategory})
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.MRITerminologySystem, []ObservationInputMutatorFunc{addObservationCategory("procedure")})
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (c *UseCasesClinicalImpl) RecordUltrasound(ctx context.Context, input dto.D
 		Value:       input.Findings,
 	}
 
-	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BilateralConceptTerminologySystem, []ObservationInputMutatorFunc{addImagingCategory})
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BilateralConceptTerminologySystem, []ObservationInputMutatorFunc{addObservationCategory("imaging")})
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func (c *UseCasesClinicalImpl) RecordCBE(ctx context.Context, input *dto.Diagnos
 		Value:       input.Findings,
 	}
 
-	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BreastExaminationCIELTerminologySystem, []ObservationInputMutatorFunc{addExamCategory})
+	observationOutput, err := c.RecordObservation(ctx, *observationInput, common.BreastExaminationCIELTerminologySystem, []ObservationInputMutatorFunc{addObservationCategory("exam")})
 	if err != nil {
 		return nil, err
 	}
