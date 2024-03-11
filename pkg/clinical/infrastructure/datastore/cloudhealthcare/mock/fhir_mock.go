@@ -1298,6 +1298,7 @@ func NewFHIRMock() *FHIRMock {
 		MockSearchFHIRObservationFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
 			uuid := uuid.New().String()
 			finalStatus := domain.ObservationStatusEnumFinal
+			instant := gofakeit.TimeZone()
 			return &domain.PagedFHIRObservations{
 				Observations: []domain.FHIRObservation{
 					{
@@ -1309,6 +1310,18 @@ func NewFHIRMock() *FHIRMock {
 						Encounter: &domain.FHIRReference{
 							ID: &uuid,
 						},
+						Code: &domain.FHIRCodeableConcept{
+							ID: new(string),
+							Coding: []*domain.FHIRCoding{
+								{
+									ID:           new(string),
+									Display:      "Test",
+									UserSelected: new(bool),
+								},
+							},
+							Text: "",
+						},
+						EffectiveInstant: (*scalarutils.Instant)(&instant),
 					},
 				},
 				HasNextPage:     false,
@@ -1506,6 +1519,7 @@ func NewFHIRMock() *FHIRMock {
 		MockGetFHIRPatientFn: func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 			patientID := uuid.New().String()
 			patientName := gofakeit.Name()
+			trueBool := true
 			gender := domain.PatientGenderEnumFemale
 			return &domain.FHIRPatientRelayPayload{
 				Resource: &domain.FHIRPatient{
@@ -1516,6 +1530,7 @@ func NewFHIRMock() *FHIRMock {
 						},
 					},
 					Gender: &gender,
+					Active: &trueBool,
 					BirthDate: &scalarutils.Date{
 						Year:  1990,
 						Month: 12,
@@ -1535,18 +1550,27 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockSearchFHIRMedicationStatementFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationStatementRelayConnection, error) {
 			codingCode := "123"
+			patientID := "1"
+			status := domain.MedicationStatementStatusEnumActive
 			return &domain.FHIRMedicationStatementRelayConnection{
 				Edges: []*domain.FHIRMedicationStatementRelayEdge{
 					{
 						Cursor: new(string),
 						Node: &domain.FHIRMedicationStatement{
-							ID:         new(string),
-							Text:       &domain.FHIRNarrative{},
-							Identifier: []*domain.FHIRIdentifier{},
-							BasedOn:    []*domain.FHIRReference{},
-							PartOf:     []*domain.FHIRReference{},
-							// Status:                    &"",
+							ID:           new(string),
+							Text:         &domain.FHIRNarrative{},
+							Identifier:   []*domain.FHIRIdentifier{},
+							BasedOn:      []*domain.FHIRReference{},
+							PartOf:       []*domain.FHIRReference{},
+							Status:       &status,
 							StatusReason: []*domain.FHIRCodeableConcept{},
+							MedicationCodeableConcept: &domain.FHIRCodeableConcept{
+								Coding: []*domain.FHIRCoding{
+									{
+										Display: "Panadol",
+									},
+								},
+							},
 							Category: &domain.FHIRCodeableConcept{
 								ID: new(string),
 								Coding: []*domain.FHIRCoding{
@@ -1560,21 +1584,22 @@ func NewFHIRMock() *FHIRMock {
 								},
 								Text: "",
 							},
-							MedicationCodeableConcept: &domain.FHIRCodeableConcept{},
-							MedicationReference:       &domain.FHIRMedication{},
-							Subject:                   &domain.FHIRReference{},
-							Context:                   &domain.FHIRReference{},
-							EffectiveDateTime:         &scalarutils.Date{},
-							EffectivePeriod:           &domain.FHIRPeriod{},
-							DateAsserted:              &scalarutils.Date{},
-							InformationSource:         &domain.FHIRReference{},
-							DerivedFrom:               []*domain.FHIRReference{},
-							ReasonCode:                []*domain.FHIRCodeableConcept{},
-							ReasonReference:           []*domain.FHIRReference{},
-							Note:                      []*domain.FHIRAnnotation{},
-							Dosage:                    []*domain.FHIRDosage{},
-							Meta:                      &domain.FHIRMeta{},
-							Extension:                 []*domain.FHIRExtension{},
+							MedicationReference: &domain.FHIRMedication{},
+							Subject: &domain.FHIRReference{
+								ID: &patientID,
+							},
+							Context:           &domain.FHIRReference{},
+							EffectiveDateTime: &scalarutils.Date{},
+							EffectivePeriod:   &domain.FHIRPeriod{},
+							DateAsserted:      &scalarutils.Date{},
+							InformationSource: &domain.FHIRReference{},
+							DerivedFrom:       []*domain.FHIRReference{},
+							ReasonCode:        []*domain.FHIRCodeableConcept{},
+							ReasonReference:   []*domain.FHIRReference{},
+							Note:              []*domain.FHIRAnnotation{},
+							Dosage:            []*domain.FHIRDosage{},
+							Meta:              &domain.FHIRMeta{},
+							Extension:         []*domain.FHIRExtension{},
 						},
 					},
 				},

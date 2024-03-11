@@ -461,6 +461,13 @@ func (r *queryResolver) GetQuestionnaireResponseRiskLevel(ctx context.Context, e
 	return r.usecases.GetQuestionnaireResponseRiskLevel(ctx, encounterID, screeningType)
 }
 
+// GetPatientMedicationHistory is the resolver for the getPatientMedicationHistory field.
+func (r *queryResolver) GetPatientMedicationHistory(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.PatientMedicationHistoryOutput, error) {
+	r.CheckDependencies()
+
+	return r.usecases.PatientMedicationHistory(ctx, patientID, &pagination)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

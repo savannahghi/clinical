@@ -548,3 +548,10 @@ type EncounterAssociatedResources {
   consent: Consent
   observation: Observation
 }
+
+type PatientMedicationHistoryOutput {
+  observations: [Observation]
+  conditions: [Condition]
+  patient: Patient
+  medications: [MedicationStatement]
+}

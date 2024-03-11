@@ -2133,3 +2133,140 @@ func TestUseCasesClinicalImpl_DeletePatient(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_PatientMedicationHistory(t *testing.T) {
+	firstTen := 10
+	type args struct {
+		ctx        context.Context
+		patientID  string
+		pagination *dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient medical information",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &firstTen,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: invalid patient ID",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: "1",
+				pagination: &dto.Pagination{
+					First: &firstTen,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient medical information",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &firstTen,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient observations",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &firstTen,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient conditions",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &firstTen,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient medication statement",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &firstTen,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get tenant identifiers from context",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				pagination: &dto.Pagination{
+					First: &firstTen,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to get patient medical information" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+			if tt.name == "Sad case: unable to get patient observations" {
+				fakeFHIR.MockSearchFHIRObservationFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRObservations, error) {
+					return nil, fmt.Errorf("failed to get patient observations")
+				}
+			}
+			if tt.name == "Sad case: unable to get patient conditions" {
+				fakeFHIR.MockSearchFHIRConditionFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRCondition, error) {
+					return nil, fmt.Errorf("failed to get patient conditions")
+				}
+			}
+			if tt.name == "Sad case: unable to get patient medication statement" {
+				fakeFHIR.MockSearchFHIRMedicationStatementFn = func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationStatementRelayConnection, error) {
+					return nil, fmt.Errorf("failed to get patient medications")
+				}
+			}
+			if tt.name == "Sad case: unable to get tenant identifiers from context" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			_, err := u.PatientMedicationHistory(tt.args.ctx, tt.args.patientID, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.PatientMedicationHistory() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

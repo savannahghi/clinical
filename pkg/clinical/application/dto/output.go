@@ -160,3 +160,11 @@ type Section struct {
 type ConsentOutput struct {
 	Status *ConsentStatusEnum `json:"status"`
 }
+
+// PatientMedicationHistoryOutput object models all information about a patient
+type PatientMedicationHistoryOutput struct {
+	Conditions   []*Condition           `json:"condition"`
+	Observations []*Observation         `json:"observations"`
+	Patient      Patient                `json:"patient"`
+	Medications  []*MedicationStatement `json:"medications"`
+}

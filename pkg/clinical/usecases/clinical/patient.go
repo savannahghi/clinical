@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/scalarutils"
 
@@ -510,4 +511,105 @@ func mapFHIRPatientToPatientDTO(patient *domain.FHIRPatient) *dto.Patient {
 		Gender:      dto.Gender(patient.Gender.String()),
 		BirthDate:   *patient.BirthDate,
 	}
+}
+
+// PatientMedicationHistory is used to retrieve all the patient clinical information. From Observations, Conditions,
+// MedicationStatement etc. relevant to referral from one facility to another.
+func (c *UseCasesClinicalImpl) PatientMedicationHistory(ctx context.Context, patientID string, pagination *dto.Pagination) (*dto.PatientMedicationHistoryOutput, error) {
+	_, err := uuid.Parse(patientID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid patient id: %s", patientID)
+	}
+
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
+	if err != nil {
+		return nil, err
+	}
+
+	patientReference := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
+
+	searchParams := map[string]interface{}{
+		"patient": patientReference,
+	}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	observationsChan := make(chan *domain.PagedFHIRObservations)
+	conditionsChan := make(chan *domain.PagedFHIRCondition)
+	medicationStatementsChan := make(chan *domain.FHIRMedicationStatementRelayConnection)
+	errChan := make(chan error, 3)
+
+	go func() {
+		result, err := c.infrastructure.FHIR.SearchFHIRObservation(ctx, searchParams, *identifiers, *pagination)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		observationsChan <- result
+	}()
+
+	go func() {
+		result, err := c.infrastructure.FHIR.SearchFHIRCondition(ctx, searchParams, *identifiers, *pagination)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		conditionsChan <- result
+	}()
+
+	go func() {
+		result, err := c.infrastructure.FHIR.SearchFHIRMedicationStatement(ctx, searchParams, *identifiers, *pagination)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		medicationStatementsChan <- result
+	}()
+
+	var observations *domain.PagedFHIRObservations
+
+	var conditions *domain.PagedFHIRCondition
+
+	var medicationStatements *domain.FHIRMedicationStatementRelayConnection
+
+	// ensure whichever goroutine finishes first is processed, whether it returns a result or an error.
+	for i := 0; i < 3; i++ {
+		select {
+		case obs := <-observationsChan:
+			observations = obs
+		case conds := <-conditionsChan:
+			conditions = conds
+		case meds := <-medicationStatementsChan:
+			medicationStatements = meds
+		case err := <-errChan:
+			return nil, err
+		}
+	}
+
+	var conditionsResult []*dto.Condition
+	for _, item := range conditions.Conditions {
+		conditionsResult = append(conditionsResult, mapFHIRConditionToConditionDTO(item))
+	}
+
+	var observationList []*dto.Observation
+	for _, item := range observations.Observations {
+		observationList = append(observationList, mapFHIRObservationToObservationDTO(item))
+	}
+
+	var medicationStatement []*dto.MedicationStatement
+	for _, item := range medicationStatements.Edges {
+		medicationStatement = append(medicationStatement, mapFHIRMedicationStatementToMedicationStatementDTO(item.Node))
+	}
+
+	output := &dto.PatientMedicationHistoryOutput{
+		Conditions:   conditionsResult,
+		Observations: observationList,
+		Patient:      *mapFHIRPatientToPatientDTO(patient.Resource),
+		Medications:  medicationStatement,
+	}
+
+	return output, nil
 }

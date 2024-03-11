@@ -406,6 +406,13 @@ type ComplexityRoot struct {
 		PhoneNumber func(childComplexity int) int
 	}
 
+	PatientMedicationHistoryOutput struct {
+		Conditions   func(childComplexity int) int
+		Medications  func(childComplexity int) int
+		Observations func(childComplexity int) int
+		Patient      func(childComplexity int) int
+	}
+
 	Period struct {
 		End   func(childComplexity int) int
 		ID    func(childComplexity int) int
@@ -430,6 +437,7 @@ type ComplexityRoot struct {
 		GetPatientDiastolicBloodPressureEntries func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		GetPatientHeightEntries                 func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		GetPatientLastMenstrualPeriodEntries    func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
+		GetPatientMedicationHistory             func(childComplexity int, patientID string, pagination dto.Pagination) int
 		GetPatientMuacEntries                   func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		GetPatientOxygenSaturationEntries       func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
 		GetPatientPulseRateEntries              func(childComplexity int, patientID string, encounterID *string, date *scalarutils.Date, pagination dto.Pagination) int
@@ -757,6 +765,7 @@ type QueryResolver interface {
 	ListPatientAllergies(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.AllergyConnection, error)
 	ListPatientMedia(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.MediaConnection, error)
 	GetQuestionnaireResponseRiskLevel(ctx context.Context, encounterID string, screeningType domain.ScreeningTypeEnum) (string, error)
+	GetPatientMedicationHistory(ctx context.Context, patientID string, pagination dto.Pagination) (*dto.PatientMedicationHistoryOutput, error)
 }
 
 type executableSchema struct {
@@ -2695,6 +2704,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Patient.PhoneNumber(childComplexity), true
 
+	case "PatientMedicationHistoryOutput.conditions":
+		if e.complexity.PatientMedicationHistoryOutput.Conditions == nil {
+			break
+		}
+
+		return e.complexity.PatientMedicationHistoryOutput.Conditions(childComplexity), true
+
+	case "PatientMedicationHistoryOutput.medications":
+		if e.complexity.PatientMedicationHistoryOutput.Medications == nil {
+			break
+		}
+
+		return e.complexity.PatientMedicationHistoryOutput.Medications(childComplexity), true
+
+	case "PatientMedicationHistoryOutput.observations":
+		if e.complexity.PatientMedicationHistoryOutput.Observations == nil {
+			break
+		}
+
+		return e.complexity.PatientMedicationHistoryOutput.Observations(childComplexity), true
+
+	case "PatientMedicationHistoryOutput.patient":
+		if e.complexity.PatientMedicationHistoryOutput.Patient == nil {
+			break
+		}
+
+		return e.complexity.PatientMedicationHistoryOutput.Patient(childComplexity), true
+
 	case "Period.end":
 		if e.complexity.Period.End == nil {
 			break
@@ -2858,6 +2895,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetPatientLastMenstrualPeriodEntries(childComplexity, args["patientID"].(string), args["encounterID"].(*string), args["date"].(*scalarutils.Date), args["pagination"].(dto.Pagination)), true
+
+	case "Query.getPatientMedicationHistory":
+		if e.complexity.Query.GetPatientMedicationHistory == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPatientMedicationHistory_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPatientMedicationHistory(childComplexity, args["patientID"].(string), args["pagination"].(dto.Pagination)), true
 
 	case "Query.getPatientMuacEntries":
 		if e.complexity.Query.GetPatientMuacEntries == nil {
@@ -4439,6 +4488,8 @@ var sources = []*ast.Source{
     encounterID: String!
     screeningType: ScreeningTypeEnum!
   ): String!
+
+  getPatientMedicationHistory(patientID: ID!, pagination: Pagination!): PatientMedicationHistoryOutput!
 }
 
 extend type Mutation {
@@ -5422,6 +5473,13 @@ type EncounterAssociatedResources {
   riskAssessment: RiskAssessment
   consent: Consent
   observation: Observation
+}
+
+type PatientMedicationHistoryOutput {
+  observations: [Observation]
+  conditions: [Condition]
+  patient: Patient
+  medications: [MedicationStatement]
 }`, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
@@ -6693,6 +6751,30 @@ func (ec *executionContext) field_Query_getPatientLastMenstrualPeriodEntries_arg
 		}
 	}
 	args["pagination"] = arg3
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getPatientMedicationHistory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["patientID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("patientID"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["patientID"] = arg0
+	var arg1 dto.Pagination
+	if tmp, ok := rawArgs["pagination"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+		arg1, err = ec.unmarshalNPagination2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPagination(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pagination"] = arg1
 	return args, nil
 }
 
@@ -19328,6 +19410,238 @@ func (ec *executionContext) fieldContext_Patient_birthDate(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _PatientMedicationHistoryOutput_observations(ctx context.Context, field graphql.CollectedField, obj *dto.PatientMedicationHistoryOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PatientMedicationHistoryOutput_observations(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Observations, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*dto.Observation)
+	fc.Result = res
+	return ec.marshalOObservation2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PatientMedicationHistoryOutput_observations(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PatientMedicationHistoryOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Observation_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Observation_status(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Observation_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Observation_encounterID(ctx, field)
+			case "name":
+				return ec.fieldContext_Observation_name(ctx, field)
+			case "value":
+				return ec.fieldContext_Observation_value(ctx, field)
+			case "timeRecorded":
+				return ec.fieldContext_Observation_timeRecorded(ctx, field)
+			case "interpretation":
+				return ec.fieldContext_Observation_interpretation(ctx, field)
+			case "note":
+				return ec.fieldContext_Observation_note(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Observation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PatientMedicationHistoryOutput_conditions(ctx context.Context, field graphql.CollectedField, obj *dto.PatientMedicationHistoryOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PatientMedicationHistoryOutput_conditions(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Conditions, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*dto.Condition)
+	fc.Result = res
+	return ec.marshalOCondition2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PatientMedicationHistoryOutput_conditions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PatientMedicationHistoryOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Condition_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Condition_status(ctx, field)
+			case "name":
+				return ec.fieldContext_Condition_name(ctx, field)
+			case "code":
+				return ec.fieldContext_Condition_code(ctx, field)
+			case "system":
+				return ec.fieldContext_Condition_system(ctx, field)
+			case "category":
+				return ec.fieldContext_Condition_category(ctx, field)
+			case "onsetDate":
+				return ec.fieldContext_Condition_onsetDate(ctx, field)
+			case "recordedDate":
+				return ec.fieldContext_Condition_recordedDate(ctx, field)
+			case "note":
+				return ec.fieldContext_Condition_note(ctx, field)
+			case "patientID":
+				return ec.fieldContext_Condition_patientID(ctx, field)
+			case "encounterID":
+				return ec.fieldContext_Condition_encounterID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Condition", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PatientMedicationHistoryOutput_patient(ctx context.Context, field graphql.CollectedField, obj *dto.PatientMedicationHistoryOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PatientMedicationHistoryOutput_patient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Patient, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Patient)
+	fc.Result = res
+	return ec.marshalOPatient2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PatientMedicationHistoryOutput_patient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PatientMedicationHistoryOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Patient_id(ctx, field)
+			case "active":
+				return ec.fieldContext_Patient_active(ctx, field)
+			case "name":
+				return ec.fieldContext_Patient_name(ctx, field)
+			case "phoneNumber":
+				return ec.fieldContext_Patient_phoneNumber(ctx, field)
+			case "gender":
+				return ec.fieldContext_Patient_gender(ctx, field)
+			case "birthDate":
+				return ec.fieldContext_Patient_birthDate(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Patient", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PatientMedicationHistoryOutput_medications(ctx context.Context, field graphql.CollectedField, obj *dto.PatientMedicationHistoryOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PatientMedicationHistoryOutput_medications(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Medications, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*dto.MedicationStatement)
+	fc.Result = res
+	return ec.marshalOMedicationStatement2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedicationStatement(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PatientMedicationHistoryOutput_medications(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PatientMedicationHistoryOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_MedicationStatement_id(ctx, field)
+			case "status":
+				return ec.fieldContext_MedicationStatement_status(ctx, field)
+			case "medication":
+				return ec.fieldContext_MedicationStatement_medication(ctx, field)
+			case "patientID":
+				return ec.fieldContext_MedicationStatement_patientID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MedicationStatement", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Period_id(ctx context.Context, field graphql.CollectedField, obj *dto.Period) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Period_id(ctx, field)
 	if err != nil {
@@ -21103,6 +21417,71 @@ func (ec *executionContext) fieldContext_Query_getQuestionnaireResponseRiskLevel
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getQuestionnaireResponseRiskLevel_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getPatientMedicationHistory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPatientMedicationHistory(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetPatientMedicationHistory(rctx, fc.Args["patientID"].(string), fc.Args["pagination"].(dto.Pagination))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.PatientMedicationHistoryOutput)
+	fc.Result = res
+	return ec.marshalNPatientMedicationHistoryOutput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatientMedicationHistoryOutput(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getPatientMedicationHistory(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "observations":
+				return ec.fieldContext_PatientMedicationHistoryOutput_observations(ctx, field)
+			case "conditions":
+				return ec.fieldContext_PatientMedicationHistoryOutput_conditions(ctx, field)
+			case "patient":
+				return ec.fieldContext_PatientMedicationHistoryOutput_patient(ctx, field)
+			case "medications":
+				return ec.fieldContext_PatientMedicationHistoryOutput_medications(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PatientMedicationHistoryOutput", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPatientMedicationHistory_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -34913,6 +35292,48 @@ func (ec *executionContext) _Patient(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var patientMedicationHistoryOutputImplementors = []string{"PatientMedicationHistoryOutput"}
+
+func (ec *executionContext) _PatientMedicationHistoryOutput(ctx context.Context, sel ast.SelectionSet, obj *dto.PatientMedicationHistoryOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, patientMedicationHistoryOutputImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PatientMedicationHistoryOutput")
+		case "observations":
+			out.Values[i] = ec._PatientMedicationHistoryOutput_observations(ctx, field, obj)
+		case "conditions":
+			out.Values[i] = ec._PatientMedicationHistoryOutput_conditions(ctx, field, obj)
+		case "patient":
+			out.Values[i] = ec._PatientMedicationHistoryOutput_patient(ctx, field, obj)
+		case "medications":
+			out.Values[i] = ec._PatientMedicationHistoryOutput_medications(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var periodImplementors = []string{"Period"}
 
 func (ec *executionContext) _Period(ctx context.Context, sel ast.SelectionSet, obj *dto.Period) graphql.Marshaler {
@@ -35469,6 +35890,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getQuestionnaireResponseRiskLevel(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getPatientMedicationHistory":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getPatientMedicationHistory(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -37480,6 +37923,20 @@ func (ec *executionContext) unmarshalNPatientInput2githubᚗcomᚋsavannahghiᚋ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNPatientMedicationHistoryOutput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatientMedicationHistoryOutput(ctx context.Context, sel ast.SelectionSet, v dto.PatientMedicationHistoryOutput) graphql.Marshaler {
+	return ec._PatientMedicationHistoryOutput(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPatientMedicationHistoryOutput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatientMedicationHistoryOutput(ctx context.Context, sel ast.SelectionSet, v *dto.PatientMedicationHistoryOutput) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PatientMedicationHistoryOutput(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNQuestionnaireResponseInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐQuestionnaireResponse(ctx context.Context, v interface{}) (dto.QuestionnaireResponse, error) {
 	res, err := ec.unmarshalInputQuestionnaireResponseInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -38377,6 +38834,54 @@ func (ec *executionContext) marshalOCondition2githubᚗcomᚋsavannahghiᚋclini
 	return ec._Condition(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalOCondition2ᚕᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx context.Context, sel ast.SelectionSet, v []*dto.Condition) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOCondition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOCondition2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐCondition(ctx context.Context, sel ast.SelectionSet, v *dto.Condition) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Condition(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOConditionConnection2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConditionConnection(ctx context.Context, sel ast.SelectionSet, v *dto.ConditionConnection) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -39240,6 +39745,10 @@ func (ec *executionContext) marshalOObservationEdge2ᚕgithubᚗcomᚋsavannahgh
 
 func (ec *executionContext) marshalOPageInfo2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v dto.PageInfo) graphql.Marshaler {
 	return ec._PageInfo(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOPatient2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPatient(ctx context.Context, sel ast.SelectionSet, v dto.Patient) graphql.Marshaler {
+	return ec._Patient(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOPeriod2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐPeriod(ctx context.Context, sel ast.SelectionSet, v *dto.Period) graphql.Marshaler {

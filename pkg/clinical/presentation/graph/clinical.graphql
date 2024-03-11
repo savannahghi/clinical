@@ -133,6 +133,8 @@ extend type Query {
     encounterID: String!
     screeningType: ScreeningTypeEnum!
   ): String!
+
+  getPatientMedicationHistory(patientID: ID!, pagination: Pagination!): PatientMedicationHistoryOutput!
 }
 
 extend type Mutation {
