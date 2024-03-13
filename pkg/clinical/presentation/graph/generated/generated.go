@@ -4439,6 +4439,7 @@ var sources = []*ast.Source{
     encounterID: String!
     screeningType: ScreeningTypeEnum!
   ): String!
+  
 }
 
 extend type Mutation {

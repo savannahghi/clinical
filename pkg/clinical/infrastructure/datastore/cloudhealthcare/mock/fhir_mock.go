@@ -91,6 +91,7 @@ type FHIRMock struct {
 	MockGetFHIRQuestionnaireResponseFn    func(ctx context.Context, id string) (*domain.FHIRQuestionnaireResponseRelayPayload, error)
 	MockCreateFHIRDiagnosticReportFn      func(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
 	MockSearchFHIREncounterAllDataFn      func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
+	MockGetFHIRPatientEverythingFn        func(ctx context.Context, id string, params map[string]interface{}) (map[string]interface{}, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -2090,6 +2091,15 @@ func NewFHIRMock() *FHIRMock {
 				TotalCount:      0,
 			}, nil
 		},
+		MockGetFHIRPatientEverythingFn: func(ctx context.Context, id string, params map[string]interface{}) (map[string]interface{}, error) {
+			return map[string]interface{}{
+				"resourceType": "Patient",
+				"active":       true,
+				"birthDate":    "2024-03-12",
+				"gender":       "male",
+				"id":           "1",
+			}, nil
+		},
 	}
 }
 
@@ -2441,4 +2451,9 @@ func (fh *FHIRMock) CreateFHIRDiagnosticReport(ctx context.Context, input *domai
 // SearchFHIREncounterAllData mocks the implementation of SearchFHIREncounterAllData
 func (fh *FHIRMock) SearchFHIREncounterAllData(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 	return fh.MockSearchFHIREncounterAllDataFn(ctx, params, tenant, pagination)
+}
+
+// GetFHIRPatientEverything mocks the implementation of getting all the patient information
+func (fh *FHIRMock) GetFHIRPatientEverything(ctx context.Context, id string, params map[string]interface{}) (map[string]interface{}, error) {
+	return fh.MockGetFHIRPatientEverythingFn(ctx, id, params)
 }

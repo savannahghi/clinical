@@ -16,7 +16,7 @@ type FakeFHIRRepository struct {
 	MockDeleteFHIRResourceFn    func(resourceType, fhirResourceID string) error
 	MockPatchFHIRResourceFn     func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
 	MockUpdateFHIRResourceFn    func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
-	MockGetFHIRPatientAllDataFn func(fhirResourceID string) ([]byte, error)
+	MockGetFHIRPatientAllDataFn func(fhirResourceID string, params map[string]interface{}) ([]byte, error)
 	MockGetFHIRResourceFn       func(resourceType, fhirResourceID string, resource interface{}) error
 	MockSearchFHIRResourceFn    func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
 }
@@ -36,8 +36,117 @@ func NewFakeFHIRRepositoryMock() *FakeFHIRRepository {
 		MockUpdateFHIRResourceFn: func(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error {
 			return nil
 		},
-		MockGetFHIRPatientAllDataFn: func(fhirResourceID string) ([]byte, error) {
-			bs, err := json.Marshal("m")
+		MockGetFHIRPatientAllDataFn: func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
+			bs, err := json.Marshal(`
+			"getPatientEverything": {
+				"entry": [
+				  {
+					"fullUrl": "https://healthcare.googleapis.com/v1/projects/",
+					"resource": {
+					  "active": true,
+					  "birthDate": "2024-03-12",
+					  "gender": "male",
+					  "id": "2051cdba-6f88-405b-aa51-56e28b75b941",
+					  "identifier": [
+						{
+						  "period": {
+							"end": "2124-05-27T15:16:04+03:00",
+							"start": "2024-03-12T15:16:04+03:00"
+						  },
+						  "system": "healthcloud.msisdn",
+						  "type": {
+							"coding": [
+							  {
+								"code": "+2547011222222",
+								"display": "+2547011222222",
+								"system": "healthcloud.iddocument",
+								"userSelected": true,
+								"version": "0.0.1"
+							  }
+							],
+							"text": "+2547011222222"
+						  },
+						  "use": "official",
+						  "value": "+2547011222222"
+						}
+					  ],
+					  "language": "EN",
+					  "managingOrganization": {
+						"display": "Chuka",
+						"id": "8f5c7e78-5d3e-401f-9148-95b4634bfbde",
+						"reference": "Organization/8f5c7e78-5d3e-401f-9148-95b4698bfgde",
+						"type": "Organization"
+					  },
+					  "maritalStatus": {
+						"coding": [
+						  {
+							"display": "unknown",
+							"userSelected": true
+						  }
+						],
+						"text": "unknown"
+					  },
+					  "meta": {
+						"lastUpdated": "2024-03-12T15:16:05.080533+00:00",
+						"tag": [
+						  {
+							"code": "85e4b0d3-1d69-47ba-b265-579d125f18e5",
+							"display": "Napoleon Health Services",
+							"system": "http://mycarehub/tenant-identification/organisation",
+							"userSelected": false,
+							"version": "1.0"
+						  },
+						  {
+							"code": "8f5c7e78-5d3e-401f-9148-95b4698bfbde",
+							"display": "Nairobi",
+							"system": "http://mycarehub/tenant-identification/facility",
+							"userSelected": false,
+							"version": "1.0"
+						  }
+						],
+						"versionId": "MTcxMDI1NjU2NTA4MDUzMzAwMA"
+					  },
+					  "name": [
+						{
+						  "family": "Jane",
+						  "given": [
+							"Brian"
+						  ],
+						  "period": {
+							"end": "2124-05-27T15:16:04+03:00",
+							"start": "2024-03-12T15:16:04+03:00"
+						  },
+						  "text": "Jane, Green ",
+						  "use": "official"
+						}
+					  ],
+					  "resourceType": "Patient",
+					  "telecom": [
+						{
+						  "period": {
+							"end": "2124-05-27T15:16:04+03:00",
+							"start": "2024-03-12T15:16:04+03:00"
+						  },
+						  "rank": 2,
+						  "system": "phone",
+						  "use": "home",
+						  "value": "+2547011222222"
+						}
+					  ]
+					}
+				  }
+				],
+				"link": [
+				  {
+					"relation": "next",
+					"url": "https://healthcare.googleapis.com/v1/projects/"
+				  }
+				],
+				"resourceType": "Bundle",
+				"total": 4,
+				"type": "searchset"
+			  }
+			}`)
 			if err != nil {
 				return nil, fmt.Errorf("unable to marshal map to JSON: %w", err)
 			}
@@ -96,8 +205,8 @@ func (f *FakeFHIRRepository) UpdateFHIRResource(resourceType, fhirResourceID str
 }
 
 // GetFHIRPatientAllData ...
-func (f *FakeFHIRRepository) GetFHIRPatientAllData(fhirResourceID string) ([]byte, error) {
-	return f.MockGetFHIRPatientAllDataFn(fhirResourceID)
+func (f *FakeFHIRRepository) GetFHIRPatientAllData(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
+	return f.MockGetFHIRPatientAllDataFn(fhirResourceID, params)
 }
 
 // GetFHIRResource ...
