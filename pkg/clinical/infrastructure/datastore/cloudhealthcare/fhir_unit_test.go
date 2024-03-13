@@ -5008,6 +5008,30 @@ func TestStoreImpl_GetFHIRPatientEverything(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad case: mandatory resource keys not found",
+			args: args{
+				ctx: context.Background(),
+				id:  "1",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: resourceType is not bundle",
+			args: args{
+				ctx: context.Background(),
+				id:  "1",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: type is not searchset",
+			args: args{
+				ctx: context.Background(),
+				id:  "1",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -5019,70 +5043,142 @@ func TestStoreImpl_GetFHIRPatientEverything(t *testing.T) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 							{
+								"fullUrl": "http://localhost",
 								"resource": map[string]interface{}{
 									"resourceType": "EpisodeOfCare",
 									"id":           gofakeit.UUID(),
 								},
 							},
 							{
+								"fullUrl": "http://localhost",
 								"resource": map[string]interface{}{
 									"resourceType": "Observation",
 									"id":           gofakeit.UUID(),
 								},
 							},
 							{
+								"fullUrl": "http://localhost",
 								"resource": map[string]interface{}{
 									"resourceType": "AllergyIntolerance",
 									"id":           gofakeit.UUID(),
 								},
 							},
+						},
+						"type":         "searchset",
+						"resourceType": "Bundle",
+						"total":        10,
+						"link": []map[string]interface{}{
 							{
+								"relation": "next",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
+							},
+							{
+								"relation": "previous",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+			if tt.name == "Sad case: mandatory resource keys not found" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"fullUrl": "http://localhost",
 								"resource": map[string]interface{}{
-									"resourceType": "ServiceRequest",
+									"resourceType": "EpisodeOfCare",
 									"id":           gofakeit.UUID(),
 								},
 							},
+						},
+						"type":  "searchset",
+						"total": 10,
+						"link": []map[string]interface{}{
 							{
+								"relation": "next",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
+							},
+							{
+								"relation": "previous",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+			if tt.name == "Sad case: resourceType is not bundle" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"fullUrl": "http://localhost",
 								"resource": map[string]interface{}{
-									"resourceType": "MedicationRequest",
+									"resourceType": "EpisodeOfCare",
 									"id":           gofakeit.UUID(),
 								},
 							},
+						},
+						"type":         "searchset",
+						"resourceType": "Buundle",
+						"total":        10,
+						"link": []map[string]interface{}{
 							{
+								"relation": "next",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
+							},
+							{
+								"relation": "previous",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+			if tt.name == "Sad case: type is not searchset" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"fullUrl": "http://localhost",
 								"resource": map[string]interface{}{
-									"resourceType": "Condition",
+									"resourceType": "EpisodeOfCare",
 									"id":           gofakeit.UUID(),
 								},
 							},
+						},
+						"type":         "searchseet",
+						"resourceType": "Bundle",
+						"total":        10,
+						"link": []map[string]interface{}{
 							{
-								"resource": map[string]interface{}{
-									"resourceType": "Encounter",
-									"id":           gofakeit.UUID(),
-								},
+								"relation": "next",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
 							},
 							{
-								"resource": map[string]interface{}{
-									"resourceType": "Composition",
-									"id":           gofakeit.UUID(),
-								},
-							},
-							{
-								"resource": map[string]interface{}{
-									"resourceType": "MedicationStatement",
-									"id":           gofakeit.UUID(),
-								},
-							},
-							{
-								"resource": map[string]interface{}{
-									"resourceType": "Medication",
-									"id":           gofakeit.UUID(),
-								},
-							},
-							{
-								"resource": map[string]interface{}{
-									"resourceType": "Patient",
-									"id":           gofakeit.UUID(),
-								},
+								"relation": "previous",
+								"url":      "https://healthcare.googleapis.com/v1/projects/?_page_token=CSDDDSSJJ",
 							},
 						},
 					}

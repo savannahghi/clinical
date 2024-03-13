@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -1895,18 +1896,141 @@ func (fh StoreImpl) CreateFHIRDiagnosticReport(_ context.Context, input *domain.
 }
 
 // GetFHIRPatientEverything is used to retrieve all patient related information
-func (fh StoreImpl) GetFHIRPatientEverything(ctx context.Context, id string, params map[string]interface{}) (map[string]interface{}, error) {
+func (fh StoreImpl) GetFHIRPatientEverything(ctx context.Context, id string, params map[string]interface{}) (*domain.PagedFHIRResource, error) {
 	patientEverythingBs, err := fh.Dataset.GetFHIRPatientAllData(id, params)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get patient's compartment: %w", err)
 	}
 
-	var patientEverything map[string]interface{}
+	respMap := make(map[string]interface{})
 
-	err = json.Unmarshal(patientEverythingBs, &patientEverything)
+	err = json.Unmarshal(patientEverythingBs, &respMap)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal patient everything")
 	}
 
-	return patientEverything, nil
+	mandatoryKeys := []string{"resourceType", "type", "total", "link"}
+	for _, k := range mandatoryKeys {
+		_, found := respMap[k]
+		if !found {
+			return nil, fmt.Errorf("server error: mandatory search result key %s not found", k)
+		}
+	}
+
+	resourceType, ok := respMap["resourceType"].(string)
+	if !ok {
+		return nil, fmt.Errorf("server error: the resourceType is not a string")
+	}
+
+	if resourceType != "Bundle" {
+		return nil, fmt.Errorf(
+			"server error: the resourceType value is not 'Bundle' as expected")
+	}
+
+	resultType, ok := respMap["type"].(string)
+	if !ok {
+		return nil, fmt.Errorf("server error: the search result type value is not a string")
+	}
+
+	if resultType != "searchset" {
+		return nil, fmt.Errorf("server error: the type value is not 'searchset' as expected")
+	}
+
+	response := domain.PagedFHIRResource{
+		Resources:       []map[string]interface{}{},
+		HasNextPage:     false,
+		NextCursor:      "",
+		HasPreviousPage: false,
+		PreviousCursor:  "",
+		TotalCount:      0,
+	}
+
+	response.TotalCount = int(respMap["total"].(float64))
+
+	respEntries := respMap["entry"]
+	if respEntries == nil {
+		return &response, nil
+	}
+
+	entries, ok := respEntries.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf(
+			"server error: entries is not a list of maps, it is: %T", respEntries)
+	}
+
+	for _, en := range entries {
+		entry, ok := en.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf(
+				"server error: expected each entry to be map, they are %T instead", en)
+		}
+
+		expectedKeys := []string{"fullUrl", "resource"}
+		for _, k := range expectedKeys {
+			_, found := entry[k]
+			if !found {
+				return nil, fmt.Errorf("server error: FHIR search entry does not have key '%s'", k)
+			}
+		}
+
+		resource, ok := entry["resource"].(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("server error: result entry %#v is not a map", entry["resource"])
+		}
+
+		response.Resources = append(response.Resources, resource)
+	}
+
+	linksEntries := respMap["link"]
+	if linksEntries == nil {
+		return &response, nil
+	}
+
+	links, ok := linksEntries.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf(
+			"server error: entries is not a list of maps, it is: %T", linksEntries)
+	}
+
+	for _, en := range links {
+		link, ok := en.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf(
+				"server error: expected each link to be map, they are %T instead", en)
+		}
+
+		if link["relation"].(string) == "next" {
+			u, err := url.Parse(link["url"].(string))
+			if err != nil {
+				return nil, fmt.Errorf("server error: cannot parse url in link: %w", err)
+			}
+
+			params, err := url.ParseQuery(u.RawQuery)
+			if err != nil {
+				return nil, fmt.Errorf("server error: cannot parse url params in link: %w", err)
+			}
+
+			cursor := params["_page_token"][0]
+
+			response.HasNextPage = true
+			response.NextCursor = cursor
+		} else if link["relation"].(string) == "previous" {
+			u, err := url.Parse(link["url"].(string))
+			if err != nil {
+				return nil, fmt.Errorf("server error: cannot parse url in link: %w", err)
+			}
+
+			params, err := url.ParseQuery(u.RawQuery)
+			if err != nil {
+				return nil, fmt.Errorf("server error: cannot parse url params in link: %w", err)
+			}
+
+			cursor := params["_page_token"][0]
+
+			response.HasPreviousPage = true
+			response.PreviousCursor = cursor
+		}
+	}
+
+	return &response, nil
 }

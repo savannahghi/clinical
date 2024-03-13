@@ -558,7 +558,7 @@ func mapFHIRPatientToPatientDTO(patient *domain.FHIRPatient) *dto.Patient {
 // (7). `fields` allows partial responses to be retrieved. See
 // https://developers.google.com/gdata/docs/2.0/basics#PartialResponse
 // for more information.
-func (c *UseCasesClinicalImpl) GetPatientEverything(ctx context.Context, patientID string, params *dto.PatientEverythingFilterParams) (map[string]interface{}, error) {
+func (c *UseCasesClinicalImpl) GetPatientEverything(ctx context.Context, patientID string, params *dto.PatientEverythingFilterParams) (*dto.PatientEverythingConnection, error) {
 	_, err := uuid.Parse(patientID)
 	if err != nil {
 		return nil, fmt.Errorf("invalid patient id: %s", patientID)
@@ -586,5 +586,14 @@ func (c *UseCasesClinicalImpl) GetPatientEverything(ctx context.Context, patient
 		return nil, err
 	}
 
-	return patientData, nil
+	return &dto.PatientEverythingConnection{
+		TotalCount: patientData.TotalCount,
+		Edges:      patientData.Resources,
+		PageInfo: dto.PageInfo{
+			HasNextPage:     patientData.HasNextPage,
+			EndCursor:       &patientData.NextCursor,
+			HasPreviousPage: patientData.HasPreviousPage,
+			StartCursor:     &patientData.PreviousCursor,
+		},
+	}, nil
 }
