@@ -2223,8 +2223,8 @@ func TestUseCasesClinicalImpl_GetPatientEverything(t *testing.T) {
 			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
 			if tt.name == "Sad case: unable to get patient everything" {
-				fakeFHIR.MockGetFHIRPatientEverythingFn = func(ctx context.Context, id string, params map[string]interface{}) (map[string]interface{}, error) {
-					return nil, fmt.Errorf("an error occurred")
+				fakeFHIR.MockGetFHIRPatientEverythingFn = func(ctx context.Context, id string, params map[string]interface{}) (*domain.PagedFHIRResource, error) {
+					return nil, fmt.Errorf("failed to get patient everything")
 				}
 			}
 			if tt.name == "Sad case: unable to get patient profile" {

@@ -4439,7 +4439,7 @@ var sources = []*ast.Source{
     encounterID: String!
     screeningType: ScreeningTypeEnum!
   ): String!
-  
+
 }
 
 extend type Mutation {
@@ -4873,7 +4873,8 @@ input MediaInput {
   id: ID!
   name: String!
   url: String!
-}`, BuiltIn: false},
+}
+`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
   id: ID
   code: String!

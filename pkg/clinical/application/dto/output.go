@@ -160,3 +160,10 @@ type Section struct {
 type ConsentOutput struct {
 	Status *ConsentStatusEnum `json:"status"`
 }
+
+// PatientEverythingConnection return a paginated collection of patient information
+type PatientEverythingConnection struct {
+	TotalCount int                      `json:"totalCount,omitempty"`
+	Edges      []map[string]interface{} `json:"edges,omitempty"`
+	PageInfo   PageInfo                 `json:"pageInfo,omitempty"`
+}
