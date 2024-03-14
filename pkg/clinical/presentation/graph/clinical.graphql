@@ -221,5 +221,5 @@ extend type Mutation {
   recordUltrasound(input: DiagnosticReportInput!): DiagnosticReport!
   recordCBE(input: DiagnosticReportInput!): DiagnosticReport!
 
-  getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResources!
+  getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResourceOutput!
 }

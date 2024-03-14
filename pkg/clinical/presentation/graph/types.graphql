@@ -543,7 +543,7 @@ type RiskAssessmentPrediction {
 	probabilityDecimal: Float
 }
 
-type EncounterAssociatedResources {
+type EncounterAssociatedResourceOutput {
   riskAssessment: RiskAssessment
   consent: Consent
   observation: Observation
