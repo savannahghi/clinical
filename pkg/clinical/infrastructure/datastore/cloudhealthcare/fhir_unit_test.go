@@ -1241,7 +1241,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			fh := FHIR.NewFHIRStoreImpl(dataset)
 
 			if tt.name == "happy case: delete all patient data" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 							{
@@ -1323,13 +1323,13 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: all patient data error" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					return nil, fmt.Errorf("failed to get data")
 				}
 			}
 
 			if tt.name == "sad case: all patient data invalid entry" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": "invalid",
 					}
@@ -1344,7 +1344,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: all patient data invalid entry type" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[int]string{
 							{
@@ -1363,7 +1363,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: all patient data entry invalid resource type" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 
@@ -1383,7 +1383,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: error deleting medication request" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 							{
@@ -1412,7 +1412,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: error deleting other types" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 							{
@@ -1441,7 +1441,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: error deleting patient" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 							{
@@ -1470,7 +1470,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: error deleting observation" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 							{
@@ -1499,7 +1499,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: error deleting encounters" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 
@@ -1529,7 +1529,7 @@ func TestStoreImpl_DeleteFHIRPatient(t *testing.T) {
 			}
 
 			if tt.name == "sad case: error deleting episode of care" {
-				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string) ([]byte, error) {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 					data := map[string]interface{}{
 						"entry": []map[string]interface{}{
 							{
@@ -4972,6 +4972,138 @@ func TestStoreImpl_SearchFHIRRiskAssessment(t *testing.T) {
 
 			if !tt.wantErr && got == nil {
 				t.Errorf("expected a response but got: %v", got)
+				return
+			}
+		})
+	}
+}
+
+func TestStoreImpl_GetFHIRPatientEverything(t *testing.T) {
+	type args struct {
+		ctx    context.Context
+		id     string
+		params map[string]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: fetch patient everything",
+			args: args{
+				ctx: context.Background(),
+				id:  "1",
+				params: map[string]interface{}{
+					"_count": 10,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to fetch patient everything",
+			args: args{
+				ctx: context.Background(),
+				id:  "1",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Happy case: fetch patient everything" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
+					data := map[string]interface{}{
+						"entry": []map[string]interface{}{
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "EpisodeOfCare",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Observation",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "AllergyIntolerance",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "ServiceRequest",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "MedicationRequest",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Condition",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Encounter",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Composition",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "MedicationStatement",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Medication",
+									"id":           gofakeit.UUID(),
+								},
+							},
+							{
+								"resource": map[string]interface{}{
+									"resourceType": "Patient",
+									"id":           gofakeit.UUID(),
+								},
+							},
+						},
+					}
+
+					bs, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					return bs, err
+				}
+			}
+			if tt.name == "Sad case: unable to fetch patient everything" {
+				dataset.MockGetFHIRPatientAllDataFn = func(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := fh.GetFHIRPatientEverything(tt.args.ctx, tt.args.id, tt.args.params)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.GetFHIRPatientEverything() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

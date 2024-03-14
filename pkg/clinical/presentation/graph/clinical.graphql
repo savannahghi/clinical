@@ -133,6 +133,7 @@ extend type Query {
     encounterID: String!
     screeningType: ScreeningTypeEnum!
   ): String!
+  
 }
 
 extend type Mutation {

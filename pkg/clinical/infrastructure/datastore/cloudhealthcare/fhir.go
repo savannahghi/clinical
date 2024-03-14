@@ -51,7 +51,7 @@ type Dataset interface {
 	UpdateFHIRResource(resourceType, fhirResourceID string, payload map[string]interface{}, resource interface{}) error
 	SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
 
-	GetFHIRPatientAllData(fhirResourceID string) ([]byte, error)
+	GetFHIRPatientAllData(fhirResourceID string, params map[string]interface{}) ([]byte, error)
 }
 
 // StoreImpl represents the FHIR infrastructure implementation
@@ -1251,7 +1251,7 @@ func (fh StoreImpl) GetFHIRPatient(_ context.Context, id string) (*domain.FHIRPa
 
 // DeleteFHIRPatient deletes the FHIRPatient identified by the supplied ID
 func (fh StoreImpl) DeleteFHIRPatient(_ context.Context, id string) (bool, error) {
-	patientEverythingBs, err := fh.Dataset.GetFHIRPatientAllData(id)
+	patientEverythingBs, err := fh.Dataset.GetFHIRPatientAllData(id, nil)
 	if err != nil {
 		return false, fmt.Errorf("unable to get patient's compartment: %w", err)
 	}
@@ -1892,4 +1892,21 @@ func (fh StoreImpl) CreateFHIRDiagnosticReport(_ context.Context, input *domain.
 	}
 
 	return resource, nil
+}
+
+// GetFHIRPatientEverything is used to retrieve all patient related information
+func (fh StoreImpl) GetFHIRPatientEverything(ctx context.Context, id string, params map[string]interface{}) (map[string]interface{}, error) {
+	patientEverythingBs, err := fh.Dataset.GetFHIRPatientAllData(id, params)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get patient's compartment: %w", err)
+	}
+
+	var patientEverything map[string]interface{}
+
+	err = json.Unmarshal(patientEverythingBs, &patientEverything)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal patient everything")
+	}
+
+	return patientEverything, nil
 }

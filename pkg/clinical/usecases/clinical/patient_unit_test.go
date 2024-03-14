@@ -2133,3 +2133,111 @@ func TestUseCasesClinicalImpl_DeletePatient(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_GetPatientEverything(t *testing.T) {
+	type args struct {
+		ctx          context.Context
+		patientID    string
+		filterParams *dto.PatientEverythingFilterParams
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: get patient everything",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				filterParams: &dto.PatientEverythingFilterParams{
+					Count:     10,
+					PageToken: "",
+					Since:     "",
+					Type:      "Observation,Condition",
+					End:       "",
+					Start:     "",
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to get patient everything",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				filterParams: &dto.PatientEverythingFilterParams{
+					Count:     10,
+					PageToken: "",
+					Since:     "",
+					Type:      "Observation,Condition",
+					End:       "",
+					Start:     "",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient profile",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: gofakeit.UUID(),
+				filterParams: &dto.PatientEverythingFilterParams{
+					Count:     10,
+					PageToken: "",
+					Since:     "",
+					Type:      "Observation,Condition",
+					End:       "",
+					Start:     "",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: invalid id",
+			args: args{
+				ctx:       addTenantIdentifierContext(context.Background()),
+				patientID: "1",
+				filterParams: &dto.PatientEverythingFilterParams{
+					Count:     10,
+					PageToken: "",
+					Since:     "",
+					Type:      "Observation,Condition",
+					End:       "",
+					Start:     "",
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to get patient everything" {
+				fakeFHIR.MockGetFHIRPatientEverythingFn = func(ctx context.Context, id string, params map[string]interface{}) (map[string]interface{}, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+			if tt.name == "Sad case: unable to get patient profile" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := u.GetPatientEverything(tt.args.ctx, tt.args.patientID, tt.args.filterParams)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.GetPatientEverything() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

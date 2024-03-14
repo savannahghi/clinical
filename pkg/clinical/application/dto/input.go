@@ -251,3 +251,14 @@ func (d DiagnosticReportInput) Validate() error {
 
 	return err
 }
+
+// PatientEverythingFilterParams provides filter parameters that can be combined to filter compartments when retrieving patient information
+type PatientEverythingFilterParams struct {
+	Count     int    `json:"count,omitempty"`
+	PageToken string `json:"pageToken,omitempty"`
+	Since     string `json:"since,omitempty"`
+	Type      string `json:"type,omitempty"`
+	End       string `json:"end,omitempty"`
+	Start     string `json:"start,omitempty"`
+	Fields    string `json:"fields,omitempty"`
+}

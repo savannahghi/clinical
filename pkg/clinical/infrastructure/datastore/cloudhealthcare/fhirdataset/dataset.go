@@ -353,13 +353,41 @@ func (fr Repository) UpdateFHIRResource(
 
 // GetFHIRPatientAllData gets all resources associated with a particular
 // patient compartment.
-func (fr Repository) GetFHIRPatientAllData(fhirResourceID string) ([]byte, error) {
+func (fr Repository) GetFHIRPatientAllData(fhirResourceID string, params map[string]interface{}) ([]byte, error) {
 	fhirService := fr.healthcareService.Projects.Locations.Datasets.FhirStores.Fhir
 	patientResource := fmt.Sprintf("%s/fhir/Patient/%s", fr.fhirStoreName, fhirResourceID)
 
-	resp, err := fhirService.PatientEverything(patientResource).Do()
+	patientEverythingCall := fhirService.PatientEverything(patientResource)
+
+	if params != nil {
+		if count, ok := params["_count"].(int); ok {
+			patientEverythingCall.Count(int64(count))
+		}
+
+		if pageToken, ok := params["_page_token"].(string); ok {
+			patientEverythingCall.PageToken(pageToken)
+		}
+
+		if since, ok := params["_since"].(string); ok {
+			patientEverythingCall.Since(since)
+		}
+
+		if typeParam, ok := params["_type"].(string); ok {
+			patientEverythingCall.Type(typeParam)
+		}
+
+		if start, ok := params["start"].(string); ok {
+			patientEverythingCall.Start(start)
+		}
+
+		if end, ok := params["end"].(string); ok {
+			patientEverythingCall.End(end)
+		}
+	}
+
+	resp, err := patientEverythingCall.Do()
 	if err != nil {
-		return nil, fmt.Errorf("PatientAllData: %w", err)
+		return nil, fmt.Errorf("patientEverything: %w", err)
 	}
 
 	defer func() {
