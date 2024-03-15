@@ -548,3 +548,13 @@ type EncounterAssociatedResourceOutput {
   consent: Consent
   observation: Observation
 }
+
+type ServiceRequest {
+  id: String
+	subject: Reference
+	encounter: Reference
+  note: [Annotation]
+  status: String
+  intent: String
+  priority: String
+}

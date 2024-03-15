@@ -707,16 +707,12 @@ func TestUseCasesClinicalImpl_RecordUltrasound(t *testing.T) {
 }
 
 func TestUseCasesClinicalImpl_RecordCBE(t *testing.T) {
-	type fields struct {
-		infrastructure infrastructure.Infrastructure
-	}
 	type args struct {
 		ctx   context.Context
 		input *dto.DiagnosticReportInput
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *dto.DiagnosticReport
 		wantErr bool

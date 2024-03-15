@@ -358,6 +358,7 @@ type ComplexityRoot struct {
 		RecordVia                          func(childComplexity int, input dto.ObservationInput) int
 		RecordViralLoad                    func(childComplexity int, input dto.ObservationInput) int
 		RecordWeight                       func(childComplexity int, input dto.ObservationInput) int
+		ReferPatient                       func(childComplexity int, input *dto.ReferralInput) int
 		StartEncounter                     func(childComplexity int, episodeID string) int
 	}
 
@@ -637,6 +638,16 @@ type ComplexityRoot struct {
 		Title   func(childComplexity int) int
 	}
 
+	ServiceRequest struct {
+		Encounter func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Intent    func(childComplexity int) int
+		Note      func(childComplexity int) int
+		Priority  func(childComplexity int) int
+		Status    func(childComplexity int) int
+		Subject   func(childComplexity int) int
+	}
+
 	Terminology struct {
 		Code   func(childComplexity int) int
 		Name   func(childComplexity int) int
@@ -731,6 +742,7 @@ type MutationResolver interface {
 	RecordUltrasound(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordCbe(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResourceOutput, error)
+	ReferPatient(ctx context.Context, input *dto.ReferralInput) (*dto.ServiceRequest, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -2494,6 +2506,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RecordWeight(childComplexity, args["input"].(dto.ObservationInput)), true
 
+	case "Mutation.referPatient":
+		if e.complexity.Mutation.ReferPatient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_referPatient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ReferPatient(childComplexity, args["input"].(*dto.ReferralInput)), true
+
 	case "Mutation.startEncounter":
 		if e.complexity.Mutation.StartEncounter == nil {
 			break
@@ -4012,6 +4036,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Section.Title(childComplexity), true
 
+	case "ServiceRequest.encounter":
+		if e.complexity.ServiceRequest.Encounter == nil {
+			break
+		}
+
+		return e.complexity.ServiceRequest.Encounter(childComplexity), true
+
+	case "ServiceRequest.id":
+		if e.complexity.ServiceRequest.ID == nil {
+			break
+		}
+
+		return e.complexity.ServiceRequest.ID(childComplexity), true
+
+	case "ServiceRequest.intent":
+		if e.complexity.ServiceRequest.Intent == nil {
+			break
+		}
+
+		return e.complexity.ServiceRequest.Intent(childComplexity), true
+
+	case "ServiceRequest.note":
+		if e.complexity.ServiceRequest.Note == nil {
+			break
+		}
+
+		return e.complexity.ServiceRequest.Note(childComplexity), true
+
+	case "ServiceRequest.priority":
+		if e.complexity.ServiceRequest.Priority == nil {
+			break
+		}
+
+		return e.complexity.ServiceRequest.Priority(childComplexity), true
+
+	case "ServiceRequest.status":
+		if e.complexity.ServiceRequest.Status == nil {
+			break
+		}
+
+		return e.complexity.ServiceRequest.Status(childComplexity), true
+
+	case "ServiceRequest.subject":
+		if e.complexity.ServiceRequest.Subject == nil {
+			break
+		}
+
+		return e.complexity.ServiceRequest.Subject(childComplexity), true
+
 	case "Terminology.code":
 		if e.complexity.Terminology.Code == nil {
 			break
@@ -4206,6 +4279,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputQuestionnaireResponseItemInput,
 		ec.unmarshalInputReactionInput,
 		ec.unmarshalInputReferenceInput,
+		ec.unmarshalInputReferralInput,
 		ec.unmarshalInputSectionInput,
 	)
 	first := true
@@ -4528,6 +4602,9 @@ extend type Mutation {
   recordCBE(input: DiagnosticReportInput!): DiagnosticReport!
 
   getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResourceOutput!
+
+  # Referral
+  referPatient(input: ReferralInput): ServiceRequest!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -4657,6 +4734,12 @@ enum QuestionnaireResponseStatusEnum{
 enum ScreeningTypeEnum{
   BREAST_CANCER_SCREENING
   CERVICAL_CANCER_SCREENING
+}
+
+enum ReferralTypeEnum {
+  DIAGNOSTICS
+  SPECIALIST
+  TREATMENT
 }`, BuiltIn: false},
 	{Name: "../external.graphql", Input: `scalar Map
 scalar Any
@@ -4873,6 +4956,15 @@ input MediaInput {
   id: ID!
   name: String!
   url: String!
+}
+
+input ReferralInput {
+  encounterID: String!
+  referralType: ReferralTypeEnum!
+  tests: [String]
+  specialist: String
+  facility: String!
+  referralNote: String!
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
@@ -5424,6 +5516,16 @@ type EncounterAssociatedResourceOutput {
   riskAssessment: RiskAssessment
   consent: Consent
   observation: Observation
+}
+
+type ServiceRequest {
+  id: String
+	subject: Reference
+	encounter: Reference
+  note: [Annotation]
+  status: String
+  intent: String
+  priority: String
 }`, BuiltIn: false},
 	{Name: "../../../../../federation/directives.graphql", Input: `
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
@@ -6363,6 +6465,21 @@ func (ec *executionContext) field_Mutation_recordWeight_args(ctx context.Context
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNObservationInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_referPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *dto.ReferralInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOReferralInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -18151,6 +18268,77 @@ func (ec *executionContext) fieldContext_Mutation_getEncounterAssociatedResource
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_referPatient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_referPatient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ReferPatient(rctx, fc.Args["input"].(*dto.ReferralInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*dto.ServiceRequest)
+	fc.Result = res
+	return ec.marshalNServiceRequest2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐServiceRequest(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_referPatient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServiceRequest_id(ctx, field)
+			case "subject":
+				return ec.fieldContext_ServiceRequest_subject(ctx, field)
+			case "encounter":
+				return ec.fieldContext_ServiceRequest_encounter(ctx, field)
+			case "note":
+				return ec.fieldContext_ServiceRequest_note(ctx, field)
+			case "status":
+				return ec.fieldContext_ServiceRequest_status(ctx, field)
+			case "intent":
+				return ec.fieldContext_ServiceRequest_intent(ctx, field)
+			case "priority":
+				return ec.fieldContext_ServiceRequest_priority(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServiceRequest", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_referPatient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Narrative_id(ctx context.Context, field graphql.CollectedField, obj *dto.Narrative) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Narrative_id(ctx, field)
 	if err != nil {
@@ -28245,6 +28433,329 @@ func (ec *executionContext) fieldContext_Section_section(ctx context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _ServiceRequest_id(ctx context.Context, field graphql.CollectedField, obj *dto.ServiceRequest) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServiceRequest_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServiceRequest_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServiceRequest",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServiceRequest_subject(ctx context.Context, field graphql.CollectedField, obj *dto.ServiceRequest) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServiceRequest_subject(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Subject, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(dto.Reference)
+	fc.Result = res
+	return ec.marshalOReference2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServiceRequest_subject(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServiceRequest",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Reference_id(ctx, field)
+			case "reference":
+				return ec.fieldContext_Reference_reference(ctx, field)
+			case "type":
+				return ec.fieldContext_Reference_type(ctx, field)
+			case "identifier":
+				return ec.fieldContext_Reference_identifier(ctx, field)
+			case "display":
+				return ec.fieldContext_Reference_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Reference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServiceRequest_encounter(ctx context.Context, field graphql.CollectedField, obj *dto.ServiceRequest) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServiceRequest_encounter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Encounter, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*dto.Reference)
+	fc.Result = res
+	return ec.marshalOReference2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServiceRequest_encounter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServiceRequest",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Reference_id(ctx, field)
+			case "reference":
+				return ec.fieldContext_Reference_reference(ctx, field)
+			case "type":
+				return ec.fieldContext_Reference_type(ctx, field)
+			case "identifier":
+				return ec.fieldContext_Reference_identifier(ctx, field)
+			case "display":
+				return ec.fieldContext_Reference_display(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Reference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServiceRequest_note(ctx context.Context, field graphql.CollectedField, obj *dto.ServiceRequest) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServiceRequest_note(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Note, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]dto.Annotation)
+	fc.Result = res
+	return ec.marshalOAnnotation2ᚕgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐAnnotation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServiceRequest_note(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServiceRequest",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Annotation_id(ctx, field)
+			case "AuthorReference":
+				return ec.fieldContext_Annotation_AuthorReference(ctx, field)
+			case "AuthorString":
+				return ec.fieldContext_Annotation_AuthorString(ctx, field)
+			case "Time":
+				return ec.fieldContext_Annotation_Time(ctx, field)
+			case "Text":
+				return ec.fieldContext_Annotation_Text(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Annotation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServiceRequest_status(ctx context.Context, field graphql.CollectedField, obj *dto.ServiceRequest) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServiceRequest_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServiceRequest_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServiceRequest",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServiceRequest_intent(ctx context.Context, field graphql.CollectedField, obj *dto.ServiceRequest) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServiceRequest_intent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Intent, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServiceRequest_intent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServiceRequest",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServiceRequest_priority(ctx context.Context, field graphql.CollectedField, obj *dto.ServiceRequest) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServiceRequest_priority(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Priority, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServiceRequest_priority(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServiceRequest",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Terminology_code(ctx context.Context, field graphql.CollectedField, obj *dto.Terminology) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Terminology_code(ctx, field)
 	if err != nil {
@@ -32617,6 +33128,80 @@ func (ec *executionContext) unmarshalInputReferenceInput(ctx context.Context, ob
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputReferralInput(ctx context.Context, obj interface{}) (dto.ReferralInput, error) {
+	var it dto.ReferralInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"encounterID", "referralType", "tests", "specialist", "facility", "referralNote"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "encounterID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EncounterID = data
+		case "referralType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("referralType"))
+			data, err := ec.unmarshalNReferralTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralTypeEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReferralType = data
+		case "tests":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tests"))
+			data, err := ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Tests = data
+		case "specialist":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("specialist"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Specialist = data
+		case "facility":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("facility"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Facility = data
+		case "referralNote":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("referralNote"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReferralNote = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputSectionInput(ctx context.Context, obj interface{}) (dto.SectionInput, error) {
 	var it dto.SectionInput
 	asMap := map[string]interface{}{}
@@ -34598,6 +35183,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "referPatient":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_referPatient(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -36399,6 +36991,54 @@ func (ec *executionContext) _Section(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var serviceRequestImplementors = []string{"ServiceRequest"}
+
+func (ec *executionContext) _ServiceRequest(ctx context.Context, sel ast.SelectionSet, obj *dto.ServiceRequest) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serviceRequestImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServiceRequest")
+		case "id":
+			out.Values[i] = ec._ServiceRequest_id(ctx, field, obj)
+		case "subject":
+			out.Values[i] = ec._ServiceRequest_subject(ctx, field, obj)
+		case "encounter":
+			out.Values[i] = ec._ServiceRequest_encounter(ctx, field, obj)
+		case "note":
+			out.Values[i] = ec._ServiceRequest_note(ctx, field, obj)
+		case "status":
+			out.Values[i] = ec._ServiceRequest_status(ctx, field, obj)
+		case "intent":
+			out.Values[i] = ec._ServiceRequest_intent(ctx, field, obj)
+		case "priority":
+			out.Values[i] = ec._ServiceRequest_priority(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var terminologyImplementors = []string{"Terminology"}
 
 func (ec *executionContext) _Terminology(ctx context.Context, sel ast.SelectionSet, obj *dto.Terminology) graphql.Marshaler {
@@ -37497,6 +38137,22 @@ func (ec *executionContext) marshalNQuestionnaireResponseStatusEnum2githubᚗcom
 	return v
 }
 
+func (ec *executionContext) unmarshalNReferralTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralTypeEnum(ctx context.Context, v interface{}) (dto.ReferralTypeEnum, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := dto.ReferralTypeEnum(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNReferralTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralTypeEnum(ctx context.Context, sel ast.SelectionSet, v dto.ReferralTypeEnum) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNScreeningTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋdomainᚐScreeningTypeEnum(ctx context.Context, v interface{}) (domain.ScreeningTypeEnum, error) {
 	var res domain.ScreeningTypeEnum
 	err := res.UnmarshalGQL(v)
@@ -37510,6 +38166,20 @@ func (ec *executionContext) marshalNScreeningTypeEnum2githubᚗcomᚋsavannahghi
 func (ec *executionContext) unmarshalNSectionInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐSectionInput(ctx context.Context, v interface{}) (*dto.SectionInput, error) {
 	res, err := ec.unmarshalInputSectionInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServiceRequest2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐServiceRequest(ctx context.Context, sel ast.SelectionSet, v dto.ServiceRequest) graphql.Marshaler {
+	return ec._ServiceRequest(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServiceRequest2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐServiceRequest(ctx context.Context, sel ast.SelectionSet, v *dto.ServiceRequest) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServiceRequest(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -39713,6 +40383,14 @@ func (ec *executionContext) unmarshalOReferenceInput2ᚖgithubᚗcomᚋsavannahg
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalOReferralInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralInput(ctx context.Context, v interface{}) (*dto.ReferralInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputReferralInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOResourceType2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐResourceType(ctx context.Context, v interface{}) (dto.ResourceType, error) {
 	tmp, err := graphql.UnmarshalString(v)
 	res := dto.ResourceType(tmp)
@@ -39852,6 +40530,38 @@ func (ec *executionContext) unmarshalOString2string(ctx context.Context, v inter
 func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalString(v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOString2ᚕstring(ctx context.Context, v interface{}) ([]string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstring(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOString2string(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {

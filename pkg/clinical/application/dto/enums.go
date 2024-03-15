@@ -527,3 +527,15 @@ func (c *SegmentationCategory) UnmarshalGQL(v interface{}) error {
 
 	return nil
 }
+
+// ReferralTypeEnum defines the type of referral
+type ReferralTypeEnum string
+
+const (
+	// DIAGNOSTICS refers to diagnostics and testing
+	DIAGNOSTICS ReferralTypeEnum = "DIAGNOSTICS"
+	// SPECIALIST refers to a specialist consultation
+	SPECIALIST ReferralTypeEnum = "SPECIALIST"
+	// TREATMENT refers to treatment
+	TREATMENT ReferralTypeEnum = "TREATMENT"
+)

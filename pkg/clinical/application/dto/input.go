@@ -262,3 +262,20 @@ type PatientEverythingFilterParams struct {
 	Start     string `json:"start,omitempty"`
 	Fields    string `json:"fields,omitempty"`
 }
+
+// ReferralInput represents the input for referring a patient
+type ReferralInput struct {
+	EncounterID  string           `json:"encounterId" validate:"required"`
+	ReferralType ReferralTypeEnum `json:"referralType"`
+	Tests        []string         `json:"tests,omitempty"`
+	Specialist   string           `json:"specialist,omitempty"`
+	Facility     string           `json:"facility"`
+	ReferralNote string           `json:"notes"`
+}
+
+func (r ReferralInput) Validate() error {
+	v := validator.New()
+	err := v.Struct(r)
+
+	return err
+}

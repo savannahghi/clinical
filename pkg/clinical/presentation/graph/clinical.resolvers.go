@@ -311,6 +311,11 @@ func (r *mutationResolver) GetEncounterAssociatedResources(ctx context.Context, 
 	return r.usecases.GetEncounterAssociatedResources(ctx, encounterID)
 }
 
+// ReferPatient is the resolver for the referPatient field.
+func (r *mutationResolver) ReferPatient(ctx context.Context, input *dto.ReferralInput) (*dto.ServiceRequest, error) {
+	return r.usecases.ReferPatient(ctx, input)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()

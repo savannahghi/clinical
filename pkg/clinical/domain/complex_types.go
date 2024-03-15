@@ -3191,3 +3191,41 @@ func (screeningType ScreeningTypeEnum) Text() string {
 
 	return "unknown screening type"
 }
+
+// ServiceRequestStatusEnum represents the possible statuses of a ServiceRequest
+type ServiceRequestStatusEnum string
+
+const (
+	ServiceRequestStatusDraft          ServiceRequestStatusEnum = "draft"
+	ServiceRequestStatusActive         ServiceRequestStatusEnum = "active"
+	ServiceRequestStatusOnHold         ServiceRequestStatusEnum = "on-hold"
+	ServiceRequestStatusRevoked        ServiceRequestStatusEnum = "revoked"
+	ServiceRequestStatusCompleted      ServiceRequestStatusEnum = "completed"
+	ServiceRequestStatusEnteredInError ServiceRequestStatusEnum = "entered-in-error"
+	ServiceRequestStatusUnknown        ServiceRequestStatusEnum = "unknown"
+)
+
+// ServiceRequestIntentEnum represents the possible intents of a ServiceRequest
+type ServiceRequestIntentEnum string
+
+const (
+	ServiceRequestIntentProposal      ServiceRequestIntentEnum = "proposal"
+	ServiceRequestIntentPlan          ServiceRequestIntentEnum = "plan"
+	ServiceRequestIntentDirective     ServiceRequestIntentEnum = "directive"
+	ServiceRequestIntentOrder         ServiceRequestIntentEnum = "order"
+	ServiceRequestIntentOriginalOrder ServiceRequestIntentEnum = "original-order"
+	ServiceRequestIntentReflexOrder   ServiceRequestIntentEnum = "reflex-order"
+	ServiceRequestIntentFillerOrder   ServiceRequestIntentEnum = "filler-order"
+	ServiceRequestIntentInstanceOrder ServiceRequestIntentEnum = "instance-order"
+	ServiceRequestIntentOption        ServiceRequestIntentEnum = "option"
+)
+
+// ServiceRequestPriorityEnum represents the possible priorities of a ServiceRequest
+type ServiceRequestPriorityEnum string
+
+const (
+	ServiceRequestPriorityRoutine ServiceRequestPriorityEnum = "routine"
+	ServiceRequestPriorityUrgent  ServiceRequestPriorityEnum = "urgent"
+	ServiceRequestPriorityAsap    ServiceRequestPriorityEnum = "asap"
+	ServiceRequestPriorityStat    ServiceRequestPriorityEnum = "stat"
+)
