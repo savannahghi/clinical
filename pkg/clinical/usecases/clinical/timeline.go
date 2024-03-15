@@ -267,13 +267,6 @@ func (c *UseCasesClinicalImpl) PatientTimeline(ctx context.Context, patientID st
 				continue
 			}
 
-			if err != nil {
-				utils.ReportErrorToSentry(err)
-				log.Errorf("date conversion error: %v", err)
-
-				return
-			}
-
 			timelineResource := dto.TimelineResource{
 				ID:           *edge.ID,
 				ResourceType: dto.ResourceTypeCondition,

@@ -32,16 +32,16 @@ type FHIRServiceRequest struct {
 	Requisition *FHIRIdentifier `json:"requisition,omitempty"`
 
 	// The status of the order.
-	Status *scalarutils.Code `json:"status,omitempty"`
+	Status ServiceRequestStatusEnum `json:"status,omitempty"`
 
 	// Whether the request is a proposal, plan, an original order or a reflex order.
-	Intent *scalarutils.Code `json:"intent,omitempty"`
+	Intent ServiceRequestIntentEnum `json:"intent,omitempty"`
 
 	// A code that classifies the service for searching, sorting and display purposes (e.g. "Surgical Procedure").
 	Category []*FHIRCodeableConcept `json:"category,omitempty"`
 
 	// Indicates how quickly the ServiceRequest should be addressed with respect to other requests.
-	Priority *scalarutils.Code `json:"priority,omitempty"`
+	Priority ServiceRequestPriorityEnum `json:"priority,omitempty"`
 
 	// Set this to true if the record is saying that the service/procedure should NOT be performed.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
@@ -158,16 +158,16 @@ type FHIRServiceRequestInput struct {
 	Requisition *FHIRIdentifierInput `json:"requisition,omitempty"`
 
 	// The status of the order.
-	Status *scalarutils.Code `json:"status,omitempty"`
+	Status ServiceRequestStatusEnum `json:"status,omitempty"`
 
 	// Whether the request is a proposal, plan, an original order or a reflex order.
-	Intent *scalarutils.Code `json:"intent,omitempty"`
+	Intent ServiceRequestIntentEnum `json:"intent,omitempty"`
 
 	// A code that classifies the service for searching, sorting and display purposes (e.g. "Surgical Procedure").
-	Category []*FHIRCodeableConceptInput `json:"category,omitempty"`
+	Category []*FHIRCodeableConcept `json:"category,omitempty"`
 
 	// Indicates how quickly the ServiceRequest should be addressed with respect to other requests.
-	Priority *scalarutils.Code `json:"priority,omitempty"`
+	Priority ServiceRequestPriorityEnum `json:"priority,omitempty"`
 
 	// Set this to true if the record is saying that the service/procedure should NOT be performed.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`

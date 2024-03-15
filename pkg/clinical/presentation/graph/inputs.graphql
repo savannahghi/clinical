@@ -192,3 +192,12 @@ input MediaInput {
   name: String!
   url: String!
 }
+
+input ReferralInput {
+  encounterID: String!
+  referralType: ReferralTypeEnum!
+  tests: [String]
+  specialist: String
+  facility: String!
+  referralNote: String!
+}

@@ -525,7 +525,36 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIRServiceRequestRelayConnection{}, nil
 		},
 		MockCreateFHIRServiceRequestFn: func(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
-			return &domain.FHIRServiceRequestRelayPayload{}, nil
+			ID := gofakeit.UUID()
+			startTime := scalarutils.DateTime(time.Now().Format("2006-01-02T15:04:05+03:00"))
+			return &domain.FHIRServiceRequestRelayPayload{
+				Resource: &domain.FHIRServiceRequest{
+					ID:           &ID,
+					Status:       "active",
+					Intent:       "order",
+					Category:     []*domain.FHIRCodeableConcept{},
+					Priority:     "urgent",
+					DoNotPerform: new(bool),
+					Subject: &domain.FHIRReference{
+						ID:        &ID,
+						Reference: new(string),
+						Display:   "",
+					},
+					Encounter: &domain.FHIRReference{
+						ID:        &ID,
+						Reference: new(string),
+						Display:   "",
+					},
+					AuthoredOn: &startTime,
+					Note: []*domain.FHIRAnnotation{
+						{
+							Time: &time.Time{},
+							Text: (*scalarutils.Markdown)(&ID),
+						},
+					},
+					Meta: &domain.FHIRMeta{},
+				},
+			}, nil
 		},
 		MockSearchFHIRAllergyIntoleranceFn: func(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRAllergy, error) {
 			UID := gofakeit.UUID()

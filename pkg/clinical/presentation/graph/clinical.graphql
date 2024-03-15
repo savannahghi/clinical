@@ -222,4 +222,7 @@ extend type Mutation {
   recordCBE(input: DiagnosticReportInput!): DiagnosticReport!
 
   getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResourceOutput!
+
+  # Referral
+  referPatient(input: ReferralInput!): ServiceRequest!
 }
