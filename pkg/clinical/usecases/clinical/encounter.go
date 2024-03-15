@@ -190,7 +190,7 @@ func (c *UseCasesClinicalImpl) ListPatientEncounters(ctx context.Context, patien
 }
 
 // GetEncounterAssociatedResources get all resources assocuated with an encounter
-func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error) {
+func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResourceOutput, error) {
 	if encounterID == "" {
 		return nil, fmt.Errorf("an encounterID is required")
 	}
@@ -208,7 +208,7 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 
 	encounterSearchParams := map[string]interface{}{
 		"_id":         encounterID,
-		"_sort":       "date",
+		"_sort":       "_lastUpdated",
 		"_count":      "1",
 		"_revinclude": includedResources,
 	}
@@ -226,7 +226,6 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 			var riskAssessment dto.RiskAssessment
 
 			riskAssessmentBytes, err := json.Marshal(encounterData)
-
 			if err != nil {
 				return nil, err
 			}
@@ -235,7 +234,7 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 				return nil, err
 			}
 
-			result.RiskAssessment = &riskAssessment
+			result.RiskAssessment = append(result.RiskAssessment, &riskAssessment)
 		case "Consent":
 			var consent dto.Consent
 
@@ -249,7 +248,7 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 				return nil, err
 			}
 
-			result.Consent = &consent
+			result.Consent = append(result.Consent, &consent)
 
 		case "Observation":
 			var observation domain.FHIRObservation
@@ -263,13 +262,17 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 				return nil, err
 			}
 
-			result.Observation = &dto.Observation{
+			result.Observation = append(result.Observation, &dto.Observation{
 				ID:     *observation.ID,
 				Value:  *observation.ValueString,
 				Status: dto.ObservationStatus(*observation.Status),
-			}
+			})
 		}
 	}
 
-	return &result, nil
+	return &dto.EncounterAssociatedResourceOutput{
+		RiskAssessment: result.RiskAssessment[0],
+		Consent:        result.Consent[0],
+		Observation:    result.Observation[0],
+	}, nil
 }

@@ -49,6 +49,13 @@ func CreateEncounterConnection(encounters []*Encounter, pageInfo PageInfo, total
 
 // EncounterAssociatedResources models  resources associated with an encounter
 type EncounterAssociatedResources struct {
+	RiskAssessment []*RiskAssessment `json:"riskAssesment"`
+	Consent        []*Consent        `json:"consent"`
+	Observation    []*Observation    `json:"observation"`
+}
+
+// EncounterAssociatedResourceOutput represents the model of the most recent encounter associated resource.
+type EncounterAssociatedResourceOutput struct {
 	RiskAssessment *RiskAssessment `json:"riskAssesment"`
 	Consent        *Consent        `json:"consent"`
 	Observation    *Observation    `json:"observation"`

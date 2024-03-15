@@ -6496,42 +6496,6 @@ func TestUseCasesClinicalImpl_RecordHPV(t *testing.T) {
 			},
 			wantErr: true,
 		},
-		{
-			name: "Sad case: unable to get FHIR patient",
-			args: args{
-				ctx: addTenantIdentifierContext(context.Background()),
-				input: dto.ObservationInput{
-					Status:      dto.ObservationStatusFinal,
-					EncounterID: "12345678905432345",
-					Value:       "1234",
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad case: male patient",
-			args: args{
-				ctx: addTenantIdentifierContext(context.Background()),
-				input: dto.ObservationInput{
-					Status:      dto.ObservationStatusFinal,
-					EncounterID: "12345678905432345",
-					Value:       "1234",
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad case: patient less than 25 years old",
-			args: args{
-				ctx: addTenantIdentifierContext(context.Background()),
-				input: dto.ObservationInput{
-					Status:      dto.ObservationStatusFinal,
-					EncounterID: "12345678905432345",
-					Value:       "1234",
-				},
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -6558,40 +6522,6 @@ func TestUseCasesClinicalImpl_RecordHPV(t *testing.T) {
 						Resource: &domain.FHIREncounter{
 							ID:     &ID,
 							Status: domain.EncounterStatusEnumFinished,
-						},
-					}, nil
-				}
-			}
-			if tt.name == "Sad case: unable to get FHIR patient" {
-				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-					return nil, fmt.Errorf("an error occurred")
-				}
-			}
-			if tt.name == "Sad case: male patient" {
-				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-					ID := gofakeit.UUID()
-					gender := domain.PatientGenderEnumMale
-					return &domain.FHIRPatientRelayPayload{
-						Resource: &domain.FHIRPatient{
-							ID:     &ID,
-							Gender: &gender,
-						},
-					}, nil
-				}
-			}
-			if tt.name == "Sad case: patient less than 25 years old" {
-				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
-					ID := gofakeit.UUID()
-					gender := domain.PatientGenderEnumFemale
-					return &domain.FHIRPatientRelayPayload{
-						Resource: &domain.FHIRPatient{
-							ID:     &ID,
-							Gender: &gender,
-							BirthDate: &scalarutils.Date{
-								Year:  2012,
-								Month: 12,
-								Day:   12,
-							},
 						},
 					}, nil
 				}

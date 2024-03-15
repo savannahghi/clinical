@@ -307,7 +307,7 @@ func (r *mutationResolver) RecordCbe(ctx context.Context, input dto.DiagnosticRe
 }
 
 // GetEncounterAssociatedResources is the resolver for the getEncounterAssociatedResources field.
-func (r *mutationResolver) GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error) {
+func (r *mutationResolver) GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResourceOutput, error) {
 	return r.usecases.GetEncounterAssociatedResources(ctx, encounterID)
 }
 

@@ -187,7 +187,7 @@ type ComplexityRoot struct {
 		Status          func(childComplexity int) int
 	}
 
-	EncounterAssociatedResources struct {
+	EncounterAssociatedResourceOutput struct {
 		Consent        func(childComplexity int) int
 		Observation    func(childComplexity int) int
 		RiskAssessment func(childComplexity int) int
@@ -730,7 +730,7 @@ type MutationResolver interface {
 	RecordMri(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordUltrasound(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordCbe(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
-	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResources, error)
+	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResourceOutput, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -1369,26 +1369,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Encounter.Status(childComplexity), true
 
-	case "EncounterAssociatedResources.consent":
-		if e.complexity.EncounterAssociatedResources.Consent == nil {
+	case "EncounterAssociatedResourceOutput.consent":
+		if e.complexity.EncounterAssociatedResourceOutput.Consent == nil {
 			break
 		}
 
-		return e.complexity.EncounterAssociatedResources.Consent(childComplexity), true
+		return e.complexity.EncounterAssociatedResourceOutput.Consent(childComplexity), true
 
-	case "EncounterAssociatedResources.observation":
-		if e.complexity.EncounterAssociatedResources.Observation == nil {
+	case "EncounterAssociatedResourceOutput.observation":
+		if e.complexity.EncounterAssociatedResourceOutput.Observation == nil {
 			break
 		}
 
-		return e.complexity.EncounterAssociatedResources.Observation(childComplexity), true
+		return e.complexity.EncounterAssociatedResourceOutput.Observation(childComplexity), true
 
-	case "EncounterAssociatedResources.riskAssessment":
-		if e.complexity.EncounterAssociatedResources.RiskAssessment == nil {
+	case "EncounterAssociatedResourceOutput.riskAssessment":
+		if e.complexity.EncounterAssociatedResourceOutput.RiskAssessment == nil {
 			break
 		}
 
-		return e.complexity.EncounterAssociatedResources.RiskAssessment(childComplexity), true
+		return e.complexity.EncounterAssociatedResourceOutput.RiskAssessment(childComplexity), true
 
 	case "EncounterClass.code":
 		if e.complexity.EncounterClass.Code == nil {
@@ -4527,7 +4527,7 @@ extend type Mutation {
   recordUltrasound(input: DiagnosticReportInput!): DiagnosticReport!
   recordCBE(input: DiagnosticReportInput!): DiagnosticReport!
 
-  getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResources!
+  getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResourceOutput!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -5420,7 +5420,7 @@ type RiskAssessmentPrediction {
 	probabilityDecimal: Float
 }
 
-type EncounterAssociatedResources {
+type EncounterAssociatedResourceOutput {
   riskAssessment: RiskAssessment
   consent: Consent
   observation: Observation
@@ -11000,8 +11000,8 @@ func (ec *executionContext) fieldContext_Encounter_patientID(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _EncounterAssociatedResources_riskAssessment(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResources) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EncounterAssociatedResources_riskAssessment(ctx, field)
+func (ec *executionContext) _EncounterAssociatedResourceOutput_riskAssessment(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResourceOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterAssociatedResourceOutput_riskAssessment(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11028,9 +11028,9 @@ func (ec *executionContext) _EncounterAssociatedResources_riskAssessment(ctx con
 	return ec.marshalORiskAssessment2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐRiskAssessment(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EncounterAssociatedResources_riskAssessment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EncounterAssociatedResourceOutput_riskAssessment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "EncounterAssociatedResources",
+		Object:     "EncounterAssociatedResourceOutput",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -11053,8 +11053,8 @@ func (ec *executionContext) fieldContext_EncounterAssociatedResources_riskAssess
 	return fc, nil
 }
 
-func (ec *executionContext) _EncounterAssociatedResources_consent(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResources) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EncounterAssociatedResources_consent(ctx, field)
+func (ec *executionContext) _EncounterAssociatedResourceOutput_consent(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResourceOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterAssociatedResourceOutput_consent(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11081,9 +11081,9 @@ func (ec *executionContext) _EncounterAssociatedResources_consent(ctx context.Co
 	return ec.marshalOConsent2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐConsent(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EncounterAssociatedResources_consent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EncounterAssociatedResourceOutput_consent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "EncounterAssociatedResources",
+		Object:     "EncounterAssociatedResourceOutput",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -11104,8 +11104,8 @@ func (ec *executionContext) fieldContext_EncounterAssociatedResources_consent(ct
 	return fc, nil
 }
 
-func (ec *executionContext) _EncounterAssociatedResources_observation(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResources) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EncounterAssociatedResources_observation(ctx, field)
+func (ec *executionContext) _EncounterAssociatedResourceOutput_observation(ctx context.Context, field graphql.CollectedField, obj *dto.EncounterAssociatedResourceOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EncounterAssociatedResourceOutput_observation(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11132,9 +11132,9 @@ func (ec *executionContext) _EncounterAssociatedResources_observation(ctx contex
 	return ec.marshalOObservation2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐObservation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EncounterAssociatedResources_observation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EncounterAssociatedResourceOutput_observation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "EncounterAssociatedResources",
+		Object:     "EncounterAssociatedResourceOutput",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -18114,9 +18114,9 @@ func (ec *executionContext) _Mutation_getEncounterAssociatedResources(ctx contex
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*dto.EncounterAssociatedResources)
+	res := resTmp.(*dto.EncounterAssociatedResourceOutput)
 	fc.Result = res
-	return ec.marshalNEncounterAssociatedResources2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResources(ctx, field.Selections, res)
+	return ec.marshalNEncounterAssociatedResourceOutput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResourceOutput(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_getEncounterAssociatedResources(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18128,13 +18128,13 @@ func (ec *executionContext) fieldContext_Mutation_getEncounterAssociatedResource
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "riskAssessment":
-				return ec.fieldContext_EncounterAssociatedResources_riskAssessment(ctx, field)
+				return ec.fieldContext_EncounterAssociatedResourceOutput_riskAssessment(ctx, field)
 			case "consent":
-				return ec.fieldContext_EncounterAssociatedResources_consent(ctx, field)
+				return ec.fieldContext_EncounterAssociatedResourceOutput_consent(ctx, field)
 			case "observation":
-				return ec.fieldContext_EncounterAssociatedResources_observation(ctx, field)
+				return ec.fieldContext_EncounterAssociatedResourceOutput_observation(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type EncounterAssociatedResources", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type EncounterAssociatedResourceOutput", field.Name)
 		},
 	}
 	defer func() {
@@ -33535,23 +33535,23 @@ func (ec *executionContext) _Encounter(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
-var encounterAssociatedResourcesImplementors = []string{"EncounterAssociatedResources"}
+var encounterAssociatedResourceOutputImplementors = []string{"EncounterAssociatedResourceOutput"}
 
-func (ec *executionContext) _EncounterAssociatedResources(ctx context.Context, sel ast.SelectionSet, obj *dto.EncounterAssociatedResources) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, encounterAssociatedResourcesImplementors)
+func (ec *executionContext) _EncounterAssociatedResourceOutput(ctx context.Context, sel ast.SelectionSet, obj *dto.EncounterAssociatedResourceOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, encounterAssociatedResourceOutputImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("EncounterAssociatedResources")
+			out.Values[i] = graphql.MarshalString("EncounterAssociatedResourceOutput")
 		case "riskAssessment":
-			out.Values[i] = ec._EncounterAssociatedResources_riskAssessment(ctx, field, obj)
+			out.Values[i] = ec._EncounterAssociatedResourceOutput_riskAssessment(ctx, field, obj)
 		case "consent":
-			out.Values[i] = ec._EncounterAssociatedResources_consent(ctx, field, obj)
+			out.Values[i] = ec._EncounterAssociatedResourceOutput_consent(ctx, field, obj)
 		case "observation":
-			out.Values[i] = ec._EncounterAssociatedResources_observation(ctx, field, obj)
+			out.Values[i] = ec._EncounterAssociatedResourceOutput_observation(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -37254,18 +37254,18 @@ func (ec *executionContext) marshalNEncounter2ᚖgithubᚗcomᚋsavannahghiᚋcl
 	return ec._Encounter(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNEncounterAssociatedResources2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResources(ctx context.Context, sel ast.SelectionSet, v dto.EncounterAssociatedResources) graphql.Marshaler {
-	return ec._EncounterAssociatedResources(ctx, sel, &v)
+func (ec *executionContext) marshalNEncounterAssociatedResourceOutput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResourceOutput(ctx context.Context, sel ast.SelectionSet, v dto.EncounterAssociatedResourceOutput) graphql.Marshaler {
+	return ec._EncounterAssociatedResourceOutput(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNEncounterAssociatedResources2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResources(ctx context.Context, sel ast.SelectionSet, v *dto.EncounterAssociatedResources) graphql.Marshaler {
+func (ec *executionContext) marshalNEncounterAssociatedResourceOutput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterAssociatedResourceOutput(ctx context.Context, sel ast.SelectionSet, v *dto.EncounterAssociatedResourceOutput) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
 		}
 		return graphql.Null
 	}
-	return ec._EncounterAssociatedResources(ctx, sel, v)
+	return ec._EncounterAssociatedResourceOutput(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNEncounterInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐEncounterInput(ctx context.Context, v interface{}) (dto.EncounterInput, error) {
