@@ -1708,6 +1708,39 @@ func (fh StoreImpl) PatchFHIRObservation(_ context.Context, id string, input dom
 	return resource, nil
 }
 
+// GetFHIRCondition retrieves instances of FHIRCondition by ID
+func (fh StoreImpl) GetFHIRCondition(_ context.Context, id string) (*domain.FHIRConditionRelayPayload, error) {
+	resource := &domain.FHIRCondition{}
+
+	err := fh.Dataset.GetFHIRResource(conditionResourceType, id, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", conditionResourceType, id, err)
+	}
+
+	payload := &domain.FHIRConditionRelayPayload{
+		Resource: resource,
+	}
+
+	return payload, nil
+}
+
+// PatchFHIRCondition is used to patch a condition resource
+func (fh StoreImpl) PatchFHIRCondition(_ context.Context, id string, input domain.FHIRConditionInput) (*domain.FHIRCondition, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", conditionResourceType, err)
+	}
+
+	resource := &domain.FHIRCondition{}
+
+	err = fh.Dataset.PatchFHIRResource(conditionResourceType, id, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to patch %s resource: %w", conditionResourceType, err)
+	}
+
+	return resource, nil
+}
+
 // ListFHIRQuestionnaire is used to list questionnaire resource using the name or the title of the resource.
 func (fh StoreImpl) ListFHIRQuestionnaire(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRQuestionnaires, error) {
 	results, err := fh.Dataset.SearchFHIRResource(questionnaireResourceType, params, tenant, pagination)
