@@ -447,7 +447,7 @@ func (fr Repository) GetFHIRResource(resourceType, fhirResourceID string, resour
 	return nil
 }
 
-// SearchFHIRResource ...
+// SearchFHIRResource is used to search for a FHIR resource
 func (fr Repository) SearchFHIRResource(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
 	err := pagination.Validate()
 	if err != nil {
