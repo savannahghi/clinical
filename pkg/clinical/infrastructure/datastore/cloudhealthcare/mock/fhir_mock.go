@@ -2111,6 +2111,22 @@ func NewFHIRMock() *FHIRMock {
 						"id":           "9012",
 						"status":       "final",
 						"valueString":  "Positive",
+						"code": map[string]interface{}{
+							"coding": []map[string]interface{}{
+								{
+									"code":    "161826",
+									"display": "Biopsy of cervix",
+									"system":  "/orgs/CIEL/sources/CIEL/concepts/161826/",
+								},
+							},
+							"text": "Biopsy of cervix",
+						},
+						"effectiveInstant": "2024-02-13T10:22:54+03:00",
+						"note": []map[string]interface{}{
+							{
+								"text": "This is a note",
+							},
+						},
 					},
 				},
 				HasNextPage:     false,

@@ -253,6 +253,8 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 		case "Observation":
 			var observation domain.FHIRObservation
 
+			var observationValue, observationNote string
+
 			observationBytes, err := json.Marshal(encounterData)
 			if err != nil {
 				return nil, err
@@ -262,17 +264,37 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 				return nil, err
 			}
 
+			if observation.ValueString != nil {
+				observationValue = *observation.ValueString
+			}
+
+			if observation.Note != nil {
+				observationNote = string(*observation.Note[0].Text)
+			}
+
 			result.Observation = append(result.Observation, &dto.Observation{
-				ID:     *observation.ID,
-				Value:  *observation.ValueString,
-				Status: dto.ObservationStatus(*observation.Status),
+				ID:           *observation.ID,
+				Name:         observation.Code.Text,
+				Value:        observationValue,
+				Status:       dto.ObservationStatus(*observation.Status),
+				TimeRecorded: string(*observation.EffectiveInstant),
+				Note:         observationNote,
 			})
 		}
 	}
 
-	return &dto.EncounterAssociatedResourceOutput{
-		RiskAssessment: result.RiskAssessment[0],
-		Consent:        result.Consent[0],
-		Observation:    result.Observation[0],
-	}, nil
+	output := &dto.EncounterAssociatedResourceOutput{}
+	if len(result.RiskAssessment) > 0 {
+		output.RiskAssessment = result.RiskAssessment[0]
+	}
+
+	if len(result.Consent) > 0 {
+		output.Consent = result.Consent[0]
+	}
+
+	if len(result.Observation) > 0 {
+		output.Observation = result.Observation[0]
+	}
+
+	return output, nil
 }
