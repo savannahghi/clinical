@@ -358,7 +358,7 @@ type ComplexityRoot struct {
 		RecordVia                          func(childComplexity int, input dto.ObservationInput) int
 		RecordViralLoad                    func(childComplexity int, input dto.ObservationInput) int
 		RecordWeight                       func(childComplexity int, input dto.ObservationInput) int
-		ReferPatient                       func(childComplexity int, input *dto.ReferralInput) int
+		ReferPatient                       func(childComplexity int, input dto.ReferralInput, count *int) int
 		StartEncounter                     func(childComplexity int, episodeID string) int
 	}
 
@@ -742,7 +742,7 @@ type MutationResolver interface {
 	RecordUltrasound(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	RecordCbe(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResourceOutput, error)
-	ReferPatient(ctx context.Context, input *dto.ReferralInput) (*dto.ServiceRequest, error)
+	ReferPatient(ctx context.Context, input dto.ReferralInput, count *int) (*dto.ServiceRequest, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -2516,7 +2516,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ReferPatient(childComplexity, args["input"].(*dto.ReferralInput)), true
+		return e.complexity.Mutation.ReferPatient(childComplexity, args["input"].(dto.ReferralInput), args["count"].(*int)), true
 
 	case "Mutation.startEncounter":
 		if e.complexity.Mutation.StartEncounter == nil {
@@ -4604,7 +4604,7 @@ extend type Mutation {
   getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResourceOutput!
 
   # Referral
-  referPatient(input: ReferralInput): ServiceRequest!
+  referPatient(input: ReferralInput!, count: Int): ServiceRequest!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -6476,15 +6476,24 @@ func (ec *executionContext) field_Mutation_recordWeight_args(ctx context.Context
 func (ec *executionContext) field_Mutation_referPatient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *dto.ReferralInput
+	var arg0 dto.ReferralInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOReferralInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralInput(ctx, tmp)
+		arg0, err = ec.unmarshalNReferralInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["input"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["count"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("count"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["count"] = arg1
 	return args, nil
 }
 
@@ -18282,7 +18291,7 @@ func (ec *executionContext) _Mutation_referPatient(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ReferPatient(rctx, fc.Args["input"].(*dto.ReferralInput))
+		return ec.resolvers.Mutation().ReferPatient(rctx, fc.Args["input"].(dto.ReferralInput), fc.Args["count"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -38137,6 +38146,11 @@ func (ec *executionContext) marshalNQuestionnaireResponseStatusEnum2githubᚗcom
 	return v
 }
 
+func (ec *executionContext) unmarshalNReferralInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralInput(ctx context.Context, v interface{}) (dto.ReferralInput, error) {
+	res, err := ec.unmarshalInputReferralInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNReferralTypeEnum2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralTypeEnum(ctx context.Context, v interface{}) (dto.ReferralTypeEnum, error) {
 	tmp, err := graphql.UnmarshalString(v)
 	res := dto.ReferralTypeEnum(tmp)
@@ -40380,14 +40394,6 @@ func (ec *executionContext) unmarshalOReferenceInput2ᚖgithubᚗcomᚋsavannahg
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputReferenceInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOReferralInput2ᚖgithubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐReferralInput(ctx context.Context, v interface{}) (*dto.ReferralInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputReferralInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

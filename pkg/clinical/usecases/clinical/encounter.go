@@ -218,6 +218,29 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 		return nil, err
 	}
 
+	resources, err := c.mapFHIREncounterDataToEncounterAssociatedDTO(encounterAllData)
+	if err != nil {
+		return nil, err
+	}
+
+	output := &dto.EncounterAssociatedResourceOutput{}
+	if len(resources.RiskAssessment) > 0 {
+		output.RiskAssessment = resources.RiskAssessment[0]
+	}
+
+	if len(resources.Consent) > 0 {
+		output.Consent = resources.Consent[0]
+	}
+
+	if len(resources.Observation) > 0 {
+		output.Observation = resources.Observation[0]
+	}
+
+	return output, nil
+}
+
+// mapFHIREncounterDataToEncounterAssociatedDTO is a helper function to map out resources associated with an encounter to an output model designed to suit the business requirement
+func (*UseCasesClinicalImpl) mapFHIREncounterDataToEncounterAssociatedDTO(encounterAllData *domain.PagedFHIRResource) (*dto.EncounterAssociatedResources, error) {
 	result := dto.EncounterAssociatedResources{}
 
 	for _, encounterData := range encounterAllData.Resources {
@@ -280,21 +303,10 @@ func (c *UseCasesClinicalImpl) GetEncounterAssociatedResources(ctx context.Conte
 				TimeRecorded: string(*observation.EffectiveInstant),
 				Note:         observationNote,
 			})
+		default:
+			continue
 		}
 	}
 
-	output := &dto.EncounterAssociatedResourceOutput{}
-	if len(result.RiskAssessment) > 0 {
-		output.RiskAssessment = result.RiskAssessment[0]
-	}
-
-	if len(result.Consent) > 0 {
-		output.Consent = result.Consent[0]
-	}
-
-	if len(result.Observation) > 0 {
-		output.Observation = result.Observation[0]
-	}
-
-	return output, nil
+	return &result, nil
 }

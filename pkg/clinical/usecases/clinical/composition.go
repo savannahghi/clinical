@@ -15,179 +15,71 @@ import (
 
 // CreateComposition creates a new composition
 func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.CompositionInput) (*dto.Composition, error) {
-	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, input.EncounterID)
-	if err != nil {
-		return nil, err
-	}
-
-	// check encounter status
-	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
-		return nil, fmt.Errorf("cannot record a composition in a finished encounter")
-	}
-
-	// get patient from encounter
-	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
-	if err != nil {
-		return nil, err
-	}
-
 	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
 	}
 
-	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
-	patientType := "Patient"
-	compositionTitle := fmt.Sprintf("%s's assessment note", patient.Resource.Name[0].Text)
 	compositionSectionTextStatus := "generated"
-
-	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
-	encounterType := scalarutils.URI("Encounter")
 	organizationRef := fmt.Sprintf("Organization/%s", identifiers.OrganizationID)
-
-	today := time.Now()
-
-	date, err := scalarutils.NewDate(today.Day(), int(today.Month()), today.Year())
-	if err != nil {
-		return nil, err
-	}
 
 	id := uuid.New().String()
 
-	var compositionCategoryCode string
-
-	switch input.Category {
-	case "ASSESSMENT_PLAN":
-		compositionCategoryCode = common.LOINCAssessmentPlanCode
-	case "HISTORY_OF_PRESENTING_ILLNESS":
-		compositionCategoryCode = common.LOINCHistoryOfPresentingIllness
-	case "SOCIAL_HISTORY":
-		compositionCategoryCode = common.LOINCSocialHistory
-	case "FAMILY_HISTORY":
-		compositionCategoryCode = common.LOINCFamilyHistory
-	case "EXAMINATION":
-		compositionCategoryCode = common.LOINCExamination
-	case "PLAN_OF_CARE":
-		compositionCategoryCode = common.LOINCPLANOFCARE
-	default:
-		return nil, fmt.Errorf("category is needed")
-	}
-
-	compositionCategoryConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, compositionCategoryCode)
+	compositionCategoryCode, err := c.mapCategoryEnumToCode(input.Category)
 	if err != nil {
 		return nil, err
 	}
 
-	compositionTypeConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, common.LOINCProgressNoteCode)
+	compositionConcept, err := c.mapCompositionConcepts(ctx, compositionCategoryCode, common.LOINCProgressNoteCode)
 	if err != nil {
 		return nil, err
 	}
 
-	status := strings.ToLower(string(input.Status))
-
-	compositionInput := domain.FHIRCompositionInput{
-		ID:     &id,
-		Status: (*domain.CompositionStatusEnum)(&status),
-		Type: &domain.FHIRCodeableConceptInput{
-			Coding: []*domain.FHIRCodingInput{
-				{
-					System:  (*scalarutils.URI)(&compositionTypeConcept.URL),
-					Code:    scalarutils.Code(compositionTypeConcept.ID),
-					Display: compositionTypeConcept.DisplayName,
-				},
-			},
-			Text: compositionTypeConcept.DisplayName,
-		},
-		Category: []*domain.FHIRCodeableConceptInput{
-			{
+	section := []*domain.FHIRCompositionSectionInput{
+		{
+			ID:    &id,
+			Title: &compositionConcept.CompositionCategoryConcept.DisplayName,
+			Code: &domain.FHIRCodeableConceptInput{
 				ID: &id,
 				Coding: []*domain.FHIRCodingInput{
 					{
-						System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
-						Code:    scalarutils.Code(compositionCategoryConcept.ID),
-						Display: compositionCategoryConcept.DisplayName,
+						ID:      &id,
+						System:  (*scalarutils.URI)(&compositionConcept.CompositionCategoryConcept.URL),
+						Code:    scalarutils.Code(compositionConcept.CompositionCategoryConcept.ID),
+						Display: compositionConcept.CompositionCategoryConcept.DisplayName,
 					},
 				},
-				Text: compositionCategoryConcept.DisplayName,
+				Text: compositionConcept.CompositionTypeConcept.DisplayName,
 			},
-		},
-		Subject: &domain.FHIRReferenceInput{
-			ID:        patient.Resource.ID,
-			Reference: &patientRef,
-			Type:      (*scalarutils.URI)(&patientType),
-		},
-		Encounter: &domain.FHIRReferenceInput{
-			ID:        encounter.Resource.ID,
-			Reference: &encounterRef,
-			Display:   *encounter.Resource.ID,
-			Type:      &encounterType,
-		},
-		Date: date,
-		Author: []*domain.FHIRReferenceInput{
-			{
-				Reference: &organizationRef,
-			},
-		},
-		Title: &compositionTitle,
-		Section: []*domain.FHIRCompositionSectionInput{
-			{
-				ID:    &id,
-				Title: &compositionCategoryConcept.DisplayName,
-				Code: &domain.FHIRCodeableConceptInput{
-					ID: &id,
-					Coding: []*domain.FHIRCodingInput{
-						{
-							ID:      &id,
-							System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
-							Code:    scalarutils.Code(compositionCategoryConcept.ID),
-							Display: compositionCategoryConcept.DisplayName,
-						},
-					},
-					Text: compositionTypeConcept.DisplayName,
-				},
-				Author: []*domain.FHIRReferenceInput{
-					{
-						Reference: &organizationRef,
-					},
-				},
-				Text: &domain.FHIRNarrativeInput{
-					ID:     &id,
-					Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
-					Div:    scalarutils.XHTML(input.Note),
-				},
-			},
-		},
-	}
-
-	tags, err := c.GetTenantMetaTags(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	compositionInput.Meta = &domain.FHIRMetaInput{
-		Tag: tags,
-	}
-
-	composition, err := c.infrastructure.FHIR.CreateFHIRComposition(ctx, compositionInput)
-	if err != nil {
-		return nil, err
-	}
-
-	compositionInput.Category = []*domain.FHIRCodeableConceptInput{
-		{
-			ID: &id,
-			Coding: []*domain.FHIRCodingInput{
+			Author: []*domain.FHIRReferenceInput{
 				{
-					System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
-					Code:    scalarutils.Code(compositionCategoryConcept.ID),
-					Display: compositionCategoryConcept.DisplayName,
+					Reference: &organizationRef,
 				},
 			},
-			Text: compositionCategoryConcept.DisplayName,
+			Text: &domain.FHIRNarrativeInput{
+				ID:     &id,
+				Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+				Div:    scalarutils.XHTML(input.Note),
+			},
 		},
 	}
 
-	result := mapFHIRCompositionToCompositionDTO(*composition.Resource)
+	compositionPayload := &CompositionPayload{
+		ConceptID: common.LOINCProgressNoteCode,
+		CompositionInput: &dto.CompositionInput{
+			EncounterID: input.EncounterID,
+			Category:    input.Category,
+			Status:      input.Status,
+		},
+		SectionData: section,
+	}
+
+	compositionOutput, err := c.RecordComposition(ctx, *compositionPayload)
+	if err != nil {
+		return nil, err
+	}
+
+	result := mapFHIRCompositionToCompositionDTO(*compositionOutput.Resource)
 
 	return &result.Edges[0].Node, nil
 }
@@ -332,21 +224,9 @@ func (c *UseCasesClinicalImpl) AppendNoteToComposition(ctx context.Context, id s
 
 	organizationRef := fmt.Sprintf("Organization/%s", identifiers.OrganizationID)
 
-	var compositionCategoryCode string
-
-	switch input.Category {
-	case "ASSESSMENT_PLAN":
-		compositionCategoryCode = common.LOINCAssessmentPlanCode
-	case "HISTORY_OF_PRESENTING_ILLNESS":
-		compositionCategoryCode = common.LOINCHistoryOfPresentingIllness
-	case "SOCIAL_HISTORY":
-		compositionCategoryCode = common.LOINCSocialHistory
-	case "FAMILY_HISTORY":
-		compositionCategoryCode = common.LOINCFamilyHistory
-	case "EXAMINATION":
-		compositionCategoryCode = common.LOINCExamination
-	case "PLAN_OF_CARE":
-		compositionCategoryCode = common.LOINCPLANOFCARE
+	compositionCategoryCode, err := c.mapCategoryEnumToCode(input.Category)
+	if err != nil {
+		return nil, err
 	}
 
 	compositionCategoryConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, compositionCategoryCode)
@@ -452,4 +332,122 @@ func (c *UseCasesClinicalImpl) AppendNoteToComposition(ctx context.Context, id s
 	result := mapFHIRCompositionToCompositionDTO(*output)
 
 	return &result.Edges[0].Node, nil
+}
+
+// RecordComposition is a shared implementation used to record a composition information
+func (c UseCasesClinicalImpl) RecordComposition(ctx context.Context, payload CompositionPayload) (*domain.FHIRCompositionRelayPayload, error) {
+	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, payload.CompositionInput.EncounterID)
+	if err != nil {
+		return nil, err
+	}
+
+	// check encounter status
+	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
+		return nil, fmt.Errorf("cannot record a composition in a finished encounter")
+	}
+
+	// get patient from encounter
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *encounter.Resource.Subject.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	patientRef := fmt.Sprintf("Patient/%s", *patient.Resource.ID)
+	patientType := "Patient"
+
+	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+	encounterType := scalarutils.URI("Encounter")
+	organizationRef := fmt.Sprintf("Organization/%s", identifiers.OrganizationID)
+
+	today := time.Now()
+
+	date, err := scalarutils.NewDate(today.Day(), int(today.Month()), today.Year())
+	if err != nil {
+		return nil, err
+	}
+
+	id := uuid.New().String()
+
+	compositionCategoryCode, err := c.mapCategoryEnumToCode(payload.CompositionInput.Category)
+	if err != nil {
+		return nil, err
+	}
+
+	compositionConcept, err := c.mapCompositionConcepts(ctx, compositionCategoryCode, payload.ConceptID)
+	if err != nil {
+		return nil, err
+	}
+
+	compositionTitle := fmt.Sprintf("%s's %s", patient.Resource.Name[0].Text, compositionConcept.CompositionCategoryConcept.DisplayName)
+
+	status := strings.ToLower(string(payload.CompositionInput.Status))
+
+	compositionInput := domain.FHIRCompositionInput{
+		ID:     &id,
+		Status: (*domain.CompositionStatusEnum)(&status),
+		Type: &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&compositionConcept.CompositionTypeConcept.URL),
+					Code:    scalarutils.Code(compositionConcept.CompositionTypeConcept.ID),
+					Display: compositionConcept.CompositionTypeConcept.DisplayName,
+				},
+			},
+			Text: compositionConcept.CompositionTypeConcept.DisplayName,
+		},
+		Category: []*domain.FHIRCodeableConceptInput{
+			{
+				ID: &id,
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&compositionConcept.CompositionCategoryConcept.URL),
+						Code:    scalarutils.Code(compositionConcept.CompositionCategoryConcept.ID),
+						Display: compositionConcept.CompositionCategoryConcept.DisplayName,
+					},
+				},
+				Text: compositionConcept.CompositionCategoryConcept.DisplayName,
+			},
+		},
+		Subject: &domain.FHIRReferenceInput{
+			ID:        patient.Resource.ID,
+			Reference: &patientRef,
+			Type:      (*scalarutils.URI)(&patientType),
+			Display:   patient.Resource.Name[0].Text,
+		},
+		Encounter: &domain.FHIRReferenceInput{
+			ID:        encounter.Resource.ID,
+			Reference: &encounterRef,
+			Display:   *encounter.Resource.ID,
+			Type:      &encounterType,
+		},
+		Date: date,
+		Author: []*domain.FHIRReferenceInput{
+			{
+				Reference: &organizationRef,
+			},
+		},
+		Title:   &compositionTitle,
+		Section: payload.SectionData,
+	}
+
+	tags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	compositionInput.Meta = &domain.FHIRMetaInput{
+		Tag: tags,
+	}
+
+	composition, err := c.infrastructure.FHIR.CreateFHIRComposition(ctx, compositionInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return composition, nil
 }

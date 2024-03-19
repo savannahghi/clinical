@@ -122,7 +122,7 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 				input: dto.CompositionInput{
 					EncounterID: gofakeit.UUID(),
 					Type:        dto.ProgressNote,
-					Category:    dto.CompositionCategory(dto.CompositionStatuEnumFinal),
+					Category:    dto.CompositionCategory(dto.CompositionStatusEnumFinal),
 					Status:      "final",
 					Note:        "Patient is deteriorating",
 				},
@@ -158,35 +158,7 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "sad case: fail to get encounter",
-			args: args{
-				ctx: context.Background(),
-				input: dto.CompositionInput{
-					EncounterID: gofakeit.UUID(),
-					Type:        dto.ProgressNote,
-					Category:    dto.AssessmentAndPlan,
-					Status:      "final",
-					Note:        "Patient is deteriorating",
-				},
-			},
-			wantErr: true,
-		},
-		{
 			name: "sad case: fail to get patient",
-			args: args{
-				ctx: context.Background(),
-				input: dto.CompositionInput{
-					EncounterID: gofakeit.UUID(),
-					Type:        dto.ProgressNote,
-					Category:    dto.AssessmentAndPlan,
-					Status:      "final",
-					Note:        "Patient is deteriorating",
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "sad case: fail on finished encounter",
 			args: args{
 				ctx: context.Background(),
 				input: dto.CompositionInput{
@@ -340,33 +312,6 @@ func TestUseCasesClinicalImpl_CreateComposition(t *testing.T) {
 			if tt.name == "sad case: fail to get identifiers" {
 				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 					return nil, fmt.Errorf("failed to get tenant identifiers")
-				}
-			}
-
-			if tt.name == "sad case: fail on finished encounter" {
-				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-					UUID := uuid.New().String()
-					PatientRef := "Patient/" + uuid.NewString()
-
-					return &domain.FHIREncounterRelayPayload{
-						Resource: &domain.FHIREncounter{
-							ID:         &UUID,
-							Text:       &domain.FHIRNarrative{},
-							Identifier: []*domain.FHIRIdentifier{},
-							Status:     domain.EncounterStatusEnum(domain.EncounterStatusEnumFinished),
-							Type:       []*domain.FHIRCodeableConcept{},
-							Subject: &domain.FHIRReference{
-								ID:        &UUID,
-								Reference: &PatientRef,
-							},
-						},
-					}, nil
-				}
-			}
-
-			if tt.name == "sad case: fail to get encounter" {
-				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
 
@@ -555,7 +500,7 @@ func TestUseCasesClinicalImpl_AppendNoteToComposition(t *testing.T) {
 				input: dto.PatchCompositionInput{
 					Type:     dto.ProgressNote,
 					Category: dto.HistoryOfPresentingIllness,
-					Status:   dto.CompositionStatuEnumFinal,
+					Status:   dto.CompositionStatusEnumFinal,
 					Note:     "Patient condition is deteriorating",
 				},
 			},
@@ -569,7 +514,7 @@ func TestUseCasesClinicalImpl_AppendNoteToComposition(t *testing.T) {
 				input: dto.PatchCompositionInput{
 					Type:     dto.ProgressNote,
 					Category: dto.FamilyHistory,
-					Status:   dto.CompositionStatuEnumFinal,
+					Status:   dto.CompositionStatusEnumFinal,
 					Note:     "Patient condition is deteriorating",
 				},
 			},
@@ -583,7 +528,7 @@ func TestUseCasesClinicalImpl_AppendNoteToComposition(t *testing.T) {
 				input: dto.PatchCompositionInput{
 					Type:     dto.ProgressNote,
 					Category: dto.Examination,
-					Status:   dto.CompositionStatuEnumFinal,
+					Status:   dto.CompositionStatusEnumFinal,
 					Note:     "Patient condition is deteriorating",
 				},
 			},
@@ -597,7 +542,7 @@ func TestUseCasesClinicalImpl_AppendNoteToComposition(t *testing.T) {
 				input: dto.PatchCompositionInput{
 					Type:     dto.ProgressNote,
 					Category: dto.Examination,
-					Status:   dto.CompositionStatuEnumFinal,
+					Status:   dto.CompositionStatusEnumFinal,
 					Note:     "Patient condition is deteriorating",
 				},
 			},
@@ -611,7 +556,7 @@ func TestUseCasesClinicalImpl_AppendNoteToComposition(t *testing.T) {
 				input: dto.PatchCompositionInput{
 					Type:     dto.ProgressNote,
 					Category: dto.Examination,
-					Status:   dto.CompositionStatuEnumFinal,
+					Status:   dto.CompositionStatusEnumFinal,
 					Note:     "Patient condition is deteriorating",
 				},
 			},
@@ -782,6 +727,244 @@ func TestUseCasesClinicalImpl_AppendNoteToComposition(t *testing.T) {
 			_, err := u.AppendNoteToComposition(tt.args.ctx, tt.args.id, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AppendNoteToComposition() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_RecordComposition(t *testing.T) {
+	type args struct {
+		ctx     context.Context
+		payload clinicalUsecase.CompositionPayload
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: record composition data",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: clinicalUsecase.CompositionPayload{
+					ConceptID: common.LOINCReferralNote,
+					CompositionInput: &dto.CompositionInput{
+						EncounterID: gofakeit.UUID(),
+						Category:    dto.CompositionCategory(dto.ReferralNote),
+						Status:      dto.CompositionStatusEnum(dto.CompositionStatusEnumFinal),
+					},
+					SectionData: []*domain.FHIRCompositionSectionInput{
+						{
+							ID:     new(string),
+							Title:  new(string),
+							Code:   &domain.FHIRCodeableConceptInput{},
+							Author: []*domain.FHIRReferenceInput{},
+							Focus:  &domain.FHIRReferenceInput{},
+							Text:   &domain.FHIRNarrativeInput{},
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to get encounter",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: clinicalUsecase.CompositionPayload{
+					ConceptID: common.LOINCReferralNote,
+					CompositionInput: &dto.CompositionInput{
+						EncounterID: gofakeit.UUID(),
+						Category:    dto.CompositionCategory(dto.ReferralNote),
+						Status:      dto.CompositionStatusEnum(dto.CompositionStatusEnumFinal),
+					},
+					SectionData: []*domain.FHIRCompositionSectionInput{
+						{
+							ID:     new(string),
+							Title:  new(string),
+							Code:   &domain.FHIRCodeableConceptInput{},
+							Author: []*domain.FHIRReferenceInput{},
+							Focus:  &domain.FHIRReferenceInput{},
+							Text:   &domain.FHIRNarrativeInput{},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: fail on finished encounter",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: clinicalUsecase.CompositionPayload{
+					ConceptID: common.LOINCReferralNote,
+					CompositionInput: &dto.CompositionInput{
+						EncounterID: gofakeit.UUID(),
+						Category:    dto.CompositionCategory(dto.ReferralNote),
+						Status:      dto.CompositionStatusEnum(dto.CompositionStatusEnumFinal),
+					},
+					SectionData: []*domain.FHIRCompositionSectionInput{
+						{
+							ID:     new(string),
+							Title:  new(string),
+							Code:   &domain.FHIRCodeableConceptInput{},
+							Author: []*domain.FHIRReferenceInput{},
+							Focus:  &domain.FHIRReferenceInput{},
+							Text:   &domain.FHIRNarrativeInput{},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: clinicalUsecase.CompositionPayload{
+					ConceptID: common.LOINCReferralNote,
+					CompositionInput: &dto.CompositionInput{
+						EncounterID: gofakeit.UUID(),
+						Category:    dto.CompositionCategory(dto.ReferralNote),
+						Status:      dto.CompositionStatusEnum(dto.CompositionStatusEnumFinal),
+					},
+					SectionData: []*domain.FHIRCompositionSectionInput{
+						{
+							ID:     new(string),
+							Title:  new(string),
+							Code:   &domain.FHIRCodeableConceptInput{},
+							Author: []*domain.FHIRReferenceInput{},
+							Focus:  &domain.FHIRReferenceInput{},
+							Text:   &domain.FHIRNarrativeInput{},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get identifiers",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: clinicalUsecase.CompositionPayload{
+					ConceptID: common.LOINCReferralNote,
+					CompositionInput: &dto.CompositionInput{
+						EncounterID: gofakeit.UUID(),
+						Category:    dto.CompositionCategory(dto.ReferralNote),
+						Status:      dto.CompositionStatusEnum(dto.CompositionStatusEnumFinal),
+					},
+					SectionData: []*domain.FHIRCompositionSectionInput{
+						{
+							ID: new(string),
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get categories",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: clinicalUsecase.CompositionPayload{
+					ConceptID: common.LOINCReferralNote,
+					CompositionInput: &dto.CompositionInput{
+						EncounterID: gofakeit.UUID(),
+						Category:    dto.CompositionCategory(dto.ReferralNote),
+						Status:      dto.CompositionStatusEnum(dto.CompositionStatusEnumFinal),
+					},
+					SectionData: []*domain.FHIRCompositionSectionInput{
+						{
+							ID: new(string),
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to create composition",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: clinicalUsecase.CompositionPayload{
+					ConceptID: common.LOINCReferralNote,
+					CompositionInput: &dto.CompositionInput{
+						EncounterID: gofakeit.UUID(),
+						Category:    dto.CompositionCategory(dto.ReferralNote),
+						Status:      dto.CompositionStatusEnum(dto.CompositionStatusEnumFinal),
+					},
+					SectionData: []*domain.FHIRCompositionSectionInput{
+						{
+							ID: new(string),
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			u := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to get encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get encounter")
+				}
+			}
+			if tt.name == "Sad case: fail on finished encounter" {
+				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
+					UUID := uuid.New().String()
+					PatientRef := "Patient/" + uuid.NewString()
+
+					return &domain.FHIREncounterRelayPayload{
+						Resource: &domain.FHIREncounter{
+							ID:         &UUID,
+							Text:       &domain.FHIRNarrative{},
+							Identifier: []*domain.FHIRIdentifier{},
+							Status:     domain.EncounterStatusEnum(domain.EncounterStatusEnumFinished),
+							Type:       []*domain.FHIRCodeableConcept{},
+							Subject: &domain.FHIRReference{
+								ID:        &UUID,
+								Reference: &PatientRef,
+							},
+						},
+					}, nil
+				}
+			}
+			if tt.name == "Sad case: unable to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+			if tt.name == "Sad case: unable to get identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get identifiers")
+				}
+			}
+			if tt.name == "Sad case: unable to get categories" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get categories")
+				}
+			}
+			if tt.name == "Sad case: unable to create composition" {
+				fakeFHIR.MockCreateFHIRCompositionFn = func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+					return nil, fmt.Errorf("failed to create composition")
+				}
+			}
+
+			_, err := u.RecordComposition(tt.args.ctx, tt.args.payload)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.RecordComposition() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

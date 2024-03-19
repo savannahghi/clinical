@@ -128,8 +128,11 @@ const (
 	// LOINCExamination defines LOINC Examination note terminology code
 	LOINCExamination = "29545-1"
 
-	// LOINCPLANOFCARE defines LOINC Plan of care note terminology code
-	LOINCPLANOFCARE = "18776-5"
+	// LOINCPlanOfCare defines LOINC Plan of care note terminology code
+	LOINCPlanOfCare = "18776-5"
+
+	// LOINCReferralNote defines the referral code for patient referral under LOINC system
+	LOINCReferralNote = "57133-1"
 
 	// ColposcopyCIELTerminologyCode is the terminology code for colposcopy findings
 	ColposcopyCIELTerminologyCode = "162816"

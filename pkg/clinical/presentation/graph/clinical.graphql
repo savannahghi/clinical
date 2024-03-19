@@ -224,5 +224,5 @@ extend type Mutation {
   getEncounterAssociatedResources(encounterID: String!): EncounterAssociatedResourceOutput!
 
   # Referral
-  referPatient(input: ReferralInput!): ServiceRequest!
+  referPatient(input: ReferralInput!, count: Int): ServiceRequest!
 }

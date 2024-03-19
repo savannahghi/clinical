@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
@@ -17,24 +18,62 @@ import (
 func (c *UseCasesClinicalImpl) ReferPatient(
 	ctx context.Context,
 	input *dto.ReferralInput,
+	count int,
 ) (*dto.ServiceRequest, error) {
 	err := input.Validate()
 	if err != nil {
 		return nil, err
 	}
 
-	encounter, err := c.infrastructure.FHIR.GetFHIREncounter(ctx, input.EncounterID)
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	if encounter.Resource.Status == domain.EncounterStatusEnumFinished {
-		return nil, fmt.Errorf("cannot record a referral in a finished encounter")
+	includedResources := []string{
+		"Observation:encounter",
 	}
 
-	patientReference := fmt.Sprintf("Patient/%s", *encounter.Resource.Subject.ID)
-	encounterReference := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+	searchParams := map[string]interface{}{
+		"_id":         input.EncounterID,
+		"_sort":       "_lastUpdated",
+		"_revinclude": includedResources,
+	}
+
+	encounterAllData, err := c.infrastructure.FHIR.SearchFHIREncounterAllData(ctx, searchParams, *identifiers, dto.Pagination{
+		First: &count,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	output, err := c.mapFHIREncounterDataToEncounterAssociatedDTO(encounterAllData)
+	if err != nil {
+		return nil, err
+	}
+
+	payload := &CompositionPayload{
+		ConceptID: common.LOINCReferralNote,
+		CompositionInput: &dto.CompositionInput{
+			EncounterID: input.EncounterID,
+			Category:    dto.ReferralNote,
+			Status:      dto.CompositionStatusEnumFinal,
+		},
+		SectionData: c.mapEncounterAssociatedDToFHIRSectionInput(output),
+	}
+
+	compositionOutput, err := c.RecordComposition(ctx, *payload)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create service request
+	patientID := compositionOutput.Resource.Subject.ID
+	patientReference := fmt.Sprintf("Patient/%s", *patientID)
+
+	encounterReference := fmt.Sprintf("Encounter/%s", *compositionOutput.Resource.Encounter.ID)
 	startTime := scalarutils.DateTime(time.Now().Format("2006-01-02T15:04:05+03:00"))
+	compositionReference := fmt.Sprintf("Composition/%s", *compositionOutput.Resource.ID)
 
 	serviceRequest := domain.FHIRServiceRequestInput{
 		Status:     domain.ServiceRequestStatusActive,
@@ -42,18 +81,24 @@ func (c *UseCasesClinicalImpl) ReferPatient(
 		Priority:   domain.ServiceRequestPriorityUrgent,
 		AuthoredOn: &startTime,
 		Subject: &domain.FHIRReferenceInput{
-			ID:        encounter.Resource.Subject.ID,
+			ID:        compositionOutput.Resource.Subject.ID,
 			Reference: &patientReference,
-			Display:   encounter.Resource.Subject.Display,
+			Display:   compositionOutput.Resource.Subject.Display,
 		},
 		Encounter: &domain.FHIRReferenceInput{
-			ID:        encounter.Resource.ID,
+			ID:        compositionOutput.Resource.Encounter.ID,
 			Reference: &encounterReference,
 		},
 		Note: []*domain.FHIRAnnotationInput{
 			{
 				Time: &startTime,
 				Text: (*scalarutils.Markdown)(&input.ReferralNote),
+			},
+		},
+		SupportingInfo: []*domain.FHIRReferenceInput{
+			{
+				ID:        compositionOutput.Resource.ID,
+				Reference: &compositionReference,
 			},
 		},
 	}
@@ -119,4 +164,26 @@ func (c *UseCasesClinicalImpl) ReferPatient(
 			Display:   referralRequest.Resource.Encounter.Display,
 		},
 	}, nil
+}
+
+func (c *UseCasesClinicalImpl) mapEncounterAssociatedDToFHIRSectionInput(associatedEncounterResources *dto.EncounterAssociatedResources) []*domain.FHIRCompositionSectionInput {
+	compositionSectionInput := []*domain.FHIRCompositionSectionInput{}
+	compositionSectionTextStatus := "generated"
+
+	for _, observation := range associatedEncounterResources.Observation {
+		resourceName := "Observation"
+		compositionSectionInput = append(compositionSectionInput, &domain.FHIRCompositionSectionInput{
+			Title: &resourceName,
+			Section: []*domain.FHIRCompositionSectionInput{
+				{
+					Title: &observation.Name,
+					Text: &domain.FHIRNarrativeInput{
+						Div:    scalarutils.XHTML(observation.Value),
+						Status: (*domain.NarrativeStatusEnum)(&compositionSectionTextStatus),
+					},
+				}},
+		})
+	}
+
+	return compositionSectionInput
 }

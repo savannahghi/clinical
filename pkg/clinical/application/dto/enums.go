@@ -168,6 +168,7 @@ const (
 	FamilyHistory              CompositionCategory = "FAMILY_HISTORY"
 	Examination                CompositionCategory = "EXAMINATION"
 	PlanOfCare                 CompositionCategory = "PLAN_OF_CARE"
+	ReferralNote               CompositionCategory = "REFERRAL_NOTE"
 )
 
 // Type enum represents type composition attribute
@@ -181,10 +182,10 @@ const (
 type CompositionStatusEnum string
 
 const (
-	CompositionStatuEnumPreliminary               CompositionStatusEnum = "PRELIMINARY"
-	CompositionStatuEnumFinal                     CompositionStatusEnum = "FINAL"
-	CompositionStatuEnumAmended                   CompositionStatusEnum = "AMENDED"
-	CompositionStatuEnumEnteredInErrorPreliminary CompositionStatusEnum = "ENTERED_IN_ERROR"
+	CompositionStatusEnumPreliminary               CompositionStatusEnum = "PRELIMINARY"
+	CompositionStatusEnumFinal                     CompositionStatusEnum = "FINAL"
+	CompositionStatusEnumAmended                   CompositionStatusEnum = "AMENDED"
+	CompositionStatusEnumEnteredInErrorPreliminary CompositionStatusEnum = "ENTERED_IN_ERROR"
 )
 
 // ConsentStatusEnum a type enum tha represents a Consent Status field of consent resource

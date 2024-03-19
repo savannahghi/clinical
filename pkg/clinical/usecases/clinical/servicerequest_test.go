@@ -22,6 +22,7 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 	type args struct {
 		ctx   context.Context
 		input *dto.ReferralInput
+		count int
 	}
 	tests := []struct {
 		name    string
@@ -40,32 +41,9 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 					Facility:     "KNH",
 					ReferralNote: "",
 				},
+				count: 4,
 			},
 			wantErr: false,
-		},
-		{
-			name: "Sad Case: Fail to get encounter",
-			args: args{
-				ctx: context.Background(),
-				input: &dto.ReferralInput{
-					EncounterID:  gofakeit.UUID(),
-					ReferralType: "DIAGNOSTICS",
-					Tests:        []string{"VIA"},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "Sad Case: Record referral in finished encounter",
-			args: args{
-				ctx: context.Background(),
-				input: &dto.ReferralInput{
-					EncounterID:  gofakeit.UUID(),
-					ReferralType: "DIAGNOSTICS",
-					Tests:        []string{"VIA"},
-				},
-			},
-			wantErr: true,
 		},
 		{
 			name: "Sad Case: Fail to get tenant meta tags",
@@ -76,6 +54,7 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 					ReferralType: "DIAGNOSTICS",
 					Tests:        []string{"VIA"},
 				},
+				count: 4,
 			},
 			wantErr: true,
 		},
@@ -88,6 +67,7 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 					ReferralType: "DIAGNOSTICS",
 					Tests:        []string{"VIA"},
 				},
+				count: 4,
 			},
 			wantErr: true,
 		},
@@ -99,6 +79,33 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 					ReferralType: "DIAGNOSTICS",
 					Tests:        []string{"VIA"},
 				},
+				count: 4,
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: unable to get fhir encounter data",
+			args: args{
+				ctx: context.Background(),
+				input: &dto.ReferralInput{
+					EncounterID:  gofakeit.UUID(),
+					ReferralType: "DIAGNOSTICS",
+					Tests:        []string{"VIA"},
+				},
+				count: 4,
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case: unable to create composition",
+			args: args{
+				ctx: context.Background(),
+				input: &dto.ReferralInput{
+					EncounterID:  gofakeit.UUID(),
+					ReferralType: "DIAGNOSTICS",
+					Tests:        []string{"VIA"},
+				},
+				count: 4,
 			},
 			wantErr: true,
 		},
@@ -116,22 +123,6 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
 			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
 
-			if tt.name == "Sad Case: Fail to get encounter" {
-				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-					return nil, fmt.Errorf("failed to get encounter")
-				}
-			}
-
-			if tt.name == "Sad Case: Record referral in finished encounter" {
-				fakeFHIR.MockGetFHIREncounterFn = func(ctx context.Context, id string) (*domain.FHIREncounterRelayPayload, error) {
-					return &domain.FHIREncounterRelayPayload{
-						Resource: &domain.FHIREncounter{
-							Status: domain.EncounterStatusEnumFinished,
-						},
-					}, nil
-				}
-			}
-
 			if tt.name == "Sad Case: Fail to get tenant meta tags" {
 				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 					return nil, fmt.Errorf("failed to get tenant identifiers")
@@ -143,8 +134,18 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 					return nil, fmt.Errorf("failed to record service request")
 				}
 			}
+			if tt.name == "Sad Case: unable to get fhir encounter data" {
+				fakeFHIR.MockSearchFHIREncounterAllDataFn = func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, fmt.Errorf("unable to get fhir encounter data")
+				}
+			}
+			if tt.name == "Sad Case: unable to create composition" {
+				fakeFHIR.MockCreateFHIRCompositionFn = func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+					return nil, fmt.Errorf("unable to create composition")
+				}
+			}
 
-			got, err := c.ReferPatient(tt.args.ctx, tt.args.input)
+			got, err := c.ReferPatient(tt.args.ctx, tt.args.input, tt.args.count)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.ReferPatient() error = %v, wantErr %v", err, tt.wantErr)
 				return
