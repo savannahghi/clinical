@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Referral Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; font-size: 14px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-logo, .header-title { color: #800080; font-weight: bold; }
+        .header-logo { font-size: 24px; }
+        .header-details { text-align: right; }
+        .header-details div { margin: 5px 0; }
+        .report-title { text-align: center; font-size: 30px; font-weight: bold; margin: 20px 0; }
+        .detail-section { background-color: #f2f2f2; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        .detail-section h2 { margin: 0 0 20px 0; }
+        .detail { margin-bottom: 10px; }
+        .detail strong { margin-right: 5px; }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            color: white;
+            background-color: #4D184D;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <span class="header-logo">Empower</span>
+            <span class="header-title">Empower Coast General Hospital</span>
+        </div>
+        <div class="header-details">
+            {{if .Date}}
+            <div>Date: {{.Date}}</div>
+            {{end}}
+            {{if .Time}}
+            <div>Time: {{.Time}}</div>
+            {{end}}
+            {{if .Reason}}
+            <div>Reason: {{.Reason}}</div>
+            {{end}}
+        </div>
+    </div>
+
+    <div class="report-title">Referral Report</div>
+
+    <div class="report-container">
+        {{if .Patient}}
+        <div class="detail-section">
+            <h2>Patient details</h2>
+            {{if .Patient.Name}}<div class="detail"><strong>Name:</strong> {{.Patient.Name}}</div>{{end}}
+            {{if .Patient.EmpowerID}}<div class="detail"><strong>Empower ID:</strong> {{.Patient.EmpowerID}}</div>{{end}}
+            {{if .Patient.NationalID}}<div class="detail"><strong>National ID:</strong> {{.Patient.NationalID}}</div>{{end}}
+            {{if .Patient.PhoneNumber}}<div class="detail"><strong>Phone number:</strong> {{.Patient.PhoneNumber}}</div>{{end}}
+            {{if .Patient.DateOfBirth}}<div class="detail"><strong>Date of birth:</strong> {{.Patient.DateOfBirth}}</div>{{end}}
+            {{if .Patient.Age}}<div class="detail"><strong>Age:</strong> {{.Patient.Age}}</div>{{end}}
+            {{if .Patient.Sex}}<div class="detail"><strong>Sex:</strong> {{.Patient.Sex}}</div>{{end}}
+        </div>
+        {{end}}
+
+        {{if .NextOfKin}}
+        <div class="detail-section">
+            <h2>Next of kin details</h2>
+            {{if .NextOfKin.Name}}<div class="detail"><strong>Name:</strong> {{.NextOfKin.Name}}</div>{{end}}
+            {{if .NextOfKin.Relationship}}<div class="detail"><strong>Relationship:</strong> {{.NextOfKin.Relationship}}</div>{{end}}
+            {{if .NextOfKin.PhoneNumber}}<div class="detail"><strong>Phone number:</strong> {{.NextOfKin.PhoneNumber}}</div>{{end}}
+        </div>
+        {{end}}
+
+        {{if .Facility}}
+        <div class="detail-section">
+            <h2>Receiving facility details</h2>
+            {{if .Facility.Name}}<div class="detail"><strong>Referred to:</strong> {{.Facility.Name}}</div>{{end}}
+            {{if .Facility.Location}}<div class="detail"><strong>Location:</strong> {{.Facility.Location}}</div>{{end}}
+            {{if .Facility.Contact}}<div class="detail"><strong>Hospital contact:</strong> {{.Facility.Contact}}</div>{{end}}
+        </div>
+        {{end}}
+
+        {{if .Referral.Reason}}
+        <div class="detail-section">
+            <h2>Referral reason</h2>
+            <div class="detail"><strong>Reason for referral:</strong> {{.Referral.Reason}}</div>
+        </div>
+        {{end}}
+
+        {{if .MedicalHistory}}
+        <div class="detail-section">
+            <h2>Medical history</h2>
+            {{if .MedicalHistory.Procedure}}<div class="detail"><strong>Procedure:</strong> {{.MedicalHistory.Procedure}}</div>{{end}}
+            {{if .MedicalHistory.Medication}}<div class="detail"><strong>Medication:</strong> {{.MedicalHistory.Medication}}</div>{{end}}
+            {{if .MedicalHistory.ReferralNotes}}<div class="detail"><strong>Referral notes:</strong> {{.MedicalHistory.ReferralNotes}}</div>{{end}}
+            {{if .MedicalHistory.Tests}}
+                {{range .MedicalHistory.Tests}}
+                    <div class="detail"><strong>Test done:</strong> {{.Name}} <strong>Results:</strong> {{.Results}} <strong>Date:</strong> {{.Date}}</div>
+                {{end}}
+            {{end}}
+        </div>
+        {{end}}
+
+        {{if .ReferredBy}}
+        <div class="detail-section">
+            <h2>Referred by</h2>
+            {{if .ReferredBy.Name}}<div class="detail"><strong>Referring Officer:</strong> {{.ReferredBy.Name}}</div>{{end}}
+            {{if .ReferredBy.Designation}}<div class="detail"><strong>Designation:</strong> {{.ReferredBy.Designation}}</div>{{end}}
+            {{if .ReferredBy.Phone}}<div class="detail"><strong>Phone:</strong> {{.ReferredBy.Phone}}</div>{{end}}
+            <div class="detail"><strong>Signature:</strong></div>
+        </div>
+        {{end}}
+    </div>
+    {{if or .Footer.Phone .Footer.Email .Footer.Address}}
+    <div class="footer">
+        {{if .Footer.Phone}}<div>Phone: {{.Footer.Phone}}</div>{{end}}
+        {{if .Footer.Email}}<div>Email: {{.Footer.Email}}</div>{{end}}
+        {{if .Footer.Address}}<div>Postal Address: {{.Footer.Address}}</div>{{end}}
+    </div>
+    {{end}}
+</body>
+</html>

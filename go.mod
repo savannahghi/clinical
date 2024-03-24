@@ -7,6 +7,7 @@ require (
 	cloud.google.com/go/pubsub v1.33.0
 	cloud.google.com/go/storage v1.32.0
 	github.com/99designs/gqlgen v0.17.36
+	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.2
 	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/brianvoe/gofakeit v3.18.0+incompatible

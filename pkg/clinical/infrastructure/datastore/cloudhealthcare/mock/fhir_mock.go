@@ -92,6 +92,7 @@ type FHIRMock struct {
 	MockCreateFHIRDiagnosticReportFn      func(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
 	MockSearchFHIREncounterAllDataFn      func(_ context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error)
 	MockGetFHIRPatientEverythingFn        func(ctx context.Context, id string, params map[string]interface{}) (*domain.PagedFHIRResource, error)
+	MockGetFHIRServiceRequestFn           func(_ context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -1537,6 +1538,7 @@ func NewFHIRMock() *FHIRMock {
 			patientID := uuid.New().String()
 			patientName := gofakeit.Name()
 			gender := domain.PatientGenderEnumFemale
+			phoneNumber := gofakeit.Phone()
 			return &domain.FHIRPatientRelayPayload{
 				Resource: &domain.FHIRPatient{
 					ID: &patientID,
@@ -1550,6 +1552,11 @@ func NewFHIRMock() *FHIRMock {
 						Year:  1990,
 						Month: 12,
 						Day:   12,
+					},
+					Telecom: []*domain.FHIRContactPoint{
+						{
+							Value: &phoneNumber,
+						},
 					},
 				},
 			}, nil
@@ -2154,6 +2161,42 @@ func NewFHIRMock() *FHIRMock {
 				TotalCount:      0,
 			}, nil
 		},
+		MockGetFHIRServiceRequestFn: func(_ context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error) {
+			resourceID := uuid.New().String()
+			return &domain.FHIRServiceRequestRelayPayload{
+				Resource: &domain.FHIRServiceRequest{
+					ID:         &resourceID,
+					Text:       &domain.FHIRNarrative{},
+					Identifier: []*domain.FHIRIdentifier{},
+					Subject: &domain.FHIRReference{
+						ID: &resourceID,
+					},
+					Encounter: &domain.FHIRReference{
+						ID: &resourceID,
+					},
+					Extension: []*domain.FHIRExtension{
+						{
+							URL: "http://savannahghi.org/fhir/StructureDefinition/referred-facility",
+							Extension: []domain.Extension{
+								{
+									URL:         "facilityName",
+									ValueString: "Nairobi Hospital",
+								},
+							},
+						},
+						{
+							URL: "http://savannahghi.org/fhir/StructureDefinition/referred-specialist",
+							Extension: []domain.Extension{
+								{
+									URL:         "specialistName",
+									ValueString: gofakeit.Name(),
+								},
+							},
+						},
+					},
+				},
+			}, nil
+		},
 	}
 }
 
@@ -2510,4 +2553,9 @@ func (fh *FHIRMock) SearchFHIREncounterAllData(ctx context.Context, params map[s
 // GetFHIRPatientEverything mocks the implementation of getting all the patient information
 func (fh *FHIRMock) GetFHIRPatientEverything(ctx context.Context, id string, params map[string]interface{}) (*domain.PagedFHIRResource, error) {
 	return fh.MockGetFHIRPatientEverythingFn(ctx, id, params)
+}
+
+// GetFHIRServiceRequest mocks the implementation of getting a service request by ID
+func (fh *FHIRMock) GetFHIRServiceRequest(ctx context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error) {
+	return fh.MockGetFHIRServiceRequestFn(ctx, id)
 }
