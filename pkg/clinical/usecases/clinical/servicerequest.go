@@ -32,9 +32,7 @@ func (c *UseCasesClinicalImpl) ReferPatient(
 		return nil, fmt.Errorf("cannot record a referral in a finished encounter")
 	}
 
-	patientID := encounter.Resource.Subject.ID
-	patientReference := fmt.Sprintf("Patient/%s", *patientID)
-
+	patientReference := fmt.Sprintf("Patient/%s", *encounter.Resource.Subject.ID)
 	encounterReference := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
 	startTime := scalarutils.DateTime(time.Now().Format("2006-01-02T15:04:05+03:00"))
 
@@ -58,6 +56,32 @@ func (c *UseCasesClinicalImpl) ReferPatient(
 				Text: (*scalarutils.Markdown)(&input.ReferralNote),
 			},
 		},
+	}
+
+	if input.Facility != "" {
+		facilityExtension := &domain.FHIRExtension{
+			URL: "http://savannahghi.org/fhir/StructureDefinition/referred-facility",
+			Extension: []domain.Extension{
+				{
+					URL:         "facilityName",
+					ValueString: input.Facility,
+				},
+			},
+		}
+		serviceRequest.Extension = append(serviceRequest.Extension, facilityExtension)
+	}
+
+	if input.Specialist != "" {
+		specialistExtension := &domain.FHIRExtension{
+			URL: "http://savannahghi.org/fhir/StructureDefinition/referred-specialist",
+			Extension: []domain.Extension{
+				{
+					URL:         "specialistName",
+					ValueString: input.Specialist,
+				},
+			},
+		}
+		serviceRequest.Extension = append(serviceRequest.Extension, specialistExtension)
 	}
 
 	tags, err := c.GetTenantMetaTags(ctx)
