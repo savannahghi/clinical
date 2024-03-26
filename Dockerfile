@@ -8,25 +8,22 @@ WORKDIR /app
 
 # Copy go.sum/go.mod and warm up the module cache (so that this
 # rather long step can be cached if go.mod/go.sum don't change)
-COPY go.* $D/
-CMD go mod download
+COPY go.* ./
+RUN go mod download
 
 ENV GIN_MODE release
 
 # Now copy the rest.
-COPY . /app/
-
-# Retrieve application dependencies.
-RUN go mod download
+COPY . .
 
 # Build the binary.
-RUN cd /app/ && CGO_ENABLED=0 GOOS=linux go build -v -o server github.com/savannahghi/clinical
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o server github.com/savannahghi/clinical
 
 # Use the official Alpine image for a lean production container.
 # https://hub.docker.com/_/alpine
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 FROM alpine:3
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates wkhtmltopdf
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/server /server
