@@ -2034,3 +2034,19 @@ func (fh StoreImpl) GetFHIRPatientEverything(ctx context.Context, id string, par
 
 	return &response, nil
 }
+
+// GetFHIRServiceRequest retrieves a FHIR service request using its primary ID
+func (fh StoreImpl) GetFHIRServiceRequest(_ context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error) {
+	resource := &domain.FHIRServiceRequest{}
+
+	err := fh.Dataset.GetFHIRResource(serviceRequestResourceType, id, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get %s with ID %s, err: %w", serviceRequestResourceType, id, err)
+	}
+
+	payload := &domain.FHIRServiceRequestRelayPayload{
+		Resource: resource,
+	}
+
+	return payload, nil
+}

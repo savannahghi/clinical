@@ -376,3 +376,19 @@ func (p PresentationHandlersImpl) ListQuestionnaire(c *gin.Context) {
 
 	c.JSON(http.StatusOK, questionnaire)
 }
+
+func (p PresentationHandlersImpl) GenerateReferralReport(c *gin.Context) {
+	queryParams := c.Request.URL.Query()
+	serviceRequestID := queryParams.Get("servicerequest")
+
+	c.Header("Content-Type", "application/pdf")
+	// c.Header("Content-Disposition", "attachment; filename=referral_report.pdf")
+
+	err := p.usecases.GenerateReferralReportPDF(c.Request.Context(), serviceRequestID)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Status": "Ok"})
+}
