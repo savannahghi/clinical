@@ -1,13 +1,9 @@
 # Use the official Golang image to create a build artifact.
 # This is based on Debian and sets the GOPATH to /go.
-# https://hub.docker.com/_/golang
-FROM golang:1.21 as builder
+FROM golang:1.22-bullseye as builder
 
 # Create and change to the app directory.
 WORKDIR /app
-
-# Install wkhtmltopdf in the builder stage.
-RUN apt-get update && apt-get install -y wkhtmltopdf && apt-get clean
 
 # Copy go.sum/go.mod and warm up the module cache.
 COPY go.* ./
@@ -22,14 +18,29 @@ COPY . .
 # Build the binary.
 RUN CGO_ENABLED=0 GOOS=linux go build -v -o server github.com/savannahghi/clinical
 
-# Use the official Alpine image for a lean production container.
-FROM alpine:3 as production
+FROM debian:bullseye-slim as production
 
-# Install ca-certificates and other runtime dependencies for wkhtmltopdf.
-RUN apk add --no-cache ca-certificates
+# Install necessary libraries for wkhtmltopdf.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wkhtmltopdf \
+    libstdc++6 \
+    libx11-6 \
+    libxrender1 \
+    libxext6 \
+    libfontconfig1 \
+    fonts-dejavu \
+    fonts-droid-fallback \
+    fonts-freefont-ttf \
+    fonts-liberation \
+    libqt5webkit5 \
+    libqt5widgets5 \
+    libqt5gui5 \
+    libqt5core5a \
+    libqt5network5 \
+    ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the wkhtmltopdf binary and related files from the builder stage to the production image.
-COPY --from=builder /usr/bin/wkhtmltopdf /usr/local/bin/
 
 # Copy the Go binary to the production image from the builder stage.
 COPY --from=builder /app/server /server
@@ -37,7 +48,7 @@ COPY --from=builder /app/server /server
 # Ensure your templates directory is correctly copied into the Docker image.
 COPY --from=builder /app/templates /app/templates
 
-# Set the working directory to where your binary and templates are
+# Set the working directory to where your binary and templates are.
 WORKDIR /app
 
 # Run the web service on container startup.
