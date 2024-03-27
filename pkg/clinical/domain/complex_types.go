@@ -3229,3 +3229,14 @@ const (
 	ServiceRequestPriorityAsap    ServiceRequestPriorityEnum = "asap"
 	ServiceRequestPriorityStat    ServiceRequestPriorityEnum = "stat"
 )
+
+// SubscriptionType defines the types of methods used to execute a subscription
+type SubscriptionTypeEnum string
+
+const (
+	SubscriptionTypeRestHook  SubscriptionTypeEnum = "rest-hook"
+	SubscriptionTypeWebSocket SubscriptionTypeEnum = "websocket"
+	SubscriptionTypeEmail     SubscriptionTypeEnum = "email"
+	SubscriptionTypeSMS       SubscriptionTypeEnum = "sms"
+	SubscriptionTypeMessage   SubscriptionTypeEnum = "message"
+)

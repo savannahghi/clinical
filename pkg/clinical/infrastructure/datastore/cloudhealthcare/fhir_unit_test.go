@@ -5205,3 +5205,55 @@ func TestStoreImpl_GetFHIRPatientEverything(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_CreateFHIRSubscription(t *testing.T) {
+	id := gofakeit.UUID()
+	type args struct {
+		ctx          context.Context
+		subscription *domain.FHIRSubscriptionInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: create subscription",
+			args: args{
+				ctx: context.Background(),
+				subscription: &domain.FHIRSubscriptionInput{
+					ID: &id,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create subscription",
+			args: args{
+				ctx: context.Background(),
+				subscription: &domain.FHIRSubscriptionInput{
+					ID: &id,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad case: unable to create subscription" {
+				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := fh.CreateFHIRSubscription(tt.args.ctx, tt.args.subscription)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRSubscription() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
