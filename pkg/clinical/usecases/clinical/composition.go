@@ -54,31 +54,12 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 
 	id := uuid.New().String()
 
-	var compositionCategoryCode string
-
-	switch input.Category {
-	case "ASSESSMENT_PLAN":
-		compositionCategoryCode = common.LOINCAssessmentPlanCode
-	case "HISTORY_OF_PRESENTING_ILLNESS":
-		compositionCategoryCode = common.LOINCHistoryOfPresentingIllness
-	case "SOCIAL_HISTORY":
-		compositionCategoryCode = common.LOINCSocialHistory
-	case "FAMILY_HISTORY":
-		compositionCategoryCode = common.LOINCFamilyHistory
-	case "EXAMINATION":
-		compositionCategoryCode = common.LOINCExamination
-	case "PLAN_OF_CARE":
-		compositionCategoryCode = common.LOINCPLANOFCARE
-	default:
-		return nil, fmt.Errorf("category is needed")
-	}
-
-	compositionCategoryConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, compositionCategoryCode)
+	compositionCategoryCode, err := c.mapCategoryEnumToCode(input.Category)
 	if err != nil {
 		return nil, err
 	}
 
-	compositionTypeConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, common.LOINCProgressNoteCode)
+	compositionConcept, err := c.mapCompositionConcepts(ctx, compositionCategoryCode, common.LOINCProgressNoteCode)
 	if err != nil {
 		return nil, err
 	}
@@ -91,24 +72,24 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 		Type: &domain.FHIRCodeableConceptInput{
 			Coding: []*domain.FHIRCodingInput{
 				{
-					System:  (*scalarutils.URI)(&compositionTypeConcept.URL),
-					Code:    scalarutils.Code(compositionTypeConcept.ID),
-					Display: compositionTypeConcept.DisplayName,
+					System:  (*scalarutils.URI)(&compositionConcept.CompositionTypeConcept.URL),
+					Code:    scalarutils.Code(compositionConcept.CompositionTypeConcept.ID),
+					Display: compositionConcept.CompositionTypeConcept.DisplayName,
 				},
 			},
-			Text: compositionTypeConcept.DisplayName,
+			Text: compositionConcept.CompositionTypeConcept.DisplayName,
 		},
 		Category: []*domain.FHIRCodeableConceptInput{
 			{
 				ID: &id,
 				Coding: []*domain.FHIRCodingInput{
 					{
-						System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
-						Code:    scalarutils.Code(compositionCategoryConcept.ID),
-						Display: compositionCategoryConcept.DisplayName,
+						System:  (*scalarutils.URI)(&compositionConcept.CompositionCategoryConcept.URL),
+						Code:    scalarutils.Code(compositionConcept.CompositionCategoryConcept.ID),
+						Display: compositionConcept.CompositionCategoryConcept.DisplayName,
 					},
 				},
-				Text: compositionCategoryConcept.DisplayName,
+				Text: compositionConcept.CompositionCategoryConcept.DisplayName,
 			},
 		},
 		Subject: &domain.FHIRReferenceInput{
@@ -132,18 +113,18 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 		Section: []*domain.FHIRCompositionSectionInput{
 			{
 				ID:    &id,
-				Title: &compositionCategoryConcept.DisplayName,
+				Title: &compositionConcept.CompositionCategoryConcept.DisplayName,
 				Code: &domain.FHIRCodeableConceptInput{
 					ID: &id,
 					Coding: []*domain.FHIRCodingInput{
 						{
 							ID:      &id,
-							System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
-							Code:    scalarutils.Code(compositionCategoryConcept.ID),
-							Display: compositionCategoryConcept.DisplayName,
+							System:  (*scalarutils.URI)(&compositionConcept.CompositionCategoryConcept.URL),
+							Code:    scalarutils.Code(compositionConcept.CompositionCategoryConcept.ID),
+							Display: compositionConcept.CompositionCategoryConcept.DisplayName,
 						},
 					},
-					Text: compositionTypeConcept.DisplayName,
+					Text: compositionConcept.CompositionTypeConcept.DisplayName,
 				},
 				Author: []*domain.FHIRReferenceInput{
 					{
@@ -178,12 +159,12 @@ func (c *UseCasesClinicalImpl) CreateComposition(ctx context.Context, input dto.
 			ID: &id,
 			Coding: []*domain.FHIRCodingInput{
 				{
-					System:  (*scalarutils.URI)(&compositionCategoryConcept.URL),
-					Code:    scalarutils.Code(compositionCategoryConcept.ID),
-					Display: compositionCategoryConcept.DisplayName,
+					System:  (*scalarutils.URI)(&compositionConcept.CompositionCategoryConcept.URL),
+					Code:    scalarutils.Code(compositionConcept.CompositionCategoryConcept.ID),
+					Display: compositionConcept.CompositionCategoryConcept.DisplayName,
 				},
 			},
-			Text: compositionCategoryConcept.DisplayName,
+			Text: compositionConcept.CompositionCategoryConcept.DisplayName,
 		},
 	}
 
@@ -332,21 +313,9 @@ func (c *UseCasesClinicalImpl) AppendNoteToComposition(ctx context.Context, id s
 
 	organizationRef := fmt.Sprintf("Organization/%s", identifiers.OrganizationID)
 
-	var compositionCategoryCode string
-
-	switch input.Category {
-	case "ASSESSMENT_PLAN":
-		compositionCategoryCode = common.LOINCAssessmentPlanCode
-	case "HISTORY_OF_PRESENTING_ILLNESS":
-		compositionCategoryCode = common.LOINCHistoryOfPresentingIllness
-	case "SOCIAL_HISTORY":
-		compositionCategoryCode = common.LOINCSocialHistory
-	case "FAMILY_HISTORY":
-		compositionCategoryCode = common.LOINCFamilyHistory
-	case "EXAMINATION":
-		compositionCategoryCode = common.LOINCExamination
-	case "PLAN_OF_CARE":
-		compositionCategoryCode = common.LOINCPLANOFCARE
+	compositionCategoryCode, err := c.mapCategoryEnumToCode(input.Category)
+	if err != nil {
+		return nil, err
 	}
 
 	compositionCategoryConcept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, compositionCategoryCode)

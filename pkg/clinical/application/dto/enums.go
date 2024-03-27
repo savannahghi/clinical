@@ -162,12 +162,13 @@ const (
 type CompositionCategory string
 
 const (
-	AssessmentAndPlan          CompositionCategory = "ASSESSMENT_PLAN"
-	HistoryOfPresentingIllness CompositionCategory = "HISTORY_OF_PRESENTING_ILLNESS"
-	SocialHistory              CompositionCategory = "SOCIAL_HISTORY"
-	FamilyHistory              CompositionCategory = "FAMILY_HISTORY"
-	Examination                CompositionCategory = "EXAMINATION"
-	PlanOfCare                 CompositionCategory = "PLAN_OF_CARE"
+	AssessmentAndPlan               CompositionCategory = "ASSESSMENT_PLAN"
+	HistoryOfPresentingIllness      CompositionCategory = "HISTORY_OF_PRESENTING_ILLNESS"
+	SocialHistory                   CompositionCategory = "SOCIAL_HISTORY"
+	FamilyHistory                   CompositionCategory = "FAMILY_HISTORY"
+	Examination                     CompositionCategory = "EXAMINATION"
+	PlanOfCare                      CompositionCategory = "PLAN_OF_CARE"
+	ProviderUnspecifiedProgressNote CompositionCategory = "PROGRESS_NOTE"
 )
 
 // Type enum represents type composition attribute

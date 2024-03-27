@@ -69,6 +69,22 @@ func TestUseCasesClinicalImpl_StartEncounter(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - failed to get concept",
+			args: args{
+				ctx:       ctx,
+				episodeID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - failed to create FHIR composition",
+			args: args{
+				ctx:       ctx,
+				episodeID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -98,6 +114,16 @@ func TestUseCasesClinicalImpl_StartEncounter(t *testing.T) {
 			if tt.name == "Sad Case - failed to get tenant identifiers" {
 				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
 					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+			if tt.name == "Sad Case - failed to get concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get concept")
+				}
+			}
+			if tt.name == "Sad Case - failed to create FHIR composition" {
+				fakeFHIR.MockCreateFHIRCompositionFn = func(ctx context.Context, input domain.FHIRCompositionInput) (*domain.FHIRCompositionRelayPayload, error) {
+					return nil, fmt.Errorf("failed to create FHIR composition")
 				}
 			}
 
