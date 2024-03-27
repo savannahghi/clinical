@@ -59,7 +59,7 @@
         </div>
         {{end}}
 
-        {{if .NextOfKin}}
+        {{if or .NextOfKin.Name .NextOfKin.PhoneNumber .NextOfKin.Relationship}}
         <div class="detail-section">
             <h2>Next of kin details</h2>
             {{if .NextOfKin.Name}}<div class="detail"><strong>Name:</strong> {{.NextOfKin.Name}}</div>{{end}}

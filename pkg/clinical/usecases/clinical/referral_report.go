@@ -5,11 +5,11 @@ import (
 	"context"
 	"fmt"
 	"html/template"
-	"log"
 	"strings"
 	"time"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 )
 
 type Patient struct {
@@ -89,19 +89,21 @@ type TemplateData struct {
 // information, to construct a comprehensive referral report. The report is formatted
 // as a PDF, making it suitable for clinical review, record-keeping, or sharing with
 // other healthcare professionals.
-func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, serviceRequestID string) error {
+func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, serviceRequestID string) ([]byte, error) {
 	if serviceRequestID == "" {
-		return fmt.Errorf("service request ID cannot be empty")
+		return nil, fmt.Errorf("service request ID cannot be empty")
 	}
 
 	serviceRequest, err := c.infrastructure.FHIR.GetFHIRServiceRequest(ctx, serviceRequestID)
 	if err != nil {
-		return err
+		utils.ReportErrorToSentry(err)
+		return nil, err
 	}
 
 	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, *serviceRequest.Resource.Subject.ID)
 	if err != nil {
-		return err
+		utils.ReportErrorToSentry(err)
+		return nil, err
 	}
 
 	age := time.Since(patient.Resource.BirthDate.AsTime()).Hours() / 24 / 365
@@ -159,8 +161,8 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 
 	tmpl, err := template.ParseFiles("templates/referral_report_template.html")
 	if err != nil {
-		log.Print(err)
-		return err
+		utils.ReportErrorToSentry(err)
+		return nil, err
 	}
 
 	// Fill the template with data
@@ -168,7 +170,8 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 
 	err = tmpl.Execute(&htmlBuffer, data)
 	if err != nil {
-		log.Fatalf("Error executing template: %v", err)
+		utils.ReportErrorToSentry(err)
+		return nil, err
 	}
 
 	// Convert template output to string
@@ -177,7 +180,8 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 	// Create a new PDF generator
 	pdfg, err := wkhtmltopdf.NewPDFGenerator()
 	if err != nil {
-		return err
+		utils.ReportErrorToSentry(err)
+		return nil, err
 	}
 
 	// Add one page from an URL, a file, or HTML content
@@ -186,13 +190,11 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 	// Create PDF document in internal buffer
 	err = pdfg.Create()
 	if err != nil {
-		return err
+		utils.ReportErrorToSentry(err)
+		return nil, err
 	}
 
-	err = pdfg.WriteFile("referral_report.pdf")
-	if err != nil {
-		return err
-	}
+	pdfBytes := pdfg.Bytes()
 
-	return nil
+	return pdfBytes, nil
 }

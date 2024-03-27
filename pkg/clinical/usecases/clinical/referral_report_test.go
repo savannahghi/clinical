@@ -86,7 +86,7 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 				}
 			}
 
-			if err := c.GenerateReferralReportPDF(tt.args.ctx, tt.args.serviceRequestID); (err != nil) != tt.wantErr {
+			if _, err := c.GenerateReferralReportPDF(tt.args.ctx, tt.args.serviceRequestID); (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GenerateReferralReportPDF() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

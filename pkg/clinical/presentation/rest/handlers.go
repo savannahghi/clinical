@@ -377,18 +377,20 @@ func (p PresentationHandlersImpl) ListQuestionnaire(c *gin.Context) {
 	c.JSON(http.StatusOK, questionnaire)
 }
 
+// GenerateReferralReport handles incoming HTTP requests to generate referral reports in PDF format.
 func (p PresentationHandlersImpl) GenerateReferralReport(c *gin.Context) {
 	queryParams := c.Request.URL.Query()
 	serviceRequestID := queryParams.Get("servicerequest")
 
-	c.Header("Content-Type", "application/pdf")
-	// c.Header("Content-Disposition", "attachment; filename=referral_report.pdf")
-
-	err := p.usecases.GenerateReferralReportPDF(c.Request.Context(), serviceRequestID)
+	pdfBytes, err := p.usecases.GenerateReferralReportPDF(c.Request.Context(), serviceRequestID)
 	if err != nil {
 		jsonErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Status": "Ok"})
+	fileName := "referral_report.pdf"
+
+	c.Header("Content-Type", "application/pdf")
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
+	c.Data(http.StatusOK, "application/pdf", pdfBytes)
 }
