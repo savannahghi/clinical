@@ -41,6 +41,7 @@ const (
 	questionnaireResponseResourceType = "QuestionnaireResponse"
 	riskAssessmentResourceType        = "RiskAssessment"
 	diagnosticReportResourceType      = "DiagnosticReport"
+	subscriptionResourceType          = "Subscription"
 )
 
 // Dataset ...
@@ -2049,4 +2050,22 @@ func (fh StoreImpl) GetFHIRServiceRequest(_ context.Context, id string) (*domain
 	}
 
 	return payload, nil
+}
+
+// CreateFHIRSubscription is responsible for creating a subscription resource in FHIR repository
+func (fh StoreImpl) CreateFHIRSubscription(_ context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error) {
+	payload, err := converterandformatter.StructToMap(subscription)
+	if err != nil {
+		return nil, fmt.Errorf("unable to convert subscription input into a map: %w", err)
+	}
+
+	fhirSubscription := &domain.FHIRSubscription{}
+
+	err = fh.Dataset.CreateFHIRResource(subscriptionResourceType, payload, fhirSubscription)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unable to create episode of care resource: %w", err)
+	}
+
+	return fhirSubscription, nil
 }

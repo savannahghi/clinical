@@ -27,6 +27,7 @@ type FHIR interface {
 	FHIRQuestionnaireResponse
 	FHIRRiskAssessment
 	FHIRDiagnosticReport
+	FHIRSubscription
 }
 
 type FHIROrganization interface {
@@ -141,4 +142,9 @@ type FHIRRiskAssessment interface {
 
 type FHIRDiagnosticReport interface {
 	CreateFHIRDiagnosticReport(_ context.Context, input *domain.FHIRDiagnosticReportInput) (*domain.FHIRDiagnosticReport, error)
+}
+
+// FHIRSubscription contains method signatures of the FHIRSubscription interface
+type FHIRSubscription interface {
+	CreateFHIRSubscription(_ context.Context, input *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
 }
