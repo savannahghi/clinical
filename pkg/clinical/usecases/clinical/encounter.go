@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
@@ -78,7 +79,86 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 		return "", err
 	}
 
+	// Create a blank composition
+	_, err = c.RecordFHIRComposition(ctx, encounter, tags, episodeOfCare)
+	if err != nil {
+		return "", err
+	}
+
 	return *encounter.Resource.ID, nil
+}
+
+func (c *UseCasesClinicalImpl) RecordFHIRComposition(ctx context.Context,
+	encounter *domain.FHIREncounterRelayPayload,
+	tags []domain.FHIRCodingInput, episodeOfCare *domain.FHIREpisodeOfCareRelayPayload) (*domain.FHIRCompositionRelayPayload, error) {
+	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
+	encounterType := scalarutils.URI("Encounter")
+
+	today := time.Now()
+
+	date, err := scalarutils.NewDate(today.Day(), int(today.Month()), today.Year())
+	if err != nil {
+		return nil, err
+	}
+
+	preliminaryStatus := domain.CompositionStatusEnumPreliminary
+
+	organizationRef := fmt.Sprintf("Organization/%s", *encounter.Resource.Meta.Tag[0].Code)
+
+	compositionCategoryCode, err := c.mapCategoryEnumToCode(dto.ProviderUnspecifiedProgressNote)
+	if err != nil {
+		return nil, err
+	}
+
+	compositionConcept, err := c.mapCompositionConcepts(ctx, compositionCategoryCode, common.LOINCProviderUnspecifiedProgressNote)
+	if err != nil {
+		return nil, err
+	}
+
+	compositionTitle := fmt.Sprintf("%s's %s", episodeOfCare.Resource.Patient.Display, compositionConcept.CompositionCategoryConcept.DisplayName)
+
+	compositionInput := domain.FHIRCompositionInput{
+		Status: &preliminaryStatus,
+		Meta: &domain.FHIRMetaInput{
+			Tag: tags,
+		},
+		Type: &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&compositionConcept.CompositionTypeConcept.URL),
+					Code:    scalarutils.Code(compositionConcept.CompositionTypeConcept.ID),
+					Display: compositionConcept.CompositionTypeConcept.DisplayName,
+				},
+			},
+			Text: compositionConcept.CompositionTypeConcept.DisplayName,
+		},
+		Subject: &domain.FHIRReferenceInput{
+			ID:        episodeOfCare.Resource.Patient.ID,
+			Reference: episodeOfCare.Resource.Patient.Reference,
+			Type:      episodeOfCare.Resource.Patient.Type,
+			Display:   episodeOfCare.Resource.Patient.Display,
+		},
+		Encounter: &domain.FHIRReferenceInput{
+			ID:        encounter.Resource.ID,
+			Reference: &encounterRef,
+			Display:   *encounter.Resource.ID,
+			Type:      &encounterType,
+		},
+		Date: date,
+		Author: []*domain.FHIRReferenceInput{
+			{
+				Reference: &organizationRef,
+			},
+		},
+		Title: &compositionTitle,
+	}
+
+	output, err := c.infrastructure.FHIR.CreateFHIRComposition(ctx, compositionInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return output, nil
 }
 
 func (c *UseCasesClinicalImpl) PatchEncounter(ctx context.Context, encounterID string, input dto.EncounterInput) (*dto.Encounter, error) {

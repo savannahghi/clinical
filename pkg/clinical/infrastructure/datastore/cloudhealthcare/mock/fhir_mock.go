@@ -343,6 +343,14 @@ func NewFHIRMock() *FHIRMock {
 			return &domain.FHIREncounterRelayPayload{
 				Resource: &domain.FHIREncounter{
 					ID: &resourceID,
+					Meta: &domain.FHIRMeta{
+						Source: resourceID,
+						Tag: []domain.FHIRCoding{
+							{
+								Code: (*scalarutils.Code)(&resourceID),
+							},
+						},
+					},
 				},
 			}, nil
 		},
