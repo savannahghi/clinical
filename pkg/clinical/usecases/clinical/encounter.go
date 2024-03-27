@@ -80,7 +80,7 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 	}
 
 	// Create a blank composition
-	_, err = c.RecordFHIRComposition(ctx, encounter, tags, episodeOfCare)
+	_, err = c.CreateInitialComposition(ctx, encounter, tags, episodeOfCare)
 	if err != nil {
 		return "", err
 	}
@@ -88,7 +88,13 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 	return *encounter.Resource.ID, nil
 }
 
-func (c *UseCasesClinicalImpl) RecordFHIRComposition(ctx context.Context,
+// CreateInitialComposition this method is to be specifically used when a new encounter is created.
+// We create the initial(blank) composition so that we can use the composition to create a patients 'clinical document'
+// that can be used for various purposes such as referral.
+// This resource is to be updated on need basis such as (but not limited to) when a new diagnostic resource, observation etc. is created
+// We want to consolidate the patients information into a single source for ease of retrieval and usage across
+// depending on the current business case.
+func (c *UseCasesClinicalImpl) CreateInitialComposition(ctx context.Context,
 	encounter *domain.FHIREncounterRelayPayload,
 	tags []domain.FHIRCodingInput, episodeOfCare *domain.FHIREpisodeOfCareRelayPayload) (*domain.FHIRCompositionRelayPayload, error) {
 	encounterRef := fmt.Sprintf("Encounter/%s", *encounter.Resource.ID)
