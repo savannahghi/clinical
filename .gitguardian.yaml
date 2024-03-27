@@ -1,3 +1,4 @@
+version: 2
 all-policies: false
 api-url: https://api.gitguardian.com
 exit-zero: false

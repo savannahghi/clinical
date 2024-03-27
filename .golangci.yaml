@@ -2,9 +2,11 @@
 run:
   timeout: 3m
   tests: false
-  skip-dirs:
+
+issues:
+  exclude-dirs:
     - pkg/clinical/presentation/graph/
-  
+
 linters:
   enable:
     - errcheck
@@ -36,7 +38,7 @@ linters-settings:
   staticcheck:
     checks: ["all"]
   funlen:
-    lines: -1 
+    lines: -1
     statements: -1
   revive:
     rules:
@@ -45,4 +47,3 @@ linters-settings:
         disabled: true
         arguments:
           - allowRegex: "^_"
-  
