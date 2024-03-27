@@ -12,6 +12,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
+	"github.com/savannahghi/serverutils"
 )
 
 // StartEncounter starts an encounter within an episode of care
@@ -81,6 +82,12 @@ func (c *UseCasesClinicalImpl) StartEncounter(ctx context.Context, episodeID str
 
 	// Create a blank composition
 	_, err = c.CreateInitialComposition(ctx, encounter, tags, episodeOfCare)
+	if err != nil {
+		return "", err
+	}
+
+	// Create Subscription
+	_, err = c.CreateSubscription(ctx, *encounter.Resource.ID, tags)
 	if err != nil {
 		return "", err
 	}
@@ -167,6 +174,51 @@ func (c *UseCasesClinicalImpl) CreateInitialComposition(ctx context.Context,
 	return output, nil
 }
 
+// CreateSubscription is used to define a push-based subscription from a server to another system.
+// Once a subscription is registered with the server, the server checks every resource that is created
+// or updated, and if the resource matches the given criteria, it sends a message on the defined "channel" so that another system can take an appropriate action.
+//
+// An example could be, update a composition resource when a new observation is created.
+func (c *UseCasesClinicalImpl) CreateSubscription(ctx context.Context, encounterID string, tags []domain.FHIRCodingInput) (*domain.FHIRSubscription, error) {
+	payload := "application/fhir+json"
+	baseURL := serverutils.MustGetEnvVar("SERVICE_HOST")
+	endpoint := fmt.Sprintf("%s/api/v1/subscriptions", baseURL)
+	criteria := fmt.Sprintf("Observation?encounter=%s", encounterID)
+
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get tenant identifiers from context: %w", err)
+	}
+
+	clinicalOrgHeader := fmt.Sprintf("Clinical-Organization-ID: %s", identifiers.OrganizationID)
+	facilityHeader := fmt.Sprintf("Clinical-Facility-ID: %s", identifiers.FacilityID)
+
+	headers := []string{clinicalOrgHeader, facilityHeader}
+
+	subscriptionInput := &domain.FHIRSubscriptionInput{
+		Meta: &domain.FHIRMetaInput{
+			Tag: tags,
+		},
+		Status:   domain.SubscriptionStatusRequested,
+		Reason:   "Subscription is used to assemble together a single logical 'document' that provides a single and coherent statement of meaning",
+		Criteria: criteria,
+		Channel: &domain.FHIRSubscriptionChannel{
+			Type:     domain.SubscriptionTypeRestHook,
+			Endpoint: &endpoint,
+			Payload:  &payload,
+			Header:   headers,
+		},
+	}
+
+	subscription, err := c.infrastructure.FHIR.CreateFHIRSubscription(ctx, subscriptionInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return subscription, nil
+}
+
+// PatchEncounter is used to update the details of an encounter resource
 func (c *UseCasesClinicalImpl) PatchEncounter(ctx context.Context, encounterID string, input dto.EncounterInput) (*dto.Encounter, error) {
 	if encounterID == "" {
 		return nil, fmt.Errorf("an encounterID is required")

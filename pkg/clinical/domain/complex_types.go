@@ -3240,3 +3240,13 @@ const (
 	SubscriptionTypeSMS       SubscriptionTypeEnum = "sms"
 	SubscriptionTypeMessage   SubscriptionTypeEnum = "message"
 )
+
+// SubscriptionStatusEnum defines the types of statuses used to execute a subscription
+type SubscriptionStatusEnum string
+
+const (
+	SubscriptionStatusRequested SubscriptionStatusEnum = "requested"
+	SubscriptionStatusActive    SubscriptionStatusEnum = "active"
+	SubscriptionStatusError     SubscriptionStatusEnum = "error"
+	SubscriptionStatusOff       SubscriptionStatusEnum = "off"
+)

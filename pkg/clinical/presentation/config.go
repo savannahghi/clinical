@@ -211,6 +211,11 @@ func SetupRoutes(r *gin.Engine, cacheStore persist.CacheStore, authclient *authu
 	referralReport.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))
 	referralReport.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
 	referralReport.GET("", handlers.GenerateReferralReport)
+
+	fhirSubscriptions := v1.Group("/subscriptions")
+	// fhirSubscriptions.Use(rest.AuthenticationGinMiddleware(cacheStore, *authclient))
+	fhirSubscriptions.Use(rest.TenantIdentifierExtractionMiddleware(infra.FHIR))
+	fhirSubscriptions.PUT("", handlers.RetrieveFHIRSubscription)
 }
 
 // GQLHandler sets up a GraphQL resolver

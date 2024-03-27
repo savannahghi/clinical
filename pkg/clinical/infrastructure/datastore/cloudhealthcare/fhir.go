@@ -2064,7 +2064,7 @@ func (fh StoreImpl) CreateFHIRSubscription(_ context.Context, subscription *doma
 	err = fh.Dataset.CreateFHIRResource(subscriptionResourceType, payload, fhirSubscription)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unable to create episode of care resource: %w", err)
+			"unable to create subscription resource: %w", err)
 	}
 
 	return fhirSubscription, nil
