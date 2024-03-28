@@ -22,11 +22,39 @@ func setupMockFHIRFunctions(fakeFHIR *fakeFHIRMock.FHIRMock, score int) {
 	ID := gofakeit.UUID()
 	fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
 		questionnaireName := "Cervical Cancer Screening"
+		linkID := "symptoms"
+		questionLinkID := "symptoms-question-one"
+		valueDecimalOne := 1.0
 		return &domain.FHIRQuestionnaireRelayPayload{
 			Resource: &domain.FHIRQuestionnaire{
 				ID:    &ID,
 				Name:  &questionnaireName,
 				Title: &questionnaireName,
+				Item: []*domain.FHIRQuestionnaireItem{
+					{
+						LinkID: &linkID,
+						Item: []*domain.FHIRQuestionnaireItem{
+							{
+								ID:     &questionLinkID,
+								LinkID: &questionLinkID,
+								Meta:   &domain.FHIRMeta{},
+								AnswerOption: []*domain.FHIRQuestionnaireItemAnswerOption{
+									{
+										Extension: []*domain.Extension{
+											{
+												URL:          "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+												ValueDecimal: &valueDecimalOne,
+											},
+										},
+										ValueCoding: &domain.FHIRCoding{
+											Display: "Yes",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		}, nil
 	}
@@ -39,10 +67,12 @@ func setupMockFHIRFunctions(fakeFHIR *fakeFHIRMock.FHIRMock, score int) {
 					LinkID: "symptoms",
 					Item: []domain.FHIRQuestionnaireResponseItem{
 						{
-							LinkID: "symptoms-score",
+							LinkID: "symptoms-question-one",
 							Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
 								{
-									ValueInteger: &score,
+									ValueCoding: &domain.FHIRCoding{
+										Display: "Yes",
+									},
 								},
 							},
 						},
@@ -367,16 +397,43 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			if tt.name == "Happy Case - Create questionnaire response and generate review summary - Breast Cancer - High Risk" {
 				fakeFHIR.MockGetFHIRQuestionnaireFn = func(ctx context.Context, id string) (*domain.FHIRQuestionnaireRelayPayload, error) {
 					questionnaireName := "Breast Cancer Screening"
+					linkID := "risk-assessment"
+					questionLinkID := "risk-assessment-question-one"
+					valueDecimalOne := 1.0
 					return &domain.FHIRQuestionnaireRelayPayload{
 						Resource: &domain.FHIRQuestionnaire{
 							ID:    &ID,
 							Name:  &questionnaireName,
 							Title: &questionnaireName,
+							Item: []*domain.FHIRQuestionnaireItem{
+								{
+									LinkID: &linkID,
+									Item: []*domain.FHIRQuestionnaireItem{
+										{
+											ID:     &questionLinkID,
+											LinkID: &questionLinkID,
+											Meta:   &domain.FHIRMeta{},
+											AnswerOption: []*domain.FHIRQuestionnaireItemAnswerOption{
+												{
+													Extension: []*domain.Extension{
+														{
+															URL:          "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+															ValueDecimal: &valueDecimalOne,
+														},
+													},
+													ValueCoding: &domain.FHIRCoding{
+														Display: "Yes",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					}, nil
 				}
 
-				score := 3
 				fakeFHIR.MockCreateFHIRQuestionnaireResponseFn = func(ctx context.Context, input *domain.FHIRQuestionnaireResponse) (*domain.FHIRQuestionnaireResponse, error) {
 					return &domain.FHIRQuestionnaireResponse{
 						ID: &ID,
@@ -385,15 +442,11 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 								LinkID: "risk-assessment",
 								Item: []domain.FHIRQuestionnaireResponseItem{
 									{
-										LinkID: "high-risk",
-
-										Item: []domain.FHIRQuestionnaireResponseItem{
+										LinkID: "risk-assessment-question-one",
+										Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
 											{
-												LinkID: "high-risk-score",
-												Answer: []domain.FHIRQuestionnaireResponseItemAnswer{
-													{
-														ValueInteger: &score,
-													},
+												ValueCoding: &domain.FHIRCoding{
+													Display: "Yes",
 												},
 											},
 										},
@@ -472,11 +525,13 @@ func TestUseCasesClinicalImpl_CreateQuestionnaireResponse(t *testing.T) {
 			if tt.name == "Sad Case - Fail to record risk assessment - High Risk" {
 				setupMockFHIRFunctions(fakeFHIR, 3)
 			}
+
 			if tt.name == "Sad Case - fail to get patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("failed to get patient")
 				}
 			}
+
 			if tt.name == "Sad Case - fail to publish to pusbsub" {
 				fakePubSub.MockNotifySegmentationFn = func(ctx context.Context, data dto.SegmentationPayload) error {
 					return fmt.Errorf("failed to publish to pubsub")
