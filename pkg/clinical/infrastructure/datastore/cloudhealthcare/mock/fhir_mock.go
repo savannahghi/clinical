@@ -2223,7 +2223,7 @@ func NewFHIRMock() *FHIRMock {
 				Reason:            "",
 				Criteria:          "",
 				Error:             new(string),
-				Channel:           domain.FHIRSubscriptionChannel{},
+				Channel:           &domain.FHIRSubscriptionChannel{},
 			}, nil
 		},
 	}

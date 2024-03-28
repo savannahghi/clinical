@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -393,4 +394,16 @@ func (p PresentationHandlersImpl) GenerateReferralReport(c *gin.Context) {
 	c.Header("Content-Type", "application/pdf")
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
 	c.Data(http.StatusOK, "application/pdf", pdfBytes)
+}
+
+func (p PresentationHandlersImpl) RetrieveFHIRSubscription(c *gin.Context) {
+	_, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		jsonErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	// fmt.Println("THE BODY IS: ", string(bytes))
+
+	c.JSON(http.StatusOK, "OK")
 }
