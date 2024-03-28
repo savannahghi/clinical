@@ -116,27 +116,9 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 	switch *questionnaire.Resource.Title {
 	// TODO: Make this a controlled enum?
 	case "Cervical Cancer Screening":
-		var symptomsScore, riskFactorsScore, totalScore int
+		scores := calculateScoresFromResponses(questionnaire.Resource, questionnaireResponse)
 
-		for _, item := range questionnaireResponse.Item {
-			if item.LinkID == "symptoms" {
-				for _, answer := range item.Item {
-					if answer.LinkID == "symptoms-score" {
-						symptomsScore = *answer.Answer[0].ValueInteger
-					}
-				}
-			}
-
-			if item.LinkID == "risk-factors" {
-				for _, answer := range item.Item {
-					if answer.LinkID == "risk-factors-score" {
-						riskFactorsScore = *answer.Answer[0].ValueInteger
-					}
-				}
-			}
-		}
-
-		totalScore = symptomsScore + riskFactorsScore
+		totalScore := scores["symptoms"] + scores["risk-factors"]
 
 		switch {
 		case totalScore >= 2:
@@ -183,23 +165,9 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 		}
 
 	case "Breast Cancer Screening":
-		var riskScore int
+		scores := calculateScoresFromResponses(questionnaire.Resource, questionnaireResponse)
 
-		for _, item := range questionnaireResponse.Item {
-			if item.LinkID == "risk-assessment" {
-				for _, answer := range item.Item {
-					if answer.LinkID == "high-risk" {
-						for _, ans := range answer.Item {
-							if ans.LinkID == "high-risk-score" {
-								riskScore = *ans.Answer[0].ValueInteger
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if riskScore >= 1 {
+		if scores["risk-assessment"] >= 1 {
 			riskLevel, err = u.recordRiskAssessment(
 				ctx,
 				encounter,
@@ -230,6 +198,93 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 	}
 
 	return riskLevel, nil
+}
+
+// calculateScoresFromResponses Calculates scores for each group in the questionnaire based on responses.
+// This function iterates through each item in the QuestionnaireResponse, matching it with its corresponding item in the Questionnaire
+// to apply scoring rules based on 'ordinalValue'. This matching is essential to accurately compute scores since it directly ties
+// the respondent's answers back to the structured definitions within the Questionnaire, including the consideration of 'ordinalValue'
+// for scoring purposes.
+func calculateScoresFromResponses(questionnaire *domain.FHIRQuestionnaire, response *dto.QuestionnaireResponse) map[string]int {
+	groupScores := make(map[string]int) // Holds the calculated scores for each group.
+
+	// Iterate through the response groups (items)
+	for _, responseGroup := range response.Item {
+		score := 0
+		groupLinkId := responseGroup.LinkID
+
+		// Find matching group in the questionnaire by linkId
+		for _, questionnaireGroup := range questionnaire.Item {
+			if *questionnaireGroup.LinkID == groupLinkId {
+				// Calculate score for this group based on responses
+				score = calculateGroupScore(questionnaireGroup.Item, responseGroup.Item)
+				break
+			}
+		}
+
+		groupScores[groupLinkId] = score
+	}
+
+	return groupScores
+}
+
+func calculateGroupScore(questionnaireItems []*domain.FHIRQuestionnaireItem, responseItems []dto.QuestionnaireResponseItem) int {
+	score := 0
+
+	// Extract the ordinal values and their corresponding display text (e.g., "Yes").
+	ordinalValues := mapLinkIdsToOrdinalValuesAndDisplay(questionnaireItems)
+
+	for _, responseItem := range responseItems {
+		// Each responseItem.LinkId might have an associated ordinal value and display text.
+		if val, ok := ordinalValues[responseItem.LinkID]; ok {
+			for _, answer := range responseItem.Answer {
+				if answer.ValueCoding.Display == val.display {
+					score += val.ordinalValue
+				}
+			}
+		}
+	}
+
+	return score
+}
+
+// mapLinkIdsToOrdinalValuesAndDisplay Maps each linkId in the Questionnaire to its corresponding 'ordinalValue', if available.
+// This mapping facilitates a more efficient scoring process by eliminating the need to repeatedly search through the
+// questionnaire structure for 'ordinalValue' extensions during scoring.
+func mapLinkIdsToOrdinalValuesAndDisplay(items []*domain.FHIRQuestionnaireItem) map[string]struct {
+	ordinalValue int
+	display      string
+} {
+	ordinalValues := make(map[string]struct {
+		ordinalValue int
+		display      string
+	})
+
+	for _, item := range items {
+		for _, answerOption := range item.AnswerOption {
+			// Check if this answerOption has an ordinalValue and is a "Yes".
+			hasOrdinalValue := false
+			ordinalValue := 0
+			displayText := ""
+
+			for _, ext := range answerOption.Extension {
+				if ext.URL == "http://hl7.org/fhir/StructureDefinition/ordinalValue" {
+					hasOrdinalValue = true
+					ordinalValue = int(*ext.ValueDecimal)
+				}
+			}
+
+			if hasOrdinalValue && answerOption.ValueCoding.Display == "Yes" {
+				displayText = answerOption.ValueCoding.Display
+				ordinalValues[*item.LinkID] = struct {
+					ordinalValue int
+					display      string
+				}{ordinalValue, displayText}
+			}
+		}
+	}
+
+	return ordinalValues
 }
 
 func (u *UseCasesClinicalImpl) recordRiskAssessment(
