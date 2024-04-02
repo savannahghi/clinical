@@ -208,35 +208,35 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 func calculateScoresFromResponses(questionnaire *domain.FHIRQuestionnaire, response *dto.QuestionnaireResponse) map[string]int {
 	groupScores := make(map[string]int) // Holds the calculated scores for each group.
 
+	ordinalValues := mapLinkIdsToOrdinalValuesAndDisplay(questionnaire.Item)
+
 	for _, responseGroup := range response.Item {
-		score := 0
-		groupLinkId := responseGroup.LinkID
+		groupScore := 0
+		groupLinkID := responseGroup.LinkID
 
 		for _, questionnaireGroup := range questionnaire.Item {
-			if *questionnaireGroup.LinkID == groupLinkId {
+			if *questionnaireGroup.LinkID == groupLinkID {
 				// Calculate score for this group based on responses
-				score = calculateGroupScore(questionnaireGroup.Item, responseGroup.Item)
+				groupScore = calculateGroupScore(responseGroup.Item, ordinalValues)
 				break
 			}
 		}
 
-		groupScores[groupLinkId] = score
+		groupScores[groupLinkID] = groupScore
 	}
 
 	return groupScores
 }
 
-func calculateGroupScore(questionnaireItems []*domain.FHIRQuestionnaireItem, responseItems []dto.QuestionnaireResponseItem) int {
+func calculateGroupScore(responseItems []dto.QuestionnaireResponseItem, ordinalValues map[string]int) int {
 	score := 0
-
-	// Extract the ordinal values and their corresponding display text (e.g., "Yes").
-	ordinalValues := mapLinkIdsToOrdinalValuesAndDisplay(questionnaireItems)
 
 	for _, responseItem := range responseItems {
 		if val, ok := ordinalValues[responseItem.LinkID]; ok {
 			for _, answer := range responseItem.Answer {
-				if answer.ValueCoding.Display == val.display {
-					score += val.ordinalValue
+				if answer.ValueCoding.Display == "Yes" {
+					score += val
+					break
 				}
 			}
 		}
@@ -248,35 +248,21 @@ func calculateGroupScore(questionnaireItems []*domain.FHIRQuestionnaireItem, res
 // mapLinkIdsToOrdinalValuesAndDisplay Maps each linkId in the Questionnaire to its corresponding 'ordinalValue', if available.
 // This mapping facilitates a more efficient scoring process by eliminating the need to repeatedly search through the
 // questionnaire structure for 'ordinalValue' extensions during scoring.
-func mapLinkIdsToOrdinalValuesAndDisplay(items []*domain.FHIRQuestionnaireItem) map[string]struct {
-	ordinalValue int
-	display      string
-} {
-	ordinalValues := make(map[string]struct {
-		ordinalValue int
-		display      string
-	})
+func mapLinkIdsToOrdinalValuesAndDisplay(items []*domain.FHIRQuestionnaireItem) map[string]int {
+	ordinalValues := make(map[string]int)
 
 	for _, item := range items {
-		for _, answerOption := range item.AnswerOption {
-			// Check if this answerOption has an ordinalValue and is a "Yes".
-			hasOrdinalValue := false
-			ordinalValue := 0
-			displayText := ""
-
-			for _, ext := range answerOption.Extension {
-				if ext.URL == "http://hl7.org/fhir/StructureDefinition/ordinalValue" {
-					hasOrdinalValue = true
-					ordinalValue = int(*ext.ValueDecimal)
+		for _, questionItem := range item.Item {
+			// Loop through answerOption to find "Yes" answers with ordinalValue
+			for _, answerOption := range questionItem.AnswerOption {
+				if answerOption.ValueCoding.Display == "Yes" {
+					for _, ext := range answerOption.Extension {
+						if ext.URL == "http://hl7.org/fhir/StructureDefinition/ordinalValue" {
+							ordinalValues[*questionItem.LinkID] = int(*ext.ValueDecimal)
+							break
+						}
+					}
 				}
-			}
-
-			if hasOrdinalValue && answerOption.ValueCoding.Display == "Yes" {
-				displayText = answerOption.ValueCoding.Display
-				ordinalValues[*item.LinkID] = struct {
-					ordinalValue int
-					display      string
-				}{ordinalValue, displayText}
 			}
 		}
 	}
