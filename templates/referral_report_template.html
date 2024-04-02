@@ -98,15 +98,13 @@
         </div>
         {{end}}
 
-        {{if .ReferredBy}}
         <div class="detail-section">
             <h2>Referred by</h2>
-            {{if .ReferredBy.Name}}<div class="detail"><strong>Referring Officer:</strong> {{.ReferredBy.Name}}</div>{{end}}
-            {{if .ReferredBy.Designation}}<div class="detail"><strong>Designation:</strong> {{.ReferredBy.Designation}}</div>{{end}}
-            {{if .ReferredBy.Phone}}<div class="detail"><strong>Phone:</strong> {{.ReferredBy.Phone}}</div>{{end}}
+            <div class="detail"><strong>Referring Officer:</strong></div>
+            <div class="detail"><strong>Designation:</strong></div>
+            <div class="detail"><strong>Phone:</strong></div>
             <div class="detail"><strong>Signature:</strong></div>
         </div>
-        {{end}}
     </div>
     {{if or .Footer.Phone .Footer.Email .Footer.Address}}
     <div class="footer">
