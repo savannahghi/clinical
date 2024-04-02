@@ -488,16 +488,20 @@ func (e ObservationStatusEnum) MarshalGQL(w io.Writer) {
 type SegmentationCategory string
 
 const (
-	SegmentationCategoryNoRisk           SegmentationCategory = "CERVICAL_CANCER_TIPS"
-	SegmentationCategoryLowRisk          SegmentationCategory = "CERVICAL_CANCER_LOW_RISK"
-	SegmentationCategoryHighRiskPositive SegmentationCategory = "CERVICAL_CANCER_POSITIVE"
-	SegmentationCategoryHighRiskNegative SegmentationCategory = "CERVICAL_CANCER_HIGH_RISK"
+	SegmentationCategoryNoRisk            SegmentationCategory = "CERVICAL_CANCER_TIPS"
+	SegmentationCategoryLowRisk           SegmentationCategory = "CERVICAL_CANCER_LOW_RISK"
+	SegmentationCategoryHighRiskPositive  SegmentationCategory = "CERVICAL_CANCER_POSITIVE"
+	SegmentationCategoryHighRiskNegative  SegmentationCategory = "CERVICAL_CANCER_HIGH_RISK"
+	SegmentationBreastCategoryHighRisk    SegmentationCategory = "BREAST_CANCER_HIGH_RISK"
+	SegmentationBreastCategoryAverageRisk SegmentationCategory = "BREAST_CANCER_AVERAGE_RISK"
 )
 
 // IsValid checks validity of a SegmentationCategory enum
 func (c SegmentationCategory) IsValid() bool {
 	switch c {
-	case SegmentationCategoryNoRisk, SegmentationCategoryLowRisk, SegmentationCategoryHighRiskPositive, SegmentationCategoryHighRiskNegative:
+	case SegmentationCategoryNoRisk, SegmentationCategoryLowRisk,
+		SegmentationCategoryHighRiskPositive, SegmentationCategoryHighRiskNegative,
+		SegmentationBreastCategoryHighRisk, SegmentationBreastCategoryAverageRisk:
 		return true
 	}
 
