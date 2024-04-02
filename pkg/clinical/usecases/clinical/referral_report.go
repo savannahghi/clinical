@@ -9,7 +9,9 @@ import (
 	"time"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
+	"github.com/savannahghi/scalarutils"
 )
 
 type Patient struct {
@@ -51,13 +53,6 @@ type MedicalHistory struct {
 	Tests         []Test
 }
 
-type ReferredBy struct {
-	Name        string
-	Designation string
-	Phone       string
-	Signature   string
-}
-
 type Footer struct {
 	Phone   string
 	Email   string
@@ -73,7 +68,6 @@ type TemplateData struct {
 	Facility       Facility
 	Referral       Referral
 	MedicalHistory MedicalHistory
-	ReferredBy     ReferredBy
 	Footer         Footer
 }
 
@@ -106,35 +100,41 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		return nil, err
 	}
 
+	var nationalID string
+
+	for _, identifier := range patient.Resource.Identifier {
+		system := scalarutils.URI(helpers.IDIdentifierSystem)
+		if identifier.System == &system && identifier.Value != "" {
+			nationalID = identifier.Value
+		}
+	}
+
 	age := time.Since(patient.Resource.BirthDate.AsTime()).Hours() / 24 / 365
 	patientData := Patient{
 		Name:        patient.Resource.Name[0].Text,
 		EmpowerID:   "",
-		NationalID:  "",
+		NationalID:  nationalID,
 		PhoneNumber: *patient.Resource.Telecom[0].Value,
 		DateOfBirth: patient.Resource.BirthDate.String(),
 		Age:         int(age),
 		Sex:         patient.Resource.Gender.String(),
 	}
 
-	var referredFacilityName, referredSpecialistName string
+	var referredFacilityName string
 
 	for _, extension := range serviceRequest.Resource.Extension {
-		switch extension.URL {
-		case "http://savannahghi.org/fhir/StructureDefinition/referred-facility":
+		if extension.URL == "http://savannahghi.org/fhir/StructureDefinition/referred-facility" {
 			for _, ext := range extension.Extension {
 				if ext.URL == "facilityName" {
 					referredFacilityName = ext.ValueString
 				}
 			}
-
-		case "http://savannahghi.org/fhir/StructureDefinition/referred-specialist":
-			for _, ext := range extension.Extension {
-				if ext.URL == "specialistName" {
-					referredSpecialistName = ext.ValueString
-				}
-			}
 		}
+	}
+
+	var referralReason string
+	if len(serviceRequest.Resource.Note) > 0 && serviceRequest.Resource.Note[0].Text != nil {
+		referralReason = string(*serviceRequest.Resource.Note[0].Text)
 	}
 
 	data := TemplateData{
@@ -146,17 +146,10 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 			Name: referredFacilityName,
 		},
 		Referral: Referral{
-			// TODO: Get the reason from the API
-			Reason: "Further Testing",
+			Reason: referralReason,
 		},
 		MedicalHistory: MedicalHistory{Procedure: "Screening", Medication: "None", ReferralNotes: "Patient complains of severe abdominal pain and intermittent bleeding.", Tests: []Test{{Name: "VIA", Results: "Positive", Date: "13th May 2024"}}},
-		ReferredBy: ReferredBy{
-			Name:        referredSpecialistName,
-			Designation: "Doctor",
-			Phone:       "+254711990990",
-			Signature:   "",
-		},
-		Footer: Footer{},
+		Footer:         Footer{},
 	}
 
 	tmpl, err := template.ParseFiles("templates/referral_report_template.html")
