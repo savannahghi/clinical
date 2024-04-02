@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/firestore v1.15.0
 	cloud.google.com/go/pubsub v1.37.0
 	cloud.google.com/go/storage v1.39.1
-	github.com/99designs/gqlgen v0.17.45
+	github.com/99designs/gqlgen v0.17.36
 	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.2
 	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
@@ -97,7 +97,6 @@ require (
 	github.com/prometheus/prometheus v0.51.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/sosodev/duration v1.2.0 // indirect
 	github.com/ttacon/builder v0.0.0-20170518171403-c099f663e1c2 // indirect
 	github.com/ttacon/libphonenumber v1.2.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect

@@ -120,13 +120,21 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		Sex:         patient.Resource.Gender.String(),
 	}
 
-	var referredFacilityName string
+	var referredFacilityName, referredFacilityCounty, referredFacilityContact string
 
 	for _, extension := range serviceRequest.Resource.Extension {
 		if extension.URL == "http://savannahghi.org/fhir/StructureDefinition/referred-facility" {
 			for _, ext := range extension.Extension {
 				if ext.URL == "facilityName" {
 					referredFacilityName = ext.ValueString
+				}
+
+				if ext.URL == "facilityCounty" {
+					referredFacilityCounty = ext.ValueString
+				}
+
+				if ext.URL == "facilityContact" {
+					referredFacilityContact = ext.ValueString
 				}
 			}
 		}
@@ -143,7 +151,9 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		Patient:   patientData,
 		NextOfKin: NextOfKin{},
 		Facility: Facility{
-			Name: referredFacilityName,
+			Name:     referredFacilityName,
+			Contact:  referredFacilityContact,
+			Location: referredFacilityCounty,
 		},
 		Referral: Referral{
 			Reason: referralReason,
