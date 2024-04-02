@@ -179,6 +179,14 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 			if err != nil {
 				return "", err
 			}
+
+			err := u.infrastructure.Pubsub.NotifySegmentation(ctx, dto.SegmentationPayload{
+				ClinicalID:   *patient.Resource.ID,
+				SegmentLabel: dto.SegmentationBreastCategoryHighRisk,
+			})
+			if err != nil {
+				return "", err
+			}
 		} else {
 			riskLevel, err = u.recordRiskAssessment(
 				ctx,
@@ -188,6 +196,14 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 				"Average Risk",
 				domain.BreastCancerScreeningTypeEnum.String(),
 			)
+			if err != nil {
+				return "", err
+			}
+
+			err := u.infrastructure.Pubsub.NotifySegmentation(ctx, dto.SegmentationPayload{
+				ClinicalID:   *patient.Resource.ID,
+				SegmentLabel: dto.SegmentationBreastCategoryAverageRisk,
+			})
 			if err != nil {
 				return "", err
 			}
