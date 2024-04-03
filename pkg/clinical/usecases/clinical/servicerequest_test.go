@@ -37,7 +37,11 @@ func TestUseCasesClinicalImpl_ReferPatient(t *testing.T) {
 					ReferralType: "DIAGNOSTICS",
 					Tests:        []string{"VIA"},
 					Specialist:   "Oncologist",
-					Facility:     "KNH",
+					Facility: &dto.FacilityInput{
+						Name:    "KNH",
+						County:  "Nairobi",
+						Contact: "+254710100100",
+					},
 					ReferralNote: "",
 				},
 			},

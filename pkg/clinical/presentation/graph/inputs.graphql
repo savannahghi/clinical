@@ -198,6 +198,12 @@ input ReferralInput {
   referralType: ReferralTypeEnum!
   tests: [String]
   specialist: String
-  facility: String!
+  facility: FacilityInput!
   referralNote: String!
+}
+
+input FacilityInput {
+  name: String!
+  county: String!
+  contact: String
 }

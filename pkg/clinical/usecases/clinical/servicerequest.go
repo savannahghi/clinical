@@ -58,13 +58,21 @@ func (c *UseCasesClinicalImpl) ReferPatient(
 		},
 	}
 
-	if input.Facility != "" {
+	if input.Facility != nil {
 		facilityExtension := &domain.FHIRExtension{
 			URL: "http://savannahghi.org/fhir/StructureDefinition/referred-facility",
 			Extension: []domain.Extension{
 				{
 					URL:         "facilityName",
-					ValueString: input.Facility,
+					ValueString: input.Facility.Name,
+				},
+				{
+					URL:         "facilityContact",
+					ValueString: input.Facility.Contact,
+				},
+				{
+					URL:         "facilityCounty",
+					ValueString: input.Facility.County,
 				},
 			},
 		}

@@ -269,8 +269,15 @@ type ReferralInput struct {
 	ReferralType ReferralTypeEnum `json:"referralType"`
 	Tests        []string         `json:"tests,omitempty"`
 	Specialist   string           `json:"specialist,omitempty"`
-	Facility     string           `json:"facility"`
+	Facility     *FacilityInput   `json:"facility"`
 	ReferralNote string           `json:"notes"`
+}
+
+// FacilityInput represents the facility payload passed when referring a patient
+type FacilityInput struct {
+	Name    string `json:"name,omitempty"`
+	County  string `json:"county,omitempty"`
+	Contact string `json:"contact,omitempty"`
 }
 
 func (r ReferralInput) Validate() error {
