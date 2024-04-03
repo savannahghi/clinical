@@ -146,7 +146,7 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 	}
 
 	data := TemplateData{
-		Date:      time.Now().Format("Monday Jan 2"),
+		Date:      time.Now().Format("Monday Jan 2 2023"),
 		Time:      time.Now().Format("15:04"),
 		Patient:   patientData,
 		NextOfKin: NextOfKin{},
@@ -158,7 +158,7 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		Referral: Referral{
 			Reason: referralReason,
 		},
-		MedicalHistory: MedicalHistory{Procedure: "Screening", Medication: "None", ReferralNotes: "Patient complains of severe abdominal pain and intermittent bleeding.", Tests: []Test{{Name: "VIA", Results: "Positive", Date: "13th May 2024"}}},
+		MedicalHistory: MedicalHistory{Procedure: "Screening", Medication: "None", ReferralNotes: referralReason, Tests: []Test{{Name: "VIA", Results: "Positive", Date: "13th May 2024"}}},
 		Footer:         Footer{},
 	}
 
@@ -168,7 +168,6 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		return nil, err
 	}
 
-	// Fill the template with data
 	var htmlBuffer bytes.Buffer
 
 	err = tmpl.Execute(&htmlBuffer, data)
@@ -177,20 +176,16 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		return nil, err
 	}
 
-	// Convert template output to string
 	htmlContent := htmlBuffer.String()
 
-	// Create a new PDF generator
 	pdfg, err := wkhtmltopdf.NewPDFGenerator()
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
-	// Add one page from an URL, a file, or HTML content
 	pdfg.AddPage(wkhtmltopdf.NewPageReader(strings.NewReader(htmlContent)))
 
-	// Create PDF document in internal buffer
 	err = pdfg.Create()
 	if err != nil {
 		utils.ReportErrorToSentry(err)
