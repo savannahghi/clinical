@@ -4,114 +4,228 @@
     <meta charset="UTF-8">
     <title>Referral Report</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; font-size: 14px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .header-logo, .header-title { color: #800080; font-weight: bold; }
-        .header-logo { font-size: 24px; }
-        .header-details { text-align: right; }
-        .header-details div { margin: 5px 0; }
-        .report-title { text-align: center; font-size: 30px; font-weight: bold; margin: 20px 0; }
-        .detail-section { background-color: #f2f2f2; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
-        .detail-section h2 { margin: 0 0 20px 0; }
-        .detail { margin-bottom: 10px; }
-        .detail strong { margin-right: 5px; }
-        .footer {
+        body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+          font-size: 14px;
+          max-width: 920px;
+          margin: 0 auto;
+        }
+  
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* This pushes the logo and details to opposite ends */
+            margin-bottom: 20px;
+            margin-top: 20px;
+            padding: 0 20px;
+        }
+          
+        .header-logo {
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+
+        .header-logo, .header-details {
+            flex: 1; /* Allows these elements to grow */
+            display: flex;
+            align-items: center;
+        }
+          
+        .header-details {
+            justify-content: flex-end; /* Aligns details to the end (right) */
+            text-align: right;
+        }
+          
+        .header-title {
+            color: #800080;
+            font-weight: bold;
+            font-size: 30px;
+            margin: 0 auto; 
             text-align: center;
-            padding: 10px;
-            color: white;
-            background-color: #4D184D;
-            margin-top: 30px;
+            flex: 2;
+        }
+          
+        .header-logo img {
+            height: auto;
+            width: auto;
+            max-height: 100%;
+        }
+
+        .report-title {
+          font-size: 30px;
+          font-weight: bold;
+          margin: 20px 0;
+        }
+        .detail-section {
+          padding: 30px;
+          margin-bottom: 30px;
+          border-radius: 8px;
+          display: grid;
+          grid-template-columns: repeat(
+            2,
+            1fr
+          ); 
+          gap: 10px;
+          padding: 20px;
+          align-items: start;
+          border: 2px solid #ebebeb;
+        }
+        .detail-section-alt {
+          padding: 30px;
+          margin-bottom: 30px;
+          border-radius: 8px;
+          border: 2px solid #ebebeb;
+        }
+        .detail-section-alt .tests {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          grid-gap: 20px;
+        }
+        .detail-section h2 {
+          margin: 0 0 20px 0;
+        }
+        .detail {
+          line-height: 2;
+        }
+        .detail strong {
+          margin-right: 5px;
+        }
+        .footer {
+          text-align: center;
+          padding: 20px;
+          color: white;
+          color: #4d184d;
+          background-color: #4d184d33;
+          margin-top: 30px;
+          font-weight: 700;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: none;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .logo-cell {
+            width: 20%;
+        }
+        .title-cell {
+            width: 60%;
+            text-align: center;
+        }
+        .details-cell {
+            width: 20%;
+            text-align: right;
+        }
+        .detail-section {
+            margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div>
-            <span class="header-logo">Empower</span>
-            <span class="header-title">Empower Coast General Hospital</span>
-        </div>
-        <div class="header-details">
-            {{if .Date}}
-            <div>Date: {{.Date}}</div>
-            {{end}}
-            {{if .Time}}
-            <div>Time: {{.Time}}</div>
-            {{end}}
-            {{if .Reason}}
-            <div>Reason: {{.Reason}}</div>
-            {{end}}
-        </div>
-    </div>
+    <table>
+        <tr>
+            <td class="logo-cell">
+                <img  alt="Empower Logo">
+            </td>
+            <td class="title-cell" colspan="2">
+                <h1 class="header-title">Empower Coast General Hospital</h1>
+            </td>
+            <td class="details-cell">
+                {{if .Date}}<div>Date: <strong>{{.Date}}</strong></div>{{end}}
+                {{if .Time}}<div>Time: <strong>{{.Time}}</strong></div>{{end}}
+                {{if .Reason}}<div>Reason: <strong>{{.Reason}}</strong></div>{{end}}
+            </td>
+        </tr>
+    </table>
+    <hr />
 
     <div class="report-title">Referral Report</div>
-
     <div class="report-container">
-        {{if .Patient}}
-        <div class="detail-section">
-            <h2>Patient details</h2>
-            {{if .Patient.Name}}<div class="detail"><strong>Name:</strong> {{.Patient.Name}}</div>{{end}}
-            {{if .Patient.EmpowerID}}<div class="detail"><strong>Empower ID:</strong> {{.Patient.EmpowerID}}</div>{{end}}
-            {{if .Patient.NationalID}}<div class="detail"><strong>National ID:</strong> {{.Patient.NationalID}}</div>{{end}}
-            {{if .Patient.PhoneNumber}}<div class="detail"><strong>Phone number:</strong> {{.Patient.PhoneNumber}}</div>{{end}}
-            {{if .Patient.DateOfBirth}}<div class="detail"><strong>Date of birth:</strong> {{.Patient.DateOfBirth}}</div>{{end}}
-            {{if .Patient.Age}}<div class="detail"><strong>Age:</strong> {{.Patient.Age}}</div>{{end}}
-            {{if .Patient.Sex}}<div class="detail"><strong>Sex:</strong> {{.Patient.Sex}}</div>{{end}}
-        </div>
-        {{end}}
 
-        {{if or .NextOfKin.Name .NextOfKin.PhoneNumber .NextOfKin.Relationship}}
-        <div class="detail-section">
-            <h2>Next of kin details</h2>
-            {{if .NextOfKin.Name}}<div class="detail"><strong>Name:</strong> {{.NextOfKin.Name}}</div>{{end}}
-            {{if .NextOfKin.Relationship}}<div class="detail"><strong>Relationship:</strong> {{.NextOfKin.Relationship}}</div>{{end}}
-            {{if .NextOfKin.PhoneNumber}}<div class="detail"><strong>Phone number:</strong> {{.NextOfKin.PhoneNumber}}</div>{{end}}
-        </div>
-        {{end}}
+    {{if .Patient}}
+    <h2>Patient details</h2>
+    <div class="detail-section">
+        {{if .Patient.Name}}<div class="detail">Name: <strong>{{.Patient.Name}}</strong></div>{{end}}
+        {{if .Patient.EmpowerID}}<div class="detail">Empower ID: <strong>{{.Patient.EmpowerID}}</strong></div>{{end}}
+        {{if .Patient.NationalID}}<div class="detail">National ID: <strong>{{.Patient.NationalID}}</strong></div>{{end}}
+        {{if .Patient.PhoneNumber}}<div class="detail">Phone number: <strong>{{.Patient.PhoneNumber}}</strong></div>{{end}}
+        {{if .Patient.DateOfBirth}}<div class="detail">Date of birth: <strong>{{.Patient.DateOfBirth}}</strong></div>{{end}}
+        {{if .Patient.Age}}<div class="detail">Age: <strong>{{.Patient.Age}}</strong></div>{{end}}
+        {{if .Patient.Sex}}<div class="detail">Sex: <strong>{{.Patient.Sex}}</strong></div>{{end}}
+    </div>
+    {{end}}
 
-        {{if .Facility}}
-        <div class="detail-section">
-            <h2>Receiving facility details</h2>
-            {{if .Facility.Name}}<div class="detail"><strong>Referred to:</strong> {{.Facility.Name}}</div>{{end}}
-            {{if .Facility.Location}}<div class="detail"><strong>Location:</strong> {{.Facility.Location}}</div>{{end}}
-            {{if .Facility.Contact}}<div class="detail"><strong>Hospital contact:</strong> {{.Facility.Contact}}</div>{{end}}
-        </div>
-        {{end}}
+    {{if or .NextOfKin.Name .NextOfKin.PhoneNumber .NextOfKin.Relationship}}
+    <h2>Next of kin details</h2>
+    <div class="detail-section">
+        {{if .NextOfKin.Name}}<div class="detail">Name: <strong>{{.NextOfKin.Name}}</strong></div>{{end}}
+        {{if .NextOfKin.PhoneNumber}}<div class="detail">Phone number: <strong>{{.NextOfKin.PhoneNumber}}</strong></div>{{end}}
+        {{if .NextOfKin.Relationship}}<div class="detail">Relationship: <strong>{{.NextOfKin.Relationship}}</strong></div>{{end}}
+    </div>
+    {{end}}
 
-        {{if .Referral.Reason}}
-        <div class="detail-section">
-            <h2>Referral reason</h2>
-            <div class="detail"><strong>Reason for referral:</strong> {{.Referral.Reason}}</div>
-        </div>
-        {{end}}
+    {{if .Facility}}
+    <h2>Receiving facility details</h2>
+    <div class="detail-section">
+        {{if .Facility.Name}}<div class="detail">Referred to: <strong>{{.Facility.Name}}</strong></div>{{end}}
+        {{if .Facility.Contact}}<div class="detail">Hospital Contact: <strong>{{.Facility.Contact}}</strong></div>{{end}}
+        {{if .Facility.Location}}<div class="detail">Location: <strong>{{.Facility.Location}}</strong></div>{{end}}
+    </div>
+    {{end}}
 
-        {{if .MedicalHistory}}
-        <div class="detail-section">
-            <h2>Medical history</h2>
-            {{if .MedicalHistory.Procedure}}<div class="detail"><strong>Procedure:</strong> {{.MedicalHistory.Procedure}}</div>{{end}}
-            {{if .MedicalHistory.Medication}}<div class="detail"><strong>Medication:</strong> {{.MedicalHistory.Medication}}</div>{{end}}
-            {{if .MedicalHistory.ReferralNotes}}<div class="detail"><strong>Referral notes:</strong> {{.MedicalHistory.ReferralNotes}}</div>{{end}}
-            {{if .MedicalHistory.Tests}}
-                {{range .MedicalHistory.Tests}}
-                    <div class="detail"><strong>Test done:</strong> {{.Name}} <strong>Results:</strong> {{.Results}} <strong>Date:</strong> {{.Date}}</div>
-                {{end}}
+    {{if .Referral.Reason}}
+    <h2>Referral reason</h2>
+    <div class="detail-section">
+        <div class="detail">Reason for Referral: <strong>{{.Referral.Reason}}</strong></div>
+    </div>
+    {{end}}
+
+    {{if .MedicalHistory}}
+    <h2>Medical History</h2>
+    <div class="detail-section-alt">
+        {{if .MedicalHistory.Procedure}}<div class="detail">Procedure: <strong>{{.MedicalHistory.Procedure}}</strong></div>{{end}}
+        {{if .MedicalHistory.Medication}}<div class="detail">Medication: <strong>{{.MedicalHistory.Medication}}</strong></div>{{end}}
+        {{if .MedicalHistory.ReferralNotes}}<div class="detail">Referral notes: <strong>{{.MedicalHistory.ReferralNotes}}</strong></div>{{end}}
+        {{if .MedicalHistory.Tests}}
+        <div class="tests">
+            {{range .MedicalHistory.Tests}}
+            <div>
+                {{if .Name}}<div class="detail">Test: <strong>{{.Name}}</strong></div>{{end}}
+                {{if .Results}}<div class="detail">Results: <strong>{{.Results}}</strong></div>{{end}}
+                {{if .Date}}<div class="detail">Date: <strong>{{.Date}}</strong></div>{{end}}
+            </div>
             {{end}}
         </div>
         {{end}}
+    </div>
+    {{end}}
 
-        <div class="detail-section">
-            <h2>Referred by</h2>
-            <div class="detail"><strong>Referring Officer:</strong></div>
-            <div class="detail"><strong>Designation:</strong></div>
-            <div class="detail"><strong>Phone:</strong></div>
-            <div class="detail"><strong>Signature:</strong></div>
-        </div>
+    <h2>Referred by</h2>
+    <div class="detail-section">
+        <div class="detail"><strong>Referring Officer:</strong></div>
+        <div class="detail"><strong>Designation:</strong></div>
+        <div class="detail"><strong>Phone:</strong></div>
+        <div class="detail"><strong>Signature:</strong></div>
+    </div>
+
     </div>
     {{if or .Footer.Phone .Footer.Email .Footer.Address}}
     <div class="footer">
-        {{if .Footer.Phone}}<div>Phone: {{.Footer.Phone}}</div>{{end}}
-        {{if .Footer.Email}}<div>Email: {{.Footer.Email}}</div>{{end}}
-        {{if .Footer.Address}}<div>Postal Address: {{.Footer.Address}}</div>{{end}}
+        {{if .Footer.Phone}}<div>Phone: <strong>{{.Footer.Phone}}</strong></div>{{end}}
+        {{if .Footer.Email}}<div>Email: <strong>{{.Footer.Email}}</strong></div>{{end}}
+        {{if .Footer.Address}}<div>Postal Address: <strong>{{.Footer.Address}}</strong></div>{{end}}
     </div>
     {{end}}
 </body>
 </html>
+    
