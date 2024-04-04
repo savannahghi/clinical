@@ -8,6 +8,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
 )
@@ -122,44 +123,50 @@ func (u *UseCasesClinicalImpl) generateQuestionnaireReviewSummary(
 
 		switch {
 		case totalScore >= 2:
-			riskLevel, err = u.recordRiskAssessment(
+			riskLevel, err = u.recordAssessmentAndSegmentPatient(
 				ctx,
+				*patient.Resource.ID,
 				encounter,
 				questionnaireResponseID,
 				common.HighRiskCIELCode,
 				"High Risk",
-				domain.CervicalCancerScreeningTypeEnum.Text(), // TODO: This is TEMPORARY. A follow up PR is to follow supplying the value from params
+				domain.CervicalCancerScreeningTypeEnum.Text(),
+				dto.SegmentationCategoryHighRiskNegative,
 			)
 			if err != nil {
+				utils.ReportErrorToSentry(err)
 				return "", err
 			}
 
-			err := u.infrastructure.Pubsub.NotifySegmentation(ctx, dto.SegmentationPayload{
-				ClinicalID:   *patient.Resource.ID,
-				SegmentLabel: dto.SegmentationCategoryHighRiskNegative,
-			})
-			if err != nil {
-				return "", err
-			}
-
-		case totalScore < 2:
-			riskLevel, err = u.recordRiskAssessment(
+		case totalScore == 1:
+			riskLevel, err = u.recordAssessmentAndSegmentPatient(
 				ctx,
+				*patient.Resource.ID,
 				encounter,
 				questionnaireResponseID,
 				common.LowRiskCIELCode,
 				"Low Risk",
 				domain.CervicalCancerScreeningTypeEnum.Text(),
+				dto.SegmentationCategoryLowRisk,
 			)
 			if err != nil {
+				utils.ReportErrorToSentry(err)
 				return "", err
 			}
 
-			err := u.infrastructure.Pubsub.NotifySegmentation(ctx, dto.SegmentationPayload{
-				ClinicalID:   *patient.Resource.ID,
-				SegmentLabel: dto.SegmentationCategoryLowRisk,
-			})
+		case totalScore == 0:
+			riskLevel, err = u.recordAssessmentAndSegmentPatient(
+				ctx,
+				*patient.Resource.ID,
+				encounter,
+				questionnaireResponseID,
+				common.NoRiskFactorsCIELCode,
+				"Not At Risk",
+				domain.CervicalCancerScreeningTypeEnum.Text(),
+				dto.SegmentationCategoryNoRisk,
+			)
 			if err != nil {
+				utils.ReportErrorToSentry(err)
 				return "", err
 			}
 		}
@@ -284,6 +291,39 @@ func mapLinkIdsToOrdinalValuesAndDisplay(items []*domain.FHIRQuestionnaireItem) 
 	}
 
 	return ordinalValues
+}
+
+// recordAssessmentAndSegmentPatient records a cancer screening risk assessment for a patient,
+// then segments the patient for targeted engagement based on the assessment's risk level.
+func (u *UseCasesClinicalImpl) recordAssessmentAndSegmentPatient(
+	ctx context.Context,
+	patientID string,
+	encounter *domain.FHIREncounterRelayPayload,
+	questionnaireResponseID, outcomeCode string,
+	outcomeDisplay, usageContext string,
+	segmentLabel dto.SegmentationCategory,
+) (string, error) {
+	riskLevel, err := u.recordRiskAssessment(
+		ctx,
+		encounter,
+		questionnaireResponseID,
+		outcomeCode,
+		outcomeDisplay,
+		usageContext,
+	)
+	if err != nil {
+		return "", err
+	}
+
+	err = u.infrastructure.Pubsub.NotifySegmentation(ctx, dto.SegmentationPayload{
+		ClinicalID:   patientID,
+		SegmentLabel: segmentLabel,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return riskLevel, nil
 }
 
 func (u *UseCasesClinicalImpl) recordRiskAssessment(
