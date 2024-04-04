@@ -161,6 +161,9 @@ const (
 	// LowRiskCIELCode represents the CIEL code for a low-risk condition
 	LowRiskCIELCode = "166675"
 
+	// NoRiskFactorsCIELCode represents the CIEL code for no known risk factors
+	NoRiskFactorsCIELCode = "1064"
+
 	// CIELTerminologySystem is the identity of CIEL terminology system
 	CIELTerminologySystem = "https://CIELterminology.org"
 
