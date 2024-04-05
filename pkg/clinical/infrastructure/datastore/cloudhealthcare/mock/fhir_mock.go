@@ -7,10 +7,12 @@ import (
 	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/firebasetools"
 	"github.com/savannahghi/scalarutils"
+	"github.com/ttacon/libphonenumber"
 )
 
 // FHIRMock struct implements mocks of FHIR methods.
@@ -1548,6 +1550,7 @@ func NewFHIRMock() *FHIRMock {
 			patientName := gofakeit.Name()
 			gender := domain.PatientGenderEnumFemale
 			phoneNumber := gofakeit.Phone()
+			system := scalarutils.URI(helpers.IDIdentifierSystem)
 			return &domain.FHIRPatientRelayPayload{
 				Resource: &domain.FHIRPatient{
 					ID: &patientID,
@@ -1565,6 +1568,14 @@ func NewFHIRMock() *FHIRMock {
 					Telecom: []*domain.FHIRContactPoint{
 						{
 							Value: &phoneNumber,
+						},
+					},
+					Identifier: []*domain.FHIRIdentifier{
+						{
+							ID:     &patientID,
+							Use:    domain.IdentifierUseEnumOfficial,
+							System: &system,
+							Value:  "12345",
 						},
 					},
 				},
@@ -2172,6 +2183,7 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockGetFHIRServiceRequestFn: func(_ context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error) {
 			resourceID := uuid.New().String()
+			note := scalarutils.Markdown("test note")
 			return &domain.FHIRServiceRequestRelayPayload{
 				Resource: &domain.FHIRServiceRequest{
 					ID:         &resourceID,
@@ -2194,6 +2206,24 @@ func NewFHIRMock() *FHIRMock {
 							},
 						},
 						{
+							URL: "http://savannahghi.org/fhir/StructureDefinition/referred-facility",
+							Extension: []domain.Extension{
+								{
+									URL:         "facilityCounty",
+									ValueString: "Nairobi",
+								},
+							},
+						},
+						{
+							URL: "http://savannahghi.org/fhir/StructureDefinition/referred-facility",
+							Extension: []domain.Extension{
+								{
+									URL:         "facilityContact",
+									ValueString: libphonenumber.PhoneNumber_CountryCodeSource_name[254],
+								},
+							},
+						},
+						{
 							URL: "http://savannahghi.org/fhir/StructureDefinition/referred-specialist",
 							Extension: []domain.Extension{
 								{
@@ -2201,6 +2231,12 @@ func NewFHIRMock() *FHIRMock {
 									ValueString: gofakeit.Name(),
 								},
 							},
+						},
+					},
+					Note: []*domain.FHIRAnnotation{
+						{
+							Time: &time.Time{},
+							Text: &note,
 						},
 					},
 				},

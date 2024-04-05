@@ -190,7 +190,7 @@ input DiagnosticReportInput {
 input MediaInput {
   id: ID!
   name: String!
-  url: String!
+  mediaLink: String!
 }
 
 input ReferralInput {

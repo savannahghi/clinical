@@ -79,7 +79,6 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 					return nil, fmt.Errorf("failed to get service request ")
 				}
 			}
-
 			if tt.name == "Sad Case - Fail to get patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("failed to get patient")

@@ -69,10 +69,21 @@ func (u *ServiceUploadImpl) UploadMedia(ctx context.Context, name string, file i
 		return nil, err
 	}
 
+	// obtain a URL that lets anyone read or write an object for a limited time
+	signedURL, err := u.Client.Bucket(bucketName).SignedURL(name, &storage.SignedURLOptions{
+		Method:  "GET",
+		Expires: time.Now().Add(48 * time.Hour),
+		Scheme:  storage.SigningSchemeV4,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	output := &dto.Media{
-		URL:         url.MediaLink,
+		MediaLink:   url.MediaLink,
 		Name:        url.Name,
 		ContentType: url.ContentType,
+		SignedURL:   signedURL,
 	}
 
 	return output, nil
