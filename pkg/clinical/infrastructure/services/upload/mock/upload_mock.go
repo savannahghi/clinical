@@ -17,7 +17,7 @@ func NewFakeUploadMock() *FakeUpload {
 	return &FakeUpload{
 		MockUploadMediaFn: func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error) {
 			return &dto.Media{
-				URL: "https://google.com",
+				MediaLink: "https://google.com",
 			}, nil
 		},
 	}

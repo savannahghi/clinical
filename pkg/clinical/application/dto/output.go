@@ -108,9 +108,10 @@ type Media struct {
 	ID          string `json:"id,omitempty"`
 	PatientID   string `json:"patientID,omitempty"`
 	PatientName string `json:"patientName,omitempty"`
-	URL         string `json:"url,omitempty"`
+	MediaLink   string `json:"mediaLink,omitempty"`
 	Name        string `json:"name,omitempty"`
 	ContentType string `json:"contentType,omitempty"`
+	SignedURL   string `json:"signedURL,omitempty"`
 }
 
 // MediaEdge is an media connection edge

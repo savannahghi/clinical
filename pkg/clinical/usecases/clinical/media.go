@@ -69,7 +69,7 @@ func (c *UseCasesClinicalImpl) UploadMedia(ctx context.Context, encounterID stri
 		},
 		Content: &domain.FHIRAttachmentInput{
 			ContentType: (*scalarutils.Code)(&mediaUploadOutput.ContentType),
-			URL:         (*scalarutils.URL)(&mediaUploadOutput.URL),
+			URL:         (*scalarutils.URL)(&mediaUploadOutput.MediaLink),
 			Title:       &mediaUploadOutput.Name,
 		},
 		Issued: &now,
@@ -106,7 +106,7 @@ func (c *UseCasesClinicalImpl) UploadMedia(ctx context.Context, encounterID stri
 		ID:          *media.ID,
 		PatientID:   *patientID,
 		PatientName: patient.Resource.Names(),
-		URL:         string(*media.Content.URL),
+		MediaLink:   string(*media.Content.URL),
 		Name:        *media.Content.Title,
 		ContentType: mediaUploadOutput.ContentType,
 	}
@@ -161,7 +161,7 @@ func mapFHIRMediaToMediaDTO(fhirMedia domain.FHIRMedia) *dto.Media {
 		ID:          *fhirMedia.ID,
 		PatientID:   *fhirMedia.Subject.ID,
 		PatientName: fhirMedia.Subject.Display,
-		URL:         string(*fhirMedia.Content.URL),
+		MediaLink:   string(*fhirMedia.Content.URL),
 		Name:        *fhirMedia.Content.Title,
 		ContentType: string(*fhirMedia.Content.ContentType),
 	}

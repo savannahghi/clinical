@@ -264,8 +264,9 @@ type ComplexityRoot struct {
 	Media struct {
 		ContentType func(childComplexity int) int
 		ID          func(childComplexity int) int
+		MediaLink   func(childComplexity int) int
 		Name        func(childComplexity int) int
-		URL         func(childComplexity int) int
+		SignedURL   func(childComplexity int) int
 	}
 
 	MediaConnection struct {
@@ -1745,6 +1746,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Media.ID(childComplexity), true
 
+	case "Media.mediaLink":
+		if e.complexity.Media.MediaLink == nil {
+			break
+		}
+
+		return e.complexity.Media.MediaLink(childComplexity), true
+
 	case "Media.name":
 		if e.complexity.Media.Name == nil {
 			break
@@ -1752,12 +1760,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Media.Name(childComplexity), true
 
-	case "Media.url":
-		if e.complexity.Media.URL == nil {
+	case "Media.signedURL":
+		if e.complexity.Media.SignedURL == nil {
 			break
 		}
 
-		return e.complexity.Media.URL(childComplexity), true
+		return e.complexity.Media.SignedURL(childComplexity), true
 
 	case "MediaConnection.edges":
 		if e.complexity.MediaConnection.Edges == nil {
@@ -4956,7 +4964,7 @@ input DiagnosticReportInput {
 input MediaInput {
   id: ID!
   name: String!
-  url: String!
+  mediaLink: String!
 }
 
 input ReferralInput {
@@ -5155,8 +5163,9 @@ type ObservationConnection {
 type Media {
   id: String!
   name: String!
-  url: String!
+  mediaLink: String!
   contentType: String!
+  signedURL: String
 }
 
 type MediaEdge {
@@ -10857,10 +10866,12 @@ func (ec *executionContext) fieldContext_DiagnosticReport_media(ctx context.Cont
 				return ec.fieldContext_Media_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Media_name(ctx, field)
-			case "url":
-				return ec.fieldContext_Media_url(ctx, field)
+			case "mediaLink":
+				return ec.fieldContext_Media_mediaLink(ctx, field)
 			case "contentType":
 				return ec.fieldContext_Media_contentType(ctx, field)
+			case "signedURL":
+				return ec.fieldContext_Media_signedURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
 		},
@@ -13505,8 +13516,8 @@ func (ec *executionContext) fieldContext_Media_name(ctx context.Context, field g
 	return fc, nil
 }
 
-func (ec *executionContext) _Media_url(ctx context.Context, field graphql.CollectedField, obj *dto.Media) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Media_url(ctx, field)
+func (ec *executionContext) _Media_mediaLink(ctx context.Context, field graphql.CollectedField, obj *dto.Media) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Media_mediaLink(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13519,7 +13530,7 @@ func (ec *executionContext) _Media_url(ctx context.Context, field graphql.Collec
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.URL, nil
+		return obj.MediaLink, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13536,7 +13547,7 @@ func (ec *executionContext) _Media_url(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Media_url(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Media_mediaLink(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Media",
 		Field:      field,
@@ -13581,6 +13592,47 @@ func (ec *executionContext) _Media_contentType(ctx context.Context, field graphq
 }
 
 func (ec *executionContext) fieldContext_Media_contentType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Media",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Media_signedURL(ctx context.Context, field graphql.CollectedField, obj *dto.Media) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Media_signedURL(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SignedURL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Media_signedURL(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Media",
 		Field:      field,
@@ -13772,10 +13824,12 @@ func (ec *executionContext) fieldContext_MediaEdge_node(ctx context.Context, fie
 				return ec.fieldContext_Media_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Media_name(ctx, field)
-			case "url":
-				return ec.fieldContext_Media_url(ctx, field)
+			case "mediaLink":
+				return ec.fieldContext_Media_mediaLink(ctx, field)
 			case "contentType":
 				return ec.fieldContext_Media_contentType(ctx, field)
+			case "signedURL":
+				return ec.fieldContext_Media_signedURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
 		},
@@ -32307,7 +32361,7 @@ func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj in
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "name", "url"}
+	fieldsInOrder := [...]string{"id", "name", "mediaLink"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -32332,15 +32386,15 @@ func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj in
 				return it, err
 			}
 			it.Name = data
-		case "url":
+		case "mediaLink":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mediaLink"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.URL = data
+			it.MediaLink = data
 		}
 	}
 
@@ -34578,8 +34632,8 @@ func (ec *executionContext) _Media(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "url":
-			out.Values[i] = ec._Media_url(ctx, field, obj)
+		case "mediaLink":
+			out.Values[i] = ec._Media_mediaLink(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -34588,6 +34642,8 @@ func (ec *executionContext) _Media(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "signedURL":
+			out.Values[i] = ec._Media_signedURL(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

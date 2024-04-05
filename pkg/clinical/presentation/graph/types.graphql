@@ -180,8 +180,9 @@ type ObservationConnection {
 type Media {
   id: String!
   name: String!
-  url: String!
+  mediaLink: String!
   contentType: String!
+  signedURL: String
 }
 
 type MediaEdge {

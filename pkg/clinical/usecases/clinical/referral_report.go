@@ -194,5 +194,11 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 
 	pdfBytes := pdfg.Bytes()
 
+	_, err = c.infrastructure.Upload.UploadMedia(ctx, "referral_report_1", bytes.NewReader(pdfBytes), "")
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, err
+	}
+
 	return pdfBytes, nil
 }
