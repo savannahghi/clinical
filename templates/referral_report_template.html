@@ -40,7 +40,7 @@
         .header-title {
             color: #800080;
             font-weight: bold;
-            font-size: 30px;
+            font-size: 25px;
             margin: 0 auto; 
             text-align: center;
             flex: 2;
@@ -87,6 +87,7 @@
         }
         .detail {
           line-height: 2;
+          padding-right: 100px;
         }
         .detail strong {
           margin-right: 5px;
@@ -137,7 +138,7 @@
             <td class="logo-cell">
                 <img  alt="Empower Logo">
             </td>
-            <td class="title-cell" colspan="2">
+            <td  >
                 <h1 class="header-title">Empower Coast General Hospital</h1>
             </td>
             <td class="details-cell">
@@ -155,38 +156,93 @@
     {{if .Patient}}
     <h2>Patient details</h2>
     <div class="detail-section">
-        {{if .Patient.Name}}<div class="detail">Name: <strong>{{.Patient.Name}}</strong></div>{{end}}
-        {{if .Patient.EmpowerID}}<div class="detail">Empower ID: <strong>{{.Patient.EmpowerID}}</strong></div>{{end}}
-        {{if .Patient.NationalID}}<div class="detail">National ID: <strong>{{.Patient.NationalID}}</strong></div>{{end}}
-        {{if .Patient.PhoneNumber}}<div class="detail">Phone number: <strong>{{.Patient.PhoneNumber}}</strong></div>{{end}}
-        {{if .Patient.DateOfBirth}}<div class="detail">Date of birth: <strong>{{.Patient.DateOfBirth}}</strong></div>{{end}}
-        {{if .Patient.Age}}<div class="detail">Age: <strong>{{.Patient.Age}}</strong></div>{{end}}
-        {{if .Patient.Sex}}<div class="detail">Sex: <strong>{{.Patient.Sex}}</strong></div>{{end}}
+        <table>
+            <tr>
+                <td>
+                    {{if .Patient.Name}}<div class="detail">Name: <strong>{{.Patient.Name}}</strong></div>{{end}}         
+                       </td>
+                <td  >
+                    {{if .Patient.EmpowerID}}<div class="detail">Empower ID: <strong>{{.Patient.EmpowerID}}</strong></div>{{end}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{if .Patient.NationalID}}<div class="detail">National ID: <strong>{{.Patient.NationalID}}</strong></div>{{end}}
+                    </td>
+                    <td  >
+                        {{if .Patient.PhoneNumber}}<div class="detail">Phone number: <strong>{{.Patient.PhoneNumber}}</strong></div>{{end}}
+                    </td>
+            </tr>
+            <tr>
+                <td>
+                    {{if .Patient.DateOfBirth}}<div class="detail">Date of birth: <strong>{{.Patient.DateOfBirth}}</strong></div>{{end}}
+                    </td>
+                    <td  >
+                        {{if .Patient.Age}}<div class="detail">Age: <strong>{{.Patient.Age}}</strong></div>{{end}}
+                    </td>
+            </tr>
+            <tr>
+                <td>
+                    {{if .Patient.Sex}}<div class="detail">Sex: <strong>{{.Patient.Sex}}</strong></div>{{end}}
+                    </td>
+            </tr>
+        </table>    
     </div>
     {{end}}
 
     {{if or .NextOfKin.Name .NextOfKin.PhoneNumber .NextOfKin.Relationship}}
     <h2>Next of kin details</h2>
     <div class="detail-section">
-        {{if .NextOfKin.Name}}<div class="detail">Name: <strong>{{.NextOfKin.Name}}</strong></div>{{end}}
-        {{if .NextOfKin.PhoneNumber}}<div class="detail">Phone number: <strong>{{.NextOfKin.PhoneNumber}}</strong></div>{{end}}
-        {{if .NextOfKin.Relationship}}<div class="detail">Relationship: <strong>{{.NextOfKin.Relationship}}</strong></div>{{end}}
+        <table>
+            <tr>
+                <td>
+                    {{if .NextOfKin.Name}}<div class="detail">Name: <strong>{{.NextOfKin.Name}}</strong></div>{{end}}
+                </td>
+                <td  >
+                    {{if .NextOfKin.PhoneNumber}}<div class="detail">Phone number: <strong>{{.NextOfKin.PhoneNumber}}</strong></div>{{end}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{if .NextOfKin.Relationship}}<div class="detail">Relationship: <strong>{{.NextOfKin.Relationship}}</strong></div>{{end}}
+                </td> 
+            </tr>
+        </table>
+
     </div>
     {{end}}
 
     {{if .Facility}}
     <h2>Receiving facility details</h2>
     <div class="detail-section">
-        {{if .Facility.Name}}<div class="detail">Referred to: <strong>{{.Facility.Name}}</strong></div>{{end}}
-        {{if .Facility.Contact}}<div class="detail">Hospital Contact: <strong>{{.Facility.Contact}}</strong></div>{{end}}
-        {{if .Facility.Location}}<div class="detail">Location: <strong>{{.Facility.Location}}</strong></div>{{end}}
+        <table>
+            <tr>
+                <td>
+                    {{if .Facility.Name}}<div class="detail">Referred to: <strong>{{.Facility.Name}}</strong></div>{{end}}
+                </td>
+                <td  >
+                    {{if .Facility.Contact}}<div class="detail">Hospital Contact: <strong>{{.Facility.Contact}}</strong></div>{{end}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{if .Facility.Location}}<div class="detail">Location: <strong>{{.Facility.Location}}</strong></div>{{end}}
+                </td>    
+            </tr>
+        </table>
     </div>
     {{end}}
 
     {{if .Referral.Reason}}
     <h2>Referral reason</h2>
     <div class="detail-section">
-        <div class="detail">Reason for Referral: <strong>{{.Referral.Reason}}</strong></div>
+        <table>
+            <tr>
+                <td>
+                    <div class="detail">Reason for Referral: <strong>{{.Referral.Reason}}</strong></div>
+                </td>
+            </tr>
+        </table>
     </div>
     {{end}}
 
@@ -212,10 +268,24 @@
 
     <h2>Referred by</h2>
     <div class="detail-section">
-        <div class="detail"><strong>Referring Officer:</strong></div>
-        <div class="detail"><strong>Designation:</strong></div>
-        <div class="detail"><strong>Phone:</strong></div>
-        <div class="detail"><strong>Signature:</strong></div>
+        <table>
+            <tr>
+                <td>
+                    <div class="detail">Referring Officer: <strong>{{.}}</strong></div>
+                </td>
+                <td>
+                    <div class="detail">Designation: <strong>{{.}}</strong></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="detail">Phone: <strong>{{.}}</strong></div>
+                </td>
+                <td>
+                    <div class="detail">Signature: <strong>{{.}}</strong></div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     </div>
