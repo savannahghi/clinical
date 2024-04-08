@@ -45,9 +45,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy the Go binary to the production image from the builder stage.
 COPY --from=builder /app/server /server
 
-# Ensure your templates directory is correctly copied into the Docker image.
-COPY --from=builder /app/templates /app/templates
-
 # Set the working directory to where your binary and templates are.
 WORKDIR /app
 

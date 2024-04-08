@@ -1,3 +1,6 @@
+package utils
+
+const ReferralFormTemplate = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -298,4 +301,4 @@
     {{end}}
 </body>
 </html>
-    
+`

@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/savannahghi/scalarutils"
+
 // FHIRDocumentReference represents a reference to a document of any kind for any purpose.
 // It provides metadata about the document so that the document can be discovered and managed.
 // The scope of a document is any seralized object with a mime-type, so includes formal patient centric documents (CDA), cliical notes, scanned paper, and non-patient centric documents like policy text.
@@ -78,7 +80,7 @@ type FHIRDocumentReferenceInput struct {
 	Type              *FHIRCodeableConceptInput        `json:"type,omitempty"`
 	Category          []FHIRCodeableConceptInput       `json:"category,omitempty"`
 	Subject           *FHIRReferenceInput              `json:"subject,omitempty"`
-	Date              *string                          `json:"date,omitempty"`
+	Date              *scalarutils.Instant             `json:"date,omitempty"`
 	Author            []FHIRReferenceInput             `json:"author,omitempty"`
 	Authenticator     *FHIRReferenceInput              `json:"authenticator,omitempty"`
 	Custodian         *FHIRReferenceInput              `json:"custodian,omitempty"`

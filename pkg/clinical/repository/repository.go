@@ -28,6 +28,7 @@ type FHIR interface {
 	FHIRRiskAssessment
 	FHIRDiagnosticReport
 	FHIRSubscription
+	FHIRDocumentReference
 }
 
 type FHIROrganization interface {
