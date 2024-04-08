@@ -3240,3 +3240,67 @@ const (
 	SubscriptionTypeSMS       SubscriptionTypeEnum = "sms"
 	SubscriptionTypeMessage   SubscriptionTypeEnum = "message"
 )
+
+// DocumentReferenceStatusEnum is a FHIR enum for document reference statuses
+type DocumentReferenceStatusEnum string
+
+const (
+	DocumentReferenceStatusEnumCurrent        DocumentReferenceStatusEnum = "current"
+	DocumentReferenceStatusEnumSuperseded     DocumentReferenceStatusEnum = "superseded"
+	DocumentReferenceStatusEnumEnteredInError DocumentReferenceStatusEnum = "entered-in-error"
+)
+
+// AllDocumentReferenceStatusEnum lists all document reference statuses
+var AllDocumentReferenceStatusEnum = []DocumentReferenceStatusEnum{
+	DocumentReferenceStatusEnumCurrent,
+	DocumentReferenceStatusEnumSuperseded,
+	DocumentReferenceStatusEnumEnteredInError,
+}
+
+// IsValid checks if the enum value is valid
+func (e DocumentReferenceStatusEnum) IsValid() bool {
+	switch e {
+	case DocumentReferenceStatusEnumCurrent, DocumentReferenceStatusEnumSuperseded, DocumentReferenceStatusEnumEnteredInError:
+		return true
+	}
+
+	return false
+}
+
+// String converts the enum to its string representation
+func (e DocumentReferenceStatusEnum) String() string {
+	return string(e)
+}
+
+// DocumentRelationshipTypeEnum is a FHIR enum for document relationship types
+type DocumentRelationshipTypeEnum string
+
+const (
+	DocumentRelationshipTypeEnumReplaces   DocumentRelationshipTypeEnum = "replaces"
+	DocumentRelationshipTypeEnumTransforms DocumentRelationshipTypeEnum = "transforms"
+	DocumentRelationshipTypeEnumSigns      DocumentRelationshipTypeEnum = "signs"
+	DocumentRelationshipTypeEnumAppends    DocumentRelationshipTypeEnum = "appends"
+)
+
+// AllDocumentRelationshipTypeEnum lists all document relationship types
+var AllDocumentRelationshipTypeEnum = []DocumentRelationshipTypeEnum{
+	DocumentRelationshipTypeEnumReplaces,
+	DocumentRelationshipTypeEnumTransforms,
+	DocumentRelationshipTypeEnumSigns,
+	DocumentRelationshipTypeEnumAppends,
+}
+
+// IsValid checks if the enum value is valid
+func (e DocumentRelationshipTypeEnum) IsValid() bool {
+	switch e {
+	case DocumentRelationshipTypeEnumReplaces, DocumentRelationshipTypeEnumTransforms, DocumentRelationshipTypeEnumSigns, DocumentRelationshipTypeEnumAppends:
+		return true
+	}
+
+	return false
+}
+
+// String converts the enum to its string representation
+func (e DocumentRelationshipTypeEnum) String() string {
+	return string(e)
+}

@@ -4517,3 +4517,147 @@ func TestConsentState_MarshalGQL(t *testing.T) {
 		})
 	}
 }
+
+func TestDocumentReferenceStatusEnum_IsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		e    DocumentReferenceStatusEnum
+		want bool
+	}{
+		{
+			name: "valid current status",
+			e:    DocumentReferenceStatusEnumCurrent,
+			want: true,
+		},
+		{
+			name: "valid superseded status",
+			e:    DocumentReferenceStatusEnumSuperseded,
+			want: true,
+		},
+		{
+			name: "valid entered-in-error status",
+			e:    DocumentReferenceStatusEnumEnteredInError,
+			want: true,
+		},
+		{
+			name: "invalid status",
+			e:    DocumentReferenceStatusEnum("unknown"),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsValid(); got != tt.want {
+				t.Errorf("DocumentReferenceStatusEnum.IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDocumentReferenceStatusEnum_String(t *testing.T) {
+	tests := []struct {
+		name string
+		e    DocumentReferenceStatusEnum
+		want string
+	}{
+		{
+			name: "current status",
+			e:    DocumentReferenceStatusEnumCurrent,
+			want: "current",
+		},
+		{
+			name: "superseded status",
+			e:    DocumentReferenceStatusEnumSuperseded,
+			want: "superseded",
+		},
+		{
+			name: "entered-in-error status",
+			e:    DocumentReferenceStatusEnumEnteredInError,
+			want: "entered-in-error",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.String(); got != tt.want {
+				t.Errorf("DocumentReferenceStatusEnum.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDocumentRelationshipTypeEnum_IsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		e    DocumentRelationshipTypeEnum
+		want bool
+	}{
+		{
+			name: "valid replaces relationship",
+			e:    DocumentRelationshipTypeEnumReplaces,
+			want: true,
+		},
+		{
+			name: "valid transforms relationship",
+			e:    DocumentRelationshipTypeEnumTransforms,
+			want: true,
+		},
+		{
+			name: "valid signs relationship",
+			e:    DocumentRelationshipTypeEnumSigns,
+			want: true,
+		},
+		{
+			name: "valid appends relationship",
+			e:    DocumentRelationshipTypeEnumAppends,
+			want: true,
+		},
+		{
+			name: "invalid relationship",
+			e:    DocumentRelationshipTypeEnum("unknown"),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsValid(); got != tt.want {
+				t.Errorf("DocumentRelationshipTypeEnum.IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDocumentRelationshipTypeEnum_String(t *testing.T) {
+	tests := []struct {
+		name string
+		e    DocumentRelationshipTypeEnum
+		want string
+	}{
+		{
+			name: "replaces relationship",
+			e:    DocumentRelationshipTypeEnumReplaces,
+			want: "replaces",
+		},
+		{
+			name: "transforms relationship",
+			e:    DocumentRelationshipTypeEnumTransforms,
+			want: "transforms",
+		},
+		{
+			name: "signs relationship",
+			e:    DocumentRelationshipTypeEnumSigns,
+			want: "signs",
+		},
+		{
+			name: "appends relationship",
+			e:    DocumentRelationshipTypeEnumAppends,
+			want: "appends",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.String(); got != tt.want {
+				t.Errorf("DocumentRelationshipTypeEnum.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
