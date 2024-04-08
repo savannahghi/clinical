@@ -146,7 +146,7 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 	}
 
 	data := TemplateData{
-		Date:      time.Now().Format("Monday Jan 2 2023"),
+		Date:      time.Now().Format("Monday, Jan 2, 2006"),
 		Time:      time.Now().Format("15:04"),
 		Patient:   patientData,
 		NextOfKin: NextOfKin{},
@@ -194,7 +194,10 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 
 	pdfBytes := pdfg.Bytes()
 
-	_, err = c.infrastructure.Upload.UploadMedia(ctx, "referral_report_1", bytes.NewReader(pdfBytes), "")
+	currentTime := time.Now().Format("20060102T150405")
+	filename := fmt.Sprintf("%s_%s.pdf", patientData.Name, currentTime)
+
+	_, err = c.infrastructure.Upload.UploadMedia(ctx, filename, bytes.NewReader(pdfBytes), "")
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
