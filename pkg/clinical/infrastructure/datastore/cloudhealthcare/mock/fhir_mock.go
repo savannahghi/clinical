@@ -97,6 +97,7 @@ type FHIRMock struct {
 	MockGetFHIRServiceRequestFn           func(_ context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error)
 	MockCreateFHIRSubscriptionFn          func(_ context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
 	MockCreateFHIRDocumentReferenceFn     func(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
+	MockPatchFHIRServiceRequestFn         func(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -469,6 +470,38 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockUpgradeEpisodeFn: func(ctx context.Context, input domain.OTPEpisodeUpgradeInput) (*domain.EpisodeOfCarePayload, error) {
 			return &domain.EpisodeOfCarePayload{}, nil
+		},
+		MockPatchFHIRServiceRequestFn: func(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
+			ID := gofakeit.UUID()
+			startTime := scalarutils.DateTime(time.Now().Format("2006-01-02T15:04:05+03:00"))
+			return &domain.FHIRServiceRequestRelayPayload{
+				Resource: &domain.FHIRServiceRequest{
+					ID:           &ID,
+					Status:       "active",
+					Intent:       "order",
+					Category:     []*domain.FHIRCodeableConcept{},
+					Priority:     "urgent",
+					DoNotPerform: new(bool),
+					Subject: &domain.FHIRReference{
+						ID:        &ID,
+						Reference: new(string),
+						Display:   "",
+					},
+					Encounter: &domain.FHIRReference{
+						ID:        &ID,
+						Reference: new(string),
+						Display:   "",
+					},
+					AuthoredOn: &startTime,
+					Note: []*domain.FHIRAnnotation{
+						{
+							Time: &time.Time{},
+							Text: (*scalarutils.Markdown)(&ID),
+						},
+					},
+					Meta: &domain.FHIRMeta{},
+				},
+			}, nil
 		},
 		MockSearchEpisodeEncounterFn: func(ctx context.Context, episodeReference string, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIREncounter, error) {
 			id := gofakeit.UUID()
@@ -2654,4 +2687,9 @@ func (fh *FHIRMock) CreateFHIRSubscription(ctx context.Context, subscription *do
 // CreateFHIRDocumentReference mocks the implementation of creating a FHIR document reference
 func (fh *FHIRMock) CreateFHIRDocumentReference(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error) {
 	return fh.MockCreateFHIRSubscriptionFn(ctx, subscription)
+}
+
+// PatchFHIRServiceRequest mocks the implementation of mocking patching service request
+func (fh *FHIRMock) PatchFHIRServiceRequest(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
+	return fh.MockPatchFHIRServiceRequestFn(ctx, id, input)
 }

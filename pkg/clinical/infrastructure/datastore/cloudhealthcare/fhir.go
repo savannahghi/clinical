@@ -2087,3 +2087,22 @@ func (fh StoreImpl) CreateFHIRDocumentReference(ctx context.Context, input *doma
 
 	return resource, nil
 }
+
+// PatchFHIRServiceRequest is used to update the specified fhir service request resource
+func (fh StoreImpl) PatchFHIRServiceRequest(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", serviceRequestResourceType, err)
+	}
+
+	resource := &domain.FHIRServiceRequest{}
+
+	err = fh.Dataset.PatchFHIRResource(serviceRequestResourceType, id, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to patch %s resource: %w", serviceRequestResourceType, err)
+	}
+
+	return &domain.FHIRServiceRequestRelayPayload{
+		Resource: resource,
+	}, nil
+}

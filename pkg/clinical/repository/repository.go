@@ -76,6 +76,7 @@ type FHIRServiceRequest interface {
 	CreateFHIRServiceRequest(ctx context.Context, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
 	DeleteFHIRServiceRequest(ctx context.Context, id string) (bool, error)
 	GetFHIRServiceRequest(ctx context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error)
+	PatchFHIRServiceRequest(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
 }
 type FHIRMedicationRequest interface {
 	SearchFHIRMedicationRequest(ctx context.Context, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.FHIRMedicationRequestRelayConnection, error)
