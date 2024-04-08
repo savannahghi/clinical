@@ -148,3 +148,8 @@ type FHIRDiagnosticReport interface {
 type FHIRSubscription interface {
 	CreateFHIRSubscription(_ context.Context, input *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
 }
+
+// FHIRDocumentReference interface contains the method signatures for the various action to be performed against the FHIR Document Reference resource
+type FHIRDocumentReference interface {
+	CreateFHIRDocumentReference(ctx context.Context, input *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error)
+}

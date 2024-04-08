@@ -96,6 +96,7 @@ type FHIRMock struct {
 	MockGetFHIRPatientEverythingFn        func(ctx context.Context, id string, params map[string]interface{}) (*domain.PagedFHIRResource, error)
 	MockGetFHIRServiceRequestFn           func(_ context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error)
 	MockCreateFHIRSubscriptionFn          func(_ context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
+	MockCreateFHIRDocumentReferenceFn     func(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -2262,6 +2263,26 @@ func NewFHIRMock() *FHIRMock {
 				Channel:           domain.FHIRSubscriptionChannel{},
 			}, nil
 		},
+		MockCreateFHIRDocumentReferenceFn: func(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error) {
+			resourceID := uuid.New().String()
+			return &domain.FHIRSubscription{
+				ID:                &resourceID,
+				Meta:              &domain.FHIRMeta{},
+				ImplicitRules:     new(string),
+				Language:          new(string),
+				Text:              &domain.FHIRNarrative{},
+				Extension:         []*domain.Extension{},
+				ModifierExtension: []*domain.Extension{},
+				Identifier:        []*domain.FHIRIdentifier{},
+				Status:            "",
+				Contact:           []domain.FHIRContactPoint{},
+				End:               new(string),
+				Reason:            "",
+				Criteria:          "",
+				Error:             new(string),
+				Channel:           domain.FHIRSubscriptionChannel{},
+			}, nil
+		},
 	}
 }
 
@@ -2627,5 +2648,10 @@ func (fh *FHIRMock) GetFHIRServiceRequest(ctx context.Context, id string) (*doma
 
 // CreateFHIRSubscription mocks the implementation of creating a subscription
 func (fh *FHIRMock) CreateFHIRSubscription(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error) {
+	return fh.MockCreateFHIRSubscriptionFn(ctx, subscription)
+}
+
+// CreateFHIRDocumentReference mocks the implementation of creating a FHIR document reference
+func (fh *FHIRMock) CreateFHIRDocumentReference(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error) {
 	return fh.MockCreateFHIRSubscriptionFn(ctx, subscription)
 }

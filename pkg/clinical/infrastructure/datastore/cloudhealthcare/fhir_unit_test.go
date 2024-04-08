@@ -5257,3 +5257,50 @@ func TestStoreImpl_CreateFHIRSubscription(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_CreateFHIRDocumentReference(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		input *domain.FHIRDocumentReferenceInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: create a document reference",
+			args: args{
+				ctx:   context.Background(),
+				input: &domain.FHIRDocumentReferenceInput{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create a document reference",
+			args: args{
+				ctx:   context.Background(),
+				input: &domain.FHIRDocumentReferenceInput{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad case: unable to create a document reference" {
+				dataset.MockCreateFHIRResourceFn = func(resourceType string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := fh.CreateFHIRDocumentReference(tt.args.ctx, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.CreateFHIRDocumentReference() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

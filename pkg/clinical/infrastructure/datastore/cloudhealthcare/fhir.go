@@ -42,6 +42,7 @@ const (
 	riskAssessmentResourceType        = "RiskAssessment"
 	diagnosticReportResourceType      = "DiagnosticReport"
 	subscriptionResourceType          = "Subscription"
+	documentReferenceResourceType     = "DocumentReference"
 )
 
 // Dataset ...
@@ -2068,4 +2069,21 @@ func (fh StoreImpl) CreateFHIRSubscription(_ context.Context, subscription *doma
 	}
 
 	return fhirSubscription, nil
+}
+
+// CreateFHIRDocumentReference method is used to create a document reference resource that provides a reference to a document of any kind for any purpose.
+func (fh StoreImpl) CreateFHIRDocumentReference(ctx context.Context, input *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error) {
+	payload, err := converterandformatter.StructToMap(input)
+	if err != nil {
+		return nil, fmt.Errorf("unable to turn %s input into a map: %w", documentReferenceResourceType, err)
+	}
+
+	resource := &domain.FHIRDocumentReference{}
+
+	err = fh.Dataset.CreateFHIRResource(documentReferenceResourceType, payload, resource)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create %s resource: %w", documentReferenceResourceType, err)
+	}
+
+	return resource, nil
 }
