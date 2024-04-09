@@ -60,8 +60,8 @@ type FHIRDocumentReferenceContext struct {
 	Period            *FHIRPeriod           `json:"period,omitempty"`
 	FacilityType      *FHIRCodeableConcept  `json:"facilityType,omitempty"`
 	PracticeSetting   *FHIRCodeableConcept  `json:"practiceSetting,omitempty"`
-	SourcePatientInfo *Reference            `json:"sourcePatientInfo,omitempty"`
-	Related           []Reference           `json:"related,omitempty"`
+	SourcePatientInfo *FHIRReference        `json:"sourcePatientInfo,omitempty"`
+	Related           []*FHIRReference      `json:"related,omitempty"`
 }
 
 // FHIRDocumentReferenceInput is the input type for FHIRDocumentReference

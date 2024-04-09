@@ -74,6 +74,14 @@ type TemplateData struct {
 	Footer         Footer
 }
 
+// DocumentReferencePayload models data used to create caller specific reference document payload
+type DocumentReferencePayload struct {
+	Subject           *domain.FHIRReferenceInput
+	Attachment        *domain.FHIRAttachment
+	Related           *domain.FHIRReference
+	TerminologySystem string
+}
+
 // GenerateReferralReportPDF generates a PDF report for a given referral.
 //
 // The serviceRequestID is unique to each ServiceRequest resource, which,
@@ -202,7 +210,26 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		return nil, err
 	}
 
-	_, err = c.CreateDocumentReference(ctx, serviceRequest, result)
+	title := fmt.Sprintf("%s's Referral report", serviceRequest.Resource.Subject.Display)
+	serviceRequestReference := fmt.Sprintf("ServiceRequest/%s", *serviceRequest.Resource.ID)
+
+	payload := &DocumentReferencePayload{
+		Subject: &domain.FHIRReferenceInput{
+			ID:        serviceRequest.Resource.Subject.ID,
+			Reference: serviceRequest.Resource.Subject.Reference,
+		},
+		Attachment: &domain.FHIRAttachment{
+			ContentType: (*scalarutils.Code)(&result.ContentType),
+			URL:         (*scalarutils.URL)(&result.SignedURL),
+			Title:       &title,
+		},
+		Related: &domain.FHIRReference{
+			Reference: &serviceRequestReference,
+		},
+		TerminologySystem: common.ReferralNoteLOINCTerminologySystem,
+	}
+
+	_, err = c.CreateDocumentReference(ctx, payload)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
@@ -212,8 +239,8 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 }
 
 // CreateDocumentReference is a helper method to abstract the creation of a document reference
-func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, serviceRequest *domain.FHIRServiceRequestRelayPayload, result *dto.Media) (bool, error) {
-	concept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, common.ReferralNoteLOINCTerminologySystem)
+func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, payload *DocumentReferencePayload) (bool, error) {
+	concept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, payload.TerminologySystem)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return true, err
@@ -222,14 +249,10 @@ func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, serv
 	finalDocStatus := domain.CompositionStatusEnumFinal
 	status := domain.DocumentReferenceStatusEnumCurrent
 	instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
-	title := fmt.Sprintf("%s's Referral report", serviceRequest.Resource.Subject.Display)
-	serviceRequestReference := fmt.Sprintf("ServiceRequest/%s", *serviceRequest.Resource.ID)
 
 	documentReference := &domain.FHIRDocumentReferenceInput{
-		Meta:       &domain.FHIRMetaInput{},
-		Identifier: []domain.FHIRIdentifierInput{},
-		Status:     status,
-		DocStatus:  &finalDocStatus,
+		Status:    status,
+		DocStatus: &finalDocStatus,
 		Type: &domain.FHIRCodeableConceptInput{
 			Coding: []*domain.FHIRCodingInput{
 				{
@@ -240,26 +263,16 @@ func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, serv
 			},
 			Text: concept.DisplayName,
 		},
-		Subject: &domain.FHIRReferenceInput{
-			ID:        serviceRequest.Resource.Subject.ID,
-			Reference: serviceRequest.Resource.Subject.Reference,
-		},
-		Date: &instant,
+		Subject: payload.Subject,
+		Date:    &instant,
 		Content: []domain.FHIRDocumentReferenceContent{
 			{
-				Attachment: domain.FHIRAttachment{
-					ContentType: (*scalarutils.Code)(&result.ContentType),
-					URL:         (*scalarutils.URL)(&result.SignedURL),
-					Title:       &title,
-				},
+				Attachment: *payload.Attachment,
 			},
 		},
 		Context: &domain.FHIRDocumentReferenceContext{
-			Related: []domain.Reference{
-				{
-					Reference: serviceRequestReference,
-					Type:      "ServiceRequest",
-				},
+			Related: []*domain.FHIRReference{
+				payload.Related,
 			},
 		},
 	}
