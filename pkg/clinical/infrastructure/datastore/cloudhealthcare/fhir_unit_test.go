@@ -5258,6 +5258,72 @@ func TestStoreImpl_CreateFHIRSubscription(t *testing.T) {
 	}
 }
 
+func TestStoreImpl_PatchFHIRServiceRequest(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		id    string
+		input domain.FHIRServiceRequestInput
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: patch service request",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: domain.FHIRServiceRequestInput{
+					ID:                 new(string),
+					BodySite:           []*domain.FHIRCodeableConceptInput{},
+					Note:               []*domain.FHIRAnnotationInput{},
+					PatientInstruction: new(string),
+					RelevantHistory:    []*domain.FHIRReferenceInput{},
+					Meta:               domain.FHIRMetaInput{},
+					Extension:          []*domain.FHIRExtension{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to patch service request",
+			args: args{
+				ctx: context.Background(),
+				id:  gofakeit.UUID(),
+				input: domain.FHIRServiceRequestInput{
+					ID:                 new(string),
+					BodySite:           []*domain.FHIRCodeableConceptInput{},
+					Note:               []*domain.FHIRAnnotationInput{},
+					PatientInstruction: new(string),
+					RelevantHistory:    []*domain.FHIRReferenceInput{},
+					Meta:               domain.FHIRMetaInput{},
+					Extension:          []*domain.FHIRExtension{},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad case: unable to patch service request" {
+				dataset.MockPatchFHIRResourceFn = func(resourceType string, id string, payload map[string]interface{}, resource interface{}) error {
+					return fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := fh.PatchFHIRServiceRequest(tt.args.ctx, tt.args.id, tt.args.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.PatchFHIRServiceRequest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestStoreImpl_CreateFHIRDocumentReference(t *testing.T) {
 	type args struct {
 		ctx   context.Context
