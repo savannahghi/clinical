@@ -191,6 +191,9 @@ const (
 	// BreastExaminationCIELTerminologySystem is the terminology code used to represent breast examination concept.
 	// This is more a more general concept code.
 	BreastExaminationCIELTerminologySystem = "162825"
+
+	// ReferralNoteLOINCTerminologySystem is the system code used to represent referral note concept in loinc terminology system
+	ReferralNoteLOINCTerminologySystem = "57133-1"
 )
 
 // DefaultIdentifier assigns a patient a code to function as their

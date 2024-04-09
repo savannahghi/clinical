@@ -96,8 +96,8 @@ type FHIRMock struct {
 	MockGetFHIRPatientEverythingFn        func(ctx context.Context, id string, params map[string]interface{}) (*domain.PagedFHIRResource, error)
 	MockGetFHIRServiceRequestFn           func(_ context.Context, id string) (*domain.FHIRServiceRequestRelayPayload, error)
 	MockCreateFHIRSubscriptionFn          func(_ context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
-	MockCreateFHIRDocumentReferenceFn     func(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
 	MockPatchFHIRServiceRequestFn         func(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
+	MockCreateFHIRDocumentReferenceFn     func(ctx context.Context, documentReference *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -2296,24 +2296,33 @@ func NewFHIRMock() *FHIRMock {
 				Channel:           domain.FHIRSubscriptionChannel{},
 			}, nil
 		},
-		MockCreateFHIRDocumentReferenceFn: func(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error) {
-			resourceID := uuid.New().String()
-			return &domain.FHIRSubscription{
-				ID:                &resourceID,
+		MockCreateFHIRDocumentReferenceFn: func(ctx context.Context, documentReference *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error) {
+			resourceID := gofakeit.UUID()
+			return &domain.FHIRDocumentReference{
+				ID:                resourceID,
 				Meta:              &domain.FHIRMeta{},
 				ImplicitRules:     new(string),
 				Language:          new(string),
 				Text:              &domain.FHIRNarrative{},
-				Extension:         []*domain.Extension{},
-				ModifierExtension: []*domain.Extension{},
-				Identifier:        []*domain.FHIRIdentifier{},
+				Extension:         []domain.FHIRExtension{},
+				ModifierExtension: []domain.FHIRExtension{},
+				MasterIdentifier:  &domain.FHIRIdentifier{},
+				Identifier:        []domain.FHIRIdentifier{},
 				Status:            "",
-				Contact:           []domain.FHIRContactPoint{},
-				End:               new(string),
-				Reason:            "",
-				Criteria:          "",
-				Error:             new(string),
-				Channel:           domain.FHIRSubscriptionChannel{},
+				Type: &domain.FHIRCodeableConcept{
+					ID: &resourceID,
+				},
+				Category:      []domain.FHIRCodeableConcept{},
+				Subject:       &domain.FHIRReference{},
+				Date:          new(string),
+				Author:        []domain.FHIRReference{},
+				Authenticator: &domain.FHIRReference{},
+				Custodian:     &domain.FHIRReference{},
+				RelatesTo:     []domain.FHIRDocumentReferenceRelatesTo{},
+				Description:   "",
+				SecurityLabel: []domain.FHIRCodeableConcept{},
+				Content:       []domain.FHIRDocumentReferenceContent{},
+				Context:       &domain.FHIRDocumentReferenceContext{},
 			}, nil
 		},
 	}
@@ -2685,8 +2694,8 @@ func (fh *FHIRMock) CreateFHIRSubscription(ctx context.Context, subscription *do
 }
 
 // CreateFHIRDocumentReference mocks the implementation of creating a FHIR document reference
-func (fh *FHIRMock) CreateFHIRDocumentReference(ctx context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error) {
-	return fh.MockCreateFHIRSubscriptionFn(ctx, subscription)
+func (fh *FHIRMock) CreateFHIRDocumentReference(ctx context.Context, documentReference *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error) {
+	return fh.MockCreateFHIRDocumentReferenceFn(ctx, documentReference)
 }
 
 // PatchFHIRServiceRequest mocks the implementation of mocking patching service request

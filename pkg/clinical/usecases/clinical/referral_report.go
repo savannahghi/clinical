@@ -9,8 +9,11 @@ import (
 	"time"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
+	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
 )
 
@@ -162,13 +165,9 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		Footer:         Footer{},
 	}
 
-	tmpl, err := template.ParseFiles("templates/referral_report_template.html")
-	if err != nil {
-		utils.ReportErrorToSentry(err)
-		return nil, err
-	}
-
 	var htmlBuffer bytes.Buffer
+
+	tmpl := template.Must(template.New("ReferralFormTemplate").Parse(utils.ReferralFormTemplate))
 
 	err = tmpl.Execute(&htmlBuffer, data)
 	if err != nil {
@@ -197,11 +196,79 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 	currentTime := time.Now().Format("20060102T150405")
 	filename := fmt.Sprintf("%s_%s.pdf", patientData.Name, currentTime)
 
-	_, err = c.infrastructure.Upload.UploadMedia(ctx, filename, bytes.NewReader(pdfBytes), "")
+	result, err := c.infrastructure.Upload.UploadMedia(ctx, filename, bytes.NewReader(pdfBytes), "")
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, err
+	}
+
+	_, err = c.CreateDocumentReference(ctx, serviceRequest, result)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
 	}
 
 	return pdfBytes, nil
+}
+
+// CreateDocumentReference is a helper method to abstract the creation of a document reference
+func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, serviceRequest *domain.FHIRServiceRequestRelayPayload, result *dto.Media) (bool, error) {
+	concept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, common.ReferralNoteLOINCTerminologySystem)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return true, err
+	}
+
+	finalDocStatus := domain.CompositionStatusEnumFinal
+	status := domain.DocumentReferenceStatusEnumCurrent
+	instant := scalarutils.Instant(time.Now().Format(time.RFC3339))
+	title := fmt.Sprintf("%s's Referral report", serviceRequest.Resource.Subject.Display)
+	serviceRequestReference := fmt.Sprintf("ServiceRequest/%s", *serviceRequest.Resource.ID)
+
+	documentReference := &domain.FHIRDocumentReferenceInput{
+		Meta:       &domain.FHIRMetaInput{},
+		Identifier: []domain.FHIRIdentifierInput{},
+		Status:     status,
+		DocStatus:  &finalDocStatus,
+		Type: &domain.FHIRCodeableConceptInput{
+			Coding: []*domain.FHIRCodingInput{
+				{
+					System:  (*scalarutils.URI)(&concept.URL),
+					Code:    scalarutils.Code(concept.ID),
+					Display: concept.DisplayName,
+				},
+			},
+			Text: concept.DisplayName,
+		},
+		Subject: &domain.FHIRReferenceInput{
+			ID:        serviceRequest.Resource.Subject.ID,
+			Reference: serviceRequest.Resource.Subject.Reference,
+		},
+		Date: &instant,
+		Content: []domain.FHIRDocumentReferenceContent{
+			{
+				Attachment: domain.FHIRAttachment{
+					ContentType: (*scalarutils.Code)(&result.ContentType),
+					URL:         (*scalarutils.URL)(&result.SignedURL),
+					Title:       &title,
+				},
+			},
+		},
+		Context: &domain.FHIRDocumentReferenceContext{
+			Related: []domain.Reference{
+				{
+					Reference: serviceRequestReference,
+					Type:      "ServiceRequest",
+				},
+			},
+		},
+	}
+
+	_, err = c.infrastructure.FHIR.CreateFHIRDocumentReference(ctx, documentReference)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return true, err
+	}
+
+	return false, nil
 }

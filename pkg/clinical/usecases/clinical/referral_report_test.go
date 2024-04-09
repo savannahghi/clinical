@@ -3,9 +3,11 @@ package clinical_test
 import (
 	"context"
 	"fmt"
+	"io"
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/clinical/pkg/clinical/infrastructure"
@@ -60,6 +62,30 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - unable to upload media",
+			args: args{
+				ctx:              ctx,
+				serviceRequestID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - unable to create FHIR document reference",
+			args: args{
+				ctx:              ctx,
+				serviceRequestID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - unable to get terminology concept",
+			args: args{
+				ctx:              ctx,
+				serviceRequestID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -82,6 +108,21 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 			if tt.name == "Sad Case - Fail to get patient" {
 				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
 					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+			if tt.name == "Sad Case - unable to upload media" {
+				fakeUpload.MockUploadMediaFn = func(ctx context.Context, name string, file io.Reader, contentType string) (*dto.Media, error) {
+					return nil, fmt.Errorf("failed to upload media")
+				}
+			}
+			if tt.name == "Sad Case - unable to create FHIR document reference" {
+				fakeFHIR.MockCreateFHIRDocumentReferenceFn = func(ctx context.Context, documentReference *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error) {
+					return nil, fmt.Errorf("failed to create FHIR document reference")
+				}
+			}
+			if tt.name == "Sad Case - unable to get terminology concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get concept")
 				}
 			}
 

@@ -4661,3 +4661,155 @@ func TestDocumentRelationshipTypeEnum_String(t *testing.T) {
 		})
 	}
 }
+
+func TestScreeningTypeEnum_IsValid(t *testing.T) {
+	tests := []struct {
+		name string
+		e    ScreeningTypeEnum
+		want bool
+	}{
+		{
+			name: "Valid screening type - breast cancer",
+			e:    BreastCancerScreeningTypeEnum,
+			want: true,
+		},
+		{
+			name: "Invalid screening type status",
+			e:    "invalid",
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.IsValid(); got != tt.want {
+				t.Errorf("ScreeningTypeEnum.IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestScreeningTypeEnum_String(t *testing.T) {
+	tests := []struct {
+		name string
+		e    ScreeningTypeEnum
+		want string
+	}{
+		{
+			name: "Breast Cancer Screening",
+			e:    BreastCancerScreeningTypeEnum,
+			want: "BREAST_CANCER_SCREENING",
+		},
+		{
+			name: "Cervical Cancer Screening",
+			e:    CervicalCancerScreeningTypeEnum,
+			want: "CERVICAL_CANCER_SCREENING",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.e.String(); got != tt.want {
+				t.Errorf("ScreeningTypeEnum.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestScreeningTypeEnum_UnmarshalGQL(t *testing.T) {
+	value := BreastCancerScreeningTypeEnum
+	invalidType := ScreeningTypeEnum("invalid")
+	type args struct {
+		v interface{}
+	}
+	tests := []struct {
+		name    string
+		e       *ScreeningTypeEnum
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "valid type",
+			e:    &value,
+			args: args{
+				v: "BREAST_CANCER_SCREENING",
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid type",
+			e:    &invalidType,
+			args: args{
+				v: "this is not a valid type",
+			},
+			wantErr: true,
+		},
+		{
+			name: "non string type",
+			e:    &invalidType,
+			args: args{
+				v: 1,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.e.UnmarshalGQL(tt.args.v); (err != nil) != tt.wantErr {
+				t.Errorf("ScreeningTypeEnum.UnmarshalGQL() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestMediaScreeningTypeEnum_MarshalGQL(t *testing.T) {
+	tests := []struct {
+		name  string
+		e     ScreeningTypeEnum
+		wantW string
+	}{
+		{
+			name:  "BREAST_CANCER_SCREENING",
+			e:     BreastCancerScreeningTypeEnum,
+			wantW: strconv.Quote("BREAST_CANCER_SCREENING"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			tt.e.MarshalGQL(w)
+			if gotW := w.String(); gotW != tt.wantW {
+				t.Errorf("ScreeningTypeEnum.MarshalGQL() = %v, want %v", gotW, tt.wantW)
+			}
+		})
+	}
+}
+
+func TestScreeningTypeEnum_Text(t *testing.T) {
+	tests := []struct {
+		name          string
+		screeningType ScreeningTypeEnum
+		want          string
+	}{
+		{
+			name:          "Valid type - breast",
+			screeningType: BreastCancerScreeningTypeEnum,
+			want:          "Breast Cancer Screening",
+		},
+		{
+			name:          "Valid type - cervical",
+			screeningType: CervicalCancerScreeningTypeEnum,
+			want:          "Cervical Cancer Screening",
+		},
+		{
+			name:          "Invalid type",
+			screeningType: ScreeningTypeEnum("invalid"),
+			want:          "unknown screening type",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.screeningType.Text(); got != tt.want {
+				t.Errorf("ScreeningTypeEnum.Text() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
