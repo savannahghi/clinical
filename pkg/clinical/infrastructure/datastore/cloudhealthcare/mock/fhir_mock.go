@@ -98,6 +98,7 @@ type FHIRMock struct {
 	MockCreateFHIRSubscriptionFn          func(_ context.Context, subscription *domain.FHIRSubscriptionInput) (*domain.FHIRSubscription, error)
 	MockPatchFHIRServiceRequestFn         func(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error)
 	MockCreateFHIRDocumentReferenceFn     func(ctx context.Context, documentReference *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error)
+	MockSearchFHIRDocumentReferenceFn     func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error)
 }
 
 // NewFHIRMock initializes a new instance of FHIR mock
@@ -2331,6 +2332,29 @@ func NewFHIRMock() *FHIRMock {
 				Context:       &domain.FHIRDocumentReferenceContext{},
 			}, nil
 		},
+		MockSearchFHIRDocumentReferenceFn: func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error) {
+			resourceID := gofakeit.UUID()
+			return &domain.PagedFHIRDocumentReference{
+				DocumentReferences: []domain.FHIRDocumentReference{
+					{
+						ID: resourceID,
+						Context: &domain.FHIRDocumentReferenceContext{
+							Related: []*domain.FHIRReference{
+								{
+									ID:        new(string),
+									Reference: new(string),
+								},
+							},
+						},
+					},
+				},
+				HasNextPage:     false,
+				NextCursor:      "",
+				HasPreviousPage: false,
+				PreviousCursor:  "",
+				TotalCount:      0,
+			}, nil
+		},
 	}
 }
 
@@ -2707,4 +2731,9 @@ func (fh *FHIRMock) CreateFHIRDocumentReference(ctx context.Context, documentRef
 // PatchFHIRServiceRequest mocks the implementation of mocking patching service request
 func (fh *FHIRMock) PatchFHIRServiceRequest(ctx context.Context, id string, input domain.FHIRServiceRequestInput) (*domain.FHIRServiceRequestRelayPayload, error) {
 	return fh.MockPatchFHIRServiceRequestFn(ctx, id, input)
+}
+
+// SearchFHIRDocumentReference mocks the implementation of searching document reference using a related resource
+func (fh *FHIRMock) SearchFHIRDocumentReference(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error) {
+	return fh.MockSearchFHIRDocumentReferenceFn(ctx, searchParams, tenant, pagination)
 }

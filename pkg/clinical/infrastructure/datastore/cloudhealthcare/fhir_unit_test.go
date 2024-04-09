@@ -5370,3 +5370,60 @@ func TestStoreImpl_CreateFHIRDocumentReference(t *testing.T) {
 		})
 	}
 }
+
+func TestStoreImpl_SearchFHIRDocumentReference(t *testing.T) {
+	type args struct {
+		ctx          context.Context
+		searchParams map[string]interface{}
+		tenant       dto.TenantIdentifiers
+		pagination   dto.Pagination
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: search for document reference",
+			args: args{
+				ctx: context.Background(),
+				searchParams: map[string]interface{}{
+					"related": fmt.Sprintf("ServiceRequest/%s", gofakeit.UUID()),
+				},
+				tenant:     dto.TenantIdentifiers{},
+				pagination: dto.Pagination{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to search for document reference",
+			args: args{
+				ctx: context.Background(),
+				searchParams: map[string]interface{}{
+					"related": fmt.Sprintf("ServiceRequest/%s", gofakeit.UUID()),
+				},
+				tenant:     dto.TenantIdentifiers{},
+				pagination: dto.Pagination{},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataset := fakeDataset.NewFakeFHIRRepositoryMock()
+			fh := FHIR.NewFHIRStoreImpl(dataset)
+
+			if tt.name == "Sad case: unable to search for document reference" {
+				dataset.MockSearchFHIRResourceFn = func(resourceType string, params map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRResource, error) {
+					return nil, fmt.Errorf("an error occurred")
+				}
+			}
+
+			_, err := fh.SearchFHIRDocumentReference(tt.args.ctx, tt.args.searchParams, tt.args.tenant, tt.args.pagination)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("StoreImpl.SearchFHIRDocumentReference() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

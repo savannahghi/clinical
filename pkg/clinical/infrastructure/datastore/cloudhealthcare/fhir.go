@@ -2106,3 +2106,38 @@ func (fh StoreImpl) PatchFHIRServiceRequest(ctx context.Context, id string, inpu
 		Resource: resource,
 	}, nil
 }
+
+// SearchFHIRDocumentReference is used to search for FHIR document reference resource using the client provided parameters. Some of these parameters include (but not limited) to `categories`, 'subject` etc.`
+func (fh StoreImpl) SearchFHIRDocumentReference(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error) {
+	documentReferences, err := fh.Dataset.SearchFHIRResource(documentReferenceResourceType, searchParams, tenant, pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	documentReferenceOutput := domain.PagedFHIRDocumentReference{
+		DocumentReferences: []domain.FHIRDocumentReference{},
+		HasNextPage:        documentReferences.HasNextPage,
+		NextCursor:         documentReferences.NextCursor,
+		HasPreviousPage:    documentReferences.HasPreviousPage,
+		PreviousCursor:     documentReferences.PreviousCursor,
+		TotalCount:         documentReferences.TotalCount,
+	}
+
+	for _, reference := range documentReferences.Resources {
+		var documentReference domain.FHIRDocumentReference
+
+		resourceBs, err := json.Marshal(reference)
+		if err != nil {
+			return nil, fmt.Errorf("unable to marshal resource to JSON: %w", err)
+		}
+
+		err = json.Unmarshal(resourceBs, &documentReference)
+		if err != nil {
+			return nil, fmt.Errorf("unable to unmarshal resource: %w", err)
+		}
+
+		documentReferenceOutput.DocumentReferences = append(documentReferenceOutput.DocumentReferences, documentReference)
+	}
+
+	return &documentReferenceOutput, nil
+}
