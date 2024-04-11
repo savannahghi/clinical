@@ -257,7 +257,7 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		TerminologySystem: common.ReferralNoteLOINCTerminologySystem,
 	}
 
-	_, err = c.CreateDocumentReference(ctx, payload)
+	err = c.CreateDocumentReference(ctx, payload)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
 		return nil, err
@@ -267,11 +267,11 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 }
 
 // CreateDocumentReference is a helper method to abstract the creation of a document reference
-func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, payload *DocumentReferencePayload) (bool, error) {
+func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, payload *DocumentReferencePayload) error {
 	concept, err := c.GetConcept(ctx, dto.TerminologySourceLOINC, payload.TerminologySystem)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
-		return true, err
+		return err
 	}
 
 	finalDocStatus := domain.CompositionStatusEnumFinal
@@ -305,11 +305,20 @@ func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, payl
 		},
 	}
 
+	tags, err := c.GetTenantMetaTags(ctx)
+	if err != nil {
+		return err
+	}
+
+	documentReference.Meta = &domain.FHIRMetaInput{
+		Tag: tags,
+	}
+
 	_, err = c.infrastructure.FHIR.CreateFHIRDocumentReference(ctx, documentReference)
 	if err != nil {
 		utils.ReportErrorToSentry(err)
-		return true, err
+		return err
 	}
 
-	return false, nil
+	return nil
 }
