@@ -142,7 +142,7 @@ const ReferralFormTemplate = `
                 <img  alt="Empower Logo">
             </td>
             <td  >
-                <h1 class="header-title">Empower Coast General Hospital</h1>
+                <h1 class="header-title">{{ .ReferringFacility.Name }}</h1>
             </td>
             <td class="details-cell">
                 {{if .Date}}<div>Date: <strong>{{.Date}}</strong></div>{{end}}

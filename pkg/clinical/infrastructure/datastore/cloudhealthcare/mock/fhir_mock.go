@@ -1674,11 +1674,17 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockGetFHIROrganizationFn: func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
 			id := uuid.New().String()
+			phoneNumber := gofakeit.Phone()
 			name := "Test Organisation"
 			return &domain.FHIROrganizationRelayPayload{
 				Resource: &domain.FHIROrganization{
 					ID:   &id,
 					Name: &name,
+					Telecom: []*domain.FHIRContactPoint{
+						{
+							Value: &phoneNumber,
+						},
+					},
 				},
 			}, nil
 		},

@@ -12,6 +12,7 @@ import (
 	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/common/helpers"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
+	"github.com/savannahghi/clinical/pkg/clinical/application/extensions"
 	"github.com/savannahghi/clinical/pkg/clinical/application/utils"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
 	"github.com/savannahghi/scalarutils"
@@ -63,15 +64,16 @@ type Footer struct {
 }
 
 type TemplateData struct {
-	Date           string
-	Time           string
-	Reason         string
-	Patient        Patient
-	NextOfKin      NextOfKin
-	Facility       Facility
-	Referral       Referral
-	MedicalHistory MedicalHistory
-	Footer         Footer
+	Date              string
+	Time              string
+	Reason            string
+	ReferringFacility Facility
+	Patient           Patient
+	NextOfKin         NextOfKin
+	Facility          Facility
+	Referral          Referral
+	MedicalHistory    MedicalHistory
+	Footer            Footer
 }
 
 // DocumentReferencePayload models data used to create caller specific reference document payload
@@ -156,9 +158,33 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		referralReason = string(*serviceRequest.Resource.Note[0].Text)
 	}
 
+	facilityID, err := extensions.GetFacilityIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	facility, err := c.infrastructure.FHIR.GetFHIROrganization(ctx, facilityID)
+	if err != nil {
+		return nil, err
+	}
+
+	var facilityContact string
+
+	if facility.Resource.Telecom != nil {
+		for _, tel := range facility.Resource.Telecom {
+			if tel.Value != nil {
+				facilityContact = *tel.Value
+				break
+			}
+		}
+	}
+
 	data := TemplateData{
-		Date:      time.Now().Format("Monday, Jan 2, 2006"),
-		Time:      time.Now().Format("15:04"),
+		Date: time.Now().Format("Monday, Jan 2, 2006"),
+		Time: time.Now().Format("15:04"),
+		ReferringFacility: Facility{
+			Name: *facility.Resource.Name,
+		},
 		Patient:   patientData,
 		NextOfKin: NextOfKin{},
 		Facility: Facility{
@@ -170,7 +196,9 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 			Reason: referralReason,
 		},
 		MedicalHistory: MedicalHistory{Procedure: "Screening", Medication: "None", ReferralNotes: referralReason, Tests: []Test{{Name: "VIA", Results: "Positive", Date: "13th May 2024"}}},
-		Footer:         Footer{},
+		Footer: Footer{
+			Phone: facilityContact,
+		},
 	}
 
 	var htmlBuffer bytes.Buffer
