@@ -16,6 +16,7 @@ import (
 var (
 	AdvantageBaseURL = serverutils.MustGetEnvVar("ADVANTAGE_BASE_URL")
 	segmentationPath = "/api/segments/segment/clinical/"
+	smsPath          = "/api/notifications/sms/"
 )
 
 // AuthUtilsLib holds the method defined in authutils library
@@ -26,6 +27,7 @@ type AuthUtilsLib interface {
 // AdvantageService represents methods that can be used to communicate with the advantage server
 type AdvantageService interface {
 	SegmentPatient(ctx context.Context, payload dto.SegmentationPayload) error
+	SendSMS(ctx context.Context, workstationID string, payload dto.SMSPayload) error
 }
 
 // ServiceAdvantageImpl represents advantage server's implementations
@@ -46,7 +48,6 @@ func (s *ServiceAdvantageImpl) SegmentPatient(ctx context.Context, payload dto.S
 
 	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
-		fmt.Println("Error marshaling JSON:", err)
 		return err
 	}
 
@@ -65,6 +66,44 @@ func (s *ServiceAdvantageImpl) SegmentPatient(ctx context.Context, payload dto.S
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
+
+	httpClient := &http.Client{Timeout: time.Second * 30}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	return nil
+}
+
+// SendSMS is used to send an SMS message to a patient.
+func (s *ServiceAdvantageImpl) SendSMS(ctx context.Context, workstationID string, payload dto.SMSPayload) error {
+	url := fmt.Sprintf("%s/%s", AdvantageBaseURL, smsPath)
+
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	body := bytes.NewReader(payloadBytes)
+
+	req, err := http.NewRequest(http.MethodPost, url, body)
+	if err != nil {
+		return err
+	}
+
+	token, err := s.client.Authenticate()
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
+	req.Header.Set("X-Workstation", workstationID)
 
 	httpClient := &http.Client{Timeout: time.Second * 30}
 

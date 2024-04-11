@@ -349,9 +349,9 @@ func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, payl
 	return nil
 }
 
-// ShareReferralForm is searched for a document reference associated with a service request, retrieves the document URL and sends it to the
-// patient via SMS
-func (c *UseCasesClinicalImpl) ShareReferralForm(ctx context.Context, serviceRequestID string) (bool, error) {
+// ShareReferralForm is searches for a document reference using the service request ID associated and retrieves the document URL
+// (which is the url of the referral form that we want to share) and sends it to the patient via SMS
+func (c *UseCasesClinicalImpl) ShareReferralForm(ctx context.Context, serviceRequestID string, workstationID string) (bool, error) {
 	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
 	if err != nil {
 		return false, err
@@ -373,7 +373,41 @@ func (c *UseCasesClinicalImpl) ShareReferralForm(ctx context.Context, serviceReq
 		return false, errors.New("no document reference found")
 	}
 
-	// TODO: Send SMS here
+	var patientID string
+	if output.DocumentReferences[0].Subject != nil {
+		patientID = *output.DocumentReferences[0].Subject.ID
+	} else {
+		return false, errors.New("no subject found")
+	}
+
+	patient, err := c.infrastructure.FHIR.GetFHIRPatient(ctx, patientID)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return false, err
+	}
+
+	var message string
+
+	if len(output.DocumentReferences) > 0 && output.DocumentReferences[0].Content[0].Attachment.URL != nil {
+		message = string(*output.DocumentReferences[0].Content[0].Attachment.URL)
+	}
+
+	var recipients []string
+
+	if len(patient.Resource.Telecom) > 0 && patient.Resource.Telecom[0].Value != nil {
+		message = *patient.Resource.Telecom[0].Value
+	}
+
+	smsPayload := &dto.SMSPayload{
+		Intention:  "DIRECT_MESSAGE",
+		Message:    message,
+		Recipients: recipients,
+	}
+
+	err = c.infrastructure.AdvantageService.SendSMS(ctx, workstationID, *smsPayload)
+	if err != nil {
+		return false, err
+	}
 
 	return true, nil
 }

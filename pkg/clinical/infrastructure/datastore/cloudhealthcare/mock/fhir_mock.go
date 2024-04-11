@@ -2334,6 +2334,7 @@ func NewFHIRMock() *FHIRMock {
 		},
 		MockSearchFHIRDocumentReferenceFn: func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error) {
 			resourceID := gofakeit.UUID()
+			URL := gofakeit.URL()
 			return &domain.PagedFHIRDocumentReference{
 				DocumentReferences: []domain.FHIRDocumentReference{
 					{
@@ -2343,6 +2344,17 @@ func NewFHIRMock() *FHIRMock {
 								{
 									ID:        new(string),
 									Reference: new(string),
+								},
+							},
+						},
+						Subject: &domain.FHIRReference{
+							ID: &resourceID,
+						},
+						Content: []domain.FHIRDocumentReferenceContent{
+							{
+								ID: resourceID,
+								Attachment: domain.FHIRAttachment{
+									URL: (*scalarutils.URL)(&URL),
 								},
 							},
 						},

@@ -62,3 +62,59 @@ func TestServiceAdvantageImpl_PatientSegmentation(t *testing.T) {
 		})
 	}
 }
+
+func TestServiceAdvantageImpl_SendSMS(t *testing.T) {
+	type args struct {
+		ctx           context.Context
+		payload       dto.SMSPayload
+		workstationID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: send SMS",
+			args: args{
+				ctx: context.Background(),
+				payload: dto.SMSPayload{
+					Intention:  "DIRECT_MESSAGE",
+					Message:    "message",
+					Recipients: []string{},
+				},
+				workstationID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to send SMS",
+			args: args{
+				ctx: context.Background(),
+				payload: dto.SMSPayload{
+					Intention:  "DIRECT_MESSAGE",
+					Message:    "message",
+					Recipients: []string{},
+				},
+				workstationID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeAuthUtils := advantageMock.NewAuthUtilsClientMock()
+			s := advantage.NewServiceAdvantage(fakeAuthUtils)
+
+			if tt.name == "Sad case: unable to send SMS" {
+				fakeAuthUtils.MockAuthenticateFn = func() (*authutils.OAUTHResponse, error) {
+					return nil, errors.New("unable to authenticate")
+				}
+			}
+
+			if err := s.SendSMS(tt.args.ctx, tt.args.workstationID, tt.args.payload); (err != nil) != tt.wantErr {
+				t.Errorf("ServiceAdvantageImpl.SendSMS() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
