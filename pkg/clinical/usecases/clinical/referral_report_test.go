@@ -33,23 +33,22 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 		{
 			name: "Happy Case - Successfully generate a referral report pdf",
 			args: args{
-				ctx:              ctx,
+				ctx:              addTenantIdentifierContext(ctx),
 				serviceRequestID: uuid.New().String(),
 			},
-			// TODO: Fix this @salaton
 			wantErr: true,
 		},
 		{
 			name: "Sad Case - Missing service request ID",
 			args: args{
-				ctx: ctx,
+				ctx: addTenantIdentifierContext(ctx),
 			},
 			wantErr: true,
 		},
 		{
 			name: "Sad Case - Fail to get service request",
 			args: args{
-				ctx:              ctx,
+				ctx:              addTenantIdentifierContext(ctx),
 				serviceRequestID: uuid.New().String(),
 			},
 			wantErr: true,
@@ -57,7 +56,7 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 		{
 			name: "Sad Case - Fail to get patient",
 			args: args{
-				ctx:              ctx,
+				ctx:              addTenantIdentifierContext(ctx),
 				serviceRequestID: uuid.New().String(),
 			},
 			wantErr: true,
@@ -65,7 +64,7 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 		{
 			name: "Sad Case - unable to upload media",
 			args: args{
-				ctx:              ctx,
+				ctx:              addTenantIdentifierContext(ctx),
 				serviceRequestID: uuid.New().String(),
 			},
 			wantErr: true,
@@ -73,7 +72,7 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 		{
 			name: "Sad Case - unable to create FHIR document reference",
 			args: args{
-				ctx:              ctx,
+				ctx:              addTenantIdentifierContext(ctx),
 				serviceRequestID: uuid.New().String(),
 			},
 			wantErr: true,
@@ -81,7 +80,15 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 		{
 			name: "Sad Case - unable to get terminology concept",
 			args: args{
-				ctx:              ctx,
+				ctx:              addTenantIdentifierContext(ctx),
+				serviceRequestID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad Case - Fail to get organization",
+			args: args{
+				ctx:              addTenantIdentifierContext(ctx),
 				serviceRequestID: uuid.New().String(),
 			},
 			wantErr: true,
@@ -123,6 +130,12 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 			if tt.name == "Sad Case - unable to get terminology concept" {
 				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
 					return nil, fmt.Errorf("failed to get concept")
+				}
+			}
+
+			if tt.name == "Sad Case - Fail to get organization" {
+				fakeFHIR.MockGetFHIROrganizationFn = func(ctx context.Context, organisationID string) (*domain.FHIROrganizationRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get organization")
 				}
 			}
 
