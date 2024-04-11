@@ -203,14 +203,20 @@ func mapFHIRCompositionToCompositionDTO(composition domain.FHIRComposition) *dto
 
 	output := dto.Composition{
 		ID:          *composition.ID,
-		Text:        string(composition.Section[0].Text.Div),
 		Type:        dto.CompositionType(composition.Type.Text),
-		Category:    dto.CompositionCategory(composition.Category[0].Text),
 		Status:      dto.CompositionStatusEnum(*composition.Status),
 		PatientID:   *composition.Subject.ID,
 		EncounterID: *composition.Encounter.ID,
 		Date:        composition.Date,
 		Section:     compositionSection,
+	}
+
+	if len(composition.Section) != 0 {
+		output.Text = string(composition.Section[0].Text.Div)
+	}
+
+	if len(composition.Category) != 0 {
+		output.Category = dto.CompositionCategory(composition.Category[0].Text)
 	}
 
 	return &dto.CompositionConnection{

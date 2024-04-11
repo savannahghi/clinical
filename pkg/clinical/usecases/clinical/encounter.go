@@ -138,6 +138,18 @@ func (c *UseCasesClinicalImpl) CreateInitialComposition(ctx context.Context,
 			},
 			Text: compositionConcept.CompositionTypeConcept.DisplayName,
 		},
+		Category: []*domain.FHIRCodeableConceptInput{
+			{
+				Coding: []*domain.FHIRCodingInput{
+					{
+						System:  (*scalarutils.URI)(&compositionConcept.CompositionCategoryConcept.URL),
+						Code:    scalarutils.Code(compositionConcept.CompositionCategoryConcept.ID),
+						Display: compositionConcept.CompositionCategoryConcept.DisplayName,
+					},
+				},
+				Text: compositionConcept.CompositionCategoryConcept.DisplayName,
+			},
+		},
 		Subject: &domain.FHIRReferenceInput{
 			ID:        episodeOfCare.Resource.Patient.ID,
 			Reference: episodeOfCare.Resource.Patient.Reference,
