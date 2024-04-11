@@ -225,4 +225,6 @@ extend type Mutation {
 
   # Referral
   referPatient(input: ReferralInput!): ServiceRequest!
+
+  shareReferralForm(serviceRequestID: ID!): Boolean!
 }

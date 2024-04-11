@@ -316,6 +316,13 @@ func (r *mutationResolver) ReferPatient(ctx context.Context, input dto.ReferralI
 	return r.usecases.ReferPatient(ctx, &input)
 }
 
+// ShareReferralForm is the resolver for the shareReferralForm field.
+func (r *mutationResolver) ShareReferralForm(ctx context.Context, serviceRequestID string) (bool, error) {
+	r.CheckDependencies()
+
+	return r.usecases.ShareReferralForm(ctx, serviceRequestID)
+}
+
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.
 func (r *queryResolver) PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error) {
 	r.CheckDependencies()

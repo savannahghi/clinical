@@ -3,6 +3,7 @@ package clinical
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"html/template"
 	"strings"
@@ -321,4 +322,33 @@ func (c *UseCasesClinicalImpl) CreateDocumentReference(ctx context.Context, payl
 	}
 
 	return nil
+}
+
+// ShareReferralForm is searched for a document reference associated with a service request, retrieves the document URL and sends it to the
+// patient via SMS
+func (c *UseCasesClinicalImpl) ShareReferralForm(ctx context.Context, serviceRequestID string) (bool, error) {
+	identifiers, err := c.infrastructure.BaseExtension.GetTenantIdentifiers(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	params := map[string]interface{}{
+		"related": fmt.Sprintf("ServiceRequest/%s", serviceRequestID),
+		"_sort":   "_lastUpdated",
+		"_count":  "1",
+	}
+
+	output, err := c.infrastructure.FHIR.SearchFHIRDocumentReference(ctx, params, *identifiers, dto.Pagination{})
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return false, err
+	}
+
+	if len(output.DocumentReferences) == 0 {
+		return false, errors.New("no document reference found")
+	}
+
+	// TODO: Send SMS here
+
+	return true, nil
 }

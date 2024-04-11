@@ -296,3 +296,83 @@ func TestUseCasesClinicalImpl_CreateDocumentReference(t *testing.T) {
 		})
 	}
 }
+
+func TestUseCasesClinicalImpl_ShareReferralForm(t *testing.T) {
+	type args struct {
+		ctx              context.Context
+		serviceRequestID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: share referral form",
+			args: args{
+				ctx:              addTenantIdentifierContext(context.Background()),
+				serviceRequestID: gofakeit.UUID(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to share referral form",
+			args: args{
+				ctx:              addTenantIdentifierContext(context.Background()),
+				serviceRequestID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get tenant identifiers",
+			args: args{
+				ctx:              addTenantIdentifierContext(context.Background()),
+				serviceRequestID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: no document references found",
+			args: args{
+				ctx:              addTenantIdentifierContext(context.Background()),
+				serviceRequestID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to share referral form" {
+				fakeFHIR.MockSearchFHIRDocumentReferenceFn = func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error) {
+					return nil, fmt.Errorf("failed to search FHIR document reference")
+				}
+			}
+			if tt.name == "Sad case: unable to get tenant identifiers" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+			if tt.name == "Sad case: no document references found" {
+				fakeFHIR.MockSearchFHIRDocumentReferenceFn = func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error) {
+					return &domain.PagedFHIRDocumentReference{}, nil
+				}
+			}
+
+			_, err := c.ShareReferralForm(tt.args.ctx, tt.args.serviceRequestID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.ShareReferralForm() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
