@@ -154,4 +154,5 @@ type FHIRSubscription interface {
 // FHIRDocumentReference interface contains the method signatures for the various action to be performed against the FHIR Document Reference resource
 type FHIRDocumentReference interface {
 	CreateFHIRDocumentReference(ctx context.Context, input *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error)
+	SearchFHIRDocumentReference(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error)
 }

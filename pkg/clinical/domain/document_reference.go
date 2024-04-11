@@ -1,6 +1,8 @@
 package domain
 
-import "github.com/savannahghi/scalarutils"
+import (
+	"github.com/savannahghi/scalarutils"
+)
 
 // FHIRDocumentReference represents a reference to a document of any kind for any purpose.
 // It provides metadata about the document so that the document can be discovered and managed.
@@ -89,4 +91,19 @@ type FHIRDocumentReferenceInput struct {
 	SecurityLabel     []FHIRCodeableConceptInput       `json:"securityLabel,omitempty"`
 	Content           []FHIRDocumentReferenceContent   `json:"content,omitempty"`
 	Context           *FHIRDocumentReferenceContext    `json:"context,omitempty"`
+}
+
+// FHIRQuestionnaireResponseRelayPayload is used to return a single instance of document response
+type FHIRDocumentReferenceRelayPayload struct {
+	Resource *FHIRDocumentReference `json:"resource,omitempty"`
+}
+
+// PagedFHIRDocumentReference is an FHIR document's paginated model data class
+type PagedFHIRDocumentReference struct {
+	DocumentReferences []FHIRDocumentReference
+	HasNextPage        bool
+	NextCursor         string
+	HasPreviousPage    bool
+	PreviousCursor     string
+	TotalCount         int
 }
