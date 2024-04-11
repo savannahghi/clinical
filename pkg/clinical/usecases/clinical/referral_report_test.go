@@ -6,7 +6,9 @@ import (
 	"io"
 	"testing"
 
+	"github.com/brianvoe/gofakeit"
 	"github.com/google/uuid"
+	"github.com/savannahghi/clinical/pkg/clinical/application/common"
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	fakeExtMock "github.com/savannahghi/clinical/pkg/clinical/application/extensions/mock"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -17,6 +19,7 @@ import (
 	fakePubSubMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/pubsub/mock"
 	fakeUploadMock "github.com/savannahghi/clinical/pkg/clinical/infrastructure/services/upload/mock"
 	clinicalUsecase "github.com/savannahghi/clinical/pkg/clinical/usecases/clinical"
+	"github.com/savannahghi/scalarutils"
 )
 
 func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
@@ -93,6 +96,14 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Sad Case - unable to get tenant meta tags",
+			args: args{
+				ctx:              addTenantIdentifierContext(ctx),
+				serviceRequestID: uuid.New().String(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -138,9 +149,149 @@ func TestUseCasesClinicalImpl_GenerateReferralReportPDF(t *testing.T) {
 					return nil, fmt.Errorf("failed to get organization")
 				}
 			}
+			if tt.name == "Sad Case - unable to get tenant meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
 
 			if _, err := c.GenerateReferralReportPDF(tt.args.ctx, tt.args.serviceRequestID); (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.GenerateReferralReportPDF() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestUseCasesClinicalImpl_CreateDocumentReference(t *testing.T) {
+	ref := fmt.Sprintf("ServiceRequest/%s", gofakeit.UUID())
+	url := gofakeit.URL()
+	mimeType := "application/json"
+	title := fmt.Sprintf("%s's Document Reference", gofakeit.Name())
+	subjectRef := fmt.Sprintf("Subject/%s", gofakeit.UUID())
+	type args struct {
+		ctx     context.Context
+		payload *clinicalUsecase.DocumentReferencePayload
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case: create document reference",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: &clinicalUsecase.DocumentReferencePayload{
+					Subject: &domain.FHIRReferenceInput{
+						Reference: &subjectRef,
+					},
+					Attachment: &domain.FHIRAttachment{
+						ContentType: (*scalarutils.Code)(&mimeType),
+						URL:         (*scalarutils.URL)(&url),
+						Title:       &title,
+					},
+					Related: &domain.FHIRReference{
+						Reference: &ref,
+					},
+					TerminologySystem: common.ReferralNoteLOINCTerminologySystem,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Sad case: unable to create document reference",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: &clinicalUsecase.DocumentReferencePayload{
+					Subject: &domain.FHIRReferenceInput{
+						Reference: &subjectRef,
+					},
+					Attachment: &domain.FHIRAttachment{
+						ContentType: (*scalarutils.Code)(&mimeType),
+						URL:         (*scalarutils.URL)(&url),
+						Title:       &title,
+					},
+					Related: &domain.FHIRReference{
+						Reference: &ref,
+					},
+					TerminologySystem: common.ReferralNoteLOINCTerminologySystem,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get concept",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: &clinicalUsecase.DocumentReferencePayload{
+					Subject: &domain.FHIRReferenceInput{
+						Reference: &subjectRef,
+					},
+					Attachment: &domain.FHIRAttachment{
+						ContentType: (*scalarutils.Code)(&mimeType),
+						URL:         (*scalarutils.URL)(&url),
+						Title:       &title,
+					},
+					Related: &domain.FHIRReference{
+						Reference: &ref,
+					},
+					TerminologySystem: common.ReferralNoteLOINCTerminologySystem,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get tenant meta tags",
+			args: args{
+				ctx: addTenantIdentifierContext(context.Background()),
+				payload: &clinicalUsecase.DocumentReferencePayload{
+					Subject: &domain.FHIRReferenceInput{
+						Reference: &subjectRef,
+					},
+					Attachment: &domain.FHIRAttachment{
+						ContentType: (*scalarutils.Code)(&mimeType),
+						URL:         (*scalarutils.URL)(&url),
+						Title:       &title,
+					},
+					Related: &domain.FHIRReference{
+						Reference: &ref,
+					},
+					TerminologySystem: common.ReferralNoteLOINCTerminologySystem,
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fakeExt := fakeExtMock.NewFakeBaseExtensionMock()
+			fakeFHIR := fakeFHIRMock.NewFHIRMock()
+			fakeOCL := fakeOCLMock.NewFakeOCLMock()
+			fakePubSub := fakePubSubMock.NewPubSubServiceMock()
+			fakeUpload := fakeUploadMock.NewFakeUploadMock()
+			fakeAdvantage := fakeAdvantageMock.NewFakeAdvantageMock()
+
+			infra := infrastructure.NewInfrastructureInteractor(fakeExt, fakeFHIR, fakeOCL, fakeUpload, fakePubSub, fakeAdvantage)
+			c := clinicalUsecase.NewUseCasesClinicalImpl(infra)
+
+			if tt.name == "Sad case: unable to create document reference" {
+				fakeFHIR.MockCreateFHIRDocumentReferenceFn = func(ctx context.Context, documentReference *domain.FHIRDocumentReferenceInput) (*domain.FHIRDocumentReference, error) {
+					return nil, fmt.Errorf("failed to create FHIR document reference")
+				}
+			}
+			if tt.name == "Sad case: unable to get concept" {
+				fakeOCL.MockGetConceptFn = func(ctx context.Context, org, source, concept string, includeMappings, includeInverseMappings bool) (*domain.Concept, error) {
+					return nil, fmt.Errorf("failed to get concept")
+				}
+			}
+			if tt.name == "Sad case: unable to get tenant meta tags" {
+				fakeExt.MockGetTenantIdentifiersFn = func(ctx context.Context) (*dto.TenantIdentifiers, error) {
+					return nil, fmt.Errorf("failed to get tenant identifiers")
+				}
+			}
+
+			if err := c.CreateDocumentReference(tt.args.ctx, tt.args.payload); (err != nil) != tt.wantErr {
+				t.Errorf("UseCasesClinicalImpl.CreateDocumentReference() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
