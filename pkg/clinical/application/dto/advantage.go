@@ -6,3 +6,10 @@ type SegmentationPayload struct {
 	ClinicalID   string               `json:"clinical_id,omitempty"`
 	SegmentLabel SegmentationCategory `json:"segment_label,omitempty"`
 }
+
+// SMSPayload is used to model data used to send sms to patients through the advantage service
+type SMSPayload struct {
+	Intention  string   `json:"intention"`
+	Message    string   `json:"message"`
+	Recipients []string `json:"recipients"`
+}

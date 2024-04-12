@@ -301,6 +301,7 @@ func TestUseCasesClinicalImpl_ShareReferralForm(t *testing.T) {
 	type args struct {
 		ctx              context.Context
 		serviceRequestID string
+		workstationID    string
 	}
 	tests := []struct {
 		name    string
@@ -312,6 +313,7 @@ func TestUseCasesClinicalImpl_ShareReferralForm(t *testing.T) {
 			args: args{
 				ctx:              addTenantIdentifierContext(context.Background()),
 				serviceRequestID: gofakeit.UUID(),
+				workstationID:    gofakeit.UUID(),
 			},
 			wantErr: false,
 		},
@@ -333,6 +335,30 @@ func TestUseCasesClinicalImpl_ShareReferralForm(t *testing.T) {
 		},
 		{
 			name: "Sad case: no document references found",
+			args: args{
+				ctx:              addTenantIdentifierContext(context.Background()),
+				serviceRequestID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get patient",
+			args: args{
+				ctx:              addTenantIdentifierContext(context.Background()),
+				serviceRequestID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to get send SMS",
+			args: args{
+				ctx:              addTenantIdentifierContext(context.Background()),
+				serviceRequestID: gofakeit.UUID(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Sad case: unable to subject associated with the document reference",
 			args: args{
 				ctx:              addTenantIdentifierContext(context.Background()),
 				serviceRequestID: gofakeit.UUID(),
@@ -367,8 +393,38 @@ func TestUseCasesClinicalImpl_ShareReferralForm(t *testing.T) {
 					return &domain.PagedFHIRDocumentReference{}, nil
 				}
 			}
+			if tt.name == "Sad case: unable to get patient" {
+				fakeFHIR.MockGetFHIRPatientFn = func(ctx context.Context, id string) (*domain.FHIRPatientRelayPayload, error) {
+					return nil, fmt.Errorf("failed to get patient")
+				}
+			}
+			if tt.name == "Sad case: unable to get send SMS" {
+				fakeAdvantage.MockSendSMSFn = func(ctx context.Context, workstationID string, payload dto.SMSPayload) error {
+					return fmt.Errorf("failed to send SMS")
+				}
+			}
+			if tt.name == "Sad case: unable to subject associated with the document reference" {
+				fakeFHIR.MockSearchFHIRDocumentReferenceFn = func(ctx context.Context, searchParams map[string]interface{}, tenant dto.TenantIdentifiers, pagination dto.Pagination) (*domain.PagedFHIRDocumentReference, error) {
+					resourceID := uuid.NewString()
+					return &domain.PagedFHIRDocumentReference{
+						DocumentReferences: []domain.FHIRDocumentReference{
+							{
+								ID:       resourceID,
+								Meta:     &domain.FHIRMeta{},
+								Type:     &domain.FHIRCodeableConcept{},
+								Category: []domain.FHIRCodeableConcept{},
+							},
+						},
+						HasNextPage:     false,
+						NextCursor:      "",
+						HasPreviousPage: false,
+						PreviousCursor:  "",
+						TotalCount:      0,
+					}, nil
+				}
+			}
 
-			_, err := c.ShareReferralForm(tt.args.ctx, tt.args.serviceRequestID)
+			_, err := c.ShareReferralForm(tt.args.ctx, tt.args.serviceRequestID, tt.args.workstationID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UseCasesClinicalImpl.ShareReferralForm() error = %v, wantErr %v", err, tt.wantErr)
 				return

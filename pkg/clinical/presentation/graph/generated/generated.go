@@ -360,7 +360,7 @@ type ComplexityRoot struct {
 		RecordViralLoad                    func(childComplexity int, input dto.ObservationInput) int
 		RecordWeight                       func(childComplexity int, input dto.ObservationInput) int
 		ReferPatient                       func(childComplexity int, input dto.ReferralInput) int
-		ShareReferralForm                  func(childComplexity int, serviceRequestID string) int
+		ShareReferralForm                  func(childComplexity int, serviceRequestID string, workstationID string) int
 		StartEncounter                     func(childComplexity int, episodeID string) int
 	}
 
@@ -745,7 +745,7 @@ type MutationResolver interface {
 	RecordCbe(ctx context.Context, input dto.DiagnosticReportInput) (*dto.DiagnosticReport, error)
 	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResourceOutput, error)
 	ReferPatient(ctx context.Context, input dto.ReferralInput) (*dto.ServiceRequest, error)
-	ShareReferralForm(ctx context.Context, serviceRequestID string) (bool, error)
+	ShareReferralForm(ctx context.Context, serviceRequestID string, workstationID string) (bool, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -2538,7 +2538,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ShareReferralForm(childComplexity, args["serviceRequestID"].(string)), true
+		return e.complexity.Mutation.ShareReferralForm(childComplexity, args["serviceRequestID"].(string), args["workstationID"].(string)), true
 
 	case "Mutation.startEncounter":
 		if e.complexity.Mutation.StartEncounter == nil {
@@ -4629,7 +4629,7 @@ extend type Mutation {
   # Referral
   referPatient(input: ReferralInput!): ServiceRequest!
 
-  shareReferralForm(serviceRequestID: ID!): Boolean!
+  shareReferralForm(serviceRequestID: ID!, workstationID: String!): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -6531,6 +6531,15 @@ func (ec *executionContext) field_Mutation_shareReferralForm_args(ctx context.Co
 		}
 	}
 	args["serviceRequestID"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["workstationID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("workstationID"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["workstationID"] = arg1
 	return args, nil
 }
 
@@ -18444,7 +18453,7 @@ func (ec *executionContext) _Mutation_shareReferralForm(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ShareReferralForm(rctx, fc.Args["serviceRequestID"].(string))
+		return ec.resolvers.Mutation().ShareReferralForm(rctx, fc.Args["serviceRequestID"].(string), fc.Args["workstationID"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
