@@ -431,7 +431,10 @@ func (c *UseCasesClinicalImpl) GetPatientObservations(ctx context.Context, patie
 
 	searchParams := map[string]interface{}{
 		"patient": patientReference,
-		"code":    observationCode,
+	}
+
+	if observationCode != "" {
+		searchParams["code"] = observationCode
 	}
 
 	if encounterID != nil {
