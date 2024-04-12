@@ -180,8 +180,33 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		}
 	}
 
+	observations, err := c.GetPatientObservations(
+		ctx,
+		*patient.Resource.ID,
+		serviceRequest.Resource.Encounter.ID,
+		nil,
+		"",
+		&dto.Pagination{},
+	)
+	if err != nil {
+		utils.ReportErrorToSentry(err)
+		return nil, err
+	}
+
+	var tests []Test
+
+	for _, observation := range observations.Edges {
+		obs := Test{
+			Name:    observation.Node.Name,
+			Results: observation.Node.Value,
+			Date:    observation.Node.TimeRecorded,
+		}
+
+		tests = append(tests, obs)
+	}
+
 	data := TemplateData{
-		Date: time.Now().Format("Monday, Jan 2, 2006"),
+		Date: time.Now().Format("Jan 2, 2006"),
 		Time: time.Now().Format("15:04"),
 		ReferringFacility: Facility{
 			Name: *facility.Resource.Name,
@@ -196,7 +221,7 @@ func (c *UseCasesClinicalImpl) GenerateReferralReportPDF(ctx context.Context, se
 		Referral: Referral{
 			Reason: referralReason,
 		},
-		MedicalHistory: MedicalHistory{Procedure: "Screening", Medication: "None", ReferralNotes: referralReason, Tests: []Test{{Name: "VIA", Results: "Positive", Date: "13th May 2024"}}},
+		MedicalHistory: MedicalHistory{Procedure: "Screening", Medication: "None", ReferralNotes: referralReason, Tests: tests},
 		Footer: Footer{
 			Phone: facilityContact,
 		},

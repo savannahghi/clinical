@@ -141,7 +141,7 @@ const ReferralFormTemplate = `
             <td class="logo-cell">
                 <img  alt="Empower Logo">
             </td>
-            <td  >
+            <td>
                 <h1 class="header-title">{{ .ReferringFacility.Name }}</h1>
             </td>
             <td class="details-cell">
@@ -161,33 +161,47 @@ const ReferralFormTemplate = `
     <div class="detail-section">
         <table>
             <tr>
+            {{if .Patient.Name}}
                 <td>
-                    {{if .Patient.Name}}<div class="detail">Name: <strong>{{.Patient.Name}}</strong></div>{{end}}         
-                       </td>
-                <td  >
-                    {{if .Patient.EmpowerID}}<div class="detail">Empower ID: <strong>{{.Patient.EmpowerID}}</strong></div>{{end}}
+                    <div class="detail">Name: <strong>{{.Patient.Name}}</strong></div>         
                 </td>
+            {{end}}
+            {{if .Patient.PhoneNumber}}
+                <td>
+                    <div class="detail">Phone number: <strong>{{.Patient.PhoneNumber}}</strong></div>
+                </td>
+            {{end}}
             </tr>
             <tr>
+            {{if .Patient.DateOfBirth}}
+            <td>
+                <div class="detail">Date of birth: <strong>{{.Patient.DateOfBirth}}</strong></div>
+            </td>
+            {{end}}
+            {{if .Patient.Age}}
                 <td>
-                    {{if .Patient.NationalID}}<div class="detail">National ID: <strong>{{.Patient.NationalID}}</strong></div>{{end}}
-                    </td>
-                    <td  >
-                        {{if .Patient.PhoneNumber}}<div class="detail">Phone number: <strong>{{.Patient.PhoneNumber}}</strong></div>{{end}}
-                    </td>
+                    <div class="detail">Age: <strong>{{.Patient.Age}}</strong></div>
+                </td>
+            {{end}}
             </tr>
             <tr>
+            {{if .Patient.Sex}}
                 <td>
-                    {{if .Patient.DateOfBirth}}<div class="detail">Date of birth: <strong>{{.Patient.DateOfBirth}}</strong></div>{{end}}
-                    </td>
-                    <td  >
-                        {{if .Patient.Age}}<div class="detail">Age: <strong>{{.Patient.Age}}</strong></div>{{end}}
-                    </td>
+                    <div class="detail">Sex: <strong>{{.Patient.Sex}}</strong></div>
+                </td>
+            {{end}}
             </tr>
             <tr>
+            {{if .Patient.NationalID}}
                 <td>
-                    {{if .Patient.Sex}}<div class="detail">Sex: <strong>{{.Patient.Sex}}</strong></div>{{end}}
-                    </td>
+                    <div class="detail">National ID: <strong>{{.Patient.NationalID}}</strong></div>
+                </td>
+            {{end}}
+            {{if .Patient.EmpowerID}}
+                <td>
+                    <div class="detail">Empower ID: <strong>{{.Patient.EmpowerID}}</strong></div>
+                </td>
+            {{end}}
             </tr>
         </table>    
     </div>
@@ -256,15 +270,24 @@ const ReferralFormTemplate = `
         {{if .MedicalHistory.Medication}}<div class="detail">Medication: <strong>{{.MedicalHistory.Medication}}</strong></div>{{end}}
         {{if .MedicalHistory.ReferralNotes}}<div class="detail">Referral notes: <strong>{{.MedicalHistory.ReferralNotes}}</strong></div>{{end}}
         {{if .MedicalHistory.Tests}}
-        <div class="tests">
+        <table>
+        <thead>
+            <tr>
+                <th>Test</th>
+                <th>Result</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
             {{range .MedicalHistory.Tests}}
-            <div>
-                {{if .Name}}<div class="detail">Test: <strong>{{.Name}}</strong></div>{{end}}
-                {{if .Results}}<div class="detail">Results: <strong>{{.Results}}</strong></div>{{end}}
-                {{if .Date}}<div class="detail">Date: <strong>{{.Date}}</strong></div>{{end}}
-            </div>
+            <tr>
+                {{if .Name}}<td>{{.Name}}</td>{{else}}<td></td>{{end}}
+                {{if .Results}}<td>{{.Results}}</td>{{else}}<td></td>{{end}}
+                {{if .Date}}<td>{{.Date}}</td>{{else}}<td></td>{{end}}
+            </tr>
             {{end}}
-        </div>
+        </tbody>
+        </table>
         {{end}}
     </div>
     {{end}}
