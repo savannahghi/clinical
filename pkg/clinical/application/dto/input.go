@@ -4,6 +4,7 @@ import (
 	"mime/multipart"
 	"time"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/go-playground/validator"
 	"github.com/savannahghi/scalarutils"
 )
@@ -285,4 +286,9 @@ func (r ReferralInput) Validate() error {
 	err := v.Struct(r)
 
 	return err
+}
+
+type MediaFileInput struct {
+	EncounterID string `json:"encounterID"`
+	File        graphql.Upload
 }

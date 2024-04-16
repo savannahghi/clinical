@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/savannahghi/clinical/pkg/clinical/application/dto"
 	"github.com/savannahghi/clinical/pkg/clinical/domain"
@@ -321,6 +322,11 @@ func (r *mutationResolver) ShareReferralForm(ctx context.Context, serviceRequest
 	r.CheckDependencies()
 
 	return r.usecases.ShareReferralForm(ctx, serviceRequestID, workstationID)
+}
+
+// UploadMedia is the resolver for the uploadMedia field.
+func (r *mutationResolver) UploadMedia(ctx context.Context, input dto.MediaFileInput) (bool, error) {
+	panic(fmt.Errorf("not implemented: UploadMedia - uploadMedia"))
 }
 
 // PatientHealthTimeline is the resolver for the patientHealthTimeline field.

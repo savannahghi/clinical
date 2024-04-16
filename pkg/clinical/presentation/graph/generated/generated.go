@@ -362,6 +362,7 @@ type ComplexityRoot struct {
 		ReferPatient                       func(childComplexity int, input dto.ReferralInput) int
 		ShareReferralForm                  func(childComplexity int, serviceRequestID string, workstationID string) int
 		StartEncounter                     func(childComplexity int, episodeID string) int
+		UploadMedia                        func(childComplexity int, input dto.MediaFileInput) int
 	}
 
 	Narrative struct {
@@ -746,6 +747,7 @@ type MutationResolver interface {
 	GetEncounterAssociatedResources(ctx context.Context, encounterID string) (*dto.EncounterAssociatedResourceOutput, error)
 	ReferPatient(ctx context.Context, input dto.ReferralInput) (*dto.ServiceRequest, error)
 	ShareReferralForm(ctx context.Context, serviceRequestID string, workstationID string) (bool, error)
+	UploadMedia(ctx context.Context, input dto.MediaFileInput) (bool, error)
 }
 type QueryResolver interface {
 	PatientHealthTimeline(ctx context.Context, input dto.HealthTimelineInput) (*dto.HealthTimeline, error)
@@ -2552,6 +2554,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.StartEncounter(childComplexity, args["episodeID"].(string)), true
 
+	case "Mutation.uploadMedia":
+		if e.complexity.Mutation.UploadMedia == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadMedia_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadMedia(childComplexity, args["input"].(dto.MediaFileInput)), true
+
 	case "Narrative.div":
 		if e.complexity.Narrative.Div == nil {
 			break
@@ -4289,6 +4303,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputFacilityInput,
 		ec.unmarshalInputHealthTimelineInput,
 		ec.unmarshalInputIdentifierInput,
+		ec.unmarshalInputMediaFileInput,
 		ec.unmarshalInputMediaInput,
 		ec.unmarshalInputMetaInput,
 		ec.unmarshalInputObservationInput,
@@ -4630,6 +4645,8 @@ extend type Mutation {
   referPatient(input: ReferralInput!): ServiceRequest!
 
   shareReferralForm(serviceRequestID: ID!, workstationID: String!): Boolean!
+
+  uploadMedia(input: MediaFileInput!): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "../enums.graphql", Input: `enum EpisodeOfCareStatusEnum {
@@ -4786,7 +4803,7 @@ scalar UnsignedInt
 scalar URI
 scalar UUID
 scalar XHTML
-
+scalar Upload
 `, BuiltIn: false},
 	{Name: "../inputs.graphql", Input: `input HealthTimelineInput {
   patientID: String!
@@ -4996,6 +5013,11 @@ input FacilityInput {
   name: String!
   county: String!
   contact: String
+}
+
+input MediaFileInput {
+  encounterID: String!
+  file: Upload!
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `type Allergy {
   id: ID
@@ -6555,6 +6577,21 @@ func (ec *executionContext) field_Mutation_startEncounter_args(ctx context.Conte
 		}
 	}
 	args["episodeID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadMedia_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 dto.MediaFileInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNMediaFileInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaFileInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -18488,6 +18525,61 @@ func (ec *executionContext) fieldContext_Mutation_shareReferralForm(ctx context.
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_shareReferralForm_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_uploadMedia(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_uploadMedia(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadMedia(rctx, fc.Args["input"].(dto.MediaFileInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_uploadMedia(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_uploadMedia_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -32449,6 +32541,44 @@ func (ec *executionContext) unmarshalInputIdentifierInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputMediaFileInput(ctx context.Context, obj interface{}) (dto.MediaFileInput, error) {
+	var it dto.MediaFileInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"encounterID", "file"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "encounterID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("encounterID"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EncounterID = data
+		case "file":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+			data, err := ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.File = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj interface{}) (dto.Media, error) {
 	var it dto.Media
 	asMap := map[string]interface{}{}
@@ -35401,6 +35531,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "uploadMedia":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadMedia(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -38260,6 +38397,11 @@ func (ec *executionContext) marshalNMedia2ᚖgithubᚗcomᚋsavannahghiᚋclinic
 	return ec._Media(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNMediaFileInput2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMediaFileInput(ctx context.Context, v interface{}) (dto.MediaFileInput, error) {
+	res, err := ec.unmarshalInputMediaFileInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNMedication2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐMedication(ctx context.Context, sel ast.SelectionSet, v dto.Medication) graphql.Marshaler {
 	return ec._Medication(ctx, sel, &v)
 }
@@ -38479,6 +38621,21 @@ func (ec *executionContext) unmarshalNTerminologySource2githubᚗcomᚋsavannahg
 
 func (ec *executionContext) marshalNTerminologySource2githubᚗcomᚋsavannahghiᚋclinicalᚋpkgᚋclinicalᚋapplicationᚋdtoᚐTerminologySource(ctx context.Context, sel ast.SelectionSet, v dto.TerminologySource) graphql.Marshaler {
 	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {
+	res, err := graphql.UnmarshalUpload(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v graphql.Upload) graphql.Marshaler {
+	res := graphql.MarshalUpload(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

@@ -18,4 +18,4 @@ scalar UnsignedInt
 scalar URI
 scalar UUID
 scalar XHTML
-
+scalar Upload

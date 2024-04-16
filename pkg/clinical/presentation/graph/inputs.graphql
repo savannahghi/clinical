@@ -207,3 +207,8 @@ input FacilityInput {
   county: String!
   contact: String
 }
+
+input MediaFileInput {
+  encounterID: String!
+  file: Upload!
+}
