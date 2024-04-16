@@ -69,7 +69,7 @@ func (c *UseCasesClinicalImpl) UploadMedia(ctx context.Context, encounterID stri
 		},
 		Content: &domain.FHIRAttachmentInput{
 			ContentType: (*scalarutils.Code)(&mediaUploadOutput.ContentType),
-			URL:         (*scalarutils.URL)(&mediaUploadOutput.MediaLink),
+			URL:         (*scalarutils.URL)(&mediaUploadOutput.SignedURL),
 			Title:       &mediaUploadOutput.Name,
 		},
 		Issued: &now,
