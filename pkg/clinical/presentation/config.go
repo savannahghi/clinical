@@ -62,6 +62,8 @@ var ClinicalAllowedHeaders = []string{
 	"Content-Type",
 	"Authorization",
 	"X-Authorization",
+	"traceparent",
+	"tracestate",
 }
 
 // PrepareServer sets up the HTTP server
